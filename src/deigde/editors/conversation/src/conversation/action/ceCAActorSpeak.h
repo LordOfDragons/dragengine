@@ -84,23 +84,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the sound file loading it if not loaded already. */
 	deSound *GetEngineSound();
 	
 	/** Retrieves the actor id. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
 	void SetActor(const char *id);
 	
 	/** Retrieves the text box text. */
-	inline const decUnicodeString &GetTextBoxText() const{return pTextBoxText;}
+	inline const decUnicodeString &GetTextBoxText() const{ return pTextBoxText; }
 	
 	/** Sets the text box text. */
 	void SetTextBoxText(const decUnicodeString &text);
 	
 	/** Translated text box text. */
-	inline const decString &GetTextBoxTextTranslate() const{return pTextBoxTextTranslate;}
+	inline const decString &GetTextBoxTextTranslate() const{ return pTextBoxTextTranslate; }
 	
 	/** Set translated text box text. */
 	void SetTextBoxTextTranslate(const char *text);
@@ -109,42 +109,42 @@ public:
 	decUnicodeString ResolveTextBoxText(const ceConversation &conversation) const;
 	
 	/** \brief Retrieves the text box text style. */
-	inline const decString &GetTextBoxTextStyle() const{return pTextBoxTextStyle;}
+	inline const decString &GetTextBoxTextStyle() const{ return pTextBoxTextStyle; }
 	/** \brief Sets the text box text style. */
 	void SetTextBoxTextStyle(const char *style);
 	/** Retrieves the path to the sound file or empty to use none. */
-	inline const decString &GetPathSound() const{return pPathSound;}
+	inline const decString &GetPathSound() const{ return pPathSound; }
 	/** Sets the path to the sound file or empty to use none. */
 	void SetPathSound(const char *path);
 	/** Retrieves the words list for lip-sync. */
-	inline ceStripList &GetWordList(){return pWords;}
-	inline const ceStripList &GetWordList() const{return pWords;}
+	inline ceStripList &GetWordList(){ return pWords; }
+	inline const ceStripList &GetWordList() const{ return pWords; }
 	/** Retrieves the face pose list. */
-	inline ceStripList &GetFacePoseList(){return pFacePoses;}
-	inline const ceStripList &GetFacePoseList() const{return pFacePoses;}
+	inline ceStripList &GetFacePoseList(){ return pFacePoses; }
+	inline const ceStripList &GetFacePoseList() const{ return pFacePoses; }
 	/** Retrieves the gesture list. */
-	inline ceStripList &GetGestureList(){return pGestures;}
-	inline const ceStripList &GetGestureList() const{return pGestures;}
+	inline ceStripList &GetGestureList(){ return pGestures; }
+	inline const ceStripList &GetGestureList() const{ return pGestures; }
 	/** Retrieves the body look-at list. */
-	inline ceStripList &GetBodyLookAtList(){return pBodyLookAt;}
-	inline const ceStripList &GetBodyLookAtList() const{return pBodyLookAt;}
+	inline ceStripList &GetBodyLookAtList(){ return pBodyLookAt; }
+	inline const ceStripList &GetBodyLookAtList() const{ return pBodyLookAt; }
 	/** Retrieves the head look-at list. */
-	inline ceStripList &GetHeadLookAtList(){return pHeadLookAt;}
-	inline const ceStripList &GetHeadLookAtList() const{return pHeadLookAt;}
+	inline ceStripList &GetHeadLookAtList(){ return pHeadLookAt; }
+	inline const ceStripList &GetHeadLookAtList() const{ return pHeadLookAt; }
 	/** Retrieves the eyes look-at list. */
-	inline ceStripList &GetEyesLookAtList(){return pEyesLookAt;}
-	inline const ceStripList &GetEyesLookAtList() const{return pEyesLookAt;}
+	inline ceStripList &GetEyesLookAtList(){ return pEyesLookAt; }
+	inline const ceStripList &GetEyesLookAtList() const{ return pEyesLookAt; }
 	/** Retrieves the movement to use or empty to not change. */
-	inline const decString &GetMovement() const{return pMovement;}
+	inline const decString &GetMovement() const{ return pMovement; }
 	/** Sets the movement to use or empty to not change. */
 	void SetMovement(const char *movement);
 	/** \brief Retrieves the minimum time the actor is speaking. */
-	inline float GetMinSpeechTime() const{return pMinSpeechTime;}
+	inline float GetMinSpeechTime() const{ return pMinSpeechTime; }
 	/** \brief Sets the minimum time the actor is speaking. */
 	void SetMinSpeechTime(float minSpeechTime);
 	
 	/** \brief Determines if speech animation is used for this action. */
-	inline bool GetUseSpeechAnimation() const{return pUseSpeechAnimation;}
+	inline bool GetUseSpeechAnimation() const{ return pUseSpeechAnimation; }
 	/** \brief Sets if speech animation is used for this action. */
 	void SetUseSpeechAnimation(bool useSpeechAnimation);
 	

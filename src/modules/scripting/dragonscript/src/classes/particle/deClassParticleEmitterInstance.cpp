@@ -376,7 +376,7 @@ void deClassParticleEmitterInstance::nfCopyControllerStates::RunFunction(dsRunTi
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -422,7 +422,7 @@ void deClassParticleEmitterInstance::nfCopyControllerStates2::RunFunction(dsRunT
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -456,7 +456,7 @@ void deClassParticleEmitterInstance::nfCopyNamedControllerStates::RunFunction(ds
 	const deClassParticleEmitterInstance &clsPEI = *((deClassParticleEmitterInstance*)GetOwnerClass());
 	
 	const deParticleEmitterInstance * const sourceInstance = clsPEI.GetInstance(rt->GetValue(0)->GetRealObject());
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -664,7 +664,7 @@ dsFunction(init.clsPEI, "getIgnoreColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | D
 }
 void deClassParticleEmitterInstance::nfGetIgnoreColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -678,7 +678,7 @@ dsFunction(init.clsPEI, "getIgnoreColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM
 }
 void deClassParticleEmitterInstance::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -694,7 +694,7 @@ dsFunction(init.clsPEI, "hasIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 }
 void deClassParticleEmitterInstance::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -711,7 +711,7 @@ dsFunction(init.clsPEI, "addIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 }
 void deClassParticleEmitterInstance::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -727,7 +727,7 @@ dsFunction(init.clsPEI, "removeIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DST
 }
 void deClassParticleEmitterInstance::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -742,7 +742,7 @@ dsFunction(init.clsPEI, "removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC |
 }
 void deClassParticleEmitterInstance::nfRemoveAllIgnoreColliders::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sPEINatDat &nd = *((sPEINatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -772,7 +772,7 @@ void deClassParticleEmitterInstance::nfEquals::RunFunction(dsRunTime *rt, dsValu
 	deClassParticleEmitterInstance *clsPEI = (deClassParticleEmitterInstance*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsPEI)){
+	if(!p_IsObjOfType(obj, clsPEI)){
 		rt->PushBool(false);
 		
 	}else{
@@ -793,7 +793,7 @@ void deClassParticleEmitterInstance::nfEquals::RunFunction(dsRunTime *rt, dsValu
 
 deClassParticleEmitterInstance::deClassParticleEmitterInstance(deScriptingDragonScript *ds) :
 dsClass("ParticleEmitterInstance", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -898,7 +898,7 @@ void deClassParticleEmitterInstance::CreateClassMembers(dsEngine *engine){
 }
 
 deParticleEmitterInstance *deClassParticleEmitterInstance::GetInstance(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -906,11 +906,11 @@ deParticleEmitterInstance *deClassParticleEmitterInstance::GetInstance(dsRealObj
 }
 
 void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitterInstance *instance){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! instance){
+	if(!instance){
 		rt->PushObject(NULL, this);
 		return;
 	}

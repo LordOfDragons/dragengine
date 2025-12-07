@@ -72,7 +72,7 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world || pComboClass->GetText().IsEmpty()){
+		if(!world || pComboClass->GetText().IsEmpty()){
 			return;
 		}
 		
@@ -94,7 +94,7 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world || ! pListBox->GetSelectedItem()){
+		if(!world || !pListBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		world->GetGuiParameters().SetAddFilterObjectSet(decStringSet());
@@ -158,11 +158,11 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		world->GetGuiParameters().SetAddFilterObjectInclusive(
-			! world->GetGuiParameters().GetAddFilterObjectInclusive());
+			!world->GetGuiParameters().GetAddFilterObjectInclusive());
 	}
 };
 
@@ -306,7 +306,7 @@ void meWPAdd::UpdateObjectFilter(){
 	}
 	pListObjClasses->SortItems();
 	
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		pListObjClasses->SetSelection(pListObjClasses->IndexOfItem(selection));
 	}
 	

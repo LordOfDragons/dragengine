@@ -57,13 +57,13 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Index of first segment. */
-	inline int GetFirstSegment() const{return pFirstSegment;}
+	inline int GetFirstSegment() const{ return pFirstSegment; }
 	
 	/** \brief Set index of first segment. */
 	void SetFirstSegment(int index);
 	
 	/** \brief Number of segments. */
-	inline int GetSegmentCount() const{return pSegmentCount;}
+	inline int GetSegmentCount() const{ return pSegmentCount; }
 	
 	/** \brief Set number of segments. */
 	void SetSegmentCount(int count);
@@ -72,13 +72,13 @@ public:
 	void IncSegmentCount();
 
 	/** \brief Index of first transmitted ray. */
-	inline int GetFirstTransmittedRay() const{return pFirstTransmittedRay;}
+	inline int GetFirstTransmittedRay() const{ return pFirstTransmittedRay; }
 	
 	/** \brief Set index of first transmitted ray. */
 	void SetFirstTransmittedRay(int index);
 	
 	/** \brief Number of transmitted rays. */
-	inline int GetTransmittedRayCount() const{return pTransmittedRayCount;}
+	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
 	
 	/** \brief Set number of transmitted rays. */
 	void SetTransmittedRayCount(int count);
@@ -87,7 +87,7 @@ public:
 	void IncTransmittedRayCount();
 	
 	/** \brief Ray is outside. */
-	inline bool GetOutside() const{return pOutside;}
+	inline bool GetOutside() const{ return pOutside; }
 	
 	/** \brief Set if ray is outside. */
 	void SetOutside(bool outside);

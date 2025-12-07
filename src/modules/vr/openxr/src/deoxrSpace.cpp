@@ -157,7 +157,7 @@ decVector &position, decQuaternion &orientation) const{
 	memset(&location, 0, sizeof(location));
 	location.type = XR_TYPE_SPACE_LOCATION;
 	
-	if(! XR_SUCCEEDED(instance.xrLocateSpace(pSpace, space.pSpace, time, &location))){
+	if(!XR_SUCCEEDED(instance.xrLocateSpace(pSpace, space.pSpace, time, &location))){
 		return 0;
 	}
 	
@@ -189,7 +189,7 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	location.pose.orientation.w = 1.0f;
 	location.next = &velocity;
 	
-	if(! XR_SUCCEEDED(instance.xrLocateSpace(pSpace, space.pSpace, time, &location))){
+	if(!XR_SUCCEEDED(instance.xrLocateSpace(pSpace, space.pSpace, time, &location))){
 		return 0;
 	}
 	
@@ -236,7 +236,7 @@ int deoxrSpace::LocateSpaceEye(XrTime time, decVector &position, decQuaternion &
 	location.pose.orientation.w = 1.0f;
 	location.next = &velocity;
 	
-	if(! XR_SUCCEEDED(instance.xrLocateSpace(pSpace, pSession.GetSpaceLocal()->pSpace, time, &location))){
+	if(!XR_SUCCEEDED(instance.xrLocateSpace(pSpace, pSession.GetSpaceLocal()->pSpace, time, &location))){
 		return 0;
 	}
 	

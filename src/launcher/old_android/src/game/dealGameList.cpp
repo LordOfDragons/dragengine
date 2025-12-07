@@ -60,7 +60,7 @@ dealGame *dealGameList::GetAt(int index) const{
 }
 
 dealGame *dealGameList::GetWithID(const char *id) const{
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,7 +84,7 @@ bool dealGameList::Has(dealGame *game) const{
 }
 
 bool dealGameList::HasWithID(const char *id) const{
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ int dealGameList::IndexOf(dealGame *game) const{
 }
 
 int dealGameList::IndexOfWithID(const char *id) const{
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -128,7 +128,7 @@ int dealGameList::IndexOfWithID(const char *id) const{
 }
 
 void dealGameList::Add(dealGame *game){
-	if(! game || HasWithID(game->GetIdentifier().GetString())){
+	if(!game || HasWithID(game->GetIdentifier().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	

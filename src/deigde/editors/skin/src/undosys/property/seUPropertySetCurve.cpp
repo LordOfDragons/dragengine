@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property){
-	if(! layer || ! property) DETHROW(deeInvalidParam);
+	if(!layer || !property) DETHROW(deeInvalidParam);
 	
 	pLayer = NULL;
 	pProperty = NULL;

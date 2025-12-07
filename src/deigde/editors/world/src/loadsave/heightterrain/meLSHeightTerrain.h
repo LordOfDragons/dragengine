@@ -57,11 +57,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const char *GetName() const{return pName.GetString();}
+	inline const char *GetName() const{ return pName.GetString(); }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the pattern. */
-	inline const char *GetPattern() const{return pPattern.GetString();}
+	inline const char *GetPattern() const{ return pPattern.GetString(); }
 	/** Sets the pattern. */
 	void SetPattern(const char *pattern);
 	

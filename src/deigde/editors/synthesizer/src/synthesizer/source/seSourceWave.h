@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Wave type. */
-	inline deSynthesizerSourceWave::eWaveType GetWaveType() const{return pWaveType;}
+	inline deSynthesizerSourceWave::eWaveType GetWaveType() const{ return pWaveType; }
 	
 	/** \brief Set wave type. */
 	void SetWaveType(deSynthesizerSourceWave::eWaveType type);
@@ -71,13 +71,13 @@ public:
 	
 	
 	/** \brief Minimum play frequency in Hz. */
-	inline float GetMinFrequency() const{return pMinFrequency;}
+	inline float GetMinFrequency() const{ return pMinFrequency; }
 	
 	/** \brief Set minimum frequency in Hz. */
 	void SetMinFrequency(float frequency);
 	
 	/** \brief Maximum frequency in Hz. */
-	inline float GetMaxFrequency() const{return pMaxFrequency;}
+	inline float GetMaxFrequency() const{ return pMaxFrequency; }
 	
 	/** \brief Set maximum frequency in Hz. */
 	void SetMaxFrequency(float frequency);
@@ -85,8 +85,8 @@ public:
 	
 	
 	/** \brief Play frequency target. */
-	inline seControllerTarget &GetTargetFrequency(){return pTargetFrequency;}
-	inline const seControllerTarget &GetTargetFrequency() const{return pTargetFrequency;}
+	inline seControllerTarget &GetTargetFrequency(){ return pTargetFrequency; }
+	inline const seControllerTarget &GetTargetFrequency() const{ return pTargetFrequency; }
 	
 	
 	

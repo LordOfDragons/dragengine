@@ -84,7 +84,7 @@ deoglOctree *deoglModelOctree::CreateOctree(int octant) const{
 	
 	// create child node
 	node = new deoglModelOctree(nc, halfExtend);
-	if(! node) DETHROW(deeOutOfMemory);
+	if(!node) DETHROW(deeOutOfMemory);
 	
 	return node;
 }
@@ -108,7 +108,7 @@ void deoglModelOctree::ClearFaces(){
 }
 
 void deoglModelOctree::InsertFaceIntoTree(deoglModelFace *face, int maxDepth){
-	if(! face || maxDepth < 0) DETHROW(deeInvalidParam);
+	if(!face || maxDepth < 0) DETHROW(deeInvalidParam);
 	
 	const decVector &minExtend = face->GetMinExtend();
 	const decVector &maxExtend = face->GetMaxExtend();
@@ -148,7 +148,7 @@ deoglModelOctree *deoglModelOctree::pGetNodeFor(const decVector &center, const d
 	
 	for(d=0; d<maxDepth; d++){
 		nextNode = curNode->GetNodeAtBox(center, halfExtend);
-		if(! nextNode) break;
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
@@ -165,7 +165,7 @@ deoglModelOctree *deoglModelOctree::pGetNodeFor(const decVector &position, int m
 		if(octant == deoglOctree::eoNotFound) break;
 		
 		nextNode = curNode->GetNodeAt(octant);
-		if(! nextNode){
+		if(!nextNode){
 			nextNode = curNode->CreateOctree(octant);
 			curNode->SetNodeAt(octant, nextNode);
 		}

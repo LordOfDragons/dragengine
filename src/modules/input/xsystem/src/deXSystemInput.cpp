@@ -369,7 +369,7 @@ void deXSystemInput::EventLoop(XEvent &event){
 		pKeyStates[keyCode] = true;
 		
 		sKey key;
-		if(! pLookUpKey(event.xkey, key)){
+		if(!pLookUpKey(event.xkey, key)){
 			break;
 		}
 		
@@ -389,13 +389,13 @@ void deXSystemInput::EventLoop(XEvent &event){
 		if(keyCode > 255){
 			break; // should never happen
 		}
-		if(! pKeyStates[keyCode]){
+		if(!pKeyStates[keyCode]){
 			break;
 		}
 		pKeyStates[keyCode] = false;
 		
 		sKey key;
-		if(! pLookUpKey(event.xkey, key)){
+		if(!pLookUpKey(event.xkey, key)){
 			break;
 		}
 		
@@ -659,7 +659,7 @@ void deXSystemInput::SetParameterValue(const char *name, const char *value){
 
 void deXSystemInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -689,7 +689,7 @@ void deXSystemInput::pQueryMousePosition(bool sendEvents){
 	}
 	
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -699,13 +699,13 @@ void deXSystemInput::pQueryMousePosition(bool sendEvents){
 	Window dummyRoot, dummyChild;
 	unsigned int state;
 	
-	if(! XQueryPointer(display, window, &dummyRoot, &dummyChild, &rootX, &rootY,
+	if(!XQueryPointer(display, window, &dummyRoot, &dummyChild, &rootX, &rootY,
 	&childX, &childY, &state)){
 		return;
 	}
 	
 	if(capture){
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		
@@ -737,7 +737,7 @@ void deXSystemInput::pQueryMousePosition(bool sendEvents){
 		pLastMouseX = childX;
 		pLastMouseY = childY;
 		
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		if(diffX == 0 && diffY == 0){
@@ -936,7 +936,7 @@ void deXSystemInput::pSetAutoRepeatEnabled(bool enabled){
 	pAutoRepeatEnabled = enabled;
 	
 	Display * const display = pOSUnix->GetDisplay();
-	if(! display){
+	if(!display){
 		return;
 	}
 	

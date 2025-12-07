@@ -106,7 +106,7 @@ void deovrDevice::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -146,7 +146,7 @@ int deovrDevice::GetButtonCount() const{
 }
 
 void deovrDevice::AddButton(deovrDeviceButton *button){
-	if(! button){
+	if(!button){
 		DETHROW(deeNullPointer);
 	}
 	pButtons.Add(button);
@@ -191,7 +191,7 @@ int deovrDevice::GetAxisCount() const{
 }
 
 void deovrDevice::AddAxis(deovrDeviceAxis *axis){
-	if(! axis){
+	if(!axis){
 		DETHROW(deeNullPointer);
 	}
 	pAxes.Add(axis);
@@ -234,7 +234,7 @@ int deovrDevice::GetFeedbackCount() const{
 }
 
 void deovrDevice::AddFeedback(deovrDeviceFeedback *feedback){
-	if(! feedback){
+	if(!feedback){
 		DETHROW(deeNullPointer);
 	}
 	pFeedbacks.Add(feedback);
@@ -264,7 +264,7 @@ int deovrDevice::GetComponentCount() const{
 }
 
 void deovrDevice::AddComponent(deovrDeviceComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeNullPointer);
 	}
 	pComponents.Add(component);
@@ -631,7 +631,7 @@ void deovrDevice::pUpdateParametersController(){
 	}
 	
 	// input source handle
-	if(! pInputValuePath.IsEmpty()){
+	if(!pInputValuePath.IsEmpty()){
 		vr::EVRInputError inputError = pOvr.GetVRInput().GetInputSourceHandle(pInputValuePath, &pInputValueHandle);
 		if(inputError != vr::VRInputError_None){
 			pOvr.LogErrorFormat("Failed retrieving input source handle: %d", inputError);
@@ -948,7 +948,7 @@ void deovrDevice::pUpdatePose(const vr::TrackedDevicePose_t &in, deInputDevicePo
 	// OpenVR is right handed: right=x, up=y, forward=-z
 	// to transform the matrix apply the conversion (-z) for both the row vectors and
 	// the column vectors
-	if(! in.bPoseIsValid){
+	if(!in.bPoseIsValid){
 		out = deInputDevicePose();
 	}
 	

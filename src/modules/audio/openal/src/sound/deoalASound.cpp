@@ -104,7 +104,7 @@ pIsUsed(false),
 pIsCached(false)
 {
 	pDetermineFormat();
-	if(! pValid){
+	if(!pValid){
 		LEAK_CHECK_CREATE(audioThread, Sound);
 		return;
 	}
@@ -141,11 +141,11 @@ deoalASound::~deoalASound(){
 void deoalASound::PreloadSound(deSound &sound){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(pStreaming || ! pValid || ! pFormat){
+	if(pStreaming || !pValid || !pFormat){
 		return;
 	}
 	
-	if(! pIsUsed){
+	if(!pIsUsed){
 		// first time the sound is used. samples data could be already loaded
 		// asynchronously during construction time. if loaded from cache and marked
 		// not used we have to first load the data before we can create the buffer
@@ -154,7 +154,7 @@ void deoalASound::PreloadSound(deSound &sound){
 				pFilename.GetString());
 		}
 		
-		if(! pStreamData){
+		if(!pStreamData){
 			pLoadEntireSound(sound);
 		}
 		
@@ -164,11 +164,11 @@ void deoalASound::PreloadSound(deSound &sound){
 }
 
 void deoalASound::PrepareBuffers(){
-	if(pStreaming || ! pValid || ! pFormat){
+	if(pStreaming || !pValid || !pFormat){
 		return;
 	}
 	
-	if(! pBuffer){
+	if(!pBuffer){
 		OAL_CHECK(pAudioThread, alGenBuffers(1, &pBuffer));
 		OAL_CHECK(pAudioThread, alBufferData(pBuffer, pFormat,
 			(const ALvoid *)pStreamData, pStreamDataSize, pSampleRate));
@@ -234,7 +234,7 @@ void deoalASound::pLoadFromCache(){
 	decBaseFileReader::Ref reader;
 	
 	const decPath path(decPath::CreatePathUnix(pFilename));
-	if(! vfs.CanReadFile(path)){
+	if(!vfs.CanReadFile(path)){
 		// without a source file no cache since it is no more unique
 		return;
 	}
@@ -243,7 +243,7 @@ void deoalASound::pLoadFromCache(){
 	
 	try{
 		reader.TakeOver(cacheSound.Read(pFilename));
-		if(! reader){
+		if(!reader){
 			// cache file absent
 			caches.Unlock();
 			return;
@@ -336,7 +336,7 @@ void deoalASound::pLoadFromCache(){
 }
 
 void deoalASound::pWriteToCache(){
-	if(! pValid || pStreaming){
+	if(!pValid || pStreaming){
 		return;
 	}
 	
@@ -349,7 +349,7 @@ void deoalASound::pWriteToCache(){
 	decBaseFileWriter::Ref writer;
 	
 	const decPath path(decPath::CreatePathUnix(pFilename));
-	if(! vfs.CanReadFile(path)){
+	if(!vfs.CanReadFile(path)){
 		return; // without a source file no cache since it is no more unique
 	}
 	

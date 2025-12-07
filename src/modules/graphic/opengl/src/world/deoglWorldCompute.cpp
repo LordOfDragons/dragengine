@@ -126,7 +126,7 @@ deoglWorldCompute::~deoglWorldCompute(){
 ///////////////
 
 void deoglWorldCompute::Prepare(){
-	if(pUpdateElements.GetCount() < pFullUpdateLimit && ! pForceFullUpdate
+	if(pUpdateElements.GetCount() < pFullUpdateLimit && !pForceFullUpdate
 	&& pElements.GetCount() <= pSSBOElements->GetElementCount()){
 		pUpdateSSBOElements();
 		
@@ -146,7 +146,7 @@ void deoglWorldCompute::PrepareGeometries(){
 		pForceFullUpdateGeometry = true;
 	}
 	
-	if(pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit && ! pForceFullUpdateGeometry){
+	if(pUpdateElementGeometries.GetCount() < pFullUpdateGeometryLimit && !pForceFullUpdateGeometry){
 		pUpdateSSBOElementGeometries();
 		// pFullUpdateSSBOElementGeometries();
 		
@@ -292,7 +292,7 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 		pElements.SetAt(index, swap);
 		swap->SetIndex(index);
 		
-		if(! swap->GetUpdateRequired()){
+		if(!swap->GetUpdateRequired()){
 			swap->SetUpdateRequired(true);
 			
 			if(pUpdateElements.GetCount() < pFullUpdateLimit){
@@ -307,7 +307,7 @@ void deoglWorldCompute::RemoveElement(deoglWorldComputeElement *element){
 		// upcoming GetSSBOUpdateElements() calls pCheckElementGeometryCount() which in turn
 		// can change the SPB pointer. thus we have to always update the element geometries
 		// even if there is the chance it is empty
-		if(! swap->GetUpdateGeometriesRequired()){
+		if(!swap->GetUpdateGeometriesRequired()){
 			// updating geometries is required since they contain the element index
 			swap->SetUpdateGeometriesRequired(true);
 			
@@ -587,7 +587,7 @@ void deoglWorldCompute::pUpdateSSBOElementGeometries(){
 		// pCheckElementGeometryCount() which in turn could drop the SPB
 		element.SetUpdateGeometriesRequired(false);
 		
-		if(! element.GetSPBGeometries()){
+		if(!element.GetSPBGeometries()){
 			continue;
 		}
 		

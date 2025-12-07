@@ -61,7 +61,7 @@ deoccmWeightSet *deoccmWeightSetList::GetAt(int index) const{
 }
 
 void deoccmWeightSetList::Add(deoccmWeightSet *weightSet){
-	if(! weightSet){
+	if(!weightSet){
 		DETHROW(deeInvalidParam);
 	}
 	

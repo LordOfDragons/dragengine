@@ -103,7 +103,7 @@ void deSkyInstanceManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(instance){
-		if(! instance->GetPeerGraphic()){
+		if(!instance->GetPeerGraphic()){
 			graSys.LoadSkyInstance(instance);
 		}
 		instance = (deSkyInstance*)instance->GetLLManagerNext();

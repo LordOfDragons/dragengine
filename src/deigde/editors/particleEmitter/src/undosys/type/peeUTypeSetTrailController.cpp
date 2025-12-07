@@ -45,7 +45,7 @@ pType(NULL),
 pController(controller),
 pNewTarget(newTarget)
 {
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

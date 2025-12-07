@@ -109,7 +109,7 @@ const desynSynthesizerSource &desynSynthesizer::GetSourceAt(int index) const{
 
 
 void desynSynthesizer::Prepare(){
-	if(! pDirtyContent){
+	if(!pDirtyContent){
 		return;
 	}
 	
@@ -248,7 +248,7 @@ void desynSynthesizer::pCreateSources(){
 			pSynthesizer.GetSourceAt(pSourceCount)->Visit(createSource);
 			pSources[pSourceCount] = createSource.GetSource();
 			
-			if(! pSources[pSourceCount]->GetSilent()){
+			if(!pSources[pSourceCount]->GetSilent()){
 				pSilent = false;
 			}
 			
@@ -264,7 +264,7 @@ void desynSynthesizer::pCreateSources(){
 }
 
 void desynSynthesizer::pClearSources(){
-	if(! pSources){
+	if(!pSources){
 		return;
 	}
 	

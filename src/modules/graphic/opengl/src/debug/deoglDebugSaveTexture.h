@@ -104,7 +104,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the base path where images are stored under. */
-	inline const decString &GetBasePath() const{return pBasePath;}
+	inline const decString &GetBasePath() const{ return pBasePath; }
 	/** Sets the base path where images are stored under. */
 	void SetBasePath(const char *path);
 	

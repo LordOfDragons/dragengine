@@ -72,16 +72,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the state. */
-	inline deNetworkState &GetState() const{return pState;}
+	inline deNetworkState &GetState() const{ return pState; }
 	
 	/** Retrieves the list of state links. */
-	inline debnStateLinkList *GetLinks() const{return pLinks;}
+	inline debnStateLinkList *GetLinks() const{ return pLinks; }
 	
 	/** Update state. */
 	void Update();
 	
 	/** Retrieves the number of values. */
-	inline int GetValueCount() const{return pValueCount;}
+	inline int GetValueCount() const{ return pValueCount; }
 	
 	/** \brief Read values from message. */
 	void LinkReadValues(decBaseFileReader &reader, debnStateLink &link);
@@ -123,7 +123,7 @@ public:
 	void InvalidateValueExcept(int index, debnStateLink &link);
 	
 	/** \brief Parent world or NULL. */
-	inline debnWorld *GetParentWorld() const{return pParentWorld;}
+	inline debnWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(debnWorld *world);

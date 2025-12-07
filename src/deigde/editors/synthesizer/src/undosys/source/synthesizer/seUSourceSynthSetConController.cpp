@@ -44,7 +44,7 @@ seUSourceSynthSetConController::seUSourceSynthSetConController(
 seSourceSynthesizer *source, int target, seController *newController) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

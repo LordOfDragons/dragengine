@@ -86,7 +86,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetActor()){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetTextBoxText().ToUTF8()){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxText().ToUTF8()){
 			return;
 		}
 		
@@ -125,12 +125,12 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
 		decString text(action->GetTextBoxText().ToUTF8());
-		if(! igdeCommonDialogs::GetMultilineString(
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Text Box Text", "Text:", text)
 		|| text == action->GetTextBoxText().ToUTF8()){
@@ -152,7 +152,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetTextBoxTextTranslate()){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxTextTranslate()){
 			return;
 		}
 		
@@ -173,12 +173,12 @@ public:
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! conversation || ! action){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		
@@ -186,7 +186,7 @@ public:
 		langpack->GetEntryNames(existingNames);
 		
 		decString name(conversation->GetLangPackEntryName());
-		if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Move to translation entry",
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Move to translation entry",
 		"Name:", name, existingNames)){
 			return;
 		}
@@ -233,17 +233,17 @@ public:
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! conversation || ! action){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		
 		ceLangPackEntry::Ref entry(langpack->GetEntryNamed(action->GetTextBoxTextTranslate()));
-		if(! entry || action->GetTextBoxText() == entry->GetText()){
+		if(!entry || action->GetTextBoxText() == entry->GetText()){
 			return;
 		}
 		
@@ -269,12 +269,12 @@ public:
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! conversation || ! action){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		
@@ -318,7 +318,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetTextBoxTextStyle()){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxTextStyle()){
 			return;
 		}
 		
@@ -336,7 +336,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetMovement()){
+		if(!topic || !action || textField->GetText() == action->GetMovement()){
 			return;
 		}
 		
@@ -354,7 +354,7 @@ public:
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action || editPath->GetPath() == action->GetPathSound()){
+		if(!topic || !action || editPath->GetPath() == action->GetPathSound()){
 			return;
 		}
 		
@@ -373,7 +373,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		const float time = textField->GetFloat();
-		if(! topic || ! action || fabsf(time - action->GetMinSpeechTime()) < FLOAT_SAFE_EPSILON){
+		if(!topic || !action || fabsf(time - action->GetMinSpeechTime()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -392,7 +392,7 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		

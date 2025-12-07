@@ -67,13 +67,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of resources. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Root resource. */
-	inline deResource *GetRoot() const{return pRoot;}
+	inline deResource *GetRoot() const{ return pRoot; }
 	
 	/** \brief Tail resource. */
-	inline deResource *GetTail() const{return pTail;}
+	inline deResource *GetTail() const{ return pTail; }
 	
 	/** \brief Resource is present. */
 	bool Has(deResource *resource) const;

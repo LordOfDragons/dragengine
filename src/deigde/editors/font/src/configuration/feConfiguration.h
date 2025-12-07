@@ -53,12 +53,12 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline feWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline feWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

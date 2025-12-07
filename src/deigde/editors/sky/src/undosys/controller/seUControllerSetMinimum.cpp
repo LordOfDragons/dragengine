@@ -43,7 +43,7 @@ seUControllerSetMinimum::seUControllerSetMinimum(seController *controller, float
 pController(NULL),
 pNewMinimum(newMinimum)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	

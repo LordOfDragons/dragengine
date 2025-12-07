@@ -79,13 +79,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline const eType GetType() const{return pType;}
+	inline const eType GetType() const{ return pType; }
 	
 	/** Dynamic skin. */
-	inline deoglRDynamicSkin &GetDynamicSkin() const{return pDynamicSkin;}
+	inline deoglRDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);

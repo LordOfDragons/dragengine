@@ -86,31 +86,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline dePhysicsBullet &GetBullet() const{return pBullet;}
+	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
 	/** Touch sensor. */
-	inline deTouchSensor &GetTouchSensor() const{return pTouchSensor;}
+	inline deTouchSensor &GetTouchSensor() const{ return pTouchSensor; }
 	
 	
 	
 	/** Shape. */
-	inline const debpShapeList &GetShape() const{return pShape;}
+	inline const debpShapeList &GetShape() const{ return pShape; }
 	
 	/** Retrieves the ghost object. */
-	inline debpGhostObject *GetGhostObject() const{return pGhostObject;}
+	inline debpGhostObject *GetGhostObject() const{ return pGhostObject; }
 	
 	/** Retrieves the list of touching colliders. */
-	inline decPointerOrderedSet &GetTouchingColliders(){return pTouchingColliders;}
-	inline const decPointerOrderedSet &GetTouchingColliders() const{return pTouchingColliders;}
+	inline decPointerOrderedSet &GetTouchingColliders(){ return pTouchingColliders; }
+	inline const decPointerOrderedSet &GetTouchingColliders() const{ return pTouchingColliders; }
 	
 	/** Retrieves the list of leaving colliders. */
-	inline decPointerOrderedSet &GetLeavingColliders(){return pLeavingColliders;}
-	inline const decPointerOrderedSet &GetLeavingColliders() const{return pLeavingColliders;}
+	inline decPointerOrderedSet &GetLeavingColliders(){ return pLeavingColliders; }
+	inline const decPointerOrderedSet &GetLeavingColliders() const{ return pLeavingColliders; }
 	
 	
 	
 	/** Parent world or \em NULL. */
-	inline debpWorld *GetParentWorld() const{return pParentWorld;}
+	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
 	void SetParentWorld(debpWorld *parentWorld);
@@ -254,10 +254,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
+	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
-	inline deDebugDrawerShape *GetDDSShape() const{return pDDSShape;}
+	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
 	/** Update debug drawer if developer mode is enabled. */
 	void UpdateDebugDrawer();

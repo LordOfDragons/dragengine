@@ -87,7 +87,7 @@ const char *filename){
 		document->CleanCharData();
 		
 		decXmlElementTag * const root = document->GetRoot();
-		if(! root || root->GetName() != "elementClass"){
+		if(!root || root->GetName() != "elementClass"){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -273,7 +273,7 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -287,7 +287,7 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 		
 		map->map.RemoveAll();
 		
-		if(! pReadPropertyValue(*tag, propertyValue, map, filename)){
+		if(!pReadPropertyValue(*tag, propertyValue, map, filename)){
 			continue;
 		}
 		
@@ -444,7 +444,7 @@ const char *filename){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -460,7 +460,7 @@ void igdeXMLElementClass::pReadMap(const decXmlElementTag &root, cMap &map, cons
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -515,7 +515,7 @@ const char *filename){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

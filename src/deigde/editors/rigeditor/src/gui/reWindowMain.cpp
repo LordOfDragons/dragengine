@@ -275,7 +275,7 @@ void reWindowMain::OnDeactivate(){
 }
 
 void reWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -385,7 +385,7 @@ public:
 	
 	virtual igdeUndo *OnAction(reRig *rig){
 		reRigBone * const bone = rig->GetSelectionBones()->GetActiveBone();
-		if(! bone){
+		if(!bone){
 			return NULL;
 		}
 		return OnActionBone(rig, bone);
@@ -408,7 +408,7 @@ public:
 		deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)), pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetRig() || ! pWindow.GetRig()->GetChanged()
+		if(!pWindow.GetRig() || !pWindow.GetRig()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
 		"Creating a new rig discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewRig();
@@ -433,7 +433,7 @@ public:
 		
 		decString filename(pWindow.GetRig() ? pWindow.GetRig()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Rig",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
 			return;
@@ -588,7 +588,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcX){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetLockAxisX(! rig->GetLockAxisX());
+		rig->SetLockAxisX(!rig->GetLockAxisX());
 		return NULL;
 	}
 	
@@ -604,7 +604,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetLockAxisY(! rig->GetLockAxisY());
+		rig->SetLockAxisY(!rig->GetLockAxisY());
 		return NULL;
 	}
 	
@@ -620,7 +620,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetLockAxisZ(! rig->GetLockAxisZ());
+		rig->SetLockAxisZ(!rig->GetLockAxisZ());
 		return NULL;
 	}
 	
@@ -637,7 +637,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcL){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetUseLocal(! rig->GetUseLocal());
+		rig->SetUseLocal(!rig->GetUseLocal());
 		return NULL;
 	}
 	
@@ -680,7 +680,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			reRigBone * const bone = rig.GetBoneAt(i);
-			if(! bone->GetSelected()){
+			if(!bone->GetSelected()){
 				selection.AddBone(bone);
 			}
 		}
@@ -697,7 +697,7 @@ public:
 			
 			for(j=0; j<shapeCount; j++){
 				reRigShape * const shape = bone.GetShapeAt(j);
-				if(! shape->GetSelected() && shape->IsVisible()){
+				if(!shape->GetSelected() && shape->IsVisible()){
 					selection.AddShape(shape);
 				}
 			}
@@ -706,7 +706,7 @@ public:
 		const int shapeCount = rig.GetShapeCount();
 		for(i=0; i<shapeCount; i++){
 			reRigShape * const shape = rig.GetShapeAt(i);
-			if(! shape->GetSelected() && shape->IsVisible()){
+			if(!shape->GetSelected() && shape->IsVisible()){
 				selection.AddShape(shape);
 			}
 		}
@@ -724,7 +724,7 @@ public:
 			
 			for(j=0; j<constraintCount; j++){
 				reRigConstraint * const constraint = bone.GetConstraintAt(j);
-				if(! constraint->GetSelected() && constraint->IsVisible()){
+				if(!constraint->GetSelected() && constraint->IsVisible()){
 					selection.AddConstraint(constraint);
 				}
 			}
@@ -733,7 +733,7 @@ public:
 		const int constraintCount = rig.GetConstraintCount();
 		for(i=0; i<constraintCount; i++){
 			reRigConstraint * const constraint = rig.GetConstraintAt(i);
-			if(! constraint->GetSelected() && constraint->IsVisible()){
+			if(!constraint->GetSelected() && constraint->IsVisible()){
 				selection.AddConstraint(constraint);
 			}
 		}
@@ -746,7 +746,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			reRigPush * const push = rig.GetPushAt(i);
-			if(! push->GetSelected() && push->IsVisible()){
+			if(!push->GetSelected() && push->IsVisible()){
 				selection.AddPush(push);
 			}
 		}
@@ -770,7 +770,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			reRigBone * const bone = rig->GetBoneAt(i);
-			if(! bone->GetSelected() && bone->GetShapeCount() > 0){
+			if(!bone->GetSelected() && bone->GetShapeCount() > 0){
 				selection.AddBone(bone);
 			}
 		}
@@ -975,7 +975,7 @@ public:
 		"Show Rig Shapes", NULL, "Show shapes of the entire rig"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowRigShapes(! rig->GetShowRigShapes());
+		rig->SetShowRigShapes(!rig->GetShowRigShapes());
 		return NULL;
 	}
 	
@@ -990,7 +990,7 @@ public:
 		"Show Rig Constraints", NULL, "Show constraints of the entire rig"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowRigConstraints(! rig->GetShowRigConstraints());
+		rig->SetShowRigConstraints(!rig->GetShowRigConstraints());
 		return NULL;
 	}
 	
@@ -1005,7 +1005,7 @@ public:
 		"Show Rig Pushs", NULL, "Show pushes of the entire rig"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowRigPushes(! rig->GetShowRigPushes());
+		rig->SetShowRigPushes(!rig->GetShowRigPushes());
 		return NULL;
 	}
 	
@@ -1097,7 +1097,7 @@ public:
 		"Show Bones", NULL, "Show bones"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowBones(! rig->GetShowBones());
+		rig->SetShowBones(!rig->GetShowBones());
 		return NULL;
 	}
 	
@@ -1113,7 +1113,7 @@ public:
 		"Show shapes of the bones not just the selected one"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowAllBoneShapes(! rig->GetShowAllBoneShapes());
+		rig->SetShowAllBoneShapes(!rig->GetShowAllBoneShapes());
 		return NULL;
 	}
 	
@@ -1129,7 +1129,7 @@ public:
 		"Show constraints of the bones not just the selected one"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShowAllBoneConstraints(! rig->GetShowAllBoneConstraints());
+		rig->SetShowAllBoneConstraints(!rig->GetShowAllBoneConstraints());
 		return NULL;
 	}
 	
@@ -1156,7 +1156,7 @@ public:
 	
 	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		const reDialogImportBone::Ref dialog(reDialogImportBone::Ref::NewWith(pWindow));
-		if(! dialog->Run(&pWindow)){
+		if(!dialog->Run(&pWindow)){
 			return NULL;
 		}
 		
@@ -1199,7 +1199,7 @@ public:
 		}
 		
 		float newMass = oldMass;
-		if(! igdeCommonDialogs::GetFloat(&pWindow, "Scale Mass", "New total mass:", newMass)){
+		if(!igdeCommonDialogs::GetFloat(&pWindow, "Scale Mass", "New total mass:", newMass)){
 			return NULL;
 		}
 		if(fabs(newMass - oldMass) < FLOAT_SAFE_EPSILON){
@@ -1218,7 +1218,7 @@ public:
 	
 	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		float density = 1.0f;
-		if(! igdeCommonDialogs::GetFloat(&pWindow, "Mass From Volume", "Density:", density)){
+		if(!igdeCommonDialogs::GetFloat(&pWindow, "Mass From Volume", "Density:", density)){
 			return NULL;
 		}
 		
@@ -1243,7 +1243,7 @@ public:
 		"X-Ray Shapes", NULL, "Sets if shapes are visible through geometry"){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetShapeXRay(! rig->GetShapeXRay());
+		rig->SetShapeXRay(!rig->GetShapeXRay());
 		return NULL;
 	}
 	
@@ -1261,7 +1261,7 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcQ, deInputEvent::ekcS){}
 	
 	virtual igdeUndo *OnAction(reRig *rig){
-		rig->SetSimulationRunning(! rig->GetSimulationRunning());
+		rig->SetSimulationRunning(!rig->GetSimulationRunning());
 		return NULL;
 	}
 	

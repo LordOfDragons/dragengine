@@ -73,7 +73,7 @@ pRandomScaleMax(1.5f),
 pRandomRotationMin(0.0f, -30.0f, 0.0f),
 pRandomRotationMax(0.0f, 30.0f, 0.0f)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -97,7 +97,7 @@ void meHeightTerrainPFType::SetPFLayer(meHeightTerrainPFLayer *pflayer){
 }
 
 void meHeightTerrainPFType::NotifyTypeChanged(){
-	if(! pPFLayer){
+	if(!pPFLayer){
 		return;
 	}
 	
@@ -115,7 +115,7 @@ void meHeightTerrainPFType::NotifyTypeChanged(){
 
 
 void meHeightTerrainPFType::SetPathModel(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -130,7 +130,7 @@ void meHeightTerrainPFType::SetPathModel(const char *path){
 		pModel = NULL;
 	}
 	
-	if(! pPathModel.IsEmpty()){
+	if(!pPathModel.IsEmpty()){
 		try{
 			pModel = pEngine->GetModelManager()->LoadModel(pPathModel, "/");
 			
@@ -145,7 +145,7 @@ void meHeightTerrainPFType::SetPathModel(const char *path){
 }
 
 void meHeightTerrainPFType::SetPathSkin(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,7 +160,7 @@ void meHeightTerrainPFType::SetPathSkin(const char *path){
 		pSkin = NULL;
 	}
 	
-	if(! pPathSkin.IsEmpty()){
+	if(!pPathSkin.IsEmpty()){
 		try{
 			pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 			

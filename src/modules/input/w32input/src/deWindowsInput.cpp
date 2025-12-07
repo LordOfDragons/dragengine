@@ -349,7 +349,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 		}
 		
 		const int scanCode = W32_GET_SCANCODE(message.lParam);
-		if(! GetKeyboardState(&keyStates[0])){
+		if(!GetKeyboardState(&keyStates[0])){
 			break;
 		}
 
@@ -394,7 +394,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 		}
 		
 		const int scanCode = W32_GET_SCANCODE(message.lParam);
-		if(! GetKeyboardState(&keyStates[0])){
+		if(!GetKeyboardState(&keyStates[0])){
 			break;
 		}
 
@@ -518,7 +518,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 }
 
 void deWindowsInput::CaptureInputDevicesChanged(){
-	if(! pOSWindows){
+	if(!pOSWindows){
 		return; // not inited yet
 	}
 	
@@ -527,7 +527,7 @@ void deWindowsInput::CaptureInputDevicesChanged(){
 }
 
 void deWindowsInput::AppActivationChanged(){
-	if(! pOSWindows){
+	if(!pOSWindows){
 		return; // not inited yet
 	}
 	
@@ -604,7 +604,7 @@ void deWindowsInput::AddDevicesAttachedDetached(DWORD eventTime){
 
 void deWindowsInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -618,12 +618,12 @@ void deWindowsInput::pCenterPointer(){
 
 void deWindowsInput::pQueryMousePosition(bool sendEvents){
 	const bool capture = GetGameEngine()->GetInputSystem()->GetCaptureInputDevices();
-	if(capture && ! pIsListening){
+	if(capture && !pIsListening){
 		return;
 	}
 	
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -632,7 +632,7 @@ void deWindowsInput::pQueryMousePosition(bool sendEvents){
 	ScreenToClient(renderWindow->GetWindow(), &position);
 	
 	if(capture){
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		
@@ -662,7 +662,7 @@ void deWindowsInput::pQueryMousePosition(bool sendEvents){
 		pLastMouseX = position.x;
 		pLastMouseY = position.y;
 		
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		if(diffX == 0 && diffY == 0){

@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/*@}*/
 	
 	

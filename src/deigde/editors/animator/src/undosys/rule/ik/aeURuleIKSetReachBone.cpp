@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleIKSetReachBone::aeURuleIKSetReachBone(aeRuleInverseKinematic *rule, const char *newValue){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

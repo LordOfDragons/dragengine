@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of particles. */
-	inline int GetParticleCount() const{return pParticleCount;}
+	inline int GetParticleCount() const{ return pParticleCount; }
 	/** Retrieves the particle at the given position. */
 	const sParticle &GetParticleAt(int index) const;
 	/** Add particles to a render task particles. */

@@ -146,7 +146,7 @@ deHeightTerrainSector *deHeightTerrain::GetSectorWith(const decPoint &coordinate
 }
 
 void deHeightTerrain::AddSector(deHeightTerrainSector *sector){
-	if(! sector || sector->GetParentHeightTerrain()){
+	if(!sector || sector->GetParentHeightTerrain()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -170,7 +170,7 @@ void deHeightTerrain::AddSector(deHeightTerrainSector *sector){
 }
 
 void deHeightTerrain::RemoveSector(deHeightTerrainSector *sector){
-	if(! sector || sector->GetParentHeightTerrain() != this){
+	if(!sector || sector->GetParentHeightTerrain() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

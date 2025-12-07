@@ -124,7 +124,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -168,7 +168,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -194,7 +194,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -220,7 +220,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -246,7 +246,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -272,7 +272,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -298,7 +298,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -328,7 +328,7 @@ public:
 		}
 		
 		seProperty * const property = pPanel.GetProperty();
-		if(! property){
+		if(!property){
 			return;
 		}
 		
@@ -336,7 +336,7 @@ public:
 		sePropertyNode *node = NULL;
 		if(item){
 			node = (sePropertyNode*)item->GetData();
-			if(! node){
+			if(!node){
 				return; // data not assigned yet. skip
 			}
 		}
@@ -358,7 +358,7 @@ public:
 				return; // otherwise we get into troubles
 			}
 			
-		}else if(! property->GetNodeSelection().HasActive()){
+		}else if(!property->GetNodeSelection().HasActive()){
 			return; // otherwise we get into troubles
 		}
 		
@@ -468,7 +468,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
-		return ! node->GetColorize().IsEqualTo(colorBox.GetColor())
+		return !node->GetColorize().IsEqualTo(colorBox.GetColor())
 			? new seUPropertyNodeSetColorize(node, colorBox.GetColor()) : NULL;
 	}
 };
@@ -485,7 +485,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -505,7 +505,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node){
+		if(!skin || !texture || !property || !node){
 			return;
 		}
 		
@@ -526,7 +526,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
-		if(! comboBox.GetSelectedItem()){
+		if(!comboBox.GetSelectedItem()){
 			return NULL;
 		}
 		deSkinPropertyNode::eCombineModes value = (deSkinPropertyNode::eCombineModes)
@@ -569,7 +569,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
-		if(! comboBox.GetSelectedItem() || node->GetNodeType() != sePropertyNode::entShape){
+		if(!comboBox.GetSelectedItem() || node->GetNodeType() != sePropertyNode::entShape){
 			return NULL;
 		}
 		deSkinPropertyNodeShape::eShapeTypes value = (deSkinPropertyNodeShape::eShapeTypes)
@@ -587,7 +587,7 @@ public:
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entShape
-			&& ! ((sePropertyNodeShape*)node)->GetLineColor().IsEqualTo(colorBox.GetColor())
+			&& !((sePropertyNodeShape*)node)->GetLineColor().IsEqualTo(colorBox.GetColor())
 			? new seUPropertyNodeShapeSetLineColor((sePropertyNodeShape*)node, colorBox.GetColor()) : NULL;
 	}
 };
@@ -599,7 +599,7 @@ public:
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entShape
-			&& ! ((sePropertyNodeShape*)node)->GetFillColor().IsEqualTo(colorBox.GetColor())
+			&& !((sePropertyNodeShape*)node)->GetFillColor().IsEqualTo(colorBox.GetColor())
 			? new seUPropertyNodeShapeSetFillColor((sePropertyNodeShape*)node, colorBox.GetColor()) : NULL;
 	}
 };
@@ -690,7 +690,7 @@ public:
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entText
-			&& ! ((sePropertyNodeText*)node)->GetColor().IsEqualTo(colorBox.GetColor())
+			&& !((sePropertyNodeText*)node)->GetColor().IsEqualTo(colorBox.GetColor())
 			? new seUPropertyNodeTextSetColor((sePropertyNodeText*)node, colorBox.GetColor()) : NULL;
 	}
 };
@@ -723,7 +723,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
 		sePropertyNode * const node = pPanel.GetNode();
-		if(! skin || ! texture || ! property || ! node || ! comboBox->GetSelectedItem()){
+		if(!skin || !texture || !property || !node || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -937,7 +937,7 @@ int seWPNode::GetSelectedMappedType() const{
 
 void seWPNode::ShowNodePanel(){
 	sePropertyNode * const node = GetNode();
-	if(! node){
+	if(!node){
 		pSwitcher->SetCurrent(0); // empty
 		return;
 	}
@@ -1133,7 +1133,7 @@ void seWPNode::UpdateOutline(){
 	
 	try{
 		const seProperty * const property = GetProperty();
-		if(! property){
+		if(!property){
 			pTreeOutline->RemoveAllItems();
 			pPreventUpdate = false;
 			return;
@@ -1145,7 +1145,7 @@ void seWPNode::UpdateOutline(){
 		int i;
 		
 		for(i=count-1; i>=0; i--){
-			if(! item){
+			if(!item){
 				item = pTreeOutline->AppendItem(NULL, "");
 			}
 			UpdateOutline(item, group.GetNodeAt(i), "");
@@ -1190,7 +1190,7 @@ void seWPNode::UpdateMappedTypeList(){
 	const int selection = GetSelectedMappedType();
 	
 	const sePropertyNode * const node = GetNode();
-	if(! node){
+	if(!node){
 		pCBMappedType->SetEnabled(false);
 		return;
 	}
@@ -1287,7 +1287,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 		item->SetText(prefix + "Group");
 		
 		for(i=count-1; i>=0; i--){
-			if(! childItem){
+			if(!childItem){
 				childItem = pTreeOutline->AppendItem(item, "");
 			}
 			UpdateOutline(childItem, group.GetNodeAt(i), "");
@@ -1330,7 +1330,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 	pTreeOutline->ItemChanged(item);
 	
 	if(node->GetMask()){
-		if(! childItem){
+		if(!childItem){
 			childItem = pTreeOutline->AppendItem(item, "");
 		}
 		UpdateOutline(childItem, node->GetMask(), "Mask: ");

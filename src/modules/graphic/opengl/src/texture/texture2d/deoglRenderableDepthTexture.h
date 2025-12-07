@@ -68,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** With stencil buffer. */
-	inline bool GetWithStencil() const{return pWithStencil;}
+	inline bool GetWithStencil() const{ return pWithStencil; }
 	
 	/** Use float depth. */
-	inline bool GetUseFloat() const{return pUseFloat;}
+	inline bool GetUseFloat() const{ return pUseFloat; }
 	
 	
 	
@@ -85,7 +85,7 @@ public:
 	bool Matches(int width, int height, bool withStencil, bool useFloat) const;
 	
 	/** Texture is in use. */
-	inline bool GetInUse() const{return pInUse;}
+	inline bool GetInUse() const{ return pInUse; }
 	
 	/** Set if texture is in use. */
 	void SetInUse(bool inUse);
@@ -93,12 +93,12 @@ public:
 	
 	
 	/** Texture. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	
 	
 	/** GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{return pMemoryUsageGPU;}
+	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	
 	/** Update GPU memory consumption. */
 	void UpdateMemoryUsage();

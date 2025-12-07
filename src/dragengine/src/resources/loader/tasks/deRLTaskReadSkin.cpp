@@ -108,12 +108,12 @@ deRLTaskReadSkin::~deRLTaskReadSkin(){
 
 void deRLTaskReadSkin::Run(){
 	LogRunEnter();
-	if(! pInternalTask){
+	if(!pInternalTask){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deSkin * const skin = pInternalTask->GetSkin();
-	if(! skin){
+	if(!skin){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -129,7 +129,7 @@ void deRLTaskReadSkin::Run(){
 
 void deRLTaskReadSkin::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded || ! pInternalTask){
+	if(!pSucceeded || !pInternalTask){
 		SetState(esFailed);
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
@@ -137,7 +137,7 @@ void deRLTaskReadSkin::Finished(){
 	}
 	
 	deSkin * const skin = pInternalTask->GetSkin();
-	if(pInternalTask->GetState() != esSucceeded || ! skin){
+	if(pInternalTask->GetState() != esSucceeded || !skin){
 		SetState(esFailed);
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);

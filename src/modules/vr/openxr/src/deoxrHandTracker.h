@@ -132,19 +132,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{return pSession;}
+	inline deoxrSession &GetSession() const{ return pSession; }
 	
 	/** Hand. */
-	inline const XrHandEXT GetHand() const{return pHand;}
+	inline const XrHandEXT GetHand() const{ return pHand; }
 	
 	/** HandTracker. */
-	inline XrHandTrackerEXT GetHandTracker() const{return pHandTracker;}
+	inline XrHandTrackerEXT GetHandTracker() const{ return pHandTracker; }
 	
 	/** Locate hand. */
 	void Locate();
 	
 	/** Count of pose bones. */
-	inline int GetPoseBoneCount() const{return pPoseBoneCount;}
+	inline int GetPoseBoneCount() const{ return pPoseBoneCount; }
 	
 	/** Pose bone at index. */
 	deInputDevicePose &GetPoseBoneAt(int index);

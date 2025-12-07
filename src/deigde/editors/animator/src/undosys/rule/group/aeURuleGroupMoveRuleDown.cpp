@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *rule){
-	if(! group || ! rule){
+	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -66,7 +66,7 @@ typedef deBaseModule* (*FUNC_CREATEMODULE)(deLoadableModule*);
 ////////////////////////////
 
 deLibraryModule::deLibraryModule(deModuleSystem *system, const char *xmlDefFilename) : deLoadableModule(system){
-	if(! xmlDefFilename){
+	if(!xmlDefFilename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,10 +100,10 @@ void deLibraryModule::LoadModule(){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(! pVerifyLibrary(pLibFileName)){
+	if(!pVerifyLibrary(pLibFileName)){
 		return;
 	}
-	if(! pLoadLibrary(pLibFileName)){
+	if(!pLoadLibrary(pLibFileName)){
 		return;
 	}
 	
@@ -111,7 +111,7 @@ void deLibraryModule::LoadModule(){
 }
 
 void deLibraryModule::UnloadModule(){
-	if(! IsLoaded() || IsLocked()){
+	if(!IsLoaded() || IsLocked()){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -227,7 +227,7 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 	
 	#ifdef HAS_LIB_DL
 	pLibHandle = dlopen(filename, RTLD_NOW);
-	if(! pLibHandle){
+	if(!pLibHandle){
 		logger.LogErrorFormat(LOGSOURCE, "dlerror: %s.", dlerror());
 		SetErrorCode(eecLibFileOpenFailed);
 		return false;
@@ -250,7 +250,7 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 	pLibHandle = LoadLibrary(widePath);
 	SetDllDirectory(NULL);
 	//SetCurrentDirectory( oldPath.GetString() );
-	if(! pLibHandle){
+	if(!pLibHandle){
 		int err = GetLastError();
 		wchar_t messageBuffer[251];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -262,7 +262,7 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 	}
 	#endif
 	
-	if(! pLibHandle){
+	if(!pLibHandle){
 		SetErrorCode(eecLibFileOpenFailed);
 		return false;
 	}
@@ -283,14 +283,14 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 	funcCreateModule = (FUNC_CREATEMODULE)GetProcAddress(pLibHandle, pLibFileEntryPoint);
 	#endif
 	
-	if(! funcCreateModule){
+	if(!funcCreateModule){
 		SetErrorCode(eecLibFileEntryPointNotFound);
 		return false;
 	}
 	
 	// create package
 	SetModule(funcCreateModule(this));
-	if(! GetModule()){
+	if(!GetModule()){
 		SetErrorCode(eecLibFileCreateModuleFailed);
 		return false;
 	}
@@ -351,13 +351,13 @@ void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader)
 	
 	// interpretate xml
 	root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "module") != 0){
+	if(!root || strcmp(root->GetName(), "module") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	for(i=0; i<root->GetElementCount(); i++){
 		element = root->GetElementAt(i);
-		if(! element->CanCastToElementTag()) continue;
+		if(!element->CanCastToElementTag()) continue;
 		
 		tag = element->CastToElementTag();
 		
@@ -417,7 +417,7 @@ void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader)
 		}else if(tag->GetName() == "library"){
 			for(j=0; j<tag->GetElementCount(); j++){
 				element = tag->GetElementAt(j);
-				if(! element->CanCastToElementTag()){
+				if(!element->CanCastToElementTag()){
 					continue;
 				}
 				
@@ -476,7 +476,7 @@ void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader)
 			/*
 			for(j=0; j<tag->GetElementCount(); j++){
 				element = tag->GetElementAt(j);
-				if(! element->CanCastToElementTag()) continue;
+				if(!element->CanCastToElementTag()) continue;
 				tag2 = element->CastToElementTag();
 				if(strcmp(tag2->GetName(), "directory") == 0){
 					// todo
@@ -511,7 +511,7 @@ bool deLibraryModule::pVerifyLibrary(const char* filename){
 	deOSWindows::Utf8ToWide(filename, widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+	if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
 		SetErrorCode(eecLibFileNotFound);
 		return false;
 	}
@@ -538,7 +538,7 @@ bool deLibraryModule::pVerifyLibrary(const char* filename){
 	}
 	
 	// check that this is really a file
-	if(! S_ISREG(fs.st_mode)){
+	if(!S_ISREG(fs.st_mode)){
 		SetErrorCode(eecLibFileNotRegularFile);
 		return false;
 	}
@@ -599,7 +599,7 @@ void deLibraryModule::pPreloadLibraries(){
 		path.SetFromNative(filename);
 		
 		handleLibrary = load_add_on(filename);
-		if(! handleLibrary){
+		if(!handleLibrary){
 			logger.LogErrorFormat(LOGSOURCE, "Preloaded %s: load_add_on failed: %s",
 				path.GetLastComponent().GetString(), strerror(pLibHandle));
 			SetErrorCode(eecLibFileOpenFailed);
@@ -615,7 +615,7 @@ void deLibraryModule::pPreloadLibraries(){
 	
 	// unix, android
 	//#ifdef OS_ANDROID
-	#if defined OS_UNIX && ! defined OS_BEOS
+	#if defined OS_UNIX && !defined OS_BEOS
 	deLogger &logger = *GetSystem()->GetEngine()->GetLogger();
 	const int count = pPreloadLibraryPath.GetCount();
 	void *handleLibrary = NULL;
@@ -628,7 +628,7 @@ void deLibraryModule::pPreloadLibraries(){
 		
 		handleLibrary = dlopen(filename, RTLD_NOW);
 		
-		if(! handleLibrary){
+		if(!handleLibrary){
 			logger.LogErrorFormat(LOGSOURCE, "%s dlerror: %s.", path.GetLastComponent().GetString(), dlerror());
 			SetErrorCode(eecLibFileOpenFailed);
 			return;
@@ -654,7 +654,7 @@ void deLibraryModule::pUnloadPreloadedLibraries(){
 	
 	// unix, android
 	//#ifdef OS_ANDROID
-	#if defined OS_UNIX && ! defined OS_BEOS
+	#if defined OS_UNIX && !defined OS_BEOS
 	int index = pPreloadedLibraries.GetCount();
 	
 	while(index > 0){

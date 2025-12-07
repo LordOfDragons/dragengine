@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point arrays. */
-	inline decVector *GetPoints() const{return pPoints;}
+	inline decVector *GetPoints() const{ return pPoints; }
 	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/**
 	 * \brief Set number of points.

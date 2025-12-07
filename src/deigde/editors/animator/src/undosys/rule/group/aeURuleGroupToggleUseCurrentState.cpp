@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState(aeRuleGroup *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleGroupToggleUseCurrentState::~aeURuleGroupToggleUseCurrentState(){
 ///////////////
 
 void aeURuleGroupToggleUseCurrentState::Undo(){
-	pRule->SetUseCurrentState(! pRule->GetUseCurrentState());
+	pRule->SetUseCurrentState(!pRule->GetUseCurrentState());
 }
 
 void aeURuleGroupToggleUseCurrentState::Redo(){
-	pRule->SetUseCurrentState(! pRule->GetUseCurrentState());
+	pRule->SetUseCurrentState(!pRule->GetUseCurrentState());
 }
 
 

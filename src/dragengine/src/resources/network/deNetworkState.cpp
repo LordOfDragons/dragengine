@@ -91,7 +91,7 @@ deNetworkValue *deNetworkState::GetValueAt(int index) const{
 }
 
 void deNetworkState::AddValue(deNetworkValue *value){
-	if(! value){
+	if(!value){
 		DETHROW(deeInvalidParam);
 	}
 	pValues.Add(value);

@@ -318,7 +318,7 @@ void deainpOverlayCirclePad::SetUpDownPerSecond(float unitsPerSecond){
 
 
 void deainpOverlayCirclePad::GenerateEvents(){
-	if(! HasPointer()){
+	if(!HasPointer()){
 		return;
 	}
 	
@@ -436,7 +436,7 @@ void deainpOverlayCirclePad::UpdateBindingIndices(){
 }
 
 void deainpOverlayCirclePad::UpdateContent(){
-	if(! GetCanvas()->GetParentView()){
+	if(!GetCanvas()->GetParentView()){
 		return;
 	}
 	GenerateEvents();

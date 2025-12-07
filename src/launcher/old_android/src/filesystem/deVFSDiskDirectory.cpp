@@ -54,7 +54,7 @@
 
 
 
-#if defined OS_UNIX && ! defined OS_ANDROID
+#if defined OS_UNIX && !defined OS_ANDROID
 // Stuff required for file error checking
 extern int errno;
 #endif
@@ -163,7 +163,7 @@ bool deVFSDiskDirectory::CanWriteFile(const decPath &path){
 	
 	canWrite = (access(diskPath.GetPathNative(), W_OK) == 0);
 	
-	while(! canWrite && diskPath.GetComponentCount() > 1){
+	while(!canWrite && diskPath.GetComponentCount() > 1){
 		diskPath.RemoveLastComponent();
 		
 		canWrite = (access(diskPath.GetPathNative(), W_OK) == 0);
@@ -283,14 +283,14 @@ void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSe
 	
 	try{
 		theDir = opendir(searchPath.GetPathNative());
-		if(! theDir){
+		if(!theDir){
 			return;
 		}
 		
 		while(true){
 			errno = 0;
 			entry = readdir(theDir);
-			if(! entry){
+			if(!entry){
 				if(errno == 0){
 					break;
 				}
@@ -363,7 +363,7 @@ void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSe
 					}
 				}
 				
-				if(! FindNextFile(searchHandle, &dirEntry)){
+				if(!FindNextFile(searchHandle, &dirEntry)){
 				    if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}
@@ -450,7 +450,7 @@ void deVFSDiskDirectory::pEnsureDirectoryExists(const decPath &path){
 		}
 		#endif
 		
-	}else if(! S_ISDIR(st.st_mode)){
+	}else if(!S_ISDIR(st.st_mode)){
 		DETHROW(deeFileNotFound); // this is not a directory
 	}
 }

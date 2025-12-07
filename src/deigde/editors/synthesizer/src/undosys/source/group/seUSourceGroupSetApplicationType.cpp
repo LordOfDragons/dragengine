@@ -43,7 +43,7 @@ seUSourceGroupSetApplicationType::seUSourceGroupSetApplicationType(
 seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

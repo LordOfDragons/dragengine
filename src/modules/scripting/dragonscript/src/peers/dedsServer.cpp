@@ -44,7 +44,7 @@
 ////////////////////////////
 
 dedsServer::dedsServer(deScriptingDragonScript *ds, deServer *server){
-	if(! ds || ! server){
+	if(!ds || !server){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -55,7 +55,7 @@ dedsServer::dedsServer(deScriptingDragonScript *ds, deServer *server){
 }
 
 dedsServer::~dedsServer(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -84,7 +84,7 @@ dsRealObject *dedsServer::GetCallback() const{
 }
 
 void dedsServer::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ void dedsServer::SetCallback(dsRealObject *object){
 //////////////////
 
 void dedsServer::ClientConnected(deConnection *connection){
-	if(! pHasCB){
+	if(!pHasCB){
 		connection->Disconnect();
 		return;
 	}

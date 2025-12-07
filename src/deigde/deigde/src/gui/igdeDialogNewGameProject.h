@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created game project or NULL if cancelled. */
-	inline igdeGameProject *GetNewProject() const{return pNewProject;}
+	inline igdeGameProject *GetNewProject() const{ return pNewProject; }
 	
 	void OnProjectDirChanged();
 	void OnProjectGameDefPathChanged();

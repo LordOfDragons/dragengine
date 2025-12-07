@@ -36,7 +36,7 @@
 ////////////////////////////
 
 reUToggleBoneDynamic::reUToggleBoneDynamic(reRigBone *bone){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -60,11 +60,11 @@ reUToggleBoneDynamic::~reUToggleBoneDynamic(){
 ///////////////
 
 void reUToggleBoneDynamic::Undo(){
-	pBone->SetDynamic(! pBone->GetDynamic());
+	pBone->SetDynamic(!pBone->GetDynamic());
 }
 
 void reUToggleBoneDynamic::Redo(){
-	pBone->SetDynamic(! pBone->GetDynamic());
+	pBone->SetDynamic(!pBone->GetDynamic());
 }
 
 

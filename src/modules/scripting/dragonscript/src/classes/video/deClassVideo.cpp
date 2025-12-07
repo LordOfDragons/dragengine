@@ -84,7 +84,7 @@ void deClassVideo::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -210,7 +210,7 @@ void deClassVideo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVideo *clsVideo = (deClassVideo*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsVideo)){
+	if(!p_IsObjOfType(object, clsVideo)){
 		rt->PushBool(false);
 		
 	}else{
@@ -244,7 +244,7 @@ void deClassVideo::nfEquals2::RunFunction(dsRunTime *rt, dsValue*){
 
 deClassVideo::deClassVideo(deScriptingDragonScript *ds) :
 dsClass("Video", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pDS = ds;
@@ -300,7 +300,7 @@ void deClassVideo::CreateClassMembers(dsEngine *engine){
 }
 
 deVideo *deClassVideo::GetVideo(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -308,11 +308,11 @@ deVideo *deClassVideo::GetVideo(dsRealObject *myself) const{
 }
 
 void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! video){
+	if(!video){
 		rt->PushObject(NULL, this);
 		return;
 	}

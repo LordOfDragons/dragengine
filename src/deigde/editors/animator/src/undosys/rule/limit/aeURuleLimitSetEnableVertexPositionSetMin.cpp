@@ -66,5 +66,5 @@ void aeURuleLimitSetEnableVertexPositionSetMin::Undo(){
 }
 
 void aeURuleLimitSetEnableVertexPositionSetMin::Redo(){
-	pRule->SetEnableVertexPositionSetMin(! pRule->GetEnableVertexPositionSetMin());
+	pRule->SetEnableVertexPositionSetMin(!pRule->GetEnableVertexPositionSetMin());
 }

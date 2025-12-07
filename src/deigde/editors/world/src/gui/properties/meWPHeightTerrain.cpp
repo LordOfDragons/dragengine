@@ -141,7 +141,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -165,7 +165,7 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -187,7 +187,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -209,7 +209,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector2 *editVector2){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -231,7 +231,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -253,7 +253,7 @@ public:
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -328,7 +328,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
 		meHeightTerrainSector * const sector = pPanel.GetSector();
-		if(! sector || sector->GetPathHeightImage() == editPath->GetPath()){
+		if(!sector || sector->GetPathHeightImage() == editPath->GetPath()){
 			return NULL;
 		}
 		
@@ -380,7 +380,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
 		meHeightTerrainSector * const sector = pPanel.GetSector();
-		if(! sector || sector->GetPathVisibilityImage() == editPath->GetPath()){
+		if(!sector || sector->GetPathVisibilityImage() == editPath->GetPath()){
 			return NULL;
 		}
 		
@@ -452,7 +452,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetSector()){
+		if(!pPanel.GetSector()){
 			return;
 		}
 		
@@ -469,7 +469,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		meHeightTerrainSector * const sector = pPanel.GetSector();
-		if(! sector){
+		if(!sector){
 			return NULL;
 		}
 		
@@ -545,7 +545,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector2 &vector, meWorld *world){
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
-		return texture && ! vector.IsEqualTo(decVector2(texture->GetProjectionOffsetU(), texture->GetProjectionOffsetV()))
+		return texture && !vector.IsEqualTo(decVector2(texture->GetProjectionOffsetU(), texture->GetProjectionOffsetV()))
 			? new meUHTSetTexUVOffset(world, pPanel.GetSector(), texture, vector) : NULL;
 	}
 };
@@ -556,7 +556,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector2 &vector, meWorld *world){
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
-		return texture && ! vector.IsEqualTo(decVector2(texture->GetProjectionScalingU(), texture->GetProjectionScalingV()))
+		return texture && !vector.IsEqualTo(decVector2(texture->GetProjectionScalingU(), texture->GetProjectionScalingV()))
 			? new meUHTSetTexUVScaling(world, pPanel.GetSector(), texture, vector) : NULL;
 	}
 };
@@ -597,7 +597,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetSector()){
+		if(!pPanel.GetSector()){
 			return;
 		}
 		
@@ -710,7 +710,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetSector()){
+		if(!pPanel.GetSector()){
 			return;
 		}
 		
@@ -768,7 +768,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
-		if(! type || textField->GetText() == type->GetName()){
+		if(!type || textField->GetText() == type->GetName()){
 			return NULL;
 		}
 		if(pPanel.GetActiveNavSpace()->HasTypeNamed(textField->GetText())){
@@ -799,7 +799,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
-		if(! type || colorBox->GetColor().IsEqualTo(type->GetColor())){
+		if(!type || colorBox->GetColor().IsEqualTo(type->GetColor())){
 			return;
 		}
 		pPanel.GetWorld()->GetUndoSystem()->Add(meUHTNavSpaceTypeSetColor::Ref::NewWith(
@@ -814,7 +814,7 @@ public:
 	
 	bool CanUse(const meWorld &world) const{
 		const meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
-		if(! navspace || world.GetGuiParameters().GetWorkMode() != meWorldGuiParameters::ewmNavSpaceEdit){
+		if(!navspace || world.GetGuiParameters().GetWorkMode() != meWorldGuiParameters::ewmNavSpaceEdit){
 			return false;
 		}
 		
@@ -841,7 +841,7 @@ public:
 	}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		if(! CanUse(*world)){
+		if(!CanUse(*world)){
 			return NULL;
 		}
 		
@@ -921,7 +921,7 @@ public:
 	}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		if(! CanUse(*world)){
+		if(!CanUse(*world)){
 			return NULL;
 		}
 		
@@ -1020,7 +1020,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetSector()){
+		if(!pPanel.GetSector()){
 			return;
 		}
 		
@@ -1039,7 +1039,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		decString name("vlayer");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
 			return NULL;
 		}
 		
@@ -1129,7 +1129,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetVLayer()){
+		if(!pPanel.GetVLayer()){
 			return;
 		}
 		
@@ -1146,7 +1146,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
-		if(! vlayer){
+		if(!vlayer){
 			return NULL;
 		}
 		
@@ -1638,7 +1638,7 @@ meHeightTerrainSector *meWPHeightTerrain::GetSector() const{
 }
 
 void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
-	if(texture && ! GetSector()){
+	if(texture && !GetSector()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1671,7 +1671,7 @@ meHeightTerrainNavSpaceType *meWPHeightTerrain::GetActiveNavSpaceType() const{
 }
 
 void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
-	if(vlayer && ! GetSector()){
+	if(vlayer && !GetSector()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1698,7 +1698,7 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
-	if(variation && ! pVLayer){
+	if(variation && !pVLayer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1773,7 +1773,7 @@ void meWPHeightTerrain::UpdateTextureList(){
 	
 	pCBTexture->SortItems();
 	
-	if(! selection && sector && sector->GetTextureCount() > 0){
+	if(!selection && sector && sector->GetTextureCount() > 0){
 		selection = sector->GetTextureAt(0);
 	}
 	pCBTexture->SetSelectionWithData(selection);
@@ -1894,7 +1894,7 @@ void meWPHeightTerrain::UpdateVLayerList(){
 	
 	pCBVLayer->SortItems();
 	
-	if(! selection && pWorld && pWorld->GetHeightTerrain()->GetVLayerCount() > 0){
+	if(!selection && pWorld && pWorld->GetHeightTerrain()->GetVLayerCount() > 0){
 		selection = pWorld->GetHeightTerrain()->GetVLayerAt(0);
 	}
 	pCBVLayer->SetSelectionWithData(selection);
@@ -1922,7 +1922,7 @@ void meWPHeightTerrain::UpdateVVariationList(){
 	
 	pCBVVariation->SortItems();
 	
-	if(! selection && pVLayer && pVLayer->GetVariationCount() > 0){
+	if(!selection && pVLayer && pVLayer->GetVariationCount() > 0){
 		selection = pVLayer->GetVariationAt(0);
 	}
 	pCBVVariation->SetSelectionWithData(selection);

@@ -92,7 +92,7 @@ public:
 #ifdef ENABLE_LEAK_TRACKING
 #define DECLARE_TRACKER(type) \
 private: decPointerSet p ## type; \
-public: inline decPointerSet &Get ## type(){return p ## type;} \
+public: inline decPointerSet &Get ## type(){ return p ## type; } \
 public: inline void Add ## type(void *object){AddTracked(p ## type, object);} \
 public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object);}
 	DECLARE_TRACKER(Billboard)

@@ -49,7 +49,7 @@ meBitArray::meBitArray(int colons, int rows){
 	pByteCount = ((colons * rows - 1) >> 3) + 1;
 	
 	pBytes = new unsigned char[pByteCount];
-	if(! pBytes) DETHROW(deeOutOfMemory);
+	if(!pBytes) DETHROW(deeOutOfMemory);
 	
 	memset(pBytes, 255, pByteCount);
 }

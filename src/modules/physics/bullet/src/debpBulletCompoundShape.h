@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */
-	inline btCompoundShape *GetCompoundShape() const{return (btCompoundShape*)GetShape();}
+	inline btCompoundShape *GetCompoundShape() const{ return (btCompoundShape*)GetShape(); }
 	
 	/** \brief Add child shape to clean up once the parent shape is finished. */
 	void AddChildShape(debpBulletShape *shape);

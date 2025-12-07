@@ -73,7 +73,7 @@ public:
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -101,7 +101,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public:
 	
 	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		

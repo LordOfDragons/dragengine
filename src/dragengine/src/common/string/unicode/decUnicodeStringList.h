@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of strings. */
-	inline int GetCount() const{return pStringCount;}
+	inline int GetCount() const{ return pStringCount; }
 	
 	/** \brief String at the given index. */
 	const decUnicodeString &GetAt(int index) const;

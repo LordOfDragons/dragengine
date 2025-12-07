@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{return pOCSnapPoint;}
+	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pOCSnapPoint; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

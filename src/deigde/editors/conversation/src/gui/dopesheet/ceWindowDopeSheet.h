@@ -150,12 +150,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Conversation to monitor. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);
@@ -179,13 +179,13 @@ public:
 	int GetScrollTime() const;
 	
 	/** \brief Pixels per second. */
-	inline float GetPixelPerSecond() const{return pPixelPerSecond;}
+	inline float GetPixelPerSecond() const{ return pPixelPerSecond; }
 	
 	/** \brief Second per pixel. */
-	inline float GetSecondPerPixel() const{return pSecondPerPixel;}
+	inline float GetSecondPerPixel() const{ return pSecondPerPixel; }
 	
 	/** \brief Zoom time factor. */
-	inline float GetZoomTime() const{return pZoomTime;}
+	inline float GetZoomTime() const{ return pZoomTime; }
 	
 	/** \brief Set time zoom factor. */
 	void SetZoomTime(float zoom);
@@ -208,12 +208,12 @@ public:
 	ceWDSLane *GetLaneAtPosition(const decPoint &position) const;
 	
 	/** \brief Voice audio preview. */
-	inline ceWDSVAPreview &GetVAPreview() const{return *pVAPreview;}
+	inline ceWDSVAPreview &GetVAPreview() const{ return *pVAPreview; }
 	
 	
 	
 	/** \brief Voice audio preview height. */
-	inline int GetVAPreviewHeight() const{return pVAPreviewHeight;}
+	inline int GetVAPreviewHeight() const{ return pVAPreviewHeight; }
 	
 	/** \brief Dope sheet size. */
 	decPoint GetSizeDopeSheet() const;
@@ -222,10 +222,10 @@ public:
 	int GetLaneHeight() const;
 	
 	/** \brief Dope sheet panel. */
-	inline cDopeSheet &GetDopeSheet() const{return (cDopeSheet&)(igdeWidget&)pDopeSheet;}
+	inline cDopeSheet &GetDopeSheet() const{ return (cDopeSheet&)(igdeWidget&)pDopeSheet; }
 	
 	/** \brief Text font. */
-	inline igdeFont *GetFontText() const{return pFontText;}
+	inline igdeFont *GetFontText() const{ return pFontText; }
 	
 	
 	

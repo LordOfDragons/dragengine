@@ -49,9 +49,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{return pCount;}
+	inline int GetElementCount() const{ return pCount; }
 	/** Retrieves the list of elements. */
-	inline void **GetElements() const{return pElements;}
+	inline void **GetElements() const{ return pElements; }
 	/** Retrieves an element by index. */
 	void *GetElementAt(int index) const;
 	/** Removes all elements. */

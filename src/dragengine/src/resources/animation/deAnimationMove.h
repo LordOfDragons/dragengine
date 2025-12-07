@@ -103,13 +103,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the move. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of the move */
 	void SetName(const char *name);
 	
 	/** \brief Playtime of the move which is the largest time of all keyframes. */
-	inline float GetPlaytime() const{return pPlaytime;}
+	inline float GetPlaytime() const{ return pPlaytime; }
 	
 	/** \brief Set playtime for the move which is the largest time of all keyframes. */
 	void SetPlaytime(float playtime);
@@ -120,7 +120,7 @@ public:
 	 * 
 	 * Used for saving only if animation file format requires sampling.
 	 */
-	inline float GetFPS() const{return pFPS;}
+	inline float GetFPS() const{ return pFPS; }
 	
 	/**
 	 * \brief Set frames per second.
@@ -131,7 +131,7 @@ public:
 	void SetFPS(float fps);
 	
 	/** \brief Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{return pListCount;}
+	inline int GetKeyframeListCount() const{ return pListCount; }
 	
 	/** \brief Keyframe at the given index. */
 	deAnimationKeyframeList *GetKeyframeList(int index) const;
@@ -143,7 +143,7 @@ public:
 	 * \brief Count of keyframe lists.
 	 * \version 1.17
 	 */
-	inline int GetVertexPositionSetKeyframeListCount() const{return pVertexPositionSetListCount;}
+	inline int GetVertexPositionSetKeyframeListCount() const{ return pVertexPositionSetListCount; }
 	
 	/**
 	 * \brief Keyframe at the given index.

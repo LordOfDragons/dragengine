@@ -63,14 +63,14 @@ pConversation(&conversation){
 
 void ceWPTMAPasteSnippet::OnAction(){
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if(! wptopic.GetActionTreeModel()){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceDialogPasteSnippet::Ref dialog(ceDialogPasteSnippet::Ref::NewWith(
 		GetWindowMain().GetEnvironment(), pConversation));
 	
-	if(! dialog->Run(&GetWindowMain()) || dialog->GetActions().GetCount() == 0){
+	if(!dialog->Run(&GetWindowMain()) || dialog->GetActions().GetCount() == 0){
 		return;
 	}
 	

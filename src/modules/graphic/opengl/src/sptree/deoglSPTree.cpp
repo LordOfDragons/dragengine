@@ -55,7 +55,7 @@ deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend,
 	pStride = nodeCount.x * nodeCount.y;
 	
 	pNodes = new deoglSPTreeNode*[pTotalNodeCount];
-	if(! pNodes) DETHROW(deeOutOfMemory);
+	if(!pNodes) DETHROW(deeOutOfMemory);
 	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = NULL;
 }
 
@@ -95,13 +95,13 @@ void deoglSPTree::IndexOfNodeAt(decPoint3 &index, const decVector &position) con
 }
 
 deoglSPTreeNode *deoglSPTree::GetNodeAt(const decPoint3 &index) const{
-	if(! IsIndexValid(index)) DETHROW(deeInvalidParam);
+	if(!IsIndexValid(index)) DETHROW(deeInvalidParam);
 	
 	return pNodes[pStride * index.z + pNodeCount.x * index.y + index.x];
 }
 
 void deoglSPTree::SetNodeAt(const decPoint3 &index, deoglSPTreeNode *node){
-	if(! IsIndexValid(index)) DETHROW(deeInvalidParam);
+	if(!IsIndexValid(index)) DETHROW(deeInvalidParam);
 	int realIndex = pStride * index.z + pNodeCount.x * index.y + index.x;
 	
 	if(pNodes[realIndex]){

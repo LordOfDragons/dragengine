@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of faces. */
-	inline int GetCount() const{return pFaceCount;}
+	inline int GetCount() const{ return pFaceCount; }
 	/** Retrieves the index of the face or -1 if not in the list. */
 	int IndexOfFace(deoglModelFace *face) const;
 	/** Determines if the face exists. */

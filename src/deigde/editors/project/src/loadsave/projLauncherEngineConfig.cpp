@@ -76,7 +76,7 @@ decBaseFileReader &reader, projTestRunner &testRunner){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "launcherConfig"){
+	if(!root || root->GetName() != "launcherConfig"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -95,7 +95,7 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -120,7 +120,7 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -145,7 +145,7 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -194,7 +194,7 @@ const decXmlElementTag &root, projTRProfile &profile){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -243,7 +243,7 @@ const decXmlElementTag &root, projTRProfile &profile){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -264,7 +264,7 @@ const decXmlElementTag &root, projTRProfile &profile){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -286,7 +286,7 @@ const decXmlElementTag &root, projTRProfile &profile, const char *module){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -322,7 +322,7 @@ const decXmlElementTag &root, projTRProfile &profile){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

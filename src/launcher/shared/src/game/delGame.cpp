@@ -182,7 +182,7 @@ void delGame::VerifyRequirements(){
 		
 		format.SetSupported(false);
 		
-		if(! deModuleSystem::IsSingleType(formatType)){
+		if(!deModuleSystem::IsSingleType(formatType)){
 			const decString &formatPattern = format.GetPattern();
 			
 			for(m=0; m<moduleCount; m++){
@@ -197,7 +197,7 @@ void delGame::VerifyRequirements(){
 			}
 		}
 		
-		if(! format.GetSupported()){
+		if(!format.GetSupported()){
 			pAllFormatsSupported = false;
 		}
 	}
@@ -308,13 +308,13 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 	if(IsRunning()){
 		DETHROW_INFO(deeInvalidAction, "game is running");
 	}
-	if(! pCanRun){
+	if(!pCanRun){
 		DETHROW_INFO(deeInvalidAction, "game can not run");
 	}
-	if(! runParams.GetGameProfile()){
+	if(!runParams.GetGameProfile()){
 		DETHROW_INFO(deeNullPointer, "runParams.gameProfile");
 	}
-	if(! runParams.GetGameProfile()->GetValid()){
+	if(!runParams.GetGameProfile()->GetValid()){
 		DETHROW_INFO(deeInvalidAction, "runParams.gameProfile is not valid");
 	}
 	
@@ -322,7 +322,7 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 	decString logfile;
 	
 	// clear the log file. a bit an ugly hack but it works
-	if(! pLogToConsole){
+	if(!pLogToConsole){
 		logfile.Format("games/%s/logs/last_run.log", pIdentifier.ToHexString(false).GetString());
 		
 		// using open file for writing instead of delete file to allow applications
@@ -451,10 +451,10 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 }
 
 void delGame::StopGame(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		DETHROW_INFO(deeInvalidAction, "game is not running");
 	}
-	if(! pEngineInstance){
+	if(!pEngineInstance){
 		DETHROW_INFO(deeNullPointer, "engineInstance");
 	}
 	
@@ -478,7 +478,7 @@ void delGame::StopGame(){
 }
 
 void delGame::KillGame(){
-	if(! IsRunning() || ! pEngineInstance) DETHROW(deeInvalidAction);
+	if(!IsRunning() || !pEngineInstance) DETHROW(deeInvalidAction);
 	
 	deLogger &logger = *pLauncher.GetLogger();
 	
@@ -491,7 +491,7 @@ void delGame::KillGame(){
 }
 
 void delGame::PulseChecking(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		return;
 	}
 	
@@ -654,7 +654,7 @@ void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) con
 //////////////////////
 
 void delGame::pStoreCustomConfig(){
-	if(pCollectChangedParams.GetCount() == 0 || ! pCollectChangedParamsProfile){
+	if(pCollectChangedParams.GetCount() == 0 || !pCollectChangedParamsProfile){
 		return;
 	}
 	
@@ -663,7 +663,7 @@ void delGame::pStoreCustomConfig(){
 	
 	// ensure custom profile exists and is initialized with profile used to run the game
 	// unless this had been already the custom profile
-	if(! pCustomProfile){
+	if(!pCustomProfile){
 		pCustomProfile.TakeOver(pLauncher.CreateGameProfile());
 	}
 	

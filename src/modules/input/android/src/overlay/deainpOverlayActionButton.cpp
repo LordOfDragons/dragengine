@@ -233,14 +233,14 @@ void deainpOverlayActionButton::pCleanUp(){
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){
-	if(! pDirtyLabelSize){
+	if(!pDirtyLabelSize){
 		return;
 	}
 	
 	pDirtyLabelSize = false;
 	
 	deFont * const font = pCLabel->GetFont();
-	if(! font){
+	if(!font){
 		return;
 	}
 	

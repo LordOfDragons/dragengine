@@ -42,7 +42,7 @@
 seUSourceChainPathSoundRemove::seUSourceChainPathSoundRemove(seSourceChain *source, int index) :
 pSource(NULL)
 {
-	if(! source || index < 0 || index >= source->GetPathSounds().GetCount()){
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -132,7 +132,7 @@ const decColor &igdeGizmo::GetShapeColor(const char *name) const{
 void igdeGizmo::SetShapeColor(const char *name, const decColor &color){
 	cShapeColor * const shapeColor = pNamedShapeColor(name);
 	if(shapeColor){
-		if(! shapeColor->color.IsEqualTo(color)){
+		if(!shapeColor->color.IsEqualTo(color)){
 			shapeColor->color = color;
 			pApplyShapeColors();
 		}
@@ -154,7 +154,7 @@ void igdeGizmo::SetTransparency(float transparency){
 	
 	pTransparency = transparency;
 	
-	if(! pIsHovering){
+	if(!pIsHovering){
 		pApplyShapeColors();
 	}
 }

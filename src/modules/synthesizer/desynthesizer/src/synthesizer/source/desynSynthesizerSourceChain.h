@@ -82,16 +82,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Play speed target. */
-	inline desynSynthesizerTarget &GetTargetSpeed(){return pTargetSpeed;}
-	inline const desynSynthesizerTarget &GetTargetSpeed() const{return pTargetSpeed;}
+	inline desynSynthesizerTarget &GetTargetSpeed(){ return pTargetSpeed; }
+	inline const desynSynthesizerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/** \brief Select target. */
-	inline desynSynthesizerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const desynSynthesizerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline desynSynthesizerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const desynSynthesizerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/** \brief Play target. */
-	inline desynSynthesizerTarget &GetTargetPlay(){return pTargetPlay;}
-	inline const desynSynthesizerTarget &GetTargetPlay() const{return pTargetPlay;}
+	inline desynSynthesizerTarget &GetTargetPlay(){ return pTargetPlay; }
+	inline const desynSynthesizerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	
 	

@@ -74,43 +74,43 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Reflected percentage for low frequencies. */
-	inline float GetReflectedLow() const{return pReflectedLow.GetValue();}
+	inline float GetReflectedLow() const{ return pReflectedLow.GetValue(); }
 	
 	/** \brief Reflected percentage for medium frequencies. */
-	inline float GetReflectedMedium() const{return pReflectedMedium.GetValue();}
+	inline float GetReflectedMedium() const{ return pReflectedMedium.GetValue(); }
 	
 	/** \brief Reflected percentage for high frequencies. */
-	inline float GetReflectedHigh() const{return pReflectedHigh.GetValue();}
+	inline float GetReflectedHigh() const{ return pReflectedHigh.GetValue(); }
 	
 	/** \brief Reflection delay in seconds. */
-	inline float GetReflectionDelay() const{return pReflectionDelay.GetValue();}
+	inline float GetReflectionDelay() const{ return pReflectionDelay.GetValue(); }
 	
 	/** \brief Reflection pan direction. */
-	inline const decVector &GetReflectionPan() const{return pReflectionPan.GetValue();}
+	inline const decVector &GetReflectionPan() const{ return pReflectionPan.GetValue(); }
 	
 	/** \brief Reverberation gain for low frequencies. */
-	inline float GetReverberationGainLow() const{return pReverberationGainLow.GetValue();}
+	inline float GetReverberationGainLow() const{ return pReverberationGainLow.GetValue(); }
 	
 	/** \brief Reverberation gain for medium frequencies. */
-	inline float GetReverberationGainMedium() const{return pReverberationGainMedium.GetValue();}
+	inline float GetReverberationGainMedium() const{ return pReverberationGainMedium.GetValue(); }
 	
 	/** \brief Reverberation gain for high frequencies. */
-	inline float GetReverberationGainHigh() const{return pReverberationGainHigh.GetValue();}
+	inline float GetReverberationGainHigh() const{ return pReverberationGainHigh.GetValue(); }
 	
 	/** \brief Reverberation delay in seconds. */
-	inline float GetReverberationDelay() const{return pReverberationDelay.GetValue();}
+	inline float GetReverberationDelay() const{ return pReverberationDelay.GetValue(); }
 	
 	/** \brief Reverberation pan direction. */
-	inline const decVector &GetReverberationPan() const{return pReverberationPan.GetValue();}
+	inline const decVector &GetReverberationPan() const{ return pReverberationPan.GetValue(); }
 	
 	/** \brief Reverberation time in seconds for medium frequencies. */
-	inline float GetReverberationTimeMedium() const{return pReverberationTimeMedium.GetValue();}
+	inline float GetReverberationTimeMedium() const{ return pReverberationTimeMedium.GetValue(); }
 	
 	/** \brief Reverberation time in seconds for low frequencies. */
-	inline float GetReverberationTimeLow() const{return pReverberationTimeLow.GetValue();}
+	inline float GetReverberationTimeLow() const{ return pReverberationTimeLow.GetValue(); }
 	
 	/** \brief Reverberation time in seconds for high frequencies. */
-	inline float GetReverberationTimeHigh() const{return pReverberationTimeHigh.GetValue();}
+	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh.GetValue(); }
 	
 	
 	

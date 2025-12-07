@@ -59,7 +59,7 @@ pOrigin(origin)
 		
 		for(pCount=0; pCount<count; pCount++){
 			sePropertyNode * const node = nodes.GetAt(pCount);
-			if(! node->GetParent()){
+			if(!node->GetParent()){
 				DETHROW(deeInvalidParam);
 			}
 			

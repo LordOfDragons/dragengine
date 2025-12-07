@@ -57,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo *CreateUndo();

@@ -68,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Face normal. */
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
 	void SetNormal(const decVector &normal);
 	
 	/** \brief Marker. */
-	inline int GetMarker() const{return pMarker;}
+	inline int GetMarker() const{ return pMarker; }
 	
 	/** \brief Set marker. */
 	void SetMarker(int marker);
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Vertex at index. */
 	int GetVertexAt(int index) const;

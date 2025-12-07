@@ -169,7 +169,7 @@ void deoglSkinStateConstructedNode::Update(deoglSkinState &state){
 }
 
 void deoglSkinStateConstructedNode::PrepareForRender(deoglSkinState &state){
-	if(! pMask){
+	if(!pMask){
 		return;
 	}
 	
@@ -177,7 +177,7 @@ void deoglSkinStateConstructedNode::PrepareForRender(deoglSkinState &state){
 }
 
 void deoglSkinStateConstructedNode::Render(deoglSkinState &state, const deoglRenderCanvasContext &){
-	if(! pMask){
+	if(!pMask){
 		return;
 	}
 	
@@ -221,7 +221,7 @@ deoglSkinStateConstructedNode::Ref deoglSkinStateConstructedNode::CreateNode(deS
 ////////////////////////
 
 void deoglSkinStateConstructedNode::pUpdateTransform(){
-	if(! pDirtyTransform){
+	if(!pDirtyTransform){
 		return;
 	}
 	
@@ -242,7 +242,7 @@ void deoglSkinStateConstructedNode::pUpdateTransform(){
 }
 
 void deoglSkinStateConstructedNode::pUpdateColorTransform(){
-	if(! pDirtyColorTransform){
+	if(!pDirtyColorTransform){
 		return;
 	}
 	

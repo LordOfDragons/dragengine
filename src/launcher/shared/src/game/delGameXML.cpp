@@ -74,7 +74,7 @@ void delGameXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "degame"){
+	if(!root || root->GetName() != "degame"){
 		DETHROW_INFO(deeInvalidParam, "missing root tag 'degame'");
 	}
 	
@@ -93,7 +93,7 @@ void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -168,7 +168,7 @@ void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
 		}
 	}
 	
-	if(! game.GetIdentifier()){
+	if(!game.GetIdentifier()){
 		ErrorMissingTag(root, "identifier");
 		DETHROW_INFO(deeInvalidParam, "missing tag");
 	}

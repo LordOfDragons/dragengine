@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Time stretch target. */
-	inline const desynSynthesizerTarget &GetTargetTime() const{return pTargetTime;}
+	inline const desynSynthesizerTarget &GetTargetTime() const{ return pTargetTime; }
 	
 	/** \brief Pitch shift target. */
-	inline const desynSynthesizerTarget &GetTargetPitch() const{return pTargetPitch;}
+	inline const desynSynthesizerTarget &GetTargetPitch() const{ return pTargetPitch; }
 	
 	
 	

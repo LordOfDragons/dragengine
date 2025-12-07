@@ -72,15 +72,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Sky instance. */
-	inline const deSkyInstance &GetInstance() const{return pInstance;}
+	inline const deSkyInstance &GetInstance() const{ return pInstance; }
 	
 	
 	
 	/** Render instance. */
-	inline deoglRSkyInstance *GetRInstance() const{return pRInstance;}
+	inline deoglRSkyInstance *GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -91,7 +91,7 @@ public:
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.

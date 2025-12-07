@@ -70,9 +70,9 @@ public:
 	void PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	inline dsClass *GetClassNavigationSpaceType() const{return pClsNavigationSpaceType;}
+	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/
 	
 private:

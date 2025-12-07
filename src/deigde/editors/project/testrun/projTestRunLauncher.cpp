@@ -182,7 +182,7 @@ void projTestRunLauncher::CreateVFS(){
 	pVFS.TakeOver(new deVirtualFileSystem);
 	
 	// add configuration containers
-	if(! pPathConfigSystem.IsEmpty()){
+	if(!pPathConfigSystem.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/system");
 		pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -190,7 +190,7 @@ void projTestRunLauncher::CreateVFS(){
 		pVFS->AddContainer(container);
 	}
 	
-	if(! pPathConfigUser.IsEmpty()){
+	if(!pPathConfigUser.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/user");
 		pathDiskDir.SetFromNative(pPathConfigUser.GetString());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -198,7 +198,7 @@ void projTestRunLauncher::CreateVFS(){
 	}
 	
 	// add data directory which is the engine share directory
-	if(! pPathShares.IsEmpty()){
+	if(!pPathShares.IsEmpty()){
 		pathRootDir.SetFromUnix("/data");
 		pathDiskDir.SetFromNative(pPathShares.GetString());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));

@@ -107,7 +107,7 @@ void gdeOCNavigationBlocker::SetBlockingPriority(int priority){
 
 
 bool gdeOCNavigationBlocker::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCNavigationBlocker::GetPropertyName(eProperties property) const{

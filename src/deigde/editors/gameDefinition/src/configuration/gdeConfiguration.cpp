@@ -89,7 +89,7 @@ void gdeConfiguration::LoadConfiguration(){
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
 		const decPath pathFile(decPath::CreatePathUnix("/igde/local/gameDefinitionEditor.xml"));
-		if(! vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
@@ -112,7 +112,7 @@ void gdeConfiguration::SaveConfiguration(){
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
 	const decPath pathFile(decPath::CreatePathUnix("/igde/local/gameDefinitionEditor.xml"));
-	if(! vfs.CanWriteFile(pathFile)){
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	

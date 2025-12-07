@@ -108,7 +108,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if not set. */
-	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL to clear. */
 	void SetSynthesizer(deSynthesizer *synthesizer);
@@ -116,7 +116,7 @@ public:
 	
 	
 	/** \brief Number of samples to create. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
 	void SetSampleCount(int sampleCount);
@@ -172,13 +172,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Synthesizer peer or NULL if not set. */
-	inline deBaseSynthesizerSynthesizerInstance *GetPeerSynthesizer() const{return pPeerSynthesizer;}
+	inline deBaseSynthesizerSynthesizerInstance *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer peer or NULL if not set. */
 	void SetPeerSynthesizer(deBaseSynthesizerSynthesizerInstance *peer);
 	
 	/** \brief Audio peer or NULL if not set. */
-	inline deBaseAudioSynthesizerInstance *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioSynthesizerInstance *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio peer or NULL if not set. */
 	void SetPeerAudio(deBaseAudioSynthesizerInstance *peer);

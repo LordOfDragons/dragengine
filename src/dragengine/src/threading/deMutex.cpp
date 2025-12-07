@@ -178,7 +178,7 @@ void deMutex::Unlock(){
 #endif
 	
 #ifdef OS_W32
-	if(! ReleaseMutex(pMutex)){
+	if(!ReleaseMutex(pMutex)){
 		DETHROW(deeInvalidAction);
 	}
 #endif

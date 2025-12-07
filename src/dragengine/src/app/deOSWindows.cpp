@@ -614,12 +614,12 @@ decString deOSWindows::pGetUserLanguage() const{
 	ULONG numLanguages = 0;
 	ULONG langBufSize = 0;
 	
-	if(! GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, NULL, &langBufSize)){
+	if(!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, NULL, &langBufSize)){
 		return "en";
 	}
 	
 	wchar_t * const buffer = new wchar_t[langBufSize];
-	if(! GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer, &langBufSize)){
+	if(!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer, &langBufSize)){
 		delete [] buffer;
 		return "en";
 	}

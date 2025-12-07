@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of pushs. */
-	inline int GetPushCount() const{return pPushCount;}
+	inline int GetPushCount() const{ return pPushCount; }
 	/** Retrieves the push at the given index. */
 	reRigPush *GetPushAt(int index) const;
 	/** Retrieves the index of the push or -1 if not found. */

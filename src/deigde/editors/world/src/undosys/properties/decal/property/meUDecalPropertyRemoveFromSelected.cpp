@@ -46,7 +46,7 @@ meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meD
 	meDecal *decal;
 	int i;
 	
-	if(! key || count < 1){
+	if(!key || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -56,7 +56,7 @@ meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meD
 		
 		for(i=0; i<count; i++){
 			decal = list.GetAt(i);
-			if(! decal->GetWorld()){
+			if(!decal->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

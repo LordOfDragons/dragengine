@@ -42,7 +42,7 @@ gdeClipboardDataOCNavSpace::gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *nav
 igdeClipboardData(TYPE_NAME),
 pNavSpace(NULL)
 {
-	if(! navSpace){
+	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -81,32 +81,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File path relative to template base path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set file path relative to template base path. */
 	void SetPath(const char *path);
 	
 	/** \brief File path rename relative to template base path. */
-	inline const decString &GetPathRename() const{return pPathRename;}
+	inline const decString &GetPathRename() const{ return pPathRename; }
 	
 	/** \brief Set file path rename relative to template base path. */
 	void SetPathRename(const char *path);
 	
 	/** \brief File pattern relative to template base path. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern relative to template base path. */
 	void SetPattern(const char *pattern);
 	
 	/** \brief Driectory. */
-	inline eDirectories GetDirectory() const{return pDirectory;}
+	inline eDirectories GetDirectory() const{ return pDirectory; }
 	
 	/** \brief Set directory. */
 	void SetDirectory(eDirectories directory);
 	
 	/** \brief Replacements. */
-	inline igdeTemplateReplaceList &GetReplacements(){return pReplacements;}
-	inline const igdeTemplateReplaceList &GetReplacements() const{return pReplacements;}
+	inline igdeTemplateReplaceList &GetReplacements(){ return pReplacements; }
+	inline const igdeTemplateReplaceList &GetReplacements() const{ return pReplacements; }
 	/*@}*/
 };
 

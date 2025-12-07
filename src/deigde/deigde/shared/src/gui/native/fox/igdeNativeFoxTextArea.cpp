@@ -95,7 +95,7 @@ pTextArea(new FXText(this, this, ID_SELF, TextAreaFlags(powner), 0, 0, 0, 0,
 pStyles(NULL),
 pResizer(NULL)
 {
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	
@@ -131,12 +131,12 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 }
 
 igdeNativeFoxTextArea *igdeNativeFoxTextArea::CreateNativeWidget(igdeTextArea &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -180,7 +180,7 @@ void igdeNativeFoxTextArea::UpdateStyles(){
 }
 
 void igdeNativeFoxTextArea::ApplyStyles(){
-	if(! pStyles){
+	if(!pStyles){
 		return;
 	}
 	
@@ -362,7 +362,7 @@ long igdeNativeFoxTextArea::onMouseLeftPress(FXObject*, FXSelector, void *pdata)
 	const int position = pTextArea->getPosAt(event.win_x, event.win_y);
 	
 	const igdeTextSegment * const segment = pOwner->GetSegmentWith(position);
-	if(! segment || ! segment->GetAction()){
+	if(!segment || !segment->GetAction()){
 		return 0;
 	}
 	
@@ -374,7 +374,7 @@ long igdeNativeFoxTextArea::onMouseLeftRelease(FXObject*, FXSelector, void *pdat
 	const int position = pTextArea->getPosAt(event.win_x, event.win_y);
 	
 	const igdeTextSegment * const segment = pOwner->GetSegmentWith(position);
-	if(! segment || ! segment->GetAction()){
+	if(!segment || !segment->GetAction()){
 		return 0;
 	}
 	
@@ -394,7 +394,7 @@ long igdeNativeFoxTextArea::onMouseLeftRelease(FXObject*, FXSelector, void *pdat
 }
 
 long igdeNativeFoxTextArea::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -412,7 +412,7 @@ long igdeNativeFoxTextArea::onCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxTextArea::onChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

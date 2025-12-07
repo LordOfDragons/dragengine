@@ -124,7 +124,7 @@ pActive(false),
 
 pColliderOwner(this)
 {
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -252,7 +252,7 @@ void meDecal::LoadSkin(){
 }
 
 decVector meDecal::GetDefaultSize(float baseSize) const{
-	if(! pEngSkin){
+	if(!pEngSkin){
 		return decVector(baseSize, baseSize, baseSize);
 	}
 	
@@ -419,7 +419,7 @@ void meDecal::SetColorTint(const decColor &color){
 }
 
 void meDecal::UpdateDynamicSkin(){
-	const bool hasTint = ! decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
+	const bool hasTint = !decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
 	bool requiresDynamicSkin = false;
 	
 	if(hasTint){
@@ -427,7 +427,7 @@ void meDecal::UpdateDynamicSkin(){
 	}
 	
 	if(requiresDynamicSkin){
-		if(! pDynamicSkin){
+		if(!pDynamicSkin){
 			deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 			pDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 		}
@@ -568,7 +568,7 @@ void meDecal::SetProperties(const decStringDictionary &properties){
 }
 
 void meDecal::RemoveProperty(const char *key){
-	if(! pProperties.Has(key)){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	
@@ -621,7 +621,7 @@ void meDecal::SetActiveProperty(const char *property){
 
 
 void meDecal::NotifyPropertiesChanged(){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -634,7 +634,7 @@ void meDecal::NotifyPropertiesChanged(){
 }
 
 void meDecal::NotifyActivePropertyChanged(){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -718,7 +718,7 @@ void meDecal::pCleanUp(){
 
 
 void meDecal::DetachDecals(){
-	if(! pAttachedDecals){
+	if(!pAttachedDecals){
 		return;
 	}
 	
@@ -766,7 +766,7 @@ void meDecal::AttachDecals(){
 			
 			for(e=0; e<entryCount; e++){
 				meObject * const object = hitlist.GetEntryAt(e)->GetObject();
-				if(! object){
+				if(!object){
 					continue;
 				}
 				
@@ -920,7 +920,7 @@ void meDecal::pLoadSkin(){
 	deSkinManager *skinMgr = engine.GetSkinManager();
 	deSkin *skin = NULL;
 	
-	if(! pSkinPath.IsEmpty()){
+	if(!pSkinPath.IsEmpty()){
 		try{
 			skin = skinMgr->LoadSkin(pSkinPath, "/");
 			

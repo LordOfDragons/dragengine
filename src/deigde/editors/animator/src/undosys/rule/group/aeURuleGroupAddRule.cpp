@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int index){
-	if(! group || ! rule){
+	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	

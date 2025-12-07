@@ -45,7 +45,7 @@ seUControllerSetMaximumValue::seUControllerSetMaximumValue(seController *control
 pController(controller),
 pNewValue(newValue)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetMaximumValue();

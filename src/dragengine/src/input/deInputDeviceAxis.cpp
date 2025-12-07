@@ -84,7 +84,7 @@ deImage *deInputDeviceAxis::GetDisplayIconAt(int index) const{
 }
 
 void deInputDeviceAxis::AddDisplayIcon(deImage *image){
-	if(! image){
+	if(!image){
 		DETHROW(deeNullPointer);
 	}
 	pDisplayIcons.Add(image);

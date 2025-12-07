@@ -237,7 +237,7 @@ const deoalRayTraceConfig &probeConfig){
 
 void deoalEnvProbe::TraceSoundRays(deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
 const deoalRayTraceConfig &probeConfig){
-	if(! pRTConfig){
+	if(!pRTConfig){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -327,7 +327,7 @@ void deoalEnvProbe::pRemoveAllListeners(){
 
 void deoalEnvProbe::pCalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
 const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter *soundLevelMeter){
-	if(! microphone && ! soundLevelMeter && pEstimated){
+	if(!microphone && !soundLevelMeter && pEstimated){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -442,7 +442,7 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 			}
 		}
 		
-		if(! replaceCached){
+		if(!replaceCached){
 			replaceCached = new deoalEnvProbeListenerCached;
 			pListeners.Add(replaceCached);
 			if(debugLogCalcInfo){

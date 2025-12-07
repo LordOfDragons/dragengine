@@ -73,7 +73,7 @@ FXMainWindow(FXApp::instance(), powner.GetTitle().GetString(),
 	DECOR_ALL, 0, 0, 800, 600),
 pOwner(&powner)
 {
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 }
@@ -174,10 +174,10 @@ decColor igdeNativeFoxMainWindow::GetSystemColor(igdeEnvironment::eSystemColors 
 void igdeNativeFoxMainWindow::UpdateWindowState(){
 	switch(pOwner->GetWindowState()){
 	case igdeMainWindow::ewsNormal:
-		if(! isMinimized() && ! isMaximized()){
+		if(!isMinimized() && !isMaximized()){
 			break;
 		}
-		if(! restore()){
+		if(!restore()){
 			SetWindowState();
 		}
 		break;
@@ -186,7 +186,7 @@ void igdeNativeFoxMainWindow::UpdateWindowState(){
 		if(isMinimized()){
 			break;
 		}
-		if(! minimize()){
+		if(!minimize()){
 			SetWindowState();
 		}
 		break;
@@ -195,7 +195,7 @@ void igdeNativeFoxMainWindow::UpdateWindowState(){
 		if(isMaximized()){
 			break;
 		}
-		if(! maximize()){
+		if(!maximize()){
 			SetWindowState();
 		}
 		break;

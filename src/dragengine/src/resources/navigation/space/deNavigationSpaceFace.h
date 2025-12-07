@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of corners. */
-	inline unsigned short GetCornerCount() const{return pCornerCount;}
+	inline unsigned short GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
 	void SetCornerCount(unsigned short count);
 	
 	/** \brief Type number for crossing this face. */
-	inline unsigned short GetType() const{return pType;}
+	inline unsigned short GetType() const{ return pType; }
 	
 	/** \brief Set type number for crossing this face. */
 	void SetType(unsigned short type);

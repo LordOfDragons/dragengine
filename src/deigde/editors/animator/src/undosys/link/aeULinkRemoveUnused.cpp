@@ -45,7 +45,7 @@
 aeULinkRemoveUnused::aeULinkRemoveUnused(aeAnimator *animator) :
 pAnimator(NULL)
 {
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

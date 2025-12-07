@@ -115,7 +115,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Camera or NULL. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL. */
 	void SetCamera(igdeCamera *camera);
@@ -123,25 +123,25 @@ public:
 	
 	
 	/** \brief Enable rotate camera interaction. */
-	inline bool GetEnableRotate() const{return pEnableRotate;}
+	inline bool GetEnableRotate() const{ return pEnableRotate; }
 	
 	/** \brief Set if rotate camera interaction is enabled. */
 	void SetEnableRotate(bool enable);
 	
 	/** \brief Enable pan camera interaction. */
-	inline bool GetEnablePan() const{return pEnablePan;}
+	inline bool GetEnablePan() const{ return pEnablePan; }
 	
 	/** \brief Set if pan camera interaction is enabled. */
 	void SetEnablePan(bool enable);
 	
 	/** \brief Enable move camera interaction. */
-	inline bool GetEnableMove() const{return pEnableMove;}
+	inline bool GetEnableMove() const{ return pEnableMove; }
 	
 	/** \brief Set if move camera interaction is enabled. */
 	void SetEnableMove(bool enable);
 	
 	/** \brief Enable zoom camera interaction. */
-	inline bool GetEnableZoom() const{return pEnableZoom;}
+	inline bool GetEnableZoom() const{ return pEnableZoom; }
 	
 	/** \brief Set if zoom camera interaction is enabled. */
 	void SetEnableZoom(bool enable);
@@ -152,25 +152,25 @@ public:
 	
 	
 	/** \brief Rotation speed in degrees per drag distance pixels. */
-	inline float GetSpeedRotate() const{return pSpeedRotate;}
+	inline float GetSpeedRotate() const{ return pSpeedRotate; }
 	
 	/** \brief Set rotation speed in degrees per drag distance pixels. */
 	void SetSpeedRotate(float degreesPerPixel);
 	
 	/** \brief Pan speed in meters per drag distance pixels. */
-	inline float GetSpeedPan() const{return pSpeedPan;}
+	inline float GetSpeedPan() const{ return pSpeedPan; }
 	
 	/** \brief Set pan speed in meters per drag distance pixels. */
 	void SetSpeedPan(float metersPerPixel);
 	
 	/** \brief Move speed in meters per drag distance pixels. */
-	inline float GetSpeedMove() const{return pSpeedMove;}
+	inline float GetSpeedMove() const{ return pSpeedMove; }
 	
 	/** \brief Set move speed in meters per drag distance pixels. */
 	void SetSpeedMove(float metersPerPixel);
 	
 	/** \brief Zoom speed in meters per drag distance pixels. */
-	inline float GetSpeedZoom() const{return pSpeedZoom;}
+	inline float GetSpeedZoom() const{ return pSpeedZoom; }
 	
 	/** \brief Set zoom speed in meters per drag distance pixels. */
 	void SetSpeedZoom(float metersPerPixel);
@@ -178,7 +178,7 @@ public:
 	
 	
 	/** \brief Interaction in progress. */
-	inline eInteraction GetInteraction() const{return pInteraction;}
+	inline eInteraction GetInteraction() const{ return pInteraction; }
 	
 	/** \brief Set interaction in progress. */
 	void SetInteraction(eInteraction interaction);
@@ -186,43 +186,43 @@ public:
 	
 	
 	/** \brief Pan or move position at start of interaction. */
-	inline const decDVector &GetMoveOrigin() const{return pMoveOrigin;}
+	inline const decDVector &GetMoveOrigin() const{ return pMoveOrigin; }
 	
 	/** \brief Set pan or move position at start of interaction. */
 	void SetMoveOrigin(const decDVector &position);
 	
 	/** \brief Current pan or move position. */
-	inline const decDVector &GetMoveCurrent() const{return pMoveCurrent;}
+	inline const decDVector &GetMoveCurrent() const{ return pMoveCurrent; }
 	
 	/** \brief Set current pan or move position. */
 	void SetMoveCurrent(const decDVector &position);
 	
 	/** \brief Rotation in degrees at start of interaction. */
-	inline const decVector &GetRotateOrigin() const{return pRotateOrigin;}
+	inline const decVector &GetRotateOrigin() const{ return pRotateOrigin; }
 	
 	/** \brief Set rotation in degrees at start of interaction. */
 	void SetRotateOrigin(const decVector &rotation);
 	
 	/** \brief Current rotation in degrees. */
-	inline const decVector &GetRotationCurrent() const{return pRotateCurrent;}
+	inline const decVector &GetRotationCurrent() const{ return pRotateCurrent; }
 	
 	/** \brief Set current rotation in degrees. */
 	void SetRotationCurrent(const decVector &rotation);
 	
 	/** \brief Zoom at start of interaction. */
-	inline float GetZoomOrigin() const{return pZoomOrigin;}
+	inline float GetZoomOrigin() const{ return pZoomOrigin; }
 	
 	/** \brief Set zoom at start of interaction. */
 	void SetZoomOrigin(float zoom);
 	
 	/** \brief Current zoom. */
-	inline float GetZoomCurrent() const{return pZoomCurrent;}
+	inline float GetZoomCurrent() const{ return pZoomCurrent; }
 	
 	/** \brief Set current zoom. */
 	void SetZoomCurrent(float zoom);
 	
 	/** \brief Matrix for pan and zoom interaction. */
-	inline const decDMatrix &GetMoveMatrix() const{return pMoveMatrix;}
+	inline const decDMatrix &GetMoveMatrix() const{ return pMoveMatrix; }
 	
 	/** \brief Set matrix for pan and zoom interaction. */
 	void SetMoveMatrix(const decDMatrix &matrix);

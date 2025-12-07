@@ -54,10 +54,10 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deServer *GetServer(dsRealObject *myself) const;
 	void PushServer(dsRunTime *rt, deServer *server);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassServerListener *GetClassServerListener() const{return pClsSvrL;}
+	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	
 private:
 	struct sInitData{

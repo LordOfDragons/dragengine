@@ -90,7 +90,7 @@ pActiveEmitController(deParticleEmitterType::eecLifetime),
 pActive(false),
 pDirty(true)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -449,7 +449,7 @@ peeParameter *peeType::GetParameterAt(deParticleEmitterType::eParameters index) 
 }
 
 int peeType::IndexOfParameter(peeParameter *parameter) const{
-	if(! parameter){
+	if(!parameter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -464,7 +464,7 @@ int peeType::IndexOfParameter(peeParameter *parameter) const{
 }
 
 void peeType::SetActiveParameter(peeParameter *parameter){
-	if(! parameter){
+	if(!parameter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -522,7 +522,7 @@ void peeType::pLoadSkin(){
 		pEngSkin = NULL;
 	}
 	
-	if(! pSkinPath.IsEmpty()){
+	if(!pSkinPath.IsEmpty()){
 		try{
 			if(pEmitter){
 				pEngSkin = pEngine->GetSkinManager()->LoadSkin(pSkinPath, pEmitter->GetDirectoryPath());
@@ -550,7 +550,7 @@ void peeType::pLoadModel(){
 		pEngCastModel = NULL;
 	}
 	
-	if(! pModelPath.IsEmpty()){
+	if(!pModelPath.IsEmpty()){
 		try{
 			if(pEmitter){
 				pEngCastModel = pEngine->GetModelManager()->LoadModel(pModelPath, pEmitter->GetDirectoryPath());
@@ -573,7 +573,7 @@ void peeType::pLoadModelSkin(){
 		pEngCastSkin = NULL;
 	}
 	
-	if(! pModelSkinPath.IsEmpty()){
+	if(!pModelSkinPath.IsEmpty()){
 		try{
 			if(pEmitter){
 				pEngCastSkin = pEngine->GetSkinManager()->LoadSkin(pModelSkinPath, pEmitter->GetDirectoryPath());
@@ -601,7 +601,7 @@ void peeType::pLoadCollisionEmitter(){
 		return;
 	}
 	
-	if(! pEmitter){
+	if(!pEmitter){
 		return;
 	}
 	
@@ -636,7 +636,7 @@ void peeType::pLoadTrailEmitter(){
 		return;
 	}
 	
-	if(! pEmitter){
+	if(!pEmitter){
 		return;
 	}
 	

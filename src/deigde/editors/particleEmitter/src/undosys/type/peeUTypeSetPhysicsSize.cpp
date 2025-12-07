@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

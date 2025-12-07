@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Activated graphic module. */
-	inline deBaseAIModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseAIModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
 	void LoadWorld(deWorld *world);

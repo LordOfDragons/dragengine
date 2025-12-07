@@ -83,16 +83,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief SpinTextField is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -103,16 +103,16 @@ public:
 	
 	
 	/** \brief Value. */
-	inline int GetValue() const{return pValue;}
+	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(int value);
 	
 	/** \brief Range lower value. */
-	inline int GetLower() const{return pLower;}
+	inline int GetLower() const{ return pLower; }
 	
 	/** \brief Range upper value. */
-	inline int GetUpper() const{return pUpper;}
+	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
 	void SetRange(int lower, int upper);

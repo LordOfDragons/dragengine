@@ -215,7 +215,7 @@ pDebugInfo(renderThread)
 		if(useFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! useFSQuadStereoVSLayer){
+		if(!useFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Finalize Stereo");
 		}
 		pAsyncGetPipeline(pPipelineFinalizeStereo, pipconf, sources, defines);
@@ -292,7 +292,7 @@ DEBUG_RESET_TIMER
 //	bool maskedRendering = info->GetUseRenderMask();
 //	deoglRenderableColorTexture *maskRenderTexture = info->GetMaskRenderTexture();
 	
-	const bool debugMainPass = ! mask;
+	const bool debugMainPass = !mask;
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, mask ? "World.RenderWorld(Masked)" : "World.RenderWorld");
@@ -368,7 +368,7 @@ DEBUG_RESET_TIMER
 	plan.PrepareRenderOneTurn();
 	
 	// trace global illumination rays if in main render pass
-	if(! mask){
+	if(!mask){
 		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
 		if(plan.GetUpdateGIState()){
 			renderGI.TraceRays(plan);
@@ -429,14 +429,14 @@ DEBUG_RESET_TIMER
 	}
 	
 	//if( ! plan->GetFBOTarget() )
-	if(! plan.GetDisableLights()){
-		if(! mask){
+	if(!plan.GetDisableLights()){
+		if(!mask){
 			renderers.GetToneMap().LuminancePrepare(plan);
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
 			DebugTimer2Sample(plan, *pDebugInfo.infoLuminancePrepare, true);
 		}
 		
-		if(! mask){
+		if(!mask){
 			DBG_ENTER("EnvMapCopyMaterials")
 			renderers.GetReflection().CopyMaterial(plan, true);
 			DBG_EXIT("EnvMapCopyMaterials")
@@ -533,8 +533,8 @@ DEBUG_RESET_TIMER
 			plan.PlanTransparency(0);
 		}
 		
-		if(! plan.GetDisableLights()){
-			if(! mask){
+		if(!plan.GetDisableLights()){
+			if(!mask){
 				renderers.GetToneMap().LuminancePrepare(plan);
 				DebugTimer2Sample(plan, *pDebugInfo.infoLuminancePrepare, true);
 				
@@ -563,9 +563,9 @@ DEBUG_RESET_TIMER
 	}
 	
 	// this happens only in the main pass
-	if(! mask){
+	if(!mask){
 		// tone mapping
-		if(disableLights || ! plan.GetUseToneMap()){
+		if(disableLights || !plan.GetUseToneMap()){
 			const deoglDebugTraceGroup debugTraceToneMap(renderThread, "World.ToneMap");
 			const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineFinalizeStereo : *pPipelineFinalize;
 			pipeline.Activate();
@@ -634,7 +634,7 @@ DEBUG_RESET_TIMER
 		if(plan.GetDebugTiming() && devMode.GetEnabled()){
 			// only in canvas rendering and main pass or VR depending if VR is used
 			if((renderThread.GetVRCamera() && plan.GetRenderVR() != deoglRenderPlan::ervrNone)
-			|| (! renderThread.GetVRCamera() && ! plan.GetFBOTarget())){
+			|| (!renderThread.GetVRCamera() && !plan.GetFBOTarget())){
 				// measuring the time required for rendering developer mode is tricky. the reason is
 				// that we need to sample the time across this function call. the sampling is present
 				// only after the function call returns which draws the measurements. we can not
@@ -867,7 +867,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		spb.SetParameterDataFloat(deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel);
 		spb.SetParameterDataFloat(deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength());
 		
-		spb.SetParameterDataBool(deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable());
+		spb.SetParameterDataBool(deoglSkinShader::erutSkinDoesReflections, !config.GetSSREnable());
 		spb.SetParameterDataBool(deoglSkinShader::erutFlipCulling, plan.GetFlipCulling());
 		spb.SetParameterDataFloat(deoglSkinShader::erutClearDepthValue, renderThread.GetChoices().GetClearDepthValueRegular());
 		
@@ -1103,7 +1103,7 @@ DBG_EXIT("RenderDebugDrawers")
 void deoglRenderWorld::RenderEffects(deoglRenderPlan &plan){
 DBG_ENTER("RenderEffects")
 	deoglRCamera * const camera = plan.GetCamera();
-	if(! camera){
+	if(!camera){
 		return;
 	}
 	

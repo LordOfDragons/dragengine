@@ -42,7 +42,7 @@ meUWorldSetProperties::meUWorldSetProperties(meWorld *world, const decStringDict
 pWorld(NULL),
 pNewValues(newValues)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

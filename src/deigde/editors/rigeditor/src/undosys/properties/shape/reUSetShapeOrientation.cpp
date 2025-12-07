@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVector &newOrientation){
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	

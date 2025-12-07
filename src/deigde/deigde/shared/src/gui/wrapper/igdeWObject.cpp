@@ -541,7 +541,7 @@ void igdeWObject::SetOutlineSkin(deSkin *skin){
 	
 	pOutlineSkin = skin;
 	
-	if(skin && ! pOutlineDynamicSkin){
+	if(skin && !pOutlineDynamicSkin){
 		pOutlineDynamicSkin.TakeOver(pEnvironment.GetEngineController()->GetEngine()->
 			GetDynamicSkinManager()->CreateDynamicSkin());
 		
@@ -572,7 +572,7 @@ void igdeWObject::SetOutlineColor(const decColor &color){
 	
 	pOutlineColor = color;
 	
-	if(! pOutlineDynamicSkin){
+	if(!pOutlineDynamicSkin){
 		return;
 	}
 	
@@ -616,7 +616,7 @@ bool igdeWObject::IsAttachedCollider() const{
 }
 
 void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
-	if(! parentCollider){
+	if(!parentCollider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -647,7 +647,7 @@ void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
 
 void igdeWObject::AttachColliderBone(deColliderComponent *parentCollider, const char *bone,
 const decVector &position, const decQuaternion &orientation){
-	if(! parentCollider || ! bone){
+	if(!parentCollider || !bone){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -687,7 +687,7 @@ const decVector &position, const decQuaternion &orientation){
 }
 
 void igdeWObject::DetachCollider(){
-	if(! pParentCollider){
+	if(!pParentCollider){
 		return;
 	}
 	
@@ -753,7 +753,7 @@ void igdeWObject::OnColliderChanged(){
 
 void igdeWObject::UpdateTriggerTargets(){
 	pListTriggerTarget.RemoveAll();
-	if(! pTriggerTable || ! pGDClass){
+	if(!pTriggerTable || !pGDClass){
 		return;
 	}
 	
@@ -800,7 +800,7 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 		pEnvironment.SetColliderDelegee(pColliderComponent, nullptr);
 		pEnvironment.SetColliderUserPointer(pColliderComponent, nullptr);
 		pColliderComponent = nullptr;
-		pColliderFallback->SetEnabled(pVisible && ! pPartiallyHidden);
+		pColliderFallback->SetEnabled(pVisible && !pPartiallyHidden);
 	}
 	
 	const int count = pCollidersInteraction.GetCount();
@@ -811,7 +811,7 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 		pEnvironment.SetColliderUserPointer(colliderInteract, nullptr);
 	}
 	
-	if(! collider){
+	if(!collider){
 		return;
 	}
 	
@@ -897,8 +897,8 @@ void igdeWObject::pCleanUp(){
 
 
 void igdeWObject::pUpdateVisiblity(){
-	const bool partiallyVisible = (pVisible && ! pPartiallyHidden);
-	pColliderFallback->SetEnabled(! pColliderComponent && partiallyVisible);
+	const bool partiallyVisible = (pVisible && !pPartiallyHidden);
+	pColliderFallback->SetEnabled(!pColliderComponent && partiallyVisible);
 	
 	pSubObjectsUpdateVisibility();
 }
@@ -1185,7 +1185,7 @@ void igdeWObject::pCheckAsyncLoadFinished(){
 void igdeWObject::pUpdateProperties(){
 	UpdateTriggerTargets();
 	
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -1234,7 +1234,7 @@ void igdeWObject::pUpdateColliderResponseType(){
 }
 
 void igdeWObject::pUpdateColliderShapes(){
-	if(! pDirtyFallbackColliderShape){
+	if(!pDirtyFallbackColliderShape){
 		return;
 	}
 	
@@ -1245,7 +1245,7 @@ void igdeWObject::pUpdateColliderShapes(){
 	int i;
 	for(i=0; i<count; i++){
 		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
-		if(! subObject.HasBoxExtends()){
+		if(!subObject.HasBoxExtends()){
 			continue;
 		}
 		
@@ -1273,7 +1273,7 @@ void igdeWObject::pUpdateColliderShapes(){
 }
 
 void igdeWObject::pPrepareExtends(){
-	if(! pDirtyExtends){
+	if(!pDirtyExtends){
 		return;
 	}
 	
@@ -1286,7 +1286,7 @@ void igdeWObject::pPrepareExtends(){
 	
 	for(i=0; i<count; i++){
 		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
-		if(! subObject.HasBoxExtends()){
+		if(!subObject.HasBoxExtends()){
 			continue;
 		}
 		

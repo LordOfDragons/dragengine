@@ -80,7 +80,7 @@ void igdeActionContextMenu::SetWidget(igdeWidget *widget){
 
 
 void igdeActionContextMenu::OnAction(){
-	if(! pWidget || ! pWidget->GetVisible()){
+	if(!pWidget || !pWidget->GetVisible()){
 		return;
 	}
 	

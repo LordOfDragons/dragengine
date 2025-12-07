@@ -257,7 +257,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 		for(j=0; j<volumeFaceCount; j++){
 			deoglDMBConvexVolumeFace &volumeFace = *((deoglDMBConvexVolumeFace*)volume.GetFaceAt(j));
 			
-			if(! volumeFace.GetDecalFace() || volumeFace.GetVertexCount() < 3){
+			if(!volumeFace.GetDecalFace() || volumeFace.GetVertexCount() < 3){
 				continue;
 			}
 			
@@ -444,7 +444,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent (const deoglRComponentLOD& lod
 		for(vf=0; vf<volumeFaceCount; vf++){
 			deoglDMBConvexVolumeFace &volumeFace = *((deoglDMBConvexVolumeFace*)volume.GetFaceAt(vf));
 			
-			if(! volumeFace.GetDecalFace()){
+			if(!volumeFace.GetDecalFace()){
 				continue;
 			}
 			if(volumeFace.GetNormal() * pDecalView > 0.001f){

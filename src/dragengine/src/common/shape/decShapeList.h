@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of shapes. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/**
 	 * \brief Shape at index.

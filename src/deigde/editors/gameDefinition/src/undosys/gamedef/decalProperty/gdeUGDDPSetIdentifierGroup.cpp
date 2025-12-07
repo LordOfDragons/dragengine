@@ -45,7 +45,7 @@ gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

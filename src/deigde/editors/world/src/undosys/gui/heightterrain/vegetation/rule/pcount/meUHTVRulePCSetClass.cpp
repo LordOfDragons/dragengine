@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVRulePCSetClass::meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass){
-	if(! vlayer || ! rule || ! nclass) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

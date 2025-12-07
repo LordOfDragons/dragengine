@@ -150,10 +150,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Selection panel. */
-	inline meWPSelection &GetWPSelection() const{return pWPSelection;}
+	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);
@@ -245,22 +245,22 @@ public:
 	void SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing);
 	
 	
-	inline igdeAction *GetActionClassBrowse() const{return pActionClassBrowse;}
-	inline igdeAction *GetActionClassEdit() const{return pActionClassEdit;}
+	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
+	inline igdeAction *GetActionClassEdit() const{ return pActionClassEdit; }
 	
-	inline igdeAction *GetActionIdFind() const{return pActionIdFind;}
+	inline igdeAction *GetActionIdFind() const{ return pActionIdFind; }
 	
-	inline igdeAction *GetActionTextureAddCustom() const{return pActionTextureAddCustom;}
-	inline igdeAction *GetActionTextureAddAllModel() const{return pActionTextureAddAllModel;}
-	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
-	inline igdeAction *GetActionTextureRemoveAll() const{return pActionTextureRemoveAll;}
-	inline igdeAction *GetActionTextureRemoveAllNotModel() const{return pActionTextureRemoveAllNotModel;}
-	inline igdeAction *GetActionTextureCopyToSelected() const{return pActionTextureCopyToSelected;}
-	inline igdeAction *GetActionTextureCloneToSelected() const{return pActionTextureCloneToSelected;}
+	inline igdeAction *GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
+	inline igdeAction *GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
+	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline igdeAction *GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
+	inline igdeAction *GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
+	inline igdeAction *GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
+	inline igdeAction *GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
 	
-	inline igdeAction *GetActionPropCopyToSel() const{return pActionPropCopyToSel;}
-	inline igdeAction *GetActionPropRemoveFromSel() const{return pActionPropRemoveFromSel;}
-	inline igdeAction *GetActionPropCloneToSel() const{return pActionPropCloneToSel;}
+	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 	
 	

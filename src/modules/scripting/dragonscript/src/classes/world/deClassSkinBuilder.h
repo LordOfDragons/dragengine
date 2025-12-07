@@ -59,12 +59,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
-	inline dsClass *GetClassSkinPropertyNodeCombineMode() const{return pClsSkinPropertyNodeCombineMode;}
+	inline dsClass *GetClassSkinPropertyNodeCombineMode() const{ return pClsSkinPropertyNodeCombineMode; }
 	/*@}*/
 	
 	

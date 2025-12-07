@@ -57,14 +57,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable recursion. */
-	inline bool GetRecursion() const{return pRecursion;}
+	inline bool GetRecursion() const{ return pRecursion; }
 	
 	/** \brief Set if recursion is enabled. */
 	void SetRecursion(bool recursion);
 	
 	/** \brief Found directories. */
-	inline dePathList &GetDirectories(){return pDirectories;}
-	inline const dePathList &GetDirectories() const{return pDirectories;}
+	inline dePathList &GetDirectories(){ return pDirectories; }
+	inline const dePathList &GetDirectories() const{ return pDirectories; }
 	/*@}*/
 	
 	

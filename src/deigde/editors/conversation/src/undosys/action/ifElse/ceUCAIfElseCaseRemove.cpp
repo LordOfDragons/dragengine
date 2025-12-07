@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAIfElseCaseRemove::ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase){
-	if(! topic || ! ifelse || ! ifcase){
+	if(!topic || !ifelse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	

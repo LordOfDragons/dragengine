@@ -109,7 +109,7 @@ void deoglSPBlockMemory::MapBuffer (int element, int count){
 }
 
 void deoglSPBlockMemory::UnmapBuffer(){
-	if(! IsBufferMapped()){
+	if(!IsBufferMapped()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -138,7 +138,7 @@ void deoglSPBlockMemory::pGrowBuffer(){
 		pBufferCapacity = bufferSize;
 	}
 	
-	if(! pBuffer){
+	if(!pBuffer){
 		pBuffer = new char[bufferSize];
 		pBufferCapacity = bufferSize;
 	}

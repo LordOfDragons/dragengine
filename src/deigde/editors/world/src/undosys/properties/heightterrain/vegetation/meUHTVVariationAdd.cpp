@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariation *variation){
-	if(! vlayer || ! variation) DETHROW(deeInvalidParam);
+	if(!vlayer || !variation) DETHROW(deeInvalidParam);
 	
 	pVLayer = vlayer;
 	pVariation = variation;

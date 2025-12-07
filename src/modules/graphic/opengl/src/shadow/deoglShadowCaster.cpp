@@ -78,7 +78,7 @@ deoglShadowCaster::~deoglShadowCaster(){
 
 void deoglShadowCaster::Update(){
 	pFrameCounterTracker.Update();
-	if(! pFrameCounterTracker.HasElapsedFrames()){
+	if(!pFrameCounterTracker.HasElapsedFrames()){
 		return;
 	}
 	

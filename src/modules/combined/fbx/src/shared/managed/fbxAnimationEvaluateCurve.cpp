@@ -55,7 +55,7 @@ pNextKeyTime(0.0f),
 pNextKeyValue(defaultValue),
 pNextFrame(0)
 {
-	if(! curve || curve->GetPropertyTime().GetValueCount() == 0){
+	if(!curve || curve->GetPropertyTime().GetValueCount() == 0){
 		return;
 	}
 	

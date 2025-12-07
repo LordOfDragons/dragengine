@@ -141,7 +141,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
-	inline const decString &GetDefaultDirectory() const{return pDefaultDirectory;}
+	inline const decString &GetDefaultDirectory() const{ return pDefaultDirectory; }
 	
 	/** \brief Set default path. */
 	void SetDefaultDirectory(const char *path);
@@ -150,7 +150,7 @@ public:
 	bool IsDirectoryValid() const;
 	
 	/** \brief Auto validate path if changed. */
-	inline bool GetAutoValidateDirectory() const{return pAutoValidateDirectory;}
+	inline bool GetAutoValidateDirectory() const{ return pAutoValidateDirectory; }
 	
 	/** \brief Set if path is auto validated if changed. */
 	void SetAutoValidateDirectory(bool autoValidateDirectory);
@@ -159,7 +159,7 @@ public:
 	void ValidateDirectory();
 	
 	/** \brief Use game virtual file system or native file system. */
-	inline bool GetUseGameVFS() const{return pUseGameVFS;}
+	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
 	
 	/** \brief Focus widget. */
 	void Focus();

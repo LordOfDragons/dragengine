@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{return pOal;}
+	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	/** \brief Skin. */
-	inline const deSkin &GetSkin() const{return pSkin;}
+	inline const deSkin &GetSkin() const{ return pSkin; }
 	
 	/** \brief Audio skin. */
-	inline deoalASkin *GetASkin() const{return pASkin;}
+	inline deoalASkin *GetASkin() const{ return pASkin; }
 	/*@}*/
 };
 

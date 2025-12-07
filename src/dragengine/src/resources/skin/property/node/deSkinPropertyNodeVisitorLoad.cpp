@@ -86,7 +86,7 @@ void deSkinPropertyNodeVisitorLoad::VisitImage(deSkinPropertyNodeImage &node){
 	const decString &path = node.GetPath();
 	deImage *image = NULL;
 	
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			image = pEngine.GetImageManager()->LoadImage(pVirtualFileSystem, path, pBasePath);
 			node.SetImage(image);
@@ -112,7 +112,7 @@ void deSkinPropertyNodeVisitorLoad::VisitText(deSkinPropertyNodeText &node){
 	const decString &path = node.GetPath();
 	deFont *font = NULL;
 	
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			font = pEngine.GetFontManager()->LoadFont(pVirtualFileSystem, path, pBasePath);
 			node.SetFont(font);

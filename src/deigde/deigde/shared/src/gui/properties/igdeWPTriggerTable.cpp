@@ -106,7 +106,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
-		if(! target){
+		if(!target){
 			return;
 		}
 		
@@ -135,7 +135,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
-		if(! list){
+		if(!list){
 			return;
 		}
 		
@@ -159,7 +159,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
-		if(! list){
+		if(!list){
 			return;
 		}
 		
@@ -196,7 +196,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
-		if(! list || ! target){
+		if(!list || !target){
 			return;
 		}
 		
@@ -219,7 +219,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
-		if(! target){
+		if(!target){
 			return;
 		}
 		
@@ -228,7 +228,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetSelectedTarget() && ! pPanel.GetSelectedTarget()->GetFired());
+		SetEnabled(pPanel.GetSelectedTarget() && !pPanel.GetSelectedTarget()->GetFired());
 	}
 };
 
@@ -242,7 +242,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
-		if(! target){
+		if(!target){
 			return;
 		}
 		
@@ -265,7 +265,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
-		if(! target){
+		if(!target){
 			return;
 		}
 		
@@ -335,7 +335,7 @@ void igdeWPTriggerTable::SelectTarget(igdeTriggerTarget *target){
 void igdeWPTriggerTable::UpdateTable(){
 	const decString filter(pEditTriggerTableFilter->GetText().GetLower());
 	igdeTriggerTarget *selectedTarget = GetSelectedTarget();
-	const bool hasFilter = ! filter.IsEmpty();
+	const bool hasFilter = !filter.IsEmpty();
 	
 	pListTriggerTable->RemoveAllItems();
 	
@@ -360,7 +360,7 @@ void igdeWPTriggerTable::UpdateTable(){
 	pListTriggerTable->SortItems();
 	
 	pListTriggerTable->SetSelectionWithData(selectedTarget);
-	if(! pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItemCount() > 0){
+	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItemCount() > 0){
 		pListTriggerTable->SetSelection(0);
 	}
 }

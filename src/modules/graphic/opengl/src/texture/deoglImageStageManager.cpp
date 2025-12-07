@@ -106,7 +106,7 @@ GLenum deoglImageStageManager::GetStageType(int stage) const{
 
 
 void deoglImageStageManager::Enable(int stage, const deoglTexture &texture, int level, eAccess access){
-	if(! texture.GetFormat()){
+	if(!texture.GetFormat()){
 		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
@@ -115,7 +115,7 @@ void deoglImageStageManager::Enable(int stage, const deoglTexture &texture, int 
 }
 
 void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int level, eAccess access){
-	if(! cubemap.GetFormat()){
+	if(!cubemap.GetFormat()){
 		DETHROW_INFO(deeNullPointer, "cubemap.format");
 	}
 	
@@ -124,7 +124,7 @@ void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int 
 }
 
 void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int level, int face, eAccess access){
-	if(! cubemap.GetFormat()){
+	if(!cubemap.GetFormat()){
 		DETHROW_INFO(deeNullPointer, "cubemap.format");
 	}
 	
@@ -133,7 +133,7 @@ void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int 
 }
 
 void deoglImageStageManager::Enable(int stage, const deoglArrayTexture &texture, int level, eAccess access){
-	if(! texture.GetFormat()){
+	if(!texture.GetFormat()){
 		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
@@ -142,7 +142,7 @@ void deoglImageStageManager::Enable(int stage, const deoglArrayTexture &texture,
 }
 
 void deoglImageStageManager::Enable(int stage, const deoglArrayTexture &texture, int level, int layer, eAccess access){
-	if(! texture.GetFormat()){
+	if(!texture.GetFormat()){
 		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
@@ -156,7 +156,7 @@ void deoglImageStageManager::EnableTBO(int stage, GLuint tbo, eAccess access, GL
 
 void deoglImageStageManager::EnableSkin(int stage, const deoglRSkin &skin, int texture,
 deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, eAccess access){
-	if(stage < 0 || stage >= OGL_MAX_IMAGE_STAGES || ! defaultTexture){
+	if(stage < 0 || stage >= OGL_MAX_IMAGE_STAGES || !defaultTexture){
 		DETHROW(deeInvalidParam);
 	}
 	

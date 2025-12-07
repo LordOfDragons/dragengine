@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Fence or 0 if not armed. */
-	inline GLsync GetFence() const{return pFence;}
+	inline GLsync GetFence() const{ return pFence; }
 	
 	/** Resets fence then arms it. */
 	void Arm();

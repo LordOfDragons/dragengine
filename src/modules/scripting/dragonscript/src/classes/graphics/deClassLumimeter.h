@@ -62,12 +62,12 @@ public:
 	deLumimeter *GetLumimeter(dsRealObject *myself) const;
 	void PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter);
 	
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassColor *GetClassColor() const{return pClsClr;}
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
+	inline deClassColor *GetClassColor() const{ return pClsClr; }
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
 
 private:
 	struct sInitData{

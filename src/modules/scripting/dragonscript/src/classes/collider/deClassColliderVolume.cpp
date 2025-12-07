@@ -147,7 +147,7 @@ void deClassColliderVolume::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassColliderVolume * const clsColVol = (deClassColliderVolume*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsColVol)){
+	if(!p_IsObjOfType(obj, clsColVol)){
 		rt->PushBool(false);
 		
 	}else{
@@ -230,7 +230,7 @@ void deClassColliderVolume::CreateClassMembers(dsEngine *engine){
 
 
 deColliderVolume *deClassColliderVolume::GetCollider(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -238,11 +238,11 @@ deColliderVolume *deClassColliderVolume::GetCollider(dsRealObject *myself) const
 }
 
 void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collider){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! collider){
+	if(!collider){
 		rt->PushObject(NULL, this);
 		return;
 	}

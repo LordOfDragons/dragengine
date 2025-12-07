@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */
-	inline deoglSharedSPB &GetSPB() const{return pSPB;}
+	inline deoglSharedSPB &GetSPB() const{ return pSPB; }
 	
 	/** Element index in the shader parameter block. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/**
 	 * Map buffer for element.

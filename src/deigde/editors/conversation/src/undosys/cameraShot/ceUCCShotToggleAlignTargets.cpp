@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets(ceCameraShot *cameraShot){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
@@ -62,9 +62,9 @@ ceUCCShotToggleAlignTargets::~ceUCCShotToggleAlignTargets(){
 ///////////////
 
 void ceUCCShotToggleAlignTargets::Undo(){
-	pCameraShot->SetAlignTargets(! pCameraShot->GetAlignTargets());
+	pCameraShot->SetAlignTargets(!pCameraShot->GetAlignTargets());
 }
 
 void ceUCCShotToggleAlignTargets::Redo(){
-	pCameraShot->SetAlignTargets(! pCameraShot->GetAlignTargets());
+	pCameraShot->SetAlignTargets(!pCameraShot->GetAlignTargets());
 }

@@ -137,7 +137,7 @@ void deTouchSensor::SetEnabled(bool enabled){
 
 
 void deTouchSensor::NotifyColliderEntered(deCollider *collider){
-	if(! collider){
+	if(!collider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -147,7 +147,7 @@ void deTouchSensor::NotifyColliderEntered(deCollider *collider){
 }
 
 void deTouchSensor::NotifyColliderLeft(deCollider *collider){
-	if(! collider){
+	if(!collider){
 		DETHROW(deeInvalidParam);
 	}
 	

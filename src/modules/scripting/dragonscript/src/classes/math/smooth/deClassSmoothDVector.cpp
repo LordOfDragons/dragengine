@@ -256,7 +256,7 @@ void deClassSmoothDVector::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *m
 	const deClassFileReader &clsFileReader = *clsSmoothDVector.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -290,7 +290,7 @@ void deClassSmoothDVector::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *my
 	const deClassFileWriter &clsFileWriter = *clsSmoothDVector.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -317,7 +317,7 @@ void deClassSmoothDVector::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassSmoothDVector * const clsSmoothDVector = (deClassSmoothDVector*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSmoothDVector)){
+	if(!p_IsObjOfType(obj, clsSmoothDVector)){
 		rt->PushBool(false);
 		
 	}else{
@@ -406,7 +406,7 @@ void deClassSmoothDVector::CreateClassMembers(dsEngine *engine){
 }
 
 const decSmoothDVector &deClassSmoothDVector::GetSmoothDVector(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -414,7 +414,7 @@ const decSmoothDVector &deClassSmoothDVector::GetSmoothDVector(dsRealObject *mys
 }
 
 void deClassSmoothDVector::PushSmoothDVector(dsRunTime *rt, const decSmoothDVector &smoothFloat){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

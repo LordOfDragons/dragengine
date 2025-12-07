@@ -371,7 +371,7 @@ debiDevice(module)
 				}
 			}
 			
-			if(! string.IsEmpty()){
+			if(!string.IsEmpty()){
 				string.SetAt(0, toupper(string.GetAt(0)));
 			}
 			

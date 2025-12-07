@@ -45,7 +45,7 @@ gdeUOCAddNavBlocker::gdeUOCAddNavBlocker(gdeObjectClass *objectClass, gdeOCNavig
 pObjectClass(NULL),
 pNavBlocker(NULL)
 {
-	if(! objectClass || ! navblocker){
+	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
 	}
 	

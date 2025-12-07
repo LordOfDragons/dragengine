@@ -157,7 +157,7 @@ void ceTextBox::SetTextOffset(int offset){
 void ceTextBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if(! parentView){
+	if(!parentView){
 		return;
 	}
 	

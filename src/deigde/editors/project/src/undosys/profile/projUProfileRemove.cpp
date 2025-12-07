@@ -44,11 +44,11 @@ projUProfileRemove::projUProfileRemove(projProject *project, projProfile *profil
 pProject(NULL),
 pProfile(NULL)
 {
-	if(! project || ! profile){
+	if(!project || !profile){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! project->GetProfiles().Has(profile)){
+	if(!project->GetProfiles().Has(profile)){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -44,7 +44,7 @@ seULinkAdd::seULinkAdd(seSky *sky, seLink *link) :
 pSky(NULL),
 pLink(NULL)
 {
-	if(! sky || ! link){
+	if(!sky || !link){
 		DETHROW(deeInvalidParam);
 	}
 	

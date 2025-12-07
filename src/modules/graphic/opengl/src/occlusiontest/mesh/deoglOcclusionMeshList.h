@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of occlusion meshes. */
-	inline int GetCount() const{return pOcclusionMeshCount;}
+	inline int GetCount() const{ return pOcclusionMeshCount; }
 	/** Retrieves the index of the occlusion mesh or -1 if not in the list. */
 	int IndexOfOcclusionMesh(deoglOcclusionMesh *occlusionMesh) const;
 	/** Determines if the occlusion mesh exists. */

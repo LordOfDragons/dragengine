@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject(gdeGameDefinition &gameDefin
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
-	if(! envMapProbe){
+	if(!envMapProbe){
 		return NULL;
 	}
 	

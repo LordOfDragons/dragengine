@@ -432,11 +432,11 @@ void deoglRLSVisitorCollectElements::VisitHTView(const deoglHTView &htview){
 			for(si.x=0; si.x<count; si.x++, cluster++){
 				const decDVector realOffset(offset + decDVector(cluster->GetCenter()));
 				const decDVector realHalfExtend(cluster->GetHalfExtends());
-				if(! TestAxisAlignedBox(realOffset - realHalfExtend, realOffset + realHalfExtend, cascadeMask)){
+				if(!TestAxisAlignedBox(realOffset - realHalfExtend, realOffset + realHalfExtend, cascadeMask)){
 					continue;
 				}
 				
-				if(! clsector){
+				if(!clsector){
 					clsector = pCollideList.AddHTSector(&sector);
 				}
 				clsector->AddCluster(si)->SetCascadeMask(cascadeMask);
@@ -473,14 +473,14 @@ void deoglRLSVisitorCollectElements::VisitPropFields(const deoglRWorld &world){
 				
 				const decDVector minExtend(offset + decDVector(cluster.GetMinimumExtend()));
 				const decDVector maxExtend(offset + decDVector(cluster.GetMaximumExtend()));
-				if(! TestAxisAlignedBox(minExtend, maxExtend, cascadeMask)){
+				if(!TestAxisAlignedBox(minExtend, maxExtend, cascadeMask)){
 					continue;
 				}
 				
-				if(! clpropfield){
+				if(!clpropfield){
 					clpropfield = pCollideList.AddPropField(&propField);
 				}
-				if(! cltype){
+				if(!cltype){
 					cltype = clpropfield->AddType(&type);
 				}
 				cltype->AddCluster(&cluster)->SetCascadeMask(cascadeMask);
@@ -500,7 +500,7 @@ void deoglRLSVisitorCollectElements::VisitPropFields(const deoglRWorld &world){
 
 void deoglRLSVisitorCollectElements::VisitNode(deoglDOctree *node, int){
 	// check if the node is fully inside or outside to speed up checks if possible
-	if(! TestAxisAlignedBox(node->GetMinimumExtend(), node->GetMaximumExtend())){
+	if(!TestAxisAlignedBox(node->GetMinimumExtend(), node->GetMaximumExtend())){
 		return; // axis aligned box of node is outside the boundary box. ignore all contained elements
 	}
 	
@@ -514,7 +514,7 @@ void deoglRLSVisitorCollectElements::VisitNode(deoglDOctree *node, int){
 
 bool deoglRLSVisitorCollectElements::TestAxisAlignedBox(const decDVector &minExtend, const decDVector &maxExtend){
 	// test if the axis aligned box hits the axis aligned boundary box
-	if(! deoglDCollisionDetection::AABoxHitsAABox(pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend, minExtend, maxExtend)){
+	if(!deoglDCollisionDetection::AABoxHitsAABox(pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend, minExtend, maxExtend)){
 		return false;
 	}
 	
@@ -568,7 +568,7 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox(const decDVector &minExt
 
 bool deoglRLSVisitorCollectElements::TestAxisAlignedBox(const decDVector &minExtend, const decDVector &maxExtend, int &splitMask){
 	// test if the axis aligned box hits the axis aligned boundary box
-	if(! deoglDCollisionDetection::AABoxHitsAABox(pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend, minExtend, maxExtend)){
+	if(!deoglDCollisionDetection::AABoxHitsAABox(pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend, minExtend, maxExtend)){
 		return false;
 	}
 	
@@ -658,7 +658,7 @@ void deoglRLSVisitorCollectElements::pVisitComponents(const deoglWorldOctree &so
 			continue;
 		}
 		
-		if(! TestAxisAlignedBox(component.GetMinimumExtend(), component.GetMaximumExtend(), cascadeMask)){
+		if(!TestAxisAlignedBox(component.GetMinimumExtend(), component.GetMaximumExtend(), cascadeMask)){
 			continue;
 		}
 		
@@ -687,7 +687,7 @@ void deoglRLSVisitorCollectElements::pVisitBillboards(const deoglWorldOctree &so
 			continue;
 		}
 		
-		if(! TestAxisAlignedBox(billboard.GetMinimumExtend(), billboard.GetMaximumExtend(), cascadeMask)){
+		if(!TestAxisAlignedBox(billboard.GetMinimumExtend(), billboard.GetMaximumExtend(), cascadeMask)){
 			continue;
 		}
 		

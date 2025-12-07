@@ -128,7 +128,7 @@ bool gdeOCSpeaker::IsPropertySet(eProperties property) const{
 	if(property < 0 || property >= EP_COUNT){
 		DETHROW(deeInvalidParam);
 	}
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCSpeaker::GetPropertyName(eProperties property) const{
@@ -158,7 +158,7 @@ bool gdeOCSpeaker::HasPropertyWithName(const char *name) const{
 
 
 bool gdeOCSpeaker::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &gdeOCSpeaker::GetTriggerName(eTriggers trigger) const{

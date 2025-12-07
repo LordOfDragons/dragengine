@@ -51,7 +51,7 @@ igdeNullInputModule::cModule::~cModule(){
 
 void igdeNullInputModule::cModule::CreateModule(){
 	SetModule(new igdeNullInputModule(*this));
-	if(! GetModule()) SetErrorCode(eecCreateModuleFailed);
+	if(!GetModule()) SetErrorCode(eecCreateModuleFailed);
 }
 
 

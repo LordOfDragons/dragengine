@@ -212,7 +212,7 @@ deClassARStateSnapshot::nfTargetAddLink::nfTargetAddLink(const sInitData &init) 
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARStateSnapshot::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -242,7 +242,7 @@ deClassARStateSnapshot::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sIn
 	p_AddParameter(init.clsARStateSnapshotTarget); // target
 }
 void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -328,7 +328,7 @@ void deClassARStateSnapshot::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -336,7 +336,7 @@ deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *mysel
 }
 
 void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -360,11 +360,11 @@ void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *an
 }
 
 void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

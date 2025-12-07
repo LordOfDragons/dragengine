@@ -71,13 +71,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to child synthesizer. */
-	inline const decString &GetPathSynthesizer() const{return pPathSynthesizer;}
+	inline const decString &GetPathSynthesizer() const{ return pPathSynthesizer; }
 	
 	/** \brief Set path to child synthesizer. */
 	void SetPathSynthesizer(const char *path);
 	
 	/** \brief Child synthesizer or \em NULL if absent. */
-	inline deSynthesizer *GetChildSynthesizer() const{return pChildSynthesizer;}
+	inline deSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
 	
 	/** \brief Update child synthesizer using stored path. */
 	void UpdateChildSynthesizer();
@@ -85,7 +85,7 @@ public:
 	
 	
 	/** \brief Number of controller names. */
-	inline int GetControllerNameCount() const{return pControllerNameCount;}
+	inline int GetControllerNameCount() const{ return pControllerNameCount; }
 	
 	/** \brief Controller name at position. */
 	const decString &GetControllerNameAt(int position) const;
@@ -93,7 +93,7 @@ public:
 	
 	
 	/** \brief Number of connections. */
-	inline int GetConnectionCount() const{return pConnectionCount;}
+	inline int GetConnectionCount() const{ return pConnectionCount; }
 	
 	/** \brief Set number of connections. */
 	void SetConnectionCount(int count);

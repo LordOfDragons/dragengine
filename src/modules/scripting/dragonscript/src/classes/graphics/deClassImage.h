@@ -49,12 +49,12 @@ public:
 	~deClassImage();
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return p_gameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	deImage *GetImage(dsRealObject *This) const;
 	void PushImage(dsRunTime *rt, deImage *image);
 	
-	inline deClassResourceListener *GetClassResourceListener() const{return pClsRN;}
+	inline deClassResourceListener *GetClassResourceListener() const{ return pClsRN; }
 
 private:
 	struct sInitData{

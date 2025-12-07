@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Claim a new query. */
 	deoglOcclusionQuery *ClaimQuery();
@@ -75,7 +75,7 @@ public:
 	void ReleaseQuery(deoglOcclusionQuery *query);
 	
 	/** Retrieves the active query. */
-	inline deoglOcclusionQuery *GetActiveQuery() const{return pActiveQuery;}
+	inline deoglOcclusionQuery *GetActiveQuery() const{ return pActiveQuery; }
 	/** Sets the active query. */
 	void SetActiveQuery(deoglOcclusionQuery *query);
 	/** Ends the active query if there is one. */

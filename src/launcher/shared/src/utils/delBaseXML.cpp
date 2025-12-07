@@ -50,10 +50,10 @@ delBaseXML::delBaseXML(deLogger *logger, const char *loggerSource) :
 pLogger(logger),
 pLoggerSource(loggerSource)
 {
-	if(! logger){
+	if(!logger){
 		DETHROW_INFO(deeNullPointer, "logger");
 	}
-	if(! loggerSource){
+	if(!loggerSource){
 		DETHROW_INFO(deeNullPointer, "loggerSource");
 	}
 }

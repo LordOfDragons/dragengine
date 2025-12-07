@@ -56,7 +56,7 @@ pTopic(&topic),
 pPlayerChoice(&playerChoice),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

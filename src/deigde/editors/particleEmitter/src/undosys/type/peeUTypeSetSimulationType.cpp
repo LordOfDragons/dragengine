@@ -44,7 +44,7 @@ deParticleEmitterType::eSimulationTypes newSimType) :
 pType(NULL),
 pNewSimType(newSimType)
 {
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -89,7 +89,7 @@ deSmokeEmitter::~deSmokeEmitter(){
 ///////////////
 
 void deSmokeEmitter::SetEmitterPosition(const decDVector &position){
-	if(! position.IsEqualTo(pEmitterPosition)){
+	if(!position.IsEqualTo(pEmitterPosition)){
 		pEmitterPosition = position;
 		
 		if(pPeerPhysics) pPeerPhysics->EmitterPositionChanged();
@@ -97,7 +97,7 @@ void deSmokeEmitter::SetEmitterPosition(const decDVector &position){
 }
 
 void deSmokeEmitter::SetEmitterOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pEmitterOrientation)){
+	if(!orientation.IsEqualTo(pEmitterOrientation)){
 		pEmitterOrientation = orientation;
 		
 		if(pPeerPhysics) pPeerPhysics->EmitterOrientationChanged();
@@ -107,7 +107,7 @@ void deSmokeEmitter::SetEmitterOrientation(const decQuaternion &orientation){
 
 
 void deSmokeEmitter::SetVolumePosition(const decDVector &position){
-	if(! position.IsEqualTo(pVolumePosition)){
+	if(!position.IsEqualTo(pVolumePosition)){
 		pVolumePosition = position;
 		
 		if(pPeerGraphic) pPeerGraphic->VolumePositionChanged();
@@ -117,7 +117,7 @@ void deSmokeEmitter::SetVolumePosition(const decDVector &position){
 
 
 void deSmokeEmitter::SetMinCastDirection(const decVector &deviation){
-	if(! deviation.IsEqualTo(pCastDirectionMin)){
+	if(!deviation.IsEqualTo(pCastDirectionMin)){
 		pCastDirectionMin = deviation;
 		
 		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
@@ -125,7 +125,7 @@ void deSmokeEmitter::SetMinCastDirection(const decVector &deviation){
 }
 
 void deSmokeEmitter::SetMaxCastDirection(const decVector &deviation){
-	if(! deviation.IsEqualTo(pCastDirectionMax)){
+	if(!deviation.IsEqualTo(pCastDirectionMax)){
 		pCastDirectionMax = deviation;
 		
 		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
@@ -220,7 +220,7 @@ void deSmokeEmitter::SetCollisionFilter(const decCollisionFilter &collisionFilte
 }
 
 void deSmokeEmitter::SetGravity(const decVector &gravity){
-	if(! gravity.IsEqualTo(pGravity)){
+	if(!gravity.IsEqualTo(pGravity)){
 		pGravity = gravity;
 		
 		if(pPeerPhysics) pPeerPhysics->GravityChanged();

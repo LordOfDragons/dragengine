@@ -61,11 +61,11 @@ aeURuleSnapToggleEnableVertexPositionSet::~aeURuleSnapToggleEnableVertexPosition
 ///////////////
 
 void aeURuleSnapToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleSnapToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 

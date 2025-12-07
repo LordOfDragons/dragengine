@@ -47,7 +47,7 @@ pGroup(NULL),
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();
 	
-	if(! group || ruleCount == 0){
+	if(!group || ruleCount == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -131,9 +131,9 @@ void aeURuleGroupPasteRule::Redo(){
 			const int linkCount = linkList.GetCount();
 			for(j=0; j<linkCount; j++){
 				aeLink * const link = linkList.GetAt(j);
-				if(! animator->GetLinks().Has(link)){
+				if(!animator->GetLinks().Has(link)){
 					aeController * const controller = link->GetController();
-					if(controller && ! animator->GetControllers().HasNamed(controller->GetName())){
+					if(controller && !animator->GetControllers().HasNamed(controller->GetName())){
 						pRemoveControllerList.Add(controller);
 						animator->AddController(controller);
 					}

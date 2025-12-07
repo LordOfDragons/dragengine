@@ -66,31 +66,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render task filter. */
-	inline int GetRenderTaskFilter() const{return pRenderTaskFilter;}
+	inline int GetRenderTaskFilter() const{ return pRenderTaskFilter; }
 	
 	/** Set render task filter. */
 	void SetRenderTaskFilter(int filter);
 	
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
 	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Texture. */
-	inline const deoglRenderTaskSharedTexture *GetTexture() const{return pTexture;}
+	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set texture. */
 	void SetTexture(const deoglRenderTaskSharedTexture *texture);
 	
 	/** VAO. */
-	inline const deoglRenderTaskSharedVAO *GetVAO() const{return pVAO;}
+	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
 	void SetVAO(const deoglRenderTaskSharedVAO *vao);
 	
 	/** Instance. */
-	inline const deoglRenderTaskSharedInstance *GetInstance() const{return pInstance;}
+	inline const deoglRenderTaskSharedInstance *GetInstance() const{ return pInstance; }
 	
 	/** Set instance. */
 	void SetInstance(const deoglRenderTaskSharedInstance *instance);
@@ -98,21 +98,21 @@ public:
 	
 	
 	/** Pipeline index. */
-	inline int GetPipelineIndex() const{return pPipelineIndex;}
+	inline int GetPipelineIndex() const{ return pPipelineIndex; }
 	
 	/** Texture index. */
-	inline int GetTextureIndex() const{return pTextureIndex;}
+	inline int GetTextureIndex() const{ return pTextureIndex; }
 	
 	/** VAO index. */
-	inline int GetVAOIndex() const{return pVAOIndex;}
+	inline int GetVAOIndex() const{ return pVAOIndex; }
 	
 	/** Instance index. */
-	inline int GetInstanceIndex() const{return pInstanceIndex;}
+	inline int GetInstanceIndex() const{ return pInstanceIndex; }
 	
 	
 	
 	/** Sub instance group index. */
-	inline int GetGroupIndex() const{return pGroupIndex;}
+	inline int GetGroupIndex() const{ return pGroupIndex; }
 	
 	/** Set sub instance group index. */
 	void SetGroupIndex(int groupIndex);

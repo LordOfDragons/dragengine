@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of objects. */
-	inline int GetObjectCount() const{return pObjectCount;}
+	inline int GetObjectCount() const{ return pObjectCount; }
 	
 	/** \brief Object at index. */
 	meCDOObject *GetObjectAt(int index) const;

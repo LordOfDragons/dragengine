@@ -85,31 +85,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas type. */
-	inline eCanvasTypes GetType() const{return pType;}
+	inline eCanvasTypes GetType() const{ return pType; }
 	
 	/** \brief Canvas type is unknown. */
-	inline bool IsUnknown() const{return pType == ectUnknown;}
+	inline bool IsUnknown() const{ return pType == ectUnknown; }
 	
 	/** \brief Canvas is an image canvas. */
-	inline bool IsImage() const{return pType == ectImage;}
+	inline bool IsImage() const{ return pType == ectImage; }
 	
 	/** \brief Canvas is a paint canvas. */
-	inline bool IsPaint() const{return pType == ectPaint;}
+	inline bool IsPaint() const{ return pType == ectPaint; }
 	
 	/** \brief Canvas is a canvas view canvas. */
-	inline bool IsCanvasView() const{return pType == ectCanvasView;}
+	inline bool IsCanvasView() const{ return pType == ectCanvasView; }
 	
 	/** \brief Canvas is a render world canvas. */
-	inline bool IsRenderWorld() const{return pType == ectRenderWorld;}
+	inline bool IsRenderWorld() const{ return pType == ectRenderWorld; }
 	
 	/** \brief Canvas is a text canvas. */
-	inline bool IsText() const{return pType == ectText;}
+	inline bool IsText() const{ return pType == ectText; }
 	
 	/** \brief Canvas is a video player canvas. */
-	inline bool IsVideoPlayer() const{return pType == ectVideoPlayer;}
+	inline bool IsVideoPlayer() const{ return pType == ectVideoPlayer; }
 	
 	/** \brief Canvas is a view canvas. */
-	inline bool IsView() const{return pType == ectView;}
+	inline bool IsView() const{ return pType == ectView; }
 	
 	/**
 	 * \brief Cast to an image canvas.

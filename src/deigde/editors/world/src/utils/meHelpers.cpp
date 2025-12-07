@@ -241,7 +241,7 @@ void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object, c
 	if(gdcomponent){
 		gdctexture = gdcomponent->GetTextureList().GetNamed(textureName);
 	}
-	if(! gdctexture && object->GetGDClass()){
+	if(!gdctexture && object->GetGDClass()){
 		gdctexture = object->GetGDClass()->GetComponentTextures().GetNamed(textureName);
 	}
 	meHelpers::CreateTexture(texture, object, textureName, gdctexture);

@@ -44,7 +44,7 @@ projProfile *profile, const char *newValue) :
 pProfile(NULL),
 pNewValue(newValue)
 {
-	if(! profile){
+	if(!profile){
 		DETHROW(deeInvalidParam);
 	}
 	

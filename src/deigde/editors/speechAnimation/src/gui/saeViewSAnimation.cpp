@@ -57,7 +57,7 @@ public:
 	
 public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
-		if(! pView.GetSAnimation()){
+		if(!pView.GetSAnimation()){
 			return eiNone;
 		}
 		return igdeMouseCameraListener::ChooseInteraction();

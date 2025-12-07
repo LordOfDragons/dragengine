@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnableScaleZMax::aeURuleLimitSetEnableScaleZMax(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableScaleZMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleZMax::Redo(){
-	pRule->SetEnableScalingZMax(! pRule->GetEnableScalingZMax());
+	pRule->SetEnableScalingZMax(!pRule->GetEnableScalingZMax());
 }

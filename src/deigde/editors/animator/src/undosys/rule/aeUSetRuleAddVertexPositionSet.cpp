@@ -56,13 +56,13 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet(aeRule *rule, con
 		for(i=0; i<setCount; i++){
 			const decString &set = engModel->GetVertexPositionSetAt(i)->GetName();
 			
-			if(set.MatchesPattern(pattern) && ! sets.Has(set)){
+			if(set.MatchesPattern(pattern) && !sets.Has(set)){
 				pVertexPositionSets.Add(set);
 			}
 		}
 		
 	}else{
-		if(! sets.Has(pattern)){
+		if(!sets.Has(pattern)){
 			pVertexPositionSets.Add(pattern);
 		}
 	}

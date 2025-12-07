@@ -731,14 +731,14 @@ void detConvexVolume::TestVolume(){
 	octree.InsertIntoTree(&a, decVector(1.0f, 0.5f, 2.0f), decVector(0.6f, 0.8f, 1.2f));
 	
 	// check the state
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXposYposZpos));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXnegYposZpos));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXnegYnegZpos));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXposYnegZpos));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXposYposZneg));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXnegYposZneg));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXnegYnegZneg));
-	ASSERT_TRUE(! octree.GetNodeAt(decConvexVolume::eoXposYnegZneg));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXposYposZpos));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXnegYposZpos));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXnegYnegZpos));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXposYnegZpos));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXposYposZneg));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXnegYposZneg));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXnegYnegZneg));
+	ASSERT_TRUE(!octree.GetNodeAt(decConvexVolume::eoXposYnegZneg));
 	ASSERT_TRUE(octree.GetElementCount() == 1);
 	ASSERT_TRUE(octree.GetElementAt(0) == &a);
 	*/
@@ -927,52 +927,52 @@ int detConvexVolume::pIsVolumeCube(const decConvexVolumeList &list) const{
 	if(vertex[7] == -1) return 18;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(0.0f, 0.0f, -1.0f));
-	if(! convexFace) return 20;
+	if(!convexFace) return 20;
 	if(convexFace->GetVertexCount() != 4) return 21;
-	if(! convexFace->HasVertex(vertex[0])) return 22;
-	if(! convexFace->HasVertex(vertex[1])) return 23;
-	if(! convexFace->HasVertex(vertex[2])) return 24;
-	if(! convexFace->HasVertex(vertex[3])) return 25;
+	if(!convexFace->HasVertex(vertex[0])) return 22;
+	if(!convexFace->HasVertex(vertex[1])) return 23;
+	if(!convexFace->HasVertex(vertex[2])) return 24;
+	if(!convexFace->HasVertex(vertex[3])) return 25;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(0.0f, 0.0f, 1.0f));
-	if(! convexFace) return 30;
+	if(!convexFace) return 30;
 	if(convexFace->GetVertexCount() != 4) return 31;
-	if(! convexFace->HasVertex(vertex[4])) return 32;
-	if(! convexFace->HasVertex(vertex[5])) return 33;
-	if(! convexFace->HasVertex(vertex[6])) return 34;
-	if(! convexFace->HasVertex(vertex[7])) return 35;
+	if(!convexFace->HasVertex(vertex[4])) return 32;
+	if(!convexFace->HasVertex(vertex[5])) return 33;
+	if(!convexFace->HasVertex(vertex[6])) return 34;
+	if(!convexFace->HasVertex(vertex[7])) return 35;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(1.0f, 0.0f, 0.0f));
-	if(! convexFace) return 40;
+	if(!convexFace) return 40;
 	if(convexFace->GetVertexCount() != 4) return 41;
-	if(! convexFace->HasVertex(vertex[1])) return 42;
-	if(! convexFace->HasVertex(vertex[2])) return 43;
-	if(! convexFace->HasVertex(vertex[5])) return 44;
-	if(! convexFace->HasVertex(vertex[6])) return 45;
+	if(!convexFace->HasVertex(vertex[1])) return 42;
+	if(!convexFace->HasVertex(vertex[2])) return 43;
+	if(!convexFace->HasVertex(vertex[5])) return 44;
+	if(!convexFace->HasVertex(vertex[6])) return 45;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(-1.0f, 0.0f, 0.0f));
-	if(! convexFace) return 50;
+	if(!convexFace) return 50;
 	if(convexFace->GetVertexCount() != 4) return 51;
-	if(! convexFace->HasVertex(vertex[0])) return 52;
-	if(! convexFace->HasVertex(vertex[3])) return 53;
-	if(! convexFace->HasVertex(vertex[4])) return 54;
-	if(! convexFace->HasVertex(vertex[7])) return 55;
+	if(!convexFace->HasVertex(vertex[0])) return 52;
+	if(!convexFace->HasVertex(vertex[3])) return 53;
+	if(!convexFace->HasVertex(vertex[4])) return 54;
+	if(!convexFace->HasVertex(vertex[7])) return 55;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(0.0f, 1.0f, 0.0f));
-	if(! convexFace) return 60;
+	if(!convexFace) return 60;
 	if(convexFace->GetVertexCount() != 4) return 61;
-	if(! convexFace->HasVertex(vertex[0])) return 62;
-	if(! convexFace->HasVertex(vertex[1])) return 63;
-	if(! convexFace->HasVertex(vertex[4])) return 64;
-	if(! convexFace->HasVertex(vertex[5])) return 65;
+	if(!convexFace->HasVertex(vertex[0])) return 62;
+	if(!convexFace->HasVertex(vertex[1])) return 63;
+	if(!convexFace->HasVertex(vertex[4])) return 64;
+	if(!convexFace->HasVertex(vertex[5])) return 65;
 	
 	convexFace = pGetFaceWithNormal(*volume, decVector(0.0f, -1.0f, 0.0f));
-	if(! convexFace) return 70;
+	if(!convexFace) return 70;
 	if(convexFace->GetVertexCount() != 4) return 71;
-	if(! convexFace->HasVertex(vertex[3])) return 72;
-	if(! convexFace->HasVertex(vertex[2])) return 73;
-	if(! convexFace->HasVertex(vertex[7])) return 74;
-	if(! convexFace->HasVertex(vertex[6])) return 75;
+	if(!convexFace->HasVertex(vertex[3])) return 72;
+	if(!convexFace->HasVertex(vertex[2])) return 73;
+	if(!convexFace->HasVertex(vertex[7])) return 74;
+	if(!convexFace->HasVertex(vertex[6])) return 75;
 	
 	return 0;
 }
@@ -983,7 +983,7 @@ int detConvexVolume::pIsVolumeCubeSplit(const decConvexVolumeList &list, const d
 	int vertex[8];
 	
 	testVolume = pGetVolumeWithVertex(list, decVector(1.0f, 1.0f, 1.0f));
-	if(! testVolume) return 1;
+	if(!testVolume) return 1;
 	
 	if(testVolume->GetVertexCount() != 8) return 10;
 	
@@ -1005,57 +1005,57 @@ int detConvexVolume::pIsVolumeCubeSplit(const decConvexVolumeList &list, const d
 	if(vertex[7] == -1) return 18;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(1.0f, 0.0f, 0.0f));
-	if(! testFace) return 20;
+	if(!testFace) return 20;
 	if(testFace->GetVertexCount() != 4) return 21;
-	if(! testFace->HasVertex(vertex[2])) return 22;
-	if(! testFace->HasVertex(vertex[0])) return 23;
-	if(! testFace->HasVertex(vertex[1])) return 24;
-	if(! testFace->HasVertex(vertex[3])) return 25;
+	if(!testFace->HasVertex(vertex[2])) return 22;
+	if(!testFace->HasVertex(vertex[0])) return 23;
+	if(!testFace->HasVertex(vertex[1])) return 24;
+	if(!testFace->HasVertex(vertex[3])) return 25;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, 1.0f));
-	if(! testFace) return 30;
+	if(!testFace) return 30;
 	if(testFace->GetVertexCount() != 4) return 31;
-	if(! testFace->HasVertex(vertex[0])) return 32;
-	if(! testFace->HasVertex(vertex[4])) return 33;
-	if(! testFace->HasVertex(vertex[5])) return 34;
-	if(! testFace->HasVertex(vertex[1])) return 35;
+	if(!testFace->HasVertex(vertex[0])) return 32;
+	if(!testFace->HasVertex(vertex[4])) return 33;
+	if(!testFace->HasVertex(vertex[5])) return 34;
+	if(!testFace->HasVertex(vertex[1])) return 35;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, -1.0f));
-	if(! testFace) return 40;
+	if(!testFace) return 40;
 	if(testFace->GetVertexCount() != 4) return 41;
-	if(! testFace->HasVertex(vertex[6])) return 42;
-	if(! testFace->HasVertex(vertex[2])) return 43;
-	if(! testFace->HasVertex(vertex[3])) return 44;
-	if(! testFace->HasVertex(vertex[7])) return 45;
+	if(!testFace->HasVertex(vertex[6])) return 42;
+	if(!testFace->HasVertex(vertex[2])) return 43;
+	if(!testFace->HasVertex(vertex[3])) return 44;
+	if(!testFace->HasVertex(vertex[7])) return 45;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 1.0f, 0.0f));
-	if(! testFace) return 50;
+	if(!testFace) return 50;
 	if(testFace->GetVertexCount() != 4) return 51;
-	if(! testFace->HasVertex(vertex[4])) return 52;
-	if(! testFace->HasVertex(vertex[0])) return 53;
-	if(! testFace->HasVertex(vertex[2])) return 54;
-	if(! testFace->HasVertex(vertex[6])) return 55;
+	if(!testFace->HasVertex(vertex[4])) return 52;
+	if(!testFace->HasVertex(vertex[0])) return 53;
+	if(!testFace->HasVertex(vertex[2])) return 54;
+	if(!testFace->HasVertex(vertex[6])) return 55;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, -1.0f, 0.0f));
-	if(! testFace) return 60;
+	if(!testFace) return 60;
 	if(testFace->GetVertexCount() != 4) return 61;
-	if(! testFace->HasVertex(vertex[5])) return 62;
-	if(! testFace->HasVertex(vertex[1])) return 63;
-	if(! testFace->HasVertex(vertex[3])) return 64;
-	if(! testFace->HasVertex(vertex[7])) return 65;
+	if(!testFace->HasVertex(vertex[5])) return 62;
+	if(!testFace->HasVertex(vertex[1])) return 63;
+	if(!testFace->HasVertex(vertex[3])) return 64;
+	if(!testFace->HasVertex(vertex[7])) return 65;
 	
 	testFace = pGetFaceWithNormal(*testVolume, -splitNormal);
-	if(! testFace) return 70;
+	if(!testFace) return 70;
 	if(testFace->GetVertexCount() != 4) return 71;
-	if(! testFace->HasVertex(vertex[4])) return 72;
-	if(! testFace->HasVertex(vertex[6])) return 73;
-	if(! testFace->HasVertex(vertex[7])) return 74;
-	if(! testFace->HasVertex(vertex[5])) return 75;
+	if(!testFace->HasVertex(vertex[4])) return 72;
+	if(!testFace->HasVertex(vertex[6])) return 73;
+	if(!testFace->HasVertex(vertex[7])) return 74;
+	if(!testFace->HasVertex(vertex[5])) return 75;
 	
 	
 	
 	testVolume = pGetVolumeWithVertex(list, decVector(-1.0f, -1.0f, -1.0f));
-	if(! testVolume) return 101;
+	if(!testVolume) return 101;
 	
 	if(testVolume->GetVertexCount() != 8) return 110;
 	
@@ -1077,52 +1077,52 @@ int detConvexVolume::pIsVolumeCubeSplit(const decConvexVolumeList &list, const d
 	if(vertex[7] == -1) return 118;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(-1.0f, 0.0f, 0.0f));
-	if(! testFace) return 120;
+	if(!testFace) return 120;
 	if(testFace->GetVertexCount() != 4) return 121;
-	if(! testFace->HasVertex(vertex[2])) return 122;
-	if(! testFace->HasVertex(vertex[0])) return 123;
-	if(! testFace->HasVertex(vertex[1])) return 124;
-	if(! testFace->HasVertex(vertex[3])) return 125;
+	if(!testFace->HasVertex(vertex[2])) return 122;
+	if(!testFace->HasVertex(vertex[0])) return 123;
+	if(!testFace->HasVertex(vertex[1])) return 124;
+	if(!testFace->HasVertex(vertex[3])) return 125;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, 1.0f));
-	if(! testFace) return 130;
+	if(!testFace) return 130;
 	if(testFace->GetVertexCount() != 4) return 131;
-	if(! testFace->HasVertex(vertex[0])) return 132;
-	if(! testFace->HasVertex(vertex[4])) return 133;
-	if(! testFace->HasVertex(vertex[5])) return 134;
-	if(! testFace->HasVertex(vertex[1])) return 135;
+	if(!testFace->HasVertex(vertex[0])) return 132;
+	if(!testFace->HasVertex(vertex[4])) return 133;
+	if(!testFace->HasVertex(vertex[5])) return 134;
+	if(!testFace->HasVertex(vertex[1])) return 135;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, -1.0f));
-	if(! testFace) return 140;
+	if(!testFace) return 140;
 	if(testFace->GetVertexCount() != 4) return 141;
-	if(! testFace->HasVertex(vertex[6])) return 142;
-	if(! testFace->HasVertex(vertex[2])) return 143;
-	if(! testFace->HasVertex(vertex[3])) return 144;
-	if(! testFace->HasVertex(vertex[7])) return 145;
+	if(!testFace->HasVertex(vertex[6])) return 142;
+	if(!testFace->HasVertex(vertex[2])) return 143;
+	if(!testFace->HasVertex(vertex[3])) return 144;
+	if(!testFace->HasVertex(vertex[7])) return 145;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 1.0f, 0.0f));
-	if(! testFace) return 150;
+	if(!testFace) return 150;
 	if(testFace->GetVertexCount() != 4) return 151;
-	if(! testFace->HasVertex(vertex[4])) return 152;
-	if(! testFace->HasVertex(vertex[0])) return 153;
-	if(! testFace->HasVertex(vertex[2])) return 154;
-	if(! testFace->HasVertex(vertex[6])) return 155;
+	if(!testFace->HasVertex(vertex[4])) return 152;
+	if(!testFace->HasVertex(vertex[0])) return 153;
+	if(!testFace->HasVertex(vertex[2])) return 154;
+	if(!testFace->HasVertex(vertex[6])) return 155;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, -1.0f, 0.0f));
-	if(! testFace) return 160;
+	if(!testFace) return 160;
 	if(testFace->GetVertexCount() != 4) return 161;
-	if(! testFace->HasVertex(vertex[5])) return 162;
-	if(! testFace->HasVertex(vertex[1])) return 163;
-	if(! testFace->HasVertex(vertex[3])) return 164;
-	if(! testFace->HasVertex(vertex[7])) return 165;
+	if(!testFace->HasVertex(vertex[5])) return 162;
+	if(!testFace->HasVertex(vertex[1])) return 163;
+	if(!testFace->HasVertex(vertex[3])) return 164;
+	if(!testFace->HasVertex(vertex[7])) return 165;
 	
 	testFace = pGetFaceWithNormal(*testVolume, splitNormal);
-	if(! testFace) return 170;
+	if(!testFace) return 170;
 	if(testFace->GetVertexCount() != 4) return 171;
-	if(! testFace->HasVertex(vertex[4])) return 172;
-	if(! testFace->HasVertex(vertex[6])) return 173;
-	if(! testFace->HasVertex(vertex[7])) return 174;
-	if(! testFace->HasVertex(vertex[5])) return 175;
+	if(!testFace->HasVertex(vertex[4])) return 172;
+	if(!testFace->HasVertex(vertex[6])) return 173;
+	if(!testFace->HasVertex(vertex[7])) return 174;
+	if(!testFace->HasVertex(vertex[5])) return 175;
 	
 	return 0;
 }
@@ -1133,7 +1133,7 @@ int detConvexVolume::pIsVolumeCubeCropped(const decConvexVolumeList &list, const
 	int vertex[8];
 	
 	testVolume = pGetVolumeWithVertex(list, decVector(1.0f, 1.0f, 1.0f));
-	if(! testVolume) return 1;
+	if(!testVolume) return 1;
 	
 	if(testVolume->GetVertexCount() != 8) return 10;
 	
@@ -1155,52 +1155,52 @@ int detConvexVolume::pIsVolumeCubeCropped(const decConvexVolumeList &list, const
 	if(vertex[7] == -1) return 18;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(1.0f, 0.0f, 0.0f));
-	if(! testFace) return 20;
+	if(!testFace) return 20;
 	if(testFace->GetVertexCount() != 4) return 21;
-	if(! testFace->HasVertex(vertex[2])) return 22;
-	if(! testFace->HasVertex(vertex[0])) return 23;
-	if(! testFace->HasVertex(vertex[1])) return 24;
-	if(! testFace->HasVertex(vertex[3])) return 25;
+	if(!testFace->HasVertex(vertex[2])) return 22;
+	if(!testFace->HasVertex(vertex[0])) return 23;
+	if(!testFace->HasVertex(vertex[1])) return 24;
+	if(!testFace->HasVertex(vertex[3])) return 25;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, 1.0f));
-	if(! testFace) return 30;
+	if(!testFace) return 30;
 	if(testFace->GetVertexCount() != 4) return 31;
-	if(! testFace->HasVertex(vertex[0])) return 32;
-	if(! testFace->HasVertex(vertex[4])) return 33;
-	if(! testFace->HasVertex(vertex[5])) return 34;
-	if(! testFace->HasVertex(vertex[1])) return 35;
+	if(!testFace->HasVertex(vertex[0])) return 32;
+	if(!testFace->HasVertex(vertex[4])) return 33;
+	if(!testFace->HasVertex(vertex[5])) return 34;
+	if(!testFace->HasVertex(vertex[1])) return 35;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, -1.0f));
-	if(! testFace) return 40;
+	if(!testFace) return 40;
 	if(testFace->GetVertexCount() != 4) return 41;
-	if(! testFace->HasVertex(vertex[6])) return 42;
-	if(! testFace->HasVertex(vertex[2])) return 43;
-	if(! testFace->HasVertex(vertex[3])) return 44;
-	if(! testFace->HasVertex(vertex[7])) return 45;
+	if(!testFace->HasVertex(vertex[6])) return 42;
+	if(!testFace->HasVertex(vertex[2])) return 43;
+	if(!testFace->HasVertex(vertex[3])) return 44;
+	if(!testFace->HasVertex(vertex[7])) return 45;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 1.0f, 0.0f));
-	if(! testFace) return 50;
+	if(!testFace) return 50;
 	if(testFace->GetVertexCount() != 4) return 51;
-	if(! testFace->HasVertex(vertex[4])) return 52;
-	if(! testFace->HasVertex(vertex[0])) return 53;
-	if(! testFace->HasVertex(vertex[2])) return 54;
-	if(! testFace->HasVertex(vertex[6])) return 55;
+	if(!testFace->HasVertex(vertex[4])) return 52;
+	if(!testFace->HasVertex(vertex[0])) return 53;
+	if(!testFace->HasVertex(vertex[2])) return 54;
+	if(!testFace->HasVertex(vertex[6])) return 55;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, -1.0f, 0.0f));
-	if(! testFace) return 60;
+	if(!testFace) return 60;
 	if(testFace->GetVertexCount() != 4) return 61;
-	if(! testFace->HasVertex(vertex[5])) return 62;
-	if(! testFace->HasVertex(vertex[1])) return 63;
-	if(! testFace->HasVertex(vertex[3])) return 64;
-	if(! testFace->HasVertex(vertex[7])) return 65;
+	if(!testFace->HasVertex(vertex[5])) return 62;
+	if(!testFace->HasVertex(vertex[1])) return 63;
+	if(!testFace->HasVertex(vertex[3])) return 64;
+	if(!testFace->HasVertex(vertex[7])) return 65;
 	
 	testFace = pGetFaceWithNormal(*testVolume, -splitNormal);
-	if(! testFace) return 70;
+	if(!testFace) return 70;
 	if(testFace->GetVertexCount() != 4) return 71;
-	if(! testFace->HasVertex(vertex[4])) return 72;
-	if(! testFace->HasVertex(vertex[6])) return 73;
-	if(! testFace->HasVertex(vertex[7])) return 74;
-	if(! testFace->HasVertex(vertex[5])) return 75;
+	if(!testFace->HasVertex(vertex[4])) return 72;
+	if(!testFace->HasVertex(vertex[6])) return 73;
+	if(!testFace->HasVertex(vertex[7])) return 74;
+	if(!testFace->HasVertex(vertex[5])) return 75;
 	
 	return 0;
 }
@@ -1211,7 +1211,7 @@ int detConvexVolume::pIsVolumeCubeCroppedInverse(const decConvexVolumeList &list
 	int vertex[8];
 	
 	testVolume = pGetVolumeWithVertex(list, decVector(-1.0f, -1.0f, -1.0f));
-	if(! testVolume) return 01;
+	if(!testVolume) return 01;
 	
 	if(testVolume->GetVertexCount() != 8) return 10;
 	
@@ -1233,52 +1233,52 @@ int detConvexVolume::pIsVolumeCubeCroppedInverse(const decConvexVolumeList &list
 	if(vertex[7] == -1) return 18;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(-1.0f, 0.0f, 0.0f));
-	if(! testFace) return 20;
+	if(!testFace) return 20;
 	if(testFace->GetVertexCount() != 4) return 21;
-	if(! testFace->HasVertex(vertex[2])) return 22;
-	if(! testFace->HasVertex(vertex[0])) return 23;
-	if(! testFace->HasVertex(vertex[1])) return 24;
-	if(! testFace->HasVertex(vertex[3])) return 25;
+	if(!testFace->HasVertex(vertex[2])) return 22;
+	if(!testFace->HasVertex(vertex[0])) return 23;
+	if(!testFace->HasVertex(vertex[1])) return 24;
+	if(!testFace->HasVertex(vertex[3])) return 25;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, 1.0f));
-	if(! testFace) return 30;
+	if(!testFace) return 30;
 	if(testFace->GetVertexCount() != 4) return 31;
-	if(! testFace->HasVertex(vertex[0])) return 32;
-	if(! testFace->HasVertex(vertex[4])) return 33;
-	if(! testFace->HasVertex(vertex[5])) return 34;
-	if(! testFace->HasVertex(vertex[1])) return 35;
+	if(!testFace->HasVertex(vertex[0])) return 32;
+	if(!testFace->HasVertex(vertex[4])) return 33;
+	if(!testFace->HasVertex(vertex[5])) return 34;
+	if(!testFace->HasVertex(vertex[1])) return 35;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 0.0f, -1.0f));
-	if(! testFace) return 40;
+	if(!testFace) return 40;
 	if(testFace->GetVertexCount() != 4) return 41;
-	if(! testFace->HasVertex(vertex[6])) return 42;
-	if(! testFace->HasVertex(vertex[2])) return 43;
-	if(! testFace->HasVertex(vertex[3])) return 44;
-	if(! testFace->HasVertex(vertex[7])) return 45;
+	if(!testFace->HasVertex(vertex[6])) return 42;
+	if(!testFace->HasVertex(vertex[2])) return 43;
+	if(!testFace->HasVertex(vertex[3])) return 44;
+	if(!testFace->HasVertex(vertex[7])) return 45;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, 1.0f, 0.0f));
-	if(! testFace) return 50;
+	if(!testFace) return 50;
 	if(testFace->GetVertexCount() != 4) return 51;
-	if(! testFace->HasVertex(vertex[4])) return 52;
-	if(! testFace->HasVertex(vertex[0])) return 53;
-	if(! testFace->HasVertex(vertex[2])) return 54;
-	if(! testFace->HasVertex(vertex[6])) return 55;
+	if(!testFace->HasVertex(vertex[4])) return 52;
+	if(!testFace->HasVertex(vertex[0])) return 53;
+	if(!testFace->HasVertex(vertex[2])) return 54;
+	if(!testFace->HasVertex(vertex[6])) return 55;
 	
 	testFace = pGetFaceWithNormal(*testVolume, decVector(0.0f, -1.0f, 0.0f));
-	if(! testFace) return 60;
+	if(!testFace) return 60;
 	if(testFace->GetVertexCount() != 4) return 61;
-	if(! testFace->HasVertex(vertex[5])) return 62;
-	if(! testFace->HasVertex(vertex[1])) return 63;
-	if(! testFace->HasVertex(vertex[3])) return 64;
-	if(! testFace->HasVertex(vertex[7])) return 65;
+	if(!testFace->HasVertex(vertex[5])) return 62;
+	if(!testFace->HasVertex(vertex[1])) return 63;
+	if(!testFace->HasVertex(vertex[3])) return 64;
+	if(!testFace->HasVertex(vertex[7])) return 65;
 	
 	testFace = pGetFaceWithNormal(*testVolume, splitNormal);
-	if(! testFace) return 70;
+	if(!testFace) return 70;
 	if(testFace->GetVertexCount() != 4) return 71;
-	if(! testFace->HasVertex(vertex[4])) return 72;
-	if(! testFace->HasVertex(vertex[6])) return 73;
-	if(! testFace->HasVertex(vertex[7])) return 74;
-	if(! testFace->HasVertex(vertex[5])) return 75;
+	if(!testFace->HasVertex(vertex[4])) return 72;
+	if(!testFace->HasVertex(vertex[6])) return 73;
+	if(!testFace->HasVertex(vertex[7])) return 74;
+	if(!testFace->HasVertex(vertex[5])) return 75;
 	
 	return 0;
 }
@@ -1317,7 +1317,7 @@ int detConvexVolume::pIsKindOfCube(const decConvexVolume &volume) const{
 	}
 	
 	for(n=0; n<6; n++){
-		if(! foundNormal[n]) return 3;
+		if(!foundNormal[n]) return 3;
 	}
 	
 	return 0;
@@ -1335,7 +1335,7 @@ void detConvexVolume::pSetSplitVolume(decConvexVolume &volume, const decVector &
 	
 	// create test face
 	decConvexVolumeFace *face = new decConvexVolumeFace;
-	if(! face) DETHROW(deeOutOfMemory);
+	if(!face) DETHROW(deeOutOfMemory);
 	
 	// set face normal
 	face->SetNormal(normal);

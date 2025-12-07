@@ -43,7 +43,7 @@ meUndoDataObjectProperty::meUndoDataObjectProperty(meObject *object) :
 pObject(NULL),
 pPropertyExists(false)
 {
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -80,7 +80,7 @@ void deRLTaskReadAnimation::Run(){
 	LogRunEnter();
 	deBaseAnimationModule * const module = (deBaseAnimationModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -99,7 +99,7 @@ void deRLTaskReadAnimation::Run(){
 
 void deRLTaskReadAnimation::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pAnimation = NULL;
 		LogFinishedExit();

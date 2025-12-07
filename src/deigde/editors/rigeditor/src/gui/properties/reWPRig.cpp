@@ -78,7 +78,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		
@@ -100,7 +100,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		reRig * const rig = pPanel.GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		
@@ -124,7 +124,7 @@ public:
 	
 	virtual void OnAction(){
 		reRig * const rig = pPanel.GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		
@@ -146,7 +146,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		reRig * const rig = pPanel.GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		

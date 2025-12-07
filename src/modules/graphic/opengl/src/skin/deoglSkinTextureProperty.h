@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable index or -1. */
-	inline int GetRenderable() const{return pRenderable;}
+	inline int GetRenderable() const{ return pRenderable; }
 	
 	/** Set renderable index or -1. */
 	void SetRenderable(int index);
 	
 	/** Calculated property index or -1. */
-	inline int GetCalculatedProperty() const{return pCalculatedProperty;}
+	inline int GetCalculatedProperty() const{ return pCalculatedProperty; }
 	
 	/** Set calculated property index or -1. */
 	void SetCalculatedProperty(int index);
 	
 	/** Bone index or -1. */
-	inline int GetBone() const{return pBone;}
+	inline int GetBone() const{ return pBone; }
 	
 	/** Set bone index or -1. */
 	void SetBone(int index);

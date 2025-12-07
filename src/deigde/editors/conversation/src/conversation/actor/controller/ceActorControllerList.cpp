@@ -87,7 +87,7 @@ bool ceActorControllerList::HasNamed(const char *name) const{
 }
 
 void ceActorControllerList::Add(ceActorController *controller){
-	if(! controller || Has(controller)){
+	if(!controller || Has(controller)){
 		DETHROW(deeInvalidParam);
 	}
 	

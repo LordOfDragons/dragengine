@@ -43,7 +43,7 @@ seUSourceGroupMoveSourceDown::seUSourceGroupMoveSourceDown(seSourceGroup *group,
 pGroup(NULL),
 pSource(NULL)
 {
-	if(! group || ! source){
+	if(!group || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

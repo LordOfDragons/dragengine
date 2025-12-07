@@ -42,10 +42,10 @@
 ////////////////////////////
 
 meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
-	if(! object || ! newcname) DETHROW(deeInvalidParam);
+	if(!object || !newcname) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set Object class");
 	
@@ -54,7 +54,7 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 	
 	try{
 		pObjects = new sObject[1];
-		if(! pObjects) DETHROW(deeOutOfMemory);
+		if(!pObjects) DETHROW(deeOutOfMemory);
 		
 		pObjects[0].oldcname = object->GetClassName();
 		pObjects[0].newcname = newcname;
@@ -75,7 +75,7 @@ meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname
 	int count = objects.GetCount();
 	meObject *object;
 	
-	if(count == 0 || ! newcname) DETHROW(deeInvalidParam);
+	if(count == 0 || !newcname) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set Object classes");
 	
@@ -84,7 +84,7 @@ meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname
 	
 	try{
 		pObjects = new sObject[count];
-		if(! pObjects) DETHROW(deeOutOfMemory);
+		if(!pObjects) DETHROW(deeOutOfMemory);
 		
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = objects.GetAt(pObjectCount);

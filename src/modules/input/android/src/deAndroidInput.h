@@ -99,16 +99,16 @@ public:
 	decPoint GetScreenSize() const;
 	
 	/** \brief Overlay system. */
-	inline deainpOverlaySystem *GetOverlaySystem() const{return pOverlaySystem;}
+	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
 	
 	/** \brief Default font. */
-	inline deFont *GetDefaultFont() const{return pFontDefault;}
+	inline deFont *GetDefaultFont() const{ return pFontDefault; }
 	
 	/** \brief Elapsed time since the last event processing. */
-	inline float GetElapsedTime() const{return pElapsedTime;}
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** \brief Devices manager. */
-	inline deainpDeviceManager &GetDevices() const{return *pDevices;}
+	inline deainpDeviceManager &GetDevices() const{ return *pDevices; }
 	/*@}*/
 	
 	

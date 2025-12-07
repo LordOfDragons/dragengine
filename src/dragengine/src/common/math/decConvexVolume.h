@@ -64,7 +64,7 @@ public:
 	/** \name Vertex Management */
 	/*@{*/
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Vertex at the given position. */
 	const decVector &GetVertexAt(int position) const;
@@ -90,7 +90,7 @@ public:
 	/** \name Face Management */
 	/*@{*/
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Face at the given index. */
 	decConvexVolumeFace *GetFaceAt(int index) const;

@@ -60,9 +60,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** \brief Retrieves the pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Loads the navigation test from file. */
 	void LoadNavTest(meWorld &world, decBaseFileReader &reader);

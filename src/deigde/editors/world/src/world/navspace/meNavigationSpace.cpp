@@ -87,7 +87,7 @@
 meNavigationSpace::meNavigationSpace(igdeEnvironment *environment) :
 pColliderOwner(this)
 {
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -283,7 +283,7 @@ void meNavigationSpace::LoadFromFile(){
 	pEngNavSpace->SetType(deNavigationSpace::estGrid);
 	
 	// load navigation space from file
-	if(! pFilename.IsEmpty()){
+	if(!pFilename.IsEmpty()){
 		deEngine &engine = *GetEngine();
 		
 		path.SetFromUnix(pFilename.GetString());
@@ -407,7 +407,7 @@ void meNavigationSpace::LoadFromFile(){
 }
 
 void meNavigationSpace::SaveToFile(){
-	if(! pWorld || pFilename.IsEmpty() || ! pEngNavSpace){
+	if(!pWorld || pFilename.IsEmpty() || !pEngNavSpace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -505,7 +505,7 @@ void meNavigationSpace::NotifyGeometryChanged(){
 
 
 void meNavigationSpace::ShowStateChanged(){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -691,7 +691,7 @@ void meNavigationSpace::pUpdateUsedCostTypes(){
 		for(i=0; i<faceCount; i++){
 			const int navtype = pEngNavSpace->GetFaceAt(i).GetType();
 			
-			if(! pUsedCostTypes.Has(navtype)){
+			if(!pUsedCostTypes.Has(navtype)){
 				pUsedCostTypes.Add(navtype);
 			}
 		}
@@ -700,10 +700,10 @@ void meNavigationSpace::pUpdateUsedCostTypes(){
 			const int navtype1 = pEngNavSpace->GetEdgeAt(i).GetType1();
 			const int navtype2 = pEngNavSpace->GetEdgeAt(i).GetType2();
 			
-			if(! pUsedCostTypes.Has(navtype1)){
+			if(!pUsedCostTypes.Has(navtype1)){
 				pUsedCostTypes.Add(navtype1);
 			}
-			if(! pUsedCostTypes.Has(navtype2)){
+			if(!pUsedCostTypes.Has(navtype2)){
 				pUsedCostTypes.Add(navtype2);
 			}
 		}

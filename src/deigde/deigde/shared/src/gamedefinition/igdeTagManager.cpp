@@ -67,7 +67,7 @@ bool igdeTagManager::HasTag(const char *tag) const{
 }
 
 int igdeTagManager::IndexOfTag(const char *tag) const{
-	if(! tag){
+	if(!tag){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -75,11 +75,11 @@ int igdeTagManager::IndexOfTag(const char *tag) const{
 }
 
 void igdeTagManager::AddTag(const char *tag){
-	if(! tag || ! tag[0]){
+	if(!tag || !tag[0]){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pTags.Has(tag)){
+	if(!pTags.Has(tag)){
 		pTags.Add(tag);
 	}
 }
@@ -107,7 +107,7 @@ bool igdeTagManager::HasAllOf(const igdeTagManager &tags) const{
 	}
 	
 	for(i=0; i<tagCount; i++){
-		if(! pTags.Has(tags.GetTagAt(i))){
+		if(!pTags.Has(tags.GetTagAt(i))){
 			return false;
 		}
 	}
@@ -129,7 +129,7 @@ bool igdeTagManager::HasAnyOf(const igdeTagManager &tags) const{
 }
 
 bool igdeTagManager::HasNoneOf(const igdeTagManager &tags) const{
-	return ! HasAnyOf(tags);
+	return !HasAnyOf(tags);
 }
 
 

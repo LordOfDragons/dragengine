@@ -73,7 +73,7 @@ void aeLoadSaveAttachmentConfig::LoadAttachmentConfig(aeAnimator &animator, decB
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "attachmentConfig") != 0){
+	if(!root || strcmp(root->GetName(), "attachmentConfig") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -136,7 +136,7 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 		writer.WriteDataTagString("gdclass", wpobject.GetGDClass()->GetName());
 	}
 	
-	if(! position.IsEqualTo(decDVector())){
+	if(!position.IsEqualTo(decDVector())){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeDouble("x", position.x);
 		writer.WriteAttributeDouble("y", position.y);
@@ -144,7 +144,7 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! orientation.IsEqualTo(decVector())){
+	if(!orientation.IsEqualTo(decVector())){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -152,7 +152,7 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("scaling");
 		writer.WriteAttributeFloat("x", scaling.x);
 		writer.WriteAttributeFloat("y", scaling.y);
@@ -160,7 +160,7 @@ void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const ae
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! wpobject.GetVisible()){
+	if(!wpobject.GetVisible()){
 		writer.WriteDataTagBool("visible", false);
 	}
 	

@@ -115,7 +115,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 }
 
 void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){
-	if(! slot){
+	if(!slot){
 		DETHROW_INFO(deeNullPointer, "slot");
 	}
 	if(&slot->GetPool() != this){

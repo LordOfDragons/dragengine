@@ -76,10 +76,10 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetRedoSystem() const{return pUndoSystem;}
+	inline igdeUndoSystem *GetRedoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);

@@ -139,7 +139,7 @@ void dedaiDeveloperMode::pCmdHelp(const decUnicodeArgumentList &command, decUnic
 
 void dedaiDeveloperMode::pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	answer.SetFromUTF8("Developer mode enabled.\n");
-	if(! pEnabled){
+	if(!pEnabled){
 		TouchUpdateTracker();
 	}
 	pEnabled = true;
@@ -149,7 +149,7 @@ void dedaiDeveloperMode::pCmdEnable(const decUnicodeArgumentList &command, decUn
 
 void dedaiDeveloperMode::pCmdShowSpaces(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	if(command.GetArgumentCount() == 2){
-		const bool newValue = ! command.MatchesArgumentAt(1, "0");
+		const bool newValue = !command.MatchesArgumentAt(1, "0");
 		if(newValue != pShowSpaces){
 			TouchUpdateTracker();
 		}
@@ -163,7 +163,7 @@ void dedaiDeveloperMode::pCmdShowSpaces(const decUnicodeArgumentList &command, d
 
 void dedaiDeveloperMode::pCmdShowSpaceLinks(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	if(command.GetArgumentCount() == 2){
-		const bool newValue = ! command.MatchesArgumentAt(1, "0");
+		const bool newValue = !command.MatchesArgumentAt(1, "0");
 		if(newValue != pShowSpaceLinks){
 			TouchUpdateTracker();
 		}
@@ -191,7 +191,7 @@ void dedaiDeveloperMode::pCmdSpaceHighlightCostType(const decUnicodeArgumentList
 
 void dedaiDeveloperMode::pCmdShowBlockers(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	if(command.GetArgumentCount() == 2){
-		const bool newValue = ! command.MatchesArgumentAt(1, "0");
+		const bool newValue = !command.MatchesArgumentAt(1, "0");
 		if(newValue != pShowBlockers){
 			TouchUpdateTracker();
 		}
@@ -205,7 +205,7 @@ void dedaiDeveloperMode::pCmdShowBlockers(const decUnicodeArgumentList &command,
 
 void dedaiDeveloperMode::pCmdShowPath(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	if(command.GetArgumentCount() == 2){
-		const bool newValue = ! command.MatchesArgumentAt(1, "0");
+		const bool newValue = !command.MatchesArgumentAt(1, "0");
 		if(newValue != pShowPath){
 			TouchUpdateTracker();
 		}
@@ -219,7 +219,7 @@ void dedaiDeveloperMode::pCmdShowPath(const decUnicodeArgumentList &command, dec
 
 void dedaiDeveloperMode::pCmdShowPathFaces(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	if(command.GetArgumentCount() == 2){
-		const bool newValue = ! command.MatchesArgumentAt(1, "0");
+		const bool newValue = !command.MatchesArgumentAt(1, "0");
 		if(newValue != pShowPathFaces){
 			TouchUpdateTracker();
 		}

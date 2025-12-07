@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Binding. */
-	inline const deainpInputBinding &GetBinding() const{return pBinding;}
+	inline const deainpInputBinding &GetBinding() const{ return pBinding; }
 	
 	/** \brief Set binding. */
 	void SetBinding(const deainpInputBinding &binding);
@@ -77,13 +77,13 @@ public:
 	
 	
 	/** \brief Button radius in pixels. */
-	inline int GetRadius() const{return pRadius;}
+	inline int GetRadius() const{ return pRadius; }
 	
 	/** \brief Set button radius in pixels. */
 	void SetRadius(int radius);
 	
 	/** \brief Center of button. */
-	inline const decPoint &GetCenter() const{return pCenter;}
+	inline const decPoint &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set center of button. */
 	void SetCenter(const decPoint &center);
@@ -111,7 +111,7 @@ public:
 	
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** \brief Set if button is pressed. */
 	void SetPressed(bool pressed);

@@ -69,19 +69,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Play time in seconds. */
-	inline float GetPlaytime() const{return pPlaytime;}
+	inline float GetPlaytime() const{ return pPlaytime; }
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{return pKeyframeListCount;}
+	inline int GetKeyframeListCount() const{ return pKeyframeListCount; }
 	
 	/** Keyframe list at index. */
 	dearAnimationKeyframeList *GetKeyframeListAt(int index) const;
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeVPSListCount() const{return pKeyframeVPSListCount;}
+	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSListCount; }
 	
 	/** Keyframe list at index. */
 	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt(int index) const;

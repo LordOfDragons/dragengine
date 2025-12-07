@@ -54,7 +54,7 @@ meNavigationSpaceSelection::~meNavigationSpaceSelection(){
 ///////////////
 
 void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
-	if(! navspaces){
+	if(!navspaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,7 +63,7 @@ void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
 }
 
 void meNavigationSpaceSelection::Remove(meNavigationSpace *navspaces){
-	if(! navspaces){
+	if(!navspaces){
 		DETHROW(deeInvalidParam);
 	}
 	

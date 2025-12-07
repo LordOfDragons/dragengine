@@ -42,7 +42,7 @@
 seUEffectToggleEnabled::seUEffectToggleEnabled(seEffect *effect) :
 pEffect(NULL)
 {
-	if(! effect){
+	if(!effect){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ seUEffectToggleEnabled::~seUEffectToggleEnabled(){
 ///////////////
 
 void seUEffectToggleEnabled::Undo(){
-	pEffect->SetEnabled(! pEffect->GetEnabled());
+	pEffect->SetEnabled(!pEffect->GetEnabled());
 }
 
 void seUEffectToggleEnabled::Redo(){
-	pEffect->SetEnabled(! pEffect->GetEnabled());
+	pEffect->SetEnabled(!pEffect->GetEnabled());
 }
 
 

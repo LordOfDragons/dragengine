@@ -196,60 +196,60 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Configuration. */
-	inline igdeConfiguration &GetConfiguration(){return pConfiguration;}
-	inline const igdeConfiguration &GetConfiguration() const{return pConfiguration;}
+	inline igdeConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const igdeConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** Local Configuration. */
-	inline igdeConfigurationLocal &GetConfigurationLocal(){return pConfigurationLocal;}
-	inline const igdeConfigurationLocal &GetConfigurationLocal() const{return pConfigurationLocal;}
+	inline igdeConfigurationLocal &GetConfigurationLocal(){ return pConfigurationLocal; }
+	inline const igdeConfigurationLocal &GetConfigurationLocal() const{ return pConfigurationLocal; }
 	
 	/** Retrieves the editor module manager. */
-	inline igdeEditorModuleManager &GetModuleManager() const{return *pModuleManager;}
+	inline igdeEditorModuleManager &GetModuleManager() const{ return *pModuleManager; }
 	
 	/** Retrieves the load save system. */
-	inline igdeLoadSaveSystem *GetLoadSaveSystem() const{return pLoadSaveSystem;}
+	inline igdeLoadSaveSystem *GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	/** Retrieves the game definition preview manager. */
-	inline igdeGDPreviewManager *GetGDPreviewManager() const{return pGDPreviewManager;}
+	inline igdeGDPreviewManager *GetGDPreviewManager() const{ return pGDPreviewManager; }
 	/** Retrieves the texture property list. */
-	inline igdeTexturePropertyList *GetTexturePropertyList() const{return pTexturePropertyList;}
+	inline igdeTexturePropertyList *GetTexturePropertyList() const{ return pTexturePropertyList; }
 	/** Retrieves the history logger. */
-	inline igdeLoggerHistory *GetLoggerHistory() const{return pLoggerHistory;}
+	inline igdeLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
 	
 	/** Virtual file system. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{return pVFS;}
+	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Project templates. */
-	inline igdeTemplateList &GetTemplates() const{return *pTemplates;}
+	inline igdeTemplateList &GetTemplates() const{ return *pTemplates; }
 	
 	/** Shared game definitions. */
-	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{return *pSharedGameDefinitions;}
+	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{ return *pSharedGameDefinitions; }
 	
 	/** Retrieves the igde game definition. */
-	inline igdeGameDefinition *GetIGDEGameDefinition() const{return pIGDEGameDefinition;}
+	inline igdeGameDefinition *GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
 	
 	/** Logger window or NULL if not visible. */
-	inline igdeWindowLogger *GetWindowLogger() const{return pWindowLogger;}
+	inline igdeWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
 	
 	/** Named GuiTheme or default if not found. */
 	igdeGuiTheme *GetGuiThemeNamed(const char *name);
 	
 	/** Default GuiTheme. */
-	inline igdeGuiTheme *GetDefaultGuiTheme() const{return pDefaultGuiTheme;}
+	inline igdeGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
 	/** Shared font list. */
-	inline igdeSharedFontList &GetSharedFontList() const{return *pSharedFontList;}
+	inline igdeSharedFontList &GetSharedFontList() const{ return *pSharedFontList; }
 	
 	/** Shared model collision rig. */
-	inline deRig *GetSharedModelCollisionRig() const{return pSharedModelCollisionRig;}
+	inline deRig *GetSharedModelCollisionRig() const{ return pSharedModelCollisionRig; }
 	
 	/** Resource loader. */
-	inline igdeResourceLoader &GetResourceLoader() const{return *pResourceLoader;}
+	inline igdeResourceLoader &GetResourceLoader() const{ return *pResourceLoader; }
 	
 	/** UI Helper. */
-	inline igdeUIHelper &GetUIHelper() const{return *pUIHelper;}
+	inline igdeUIHelper &GetUIHelper() const{ return *pUIHelper; }
 	
 	/** UI Helper for properties panels. */
-	inline igdeUIHelper &GetUIHelperProperties() const{return *pUIHelperProperties;}
+	inline igdeUIHelper &GetUIHelperProperties() const{ return *pUIHelperProperties; }
 	
 	/**
 	 * Show logger window.
@@ -265,7 +265,7 @@ public:
 	bool ProcessCommandLine(const decUnicodeStringList &arguments);
 	
 	/** Retrieves the active game project. */
-	inline igdeGameProject *GetGameProject() const{return pGameProject;}
+	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
 	void SetGameProject(igdeGameProject *project);
 	/**
@@ -315,34 +315,34 @@ public:
 	bool IsSyncGameDefTaskRunning() const;
 	
 	/** Retrieves the menu bar. */
-	inline igdeMenuBar *GetMenuBar() const{return pMenuBar;}
+	inline igdeMenuBar *GetMenuBar() const{ return pMenuBar; }
 	
 	/** Toolbar dock sites. */
-	inline igdeToolBarDock *GetDockSiteLeft() const{return pToolBarDockLeft;}
-	inline igdeToolBarDock *GetDockSiteTop() const{return pToolBarDockTop;}
-	inline igdeToolBarDock *GetDockSiteRight() const{return pToolBarDockRight;}
-	inline igdeToolBarDock *GetDockSiteBottom() const{return pToolBarDockBottom;}
+	inline igdeToolBarDock *GetDockSiteLeft() const{ return pToolBarDockLeft; }
+	inline igdeToolBarDock *GetDockSiteTop() const{ return pToolBarDockTop; }
+	inline igdeToolBarDock *GetDockSiteRight() const{ return pToolBarDockRight; }
+	inline igdeToolBarDock *GetDockSiteBottom() const{ return pToolBarDockBottom; }
 	
 	/** Content switcher. */
-	inline igdeSwitcher *GetContentSwitcher() const{return pSwiContent;}
+	inline igdeSwitcher *GetContentSwitcher() const{ return pSwiContent; }
 	
 	/** Game toolbar. */
-	inline igdeToolBar *GetToolBarGame() const{return pTBGame;}
+	inline igdeToolBar *GetToolBarGame() const{ return pTBGame; }
 	
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconApplication() const{return pIconApplication;}
+	inline igdeIcon *GetIconApplication() const{ return pIconApplication; }
 	
-	inline igdeIcon *GetIconGameNew() const{return pIconGameNew;}
-	inline igdeIcon *GetIconGameOpen() const{return pIconGameOpen;}
-	inline igdeIcon *GetIconGameSave() const{return pIconGameSave;}
-	inline igdeIcon *GetIconGameSaveAs() const{return pIconGameSaveAs;}
-	inline igdeIcon *GetIconGameExit() const{return pIconGameExit;}
-	inline igdeIcon *GetIconGameReloadXMLElementClasses() const{return pIconGameReloadXMLElementClasses;}
-	inline igdeIcon *GetIconSettingsIgde() const{return pIconSettingsIGDE;}
-	inline igdeIcon *GetIconSettingsEngine() const{return pIconSettingsEngine;}
-	inline igdeIcon *GetIconSettingsTexPropList() const{return pIconSettingsTexPropList;}
+	inline igdeIcon *GetIconGameNew() const{ return pIconGameNew; }
+	inline igdeIcon *GetIconGameOpen() const{ return pIconGameOpen; }
+	inline igdeIcon *GetIconGameSave() const{ return pIconGameSave; }
+	inline igdeIcon *GetIconGameSaveAs() const{ return pIconGameSaveAs; }
+	inline igdeIcon *GetIconGameExit() const{ return pIconGameExit; }
+	inline igdeIcon *GetIconGameReloadXMLElementClasses() const{ return pIconGameReloadXMLElementClasses; }
+	inline igdeIcon *GetIconSettingsIgde() const{ return pIconSettingsIGDE; }
+	inline igdeIcon *GetIconSettingsEngine() const{ return pIconSettingsEngine; }
+	inline igdeIcon *GetIconSettingsTexPropList() const{ return pIconSettingsTexPropList; }
 	
 	
 	
@@ -365,7 +365,7 @@ public:
 	void SetProgressText(const char *text);
 	
 	/** Retrieves the minimum frame update time. */
-	inline float GetMinUpdateTime() const{return pMinUpdateTime;}
+	inline float GetMinUpdateTime() const{ return pMinUpdateTime; }
 
 	/** Sets the minimum frame update time. */
 	void SetMinUpdateTime(float seconds);

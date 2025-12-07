@@ -477,7 +477,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the positive side
 		lambda = (boxHalfExtends.x - point.x) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.y + rayDirection.y * lambda;
 			if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 				hp = point.z + rayDirection.z * lambda;
@@ -490,7 +490,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the negative side
 		lambda = (-boxHalfExtends.x - point.x) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.y + rayDirection.y * lambda;
 			if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 				hp = point.z + rayDirection.z * lambda;
@@ -508,7 +508,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the positive side
 		lambda = (boxHalfExtends.y - point.y) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
 			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.z + rayDirection.z * lambda;
@@ -521,7 +521,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the negative side
 		lambda = (-boxHalfExtends.y - point.y) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
 			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.z + rayDirection.z * lambda;
@@ -539,7 +539,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the positive side
 		lambda = (boxHalfExtends.z - point.z) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
 			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.y + rayDirection.y * lambda;
@@ -552,7 +552,7 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance)
 		
 		// face on the negative side
 		lambda = (-boxHalfExtends.z - point.z) * factor;
-		if(lambda >= 0.0f && lambda <= 1.0f && (! hasBestDistance || lambda < bestDistance)){
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
 			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.y + rayDirection.y * lambda;

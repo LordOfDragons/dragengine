@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const decUnicodeString &newText){
-	if(! topic) DETHROW(deeInvalidParam);
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;

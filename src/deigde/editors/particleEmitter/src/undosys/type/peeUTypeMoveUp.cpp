@@ -41,12 +41,12 @@
 ////////////////////////////
 
 peeUTypeMoveUp::peeUTypeMoveUp(peeType *type){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	
 	peeEmitter *emitter = type->GetEmitter();
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	

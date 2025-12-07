@@ -265,7 +265,7 @@ void deoalSpeaker::Synchronize(){
 	// 
 	// NOTE extended to non-looping case otherwise moving out of range stops the sound
 	//      processing causing sound to start where it left of if entering range again
-	if(pSpeaker.GetPlaying()){ //  && ! pSpeaker.GetLooping()
+	if(pSpeaker.GetPlaying()){ //  && !pSpeaker.GetLooping()
 		if(pParentWorld){
 			pParentWorld->AddSyncSpeaker(this);
 		}
@@ -412,7 +412,7 @@ void deoalSpeaker::pCleanUp(){
 
 
 void deoalSpeaker::pSyncSource(){
-	if(! pDirtySource){
+	if(!pDirtySource){
 		return;
 	}
 	
@@ -456,10 +456,10 @@ void deoalSpeaker::pSyncSource(){
 
 
 void deoalSpeaker::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncSpeaker(this);
 	}
-	if(! pLLSyncMic.GetList() && pParentMicrophone){
+	if(!pLLSyncMic.GetList() && pParentMicrophone){
 		pParentMicrophone->AddSyncSpeaker(this);
 	}
 }

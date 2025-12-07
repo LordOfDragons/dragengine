@@ -62,33 +62,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{return pTrackBone;}
+	inline const decString &GetTrackBone() const{ return pTrackBone; }
 	/** Set the name of the track bone or empty string to use none. */
 	void SetTrackBone(const char *boneName);
 	/** Retrieve the track axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{return pTrackAxis;}
+	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
 	/** Set the track axis. */
 	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{return pUpAxis;}
+	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
 	/** Set the up axis. */
 	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up target. */
-	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{return pUpTarget;}
+	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
 	/** Set the up target. */
 	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
 	/** Retrieve the locked axis. */
-	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{return pLockedAxis;}
+	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
 	/** Set the locked axis. */
 	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
 	
 	/** Retrieve the position target. */
-	inline aeControllerTarget &GetTargetPosition(){return pTargetPosition;}
-	inline const aeControllerTarget &GetTargetPosition() const{return pTargetPosition;}
+	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Retrieve the up target. */
-	inline aeControllerTarget &GetTargetUp(){return pTargetUp;}
-	inline const aeControllerTarget &GetTargetUp() const{return pTargetUp;}
+	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
+	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
 	
 	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

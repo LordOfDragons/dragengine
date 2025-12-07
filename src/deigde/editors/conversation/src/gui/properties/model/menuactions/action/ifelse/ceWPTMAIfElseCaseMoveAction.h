@@ -68,22 +68,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return *pConversation;}
+	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{return pAction;}
+	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
+	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 	
 	/** \brief If-case. */
-	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
+	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Index of new position. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	

@@ -65,7 +65,7 @@ public:
 	virtual void Finished();
 	
 	/** \brief Font has been already loaded. */
-	inline bool GetAlreadyLoaded() const{return pAlreadyLoaded;}
+	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	/*@}*/
 	
 	

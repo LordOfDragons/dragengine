@@ -117,8 +117,8 @@ void deoglTexUnitConfig::Apply(deoglRenderThread &renderThread, int stage) const
 					
 				}else{
 					// DEBUGGING
-					if(! envmap->GetEnvironmentMap()){
-						printf("BUG! envmap->GetEnvironmentMap() is NULL\n");
+					if(!envmap->GetEnvironmentMap()){
+						printf("BUG!envmap->GetEnvironmentMap() is NULL\n");
 						printf("  world: %p\n", envmap->GetWorld());
 						printf("  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z);
 						printf("  skyonly: %d\n", envmap->GetSkyOnly());
@@ -156,7 +156,7 @@ void deoglTexUnitConfig::Apply(deoglRenderThread &renderThread, int stage) const
 			const bool useEqui = renderReflection.GetUseEquiEnvMap();
 			deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
 			
-			if(! envmap){
+			if(!envmap){
 				envmap = renderReflection.GetDirectEnvMapActive();
 			}
 			
@@ -199,7 +199,7 @@ bool deoglTexUnitConfig::IsEnabled() const{
 }
 
 bool deoglTexUnitConfig::IsDisabled() const{
-	return ! pTexture && ! pCubeMap && ! pArrayTexture && ! pTBO && pSpecial == estNone;
+	return !pTexture && !pCubeMap && !pArrayTexture && !pTBO && pSpecial == estNone;
 }
 
 
@@ -251,7 +251,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 		// try video player
-		if(! found){
+		if(!found){
 			const int skinVideoPlayer = schan->GetVideoPlayer();
 			deoglRVideoPlayer *videoPlayer = nullptr;
 			
@@ -266,7 +266,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 		// try dynamic constructed
-		if(! found){
+		if(!found){
 			const int dynamicConstructed = schan->GetDynamicConstructed();
 			
 			if(dynamicConstructed != -1 && skinState
@@ -281,7 +281,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 		// otherwise use channel texture
-		if(! found){
+		if(!found){
 			deoglTexture *texture = schan->GetTexture();
 			
 			if(schan->GetImage()){
@@ -373,7 +373,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 		}
 		
 		// otherwise us channel texture
-		if(! found){
+		if(!found){
 			deoglCubeMap *cubemap = schan->GetCubeMap();
 			
 			if(schan->GetImage()){

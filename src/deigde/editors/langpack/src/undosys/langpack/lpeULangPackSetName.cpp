@@ -43,7 +43,7 @@ lpeULangPackSetName::lpeULangPackSetName(lpeLangPack *langpack, const decUnicode
 pLangPack(NULL),
 pNewName(newName)
 {
-	if(! langpack){
+	if(!langpack){
 		DETHROW(deeInvalidParam);
 	}
 	

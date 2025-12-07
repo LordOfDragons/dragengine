@@ -194,7 +194,7 @@ void deoglVREye::BeginFrame(deBaseVRModule &vrmodule){
 	// are recreated if parameters changed
 	pGetParameters(vrmodule);
 	
-	if(! pRenderTarget || pTargetSize != pRenderTarget->GetSize()){
+	if(!pRenderTarget || pTargetSize != pRenderTarget->GetSize()){
 		deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 		pLogParameters(renderThread);
 		
@@ -242,7 +242,7 @@ void deoglVREye::Render(){
 }
 
 void deoglVREye::Submit(deBaseVRModule &vrmodule){
-	if(! pRenderTarget->GetFBO() || ! pRenderTarget->GetTexture()){
+	if(!pRenderTarget->GetFBO() || !pRenderTarget->GetTexture()){
 		// shutdown protection
 		return;
 	}
@@ -424,7 +424,7 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 }
 
 void deoglVREye::pDestroyEyeViews(){
-	if(! pVRViewImages){
+	if(!pVRViewImages){
 		return;
 	}
 	

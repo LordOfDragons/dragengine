@@ -839,7 +839,7 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 			
 			const bool hasVR = pVRCamera && pVRCamera->GetVR();
 			
-			if(remainingTime / estimatedGameTime >= ratioTimes && ! hasVR){
+			if(remainingTime / estimatedGameTime >= ratioTimes && !hasVR){
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -888,7 +888,7 @@ void deoglRenderThread::Unfreeze(){
 }
 
 void deoglRenderThread::CreateRenderWindow(deoglRRenderWindow *window){
-	if(! window){
+	if(!window){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1055,7 +1055,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	bool verified = true;
 	verified &= pCapabilities->Verify();
 	verified &= pExtensions->VerifyPresence(); // capabilities possibly disabled extensions
-	if(! verified){
+	if(!verified){
 		DETHROW_INFO(deeInvalidAction, "Required hardware support missing. Please see logs");
 	}
 	
@@ -1534,7 +1534,7 @@ void deoglRenderThread::pInitExtensions(){
 	
 	pExtensions->PrintSummary(); // print this always to help debug customer problems
 	
-	if(! pExtensions->VerifyPresence()){
+	if(!pExtensions->VerifyPresence()){
 		DETHROW_INFO(deeInvalidAction,
 			"Required extensions or functions could not be found. Please see logs");
 	}
@@ -1665,7 +1665,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 	// transfer. by synchronizing with the GPU we can ensure all rendering has finished so
 	// we can use the GPU for pre-render processing. this trades stalling at an unfortunate
 	// time with stalling at a well known time
-	if(! (pVRCamera && pVRCamera->GetVR()) && showDebugInfoModule){
+	if(!(pVRCamera && pVRCamera->GetVR()) && showDebugInfoModule){
 		OGL_CHECK(*this, glFinish());
 	}
 	
@@ -1839,15 +1839,15 @@ void deoglRenderThread::pRenderSingleFrame(){
 #include <malloc.h>
 
 bool deoglRenderThread::DoesDebugMemoryUsage() const{
-	if(! pLogger) return false;
-	if(! pTexture) return false;
-	if(! pDeferredRendering) return false;
+	if(!pLogger) return false;
+	if(!pTexture) return false;
+	if(!pDeferredRendering) return false;
 	
 	return pOgl.GetGameEngine()->GetCacheAppID() == "testing";
 }
 
 void deoglRenderThread::DebugMemoryUsage(const char *prefix){
-	if(! DoesDebugMemoryUsage()) return;
+	if(!DoesDebugMemoryUsage()) return;
 	
 	pLogger->LogInfoFormat("DebugMemoryUsage: %s", prefix);
 	
@@ -2062,7 +2062,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 			int i;
 			for(i=0; i<xmlDoc.GetRoot()->GetElementCount(); i++){
 				const decXmlElement * const element = xmlDoc.GetRoot()->GetElementAt(i);
-				if(! element->CanCastToElementTag()){
+				if(!element->CanCastToElementTag()){
 					continue;
 				}
 				const decXmlElementTag * const tag = element->CastToElementTag():
@@ -2072,7 +2072,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 					int j;
 					for(j=0; j<tag.GetElementCount(); j++){
 						const decXmlElement * const element2 = tag->GetElementAt(j);
-						if(! element2->CanCastToAttValue()){
+						if(!element2->CanCastToAttValue()){
 							continue;
 						}
 						const decXmlAttValue * const attr = element2->CastToAttValue();
@@ -2232,7 +2232,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 }
 
 void deoglRenderThread::DebugMemoryUsageSmall(const char *prefix){
-	if(! DoesDebugMemoryUsage()) return;
+	if(!DoesDebugMemoryUsage()) return;
 	
 	const struct mallinfo minfo(mallinfo());
 	pLogger->LogInfoFormat("DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
@@ -2269,7 +2269,7 @@ void deoglRenderThread::pBeginFrame(){
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	pShader->GetShaderManager().Update();
 	
-	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	
@@ -2314,7 +2314,7 @@ void deoglRenderThread::pRenderWindows(){
 
 void deoglRenderThread::pVRStartBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if(! vr){
+	if(!vr){
 		return;
 	}
 	

@@ -72,25 +72,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Center. */
-	inline const decDVector &GetCenter() const{return pCenter;}
+	inline const decDVector &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set center. */
 	void SetCenter(const decDVector &center);
 	
 	/** \brief Radius. */
-	inline double GetRadius() const{return pRadius;}
+	inline double GetRadius() const{ return pRadius; }
 	
 	/** \brief Set radius. */
 	void SetRadius(double radius);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Ray trace world BVH or NULL. */
-	inline deoalRTWorldBVH *GetRTWorldBVH() const{return pRTWorldBVH;}
+	inline deoalRTWorldBVH *GetRTWorldBVH() const{ return pRTWorldBVH; }
 	
 	/** \brief Set ray trace world bch or NULL. */
 	void SetRTWorldBVH(deoalRTWorldBVH *bvh);

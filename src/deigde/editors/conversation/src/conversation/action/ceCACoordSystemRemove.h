@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the coordinate system id. */
-	inline const decString &GetCoordSystemID() const{return pCoordSystemID;}
+	inline const decString &GetCoordSystemID() const{ return pCoordSystemID; }
 	/** \brief Sets the coordinate system id. */
 	void SetCoordSystemID(const char *id);
 	

@@ -87,45 +87,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent plan. */
-	inline deoglRenderPlan &GetPlan() const{return pPlan;}
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
 	
 	
-	inline deoglRenderTask &GetSolidDepthTask(){return *pSolidDepthTask;}
+	inline deoglRenderTask &GetSolidDepthTask(){ return *pSolidDepthTask; }
 	
-	inline deoglRenderTask &GetSolidDepthOutlineTask(){return *pSolidDepthOutlineTask;}
+	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return *pSolidDepthOutlineTask; }
 	
-	inline deoglRenderTask &GetSolidGeometryTask(){return *pSolidGeometryTask;}
+	inline deoglRenderTask &GetSolidGeometryTask(){ return *pSolidGeometryTask; }
 	
-	inline deoglRenderTask &GetSolidGeometryHeight1Task(){return *pSolidGeometryHeight1Task;}
-	inline deoglRenderTask &GetSolidGeometryHeight2Task(){return *pSolidGeometryHeight2Task;}
+	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return *pSolidGeometryHeight1Task; }
+	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return *pSolidGeometryHeight2Task; }
 	
-	inline deoglRenderTask &GetSolidGeometryOutlineTask(){return *pSolidGeometryOutlineTask;}
+	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return *pSolidGeometryOutlineTask; }
 	
-	inline deoglRenderTask &GetSolidDecalsTask(){return *pSolidDecalsTask;}
-	
-	
-	
-	inline deoglRenderTask &GetSolidDepthXRayTask(){return *pSolidDepthXRayTask;}
-	
-	inline deoglRenderTask &GetSolidDepthOutlineXRayTask(){return *pSolidDepthOutlineXRayTask;}
-	
-	inline deoglRenderTask &GetSolidGeometryXRayTask(){return *pSolidGeometryXRayTask;}
-	
-	inline deoglRenderTask &GetSolidGeometryHeight1XRayTask(){return *pSolidGeometryHeight1XRayTask;}
-	inline deoglRenderTask &GetSolidGeometryHeight2XRayTask(){return *pSolidGeometryHeight2XRayTask;}
-	
-	inline deoglRenderTask &GetSolidGeometryOutlineXRayTask(){return *pSolidGeometryOutlineXRayTask;}
-	
-	inline deoglRenderTask &GetSolidDecalsXRayTask(){return *pSolidDecalsXRayTask;}
+	inline deoglRenderTask &GetSolidDecalsTask(){ return *pSolidDecalsTask; }
 	
 	
 	
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{return pCRTSolidDepth;}
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{return pCRTSolidGeometry;}
+	inline deoglRenderTask &GetSolidDepthXRayTask(){ return *pSolidDepthXRayTask; }
 	
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{return pCRTSolidDepthXRay;}
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{return pCRTSolidGeometryXRay;}
+	inline deoglRenderTask &GetSolidDepthOutlineXRayTask(){ return *pSolidDepthOutlineXRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryXRayTask(){ return *pSolidGeometryXRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryHeight1XRayTask(){ return *pSolidGeometryHeight1XRayTask; }
+	inline deoglRenderTask &GetSolidGeometryHeight2XRayTask(){ return *pSolidGeometryHeight2XRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryOutlineXRayTask(){ return *pSolidGeometryOutlineXRayTask; }
+	
+	inline deoglRenderTask &GetSolidDecalsXRayTask(){ return *pSolidDecalsXRayTask; }
+	
+	
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{ return pCRTSolidDepth; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{ return pCRTSolidGeometry; }
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{ return pCRTSolidDepthXRay; }
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{ return pCRTSolidGeometryXRay; }
 	
 	
 	

@@ -43,7 +43,7 @@ gdeOCForceField *particleEmitter) :
 igdeClipboardData(TYPE_NAME),
 pForceField(NULL)
 {
-	if(! particleEmitter){
+	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

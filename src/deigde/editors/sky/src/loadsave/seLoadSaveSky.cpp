@@ -86,7 +86,7 @@ void seLoadSaveSky::LoadSky(seLoadSaveSystem &lssys, seSky &sky, decBaseFileRead
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "sky"){
+	if(!root || root->GetName() != "sky"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,17 +188,17 @@ void seLoadSaveSky::pWriteLayer(decXmlWriter &writer, const seLayer &layer){
 	writer.WriteDataTagString("name", layer.GetName().GetString());
 	
 	const decVector &offset = layer.GetOffset();
-	if(! offset.IsZero()){
+	if(!offset.IsZero()){
 		WriteVector(writer, "offset", offset);
 	}
 	
 	const decVector &orientation = layer.GetOrientation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		WriteVector(writer, "orientation", orientation);
 	}
 	
 	const decColor &color = layer.GetColor();
-	if(! color.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!color.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		WriteColor(writer, "color", color);
 	}
 	
@@ -215,15 +215,15 @@ void seLoadSaveSky::pWriteLayer(decXmlWriter &writer, const seLayer &layer){
 		writer.WriteDataTagBool("mulBySkyColor", true);
 	}
 	
-	if(! layer.GetSkinPath().IsEmpty()){
+	if(!layer.GetSkinPath().IsEmpty()){
 		writer.WriteDataTagString("skin", layer.GetSkinPath());
 	}
 	
-	if(! layer.GetLightOrientation().IsZero()){
+	if(!layer.GetLightOrientation().IsZero()){
 		WriteVector(writer, "lightOrientation", layer.GetLightOrientation());
 	}
 	
-	if(! layer.GetLightColor().IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!layer.GetLightColor().IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		WriteColor(writer, "lightColor", layer.GetLightColor());
 	}
 	
@@ -358,7 +358,7 @@ void seLoadSaveSky::pWriteBody(decXmlWriter &writer, const seBody &body){
 	writer.WriteOpeningTag("body", false, true);
 	
 	const decVector &orientation = body.GetOrientation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		WriteVector(writer, "orientation", orientation);
 	}
 	
@@ -366,11 +366,11 @@ void seLoadSaveSky::pWriteBody(decXmlWriter &writer, const seBody &body){
 	WriteVector2(writer, "size", size);
 	
 	const decColor &color = body.GetColor();
-	if(! color.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!color.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		WriteColor(writer, "color", color);
 	}
 	
-	if(! body.GetSkinPath().IsEmpty()){
+	if(!body.GetSkinPath().IsEmpty()){
 		writer.WriteDataTagString("skin", body.GetSkinPath().GetString());
 	}
 	
@@ -385,7 +385,7 @@ void seLoadSaveSky::pReadSky(const decXmlElementTag &root, seSky &sky){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -421,7 +421,7 @@ void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -463,7 +463,7 @@ void seLoadSaveSky::pReadLink(const decXmlElementTag &root, seSky &sky){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -501,7 +501,7 @@ void seLoadSaveSky::pReadLayer(const decXmlElementTag &root, seSky &sky){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -638,7 +638,7 @@ void seLoadSaveSky::pReadTarget(const decXmlElementTag &root, seSky &sky, seLaye
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -646,7 +646,7 @@ void seLoadSaveSky::pReadTarget(const decXmlElementTag &root, seSky &sky, seLaye
 		
 		if(tagName == "link"){
 			seLink *link = sky.GetLinks().GetAt(GetCDataInt(*tag));
-			if(! target->GetLinks().Has(link)){
+			if(!target->GetLinks().Has(link)){
 				target->AddLink(link);
 			}
 			
@@ -665,7 +665,7 @@ void seLoadSaveSky::pReadBody(const decXmlElementTag &root, seSky &sky, seLayer 
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

@@ -78,7 +78,7 @@ int width, int height, int layerCount, bool withStencil, bool useFloat){
 	
 	// find the texture with the matching format
 	for(i=0; i<pArrayTextureCount; i++){
-		if(! pArrayTextures[i]->GetInUse() && pArrayTextures[i]->Matches(
+		if(!pArrayTextures[i]->GetInUse() && pArrayTextures[i]->Matches(
 		width, height, layerCount, withStencil, useFloat)){
 			texture = pArrayTextures[i];
 			break;
@@ -86,7 +86,7 @@ int width, int height, int layerCount, bool withStencil, bool useFloat){
 	}
 	
 	// if not found create a new one
-	if(! texture){
+	if(!texture){
 		if(pArrayTextureCount == pArrayTextureSize){
 			int newSize = pArrayTextureSize * 3 / 2 + 1;
 			deoglRenderableDepthArrayTexture **newArray = new deoglRenderableDepthArrayTexture*[newSize];

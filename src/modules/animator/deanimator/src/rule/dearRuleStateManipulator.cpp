@@ -100,7 +100,7 @@ dearRuleStateManipulator::~dearRuleStateManipulator(){
 
 void dearRuleStateManipulator::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	

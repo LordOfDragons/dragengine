@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
-	if(! texture || ! newName) DETHROW(deeInvalidParam);
+	if(!texture || !newName) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;
 	

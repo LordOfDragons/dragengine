@@ -90,10 +90,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the rigged collider. */
-	inline deColliderRig &GetColliderRig() const{return pColliderRig;}
+	inline deColliderRig &GetColliderRig() const{ return pColliderRig; }
 	
 	/** Retrieves the test mode. */
-	inline eTestModes GetTestMode() const{return pTestMode;}
+	inline eTestModes GetTestMode() const{ return pTestMode; }
 	
 	/** \brief Mark bones dirty. */
 	void DirtyBones();
@@ -139,10 +139,10 @@ public:
 	void UpdateCollisionObjectAABBs() override;
 	
 	/** Retrieves the rig or NULL if not set. */
-	inline debpRig *GetRig() const{return pRig;}
+	inline debpRig *GetRig() const{ return pRig; }
 	/** Retrieves the list of rig shapes. */
-	inline debpShapeList &GetRigShapes(){return pRigShapes;}
-	inline const debpShapeList &GetRigShapes() const{return pRigShapes;}
+	inline debpShapeList &GetRigShapes(){ return pRigShapes; }
+	inline const debpShapeList &GetRigShapes() const{ return pRigShapes; }
 	
 	/** Updates shapes with the current matrix. */
 	void UpdateShapes() override;
@@ -153,10 +153,10 @@ public:
 	bool IsSimpleShape() const;
 	
 	/** \brief Simple physics body or \em NULL. */
-	inline debpPhysicsBody *GetSimplePhysicsBody() const{return pSimplePhyBody;}
+	inline debpPhysicsBody *GetSimplePhysicsBody() const{ return pSimplePhyBody; }
 	
 	/** \brief Bones or NULL. */
-	inline debpColliderBones *GetBones() const{return pBones;}
+	inline debpColliderBones *GetBones() const{ return pBones; }
 	
 	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
 	bool PrepareStaticCollisionTest() override;

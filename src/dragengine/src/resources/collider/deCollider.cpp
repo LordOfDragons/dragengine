@@ -311,7 +311,7 @@ deColliderAttachment *deCollider::GetAttachmentAt(int index) const{
 }
 
 bool deCollider::HasAttachmentWith(deResource *resource) const{
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -326,7 +326,7 @@ bool deCollider::HasAttachmentWith(deResource *resource) const{
 }
 
 deColliderAttachment *deCollider::GetAttachmentWith(deResource *resource) const{
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -340,7 +340,7 @@ deColliderAttachment *deCollider::GetAttachmentWith(deResource *resource) const{
 }
 
 void deCollider::AddAttachment(deColliderAttachment *attachment){
-	if(! attachment || HasAttachmentWith(attachment->GetResource())){
+	if(!attachment || HasAttachmentWith(attachment->GetResource())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -464,7 +464,7 @@ deColliderConstraint *deCollider::GetConstraintAt(int index) const{
 }
 
 int deCollider::IndexOfConstraint(deColliderConstraint *constraint) const{
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -479,7 +479,7 @@ int deCollider::IndexOfConstraint(deColliderConstraint *constraint) const{
 }
 
 bool deCollider::HasConstraint(deColliderConstraint *constraint) const{
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -501,7 +501,7 @@ void deCollider::AddConstraint(deColliderConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		deColliderConstraint **newArray = new deColliderConstraint*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(deColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
@@ -672,35 +672,35 @@ void deCollider::NotifyCollisionTestEnableChanged(int index){
 ////////////////////////
 
 bool deCollider::PointInside(const decDVector &point){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return false;
 	}
 	return pPeerPhysics->PointInside(point);
 }
 
 void deCollider::RayHits(const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return;
 	}
 	pPeerPhysics->RayHits(rayOrigin, rayDirection, listener);
 }
 
 void deCollider::ColliderHits(deCollider *collider, deBaseScriptingCollider *listener){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return;
 	}
 	pPeerPhysics->ColliderHits(collider, listener);
 }
 
 void deCollider::ColliderMoveHits(deCollider *collider, const decVector &displacement, deBaseScriptingCollider *listener){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return;
 	}
 	pPeerPhysics->ColliderMoveHits(collider, displacement, listener);
 }
 
 void deCollider::ColliderRotateHits(deCollider *collider, const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return;
 	}
 	pPeerPhysics->ColliderRotateHits(collider, rotation, listener);
@@ -708,7 +708,7 @@ void deCollider::ColliderRotateHits(deCollider *collider, const decVector &rotat
 
 void deCollider::ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
 const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! pPeerPhysics){
+	if(!pPeerPhysics){
 		return;
 	}
 	pPeerPhysics->ColliderMoveRotateHits(collider, displacement, rotation, listener);

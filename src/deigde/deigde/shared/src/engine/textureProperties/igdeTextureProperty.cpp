@@ -38,7 +38,7 @@
 ////////////////////////////
 
 igdeTextureProperty::igdeTextureProperty(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -65,7 +65,7 @@ void igdeTextureProperty::SetType(ePropertyTypes type){
 }
 
 void igdeTextureProperty::SetDescription(const char *description){
-	if(! description){
+	if(!description){
 		DETHROW(deeInvalidParam);
 	}
 	

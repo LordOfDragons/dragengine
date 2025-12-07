@@ -107,7 +107,7 @@ deClassSSSynthesizer::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : 
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSSSynthesizer::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -145,7 +145,7 @@ deClassSSSynthesizer::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInit
 	p_AddParameter(init.clsSSSynthesizerTarget); // target
 }
 void deClassSSSynthesizer::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -277,7 +277,7 @@ void deClassSSSynthesizer::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerSourceSynthesizer *deClassSSSynthesizer::GetSource(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -285,7 +285,7 @@ deSynthesizerSourceSynthesizer *deClassSSSynthesizer::GetSource(dsRealObject *my
 }
 
 void deClassSSSynthesizer::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -309,11 +309,11 @@ void deClassSSSynthesizer::AssignSynthesizer(dsRealObject *myself, deSynthesizer
 }
 
 void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSynthesizer *source){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! source){
+	if(!source){
 		rt->PushObject(NULL, this);
 		return;
 	}

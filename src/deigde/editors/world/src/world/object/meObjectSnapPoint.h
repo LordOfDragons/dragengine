@@ -78,10 +78,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Snap point. */
-	inline igdeGDCSnapPoint *GetSnapPoint() const{return pSnapPoint;}
+	inline igdeGDCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

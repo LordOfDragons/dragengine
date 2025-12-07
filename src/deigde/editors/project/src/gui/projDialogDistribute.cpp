@@ -150,12 +150,12 @@ void projDialogDistribute::LogMessage(const char *message){
 }
 
 void projDialogDistribute::OnFrameUpdate(){
-	if(! pTaskDistribute){
+	if(!pTaskDistribute){
 		return;
 	}
 	
 	try{
-		if(! pTaskDistribute->Step()){
+		if(!pTaskDistribute->Step()){
 			decPath path;
 			path.SetFromNative(GetEnvironment().GetGameProject()->GetDirectoryPath());
 			path.AddUnixPath(pProfile->GetDelgaPath());

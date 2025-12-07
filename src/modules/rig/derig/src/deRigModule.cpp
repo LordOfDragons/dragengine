@@ -112,7 +112,7 @@ void deRigModule::LoadRig(decBaseFileReader &file, deRig &rig){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "rig") != 0){
+	if(!root || strcmp(root->GetName(), "rig") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -342,7 +342,7 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &b
 		}
 	}*/
 	
-	if(! name){
+	if(!name){
 		LogWarn("Bone missing name, ignoring.\n");
 		return;
 	}
@@ -353,7 +353,7 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &b
 	
 	try{
 		bone = new deRigBone(name);
-		if(! bone) DETHROW(deeOutOfMemory);
+		if(!bone) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -582,7 +582,7 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 	
 	try{
 		cylinder = new decShapeCylinder(1.0f, 1.0f);
-		if(! cylinder) DETHROW(deeOutOfMemory);
+		if(!cylinder) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -685,7 +685,7 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 	
 	try{
 		capsule = new decShapeCapsule(1.0f, 1.0f);
-		if(! capsule) DETHROW(deeOutOfMemory);
+		if(!capsule) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -781,7 +781,7 @@ void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStr
 	
 	try{
 		box = new decShapeBox(decVector(1.0f, 1.0f, 1.0f));
-		if(! box) DETHROW(deeOutOfMemory);
+		if(!box) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -868,7 +868,7 @@ void deRigModule::pParseHull(decXmlElementTag *root, decShapeList &shapes, decSt
 		int pointIndex = 0;
 		for(i=0; i<root->GetElementCount(); i++){
 			decXmlElementTag * const tag = pGetTagAt(root, i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -919,7 +919,7 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 	
 	try{
 		constraint = new deRigConstraint;
-		if(! constraint) DETHROW(deeOutOfMemory);
+		if(!constraint) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -1033,7 +1033,7 @@ deColliderConstraintDof &dof, bool linearConstraint){
 				if(cdata){
 					value = strtof(cdata->GetData(), NULL);
 					
-					if(! linearConstraint){
+					if(!linearConstraint){
 						value *= DEG2RAD;
 					}
 					
@@ -1046,7 +1046,7 @@ deColliderConstraintDof &dof, bool linearConstraint){
 				if(cdata){
 					value = strtof(cdata->GetData(), NULL);
 					
-					if(! linearConstraint){
+					if(!linearConstraint){
 						value *= DEG2RAD;
 					}
 					
@@ -1251,7 +1251,7 @@ void deRigModule::pWriteRig(decXmlWriter &writer, const deRig &rig){
 	}
 	
 	const decVector &cmp = rig.GetCentralMassPoint();
-	if(! cmp.IsZero()){
+	if(!cmp.IsZero()){
 		writer.WriteOpeningTagStart("centralMassPoint");
 		writer.WriteAttributeFloat("x", cmp.x);
 		writer.WriteAttributeFloat("y", cmp.y);
@@ -1289,7 +1289,7 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	}
 	
 	const decVector &position = bone.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -1298,7 +1298,7 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	}
 	
 	const decVector rotation(bone.GetRotation() * RAD2DEG);
-	if(! rotation.IsZero()){
+	if(!rotation.IsZero()){
 		writer.WriteOpeningTagStart("rotation");
 		writer.WriteAttributeFloat("x", rotation.x);
 		writer.WriteAttributeFloat("y", rotation.y);
@@ -1311,7 +1311,7 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	}
 	
 	const decVector &cmp = bone.GetCentralMassPoint();
-	if(! cmp.IsZero()){
+	if(!cmp.IsZero()){
 		writer.WriteOpeningTagStart("centralMassPoint");
 		writer.WriteAttributeFloat("x", cmp.x);
 		writer.WriteAttributeFloat("y", cmp.y);
@@ -1327,8 +1327,8 @@ void deRigModule::pWriteBone(decXmlWriter &writer, const deRig &rig, const deRig
 	const decVector ikLimitsUpper(bone.GetIKLimitsUpper() * RAD2DEG);
 	const decVector &ikResistance = bone.GetIKResistance();
 	
-	if(! ikLimitsUpper.IsZero() || ! ikResistance.IsZero()
-	|| ! ikLimitsLower.IsEqualTo(decVector(360.0f, 360.0f, 360.0f))
+	if(!ikLimitsUpper.IsZero() || !ikResistance.IsZero()
+	|| !ikLimitsLower.IsEqualTo(decVector(360.0f, 360.0f, 360.0f))
 	|| bone.GetIKLockedX() || bone.GetIKLockedY() || bone.GetIKLockedZ()){
 		if(fabsf(ikLimitsLower.x - 360.0f) > FLOAT_SAFE_EPSILON
 		|| fabsf(ikLimitsUpper.x) > FLOAT_SAFE_EPSILON
@@ -1414,7 +1414,7 @@ void deRigModule::pWriteConstraint(decXmlWriter &writer, const deRig &rig, const
 	}
 	
 	const decVector &referencePosition = constraint.GetReferencePosition();
-	if(! referencePosition.IsZero()){
+	if(!referencePosition.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", referencePosition.x);
 		writer.WriteAttributeFloat("y", referencePosition.y);
@@ -1424,7 +1424,7 @@ void deRigModule::pWriteConstraint(decXmlWriter &writer, const deRig &rig, const
 	
 	const decVector referenceRotation(decMatrix::CreateFromQuaternion(
 		constraint.GetReferenceOrientation()).GetEulerAngles() / DEG2RAD);
-	if(! referenceRotation.IsZero()){
+	if(!referenceRotation.IsZero()){
 		writer.WriteOpeningTagStart("rotation");
 		writer.WriteAttributeFloat("x", referenceRotation.x);
 		writer.WriteAttributeFloat("y", referenceRotation.y);
@@ -1433,7 +1433,7 @@ void deRigModule::pWriteConstraint(decXmlWriter &writer, const deRig &rig, const
 	}
 	
 	const decVector &boneOffset = constraint.GetBoneOffset();
-	if(! boneOffset.IsZero()){
+	if(!boneOffset.IsZero()){
 		writer.WriteOpeningTagStart("offset");
 		writer.WriteAttributeFloat("x", boneOffset.x);
 		writer.WriteAttributeFloat("y", boneOffset.y);
@@ -1490,7 +1490,7 @@ const char *tagName, bool linearConstraint){
 	
 	// lower
 	value = dof.GetLowerLimit();
-	if(! linearConstraint){
+	if(!linearConstraint){
 		value /= DEG2RAD;
 	}
 	
@@ -1504,7 +1504,7 @@ const char *tagName, bool linearConstraint){
 	
 	// upper
 	value = dof.GetUpperLimit();
-	if(! linearConstraint){
+	if(!linearConstraint){
 		value /= DEG2RAD;
 	}
 	
@@ -1549,7 +1549,7 @@ const char *tagName, bool linearConstraint){
 		writer.WriteDataTagFloat("springStiffness", value);
 	}
 	
-	if(! emptyTag){
+	if(!emptyTag){
 		writer.WriteClosingTag(tagName);
 	}
 }

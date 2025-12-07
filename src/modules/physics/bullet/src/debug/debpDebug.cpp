@@ -135,7 +135,7 @@ void debpDebug::SetEnabled(bool enabled){
 
 
 void debpDebug::BeginProcessPhysics(debpWorld *world){
-	if(! pEnabled){
+	if(!pEnabled){
 		return;
 	}
 	
@@ -152,7 +152,7 @@ void debpDebug::BeginProcessPhysics(debpWorld *world){
 }
 
 void debpDebug::EndProcessPhysics(debpWorld *world){
-	if(! pEnabled){
+	if(!pEnabled){
 		return;
 	}
 	

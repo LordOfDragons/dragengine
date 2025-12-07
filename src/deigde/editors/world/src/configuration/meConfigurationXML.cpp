@@ -71,7 +71,7 @@ void meConfigurationXML::ReadFromFile(decBaseFileReader &reader, meConfiguration
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "worldEditor") != 0){
+	if(!root || strcmp(root->GetName(), "worldEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void meConfigurationXML::pReadConfig(const decXmlElementTag &root, meConfigurati
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

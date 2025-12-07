@@ -58,25 +58,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Space mesh. */
-	inline dedaiSpaceMesh *GetMesh() const{return pMesh;}
+	inline dedaiSpaceMesh *GetMesh() const{ return pMesh; }
 	
 	/** \brief Set space mesh. */
 	void SetMesh(dedaiSpaceMesh *mesh);
 	
 	/** \brief Face index. */
-	inline unsigned short GetFace() const{return pFace;}
+	inline unsigned short GetFace() const{ return pFace; }
 	
 	/** \brief Set face index. */
 	void SetFace(unsigned short face);
 	
 	/** \brief Face corner index. */
-	inline unsigned short GetCorner() const{return pCorner;}
+	inline unsigned short GetCorner() const{ return pCorner; }
 	
 	/** \brief Set face corner index. */
 	void SetCorner(unsigned short corner);
 	
 	/** \brief Transformation matrix from this navigation mesh to the linked one. */
-	inline const decMatrix &GetTransform() const{return pTransform;}
+	inline const decMatrix &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set transformation matrix from this navigation mesh to the linked one. */
 	void SetTransform(const decMatrix &transform);

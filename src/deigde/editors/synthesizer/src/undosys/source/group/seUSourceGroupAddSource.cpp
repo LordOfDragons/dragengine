@@ -44,7 +44,7 @@ pGroup(NULL),
 pSource(NULL),
 pIndex(index)
 {
-	if(! group || ! source){
+	if(!group || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

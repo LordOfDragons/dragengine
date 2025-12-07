@@ -70,7 +70,7 @@ bool igdeGuiTheme::HasProperty(const char *property) const{
 }
 
 void igdeGuiTheme::SetProperty(igdeGuiThemeProperty *property){
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	pProperties.SetAt(property->GetName(), property);

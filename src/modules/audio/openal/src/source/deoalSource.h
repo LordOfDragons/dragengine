@@ -89,15 +89,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** Source. */
-	inline ALuint GetSource() const{return pSource;}
+	inline ALuint GetSource() const{ return pSource; }
 	
 	
 	
 	/** Number of streaming buffers. */
-	inline int GetBufferCount() const{return pBufferCount;}
+	inline int GetBufferCount() const{ return pBufferCount; }
 	
 	/** Set number of streaming buffers. */
 	void SetBufferCount(int count);
@@ -108,13 +108,13 @@ public:
 	
 	
 	/** Owner or \em NULL if not bound. */
-	inline void *GetOwner() const{return pOwner;}
+	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Set owner or \em NULL if not bound. */
 	void SetOwner(void *owner);
 	
 	/** Importance. */
-	inline float GetImportance() const{return pImportance;}
+	inline float GetImportance() const{ return pImportance; }
 	
 	/** Set importance. */
 	void SetImportance(float importance);
@@ -130,7 +130,7 @@ public:
 	
 	
 	/** Play state. */
-	inline eState GetState() const{return pState;}
+	inline eState GetState() const{ return pState; }
 	
 	/** Start playing back. */
 	void Play();

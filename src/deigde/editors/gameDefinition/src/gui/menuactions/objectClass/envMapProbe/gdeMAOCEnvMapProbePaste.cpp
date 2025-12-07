@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Environment Map Probe",
 igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

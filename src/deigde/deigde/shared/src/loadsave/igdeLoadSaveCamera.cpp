@@ -111,7 +111,7 @@ void igdeLoadSaveCamera::pReadCamera(const decXmlElementTag &root, igdeCamera &c
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

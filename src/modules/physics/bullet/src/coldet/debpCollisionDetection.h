@@ -131,13 +131,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo(){return pColInfo;}
+	inline deCollisionInfo *GetCollisionInfo(){ return pColInfo; }
 	
 	/** \brief Bullet shape collision. */
-	inline debpBulletShapeCollision &GetBulletShapeCollision(){return pShapeCollision;}
+	inline debpBulletShapeCollision &GetBulletShapeCollision(){ return pShapeCollision; }
 	
 	/** \brief Ray hack shape. */
-	inline debpSweepCollisionTest &GetRayHackShape(){return pRayHackShape;}
+	inline debpSweepCollisionTest &GetRayHackShape(){ return pRayHackShape; }
 	/*@}*/
 	
 	/** @name Collision Detection */

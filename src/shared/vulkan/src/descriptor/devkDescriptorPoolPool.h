@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner. */
-	inline devkDescriptorPool &GetOwner() const{return pOwner;}
+	inline devkDescriptorPool &GetOwner() const{ return pOwner; }
 	
 	/** Get next free slot or nullptr if pool is full. */
 	devkDescriptorPoolSlot *Get();

@@ -62,17 +62,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render target. */
-	inline const deoglRenderTarget::Ref &GetRenderTarget() const{return pRenderTarget;}
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Skin constructed property. */
-	deoglSkinConstructedProperty *GetProperty() const{return pProperty;}
+	deoglSkinConstructedProperty *GetProperty() const{ return pProperty; }
 	
 	/** Set skin constructed property. */
 	void SetProperty(deoglSkinConstructedProperty *property);
 	
 	/** Content. */
-	inline deoglSkinStateCNGroup &GetContent(){return pContent;}
-	inline const deoglSkinStateCNGroup &GetContent() const{return pContent;}
+	inline deoglSkinStateCNGroup &GetContent(){ return pContent; }
+	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
 	
 	/**
 	 * Update.

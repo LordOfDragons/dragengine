@@ -87,43 +87,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent debug drawer or NULL. */
-	inline deDebugDrawer *GetParentDebugDrawer() const{return pEngDebugDrawer;}
+	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
 	/** \brief Set parent debug drawer or NULL. */
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
 	void SetScale(const decVector &scale);
 	
 	/** \brief Edge color. */
-	inline const decColor &GetEdgeColor() const{return pColorEdge;}
+	inline const decColor &GetEdgeColor() const{ return pColorEdge; }
 	
 	/** \brief Set edge color. */
 	void SetEdgeColor(const decColor &color);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{return pColorFill;}
+	inline const decColor &GetFillColor() const{ return pColorFill; }
 	
 	/** \brief Set fill color. */
 	void SetFillColor(const decColor &color);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the debug drawer shape is visible. */
 	void SetVisible(bool visible);

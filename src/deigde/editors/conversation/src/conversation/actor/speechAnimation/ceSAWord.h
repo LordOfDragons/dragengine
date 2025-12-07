@@ -55,9 +55,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the phonetics. */
-	inline const decUnicodeString &GetPhonetics() const{return pPhonetics;}
+	inline const decUnicodeString &GetPhonetics() const{ return pPhonetics; }
 	/** Sets the phonetics. */
 	void SetPhonetics(const decUnicodeString &phonetics);
 	/*@}*/

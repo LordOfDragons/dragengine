@@ -166,22 +166,22 @@ public:
 	void LogExceptionPython();
 	
 	/** \brief Retrieve a namespace. */
-	inline spBaseModule *GetNamespaceDragengine() const{return pNamespaceDragengine;}
-	inline spBaseModule *GetNamespaceScenery() const{return pNamespaceScenery;}
-	inline spBaseModule *GetNamespaceGui() const{return pNamespaceGui;}
+	inline spBaseModule *GetNamespaceDragengine() const{ return pNamespaceDragengine; }
+	inline spBaseModule *GetNamespaceScenery() const{ return pNamespaceScenery; }
+	inline spBaseModule *GetNamespaceGui() const{ return pNamespaceGui; }
 	
 	/** \brief Retrieve a type. */
-	inline spTypeModuleLoader *GetTypeModuleLoader() const{return pTypeModuleLoader;}
-	inline spModuleEngine *GetModuleEngine() const{return pModuleEngine;}
-	inline spModuleGraphicSystem *GetModuleGraphicSystem() const{return pModuleGraphicSystem;}
-	inline spTypeCanvas *GetTypeCanvas() const{return pTypeCanvas;}
-	inline spTypeWorld *GetTypeWorld() const{return pTypeWorld;}
+	inline spTypeModuleLoader *GetTypeModuleLoader() const{ return pTypeModuleLoader; }
+	inline spModuleEngine *GetModuleEngine() const{ return pModuleEngine; }
+	inline spModuleGraphicSystem *GetModuleGraphicSystem() const{ return pModuleGraphicSystem; }
+	inline spTypeCanvas *GetTypeCanvas() const{ return pTypeCanvas; }
+	inline spTypeWorld *GetTypeWorld() const{ return pTypeWorld; }
 	
 	/** \brief Retrieves the script directory. */
-	inline const decString &GetScriptPath() const{return pScriptPath;}
+	inline const decString &GetScriptPath() const{ return pScriptPath; }
 	
 	/** \brief Retrieves the list of script files. */
-	inline spScriptFileList &GetScriptFileList() const{return *pScriptFileList;}
+	inline spScriptFileList &GetScriptFileList() const{ return *pScriptFileList; }
 	/*@}*/
 	
 private:

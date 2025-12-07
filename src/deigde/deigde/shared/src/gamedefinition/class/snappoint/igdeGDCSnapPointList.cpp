@@ -72,7 +72,7 @@ bool igdeGDCSnapPointList::Has(igdeGDCSnapPoint *snapPoint) const{
 }
 
 void igdeGDCSnapPointList::Add(igdeGDCSnapPoint *snapPoint){
-	if(! snapPoint || Has(snapPoint)){
+	if(!snapPoint || Has(snapPoint)){
 		DETHROW(deeInvalidParam);
 	}
 	pSnapPoints.Add(snapPoint);

@@ -110,7 +110,7 @@ void deParticleEmitterInstanceManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(instance){
-		if(! instance->GetPeerGraphic()){
+		if(!instance->GetPeerGraphic()){
 			grasys.LoadParticleEmitterInstance(instance);
 		}
 		
@@ -132,7 +132,7 @@ void deParticleEmitterInstanceManager::SystemPhysicsLoad(){
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(instance){
-		if(! instance->GetPeerPhysics()){
+		if(!instance->GetPeerPhysics()){
 			physys.LoadParticleEmitterInstance(instance);
 		}
 		
@@ -154,7 +154,7 @@ void deParticleEmitterInstanceManager::SystemScriptingLoad(){
 	deScriptingSystem &scrsys = *GetScriptingSystem();
 	
 	while(instance){
-		if(! instance->GetPeerScripting()){
+		if(!instance->GetPeerScripting()){
 			scrsys.LoadParticleEmitterInstance(instance);
 		}
 		

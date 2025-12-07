@@ -302,7 +302,7 @@ void aeAnimator::UpdateWorld(float elapsed){
 	pLocomotion->Update(realTimeElapsed);
 	
 	// update the controllers which are linked to the elapsed time
-	if(! pPaused){
+	if(!pPaused){
 		const int count = pControllers.GetCount();
 		for(i=0; i<count; i++){
 			pControllers.GetAt(i)->UpdateValue(controllerElapsed);
@@ -358,7 +358,7 @@ void aeAnimator::UpdateWorld(float elapsed){
 	pLocomotion->PostUpdate();
 	
 	// update attachments
-	if(! pPaused){
+	if(!pPaused){
 		for(i=0; i<pAttachmentCount; i++){
 			pAttachments[i]->Update(realTimeElapsed);
 		}
@@ -472,7 +472,7 @@ void aeAnimator::MoveControllerTo(aeController *controller, int index){
 }
 
 void aeAnimator::RemoveController(aeController *controller){
-	if(! pControllers.Has(controller)){
+	if(!pControllers.Has(controller)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -570,7 +570,7 @@ void aeAnimator::AddLink(aeLink *link){
 }
 
 void aeAnimator::RemoveLink(aeLink *link){
-	if(! pLinks.Has(link)){
+	if(!pLinks.Has(link)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -660,7 +660,7 @@ void aeAnimator::MoveRuleTo(aeRule *rule, int index){
 }
 
 void aeAnimator::RemoveRule(aeRule *rule){
-	if(! pRules.Has(rule)){
+	if(!pRules.Has(rule)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -716,7 +716,7 @@ void aeAnimator::RebuildRules(){
 		pRules.GetAt(i)->SetEngineRule(NULL);
 	}
 	
-	if(! pEngAnimator){
+	if(!pEngAnimator){
 		return;
 	}
 	
@@ -756,9 +756,9 @@ void aeAnimator::SetListBones(const decStringSet &bones){
 }
 
 void aeAnimator::AddBone(const char *bone){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
-	if(! pListBones.Has(bone)){
+	if(!pListBones.Has(bone)){
 		pListBones.Add(bone);
 		
 		if(pEngAnimator){
@@ -819,7 +819,7 @@ void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
 void aeAnimator::AddVertexPositionSet(const char *vertexPositionSet){
 	DEASSERT_NOTNULL(vertexPositionSet)
 	
-	if(! pListVertexPositionSets.Has(vertexPositionSet)){
+	if(!pListVertexPositionSets.Has(vertexPositionSet)){
 		pListVertexPositionSets.Add(vertexPositionSet);
 		
 		if(pEngAnimator){
@@ -869,7 +869,7 @@ aeAttachment *aeAnimator::GetAttachmentAt(int index) const{
 }
 
 aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pAttachmentCount; i++){
@@ -882,7 +882,7 @@ aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 }
 
 int aeAnimator::IndexOfAttachment(aeAttachment *attachment) const{
-	if(! attachment) DETHROW(deeInvalidParam);
+	if(!attachment) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pAttachmentCount; i++){
@@ -899,7 +899,7 @@ bool aeAnimator::HasAttachment(aeAttachment *attachment) const{
 }
 
 bool aeAnimator::HasAttachmentNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1009,7 +1009,7 @@ aeAnimatorNotifier *aeAnimator::GetNotifierAt(int index) const{
 }
 
 int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -1020,7 +1020,7 @@ int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
 }
 
 bool aeAnimator::HasNotifier(aeAnimatorNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -1176,7 +1176,7 @@ void aeAnimator::NotifyActiveControllerChanged(){
 }
 
 void aeAnimator::NotifyControllerChanged(aeController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1187,7 +1187,7 @@ void aeAnimator::NotifyControllerChanged(aeController *controller){
 }
 
 void aeAnimator::NotifyControllerNameChanged(aeController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -1199,7 +1199,7 @@ void aeAnimator::NotifyControllerNameChanged(aeController *controller){
 }
 
 void aeAnimator::NotifyControllerValueChanged(aeController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1230,7 +1230,7 @@ void aeAnimator::NotifyActiveLinkChanged(){
 }
 
 void aeAnimator::NotifyLinkChanged(aeLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1241,7 +1241,7 @@ void aeAnimator::NotifyLinkChanged(aeLink *link){
 }
 
 void aeAnimator::NotifyLinkNameChanged(aeLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -1314,7 +1314,7 @@ void aeAnimator::NotifyActiveAttachmentChanged(){
 }
 
 void aeAnimator::NotifyAttachmentChanged(aeAttachment *attachment){
-	if(! attachment) DETHROW(deeInvalidParam);
+	if(!attachment) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1491,15 +1491,15 @@ void aeAnimator::pUpdateComponent(){
 	
 	// try to load the model, skin and rig if possible
 	try{
-		if(! pDisplayModelPath.IsEmpty()){
+		if(!pDisplayModelPath.IsEmpty()){
 			displayModel = engine->GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
 		}
 		
-		if(! pDisplaySkinPath.IsEmpty()){
+		if(!pDisplaySkinPath.IsEmpty()){
 			displaySkin = engine->GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
 		}
 		
-		if(! pDisplayRigPath.IsEmpty()){
+		if(!pDisplayRigPath.IsEmpty()){
 			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
 		}
 		
@@ -1517,7 +1517,7 @@ void aeAnimator::pUpdateComponent(){
 	// protect the loaded parts
 	try{
 		// if the skin is missing use the default one
-		if(! displaySkin){
+		if(!displaySkin){
 			displaySkin = GetGameDefinition()->GetDefaultSkin();
 			displaySkin->AddReference();
 		}
@@ -1605,7 +1605,7 @@ void aeAnimator::pUpdateAnimator(){
 	deAnimation::Ref animation;
 	
 	try{
-		if(! pAnimationPath.IsEmpty()){
+		if(!pAnimationPath.IsEmpty()){
 			animation.TakeOver(GetEngine()->GetAnimationManager()->
 				LoadAnimation(pAnimationPath, GetDirectoryPath()));
 		}

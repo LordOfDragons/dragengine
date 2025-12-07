@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentToggleStatic::~gdeUOCComponentToggleStatic(){
 ///////////////
 
 void gdeUOCComponentToggleStatic::Undo(){
-	pComponent->SetStatic(! pComponent->GetStatic());
+	pComponent->SetStatic(!pComponent->GetStatic());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

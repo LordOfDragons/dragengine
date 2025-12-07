@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Comment.*/
-	inline const decString &GetComment() const{return pComment;}
+	inline const decString &GetComment() const{ return pComment; }
 	
 	/** \brief Set comment. */
 	void SetComment(const char *comment);

@@ -202,7 +202,7 @@ void deClassCurveDistanceMapping::nfEquals::RunFunction(dsRunTime *rt, dsValue *
 	deClassCurveDistanceMapping *clsCDistMap = (deClassCurveDistanceMapping*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCDistMap)){
+	if(!p_IsObjOfType(obj, clsCDistMap)){
 		rt->PushBool(false);
 		
 	}else{
@@ -273,7 +273,7 @@ void deClassCurveDistanceMapping::CreateClassMembers(dsEngine *engine){
 }
 
 decCurveDistanceMapping &deClassCurveDistanceMapping::GetMapping(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -281,7 +281,7 @@ decCurveDistanceMapping &deClassCurveDistanceMapping::GetMapping(dsRealObject *m
 }
 
 void deClassCurveDistanceMapping::PushMapping(dsRunTime *rt, const decCurveDistanceMapping &mapping){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline lpeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline lpeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set language pack or NULL. */
 	void SetLangPack(lpeLangPack *langpack);

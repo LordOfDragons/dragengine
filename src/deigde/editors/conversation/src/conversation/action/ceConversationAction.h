@@ -102,28 +102,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the type. */
-	inline eActionTypes GetType() const{return pType;}
+	inline eActionTypes GetType() const{ return pType; }
 	
 	/** \brief Wait for actor. */
-	inline bool GetWaitForActor() const{return pWaitForActor;}
+	inline bool GetWaitForActor() const{ return pWaitForActor; }
 	
 	/** \brief Set to wait for actor. */
 	void SetWaitForActor(bool wait);
 	
 	/** \brief Waiting considers only actor speaking not actor waiting. */
-	inline bool GetWaitSpeakOnly() const{return pWaitSpeakOnly;}
+	inline bool GetWaitSpeakOnly() const{ return pWaitSpeakOnly; }
 	
 	/** \brief Set waiting considers only actor speaking not actor waiting. */
 	void SetWaitSpeakOnly(bool speakOnly);
 	
 	/** \brief ID of actor to wait for or empty string to wait for all actors. */
-	inline const decString &GetWaitForActorID() const{return pWaitForActorID;}
+	inline const decString &GetWaitForActorID() const{ return pWaitForActorID; }
 	
 	/** \brief Set ID of actor to wait for or empty string to wait for all actors. */
 	void SetWaitForActorID(const char *id);
 	
 	/** \brief Retrieves the delay in seconds before processing this action. */
-	inline float GetDelay() const{return pDelay;}
+	inline float GetDelay() const{ return pDelay; }
 	
 	/** \brief Sets the delay in seconds before processing this action. */
 	void SetDelay(float delay);

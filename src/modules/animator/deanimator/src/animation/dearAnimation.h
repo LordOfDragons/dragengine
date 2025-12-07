@@ -57,9 +57,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the module. */
-	inline deDEAnimator *GetModule() const{return pModule;}
+	inline deDEAnimator *GetModule() const{ return pModule; }
 	/** Retrieve the animation. */
-	inline deAnimation *GetAnimation() const{return pAnimation;}
+	inline deAnimation *GetAnimation() const{ return pAnimation; }
 	
 	/** Retrieve the number of moves. */
 	int GetMoveCount() const;

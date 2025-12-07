@@ -59,7 +59,7 @@ void deoglNotifyEnvMapLightChanged::VisitEnvMaps(deoglEnvironmentMap *envmap){
 	}
 	
 	if(envmap->GetHasInfluenceBox()){
-		if(! envmap->GetInfluenceCollisionBox().BoxHitsBox(&pLightBox)){
+		if(!envmap->GetInfluenceCollisionBox().BoxHitsBox(&pLightBox)){
 			return;
 		}
 	}

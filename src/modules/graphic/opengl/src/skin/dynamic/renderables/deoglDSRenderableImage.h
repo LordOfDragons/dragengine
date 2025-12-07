@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableImage &GetRenderableImage() const{return pRenderableImage;}
+	inline const deDSRenderableImage &GetRenderableImage() const{ return pRenderableImage; }
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

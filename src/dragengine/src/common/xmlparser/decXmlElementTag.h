@@ -62,16 +62,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Namespace part of the tag name. */
-	inline const decString &GetNamespace() const{return pNamespace;}
+	inline const decString &GetNamespace() const{ return pNamespace; }
 	
 	/** \brief Local name part of the tag name. */
-	inline const decString &GetLocalName() const{return pLocalName;}
+	inline const decString &GetLocalName() const{ return pLocalName; }
 	/*@}*/
 	
 	

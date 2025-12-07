@@ -91,7 +91,7 @@ deSkin *deSkinManager::GetSkinWith(const char *filename) const{
 
 deSkin *deSkinManager::GetSkinWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deSkin * const skin = (deSkin*)pSkins.GetWithFilename(vfs, filename);
-	return skin && ! skin->GetOutdated() ? skin : NULL;
+	return skin && !skin->GetOutdated() ? skin : NULL;
 }
 
 deSkin *deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
@@ -99,7 +99,7 @@ deSkin *deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
 }
 
 deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		// length file name are considered unique and match no filename
 		if(strlen(filename) > 0){
 			findSkin = (deSkin*)pSkins.GetWithFilename(vfs, filename);
-			if(findSkin && ! findSkin->GetOutdated()){
+			if(findSkin && !findSkin->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
@@ -144,7 +144,7 @@ deSkin *deSkinManager::LoadSkin(const char *filename, const char *basePath){
 }
 
 deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	decBaseFileReader *fileReader = NULL;
@@ -155,7 +155,7 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 	
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			//return LoadDefault();
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
@@ -232,7 +232,7 @@ deSkin *deSkinManager::LoadDefault(){
 		findSkin = (deSkin*)pSkins.GetWithFilename(GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN);
 		
 		if(findSkin){
-			if(! findSkin->GetPeerGraphic()){
+			if(!findSkin->GetPeerGraphic()){
 				GetGraphicSystem()->LoadSkin(findSkin);
 			}
 			findSkin->AddReference();
@@ -248,7 +248,7 @@ deSkin *deSkinManager::LoadDefault(){
 			skinTex = new deSkinTexture("skin");
 			propDiff = new deSkinPropertyImage("color");
 			
-			propDiff->SetImage(imgNoTex); // attention! +1 reference
+			propDiff->SetImage(imgNoTex); // attention!+1 reference
 			
 			skinTex->AddProperty(propDiff);
 			propDiff = NULL;
@@ -284,7 +284,7 @@ deSkin *deSkinManager::LoadDefault(){
 
 
 void deSkinManager::AddLoadedSkin(deSkin *skin){
-	if(! skin){
+	if(!skin){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -344,7 +344,7 @@ void deSkinManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(skin){
-		if(! skin->GetPeerGraphic()){
+		if(!skin->GetPeerGraphic()){
 			grasys.LoadSkin(skin);
 		}
 		
@@ -366,7 +366,7 @@ void deSkinManager::SystemAudioLoad(){
 	deAudioSystem &audsys = *GetAudioSystem();
 	
 	while(skin){
-		if(! skin->GetPeerAudio()){
+		if(!skin->GetPeerAudio()){
 			audsys.LoadSkin(skin);
 		}
 		
@@ -388,7 +388,7 @@ void deSkinManager::SystemPhysicsLoad(){
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(skin){
-		if(! skin->GetPeerPhysics()){
+		if(!skin->GetPeerPhysics()){
 			physys.LoadSkin(skin);
 		}
 		

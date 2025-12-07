@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent world. */
-	inline meWorld &GetWorld() const{return pWorld;}
+	inline meWorld &GetWorld() const{ return pWorld; }
 	
 	/** Music path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Set music path. */
 	void SetPath(const char *path);

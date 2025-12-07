@@ -52,8 +52,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief DragonScript module. */
-	inline deScriptingDragonScript &GetDS(){return pDS;}
-	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS(){ return pDS; }
+	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);

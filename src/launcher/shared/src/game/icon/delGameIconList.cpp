@@ -83,7 +83,7 @@ delGameIcon *delGameIconList::GetLargest(int size) const{
 			continue;
 		}
 		
-		if(! bestIcon || icon->GetSize() > bestIcon->GetSize()){
+		if(!bestIcon || icon->GetSize() > bestIcon->GetSize()){
 			bestIcon = icon;
 		}
 	}
@@ -102,7 +102,7 @@ delGameIcon *delGameIconList::GetSmallest(int size) const{
 			continue;
 		}
 		
-		if(! bestIcon || icon->GetSize() < bestIcon->GetSize()){
+		if(!bestIcon || icon->GetSize() < bestIcon->GetSize()){
 			bestIcon = icon;
 		}
 	}
@@ -117,7 +117,7 @@ delGameIcon *delGameIconList::GetLargest() const{
 	
 	for(i=0; i<count; i++){
 		delGameIcon * const icon = (delGameIcon*)pIcons.GetAt(i);
-		if(! bestIcon || icon->GetSize() > bestIcon->GetSize()){
+		if(!bestIcon || icon->GetSize() > bestIcon->GetSize()){
 			bestIcon = icon;
 		}
 	}
@@ -132,7 +132,7 @@ delGameIcon *delGameIconList::GetSmallest() const{
 	
 	for(i=0; i<count; i++){
 		delGameIcon * const icon = (delGameIcon*)pIcons.GetAt(i);
-		if(! bestIcon || icon->GetSize() < bestIcon->GetSize()){
+		if(!bestIcon || icon->GetSize() < bestIcon->GetSize()){
 			bestIcon = icon;
 		}
 	}
@@ -177,7 +177,7 @@ int delGameIconList::IndexOfWithSize(int size) const{
 }
 
 void delGameIconList::Add(delGameIcon *icon){
-	if(! icon){
+	if(!icon){
 		DETHROW_INFO(deeNullPointer, "icon");
 	}
 	if(HasWithSize(icon->GetSize())){

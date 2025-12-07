@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	/** Retrieves a point by index. */
 	const decVector2 &GetPointAt(int index) const;
 	/** Adds a point. */
@@ -63,7 +63,7 @@ public:
 	void RemoveAllPoints();
 	
 	/** Retrieves the number of hull points. */
-	inline int GetHullPointCount() const{return pHullPointCount;}
+	inline int GetHullPointCount() const{ return pHullPointCount; }
 	/** Retrieves a hull point by index. */
 	int GetHullPointAt(int index) const;
 	/** Retrieves the point using a hull point by index. */

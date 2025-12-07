@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);

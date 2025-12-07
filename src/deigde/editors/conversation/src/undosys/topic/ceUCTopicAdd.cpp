@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic){
-	if(! file || ! topic) DETHROW(deeInvalidParam);
+	if(!file || !topic) DETHROW(deeInvalidParam);
 	
 	pFile = NULL;
 	pTopic = NULL;

@@ -45,7 +45,7 @@ gdeOCCamera *camera, const char *newValue) :
 pObjectClass(NULL),
 pCamera(NULL)
 {
-	if(! objectClass || ! camera){
+	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
 	}
 	

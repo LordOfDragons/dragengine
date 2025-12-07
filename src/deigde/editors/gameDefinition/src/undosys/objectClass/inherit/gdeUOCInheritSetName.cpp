@@ -45,7 +45,7 @@ gdeOCInherit *inherit, const char *newValue) :
 pObjectClass(NULL),
 pInherit(NULL)
 {
-	if(! objectClass || ! inherit){
+	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
 	}
 	

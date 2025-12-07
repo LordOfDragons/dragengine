@@ -215,7 +215,7 @@ void deClassInputDeviceAxis::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = axis.GetDisplayIconAt(i);
-		if(icon->GetWidth() <= maxWidth && (! bestIcon || icon->GetWidth() >= bestWidth)){
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
@@ -242,7 +242,7 @@ void deClassInputDeviceAxis::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = axis.GetDisplayIconAt(i);
-		if(icon->GetHeight() <= maxHeight && (! bestIcon || icon->GetHeight() >= bestHeight)){
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
@@ -314,7 +314,7 @@ void deClassInputDeviceAxis::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 	const sIDAxisNatDat &nd = *((const sIDAxisNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsIDAxis)){
+	if(!p_IsObjOfType(obj, clsIDAxis)){
 		rt->PushBool(false);
 		
 	}else{
@@ -388,7 +388,7 @@ void deClassInputDeviceAxis::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, int index){
-	if(! rt || ! device || index < 0 || index >= device->GetDevice()->GetAxisCount()){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetAxisCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

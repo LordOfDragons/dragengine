@@ -151,7 +151,7 @@ int igdeListBox::IndexOfItem(igdeListItem *item) const{
 }
 
 int igdeListBox::IndexOfItem(const char *item) const{
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -181,7 +181,7 @@ int igdeListBox::IndexOfItemWithData(void *data) const{
 }
 
 void igdeListBox::AddItem(igdeListItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	pItems.Add(item);
@@ -203,7 +203,7 @@ void igdeListBox::AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *i
 }
 
 void igdeListBox::InsertItem(int index, igdeListItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -336,7 +336,7 @@ static void igdeListBox_Sort(decObjectList &items, igdeListItemSorter &sorter, i
 }
 
 void igdeListBox::SortItems(){
-	if(! pSorter){
+	if(!pSorter){
 		return;
 	}
 	
@@ -443,7 +443,7 @@ void igdeListBox::DeselectItem(int index){
 	}
 	
 	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(! item.GetSelected()){
+	if(!item.GetSelected()){
 		return;
 	}
 	
@@ -462,7 +462,7 @@ void igdeListBox::DeselectAllItems(){
 	
 	for(i=0; i<count; i++){
 		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
-		if(! item.GetSelected()){
+		if(!item.GetSelected()){
 			continue;
 		}
 		
@@ -488,7 +488,7 @@ void igdeListBox::MakeSelectionVisible(){
 }
 
 void igdeListBox::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -508,7 +508,7 @@ void igdeListBox::ShowContextMenu(const decPoint &position){
 
 
 void igdeListBox::AddListener(igdeListBoxListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -575,7 +575,7 @@ void igdeListBox::CreateNativeWidget(){
 }
 
 void igdeListBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

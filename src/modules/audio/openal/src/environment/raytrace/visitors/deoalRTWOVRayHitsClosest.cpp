@@ -140,7 +140,7 @@ void deoalRTWOVRayHitsClosest::VisitComponent(const deoalRTWorldBVH::sVisitCompo
 		visitor.VisitBVH(*model.GetRTBVH());
 	}
 	
-	if(! visitor.GetHasResult() || visitor.GetResultDistance() >= pLimitDistance){
+	if(!visitor.GetHasResult() || visitor.GetResultDistance() >= pLimitDistance){
 		#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
 		const float elapsed = timerComponent.GetElapsedTime();
 		timingComponentOctree += elapsed;

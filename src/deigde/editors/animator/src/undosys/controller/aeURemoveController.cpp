@@ -46,7 +46,7 @@ pAnimator(NULL),
 pController(NULL),
 pIndex(-1)
 {
-	if(! animator || ! controller){
+	if(!animator || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

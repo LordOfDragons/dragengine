@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetRotMax::aeURuleLimitSetRotMax(aeRuleLimit *rule, const decVector &newMax){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

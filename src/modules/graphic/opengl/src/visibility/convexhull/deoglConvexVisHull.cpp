@@ -142,9 +142,9 @@ void deoglConvexVisHull::SetPointCount(int count){
 void deoglConvexVisHull::UpdateVBO(){
 	if(pPointCount > 0){
 		// update vbo
-		if(! pVBO){
+		if(!pVBO){
 			OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-			if(! pVBO){
+			if(!pVBO){
 				DETHROW(deeOutOfMemory);
 			}
 		}
@@ -156,7 +156,7 @@ void deoglConvexVisHull::UpdateVBO(){
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 		
 		// update vao
-		if(! pVAO){
+		if(!pVAO){
 			deoglVBOLayout layout;
 			
 			layout.SetAttributeCount(1);
@@ -168,7 +168,7 @@ void deoglConvexVisHull::UpdateVBO(){
 			layout.GetAttributeAt(0).SetOffset(0);
 			
 			OGL_CHECK(pRenderThread, pglGenVertexArrays(1, &pVAO));
-			if(! pVAO){
+			if(!pVAO){
 				DETHROW(deeOutOfMemory);
 			}
 			

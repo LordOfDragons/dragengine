@@ -82,45 +82,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent height terrain vegetation layer or NULL. */
-	inline meHTVegetationLayer *GetVLayer() const{return pVLayer;}
+	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	/** Sets the parent height terrain vegetation layer or NULL. */
 	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** Retrieves the model path. */
-	inline const decString &GetPathModel() const{return pPathModel;}
+	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
 	/** Retrieves the engine model or NULL if not valid. */
-	inline deModel *GetModel() const{return pModel;}
+	inline deModel *GetModel() const{ return pModel; }
 	/** Retrieves the skin path. */
-	inline const decString &GetPathSkin() const{return pPathSkin;}
+	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
 	/** Retrieves the engine skin or NULL if not valid. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	/** Retrieves the rotation per force. */
-	inline float GetRotationPerForce() const{return pRotationPerForce;}
+	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	/** Sets the rotation per force. */
 	void SetRotationPerForce(float rotationPerForce);
 	/** Retrieves the restitution. */
-	inline float GetRestitution() const{return pRestitution;}
+	inline float GetRestitution() const{ return pRestitution; }
 	/** Sets the restitution. */
 	void SetRestitution(float resitution);
 	
 	/** Retrieves the minimum random scaling. */
-	inline float GetMinimumRandomScaling() const{return pRandomScaleMin;}
+	inline float GetMinimumRandomScaling() const{ return pRandomScaleMin; }
 	/** Sets the minimum random scaling. */
 	void SetMinimumRandomScaling(float scaling);
 	/** Retrieves the maximum random scaling. */
-	inline float GetMaximumRandomScaling() const{return pRandomScaleMax;}
+	inline float GetMaximumRandomScaling() const{ return pRandomScaleMax; }
 	/** Sets the maximum random scaling. */
 	void SetMaximumRandomScaling(float scaling);
 	/** Retrieves the minimum random rotation. */
-	inline float GetMinimumRandomRotation() const{return pRandomRotationMin;}
+	inline float GetMinimumRandomRotation() const{ return pRandomRotationMin; }
 	/** Sets the minimum random rotation. */
 	void SetMinimumRandomRotation(float rotation);
 	/** Retrieves the maximum random rotation. */
-	inline float GetMaximumRandomRotation() const{return pRandomRotationMax;}
+	inline float GetMaximumRandomRotation() const{ return pRandomRotationMax; }
 	/** Sets the maximum random rotation. */
 	void SetMaximumRandomRotation(float rotation);
 	

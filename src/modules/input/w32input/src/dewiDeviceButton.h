@@ -85,28 +85,28 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Input module. */
-	inline deWindowsInput &GetModule() const{return pModule;}
+	inline deWindowsInput &GetModule() const{ return pModule; }
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is presssed. */
 	void SetPressed(bool pressed);
 	
 	/** Button type. */
-	inline deInputDeviceButton::eButtonTypes GetType() const{return pType;}
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set button type. */
 	void SetType(deInputDeviceButton::eButtonTypes type);
@@ -114,10 +114,10 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -126,7 +126,7 @@ public:
 	void SetDisplayImages(const dewiDeviceButton &button);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
@@ -134,43 +134,43 @@ public:
 	
 	
 	/** WI specific code. */
-	inline int GetWICode() const{return pWICode;}
+	inline int GetWICode() const{ return pWICode; }
 	
 	/** Set WI specific code. */
 	void SetWICode(int code);
 	
 	/** WI specific character. */
-	inline int GetWIChar() const{return pWIChar;}
+	inline int GetWIChar() const{ return pWIChar; }
 	
 	/** Set WI specific character. */
 	void SetWIChar(int character);
 	
 	/** Input event key code. */
-	inline deInputEvent::eKeyCodes GetKeyCode() const{return pKeyCode;}
+	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/** Set input event key code. */
 	void SetKeyCode(deInputEvent::eKeyCodes keyCode);
 	
 	/** Match priority. */
-	inline int GetMatchPriority() const{return pMatchPriority;}
+	inline int GetMatchPriority() const{ return pMatchPriority; }
 	
 	/** Set match priority. */
 	void SetMatchPriority(int priority);
 	
 	/** Key location. */
-	inline deInputEvent::eKeyLocation GetKeyLocation() const{return pKeyLocation;}
+	inline deInputEvent::eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
 	
 	/** Set key location. */
 	void SetKeyLocation(deInputEvent::eKeyLocation location);
 
 	/** WinRT reading index. */
-	inline int GetWinRTReadingIndex() const{return pWinRTReadingIndex;}
+	inline int GetWinRTReadingIndex() const{ return pWinRTReadingIndex; }
 
 	/** Set WinRT reading index. */
 	void SetWinRTReadingIndex(int index);
 	
 	/** Is battery charging. */
-	inline bool GetIsBatteryCharging() const{return pIsBatteryCharging;}
+	inline bool GetIsBatteryCharging() const{ return pIsBatteryCharging; }
 
 	/** Set is battery charging. */
 	void SetIsBatteryCharging(bool isBatteryCharging);

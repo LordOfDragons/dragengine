@@ -63,7 +63,7 @@ pIKLimitsUpper(0.0f, 0.0f, 0.0f),
 pIKResistance(0.0f, 0.0f, 0.0f),
 pIKLocked{false, false, false}
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -381,7 +381,7 @@ void reRigBone::UpdateFromPose(){
 		pPoseMatrix = decDMatrix(pMatrix);
 	}
 	
-	if(! pPoseMatrix.IsEqualTo(oldPose)){
+	if(!pPoseMatrix.IsEqualTo(oldPose)){
 		pInversePoseMatrix = pPoseMatrix.Invert();
 		NotifyPoseChanged();
 		
@@ -422,7 +422,7 @@ void reRigBone::UpdateShapesAndConstraints(){
 
 bool reRigBone::CanHaveParent(reRigBone *bone){
 	// no parent is always good
-	if(! bone){
+	if(!bone){
 		return true;
 	}
 	
@@ -432,7 +432,7 @@ bool reRigBone::CanHaveParent(reRigBone *bone){
 	}
 	
 	// if there is no rig we can have no parent at all
-	if(! pRig){
+	if(!pRig){
 		return false;
 	}
 	
@@ -472,7 +472,7 @@ reRigShape *reRigBone::GetShapeAt(int index) const{
 }
 
 reRigShape *reRigBone::GetShapeWith(deColliderVolume *collider) const{
-	if(! collider){
+	if(!collider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -499,7 +499,7 @@ bool reRigBone::HasShape(reRigShape *shape) const{
 }
 
 void reRigBone::AddShape(reRigShape *shape){
-	if(! shape || pShapes.HasShape(shape)){
+	if(!shape || pShapes.HasShape(shape)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -513,7 +513,7 @@ void reRigBone::AddShape(reRigShape *shape){
 }
 
 void reRigBone::RemoveShape(reRigShape *shape){
-	if(! pShapes.HasShape(shape)){
+	if(!pShapes.HasShape(shape)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -645,7 +645,7 @@ reRigConstraint *reRigBone::GetConstraintAt(int index) const{
 }
 
 reRigConstraint *reRigBone::GetConstraintWith(deColliderVolume *collider) const{
-	if(! collider){
+	if(!collider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -686,7 +686,7 @@ void reRigBone::AddConstraint(reRigConstraint *constraint){
 }
 
 void reRigBone::RemoveConstraint(reRigConstraint *constraint){
-	if(! pConstraints.HasConstraint(constraint)){
+	if(!pConstraints.HasConstraint(constraint)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -798,7 +798,7 @@ void reRigBone::pRepositionDDShapes(){
 
 
 void reRigBone::pUpdateColliderShape(){
-	if(! pCollider){
+	if(!pCollider){
 		return;
 	}
 	

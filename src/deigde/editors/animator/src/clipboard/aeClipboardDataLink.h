@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Links. */
-	inline const aeLinkList &GetLinks() const{return pLinks;}
+	inline const aeLinkList &GetLinks() const{ return pLinks; }
 	/*@}*/
 };
 

@@ -1252,7 +1252,7 @@ void deClassShapeList::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue*){
 	deClassShapeList &clsShapeList = *((deClassShapeList*)GetOwnerClass());
 	const deClassFileReader &clsFileReader = *clsShapeList.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1350,7 +1350,7 @@ void deClassShapeList::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself
 	const deClassFileWriter &clsFileWriter = *clsShapeList.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1391,7 +1391,7 @@ void deClassShapeList::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassShapeList * const clsShaList = (deClassShapeList*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsShaList)){
+	if(!p_IsObjOfType(object, clsShaList)){
 		rt->PushBool(false);
 		
 	}else{
@@ -1410,7 +1410,7 @@ void deClassShapeList::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassShapeList::deClassShapeList(deScriptingDragonScript *ds) :
 dsClass("ShapeList", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1516,7 +1516,7 @@ void deClassShapeList::CreateClassMembers(dsEngine *engine){
 }
 
 const decShapeList &deClassShapeList::GetShapeList(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1524,7 +1524,7 @@ const decShapeList &deClassShapeList::GetShapeList(dsRealObject *myself) const{
 }
 
 void deClassShapeList::PushShapeList(dsRunTime *rt, const decShapeList &shapeList){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1542,7 +1542,7 @@ void deClassShapeList::PushShapeList(dsRunTime *rt, const decShapeList &shapeLis
 }
 
 void deClassShapeList::HullAddPoints(dsRunTime &rt, decShapeHull &hull, dsValue &pointsArray) const{
-	if(! pointsArray.GetRealObject()){
+	if(!pointsArray.GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	

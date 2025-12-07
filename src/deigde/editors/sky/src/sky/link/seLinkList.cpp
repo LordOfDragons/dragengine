@@ -68,14 +68,14 @@ bool seLinkList::Has(seLink *link) const{
 }
 
 void seLinkList::Add(seLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);
 }
 
 void seLinkList::InsertAt(seLink *link, int index){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Insert(link, index);

@@ -110,7 +110,7 @@ bool ceActorPoseList::HasNamed(const char *name) const{
 }
 
 void ceActorPoseList::Add(ceActorPose *pose){
-	if(! pose || HasNamed(pose->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!pose || HasNamed(pose->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pGestures.Add(pose);
 }

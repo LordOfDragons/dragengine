@@ -46,7 +46,7 @@
 /////////////////////////////////
 
 dealBaseXML::dealBaseXML(deLogger *logger, const char *loggerSource){
-	if(! logger || ! loggerSource) DETHROW(deeInvalidParam);
+	if(!logger || !loggerSource) DETHROW(deeInvalidParam);
 	
 	pLoggerSource = loggerSource;
 	

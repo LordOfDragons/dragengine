@@ -66,7 +66,7 @@
 ////////////////////////////
 
 meCLAddDecal::meCLAddDecal(meWindowMain *windowMain, meWorld *world){
-	if(! windowMain || ! world) DETHROW(deeInvalidParam);
+	if(!windowMain || !world) DETHROW(deeInvalidParam);
 	
 	pWndMain = windowMain;
 	pWorld = world;
@@ -124,7 +124,7 @@ void meCLAddDecal::RunAction(){
 	//pWndMain->GetLogger()->LogErrorFormat( LOGSOURCE, "debug: %g,%g,%g | %g,%g,%g\n", pRayOrigin.x, pRayOrigin.y, pRayOrigin.z, pRayDirection.x, pRayDirection.y, pRayDirection.z );
 	//pWndMain->GetLogger()->LogErrorFormat( LOGSOURCE, "debug: %g | %g,%g,%g | %g,%g,%g\n", entry->GetDistance(), hitPoint.x, hitPoint.y, hitPoint.z, normal.x, normal.y, normal.z );
 	
-	if(! object){
+	if(!object){
 		pUndo = NULL;
 		return;
 	}
@@ -154,7 +154,7 @@ void meCLAddDecal::RunAction(){
 }
 
 void meCLAddDecal::Finish(){
-	if(! pUndo){
+	if(!pUndo){
 		return;
 	}
 	
@@ -175,7 +175,7 @@ void meCLAddDecal::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld->GetEnvironment(), info->GetCollider() );
-		if(! colliderOwner){
+		if(!colliderOwner){
 			return;
 		}
 		

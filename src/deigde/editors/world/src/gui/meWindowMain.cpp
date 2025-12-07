@@ -377,7 +377,7 @@ void meWindowMain::OnDeactivate(){
 }
 
 void meWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -434,7 +434,7 @@ void meWindowMain::SetUse3DCursor(bool useIt){
 
 void meWindowMain::RotateActiveObjectBy(const decVector &rotation){
 	meObject * const object = pWorld ? pWorld->GetSelectionObject().GetActive() : NULL;
-	if(! object){
+	if(!object){
 		return;
 	}
 	
@@ -480,7 +480,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetWorld()){
+		if(!pWindow.GetWorld()){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetWorld())));
@@ -519,7 +519,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetWorld() || ! pWindow.GetWorld()->GetAnyChanged()
+		if(!pWindow.GetWorld() || !pWindow.GetWorld()->GetAnyChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New World",
 		"Creating a new World discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewWorld();
@@ -812,7 +812,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcX){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetGuiParameters().SetLockAxisX(! world->GetGuiParameters().GetLockAxisX());
+		world->GetGuiParameters().SetLockAxisX(!world->GetGuiParameters().GetLockAxisX());
 		return NULL;
 	}
 	
@@ -829,7 +829,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetGuiParameters().SetLockAxisY(! world->GetGuiParameters().GetLockAxisY());
+		world->GetGuiParameters().SetLockAxisY(!world->GetGuiParameters().GetLockAxisY());
 		return NULL;
 	}
 	
@@ -846,7 +846,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetGuiParameters().SetLockAxisZ(! world->GetGuiParameters().GetLockAxisZ());
+		world->GetGuiParameters().SetLockAxisZ(!world->GetGuiParameters().GetLockAxisZ());
 		return NULL;
 	}
 	
@@ -863,7 +863,7 @@ public:
 		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcL){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetGuiParameters().SetUseLocal(! world->GetGuiParameters().GetUseLocal());
+		world->GetGuiParameters().SetUseLocal(!world->GetGuiParameters().GetUseLocal());
 		return NULL;
 	}
 	
@@ -896,7 +896,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		world->GetGuiParameters().SetSnapToSnapPoints(
-			! world->GetGuiParameters().GetSnapToSnapPoints());
+			!world->GetGuiParameters().GetSnapToSnapPoints());
 		return NULL;
 	}
 	
@@ -933,7 +933,7 @@ public:
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekc3){}
 	
 	virtual igdeUndo *OnAction(meWorld*){
-		pWindow.SetUse3DCursor(! pWindow.GetUse3DCursor());
+		pWindow.SetUse3DCursor(!pWindow.GetUse3DCursor());
 		return NULL;
 	}
 	
@@ -1093,7 +1093,7 @@ public:
 	virtual igdeUndo *OnAction(meWorld *world){
 		meObject * const active = world->GetSelectionObject().GetActive();
 		const meObjectList &list = world->GetSelectionObject().GetSelected();
-		if(! active || list.GetCount() == 0){
+		if(!active || list.GetCount() == 0){
 			return NULL;
 		}
 		return new meUObjectAttachTo(world, list, active);
@@ -1131,7 +1131,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		meObject * const active = world->GetSelectionObject().GetActive();
-		if(! active){
+		if(!active){
 			return NULL;
 		}
 		
@@ -1156,7 +1156,7 @@ public:
 class cActionObjectReassignIDs : public cActionBase{
 public:
 	cActionObjectReassignIDs(meWindowMain &window) : cActionBase(window, "Reassign Object IDs",
-		NULL, "Reassign Object IDs (WARNING! Dangerous Operation!)"){}
+		NULL, "Reassign Object IDs (WARNING!Dangerous Operation!)"){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		if(igdeCommonDialogs::QuestionFormat(&pWindow, igdeCommonDialogs::ebsYesNo, "Reassign Object IDs",
@@ -1306,7 +1306,7 @@ public:
 	
 	bool ActivatePropName(const meWorld &world, decString &propertyName) const{
 		meObject * const object = world.GetSelectionObject().GetActive();
-		if(! object || ! object->GetGDClass()){
+		if(!object || !object->GetGDClass()){
 			return false;
 		}
 		
@@ -1331,7 +1331,7 @@ public:
 	virtual igdeUndo *OnAction(meWorld *world){
 		meObject *object = world->GetSelectionObject().GetActive();
 		const char * const property = ActivatePropName(*world);
-		if(! property || ! object){
+		if(!property || !object){
 			return NULL;
 		}
 		return OnActionShape(world, object, property);
@@ -1345,7 +1345,7 @@ public:
 	
 	const char *ActivatePropName(const meWorld &world) const{
 		meObject * const object = world.GetSelectionObject().GetActive();
-		if(! object){
+		if(!object){
 			return NULL;
 		}
 		
@@ -1355,7 +1355,7 @@ public:
 				return NULL;
 			}
 			
-		}else if(! object->IsPropertyShapeList(property)){
+		}else if(!object->IsPropertyShapeList(property)){
 			return NULL;
 		}
 		
@@ -1465,14 +1465,14 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		meDecal * const decal = world->GetSelectionDecal().GetActive();
-		if(! decal){
+		if(!decal){
 			return NULL;
 		}
 		meObject * const object = decal->GetParentObject();
-		if(! object){
+		if(!object){
 			return NULL;
 		}
-		if(! CanReorder(*object, object->IndexOfDecal(decal))){
+		if(!CanReorder(*object, object->IndexOfDecal(decal))){
 			return NULL;
 		}
 		return OnActionDecal(world, decal);
@@ -1561,7 +1561,7 @@ public:
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcB){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->SetFullBright(! world->GetFullBright());
+		world->SetFullBright(!world->GetFullBright());
 		return NULL;
 	}
 	
@@ -1578,7 +1578,7 @@ public:
 		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcM){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetMicrophone()->SetMuted(! world->GetMicrophone()->GetMuted());
+		world->GetMicrophone()->SetMuted(!world->GetMicrophone()->GetMuted());
 		return NULL;
 	}
 	
@@ -1595,7 +1595,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		world->GetGuiParameters().SetShowOcclusionMeshes(
-			! world->GetGuiParameters().GetShowOcclusionMeshes());
+			!world->GetGuiParameters().GetShowOcclusionMeshes());
 		return NULL;
 	}
 	
@@ -1612,7 +1612,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		world->GetGuiParameters().SetShowOcclusionMeshesSelected(
-			! world->GetGuiParameters().GetShowOcclusionMeshesSelected());
+			!world->GetGuiParameters().GetShowOcclusionMeshesSelected());
 		return NULL;
 	}
 	
@@ -1629,7 +1629,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		world->GetGuiParameters().SetShowNavigationSpaces(
-			! world->GetGuiParameters().GetShowNavigationSpaces());
+			!world->GetGuiParameters().GetShowNavigationSpaces());
 		return NULL;
 	}
 	
@@ -1646,7 +1646,7 @@ public:
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		world->GetGuiParameters().SetShowNavigationSpacesSelected(
-			! world->GetGuiParameters().GetShowNavigationSpacesSelected());
+			!world->GetGuiParameters().GetShowNavigationSpacesSelected());
 		return NULL;
 	}
 	
@@ -2309,7 +2309,7 @@ void meWindowMain::pUpdateLoading(){
 	}
 	
 	try{
-		if(! pLoadWorld){
+		if(!pLoadWorld){
 			GetEditorModule().LogInfoFormat("Loading world %s", pLoadFilename.GetString());
 			pLoadWorld = pLoadSaveSystem->LoadWorld(pLoadFilename, GetGameDefinition(), &pLoadTask);
 			

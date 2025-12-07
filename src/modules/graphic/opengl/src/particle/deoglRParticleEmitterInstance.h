@@ -140,12 +140,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglRParticleEmitter *GetEmitter() const{return pEmitter;}
+	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** Set emitter or \em NULL if not set. */
 	void SetEmitter(deoglRParticleEmitter *emitter);
@@ -153,7 +153,7 @@ public:
 	
 	
 	/** Parent world. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
 	void SetParentWorld(deoglRWorld *world);
@@ -161,7 +161,7 @@ public:
 	
 	
 	/** Octree node or \em NULL if there is none. */
-	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
+	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** Set octree node or \em NULL if there is none. */
 	void SetOctreeNode(deoglWorldOctree *node);
@@ -172,25 +172,25 @@ public:
 	
 	
 	/** Burst time. */
-	inline float GetBurstTime() const{return pBurstTime;}
+	inline float GetBurstTime() const{ return pBurstTime; }
 	
 	/** Set burst time. */
 	void SetBurstTime(float burstTime);
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** Reference position. */
-	inline const decDVector &GetReferencePosition() const{return pReferencePosition;}
+	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
 	
 	/** Set reference position. */
 	void SetReferencePosition(const decDVector &position);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
@@ -203,15 +203,15 @@ public:
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{return pVAO;}
+	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** Update extends. */
 	void UpdateExtends(const deParticleEmitterInstance &instance);
@@ -219,7 +219,7 @@ public:
 	
 	
 	/** Render environment map or \em NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{return pRenderEnvMap;}
+	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or \em NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
@@ -249,7 +249,7 @@ public:
 	
 	
 	/** Compute shader octree index. */
-	inline uint32_t GetCSOctreeIndex() const{return pCSOctreeIndex;}
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
 	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	/*@}*/
 	
@@ -258,10 +258,10 @@ public:
 	/** \name Particles. */
 	/*@{*/
 	/** Particles. */
-	inline const sParticle *GetParticles() const{return pParticles;}
+	inline const sParticle *GetParticles() const{ return pParticles; }
 	
 	/** Number of particles. */
-	inline int GetParticleCount() const{return pParticleCount;}
+	inline int GetParticleCount() const{ return pParticleCount; }
 	
 	/** Update particles. */
 	void UpdateParticles(const deParticleEmitterInstance &instance);
@@ -310,7 +310,7 @@ public:
 	/** \name Index Buffer */
 	/*@{*/
 	/** Number of indices used in the index buffer. */
-	inline int GetIBOUsedIndexCount() const{return pIndexUsedCount;}
+	inline int GetIBOUsedIndexCount() const{ return pIndexUsedCount; }
 	
 	/** Remove all entries from the index buffer. */
 	void ClearIBO();
@@ -333,7 +333,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.

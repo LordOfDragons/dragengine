@@ -45,7 +45,7 @@ gdeOCLight *light, float newValue) :
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	

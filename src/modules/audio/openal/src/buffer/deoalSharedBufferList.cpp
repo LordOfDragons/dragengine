@@ -67,7 +67,7 @@ deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer(int size){
 	
 	for(i=0; i<count; i++){
 		buffer = (deoalSharedBuffer*)pBuffers.GetAt(i);
-		if(! buffer->GetInUse()){
+		if(!buffer->GetInUse()){
 			if(size > buffer->GetSize()){
 				buffer->SetSize(size);
 			}
@@ -93,7 +93,7 @@ deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer(int size){
 }
 
 void deoalSharedBufferList::ReleaseBuffer(deoalSharedBuffer *buffer){
-	if(! buffer){
+	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
 	

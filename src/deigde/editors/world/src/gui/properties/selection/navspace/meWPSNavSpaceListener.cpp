@@ -63,7 +63,7 @@ void meWPSNavSpaceListener::NavSpaceSelectionChanged(meWorld*){
 }
 
 void meWPSNavSpaceListener::NavSpaceChanged(meWorld*, meNavigationSpace *navspace){
-	if(! navspace->GetActive()){
+	if(!navspace->GetActive()){
 		return;
 	}
 	
@@ -72,7 +72,7 @@ void meWPSNavSpaceListener::NavSpaceChanged(meWorld*, meNavigationSpace *navspac
 }
 
 void meWPSNavSpaceListener::NavSpaceGeometryChanged(meWorld*, meNavigationSpace *navspace){
-	if(! navspace->GetActive()){
+	if(!navspace->GetActive()){
 		return;
 	}
 	
@@ -80,7 +80,7 @@ void meWPSNavSpaceListener::NavSpaceGeometryChanged(meWorld*, meNavigationSpace 
 }
 
 void meWPSNavSpaceListener::NavSpaceUsedCostTypesChanged(meWorld*, meNavigationSpace *navspace){
-	if(! navspace->GetActive()){
+	if(!navspace->GetActive()){
 		return;
 	}
 	

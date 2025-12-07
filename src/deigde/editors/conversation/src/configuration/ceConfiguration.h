@@ -53,12 +53,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

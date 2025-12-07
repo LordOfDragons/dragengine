@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName){
-	if(! topic || ! newName) DETHROW(deeInvalidParam);
+	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pMusic = NULL;

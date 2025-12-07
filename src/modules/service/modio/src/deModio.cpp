@@ -131,7 +131,7 @@ void deModio::SetCurUserId(const decString &id){
 	
 	pCurUserId = id;
 	
-	if(! pUserConfigs.Has(id)){
+	if(!pUserConfigs.Has(id)){
 		pUserConfigs.SetAt(id, deModioUserConfig::Ref::NewWith(*this, id));
 	}
 	
@@ -182,7 +182,7 @@ void deModio::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
 		
 		LogInfo("Add VFS containers for stage 'VFSStageMods'");
 		
-		if(! pVFSMods){
+		if(!pVFSMods){
 			pVFSMods.TakeOver(new deVirtualFileSystem);
 		}
 		
@@ -208,7 +208,7 @@ void deModio::RemoveRequiresEventHandlingCount(){
 
 void deModio::StoreFailureStateIfFailed(){
 	const bool failure = GetGameEngine()->GetScriptFailed() || GetGameEngine()->GetSystemFailed();
-	if(! failure){
+	if(!failure){
 		return;
 	}
 	
@@ -287,7 +287,7 @@ void deModio::pLoadConfig(){
 	pModConfigs.RemoveAll();
 	pUserConfigs.RemoveAll();
 	
-	if(! GetVFS().ExistsFile(pPathConfig)){
+	if(!GetVFS().ExistsFile(pPathConfig)){
 		return;
 	}
 	
@@ -363,7 +363,7 @@ void deModio::pSaveConfig(){
 
 void deModio::pDeleteConfig(){
 	const deVirtualFileSystem &vfs = GetVFS();
-	if(! vfs.ExistsFile(pPathConfig)){
+	if(!vfs.ExistsFile(pPathConfig)){
 		return;
 	}
 	
@@ -377,13 +377,13 @@ void deModio::pDeleteConfig(){
 
 void deModio::pCheckFailureState(){
 	bool failure = pReadFailureState();
-	if(! failure){
+	if(!failure){
 		return;
 	}
 	
 	LogWarn("Failure state is set to 1. Disabling all modifications.");
 	deModioUserConfig * const userConfig = GetUserConfigIfPresent(pCurUserId);
-	if(! userConfig){
+	if(!userConfig){
 		ClearFailureState();
 		return;
 	}
@@ -412,7 +412,7 @@ void deModio::pCheckFailureState(){
 
 bool deModio::pReadFailureState(){
 	const deVirtualFileSystem &vfs = GetVFS();
-	if(! vfs.ExistsFile(pPathFailureState)){
+	if(!vfs.ExistsFile(pPathFailureState)){
 		return false;
 	}
 	
@@ -438,7 +438,7 @@ void deModio::pUpdateVFS(){
 	pVFSMods->RemoveAllContainers();
 	pActivateConfigs.RemoveAll();
 	
-	if(! userConfig){
+	if(!userConfig){
 		LogInfoFormat("-> User missing. Skipping");
 		return;
 	}

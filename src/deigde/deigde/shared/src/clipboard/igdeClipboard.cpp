@@ -86,7 +86,7 @@ igdeClipboardData *igdeClipboard::GetWithTypeName(const char *typeName) const{
 }
 
 void igdeClipboard::Set(igdeClipboardData *data){
-	if(! data){
+	if(!data){
 		DETHROW(deeInvalidParam);
 	}
 	

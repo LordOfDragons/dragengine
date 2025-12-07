@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime){
-	if(! topic){
+	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -51,7 +51,7 @@ seUMappedToggleInputClamped::~seUMappedToggleInputClamped(){
 ///////////////
 
 void seUMappedToggleInputClamped::Undo(){
-	pMapped->SetInputClamped(! pMapped->GetInputClamped());
+	pMapped->SetInputClamped(!pMapped->GetInputClamped());
 }
 
 void seUMappedToggleInputClamped::Redo(){

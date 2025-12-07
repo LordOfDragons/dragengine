@@ -46,10 +46,10 @@
 ////////////////////////////
 
 meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape){
-	if(! object || ! property){
+	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

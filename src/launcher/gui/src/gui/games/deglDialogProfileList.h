@@ -127,9 +127,9 @@ private:
 		typedef deTObjectReference<cEditProfile> Ref;
 		cEditProfile(deglDialogProfileList &dialog, const char *name);
 		cEditProfile(deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom);
-		inline delGameProfile *GetOriginal() const{return pOriginal;}
-		inline delGameProfile *GetEdit() const{return pEdit;}
-		inline delGame *GetGameCustom() const{return pGameCustom;}
+		inline delGameProfile *GetOriginal() const{ return pOriginal; }
+		inline delGameProfile *GetEdit() const{ return pEdit; }
+		inline delGame *GetGameCustom() const{ return pGameCustom; }
 		FXString GetText() const;
 		FXIcon *GetIcon() const;
 	};
@@ -213,7 +213,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Update full screen resolution list. */
 	void UpdateFullScreenResolutions();

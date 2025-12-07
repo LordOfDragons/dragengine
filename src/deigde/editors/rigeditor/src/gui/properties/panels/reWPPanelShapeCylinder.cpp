@@ -64,7 +64,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
-		if(! rig || ! cylinder){
+		if(!rig || !cylinder){
 			return;
 		}
 		
@@ -89,7 +89,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
-		if(! rig || ! cylinder){
+		if(!rig || !cylinder){
 			return;
 		}
 		
@@ -114,7 +114,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
-		if(! rig || ! cylinder){
+		if(!rig || !cylinder){
 			return;
 		}
 		

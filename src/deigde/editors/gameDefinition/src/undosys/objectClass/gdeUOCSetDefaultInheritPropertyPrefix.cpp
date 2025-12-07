@@ -42,7 +42,7 @@
 gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass *objectClass, const char *newValue) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

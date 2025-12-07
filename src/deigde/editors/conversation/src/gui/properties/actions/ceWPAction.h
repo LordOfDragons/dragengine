@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent panel. */
-	inline ceWPTopic &GetParentPanel() const{return pParentPanel;}
+	inline ceWPTopic &GetParentPanel() const{ return pParentPanel; }
 	
 	/** \brief Create common action parameters. */
 	void CreateGUICommon(igdeContainerForm &container);

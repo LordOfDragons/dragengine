@@ -98,7 +98,7 @@ gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCComponent(occomponent),
 pPlayback(false)
 {
-	if(! occomponent){
+	if(!occomponent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -126,7 +126,7 @@ gdeVAOComponent::~gdeVAOComponent(){
 ///////////////
 
 void gdeVAOComponent::Update(float elapsed){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
@@ -149,7 +149,7 @@ void gdeVAOComponent::RebuildResources(){
 }
 
 void gdeVAOComponent::UpdateTexture(gdeOCComponentTexture *texture){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -168,7 +168,7 @@ void gdeVAOComponent::SelectedObjectChanged(){
 void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) const{
 	minExtend.SetZero();
 	maxExtend.SetZero();
-	if(! pComponent || ! pComponent->GetModel()){
+	if(!pComponent || !pComponent->GetModel()){
 		return;
 	}
 	
@@ -218,7 +218,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// model
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epModel), pOCComponent->GetModelPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			model.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
 			
@@ -229,7 +229,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// skin
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epSkin), pOCComponent->GetSkinPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
 			
@@ -240,7 +240,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// rig
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epRig), pOCComponent->GetRigPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			rig.TakeOver(engine.GetRigManager()->LoadRig(vfs, path, "/"));
 			
@@ -251,7 +251,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// occlusion mesh
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epOcclusionMesh), pOCComponent->GetOcclusionMeshPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			occlusionMesh.TakeOver(engine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/"));
 			
@@ -262,7 +262,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// audio model
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epAudioModel), pOCComponent->GetAudioModelPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			audioModel.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
 			
@@ -295,7 +295,7 @@ void gdeVAOComponent::pCreateComponent(){
 }
 
 void gdeVAOComponent::pCreateComponentTextures(){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -333,9 +333,9 @@ deComponentTexture &engTexture, int engTextureIndex){
 		texCoordRotation = texture->GetRotation();
 	}
 	
-	if(! useSkin && texture){
+	if(!useSkin && texture){
 		try{
-			if(! texture->GetPathSkin().IsEmpty()){
+			if(!texture->GetPathSkin().IsEmpty()){
 				occtextureSkin.TakeOver(engine.GetSkinManager()->LoadSkin(texture->GetPathSkin(), "/"));
 			}
 			
@@ -349,9 +349,9 @@ deComponentTexture &engTexture, int engTextureIndex){
 		}
 	}
 	
-	if(! useDynamicSkin && texture){
+	if(!useDynamicSkin && texture){
 		const decColor &gdctColorTint = texture->GetColorTint();
-		const bool gdctHasTint = ! gdctColorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
+		const bool gdctHasTint = !gdctColorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 		bool gdctRequiresDynamicSkin = false;
 		
 		if(gdctHasTint){
@@ -384,7 +384,7 @@ deComponentTexture &engTexture, int engTextureIndex){
 	if(useSkin != engTexture.GetSkin()
 	|| useTexture != engTexture.GetTexture()
 	|| useDynamicSkin != engTexture.GetDynamicSkin()
-	|| ! texCoordTransform.IsEqualTo(engTexture.GetTransform())){
+	|| !texCoordTransform.IsEqualTo(engTexture.GetTransform())){
 		engTexture.SetSkin(useSkin);
 		engTexture.SetTexture(useTexture);
 		engTexture.SetTransform(texCoordTransform);
@@ -422,7 +422,7 @@ void gdeVAOComponent::pCreateCollider(){
 }
 
 void gdeVAOComponent::pCreateAnimator(){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -440,7 +440,7 @@ void gdeVAOComponent::pCreateAnimator(){
 		return;
 	}
 	
-	if(! pathAnimation.IsEmpty() && vfs.ExistsFile(decPath::CreatePathUnix(pathAnimation))){
+	if(!pathAnimation.IsEmpty() && vfs.ExistsFile(decPath::CreatePathUnix(pathAnimation))){
 		try{
 			animation.TakeOver(engine.GetAnimationManager()->LoadAnimation(&vfs, pathAnimation, "/"));
 			
@@ -450,9 +450,9 @@ void gdeVAOComponent::pCreateAnimator(){
 		}
 	}
 	
-	if(! pathAnimator.IsEmpty()){
+	if(!pathAnimator.IsEmpty()){
 		const decPath vfsPath(decPath::CreatePathUnix(pathAnimator));
-		if(! vfs.ExistsFile(vfsPath)){
+		if(!vfs.ExistsFile(vfsPath)){
 			return;
 		}
 		
@@ -534,7 +534,7 @@ void gdeVAOComponent::pCreateAnimator(){
 }
 
 void gdeVAOComponent::pAttachComponent(){
-	if(! pComponent || ! pCollider){
+	if(!pComponent || !pCollider){
 		return;
 	}
 	

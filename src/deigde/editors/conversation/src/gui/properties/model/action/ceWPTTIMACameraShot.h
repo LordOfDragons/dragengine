@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACameraShot *GetActionCameraShot() const{return (ceCACameraShot*)GetAction();}
+	inline ceCACameraShot *GetActionCameraShot() const{ return (ceCACameraShot*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

@@ -125,7 +125,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Texture. */
-	inline const deoglSkinTexture &GetTexture() const{return pTexture;}
+	inline const deoglSkinTexture &GetTexture() const{ return pTexture; }
 	
 	/** Pipeline with type and modifiers or nullptr. */
 	const deoglSkinTexturePipeline *GetWith(eTypes type, int modifiers = 0) const;

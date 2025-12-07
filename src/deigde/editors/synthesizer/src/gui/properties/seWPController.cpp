@@ -82,7 +82,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seController * const controller = pPanel.GetController();
-		if(! controller){
+		if(!controller){
 			return;
 		}
 		
@@ -106,7 +106,7 @@ public:
 	
 	virtual void OnAction(){
 		seController * const controller = pPanel.GetController();
-		if(! controller){
+		if(!controller){
 			return;
 		}
 		
@@ -129,7 +129,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -212,7 +212,7 @@ public:
 		if(pUndo){
 			((seUControllerSetCurve&)(igdeUndo&)pUndo).SetNewValue(viewCurveBezier->GetCurve());
 			
-		}else if(! pPanel.GetController() || pPanel.GetController()->GetCurve() == viewCurveBezier->GetCurve()){
+		}else if(!pPanel.GetController() || pPanel.GetController()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{
@@ -497,7 +497,7 @@ void seWPController::UpdateControllerList(){
 	}
 	
 	pListController->SetSelectionWithData(selection);
-	if(! pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
+	if(!pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
 		pListController->SetSelection(0);
 	}
 	

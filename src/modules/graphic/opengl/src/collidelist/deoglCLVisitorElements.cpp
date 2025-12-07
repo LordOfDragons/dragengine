@@ -48,7 +48,7 @@
 ////////////////////////////
 
 deoglCLVisitorElements::deoglCLVisitorElements(deoglCollideList *collideList, deoglDCollisionVolume *volume){
-	if(! collideList || ! volume) DETHROW(deeInvalidParam);
+	if(!collideList || !volume) DETHROW(deeInvalidParam);
 	
 	pCollideList = collideList;
 	pVolume = volume;

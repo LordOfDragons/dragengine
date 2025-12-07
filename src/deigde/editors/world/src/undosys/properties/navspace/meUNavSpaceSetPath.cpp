@@ -42,12 +42,12 @@
 ////////////////////////////
 
 meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath){
-	if(! navspace || ! newPath){
+	if(!navspace || !newPath){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld *world = navspace->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

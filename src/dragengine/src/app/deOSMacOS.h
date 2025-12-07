@@ -185,7 +185,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline NSWindow *GetWindow() const{return pCurWindow;}
+	inline NSWindow *GetWindow() const{ return pCurWindow; }
 	
 	/**
 	 * \brief Set current game window.
@@ -200,7 +200,7 @@ public:
 	void SetWindow(NSWindow *window);
 	
 	/** \brief Hosting main window or NULL if not set. */
-	inline NSWindow *GetHostingMainWindow() const{return pHostingMainWindow;}
+	inline NSWindow *GetHostingMainWindow() const{ return pHostingMainWindow; }
 	
 	/**
 	 * \brief Set hosting main window or NULL if not set.
@@ -213,7 +213,7 @@ public:
 	void SetHostingMainWindow(NSWindow *window);
 	
 	/** \brief Hosting render window or NULL if not set. */
-	inline NSWindow *GetHostingRenderWindow() const{return pHostingRenderWindow;}
+	inline NSWindow *GetHostingRenderWindow() const{ return pHostingRenderWindow; }
 	
 	/**
 	 * \brief Set hosting render window or NULL if not set.

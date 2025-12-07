@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/**
 	 * \brief Path point at index.

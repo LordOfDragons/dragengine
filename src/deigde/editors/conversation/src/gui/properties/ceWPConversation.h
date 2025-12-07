@@ -125,10 +125,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties windows. */
-	inline ceWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Conversation. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
 	void SetConversation(ceConversation *conversation);

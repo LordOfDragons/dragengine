@@ -193,13 +193,13 @@ void deVRSystem::ClearPermanents(){
 }
 
 void deVRSystem::PostStart(){
-	if(! pActiveModule || ! pActiveModule->Init()){
+	if(!pActiveModule || !pActiveModule->Init()){
 		DETHROW(deeInvalidAction);
 	}
 }
 
 void deVRSystem::PreStop(){
-	if(! pActiveModule){
+	if(!pActiveModule){
 		return;
 	}
 	

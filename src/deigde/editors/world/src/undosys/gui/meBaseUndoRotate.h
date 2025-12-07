@@ -54,29 +54,29 @@ public:
 	
 	// management
 	/** Retrieves the angle to rotate in degrees. */
-	inline float GetAngle() const{return pAngle;}
+	inline float GetAngle() const{ return pAngle; }
 	/** Sets the angle to rotate in degrees. */
 	void SetAngle(float angle);
 	/** Retrieves the pivot point. */
-	inline const decDVector &GetPivot() const{return pPivot;}
+	inline const decDVector &GetPivot() const{ return pPivot; }
 	/** Sets the pivot point. */
 	void SetPivot(const decDVector &pivot);
 	/** Retrieves the rotation axis. */
-	inline const decDVector &GetAxis() const{return pAxis;}
+	inline const decDVector &GetAxis() const{ return pAxis; }
 	/** Sets the rotation axis. */
 	void SetAxis(const decDVector &axis);
 	
 	/** Determines if the position has to be modified. */
-	inline bool GetModifyPosition() const{return pModifyPosition;}
+	inline bool GetModifyPosition() const{ return pModifyPosition; }
 	/** Sets if the position has to be modified. */
 	void SetModifyPosition(bool modifyPosition);
 	/** Determines if the orientation has to be modified. */
-	inline bool GetModifyOrientation() const{return pModifyOrientation;}
+	inline bool GetModifyOrientation() const{ return pModifyOrientation; }
 	/** Sets if the orientation has to be modified. */
 	void SetModifyOrientation(bool modifyOrientation);
 	
 	/** Retrieves the rotation matrix. */
-	inline const decDMatrix &GetRotationMatrix() const{return pMatrix;}
+	inline const decDMatrix &GetRotationMatrix() const{ return pMatrix; }
 	/** Updates the rotation matrix. */
 	void UpdateRotationMatrix();
 	

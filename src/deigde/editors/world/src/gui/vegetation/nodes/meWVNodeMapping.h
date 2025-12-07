@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleMapping *GetRuleMapping() const{return pRuleMapping;}
+	inline meHTVRuleMapping *GetRuleMapping() const{ return pRuleMapping; }
 	
 	/** \brief Update node. */
 	virtual void Update();

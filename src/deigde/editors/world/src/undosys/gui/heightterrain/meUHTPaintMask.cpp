@@ -48,7 +48,7 @@
 
 meUHTPaintMask::meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector,
 meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, unsigned char *oldValues){
-	if(! world || ! sector || ! texture || ! oldValues) DETHROW(deeInvalidParam);
+	if(!world || !sector || !texture || !oldValues) DETHROW(deeInvalidParam);
 	
 	int pixelCount = size.x * size.y;
 	
@@ -77,10 +77,10 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	
 	try{
 		pOldValues = new unsigned char[pixelCount];
-		if(! pOldValues) DETHROW(deeOutOfMemory);
+		if(!pOldValues) DETHROW(deeOutOfMemory);
 		
 		pNewValues = new unsigned char[pixelCount];
-		if(! pNewValues) DETHROW(deeOutOfMemory);
+		if(!pNewValues) DETHROW(deeOutOfMemory);
 		
 		pSaveValues();
 		

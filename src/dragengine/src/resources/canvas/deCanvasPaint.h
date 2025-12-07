@@ -143,7 +143,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline eShapeTypes GetShapeType() const{return pShapeType;}
+	inline eShapeTypes GetShapeType() const{ return pShapeType; }
 	
 	/**
 	 * \brief Set shape type.
@@ -152,19 +152,19 @@ public:
 	void SetShapeType(eShapeTypes shapeType);
 	
 	/** \brief Line color. */
-	inline const decColor &GetLineColor() const{return pLineColor;}
+	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** \brief Set line color. */
 	void SetLineColor(const decColor &color);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{return pFillColor;}
+	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** \brief Set fill color. */
 	void SetFillColor(const decColor &color);
 	
 	/** \brief Line thickness in units. */
-	inline float GetThickness() const{return pThickness;}
+	inline float GetThickness() const{ return pThickness; }
 	
 	/**
 	 * \brief Line thickness in units.
@@ -179,7 +179,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	inline float GetRoundCornerX() const{return pRoundCornerX;}
+	inline float GetRoundCornerX() const{ return pRoundCornerX; }
 	
 	/**
 	 * \brief Set round corner in X direction as percentage.
@@ -195,7 +195,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	inline float GetRoundCornerY() const{return pRoundCornerY;}
+	inline float GetRoundCornerY() const{ return pRoundCornerY; }
 	
 	/**
 	 * \brief Set round corner in Y direction as percentage.
@@ -210,7 +210,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	inline float GetStartAngle() const{return pStartAngle;}
+	inline float GetStartAngle() const{ return pStartAngle; }
 	
 	/**
 	 * \brief Set start angle in radians from 0 to 2PI.
@@ -224,7 +224,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	inline float GetEndAngle() const{return pEndAngle;}
+	inline float GetEndAngle() const{ return pEndAngle; }
 	
 	/**
 	 * \brief Set end angle in radians from 0 to 2PI.
@@ -239,7 +239,7 @@ public:
 	/** \name Points */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/**
 	 * \brief Point at position.

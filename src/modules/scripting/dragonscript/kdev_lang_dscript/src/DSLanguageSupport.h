@@ -45,7 +45,7 @@ public:
 	
 	
 	/** \brief Singleton. */
-	inline static DSLanguageSupport *self(){return pSelf;}
+	inline static DSLanguageSupport *self(){ return pSelf; }
 	
 	/** \brief Name of language.*/
 	virtual QString name() const override;

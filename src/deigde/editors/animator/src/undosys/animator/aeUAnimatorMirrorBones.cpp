@@ -45,7 +45,7 @@
 aeUAnimatorMirrorBones::aeUAnimatorMirrorBones(aeAnimator *animator) :
 pAnimator(animator)
 {
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -103,7 +103,7 @@ void deoalWOVRayBlocked::VisitNode(deoalDOctree*, int){
 
 void deoalWOVRayBlocked::VisitComponent(deoalAComponent *component){
 	deoalAModel &model = *component->GetModel();
-	if(! model.GetRTBVH() && ! component->GetBVH()){
+	if(!model.GetRTBVH() && !component->GetBVH()){
 		return;
 	}
 	

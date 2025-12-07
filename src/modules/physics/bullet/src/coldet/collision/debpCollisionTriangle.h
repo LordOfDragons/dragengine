@@ -150,16 +150,16 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	inline const decVector &GetCorner1() const{return pCorners[0];}
-	inline const decVector &GetCorner2() const{return pCorners[1];}
-	inline const decVector &GetCorner3() const{return pCorners[2];}
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetCorner1() const{ return pCorners[0]; }
+	inline const decVector &GetCorner2() const{ return pCorners[1]; }
+	inline const decVector &GetCorner3() const{ return pCorners[2]; }
+	inline const decVector &GetNormal() const{ return pNormal; }
 	/**
 	 * Retrieves the precalculated distance value. The distance
 	 * is the dot product between the first corner point and
 	 * the triangle normal.
 	 */
-	inline float GetDistance() const{return pDist;}
+	inline float GetDistance() const{ return pDist; }
 	/** Sets the corners of the triangle and calculates the normal and distance. */
 	void SetCorners(const decVector &corner1, const decVector &corner2, const decVector &corner3);
 	/**

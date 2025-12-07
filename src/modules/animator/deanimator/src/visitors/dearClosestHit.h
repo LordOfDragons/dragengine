@@ -59,13 +59,13 @@ public:
 	void Reset();
 	
 	/** Determines if an element has been hit. */
-	inline bool GetHasHit() const{return pHasHit;}
+	inline bool GetHasHit() const{ return pHasHit; }
 	/** Retrieves the hit distance. */
-	inline float GetHitDistance() const{return pHitDistance;}
+	inline float GetHitDistance() const{ return pHitDistance; }
 	/** Retrieves the hit normal. */
-	inline const decVector &GetHitNormal() const{return pHitNormal;}
+	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	/** Retrieves the listener to forward to or NULL if not set. */
-	inline deBaseScriptingCollider *GetListener() const{return pListener;}
+	inline deBaseScriptingCollider *GetListener() const{ return pListener; }
 	/** Sets the listener to forward to or NULL if not set. */
 	void SetListener(deBaseScriptingCollider *listener);
 	/*@}*/

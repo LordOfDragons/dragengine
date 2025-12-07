@@ -66,7 +66,7 @@ public:
 	virtual void RaiseAndActivate();
 	
 	virtual void OnFrameUpdate();
-	inline bool GetIsClosed() const{return pIsClosed;}
+	inline bool GetIsClosed() const{ return pIsClosed; }
 	void SetIsClosed(bool isClosed);
 	/*@}*/
 };

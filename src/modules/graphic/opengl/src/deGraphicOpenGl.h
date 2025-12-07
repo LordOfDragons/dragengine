@@ -286,44 +286,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return *pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return *pRenderThread; }
 	
 	/** Render thread is not NULL. */
 	bool HasRenderThread() const;
 	
 	/** Capture canvas list. */
-	inline deoglCaptureCanvasList &GetCaptureCanvasList(){return pCaptureCanvasList;}
+	inline deoglCaptureCanvasList &GetCaptureCanvasList(){ return pCaptureCanvasList; }
 	
 	/** Caches. */
-	inline deoglCaches &GetCaches() const{return *pCaches;}
+	inline deoglCaches &GetCaches() const{ return *pCaches; }
 	
 	/** Debug overlay manager. */
-	inline deoglDebugOverlay &GetDebugOverlay(){return pDebugOverlay;}
+	inline deoglDebugOverlay &GetDebugOverlay(){ return pDebugOverlay; }
 	
 	/** Resources. */
-	inline deoglResources &GetResources() const{return *pResources;}
+	inline deoglResources &GetResources() const{ return *pResources; }
 	
 	/** Overlay canvas view. */
-	inline const deCanvasView::Ref &GetOverlay() const{return pOverlay;}
+	inline const deCanvasView::Ref &GetOverlay() const{ return pOverlay; }
 	
 	/** Shader compiling information. */
-	inline const deoglShaderCompilingInfo::Ref &GetShaderCompilingInfo() const{return pShaderCompilingInfo;}
+	inline const deoglShaderCompilingInfo::Ref &GetShaderCompilingInfo() const{ return pShaderCompilingInfo; }
 	
 	/** Configuration. */
-	inline deoglConfiguration &GetConfiguration(){return pConfiguration;}
+	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
 	/** List of render windows. */
-	inline deoglRenderWindowList &GetRenderWindowList(){return pRenderWindowList;}
-	inline const deoglRenderWindowList &GetRenderWindowList() const{return pRenderWindowList;}
+	inline deoglRenderWindowList &GetRenderWindowList(){ return pRenderWindowList; }
+	inline const deoglRenderWindowList &GetRenderWindowList() const{ return pRenderWindowList; }
 	
 	/** VR camera or null. */
-	inline deoglCamera *GetVRCamera() const{return pVRCamera;}
+	inline deoglCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or null. */
 	void SetVRCamera(deoglCamera *camera);
 	
 	/** VR debug panel matrix. */
-	inline const decDMatrix &GetVRDebugPanelMatrix() const{return pVRDebugPanelMatrix;}
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	/*@}*/
 	
 private:

@@ -469,7 +469,7 @@ int meHeightTerrain::IndexOfSector(meHeightTerrainSector *sector) const{
 }
 
 void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
-	if(! sector || GetSectorWith(sector->GetCoordinates())){
+	if(!sector || GetSectorWith(sector->GetCoordinates())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -477,7 +477,7 @@ void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
 	
 	sector->SetHeightTerrain(this);
 	
-	if(! pActiveSector){
+	if(!pActiveSector){
 		SetActiveSector(sector);
 	}
 	
@@ -485,7 +485,7 @@ void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
 }
 
 void meHeightTerrain::RemoveSector(meHeightTerrainSector *sector){
-	if(! pSectors.Has(sector)){
+	if(!pSectors.Has(sector)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -557,7 +557,7 @@ bool meHeightTerrain::HasVLayer(meHTVegetationLayer *vlayer) const{
 }
 
 void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
-	if(! vlayer){
+	if(!vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -567,7 +567,7 @@ void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
 	SetChanged(true);
 	pWorld.NotifyHTVLayerCountChanged();
 	
-	if(! pActiveVLayer){
+	if(!pActiveVLayer){
 		SetActiveVLayer(vlayer);
 	}
 	
@@ -575,7 +575,7 @@ void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meHeightTerrain::InsertVLayer(int before, meHTVegetationLayer *vlayer){
-	if(! vlayer){
+	if(!vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -585,7 +585,7 @@ void meHeightTerrain::InsertVLayer(int before, meHTVegetationLayer *vlayer){
 	SetChanged(true);
 	pWorld.NotifyHTVLayerCountChanged();
 	
-	if(! pActiveVLayer){
+	if(!pActiveVLayer){
 		SetActiveVLayer(vlayer);
 	}
 	
@@ -640,7 +640,7 @@ void meHeightTerrain::SetActiveVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meHeightTerrain::NotifyVLayerChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	pWorld.NotifyHTVLayerChanged(vlayer);
 }
 

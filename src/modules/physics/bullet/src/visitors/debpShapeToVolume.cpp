@@ -84,7 +84,7 @@ void debpShapeToVolume::SetMatrix(const decDMatrix &matrix){
 /////////////////////////
 
 debpDCollisionVolume *debpShapeToVolume::GetVolumeFor(decShape *shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	

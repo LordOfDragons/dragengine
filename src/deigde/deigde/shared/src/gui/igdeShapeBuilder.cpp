@@ -65,7 +65,7 @@ void igdeShapeBuilder::CreateSphere(decConvexVolumeList &list, const decVector &
 	try{
 		// create convex volume
 		volume = new decConvexVolume;
-		if(! volume) DETHROW(deeOutOfMemory);
+		if(!volume) DETHROW(deeOutOfMemory);
 		
 		// add vertices
 		volume->AddVertex(center + decVector(-offset, radius, -offset));
@@ -155,7 +155,7 @@ void igdeShapeBuilder::CreateFrustum(decConvexVolumeList &list, const decVector 
 	try{
 		// create convex volume
 		volume = new decConvexVolume;
-		if(! volume) DETHROW(deeOutOfMemory);
+		if(!volume) DETHROW(deeOutOfMemory);
 		
 		// add vertices
 		volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
@@ -221,7 +221,7 @@ void igdeShapeBuilder::CreateArrow(decConvexVolumeList &list, const decVector &f
 	try{
 		// create convex volume
 		volume = new decConvexVolume;
-		if(! volume) DETHROW(deeOutOfMemory);
+		if(!volume) DETHROW(deeOutOfMemory);
 		
 		// add vertices
 		volume->AddVertex(to);
@@ -357,7 +357,7 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &
 				if(vertexCount < 3) continue;
 				
 				ddFace = new deDebugDrawerShapeFace;
-				if(! ddFace) DETHROW(deeOutOfMemory);
+				if(!ddFace) DETHROW(deeOutOfMemory);
 				
 				ddFace->SetNormal(cvVolumeFace->GetNormal());
 				
@@ -398,7 +398,7 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, igdeWDebugDrawerShap
 				if(vertexCount < 3) continue;
 				
 				ddFace = new deDebugDrawerShapeFace;
-				if(! ddFace) DETHROW(deeOutOfMemory);
+				if(!ddFace) DETHROW(deeOutOfMemory);
 				
 				ddFace->SetNormal(cvVolumeFace->GetNormal());
 				
@@ -525,7 +525,7 @@ const decVector &p2, const decVector &p3, const decVector &normal) const{
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if(! ddFace) DETHROW(deeOutOfMemory);
+		if(!ddFace) DETHROW(deeOutOfMemory);
 		
 		ddFace->SetNormal(normal);
 		
@@ -557,7 +557,7 @@ const decVector &p2, const decVector &p3, const decVector &p4, const decVector &
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if(! ddFace) DETHROW(deeOutOfMemory);
+		if(!ddFace) DETHROW(deeOutOfMemory);
 		
 		ddFace->SetNormal(normal);
 		
@@ -586,7 +586,7 @@ void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, i
 	
 	try{
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();
@@ -610,7 +610,7 @@ void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, i
 	
 	try{
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();
@@ -635,7 +635,7 @@ void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, i
 	
 	try{
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		
 		const decVector &v1 = volume->GetVertexAt(p1);
 		const decVector &v2 = volume->GetVertexAt(p2);

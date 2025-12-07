@@ -84,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{return pDisplay;}
+	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	
 	

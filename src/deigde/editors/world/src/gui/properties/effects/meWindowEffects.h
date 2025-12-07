@@ -76,7 +76,7 @@ public:
 	//virtual void create();
 	
 	// management
-	inline meWindowMain *GetWindowMain() const{return pWndMain;}
+	inline meWindowMain *GetWindowMain() const{ return pWndMain; }
 	void UpdateWorld();
 	void UpdateEffectsList();
 	const char *GetEffectTypeNameFor(int type) const;

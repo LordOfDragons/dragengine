@@ -97,7 +97,7 @@ deoalDebugInfo::~deoalDebugInfo(){
 ///////////////
 
 void deoalDebugInfo::ResetTimersMainThread(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ void deoalDebugInfo::ResetTimersMainThread(){
 }
 
 void deoalDebugInfo::StoreTimeThreadMain(float time){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -114,7 +114,7 @@ void deoalDebugInfo::StoreTimeThreadMain(float time){
 }
 
 void deoalDebugInfo::StoreTimeThreadMainWaitFinish(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -122,7 +122,7 @@ void deoalDebugInfo::StoreTimeThreadMainWaitFinish(){
 }
 
 void deoalDebugInfo::StoreTimeThreadMainSynchronize(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -131,7 +131,7 @@ void deoalDebugInfo::StoreTimeThreadMainSynchronize(){
 }
 
 void deoalDebugInfo::ResetTimersAudioThread(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void deoalDebugInfo::ResetTimersAudioThread(){
 }
 
 void deoalDebugInfo::StoreTimeAudioThread(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -198,7 +198,7 @@ void deoalDebugInfo::StoreTimeAudioThreadEffectsProcess(){
 
 void deoalDebugInfo::StoreTimeFrameLimiter(const decTimeHistory &main,
 const decTimeHistory &audio, const decTimeHistory &audioEstimated){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -219,7 +219,7 @@ const decTimeHistory &audio, const decTimeHistory &audioEstimated){
 
 
 void deoalDebugInfo::UpdateDebugInfo(){
-	if(! pAudioThread.GetDebug().GetEnabled()){
+	if(!pAudioThread.GetDebug().GetEnabled()){
 		return;
 	}
 	
@@ -279,7 +279,7 @@ void deoalDebugInfo::ShowDIModule(){
 }
 
 void deoalDebugInfo::HideDIModule(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -288,7 +288,7 @@ void deoalDebugInfo::HideDIModule(){
 }
 
 void deoalDebugInfo::UpdateDIModule(){
-	if(! pDIModule){
+	if(!pDIModule){
 		return;
 	}
 	
@@ -359,7 +359,7 @@ void deoalDebugInfo::ShowDIActiveMic(){
 }
 
 void deoalDebugInfo::HideDIActiveMic(){
-	if(! pDIActiveMic){
+	if(!pDIActiveMic){
 		return;
 	}
 	
@@ -368,7 +368,7 @@ void deoalDebugInfo::HideDIActiveMic(){
 }
 
 void deoalDebugInfo::UpdateDIActiveMic(){
-	if(! pDIActiveMic){
+	if(!pDIActiveMic){
 		return;
 	}
 	
@@ -403,7 +403,7 @@ void deoalDebugInfo::ShowDDActiveMicRays(){
 }
 
 void deoalDebugInfo::HideDDActiveMicRays(){
-	if(! pDDActiveMicRays){
+	if(!pDDActiveMicRays){
 		return;
 	}
 	
@@ -414,7 +414,7 @@ void deoalDebugInfo::HideDDActiveMicRays(){
 }
 
 void deoalDebugInfo::CaptureActiveMicRays(){
-	if(! pDDActiveMicRays || ! pAudioThread.GetOal().GetDevMode()->GetCaptureMicRays()){
+	if(!pDDActiveMicRays || !pAudioThread.GetOal().GetDevMode()->GetCaptureMicRays()){
 		return;
 	}
 	
@@ -463,7 +463,7 @@ void deoalDebugInfo::ShowDISpeakerAtPosition(){
 }
 
 void deoalDebugInfo::HideDISpeakerAtPosition(){
-	if(! pDISpeakerAtPosition){
+	if(!pDISpeakerAtPosition){
 		return;
 	}
 	
@@ -472,7 +472,7 @@ void deoalDebugInfo::HideDISpeakerAtPosition(){
 }
 
 void deoalDebugInfo::UpdateDISpeakerAtPosition(){
-	if(! pDISpeakerAtPosition){
+	if(!pDISpeakerAtPosition){
 		return;
 	}
 	
@@ -548,7 +548,7 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 			
 			for(i=0; i<count; i++){
 				deoalASpeaker * const speaker = activeSpeakers.GetAt(i);
-				if(! speaker->GetPlaying() || ! speaker->GetEnvironment()){
+				if(!speaker->GetPlaying() || !speaker->GetEnvironment()){
 					continue;
 				}
 				
@@ -557,7 +557,7 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 					continue;
 				}
 				
-				if(! bestSpeaker || distance < bestDistance){
+				if(!bestSpeaker || distance < bestDistance){
 					bestSpeaker = speaker;
 					bestDistance = distance;
 				}
@@ -674,7 +674,7 @@ void deoalDebugInfo::CaptureDDClosestSpeakersDirect(){
 			
 			for(i=0; i<count; i++){
 				deoalASpeaker * const speaker = activeSpeakers.GetAt(i);
-				if(! speaker->GetPlaying() || ! speaker->GetEnvironment()){
+				if(!speaker->GetPlaying() || !speaker->GetEnvironment()){
 					continue;
 				}
 				
@@ -683,7 +683,7 @@ void deoalDebugInfo::CaptureDDClosestSpeakersDirect(){
 					continue;
 				}
 				
-				if(! bestSpeaker || distance < bestDistance){
+				if(!bestSpeaker || distance < bestDistance){
 					bestSpeaker = speaker;
 					bestDistance = distance;
 				}
@@ -748,11 +748,11 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 		
 		for(i=0; i<speakers.GetCount(); i++){
 			const deoalASpeaker &speaker = *speakers.GetAt(i);
-			if(! speaker.GetEnabled() || ! speaker.GetPlaying()){
+			if(!speaker.GetEnabled() || !speaker.GetPlaying()){
 				continue;
 			}
 			
-			if(useEnv && (! speaker.GetEnvironment() || ! speaker.GetEnvironment()->GetValid())){
+			if(useEnv && (!speaker.GetEnvironment() || !speaker.GetEnvironment()->GetValid())){
 				continue;
 			}
 			

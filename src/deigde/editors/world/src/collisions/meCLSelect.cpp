@@ -205,7 +205,7 @@ void meCLSelect::RunAction(int selectIndex){
 			if(pRectSelect){
 				rselListObjects.AddIfAbsent(object);
 				
-				if(! object->GetSelected()){
+				if(!object->GetSelected()){
 					selection.Add(object);
 				}
 				
@@ -229,7 +229,7 @@ void meCLSelect::RunAction(int selectIndex){
 				}
 			}
 			
-			if(! pRectSelect){
+			if(!pRectSelect){
 				pWorld.NotifyObjectSelectionChanged();
 				break;
 			}
@@ -240,7 +240,7 @@ void meCLSelect::RunAction(int selectIndex){
 			if(pRectSelect){
 				rselListObjectShapes.AddIfAbsent(objectShape);
 				
-				if(! objectShape->GetSelected()){
+				if(!objectShape->GetSelected()){
 					selection.Add(objectShape);
 				}
 				
@@ -264,7 +264,7 @@ void meCLSelect::RunAction(int selectIndex){
 				}
 			}
 			
-			if(! pRectSelect){
+			if(!pRectSelect){
 				pWorld.NotifyObjectShapeSelectionChanged();
 				break;
 			}
@@ -319,12 +319,12 @@ void meCLSelect::RunAction(int selectIndex){
 			
 		}else if(pCanSelectHTNavPoints && htnavPoint != -1){
 			meHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
-			if(! heightTerrain){
+			if(!heightTerrain){
 				break;
 			}
 			
 			meHeightTerrainSector * const sector = heightTerrain->GetActiveSector();
-			if(! sector){
+			if(!sector){
 				break;
 			}
 			
@@ -360,7 +360,7 @@ void meCLSelect::RunAction(int selectIndex){
 			
 			count = listSelected.GetCount();
 			for(i=0; i<count; i++){
-				if(! rselListObjects.Has(listSelected.GetAt(i))){
+				if(!rselListObjects.Has(listSelected.GetAt(i))){
 					listDeselect.Add(listSelected.GetAt(i));
 				}
 			}
@@ -370,7 +370,7 @@ void meCLSelect::RunAction(int selectIndex){
 				selection.Remove(listDeselect.GetAt(i));
 			}
 			
-			if(! selection.HasActive() || ! selection.GetActive()->GetSelected()){
+			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
 				selection.ActivateNext();
 			}
 			
@@ -384,7 +384,7 @@ void meCLSelect::RunAction(int selectIndex){
 			
 			count = listSelected.GetCount();
 			for(i=0; i<count; i++){
-				if(! rselListObjectShapes.Has(listSelected.GetAt(i))){
+				if(!rselListObjectShapes.Has(listSelected.GetAt(i))){
 					listDeselect.Add(listSelected.GetAt(i));
 				}
 			}
@@ -394,7 +394,7 @@ void meCLSelect::RunAction(int selectIndex){
 				selection.Remove(listDeselect.GetAt(i));
 			}
 			
-			if(! selection.HasActive() || ! selection.GetActive()->GetSelected()){
+			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
 				selection.ActivateNext();
 			}
 			
@@ -414,12 +414,12 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld.GetEnvironment(), info->GetCollider() );
-		if(! colliderOwner){
+		if(!colliderOwner){
 			return;
 		}
 		
 		if(colliderOwner->GetObject()){
-			if(! pCanHitObjects){
+			if(!pCanHitObjects){
 				return;
 			}
 			
@@ -429,7 +429,7 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 			pHitList.AddEntry(entry);
 			
 		}else if(colliderOwner->GetDecal()){
-			if(! pCanHitDecals){
+			if(!pCanHitDecals){
 				return;
 			}
 			
@@ -439,7 +439,7 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 			pHitList.AddEntry(entry);
 			
 		}else if(colliderOwner->GetNavigationSpace()){
-			if(! pCanHitNavSpaces){
+			if(!pCanHitNavSpaces){
 				return;
 			}
 			
@@ -449,7 +449,7 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 			pHitList.AddEntry(entry);
 			
 		}else if(colliderOwner->GetShape()){
-			if(! pCanHitObjectShapes){
+			if(!pCanHitObjectShapes){
 				return;
 			}
 			

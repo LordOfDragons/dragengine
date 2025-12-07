@@ -70,7 +70,7 @@ void ceTextBoxText::SetText(const decUnicodeString &text){
 void ceTextBoxText::Layout(const ceTextBox &textBox){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *textBox.GetEngine().GetCanvasManager();
-	if(! pCanvasView){
+	if(!pCanvasView){
 		pCanvasView = canvasManager.CreateCanvasView();
 	}
 	
@@ -80,7 +80,7 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 	
 	// get font. if not existing exit since we can not render anything this way
 	deFont * const font = textBox.GetFont();
-	if(! font){
+	if(!font){
 		return;
 	}
 	

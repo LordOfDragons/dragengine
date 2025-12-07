@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -86,7 +86,7 @@ public:
 	 */
 	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source);
 	
-	inline dsClass *GetClassSynthesizerSourceMix() const{return pClsSynthesizerSourceMix;}
+	inline dsClass *GetClassSynthesizerSourceMix() const{ return pClsSynthesizerSourceMix; }
 	/*@}*/
 	
 	

@@ -45,11 +45,11 @@ gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCS
 pObjectClass(NULL),
 pSnapPoint(NULL)
 {
-	if(! objectClass || ! snapPoint){
+	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetSnapPoints().Has(snapPoint)){
+	if(!objectClass->GetSnapPoints().Has(snapPoint)){
 		DETHROW(deeInvalidParam);
 	}
 	

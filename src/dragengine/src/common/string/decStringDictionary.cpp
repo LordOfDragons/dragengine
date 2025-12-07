@@ -156,7 +156,7 @@ decStringDictionary::~decStringDictionary(){
 ///////////////
 
 bool decStringDictionary::Has(const char *key) const{
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -176,7 +176,7 @@ bool decStringDictionary::Has(const char *key) const{
 
 const decString &decStringDictionary::GetAt(const char *key) const{
 	const decString *string;
-	if(! GetAt(key, &string)){
+	if(!GetAt(key, &string)){
 		DETHROW(deeInvalidParam);
 	}
 	return *string;
@@ -191,7 +191,7 @@ const decString &decStringDictionary::GetAt(const char *key, const decString &de
 }
 
 bool decStringDictionary::GetAt(const char *key, const decString **string) const{
-	if(! key || ! string){
+	if(!key || !string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -211,7 +211,7 @@ bool decStringDictionary::GetAt(const char *key, const decString **string) const
 }
 
 void decStringDictionary::SetAt(const char *key, const char *value){
-	if(! key || key[0] == '\0'){
+	if(!key || key[0] == '\0'){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -254,7 +254,7 @@ void decStringDictionary::SetAt(const char *key, const char *value){
 }
 
 void decStringDictionary::Remove(const char *key){
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -287,7 +287,7 @@ void decStringDictionary::Remove(const char *key){
 }
 
 void decStringDictionary::RemoveIfPresent(const char *key){
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -386,7 +386,7 @@ bool decStringDictionary::Equals(const decStringDictionary &dict) const{
 		sDictEntry *iterEntry = pBuckets[i];
 		
 		while(iterEntry){
-			if(! dict.GetAt(iterEntry->key, &string) || *string != iterEntry->value){
+			if(!dict.GetAt(iterEntry->key, &string) || *string != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -404,7 +404,7 @@ void decStringDictionary::CheckLoad(){
 		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if(! newBuckets){
+		if(!newBuckets){
 			DETHROW(deeInvalidParam);
 		}
 		for(i=0; i<newBucketCount; i++){

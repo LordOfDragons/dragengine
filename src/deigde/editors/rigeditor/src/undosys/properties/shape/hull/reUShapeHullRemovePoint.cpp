@@ -39,7 +39,7 @@ reUShapeHullRemovePoint::reUShapeHullRemovePoint(reRigShapeHull *shape, int inde
 pShape(shape),
 pIndex(index)
 {
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	

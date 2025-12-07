@@ -70,7 +70,7 @@ void deClassVideoPlayer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create video player
 	nd.videoPlayer = vpmgr.CreateVideoPlayer();
-	if(! nd.videoPlayer) DSTHROW(dueOutOfMemory);
+	if(!nd.videoPlayer) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -316,7 +316,7 @@ void deClassVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVideoPlayer *clsVP = (deClassVideoPlayer*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsVP)){
+	if(!p_IsObjOfType(obj, clsVP)){
 		rt->PushBool(false);
 		
 	}else{
@@ -336,7 +336,7 @@ void deClassVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassVideoPlayer::deClassVideoPlayer(deScriptingDragonScript *ds) :
 dsClass("VideoPlayer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pDS = ds;
@@ -403,7 +403,7 @@ void deClassVideoPlayer::CreateClassMembers(dsEngine *engine){
 }
 
 deVideoPlayer *deClassVideoPlayer::GetVideoPlayer(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -411,11 +411,11 @@ deVideoPlayer *deClassVideoPlayer::GetVideoPlayer(dsRealObject *myself) const{
 }
 
 void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlayer){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! videoPlayer){
+	if(!videoPlayer){
 		rt->PushObject(NULL, this);
 		return;
 	}

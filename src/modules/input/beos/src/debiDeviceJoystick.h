@@ -65,10 +65,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Device name. */
-	inline const decString &GetName() const{return pDevName;}
+	inline const decString &GetName() const{ return pDevName; }
 	
 	/** \brief Joystick instance. */
-	inline BJoystick *GetJoystick() const{return pJoystick;}
+	inline BJoystick *GetJoystick() const{ return pJoystick; }
 	
 	
 	

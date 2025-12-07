@@ -61,7 +61,7 @@ pOCSpeaker(ocspeaker),
 pDDSCenter(NULL),
 pDDSCoordSystem(NULL)
 {
-	if(! ocspeaker){
+	if(!ocspeaker){
 		DETHROW(deeInvalidParam);
 	}
 	

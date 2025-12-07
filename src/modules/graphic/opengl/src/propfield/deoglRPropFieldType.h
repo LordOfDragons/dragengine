@@ -92,12 +92,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Prop field. */
-	inline deoglRPropField &GetPropField() const{return pPropField;}
+	inline deoglRPropField &GetPropField() const{ return pPropField; }
 	
 	
 	
 	/** Model or NULL if not set. */
-	inline deoglRModel *GetModel() const{return pModel;}
+	inline deoglRModel *GetModel() const{ return pModel; }
 	
 	/**
 	 * Set model or NULL if not set.
@@ -106,7 +106,7 @@ public:
 	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/**
 	 * Set skin or NULL if not set.
@@ -115,18 +115,18 @@ public:
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL if not valid. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
+	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
 	
 	/** Minimum extend. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Bending factor. */
-	inline float GetBendFactor() const{return pBendFactor;}
+	inline float GetBendFactor() const{ return pBendFactor; }
 	
 	
 	
@@ -181,7 +181,7 @@ public:
 	
 	
 	/** Parameter block or NULL if there is no valid skin texture. */
-	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{return pParamBlock;}
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();

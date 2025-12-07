@@ -113,7 +113,7 @@ bool projProfileList::HasNamed(const char *name) const{
 }
 
 void projProfileList::Add(projProfile *profile){
-	if(! profile || HasNamed(profile->GetName())){
+	if(!profile || HasNamed(profile->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

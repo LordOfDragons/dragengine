@@ -130,45 +130,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Size of GI state. */
-	inline const decVector &GetSize() const{return pSize;}
+	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** World. */
-	inline deoglRWorld *GetWorld() const{return pWorld;}
+	inline deoglRWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(deoglRWorld *world);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. Invalidates all if changed. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** GI importance. */
-	inline int GetGIImportance() const{return pGIImportance;}
+	inline int GetGIImportance() const{ return pGIImportance; }
 	
 	/** Set size of GI state invalidating certain volumes and probes. */
 // 	void SetSize( const decVector &size );
 	
 	/** Probe count. */
-	inline const decPoint3 &GetProbeCount() const{return pProbeCount;}
+	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
 	
 	/** Grid coord clamp. */
-	inline const decPoint3 &GetGridCoordClamp() const{return pGridCoordClamp;}
+	inline const decPoint3 &GetGridCoordClamp() const{ return pGridCoordClamp; }
 	
 	/** Probe stride. */
-	inline int GetStrideProbeCount() const{return pStrideProbeCount;}
+	inline int GetStrideProbeCount() const{ return pStrideProbeCount; }
 	
 	/** Real probe count. */
-	inline int GetRealProbeCount() const{return pRealProbeCount;}
+	inline int GetRealProbeCount() const{ return pRealProbeCount; }
 	
 	
 	
 	/** Cascade count. */
-	inline int GetCascadeCount() const{return pCascadeCount;}
+	inline int GetCascadeCount() const{ return pCascadeCount; }
 	
 	/** Cascade at index. */
 	deoglGICascade &GetCascadeAt(int index) const;
@@ -188,41 +188,41 @@ public:
 	
 	
 	/** Size of sample image. */
-	inline const decPoint &GetSampleImageSize() const{return pSampleImageSize;}
+	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
 	
 	
 	
 	/** Irradiance map size. */
-	inline int GetIrradianceMapSize() const{return pIrradianceMapSize;}
+	inline int GetIrradianceMapSize() const{ return pIrradianceMapSize; }
 	
 	/** Distance map size. */
-	inline int GetDistanceMapSize() const{return pDistanceMapSize;}
+	inline int GetDistanceMapSize() const{ return pDistanceMapSize; }
 	
 	/** Irradiance map scale. */
-	inline const decVector2 &GetIrradianceMapScale() const{return pIrradianceMapScale;}
+	inline const decVector2 &GetIrradianceMapScale() const{ return pIrradianceMapScale; }
 	
 	/** Distance map scale. */
-	inline const decVector2 &GetDistanceMapScale() const{return pDistanceMapScale;}
+	inline const decVector2 &GetDistanceMapScale() const{ return pDistanceMapScale; }
 	
 	/** Depth sharpness. */
-	inline float GetDepthSharpness() const{return pDepthSharpness;}
+	inline float GetDepthSharpness() const{ return pDepthSharpness; }
 	
 	/** Hysteresis. */
-	inline float GetHysteresis() const{return pHysteresis;}
+	inline float GetHysteresis() const{ return pHysteresis; }
 	
 	/** Normal bias. */
-	inline float GetNormalBias() const{return pNormalBias;}
+	inline float GetNormalBias() const{ return pNormalBias; }
 	
 	/** Irradiance gamma. */
-	inline float GetIrradianceGamma() const{return pIrradianceGamma;}
+	inline float GetIrradianceGamma() const{ return pIrradianceGamma; }
 	
 	/** Self shadow bias. */
-	inline float GetSelfShadowBias() const{return pSelfShadowBias;}
+	inline float GetSelfShadowBias() const{ return pSelfShadowBias; }
 	
 	
 	
 	/** Clear probes UBO. */
-	inline deoglSPBlockUBO &GetUBOClearProbes() const{return pUBOClearProbes;}
+	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return pUBOClearProbes; }
 	
 	/** Prepare clear probes UBO. */
 	void PrepareUBOClearProbes() const;
@@ -230,25 +230,25 @@ public:
 	
 	
 	/** Irradiance probe texture. */
-	inline deoglArrayTexture &GetTextureProbeIrradiance(){return pTexProbeIrradiance;}
-	inline const deoglArrayTexture &GetTextureProbeIrradiance() const{return pTexProbeIrradiance;}
+	inline deoglArrayTexture &GetTextureProbeIrradiance(){ return pTexProbeIrradiance; }
+	inline const deoglArrayTexture &GetTextureProbeIrradiance() const{ return pTexProbeIrradiance; }
 	
 	/** Distance probe texture. */
-	inline deoglArrayTexture &GetTextureProbeDistance(){return pTexProbeDistance;}
-	inline const deoglArrayTexture &GetTextureProbeDistance() const{return pTexProbeDistance;}
+	inline deoglArrayTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
+	inline const deoglArrayTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
 	/** Probe offset texture. */
-	inline deoglArrayTexture &GetTextureProbeOffset(){return pTexProbeOffset;}
-	inline const deoglArrayTexture &GetTextureProbeOffset() const{return pTexProbeOffset;}
+	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
+	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
 	/** Probe dynamic states parameter block. */
-	inline const deoglSPBlockSSBO::Ref &GetPBProbeDynamicStates() const{return pPBProbeDynamicStates;}
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeDynamicStates() const{ return pPBProbeDynamicStates; }
 	
 	/** Probe offset parameter block. */
-	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{return pPBProbeOffsets;}
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }
 	
 	/** Probe extends feedback parameter block. */
-	inline const deoglSPBlockSSBO::Ref &GetPBProbeExtends() const{return pPBProbeExtends;}
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeExtends() const{ return pPBProbeExtends; }
 	
 	/** Activate next cascade to use for upcoming Update() call. */
 	void ActivateNextCascade();
@@ -295,20 +295,20 @@ public:
 	
 	
 	/** Instances. */
-	inline deoglGIInstances &GetInstances(){return pInstances;}
-	inline const deoglGIInstances &GetInstances() const{return pInstances;}
+	inline deoglGIInstances &GetInstances(){ return pInstances; }
+	inline const deoglGIInstances &GetInstances() const{ return pInstances; }
 	
 	/** Rays. */
-	inline deoglGIRayCache &GetRayCache(){return pRayCache;}
-	inline const deoglGIRayCache &GetRayCache() const{return pRayCache;}
+	inline deoglGIRayCache &GetRayCache(){ return pRayCache; }
+	inline const deoglGIRayCache &GetRayCache() const{ return pRayCache; }
 	
 	/** Static BVH. */
-	inline deoglGIBVH &GetBVHStatic(){return pBVHStatic;}
-	inline const deoglGIBVH &GetBVHStatic() const{return pBVHStatic;}
+	inline deoglGIBVH &GetBVHStatic(){ return pBVHStatic; }
+	inline const deoglGIBVH &GetBVHStatic() const{ return pBVHStatic; }
 	
 	/** Dynamic BVH. */
-	inline deoglGIBVH &GetBVHDynamic(){return pBVHDynamic;}
-	inline const deoglGIBVH &GetBVHDynamic() const{return pBVHDynamic;}
+	inline deoglGIBVH &GetBVHDynamic(){ return pBVHDynamic; }
+	inline const deoglGIBVH &GetBVHDynamic() const{ return pBVHDynamic; }
 	/*@}*/
 	
 	

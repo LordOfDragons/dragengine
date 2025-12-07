@@ -260,7 +260,7 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 		propfield = sector.GetPropFieldAt(p);
 		instanceCount = propfield->GetVInstanceCount();
 		
-		if(! propfield->GetEnginePropField()) DETHROW(deeInvalidParam); // HACK because the position is not yet in the propfield itself
+		if(!propfield->GetEnginePropField()) DETHROW(deeInvalidParam); // HACK because the position is not yet in the propfield itself
 		
 		propfieldPosition = (propfield->GetEnginePropField()->GetPosition() - sectorPosition).ToVector();
 		

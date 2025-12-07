@@ -43,7 +43,7 @@ meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType
 pType(NULL),
 pNewColor(newColor)
 {
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

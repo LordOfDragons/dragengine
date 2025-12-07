@@ -45,7 +45,7 @@ gdeOCForceField *forceField, float newValue) :
 pObjectClass(NULL),
 pForceField(NULL)
 {
-	if(! objectClass || ! forceField){
+	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
 	}
 	

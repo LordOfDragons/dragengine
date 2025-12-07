@@ -52,8 +52,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline uint32_t *GetDataUInt(){return (uint32_t*)pData;}
-	inline const uint32_t *GetDataUInt() const{return (uint32_t*)pData;}
+	inline uint32_t *GetDataUInt(){ return (uint32_t*)pData; }
+	inline const uint32_t *GetDataUInt() const{ return (uint32_t*)pData; }
 	
 	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool(bool value);

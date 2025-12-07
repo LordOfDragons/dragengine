@@ -123,18 +123,18 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent instance. */
-	inline debpParticleEmitterInstance *GetInstance() const{return pInstance;}
+	inline debpParticleEmitterInstance *GetInstance() const{ return pInstance; }
 	/** Sets the parent instance. */
 	void SetInstance(debpParticleEmitterInstance *instance);
 	/** Retrieves the type number. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/** Sets the type number. */
 	void SetType(int type);
 	
 	/** Retrieves the particles. */
-	inline sParticle *GetParticles() const{return pParticles;}
+	inline sParticle *GetParticles() const{ return pParticles; }
 	/** Retrieves the number of particles. */
-	inline int GetParticlesCount() const{return pParticleCount;}
+	inline int GetParticlesCount() const{ return pParticleCount; }
 	
 	/** Prepare stepping. */
 	void PrepareParticles(bool casting, float elapsed, float travelledDistance);

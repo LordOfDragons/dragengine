@@ -50,7 +50,7 @@
 ////////////////////////////
 
 debpSmokeEmitter::debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter){
-	if(! bullet || ! smokeEmitter) DETHROW(deeInvalidParam);
+	if(!bullet || !smokeEmitter) DETHROW(deeInvalidParam);
 	
 	pBullet = bullet;
 	pSmokeEmitter = smokeEmitter;

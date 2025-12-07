@@ -88,7 +88,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the operator. */
-	inline eOperators GetOperator() const{return pOperator;}
+	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
 	void SetOperator(eOperators oper);
 	

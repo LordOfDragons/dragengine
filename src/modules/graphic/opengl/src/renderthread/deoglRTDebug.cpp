@@ -160,7 +160,7 @@ GLsizei /*length*/, const GLchar *message, const void *userParam){
 void fDebugOutputAMD(GLuint id, GLenum category, GLenum severity, GLsizei length,
 const GLchar *message, void *userParam){
 	deoglRenderThread &renderThread = *((deoglRenderThread*)userParam);
-	if(! renderThread.GetDebug().GetEnableHwDebugOutput()){
+	if(!renderThread.GetDebug().GetEnableHwDebugOutput()){
 		return;
 	}
 	

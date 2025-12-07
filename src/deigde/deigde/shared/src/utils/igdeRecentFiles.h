@@ -68,28 +68,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Editor window or NULL. */
-	inline igdeEditorWindow *GetEditorWindow() const{return pEditorWindow;}
+	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
 	
 	/** \brief Maximum count of files to remember. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set maximum count of files to remember. */
 	void SetSize(int size);
 	
 	/** \brief Use unix path. */
-	inline bool GetUnixPath() const{return pUnixPath;}
+	inline bool GetUnixPath() const{ return pUnixPath; }
 	
 	/** \brief Recent files. */
-	inline const decStringList &GetFiles() const{return pFiles;}
+	inline const decStringList &GetFiles() const{ return pFiles; }
 	
 	/** \brief Set recent files. */
 	void SetFiles(const decStringList &files);
 	
 	/** \brief Menu to synchronize or NULL if not used. */
-	inline igdeMenuCascade *GetMenu() const{return pMenu;}
+	inline igdeMenuCascade *GetMenu() const{ return pMenu; }
 	
 	/** \brief Set menu to synchronize or NULL if not used. */
 	void SetMenu(igdeMenuCascade *menu);

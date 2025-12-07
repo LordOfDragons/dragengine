@@ -69,7 +69,7 @@
 ////////////////////////////
 
 debpHeightTerrainShape::debpHeightTerrainShape(debpHTSector *sector){
-	if(! sector){
+	if(!sector){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,7 +188,7 @@ const btVector3 &raySource, const btVector3 &rayTarget){
 				const debpHTSCluster &cluster = clusters[linebase + x];
 				
 				float dummyDistance;
-				if(! debpDECollisionDetection::RayHitsBox(rayFrom, displacement, cluster.center, cluster.halfExtends, dummyDistance)){
+				if(!debpDECollisionDetection::RayHitsBox(rayFrom, displacement, cluster.center, cluster.halfExtends, dummyDistance)){
 					continue;
 				}
 				

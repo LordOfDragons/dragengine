@@ -59,19 +59,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
-	inline dsClass *GetClassFileType() const{return pClsFileType;}
-	inline dsClass *GetClassFileExtension() const{return pClsFileExtension;}
-	inline dsClass *GetClassResourceLoaderType() const{return pClsResourceLoaderType;}
+	inline dsClass *GetClassFileType() const{ return pClsFileType; }
+	inline dsClass *GetClassFileExtension() const{ return pClsFileExtension; }
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	void PrepareTypes();
 	
-	inline dsValue *GetTypeFile() const{return pTypeFile;}
-	inline dsValue *GetTypeDirectory() const{return pTypeDirectory;}
-	inline dsValue *GetTypeSpecial() const{return pTypeSpecial;}
+	inline dsValue *GetTypeFile() const{ return pTypeFile; }
+	inline dsValue *GetTypeDirectory() const{ return pTypeDirectory; }
+	inline dsValue *GetTypeSpecial() const{ return pTypeSpecial; }
 	
 	void BrowseNativeDirectory(const decPath &path) const;
 	void OpenUrl(const char *url) const;

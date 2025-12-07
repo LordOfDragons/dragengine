@@ -63,7 +63,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Light or \em NULL if object is \em NULL. */
 	deLight *GetLight(dsRealObject *myself) const;
@@ -71,9 +71,9 @@ public:
 	/** \brief Push light to stack or \em null light is \em NULL. */
 	void PushLight(dsRunTime *rt, deLight *light);
 	
-	inline dsClass *GetClassLightType() const{return pClsLightType;}
-	inline dsClass *GetClassLightHintMovement() const{return pClsLightHintMovement;}
-	inline dsClass *GetClassLightHintParameter() const{return pClsLightHintParameter;}
+	inline dsClass *GetClassLightType() const{ return pClsLightType; }
+	inline dsClass *GetClassLightHintMovement() const{ return pClsLightHintMovement; }
+	inline dsClass *GetClassLightHintParameter() const{ return pClsLightHintParameter; }
 	/*@}*/
 	
 	

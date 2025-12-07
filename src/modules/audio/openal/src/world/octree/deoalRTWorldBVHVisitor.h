@@ -67,35 +67,35 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decVector &GetRayOrigin() const{ return pRayOrigin; }
 	
 	/** \brief Ray direction. */
-	inline const decVector &GetRayDirection() const{return pRayDirection;}
+	inline const decVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Ray direction has X axis component not equal to 0. */
-	inline bool GetCheckAxisX() const{return pCheckAxisX;}
+	inline bool GetCheckAxisX() const{ return pCheckAxisX; }
 	
 	/** \brief Ray direction has Y axis component not equal to 0. */
-	inline bool GetCheckAxisY() const{return pCheckAxisY;}
+	inline bool GetCheckAxisY() const{ return pCheckAxisY; }
 	
 	/** \brief Ray direction has Z axis component not equal to 0. */
-	inline bool GetCheckAxisZ() const{return pCheckAxisZ;}
+	inline bool GetCheckAxisZ() const{ return pCheckAxisZ; }
 	
 	/**
 	 * \brief Inverted ray direction.
 	 * 
 	 * Returns vector 1/rayDirection for all components.
 	 */
-	inline const decVector &GetInvRayDirection() const{return pInvRayDirection;}
+	inline const decVector &GetInvRayDirection() const{ return pInvRayDirection; }
 	
 	/** \brief Ray length. */
-	inline float GetRayLength() const{return pRayLength;}
+	inline float GetRayLength() const{ return pRayLength; }
 	
 	/** \brief Ray box minimum extend. */
-	inline const decVector &GetRayBoxMin() const{return pRayBoxMin;}
+	inline const decVector &GetRayBoxMin() const{ return pRayBoxMin; }
 	
 	/** \brief Ray box maximum extend. */
-	inline const decVector &GetRayBoxMax() const{return pRayBoxMax;}
+	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
 	void SetRay(const decVector &origin, const decVector &direction);

@@ -55,7 +55,7 @@ decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFa
 	debpDMBConvexVolumeFace *newFace = NULL;
 	
 	newFace = new debpDMBConvexVolumeFace;
-	if(! newFace) DETHROW(deeOutOfMemory);
+	if(!newFace) DETHROW(deeOutOfMemory);
 	
 	if(face){
 		debpDMBConvexVolumeFace *dmbFace = (debpDMBConvexVolumeFace*)face;

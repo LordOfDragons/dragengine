@@ -111,27 +111,27 @@ public:
 	/** \name management */
 	/*@{*/
 	/** \brief Connection. */
-	inline deConnection *GetConnection() const{return pConnection;}
+	inline deConnection *GetConnection() const{ return pConnection; }
 	
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{return pSocket;}
+	inline debnSocket *GetSocket() const{ return pSocket; }
 	
 	/** \brief Remote address. */
-	inline const debnAddress &GetRemoteAddress() const{return pRemoteAddress;}
+	inline const debnAddress &GetRemoteAddress() const{ return pRemoteAddress; }
 	
 	/** \brief Connection identifier. */
-	inline int GetIdentifier() const{return pIdentifier;}
+	inline int GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set connection identifier. */
 	void SetIdentifier(int identifier);
 	
 	/** \brief Protocol to use. */
-	inline eProtocols GetProtocol() const{return pProtocol;}
+	inline eProtocols GetProtocol() const{ return pProtocol; }
 	
 	
 	
 	/** \brief List of modified state links. */
-	debnStateLinkList *GetModifiedStateLinks() const{return pModifiedStateLinks;}
+	debnStateLinkList *GetModifiedStateLinks() const{ return pModifiedStateLinks; }
 	
 	/** \brief Process connection. */
 	void Process(float elapsedTime);
@@ -199,19 +199,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Previous connection. */
-	inline debnConnection *GetPreviousConnection() const{return pPreviousConnection;}
+	inline debnConnection *GetPreviousConnection() const{ return pPreviousConnection; }
 	
 	/** \brief Set previous connection. */
 	void SetPreviousConnection(debnConnection *connection);
 	
 	/** \brief Next connection. */
-	inline debnConnection *GetNextConnection() const{return pNextConnection;}
+	inline debnConnection *GetNextConnection() const{ return pNextConnection; }
 	
 	/** \brief Set next connection. */
 	void SetNextConnection(debnConnection *connection);
 	
 	/** \brief Connection is registered. */
-	inline bool GetIsRegistered() const{return pIsRegistered;}
+	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** \brief Set if connection is registered. */
 	void SetIsRegistered(bool isRegistered);

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTVRuleMathSetOp::meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

@@ -587,7 +587,7 @@ void deoxrDevice::TrackStates(){
 		
 		// if no space pose exists use hand tracker wrist position to calculate a reasonable
 		// device location which is at a similar location of true controller hand poses
-		if(! pSpacePose){
+		if(!pSpacePose){
 			deInputDevicePose &wrist = pHandTracker->GetPoseBoneAt(deInputDevice::ehbWrist);
 			
 			const decMatrix wristMatrix(decMatrix::CreateWorld(wrist.GetPosition(), wrist.GetOrientation()));

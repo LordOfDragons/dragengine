@@ -64,10 +64,10 @@ public:
 	void Reset();
 	
 	/** Identified object or nullptr. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** Identified decal or nullptr. */
-	inline meDecal *GetDecal() const{return pDecal;}
+	inline meDecal *GetDecal() const{ return pDecal; }
 	
 	/** Has identified object. */
 	bool HasObject() const;

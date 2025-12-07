@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue *controller){
-	if(! facePose || ! controller){
+	if(!facePose || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

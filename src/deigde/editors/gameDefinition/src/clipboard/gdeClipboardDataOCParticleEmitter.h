@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter. */
-	gdeOCParticleEmitter *GetParticleEmitter() const{return pParticleEmitter;}
+	gdeOCParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
 	/*@}*/
 };
 

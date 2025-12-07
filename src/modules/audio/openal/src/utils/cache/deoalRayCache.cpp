@@ -67,10 +67,10 @@ public:
 	virtual ~deoalRayCacheFindRayVisitor(){
 	}
 	
-	inline deoalRayCacheRay *FoundRay() const{return pFoundRay;}
+	inline deoalRayCacheRay *FoundRay() const{ return pFoundRay; }
 	
 	void Visit(deoalRayCacheOctree &node){
-		if(! ((pOrigin - node.GetCenter()).Absolute() - pRangeExtend <= node.GetHalfSize())){
+		if(!((pOrigin - node.GetCenter()).Absolute() - pRangeExtend <= node.GetHalfSize())){
 			return;
 		}
 		
@@ -124,10 +124,10 @@ public:
 	pAvgNodeRays(0){
 	}
 	
-	inline int GetNodeCount() const{return pNodeCount;}
-	inline int GetMaxNodeRays() const{return pMaxNodeRays;}
-	inline int GetLeafNodeCount() const{return pLeafNodeCount;}
-	inline int GetAvgNodeRays() const{return pAvgNodeRays;}
+	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetMaxNodeRays() const{ return pMaxNodeRays; }
+	inline int GetLeafNodeCount() const{ return pLeafNodeCount; }
+	inline int GetAvgNodeRays() const{ return pAvgNodeRays; }
 	
 	void Visit(deoalRayCacheOctree &node){
 		pNodeCount++;
@@ -146,7 +146,7 @@ public:
 				Visit(*child);
 			}
 		}
-		if(! hasChildNodes){
+		if(!hasChildNodes){
 			pLeafNodeCount++;
 		}
 	}
@@ -412,7 +412,7 @@ void deoalRayCache::pCacheRay(deoalRayCacheRay *ray){
 		pTailRay->SetLLNext(ray);
 		ray->SetLLPrev(pTailRay);
 		
-	}else if(! pRootRay){
+	}else if(!pRootRay){
 		pRootRay = ray;
 	}
 	pTailRay = ray;

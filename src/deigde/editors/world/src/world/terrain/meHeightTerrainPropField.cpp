@@ -72,7 +72,7 @@ pDirty(false),
 pKeepClean(true),
 pListener(NULL)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -154,7 +154,7 @@ void meHeightTerrainPropField::Clear(){
 
 
 void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
-	if(! pEngPF){
+	if(!pEngPF){
 		return;
 	}
 	
@@ -163,7 +163,7 @@ void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
 	if(pKeepClean){
 		return;
 	}
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -239,7 +239,7 @@ void meHeightTerrainPropField::RemoveAllVInstances(){
 }
 
 void meHeightTerrainPropField::UpdateVInstances(){
-	if(! pDirtyVInstances || ! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pDirtyVInstances || !pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	

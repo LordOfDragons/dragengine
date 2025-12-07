@@ -98,15 +98,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector-A to use if there is no input vector-A. */
-	inline const decVector &GetVectorA() const{return pVectorA;}
+	inline const decVector &GetVectorA() const{ return pVectorA; }
 	/** Sets the vector-A to use if there is no input vector-A. */
 	void SetVectorA(const decVector &value);
 	/** Retrieves the vector-B to use if there is no input vector-B. */
-	inline const decVector &GetVectorB() const{return pVectorB;}
+	inline const decVector &GetVectorB() const{ return pVectorB; }
 	/** Sets the vector-B to use if there is no input vector-B. */
 	void SetVectorB(const decVector &value);
 	/** Retrieves the operator. */
-	inline eOperators GetOperator() const{return pOperator;}
+	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
 	void SetOperator(eOperators oper);
 	

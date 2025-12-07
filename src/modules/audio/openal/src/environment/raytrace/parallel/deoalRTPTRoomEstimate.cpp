@@ -139,7 +139,7 @@ void deoalRTPTRoomEstimate::Run(){
 	if(pTraceRay(rayDirection, hitResult)){
 	#else
 	for(i=0; i<pRayCount; i++){
-		if(! pTraceRay(rayDirections[i], hitResult)){
+		if(!pTraceRay(rayDirections[i], hitResult)){
 			continue;
 		}
 	#endif

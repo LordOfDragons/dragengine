@@ -89,7 +89,7 @@ igdeUndo *gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 	}
 	
 	gdeCategory * const category = gameDefinition.GetActiveCategory();
-	if(! category){
+	if(!category){
 		return NULL;
 	}
 	

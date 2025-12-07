@@ -235,7 +235,7 @@ void dedsCollisionTester::ColliderHits(const decDVector &position){
 }
 
 void dedsCollisionTester::ColliderHits(const decDVector &position, const decQuaternion &orientation){
-	if(! pCollider){
+	if(!pCollider){
 		return;
 	}
 	
@@ -256,7 +256,7 @@ void dedsCollisionTester::ColliderMoveHits(const decDVector &position, const dec
 
 void dedsCollisionTester::ColliderMoveHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &direction){
-	if(! pCollider){
+	if(!pCollider){
 		return;
 	}
 	
@@ -277,7 +277,7 @@ void dedsCollisionTester::ColliderRotateHits(const decDVector &position, const d
 
 void dedsCollisionTester::ColliderRotateHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &rotation){
-	if(! pCollider){
+	if(!pCollider){
 		return;
 	}
 	
@@ -299,7 +299,7 @@ const decVector &rotation){
 
 void dedsCollisionTester::ColliderMoveRotateHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &direction, const decVector &rotation){
-	if(! pCollider){
+	if(!pCollider){
 		return;
 	}
 	

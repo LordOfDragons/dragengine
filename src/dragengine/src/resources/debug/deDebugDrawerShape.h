@@ -72,19 +72,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
 	void SetScale(const decVector &scale);
@@ -92,20 +92,20 @@ public:
 	
 	
 	/** \brief Edge color. */
-	inline const decColor &GetEdgeColor() const{return pEdgeColor;}
+	inline const decColor &GetEdgeColor() const{ return pEdgeColor; }
 	
 	/** \brief Set edge color. */
 	void SetEdgeColor(const decColor &color);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{return pFillColor;}
+	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** \brief Set fill color. */
 	void SetFillColor(const decColor &color);
 	
 	/** \brief Shape list. */
-	inline decShapeList &GetShapeList(){return pShapeList;}
-	inline const decShapeList &GetShapeList() const{return pShapeList;}
+	inline decShapeList &GetShapeList(){ return pShapeList; }
+	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	/*@}*/
 	
 	

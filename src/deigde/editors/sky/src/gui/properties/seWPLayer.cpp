@@ -120,7 +120,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -166,7 +166,7 @@ public:
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -189,7 +189,7 @@ public:
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -212,7 +212,7 @@ public:
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -244,7 +244,7 @@ public:
 	
 	virtual void OnAction(){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
@@ -318,7 +318,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
@@ -477,7 +477,7 @@ public:
 	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if(! sky || ! layer){
+		if(!sky || !layer){
 			return;
 		}
 		
@@ -492,7 +492,7 @@ public:
 	}
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
-		if(! pUndo){
+		if(!pUndo){
 			return;
 		}
 		
@@ -582,7 +582,7 @@ public:
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		seLayer * const layer = pPanel.GetLayer();
-		if(! layer){
+		if(!layer){
 			return;
 		}
 		
@@ -636,7 +636,7 @@ public:
 	
 	virtual igdeUndo *OnActionLayer(seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if(! body){
+		if(!body){
 			return NULL;
 		}
 		return new seUBodyRemove(body);
@@ -699,7 +699,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decString &path, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if(! body || body->GetSkinPath() == path){
+		if(!body || body->GetSkinPath() == path){
 			return NULL;
 		}
 		return new seUBodySetSkin(body, path);
@@ -712,7 +712,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if(! body || body->GetOrientation().IsEqualTo(vector)){
+		if(!body || body->GetOrientation().IsEqualTo(vector)){
 			return NULL;
 		}
 		return new seUBodySetOrientation(body, vector);
@@ -725,7 +725,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector2 &vector, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if(! body || body->GetSize().IsEqualTo(vector)){
+		if(!body || body->GetSize().IsEqualTo(vector)){
 			return NULL;
 		}
 		return new seUBodySetSize(body, vector);
@@ -780,7 +780,7 @@ public:
 	
 	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
 		const igdeListItem * const selection = pComboLinks.GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			return NULL;
 		}
 		
@@ -808,13 +808,13 @@ public:
 	
 	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
 		const igdeListItem * const selection = pListLinks.GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			return NULL;
 		}
 		
 		const deSkyLayer::eTargets target = layer->GetActiveTarget();
 		seLink * const link = (seLink*)selection->GetData();
-		if(! layer->GetTarget(target).GetLinks().Has(link)){
+		if(!layer->GetTarget(target).GetLinks().Has(link)){
 			return NULL;
 		}
 		

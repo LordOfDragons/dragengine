@@ -77,7 +77,7 @@ decUniqueID::decUniqueID(const char *string) :
 pBytes(NULL),
 pByteCount(0)
 {
-	if(! string || ! string[0]){
+	if(!string || !string[0]){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -407,7 +407,7 @@ bool decUniqueID::operator==(const decUniqueID &id) const{
 }
 
 bool decUniqueID::operator!=(const decUniqueID &id) const{
-	return ! (*this == id);
+	return !(*this == id);
 }
 
 bool decUniqueID::operator<(const decUniqueID& id) const

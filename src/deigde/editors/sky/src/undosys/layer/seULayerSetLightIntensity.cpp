@@ -43,7 +43,7 @@ seULayerSetLightIntensity::seULayerSetLightIntensity(seLayer *layer, float newIn
 pLayer(NULL),
 pNewIntensity(newIntensity)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

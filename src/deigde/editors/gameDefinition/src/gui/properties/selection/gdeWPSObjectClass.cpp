@@ -154,7 +154,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		if(! objectClass){
+		if(!objectClass){
 			return;
 		}
 		
@@ -177,7 +177,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		if(! objectClass){
+		if(!objectClass){
 			return;
 		}
 		
@@ -203,7 +203,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		if(! objectClass){
+		if(!objectClass){
 			return;
 		}
 		
@@ -237,7 +237,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		if(! objectClass || objectClass->GetDescription() == textArea->GetDescription()){
+		if(!objectClass || objectClass->GetDescription() == textArea->GetDescription()){
 			return;
 		}
 		
@@ -281,7 +281,7 @@ public:
 		return new gdeUOCToggleIsGhost(objectClass);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionCanInstantiate : public cBaseAction {
@@ -293,7 +293,7 @@ public:
 		return new gdeUOCToggleCanInstantiate(objectClass);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionIsAttachableBehavior : public cBaseAction {
@@ -305,7 +305,7 @@ public:
 		return new gdeUOCToggleIsAttachableBehavior(objectClass);
 	}
 	
-	void Update() override{/* empty on purpose! */}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionInheritSubObjects : public cBaseAction {
@@ -325,7 +325,7 @@ public:
 		return new gdeUOCSetInheritSubObjects(objectClass, filter);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 
@@ -539,7 +539,7 @@ public:
 		proposals.SortAscending();
 		
 		decString name("Name");
-		if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals)){
 			return nullptr;
 		}
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(name);
@@ -606,7 +606,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass){
 		gdeOCInherit * const inherit = pPanel.GetInherit();
-		if(! inherit || inherit->GetName() == comboBox.GetText()){
+		if(!inherit || inherit->GetName() == comboBox.GetText()){
 			return nullptr;
 		}
 		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass(comboBox.GetText());
@@ -632,7 +632,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass){
 		gdeOCInherit * const inherit = pPanel.GetInherit();
-		if(! inherit || inherit->GetPropertyPrefix() == textField.GetText()){
+		if(!inherit || inherit->GetPropertyPrefix() == textField.GetText()){
 			return NULL;
 		}
 		return new gdeUOCInheritSetPropertyPrefix(objectClass, inherit, textField.GetText());
@@ -666,7 +666,7 @@ public:
 	
 	virtual igdeUndo *OnActionObjectClass(gdeObjectClass*){
 		const gdeOCInherit * const inherit = pPanel.GetInherit();
-		if(! inherit){
+		if(!inherit){
 			return NULL;
 		}
 		
@@ -745,13 +745,13 @@ public:
 	
 	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
 		const decString &key = pPanel.GetPropertyKey();
-		if(! objectClass || key.IsEmpty()){
+		if(!objectClass || key.IsEmpty()){
 			return NULL;
 		}
 		
 		decString value;
 		objectClass->NamedPropertyDefaultValue(key, value);
-		if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Set Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Set Property Value", "Value:", value)){
 			return NULL;
 		}
 		
@@ -761,7 +761,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetObjectClass() && ! pPanel.GetPropertyKey().IsEmpty());
+		SetEnabled(pPanel.GetObjectClass() && !pPanel.GetPropertyKey().IsEmpty());
 	}
 };
 
@@ -772,7 +772,7 @@ public:
 	
 	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
 		const char * const key = pPanel.GetPropertyValue();
-		if(! key || ! objectClass->GetPropertyValues().Has(key)){
+		if(!key || !objectClass->GetPropertyValues().Has(key)){
 			return NULL;
 		}
 		
@@ -828,13 +828,13 @@ public:
 	
 	virtual void OnDoubleClickItem(igdeIconListBox *listBox, int index){
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		if(! objectClass){
+		if(!objectClass){
 			return;
 		}
 		
 		const decString &key = listBox->GetItemAt(index)->GetText();
 		decString value(objectClass->GetPropertyValues().GetAt(key, ""));
-		if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
 			return;
 		}
 		
@@ -910,7 +910,7 @@ public:
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture){
+		if(!texture){
 			return;
 		}
 		
@@ -955,7 +955,7 @@ public:
 			name = "Texture";
 			
 			while(true){
-				if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
 					return NULL;
 				}
 				
@@ -980,7 +980,7 @@ public:
 	
 	virtual void Update(){
 		const gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		SetEnabled(objectClass && (pTextureName.IsEmpty() || ! objectClass->GetTextures().HasNamed(pTextureName)));
+		SetEnabled(objectClass && (pTextureName.IsEmpty() || !objectClass->GetTextures().HasNamed(pTextureName)));
 	}
 };
 
@@ -1038,7 +1038,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture || texture->GetPathSkin() == editPath->GetPath()){
+		if(!texture || texture->GetPathSkin() == editPath->GetPath()){
 			return;
 		}
 		
@@ -1092,7 +1092,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
+		if(!texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
 			return;
 		}
 		
@@ -1356,7 +1356,7 @@ gdeProperty *gdeWPSObjectClass::GetTextureProperty() const{
 
 gdeOCInherit *gdeWPSObjectClass::GetInherit() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -1410,7 +1410,7 @@ void gdeWPSObjectClass::UpdateCategoryList(){
 	}
 	
 	pCBCategory->SetText(selection);
-	pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty() && ! pCBCategory->GetSelectedItem());
+	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
 void gdeWPSObjectClass::UpdateClassLists(){
@@ -1433,8 +1433,8 @@ void gdeWPSObjectClass::UpdateClassLists(){
 	}
 	
 	pInheritCBClass->SetText(selectedInheritClass);
-	pInheritCBClass->SetInvalidValue(! pInheritCBClass->GetText().IsEmpty()
-		&& ! pInheritCBClass->GetSelectedItem());
+	pInheritCBClass->SetInvalidValue(!pInheritCBClass->GetText().IsEmpty()
+		&& !pInheritCBClass->GetSelectedItem());
 }
 
 void gdeWPSObjectClass::UpdateIdentifierLists(){
@@ -1473,8 +1473,8 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pChkInheritSONavigationBlockers->SetChecked((iso & igdeGDClass::efsoNavigationBlockers) != 0);
 		pChkInheritSOWorlds->SetChecked((iso & igdeGDClass::efsoWorlds) != 0);
 		pCBCategory->SetText(objectClass->GetCategory());
-		pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty()
-			&& ! pCBCategory->GetSelectedItem());
+		pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty()
+			&& !pCBCategory->GetSelectedItem());
 		properties.SetPropertyList(&objectClass->GetProperties());
 		textureProperties.SetPropertyList(&objectClass->GetTextureProperties());
 		hideTags.SetTagList(&objectClass->GetHideTags());
@@ -1623,7 +1623,7 @@ void gdeWPSObjectClass::UpdateInherits(){
 	}
 	
 	pListInherits->SetSelectionWithData(activeInherit);
-	if(! pListInherits->GetSelectedItem() && pListInherits->GetItemCount() > 0){
+	if(!pListInherits->GetSelectedItem() && pListInherits->GetItemCount() > 0){
 		pListInherits->SetSelection(0);
 	}
 	
@@ -1642,8 +1642,8 @@ void gdeWPSObjectClass::UpdateInherit(){
 		pInheritEditPropertyPrefix->ClearText();
 	}
 	
-	pInheritCBClass->SetInvalidValue(! pInheritCBClass->GetText().IsEmpty()
-		&& ! pInheritCBClass->GetSelectedItem());
+	pInheritCBClass->SetInvalidValue(!pInheritCBClass->GetText().IsEmpty()
+		&& !pInheritCBClass->GetSelectedItem());
 	
 	pInheritCBClass->SetEnabled(inherit != NULL);
 	pInheritEditPropertyPrefix->SetEnabled(inherit != NULL);

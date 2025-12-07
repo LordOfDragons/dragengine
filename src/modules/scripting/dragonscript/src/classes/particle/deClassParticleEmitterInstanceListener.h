@@ -51,15 +51,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for lastParticleDied(). */
-	inline int GetFuncIndexLastParticleDied() const{return pFuncIndexLastParticleDied;}
+	inline int GetFuncIndexLastParticleDied() const{ return pFuncIndexLastParticleDied; }
 	
 	/** \brief Function index for collisionResponse(). */
-	inline int GetFuncIndexCollisionResponse() const{return pFuncIndexCollisionResponse;}
+	inline int GetFuncIndexCollisionResponse() const{ return pFuncIndexCollisionResponse; }
 	/*@}*/
 	
 private:

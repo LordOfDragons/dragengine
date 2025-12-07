@@ -64,7 +64,7 @@ deSynthesizerSystem::~deSynthesizerSystem(){
 ///////////////
 
 void deSynthesizerSystem::LoadSound(deSound *sound){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -75,7 +75,7 @@ void deSynthesizerSystem::LoadSound(deSound *sound){
 }
 
 void deSynthesizerSystem::LoadSynthesizer(deSynthesizer *synthesizer){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -86,7 +86,7 @@ void deSynthesizerSystem::LoadSynthesizer(deSynthesizer *synthesizer){
 }
 
 void deSynthesizerSystem::LoadSynthesizerInstance(deSynthesizerInstance *instance){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -116,7 +116,7 @@ void deSynthesizerSystem::PostStart(){
 	int i;
 	
 	// init module
-	if(! pActiveModule->Init()){
+	if(!pActiveModule->Init()){
 		DETHROW(deeInvalidAction);
 	}
 	

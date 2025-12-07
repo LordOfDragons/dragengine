@@ -71,7 +71,7 @@ void feConfigurationXML::ReadFromFile(decBaseFileReader &reader, feConfiguration
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "fontEditor") != 0){
+	if(!root || strcmp(root->GetName(), "fontEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void feConfigurationXML::pReadConfig(const decXmlElementTag &root, feConfigurati
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

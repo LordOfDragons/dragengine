@@ -71,7 +71,7 @@ bool igdeGDCParticleEmitterList::Has(igdeGDCParticleEmitter *emitter) const{
 }
 
 void igdeGDCParticleEmitterList::Add(igdeGDCParticleEmitter *emitter){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCParticleEmitterList::Add(igdeGDCParticleEmitter *emitter){
 }
 
 void igdeGDCParticleEmitterList::InsertAt(igdeGDCParticleEmitter *emitter, int index){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	

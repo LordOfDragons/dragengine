@@ -198,7 +198,7 @@ void gdeGameDefinition::SetBasePath(const char *path){
 	
 	pBasePath = path;
 	
-	if(! pIsProjectGameDef){
+	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
 			pVFS->FreeReference();
@@ -216,7 +216,7 @@ void gdeGameDefinition::SetVFSPath(const char *path){
 	
 	pVFSPath = path;
 	
-	if(! pIsProjectGameDef){
+	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
 			pVFS->FreeReference();
@@ -270,7 +270,7 @@ void gdeGameDefinition::UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSys
 			"UpdateBaseGameDefinitions: Resolving Base Game Definition ID '%s'", id.GetString());
 		
 		const igdeGameDefinition * const sharedGameDefinition = GetEnvironment()->GetSharedGameDefinition(id);
-		if(! sharedGameDefinition){
+		if(!sharedGameDefinition){
 			GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
 				"UpdateBaseGameDefinitions: Failed resolving Game Definition ID '%s'", id.GetString());
 			continue;
@@ -604,7 +604,7 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 		}
 		
 	}else{
-		if(! pVFS){
+		if(!pVFS){
 			deVFSDiskDirectory *container = NULL;
 			
 			try{
@@ -648,13 +648,13 @@ void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
 	
 	NotifyObjectClassStructureChanged();
 	
-	if(! pActiveObjectClass){
+	if(!pActiveObjectClass){
 		SetActiveObjectClass(objectClass);
 	}
 }
 
 void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
-	if(! objectClass || objectClass->GetGameDefinition() != this){
+	if(!objectClass || objectClass->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1071,13 +1071,13 @@ void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
 	particleEmitter->SetGameDefinition(this);
 	NotifyParticleEmitterStructureChanged();
 	
-	if(! pActiveParticleEmitter){
+	if(!pActiveParticleEmitter){
 		SetActiveParticleEmitter(particleEmitter);
 	}
 }
 
 void gdeGameDefinition::RemoveParticleEmitter(gdeParticleEmitter *particleEmitter){
-	if(! particleEmitter || particleEmitter->GetGameDefinition() != this){
+	if(!particleEmitter || particleEmitter->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1145,13 +1145,13 @@ void gdeGameDefinition::AddSkin(gdeSkin *skin){
 	skin->SetGameDefinition(this);
 	NotifySkinStructureChanged();
 	
-	if(! pActiveSkin){
+	if(!pActiveSkin){
 		SetActiveSkin(skin);
 	}
 }
 
 void gdeGameDefinition::RemoveSkin(gdeSkin *skin){
-	if(! skin || skin->GetGameDefinition() != this){
+	if(!skin || skin->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1219,13 +1219,13 @@ void gdeGameDefinition::AddSky(gdeSky *sky){
 	sky->SetGameDefinition(this);
 	NotifySkyStructureChanged();
 	
-	if(! pActiveSky){
+	if(!pActiveSky){
 		SetActiveSky(sky);
 	}
 }
 
 void gdeGameDefinition::RemoveSky(gdeSky *sky){
-	if(! sky || sky->GetGameDefinition() != this){
+	if(!sky || sky->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1289,7 +1289,7 @@ void gdeGameDefinition::SetActiveSky(gdeSky *sky){
 //////////////
 
 void gdeGameDefinition::AddListener(gdeGameDefinitionListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

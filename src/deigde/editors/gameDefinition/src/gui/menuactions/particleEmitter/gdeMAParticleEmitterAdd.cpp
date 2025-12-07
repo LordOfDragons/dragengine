@@ -64,7 +64,7 @@ igdeUndo *gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 	decString filename;
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
 	
-	if(! igdeCommonDialogs::GetFileOpen(&pWindowMain,
+	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
 		return NULL;

@@ -47,7 +47,7 @@ const meDecalList &list, const char *key, const char *value){
 	meDecal *decal;
 	int i;
 	
-	if(! key || ! value || count < 1){
+	if(!key || !value || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -58,7 +58,7 @@ const meDecalList &list, const char *key, const char *value){
 		
 		for(i=0; i<count; i++){
 			decal = list.GetAt(i);
-			if(! decal->GetWorld()){
+			if(!decal->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

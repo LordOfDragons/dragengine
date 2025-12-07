@@ -69,16 +69,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Determines if the target is currently fired or not. */
-	inline bool GetFired() const{return pFired;}
+	inline bool GetFired() const{ return pFired; }
 	
 	/** \brief Sets if the target is currently fired or not. */
 	void SetFired(bool fired);
 	
 	/** \brief Determines if the target has ever fired. */
-	inline bool GetHasFired() const{return pHasFired;}
+	inline bool GetHasFired() const{ return pHasFired; }
 	
 	/** \brief Sets if the target has ever fired. */
 	void SetHasFired(bool hasFired);

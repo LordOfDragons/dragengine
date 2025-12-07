@@ -45,7 +45,7 @@ seUControllerSetCurve::seUControllerSetCurve(seController *controller, const dec
 pController(controller),
 pNewValue(newValue)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetCurve();

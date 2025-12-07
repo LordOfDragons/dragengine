@@ -55,7 +55,7 @@ pResult(0){
 void deoglCapCheckATLUnbind::Check(GLuint fbo){
 	deoglRTLogger &logger = pCapabilities.GetRenderThread().GetLogger();
 	
-	if(! pglFramebufferTexture){
+	if(!pglFramebufferTexture){
 		pResult = 1; // hm...
 		return;
 	}
@@ -93,7 +93,7 @@ void deoglCapCheckATLUnbind::pTestBugExample(GLuint fbo){
 	
 	// generate test texture
 	OGL_CHECK(pRenderThread, glGenTextures(1, &texture));
-	if(! texture){
+	if(!texture){
 		DETHROW(deeOutOfMemory);
 	}
 	

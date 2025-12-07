@@ -115,25 +115,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief IconListBox is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Minimum size. */
-	inline const decPoint &GetMiniumSize() const{return pMinimumSize;}
+	inline const decPoint &GetMiniumSize() const{ return pMinimumSize; }
 	
 	/** \brief Set minimum size. */
 	void SetMinimumSize(const decPoint &size);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief View mode. */
-	inline eViewMode GetViewMode() const{return pViewMode;}
+	inline eViewMode GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
 	void SetViewMode(eViewMode mode);
@@ -212,7 +212,7 @@ public:
 	
 	
 	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{return pSorter;}
+	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
 	void SetSorter(igdeListItemSorter *sorter);
@@ -226,19 +226,19 @@ public:
 	
 	
 	/** \brief Selection mode. */
-	inline eSelectionMode GetSelectionMode() const{return pSelectionMode;}
+	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
 	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Index of selected item or -1. */
-	inline int GetSelection() const{return pSelection;}
+	inline int GetSelection() const{ return pSelection; }
 	
 	/** \brief Selected item or NULL. */
 	igdeListItem *GetSelectedItem() const;
 	
 	/** \brief Selected item is not -1. */
-	inline bool HasSelection() const{return pSelection != -1;}
+	inline bool HasSelection() const{ return pSelection != -1; }
 	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection(int selection);

@@ -86,7 +86,7 @@ deoalOctree *deoalOctree::GetNodeAtBox(const decVector &boxCenter, const decVect
 	if(octant == eoNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if(! pNodes[octant]){
+	if(!pNodes[octant]){
 		pNodes[octant] = CreateOctree(octant);
 		pNodes[octant]->SetParent(this);
 	}
@@ -190,7 +190,7 @@ deoalOctree *deoalOctree::SearchTreeForPoint(const decVector &point) const{
 }
 
 void deoalOctree::VisitNodes(deoalOctreeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i;
 	
 	// visit
@@ -203,12 +203,12 @@ void deoalOctree::VisitNodes(deoalOctreeVisitor *visitor){
 }
 
 void deoalOctree::VisitNodesColliding(deoalOctreeVisitor *visitor, deoalCollisionVolume *volume){
-	if(! visitor || ! volume) DETHROW(deeInvalidParam);
+	if(!visitor || !volume) DETHROW(deeInvalidParam);
 	deoalCollisionBox colBox(pCenter, pHalfSize);
 	int i;
 	
 	// exit if this node is not in the collision volume
-	if(! volume->BoxHitsVolume(&colBox)) return;
+	if(!volume->BoxHitsVolume(&colBox)) return;
 	
 	// visit
 	visitor->VisitNode(this, deoalCollisionDetection::eirPartial);
@@ -220,7 +220,7 @@ void deoalOctree::VisitNodesColliding(deoalOctreeVisitor *visitor, deoalCollisio
 }
 
 void deoalOctree::VisitNodesColliding(deoalOctreeVisitor *visitor, const decVector &boxMinExtend, const decVector &boxMaxExtend){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i, result;
 	
 	result = deoalCollisionDetection::AABoxIntersectsAABox(pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend);

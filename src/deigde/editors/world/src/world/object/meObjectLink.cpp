@@ -50,7 +50,7 @@
 ////////////////////////////
 
 meObjectLink::meObjectLink(igdeEnvironment *environment, meObject *anchor, meObject *target){
-	if(! environment || ! anchor || ! target){
+	if(!environment || !anchor || !target){
 		DETHROW(deeInvalidParam);
 	}
 	

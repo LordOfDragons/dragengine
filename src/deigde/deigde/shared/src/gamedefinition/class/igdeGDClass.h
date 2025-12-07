@@ -157,63 +157,63 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the class. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Description of the class. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description of the class. */
 	void SetDescription(const char *description);
 	
 	/** \brief Scale mode. */
-	inline eScaleModes GetScaleMode() const{return pScaleMode;}
+	inline eScaleModes GetScaleMode() const{ return pScaleMode; }
 	
 	/** \brief Set scale mode. */
 	void SetScaleMode(eScaleModes mode);
 	
 	/** \brief Cathegory. */
-	inline const decString &GetCategory() const{return pCategory;}
+	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set cathegory. */
 	void SetCategory(const char *category);
 	
 	/** \brief Class camera. */
-	inline igdeGDCamera *GetCamera() const{return pCamera;}
+	inline igdeGDCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Determines if the class has a camera. */
-	inline bool GetHasCamera() const{return pHasCamera;}
+	inline bool GetHasCamera() const{ return pHasCamera; }
 	
 	/** \brief Sets if the class has a camera. */
 	void SetHasCamera(bool hasCamera);
 	
 	/** \brief Determines if this is a ghost object not blocking other objects. */
-	inline bool GetIsGhost() const{return pIsGhost;}
+	inline bool GetIsGhost() const{ return pIsGhost; }
 	
 	/** \brief Sets if this is a ghost object not blocking other objects. */
 	void SetIsGhost(bool isGhost);
 	
 	/** \brief Object can be instantiated. */
-	inline bool GetCanInstantiate() const{return pCanInstantiate;}
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** \brief Set if object can be instantiated. */
 	void SetCanInstantiate(bool canInstantiate);
 	
 	/** Object class is an attachable behavior. */
-	inline bool GetIsAttachableBehavior() const{return pIsAttachableBehavior;}
+	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
 	
 	/** Set if object class is an attachable behavior. */
 	void SetIsAttachableBehavior(bool isAttachableBehavior);
 	
 	/** \brief Hide tags. */
-	inline igdeTagManager &GetHideTags(){return pHideTags;}
-	inline const igdeTagManager &GetHideTags() const{return pHideTags;}
+	inline igdeTagManager &GetHideTags(){ return pHideTags; }
+	inline const igdeTagManager &GetHideTags() const{ return pHideTags; }
 	
 	/** \brief Partial hide tags. */
-	inline igdeTagManager &GetPartialHideTags(){return pPartialHideTags;}
-	inline const igdeTagManager &GetPartialHideTags() const{return pPartialHideTags;}
+	inline igdeTagManager &GetPartialHideTags(){ return pPartialHideTags; }
+	inline const igdeTagManager &GetPartialHideTags() const{ return pPartialHideTags; }
 	
 	/** \brief Inherit sub objects filter. */
-	inline int GetInheritSubObjects() const{return pInheritSubObjects;}
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
 	
 	/** \brief Set inherit sub objects filter. */
 	void SetInheritSubObjects(int filter);
@@ -244,26 +244,26 @@ public:
 	void Check();
 	
 	/** \brief Preview image or NULL if not created yet. */
-	inline deImage *GetPreviewImage() const{return pPreviewImage;}
+	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created yet. */
 	void SetPreviewImage(deImage *image);
 	
 	/** \brief Default inherit property prefix. */
-	inline const decString &GetDefaultInheritPropertyPrefix() const{return pDefaultInheritPropertyPrefix;}
+	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
 	
 	/** \brief Set default inherit property prefix. */
 	void SetDefaultInheritPropertyPrefix(const decString &prefix);
 	
 	/** \brief Element class path or empty string if defined manually. */
-	inline const decString &GetPathEClass() const{return pPathEClass;}
+	inline const decString &GetPathEClass() const{ return pPathEClass; }
 	
 	/** \brief Set element class path or empty string if defined manually. */
 	void SetPathEClass(const decString &pathEClass);
 	
 	/** \brief Component texture replacements. */
-	inline igdeGDCCTextureList &GetComponentTextures(){return pComponentTextures;}
-	inline const igdeGDCCTextureList &GetComponentTextures() const{return pComponentTextures;}
+	inline igdeGDCCTextureList &GetComponentTextures(){ return pComponentTextures; }
+	inline const igdeGDCCTextureList &GetComponentTextures() const{ return pComponentTextures; }
 	
 	/** \brief Build flattened component texture replacements list. */
 	void GetDeepComponentTextures(igdeGDCCTextureList &list) const;
@@ -274,7 +274,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief List of class properties. */
-	inline const igdeGDPropertyList &GetListProperties() const{return pListProperties;}
+	inline const igdeGDPropertyList &GetListProperties() const{ return pListProperties; }
 	
 	/** \brief Adds a class property. */
 	void AddProperty(igdeGDProperty *property);
@@ -286,7 +286,7 @@ public:
 	void RemoveAllProperties();
 	
 	/** \brief Property values. */
-	inline const decStringDictionary &GetPropertyValues() const{return pPropertyValues;}
+	inline const decStringDictionary &GetPropertyValues() const{ return pPropertyValues; }
 	
 	/** \brief Set property values. */
 	void SetPropertyValues(const decStringDictionary &values);
@@ -332,7 +332,7 @@ public:
 	/** \name Texture properties */
 	/*@{*/
 	/** \brief Texture properties. */
-	inline const igdeGDPropertyList &GetTextureProperties() const{return pTextureProperties;}
+	inline const igdeGDPropertyList &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** \brief Set texture properties. */
 	void SetTextureProperties(const igdeGDPropertyList &properties);
@@ -387,7 +387,7 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** \brief List of components. */
-	inline const igdeGDCComponentList &GetComponentList() const{return pListComponents;}
+	inline const igdeGDCComponentList &GetComponentList() const{ return pListComponents; }
 	
 	/** \brief Adds a component. */
 	void AddComponent(igdeGDCComponent *component);
@@ -413,7 +413,7 @@ public:
 	/** \name Lights */
 	/*@{*/
 	/** \brief List of lights. */
-	inline const igdeGDCLightList &GetLightList() const{return pListLights;}
+	inline const igdeGDCLightList &GetLightList() const{ return pListLights; }
 	
 	/** \brief Adds a light. */
 	void AddLight(igdeGDCLight *light);
@@ -439,7 +439,7 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** \brief List of billboards. */
-	inline const igdeGDCBillboardList &GetBillboardList() const{return pListBillboards;}
+	inline const igdeGDCBillboardList &GetBillboardList() const{ return pListBillboards; }
 	
 	/** \brief Adds a billboard. */
 	void AddBillboard(igdeGDCBillboard *billboard);
@@ -465,7 +465,7 @@ public:
 	/** \name SnapPoints */
 	/*@{*/
 	/** \brief List of snap points. */
-	inline const igdeGDCSnapPointList &GetSnapPointList() const{return pSnapPoints;}
+	inline const igdeGDCSnapPointList &GetSnapPointList() const{ return pSnapPoints; }
 	
 	/** \brief Add snap point. */
 	void AddSnapPoint(igdeGDCSnapPoint *snappoint);
@@ -482,7 +482,7 @@ public:
 	/** \name Particle Emitters */
 	/*@{*/
 	/** \brief List of particle emitters. */
-	inline const igdeGDCParticleEmitterList &GetParticleEmitterList() const{return pListParticleEmitters;}
+	inline const igdeGDCParticleEmitterList &GetParticleEmitterList() const{ return pListParticleEmitters; }
 	
 	/** \brief Adds a particle emitter. */
 	void AddParticleEmitter(igdeGDCParticleEmitter *emitter);
@@ -499,7 +499,7 @@ public:
 	/** \name Force Fields */
 	/*@{*/
 	/** \brief List of force fields. */
-	inline const igdeGDCForceFieldList &GetForceFieldList() const{return pListForceFields;}
+	inline const igdeGDCForceFieldList &GetForceFieldList() const{ return pListForceFields; }
 	
 	/** \brief Adds a force field. */
 	void AddForceField(igdeGDCForceField *field);
@@ -516,7 +516,7 @@ public:
 	/** \name Environment Map Probes */
 	/*@{*/
 	/** \brief List of environment map probes. */
-	inline const igdeGDCEnvMapProbeList &GetEnvironmentMapProbeList() const{return pListEnvMapProbes;}
+	inline const igdeGDCEnvMapProbeList &GetEnvironmentMapProbeList() const{ return pListEnvMapProbes; }
 	
 	/** \brief Adds an environment map probe. */
 	void AddEnvironmentMapProbe(igdeGDCEnvMapProbe *probe);
@@ -542,7 +542,7 @@ public:
 	/** \name Speakers */
 	/*@{*/
 	/** \brief List of speakers. */
-	inline const igdeGDCSpeakerList &GetSpeakerList() const{return pListSpeakers;}
+	inline const igdeGDCSpeakerList &GetSpeakerList() const{ return pListSpeakers; }
 	
 	/** \brief Adds a speaker. */
 	void AddSpeaker(igdeGDCSpeaker *speaker);
@@ -568,7 +568,7 @@ public:
 	/** \name Navigation spaces */
 	/*@{*/
 	/** \brief List of navigation spaces. */
-	inline const igdeGDCNavigationSpaceList &GetNavigationSpaceList() const{return pListNavigationSpaces;}
+	inline const igdeGDCNavigationSpaceList &GetNavigationSpaceList() const{ return pListNavigationSpaces; }
 	
 	/** \brief Adds a navigation space. */
 	void AddNavigationSpace(igdeGDCNavigationSpace *navSpace);
@@ -594,7 +594,7 @@ public:
 	/** \name Navigation blockers */
 	/*@{*/
 	/** \brief List of navigation blockers. */
-	inline const igdeGDCNavigationBlockerList &GetNavigationBlockerList() const{return pListNavigationBlockers;}
+	inline const igdeGDCNavigationBlockerList &GetNavigationBlockerList() const{ return pListNavigationBlockers; }
 	
 	/** \brief Adds a navigation blocker. */
 	void AddNavigationBlocker(igdeGDCNavigationBlocker *blocker);
@@ -620,7 +620,7 @@ public:
 	/** \name Worlds */
 	/*@{*/
 	/** \brief List of worlds. */
-	inline const igdeGDCWorldList &GetWorldList() const{return pListWorlds;}
+	inline const igdeGDCWorldList &GetWorldList() const{ return pListWorlds; }
 	
 	/** \brief Add world. */
 	void AddWorld(igdeGDCWorld *world);

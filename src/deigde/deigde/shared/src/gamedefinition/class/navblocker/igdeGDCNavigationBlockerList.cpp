@@ -71,14 +71,14 @@ bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker *blocker) const{
 }
 
 void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker *blocker){
-	if(! blocker){
+	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Add(blocker);
 }
 
 void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker *blocker, int index){
-	if(! blocker){
+	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Insert(blocker, index);

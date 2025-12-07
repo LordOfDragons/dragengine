@@ -113,7 +113,7 @@ deClassCanvasPaint::nfSetShapeType::nfSetShapeType(const sInitData &init) : dsFu
 }
 void deClassCanvasPaint::nfSetShapeType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCPaintNatDat &nd = *((sCPaintNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -334,7 +334,7 @@ void deClassCanvasPaint::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCanvasPaint * const clsCPaint = (deClassCanvasPaint*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCPaint)){
+	if(!p_IsObjOfType(obj, clsCPaint)){
 		rt->PushBool(false);
 		
 	}else{
@@ -419,7 +419,7 @@ void deClassCanvasPaint::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasPaint *deClassCanvasPaint::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -427,11 +427,11 @@ deCanvasPaint *deClassCanvasPaint::GetCanvas(dsRealObject *myself) const {
 }
 
 void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

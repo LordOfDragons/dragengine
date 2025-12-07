@@ -206,7 +206,7 @@ void deClassSkyLink::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyLinkNatDat &nd = *((sSkyLinkNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyCtrl)){
+	if(!p_IsObjOfType(obj, clsSkyCtrl)){
 		rt->PushBool(false);
 		
 	}else{
@@ -275,7 +275,7 @@ void deClassSkyLink::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
-	if(! rt || ! sky || index < 0 || index >= sky->GetLinkCount()){
+	if(!rt || !sky || index < 0 || index >= sky->GetLinkCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

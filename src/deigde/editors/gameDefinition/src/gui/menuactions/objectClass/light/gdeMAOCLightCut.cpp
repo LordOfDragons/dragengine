@@ -67,7 +67,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if(! light){
+	if(!light){
 		return NULL;
 	}
 	

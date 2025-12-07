@@ -64,19 +64,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decUnicodeString &GetName() const{return pName;}
+	inline const decUnicodeString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const decUnicodeString &name);
 	
 	/** \brief Text. */
-	inline const decUnicodeString &GetText() const{return pText;}
+	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const decUnicodeString &text);
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
 	void Layout(const ceTextBox &textBox);

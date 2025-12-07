@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or \em NULL if not set. */
-	inline dealImage *GetImage() const{return pImage;}
+	inline dealImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
 	void SetImage(dealImage *image);
 	
 	/** \brief Colorize color. */
-	inline const decColor &GetColorize() const{return pColorize;}
+	inline const decColor &GetColorize() const{ return pColorize; }
 	
 	/** \brief Set colorize color. */
 	void SetColorize(const decColor &colorize);
 	
 	/** \brief Scaling. */
-	inline float GetScaling() const{return pScaling;}
+	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(float scaling);

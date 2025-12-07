@@ -110,7 +110,7 @@ bool ceActorGestureList::HasNamed(const char *name) const{
 }
 
 void ceActorGestureList::Add(ceActorGesture *gesture){
-	if(! gesture || HasNamed(gesture->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!gesture || HasNamed(gesture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pGestures.Add(gesture);
 }

@@ -87,49 +87,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScaling() const{return pScaling;}
+	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline const decShapeList &GetShapeListInfluence() const{return pShapeListInfluence;}
+	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
 	/** \brief Set influence shape list. */
 	void SetShapeListInfluence(const decShapeList &shapeList);
 	
 	/** \brief Reflection shape or NULL if the environment map is global. */
-	inline decShape *GetShapeReflection() const{return pShapeReflection;}
+	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
 	
 	/** \brief Set reflection shape or NULL if the environment map is global. */
 	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline const decShapeList &GetShapeListReflectionMask() const{return pShapeListReflectionMask;}
+	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Set reflection mask shape list. */
 	void SetShapeListReflectionMask(const decShapeList &shapeList);
 	
 	/** \brief Influence border size. */
-	inline float GetInfluenceBorderSize() const{return pInfluenceBorderSize;}
+	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
 	
 	/** \brief Set influence border size. */
 	void SetInfluenceBorderSize(float borderSize);
 	
 	/** \brief Influence priority. */
-	inline int GetInfluencePriority() const{return pInfluencePriority;}
+	inline int GetInfluencePriority() const{ return pInfluencePriority; }
 	
 	/** \brief Set influence priority. */
 	void SetInfluencePriority(int priority);

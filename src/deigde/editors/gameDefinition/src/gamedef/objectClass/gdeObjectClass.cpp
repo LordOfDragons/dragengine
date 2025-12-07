@@ -613,7 +613,7 @@ const gdeProperty* &property) const{
 		return true;
 	}
 	
-	if(! pGameDefinition){
+	if(!pGameDefinition){
 		return false;
 	}
 	
@@ -623,7 +623,7 @@ const gdeProperty* &property) const{
 	for(i=0; i<count; i++){
 		const gdeOCInherit &inherit = *pInherits.GetAt(i);
 		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherit.GetName());
-		if(! ioc){
+		if(!ioc){
 			continue;
 		}
 		
@@ -660,7 +660,7 @@ bool gdeObjectClass::NamedPropertyDefaultValue(const char *name, decString &valu
 	for(i=0; i<count; i++){
 		const gdeOCInherit &inherit = *pInherits.GetAt(i);
 		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherit.GetName());
-		if(! ioc){
+		if(!ioc){
 			continue;
 		}
 		
@@ -685,7 +685,7 @@ void gdeObjectClass::AddPropertyNamesTo(decStringSet &set, bool inherited) const
 		set.Add(pProperties.GetAt(i)->GetName());
 	}
 	
-	if(! pGameDefinition || ! inherited){
+	if(!pGameDefinition || !inherited){
 		return;
 	}
 	
@@ -706,7 +706,7 @@ void gdeObjectClass::AddTexturePropertyNamesTo(decStringSet &set, bool inherited
 		set.Add(pTextureProperties.GetAt(i)->GetName());
 	}
 	
-	if(! pGameDefinition || ! inherited){
+	if(!pGameDefinition || !inherited){
 		return;
 	}
 	

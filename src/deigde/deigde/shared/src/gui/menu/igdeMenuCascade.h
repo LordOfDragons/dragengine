@@ -95,37 +95,37 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Text shown in the menu entry. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text shown in the menu entry. */
 	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Hot-Key. */
-	const igdeHotKey &GetHotKey() const{return pHotKey;}
+	const igdeHotKey &GetHotKey() const{ return pHotKey; }
 	
 	/** \brief Set Hot-Key. */
 	void SetHotKey(const igdeHotKey &hotKey);
 	
 	/** \brief Mnemonic key or ekcUndefined if not used. */
-	inline deInputEvent::eKeyCodes GetMnemonic() const{return pMnemonic;}
+	inline deInputEvent::eKeyCodes GetMnemonic() const{ return pMnemonic; }
 	
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
 	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if menu entry is enabled. */
 	void SetEnabled(bool enabled);

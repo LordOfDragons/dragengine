@@ -41,7 +41,7 @@ devkDescriptorSetLayout *layout, int maxSetCount) :
 pDevice(device),
 pLayout(layout)
 {
-	if(! layout){
+	if(!layout){
 		DETHROW_INFO(deeNullPointer, "layout");
 	}
 	
@@ -82,7 +82,7 @@ devkDescriptorPoolSlot *devkDescriptorPool::Get(){
 	pPools.Add(pool);
 	
 	devkDescriptorPoolSlot * const slot = pool->Get();
-	if(! slot){
+	if(!slot){
 		DETHROW(deeOutOfMemory);
 	}
 	

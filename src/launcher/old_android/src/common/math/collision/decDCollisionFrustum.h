@@ -183,18 +183,18 @@ public:
 	
 	/** @name Collision Routines */
 	/*@{*/
-	inline decDVector GetLeftNormal() const{return pNormalLeft;}
-	inline decDVector GetRightNormal() const{return pNormalRight;}
-	inline decDVector GetTopNormal() const{return pNormalTop;}
-	inline decDVector GetBottomNormal() const{return pNormalBottom;}
-	inline decDVector GetNearNormal() const{return pNormalNear;}
-	inline decDVector GetFarNormal() const{return pNormalFar;}
-	inline double GetLeftDistance() const{return pDistLeft;}
-	inline double GetRightDistance() const{return pDistRight;}
-	inline double GetTopDistance() const{return pDistTop;}
-	inline double GetBottomDistance() const{return pDistBottom;}
-	inline double GetNearDistance() const{return pDistNear;}
-	inline double GetFarDistance() const{return pDistFar;}
+	inline decDVector GetLeftNormal() const{ return pNormalLeft; }
+	inline decDVector GetRightNormal() const{ return pNormalRight; }
+	inline decDVector GetTopNormal() const{ return pNormalTop; }
+	inline decDVector GetBottomNormal() const{ return pNormalBottom; }
+	inline decDVector GetNearNormal() const{ return pNormalNear; }
+	inline decDVector GetFarNormal() const{ return pNormalFar; }
+	inline double GetLeftDistance() const{ return pDistLeft; }
+	inline double GetRightDistance() const{ return pDistRight; }
+	inline double GetTopDistance() const{ return pDistTop; }
+	inline double GetBottomDistance() const{ return pDistBottom; }
+	inline double GetNearDistance() const{ return pDistNear; }
+	inline double GetFarDistance() const{ return pDistFar; }
 	void SetLeftPlane(const decDVector &normal, double dist);
 	void SetRightPlane(const decDVector &normal, double dist);
 	void SetTopPlane(const decDVector &normal, double dist);

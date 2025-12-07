@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -54,7 +54,7 @@ meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

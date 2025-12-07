@@ -249,7 +249,7 @@ void deClassSkyBody::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *((const sSkyBodyNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyBody)){
+	if(!p_IsObjOfType(obj, clsSkyBody)){
 		rt->PushBool(false);
 		
 	}else{
@@ -324,7 +324,7 @@ void deClassSkyBody::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassSkyBody::PushBody(dsRunTime *rt, deSky *sky, int layer, int index){
-	if(! rt || ! sky){
+	if(!rt || !sky){
 		DSTHROW(dueInvalidParam);
 	}
 	

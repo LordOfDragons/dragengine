@@ -58,22 +58,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Create class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** Debug timer. */
-	inline decTimer &GetDebugTimer(){return pDebugTimer;}
+	inline decTimer &GetDebugTimer(){ return pDebugTimer; }
 	
 	/** Default enable GI. */
-	inline bool GetDefaultEnableGI() const{return pDefaultEnableGI;}
+	inline bool GetDefaultEnableGI() const{ return pDefaultEnableGI; }
 	
 	/** Set default enable GI. */
 	void SetDefaultEnableGI(bool enable);
 	
 	/** Default enable auralization. */
-	inline bool GetDefaultEnableAuralization() const{return pDefaultEnableAuralization;}
+	inline bool GetDefaultEnableAuralization() const{ return pDefaultEnableAuralization; }
 	
 	/** Set default enable auralization. */
 	void SetDefaultEnableAuralization(bool enable);
@@ -84,7 +84,7 @@ public:
 	 * If enabled scripts are DPI aware and apply scaling properly. If disabled the engine
 	 * modules apply the scaling making DPI changes transparent. Default is disabled.
 	 */
-	inline bool GetDpiAware() const{return pDpiAware;}
+	inline bool GetDpiAware() const{ return pDpiAware; }
 	
 	/**
 	 * \brief Set if scripts are DPI aware.

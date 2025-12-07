@@ -81,7 +81,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleAnimationSelect * const rule = (aeRuleAnimationSelect*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -130,7 +130,7 @@ public:
 	}
 	
 	virtual void Update(const aeAnimator & , const aeRuleAnimationSelect &){
-		SetEnabled(! pPanel.GetCBMovesText().IsEmpty());
+		SetEnabled(!pPanel.GetCBMovesText().IsEmpty());
 	}
 };
 

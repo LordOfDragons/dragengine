@@ -128,7 +128,7 @@ decPoint feViewFIImage::GetContentSize() const{
 void feViewFIImage::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if(! pCanvasImageBackground){
+	if(!pCanvasImageBackground){
 		pCanvasImageBackground.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
 		pCanvasImageBackground->SetShapeType(deCanvasPaint::estRectangle);
 		pCanvasImageBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -138,14 +138,14 @@ void feViewFIImage::CreateCanvas(){
 		AddCanvas(pCanvasImageBackground);
 	}
 	
-	if(! pCanvasFontImage){
+	if(!pCanvasFontImage){
 		pCanvasFontImage.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage());
 		pCanvasFontImage->SetOrder(3.0f);
 		pCanvasFontImage->SetVisible(false);
 		AddCanvas(pCanvasFontImage);
 	}
 	
-	if(! pCanvasActiveGlyph){
+	if(!pCanvasActiveGlyph){
 		pCanvasActiveGlyph.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
 		pCanvasActiveGlyph->SetShapeType(deCanvasPaint::estRectangle);
 		pCanvasActiveGlyph->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
@@ -174,13 +174,13 @@ void feViewFIImage::OnResize(){
 
 
 void feViewFIImage::ResizeCanvas(){
-	if(! GetRenderWindowCanvas()){
+	if(!GetRenderWindowCanvas()){
 		return;
 	}
 	
 	const decPoint &parentSize = GetRenderWindowCanvas()->GetSize();
 	
-	if(! pFont){
+	if(!pFont){
 		if(pCanvasFontImage){
 			pCanvasFontImage->SetVisible(false);
 		}
@@ -196,7 +196,7 @@ void feViewFIImage::ResizeCanvas(){
 	const feFontImage &fontImage = *pFont->GetFontImage();
 	deImage * const engImage = fontImage.GetEngineImage();
 	
-	if(! engImage){
+	if(!engImage){
 		if(pCanvasFontImage){
 			pCanvasFontImage->SetVisible(false);
 		}

@@ -108,10 +108,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Clear buffers pipeline. */
-	inline const deoglPipeline *GetPipelineClearBuffers() const{return pPipelineClearBuffers;}
+	inline const deoglPipeline *GetPipelineClearBuffers() const{ return pPipelineClearBuffers; }
 	
 	
 	
@@ -188,7 +188,7 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Direct access debug timer. */
-	inline decTimer& GetDebugTimerAt(int index){return pDebugTimer[index];}
+	inline decTimer& GetDebugTimerAt(int index){ return pDebugTimer[index]; }
 	
 	/** Reset all debug timers if plan has debug enabled. */
 	void DebugTimersReset(const deoglRenderPlan &plan, bool waitGPU);

@@ -61,9 +61,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the serial. */
-	inline int GetSerial() const{return pSerial;}
+	inline int GetSerial() const{ return pSerial; }
 	/** Retrieves the stream state. */
-	inline ogg_stream_state &GetStreamState(){return pStreamState;}
+	inline ogg_stream_state &GetStreamState(){ return pStreamState; }
 	/** Retrieves the frame index for a granule position. */
 	int GranuleToFrame(ogg_int64_t granule) const;
 	/** Retrieves the i-frame index for a granule position. */

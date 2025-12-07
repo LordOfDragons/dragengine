@@ -70,7 +70,7 @@ deRig *deRigManager::GetRigWith(const char *filename) const{
 
 deRig *deRigManager::GetRigWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deRig * const rig = (deRig*)pRigs.GetWithFilename(vfs, filename);
-	return rig && ! rig->GetOutdated() ? rig : NULL;
+	return rig && !rig->GetOutdated() ? rig : NULL;
 }
 
 deRig *deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
@@ -78,7 +78,7 @@ deRig *deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
 }
 
 deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	deRig *rig = NULL, *findRig;
@@ -89,7 +89,7 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		// rig is created
 		if(filename[0] != '\0'){
 			findRig = (deRig*)pRigs.GetWithFilename(vfs, filename);
-			if(findRig && ! findRig->GetOutdated()){
+			if(findRig && !findRig->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
@@ -99,7 +99,7 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		builder.BuildRig(rig);
 		
 		// check rig
-		if(! rig->Verify()){
+		if(!rig->Verify()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -129,7 +129,7 @@ deRig *deRigManager::LoadRig(const char *filename, const char *basePath){
 }
 
 deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
-	if(! vfs || ! filename || filename[0] == '\0' || ! basePath){
+	if(!vfs || !filename || filename[0] == '\0' || !basePath){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -140,7 +140,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 	
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -170,7 +170,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 			module->LoadRig(*fileReader, *rig);
 			fileReader->FreeReference(); fileReader = NULL;
 			// check rig
-			if(! rig->Verify()) DETHROW(deeInvalidParam);
+			if(!rig->Verify()) DETHROW(deeInvalidParam);
 			// prepare rig
 			rig->Prepare();
 			// load system peers
@@ -196,7 +196,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 }
 
 void deRigManager::AddLoadedRig(deRig *rig){
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -232,7 +232,7 @@ void deRigManager::SystemPhysicsLoad(){
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(rig){
-		if(! rig->GetPeerPhysics()){
+		if(!rig->GetPeerPhysics()){
 			phySys.LoadRig(rig);
 		}
 		

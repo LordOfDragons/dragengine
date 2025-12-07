@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Speaker",
 igdeUndo *gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCSpeaker::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

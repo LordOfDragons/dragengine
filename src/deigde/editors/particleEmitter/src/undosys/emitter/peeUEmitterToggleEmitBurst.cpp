@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ peeUEmitterToggleEmitBurst::~peeUEmitterToggleEmitBurst(){
 ///////////////
 
 void peeUEmitterToggleEmitBurst::Undo(){
-	pEmitter->SetEmitBurst(! pEmitter->GetEmitBurst());
+	pEmitter->SetEmitBurst(!pEmitter->GetEmitBurst());
 }
 
 void peeUEmitterToggleEmitBurst::Redo(){
-	pEmitter->SetEmitBurst(! pEmitter->GetEmitBurst());
+	pEmitter->SetEmitBurst(!pEmitter->GetEmitBurst());
 }

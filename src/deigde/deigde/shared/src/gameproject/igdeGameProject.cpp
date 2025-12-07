@@ -144,7 +144,7 @@ void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition *gameDefinitio
 
 
 void igdeGameProject::MergeGameDefinitions(){
-	if(! pProjectGameDefinition){
+	if(!pProjectGameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

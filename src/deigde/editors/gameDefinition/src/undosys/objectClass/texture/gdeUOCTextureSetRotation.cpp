@@ -45,7 +45,7 @@ gdeOCComponentTexture* texture, float newValue) :
 pObjectClass(NULL),
 pTexture(NULL)
 {
-	if(! objectClass || ! texture){
+	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	

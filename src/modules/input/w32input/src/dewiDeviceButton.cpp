@@ -90,7 +90,7 @@ void dewiDeviceButton::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -180,7 +180,7 @@ void dewiDeviceButton::WinRTReading(dewiDeviceWinRTController &device){
 	}
 
 	if(pressed){
-		if(! pPressed){
+		if(!pPressed){
 			pPressed = true;
 			pModule.AddButtonPressed(device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime());
 		}

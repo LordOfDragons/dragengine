@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceControllerValue *controller, float newValue){
-	if(! facePose || ! controller){
+	if(!facePose || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

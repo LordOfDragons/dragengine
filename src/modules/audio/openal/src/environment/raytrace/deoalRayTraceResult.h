@@ -61,7 +61,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of elements. */
-	inline int GetElementCount() const{return pElementCount;}
+	inline int GetElementCount() const{ return pElementCount; }
 	
 	/** \brief Element at index. */
 	const deoalRayTraceHitElement &GetElementAt(int index) const;

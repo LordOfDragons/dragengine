@@ -266,7 +266,7 @@ void igdeDialogBrowser::UpdateCategoryList(){
 }
 
 void igdeDialogBrowser::UpdateCategoryListWith(igdeGDCategory *category){
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -277,14 +277,14 @@ void igdeDialogBrowser::UpdateCategoryListWith(igdeGDCategory *category){
 	
 	for(i=0; i<categoryCount; i++){
 		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(! child->GetHidden()){
+		if(!child->GetHidden()){
 			AddCategoryToList(child, NULL);
 		}
 	}
 }
 
 void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent){
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -296,7 +296,7 @@ void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem
 	
 	for(i=0; i<categoryCount; i++){
 		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(! child->GetHidden()){
+		if(!child->GetHidden()){
 			AddCategoryToList(child, item);
 		}
 	}
@@ -312,14 +312,14 @@ void igdeDialogBrowser::UpdateItemList(){
 	pListItems->SortItems();
 	
 	pListItems->SetSelectionWithData(selection);
-	if(! pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
 		pListItems->SetSelection(0);
 	}
 }
 
 void igdeDialogBrowser::RebuildPISelectedItem(){
 	igdeListItem * const item = GetSelectedListItem();
-	if(! item){
+	if(!item){
 		return;
 	}
 	
@@ -350,7 +350,7 @@ igdeGDCategory *igdeDialogBrowser::GetSelectedCategory() const{
 
 void igdeDialogBrowser::SelectCategory(igdeGDCategory *category){
 	pTreeCategories->SetSelectionWithData(category);
-	if(! pTreeCategories->GetSelection() && pTreeCategories->GetFirstChild()){
+	if(!pTreeCategories->GetSelection() && pTreeCategories->GetFirstChild()){
 		pTreeCategories->SetSelection(pTreeCategories->GetFirstChild());
 	}
 }

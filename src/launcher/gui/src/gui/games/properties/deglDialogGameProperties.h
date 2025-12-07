@@ -157,10 +157,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game. */
-	inline delGame &GetGame() const{return pGame;}
+	inline delGame &GetGame() const{ return pGame; }
 	
 	/** Update game values. */
 	void UpdateGame();

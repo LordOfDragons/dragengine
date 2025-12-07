@@ -71,14 +71,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
 	void SetName(const char *name);
 	
 	/** \brief Parameters. */
-	inline delGPMParameterList &GetParameters(){return pParameters;}
-	inline const delGPMParameterList &GetParameters() const{return pParameters;}
+	inline delGPMParameterList &GetParameters(){ return pParameters; }
+	inline const delGPMParameterList &GetParameters() const{ return pParameters; }
 	
 	/**
 	 * \brief Set parameters for a module version if possible.

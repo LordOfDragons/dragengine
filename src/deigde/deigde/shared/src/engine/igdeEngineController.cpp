@@ -111,7 +111,7 @@ pRenderCounter(0)
 		logger->LogInfo(LOGSOURCE, "Creating OS Console.");
 		os = new deOSConsole();
 #endif
-		if(! os) DETHROW(deeOutOfMemory);
+		if(!os) DETHROW(deeOutOfMemory);
 		
 		// create game engine
 		logger->LogInfo(LOGSOURCE, "Creating Game Engine.");
@@ -157,7 +157,7 @@ void igdeEngineController::InitEngine(){
 }
 
 void igdeEngineController::CloseEngine(){
-	if(! pEngine){
+	if(!pEngine){
 		return;
 	}
 	
@@ -313,17 +313,17 @@ void igdeEngineController::StartEngine(){
 	// prepare for engine launch
 	try{
 		// test if we can start all required systems
-		if(! pEngine->GetCrashRecoverySystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetAnimatorSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetGraphicSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetAudioSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetPhysicsSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetInputSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetScriptingSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetSynthesizerSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetAISystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetNetworkSystem()->CanStart()) DETHROW(deeInvalidParam);
-		if(! pEngine->GetVRSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetCrashRecoverySystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetAnimatorSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetGraphicSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetAudioSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetPhysicsSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetInputSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetScriptingSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetSynthesizerSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetAISystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetNetworkSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(!pEngine->GetVRSystem()->CanStart()) DETHROW(deeInvalidParam);
 		
 		// set script module directory
 		pEngine->GetScriptingSystem()->SetScriptDirectory(scriptDirectory);
@@ -332,39 +332,39 @@ void igdeEngineController::StartEngine(){
 		
 		// bring up the crash recovery module. this module is required to ensure
 		// that we do not crash to desktop.
-		if(! pEngine->GetCrashRecoverySystem()->GetIsRunning()){
+		if(!pEngine->GetCrashRecoverySystem()->GetIsRunning()){
 			pEngine->GetCrashRecoverySystem()->Start();
 		}
 		
 		// start all other systems if not running yet
-		if(! pEngine->GetAISystem()->GetIsRunning()){
+		if(!pEngine->GetAISystem()->GetIsRunning()){
 			pEngine->GetAISystem()->Start();
 		}
-		if(! pEngine->GetAnimatorSystem()->GetIsRunning()){
+		if(!pEngine->GetAnimatorSystem()->GetIsRunning()){
 			pEngine->GetAnimatorSystem()->Start();
 		}
-		if(! pEngine->GetGraphicSystem()->GetIsRunning()){
+		if(!pEngine->GetGraphicSystem()->GetIsRunning()){
 			pEngine->GetGraphicSystem()->Start();
 		}
-		if(! pEngine->GetAudioSystem()->GetIsRunning()){
+		if(!pEngine->GetAudioSystem()->GetIsRunning()){
 			pEngine->GetAudioSystem()->Start();
 		}
-		if(! pEngine->GetPhysicsSystem()->GetIsRunning()){
+		if(!pEngine->GetPhysicsSystem()->GetIsRunning()){
 			pEngine->GetPhysicsSystem()->Start();
 		}
-		if(! pEngine->GetInputSystem()->GetIsRunning()){
+		if(!pEngine->GetInputSystem()->GetIsRunning()){
 			pEngine->GetInputSystem()->Start();
 		}
-		if(! pEngine->GetSynthesizerSystem()->GetIsRunning()){
+		if(!pEngine->GetSynthesizerSystem()->GetIsRunning()){
 			pEngine->GetSynthesizerSystem()->Start();
 		}
-		if(! pEngine->GetScriptingSystem()->GetIsRunning()){
+		if(!pEngine->GetScriptingSystem()->GetIsRunning()){
 			pEngine->GetScriptingSystem()->Start();
 		}
-		if(! pEngine->GetNetworkSystem()->GetIsRunning()){
+		if(!pEngine->GetNetworkSystem()->GetIsRunning()){
 			pEngine->GetNetworkSystem()->Start();
 		}
-		if(! pEngine->GetVRSystem()->GetIsRunning()){
+		if(!pEngine->GetVRSystem()->GetIsRunning()){
 			pEngine->GetVRSystem()->Start();
 		}
 		
@@ -449,7 +449,7 @@ deRenderWindow *igdeEngineController::CreateRenderWindow(){
 }
 
 deRenderWindow *igdeEngineController::CreateRenderWindow(igdeWidget &hostWindow){
-	if(! igdeNativeWidget::HasNativeParent(hostWindow)){
+	if(!igdeNativeWidget::HasNativeParent(hostWindow)){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -462,7 +462,7 @@ deRenderWindow *igdeEngineController::CreateRenderWindow(igdeWidget &hostWindow)
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
-	if(! pMainRenderWindow){
+	if(!pMainRenderWindow){
 		return;
 	}
 	
@@ -499,7 +499,7 @@ void igdeEngineController::ResizeWindow(int width, int height){
 
 
 void igdeEngineController::AddInternalModule(deInternalModule *module){
-	if(! module) DETHROW(deeInvalidParam);
+	if(!module) DETHROW(deeInvalidParam);
 	
 	// load the module. this should not fail unless somebody made a big
 	// mistake in his internal module
@@ -510,13 +510,13 @@ void igdeEngineController::AddInternalModule(deInternalModule *module){
 }
 
 void igdeEngineController::ActivateModule(int system, const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	deModuleSystem *modSys = pEngine->GetModuleSystem();
 	deLoadableModule *engineModule;
 	
 	// try to find the module
 	engineModule = modSys->GetModuleNamed(name);
-	if(! engineModule){
+	if(!engineModule){
 		pMainWindow.GetLogger()->LogErrorFormat("igdeEngineController.ActivateModule", "Failed loading module '%s'.", name);
 		DETHROW(deeInvalidParam);
 	}
@@ -610,7 +610,7 @@ void igdeEngineController::pCreateMainRenderWindow(){
 	#ifdef IGDE_TOOLKIT_NULL
 		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindow();
 	#else
-		if(! igdeNativeWidget::HasNativeParent(pMainWindow)){
+		if(!igdeNativeWidget::HasNativeParent(pMainWindow)){
 			DETHROW(deeNullPointer);
 		}
 		
@@ -623,7 +623,7 @@ void igdeEngineController::pCreateMainRenderWindow(){
 }
 
 void igdeEngineController::pDestroyMainRenderWindow(){
-	if(! pMainRenderWindow){
+	if(!pMainRenderWindow){
 		return;
 	}
 	
@@ -651,7 +651,7 @@ deLoadableModule *igdeEngineController::GetBestModuleForType(deModuleSystem::eMo
 		}
 		
 		// no best module found. use this module
-		if(! bestModule){
+		if(!bestModule){
 			bestModule = module;
 			
 		// best module has been found and this module is fallback. skip module

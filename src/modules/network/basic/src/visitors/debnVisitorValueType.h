@@ -60,9 +60,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/** \brief Message. */
-	inline deNetworkMessage *GetMessage() const{return pMessage;}
+	inline deNetworkMessage *GetMessage() const{ return pMessage; }
 	/*@}*/
 	
 	/** @name Visiting */

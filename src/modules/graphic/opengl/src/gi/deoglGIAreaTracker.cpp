@@ -138,7 +138,7 @@ void deoglGIAreaTracker::Update(){
 	
 	// if there is no world set all leaving flag.
 	// in general though caller is responsible to handle this case
-	if(! pWorld){
+	if(!pWorld){
 		pAllLeaving = true;
 		return;
 	}
@@ -182,7 +182,7 @@ bool deoglGIAreaTracker::HasChanged() const{
 }
 
 bool deoglGIAreaTracker::HasNotChanged() const{
-	return pEntering.GetComponentCount() == 0 && pLeaving.GetComponentCount() == 0 && ! pAllLeaving;
+	return pEntering.GetComponentCount() == 0 && pLeaving.GetComponentCount() == 0 && !pAllLeaving;
 }
 
 void deoglGIAreaTracker::ClearChanges(){
@@ -198,7 +198,7 @@ bool deoglGIAreaTracker::RejectComponent(const deoglRComponent &component) const
 	if(component.GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot(component.GetLayerMask())){
 		return true;
 	}
-	if(! component.GetModel() || component.GetLODCount() == 0){
+	if(!component.GetModel() || component.GetLODCount() == 0){
 		return true;
 	}
 	
@@ -316,10 +316,10 @@ void deoglGIAreaTracker::pVisitComponents(const deoglWorldOctree &node){
 		const bool touchNew = cmax > pBox.minExtend && cmin < pBox.maxExtend;
 		const bool touchOld = cmax > pBoxLastUpdate.minExtend && cmin < pBoxLastUpdate.maxExtend;
 		
-		if(touchNew && ! touchOld){
+		if(touchNew && !touchOld){
 			pEntering.AddComponent(addComponent);
 			
-		}else if(touchOld && ! touchNew){
+		}else if(touchOld && !touchNew){
 			pLeaving.AddComponent(addComponent);
 		}
 	}
@@ -370,7 +370,7 @@ void deoglGIAreaTracker::pVisitComponentsNewOnly(const deoglWorldOctree &node){
 		const decDVector &cmin = component.GetMinimumExtend();
 		const decDVector &cmax = component.GetMaximumExtend();
 		
-		if(! (cmax > pBox.minExtend && cmin < pBox.maxExtend)){
+		if(!(cmax > pBox.minExtend && cmin < pBox.maxExtend)){
 			continue;
 		}
 		if(RejectComponent(component)){

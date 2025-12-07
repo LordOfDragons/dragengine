@@ -100,7 +100,7 @@ public:
 	virtual void OnAction(){
 		seSkin * const skin = pView.GetSkin();
 		seProperty * const property = pView.GetActiveProperty();
-		if(! skin || ! property){
+		if(!skin || !property){
 			return;
 		}
 		
@@ -325,7 +325,7 @@ public:
 	
 	virtual igdeUndo *OnAction(seSkin*, seProperty *property){
 		sePropertyNodeGroup * const node = property->GetActiveNodeGroup();
-		if(! node){
+		if(!node){
 			return NULL;
 		}
 		
@@ -384,7 +384,7 @@ public:
 		seUPNGroupMoveNodes *undo = NULL;
 		if(node){
 			undo = CreateUndo(skin, property, node);
-			if(! undo->HasAnyEffect()){
+			if(!undo->HasAnyEffect()){
 				undo->FreeReference();
 				undo = NULL;
 			}
@@ -454,7 +454,7 @@ public:
 	}
 	
 	virtual void UpdateNode(const seSkin &, const seProperty &property, const sePropertyNode &node){
-		SetEnabled(! node.GetMask() && property.GetNodeSelection().GetSelected().GetCount() == 2);
+		SetEnabled(!node.GetMask() && property.GetNodeSelection().GetSelected().GetCount() == 2);
 	}
 };
 
@@ -613,12 +613,12 @@ seProperty *seViewConstructedView::GetActiveProperty() const{
 
 sePropertyNode *seViewConstructedView::GetActiveNode() const{
 	seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		return NULL;
 	}
 	
 	sePropertyNode * const node = property->GetNodeSelection().GetActive();
-	if(! node){
+	if(!node){
 		return NULL;
 	}
 	
@@ -632,12 +632,12 @@ sePropertyNode *seViewConstructedView::GetActiveNode() const{
 
 sePropertyNodeGroup *seViewConstructedView::GetActiveNodeGroup() const{
 	seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		return NULL;
 	}
 	
 	sePropertyNodeGroup * const nodeGroup = property->GetActiveNodeGroup();
-	if(! nodeGroup){
+	if(!nodeGroup){
 		return NULL;
 	}
 	
@@ -651,7 +651,7 @@ sePropertyNodeGroup *seViewConstructedView::GetActiveNodeGroup() const{
 
 sePropertyNode *seViewConstructedView::NodeAtPosition(const decPoint &position) const{
 	seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		return NULL;
 	}
 	
@@ -689,12 +689,12 @@ sePropertyNode *seViewConstructedView::NodeAtPosition(const decPoint &position) 
 
 
 void seViewConstructedView::UpdateConstructedCanvas(){
-	if(! pCanvasContent){
+	if(!pCanvasContent){
 		return;
 	}
 	
 	const seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		pCanvasContentBackground->SetVisible(false);
 		return;
 	}
@@ -719,14 +719,14 @@ void seViewConstructedView::UpdateConstructedCanvas(){
 }
 
 void seViewConstructedView::RecreateContentCanvas(){
-	if(! pCanvasContent){
+	if(!pCanvasContent){
 		return;
 	}
 	
 	pCanvasContent->RemoveAllCanvas();
 	
 	const seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
@@ -736,7 +736,7 @@ void seViewConstructedView::RecreateContentCanvas(){
 
 void seViewConstructedView::UpdateContentCanvasParams(){
 	const seProperty * const property = GetActiveProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
@@ -744,14 +744,14 @@ void seViewConstructedView::UpdateContentCanvasParams(){
 }
 
 void seViewConstructedView::UpdateMarkers(){
-	if(! pCanvasContent){
+	if(!pCanvasContent){
 		return;
 	}
 	
 	seProperty * const activeProperty = GetActiveProperty();
 	sePropertyNode * const activeNode = GetActiveNode();
 	
-	if(! activeProperty || ! activeNode){
+	if(!activeProperty || !activeNode){
 		pCanvasMarkerBorder->SetVisible(false);
 		pCanvasMarkerResizeTopLeft->SetVisible(false);
 		pCanvasMarkerResizeTop->SetVisible(false);
@@ -1219,7 +1219,7 @@ void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup
 			continue;
 		}
 		
-		if(! canvas){
+		if(!canvas){
 			DETHROW(deeInvalidParam);
 		}
 		

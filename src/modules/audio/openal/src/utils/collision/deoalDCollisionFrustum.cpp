@@ -232,7 +232,7 @@ decDVector deoalDCollisionFrustum::ClosestPointTo(const decDVector &point){
 /////////////
 
 void deoalDCollisionFrustum::Visit(deoalDCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitFrustum(this);
 }
 

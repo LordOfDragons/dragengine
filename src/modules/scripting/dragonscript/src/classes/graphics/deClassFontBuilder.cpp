@@ -70,7 +70,7 @@ public:
 		pFont = NULL;
 	}
 	
-	inline deFont *GetFont() const{return pFont;}
+	inline deFont *GetFont() const{ return pFont; }
 };
 
 
@@ -155,7 +155,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfSetLineHeight::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetFont()){
+	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -185,7 +185,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfSetIsColorFont::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetFont()){
+	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -205,7 +205,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfSetUndefinedGlyph::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetFont()){
+	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -226,7 +226,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfSetGlyphCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetFont()){
+	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -248,7 +248,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfSetGlyphAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetFont()){
+	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
 	

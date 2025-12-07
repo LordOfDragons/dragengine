@@ -70,19 +70,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Font. */
-	inline const deoglRFont::Ref &GetFont() const{return pFont;}
+	inline const deoglRFont::Ref &GetFont() const{ return pFont; }
 	
 	/** Font size. */
-	inline const deoglRFontSize::Ref &GetFontSize() const{return pFontSize;}
+	inline const deoglRFontSize::Ref &GetFontSize() const{ return pFontSize; }
 	
 	/** Text size. */
-	inline float GetTextSize() const{return pTextSize;}
+	inline float GetTextSize() const{ return pTextSize; }
 	
 	/** Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** Color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Mapped for type. */
 	int GetTextMappedFor(deSkinPropertyNodeText::eTextMapped type) const;

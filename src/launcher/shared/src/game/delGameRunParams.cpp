@@ -102,7 +102,7 @@ const decUuid &useCustomPatch, decString &error){
 	}
 	
 	// use no patch at all
-	if(! useCustomPatch){
+	if(!useCustomPatch){
 		return true;
 	}
 	
@@ -112,7 +112,7 @@ const decUuid &useCustomPatch, decString &error){
 	game.SortPatches(patches, collected);
 	
 	delPatch *usePatch = patches.GetWithID(useCustomPatch);
-	if(! usePatch){
+	if(!usePatch){
 		error.Format("No patch found with identifier '%s'",
 			useCustomPatch.ToHexString(false).GetString());
 		return false;

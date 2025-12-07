@@ -42,13 +42,13 @@
 ////////////////////////////
 
 meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Object Texture");
 	

@@ -89,7 +89,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		
@@ -113,7 +113,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		
@@ -137,7 +137,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace){
+		if(!navspace){
 			return;
 		}
 		
@@ -161,7 +161,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if(! navspace || navspace->GetPath() == editPath->GetPath()){
+		if(!navspace || navspace->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -331,7 +331,7 @@ public:
 	cComboPropertyNameTarget(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetNavigationSpace()){
+		if(!pPanel.GetNavigationSpace()){
 			return;
 		}
 		

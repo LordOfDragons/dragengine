@@ -253,7 +253,7 @@ bool projTestRunner::IsRunning(){
 }
 
 void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile){
-	if(! profile){
+	if(!profile){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -298,17 +298,17 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			secattr.bInheritHandle = TRUE;
 			secattr.lpSecurityDescriptor = NULL;
 			
-			if(! CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
+			if(!CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
 				DETHROW(deeInvalidAction);
 			}
-			if(! CreatePipe(&pipesOutRead, &pipesOutWrite, &secattr, 0)){
+			if(!CreatePipe(&pipesOutRead, &pipesOutWrite, &secattr, 0)){
 				DETHROW(deeInvalidAction);
 			}
 			
-			if(! SetHandleInformation(pipesInWrite, HANDLE_FLAG_INHERIT, 0)){
+			if(!SetHandleInformation(pipesInWrite, HANDLE_FLAG_INHERIT, 0)){
 				DETHROW(deeInvalidAction);
 			}
-			if(! SetHandleInformation(pipesOutRead, HANDLE_FLAG_INHERIT, 0)){
+			if(!SetHandleInformation(pipesOutRead, HANDLE_FLAG_INHERIT, 0)){
 				DETHROW(deeInvalidAction);
 			}
 			
@@ -325,11 +325,11 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if(! CreateProcess(NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
+			if(!CreateProcess(NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
 				DETHROW(deeInvalidAction);
 			}
 			
-			if(! WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
 				DETHROW(deeInvalidAction);
 			}
 			if(bytesWritten < sizeof(pipesOutWrite)){
@@ -382,7 +382,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 	// solution here
 	fflush(NULL);
 	
-	if(! pProcessID){
+	if(!pProcessID){
 		int pipesIn[2] = {0, 0};
 		int pipesOut[2] = {0, 0};
 		
@@ -454,7 +454,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 }
 
 void projTestRunner::Stop(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		return;
 	}
 	
@@ -511,7 +511,7 @@ void projTestRunner::Stop(){
 }
 
 void projTestRunner::Kill(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		return;
 	}
 	
@@ -605,7 +605,7 @@ void projTestRunner::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(! WriteFile(pPipeIn, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipeIn, data, length, &bytesWritten, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){
@@ -653,7 +653,7 @@ void projTestRunner::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(! ReadFile(pPipeOut, data, length, &bytesRead, NULL)){
+	if(!ReadFile(pPipeOut, data, length, &bytesRead, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesRead < length){
@@ -675,7 +675,7 @@ void projTestRunner::SendQuit(){
 		DETHROW(deeInvalidParam);
 	}
 	#else
-	if(! pPipeIn){
+	if(!pPipeIn){
 		DETHROW(deeInvalidParam);
 	}
 	#endif
@@ -684,7 +684,7 @@ void projTestRunner::SendQuit(){
 }
 
 decString projTestRunner::ReadNextLogData(){
-	if(! pLogFileReader){
+	if(!pLogFileReader){
 		return decString();
 	}
 	
@@ -700,7 +700,7 @@ decString projTestRunner::ReadNextLogData(){
 		pLogFileReader->Read((char*)content.GetString(), end - position);
 	}
 	
-	if(! IsRunning()){
+	if(!IsRunning()){
 		pLogFileReader = NULL;  // close log file
 	}
 	
@@ -802,8 +802,8 @@ void projTestRunner::pSendLaunchParameters(){
 		if(pLauncherProfile->GetReplaceRunArguments()){
 			runArguments = pLauncherProfile->GetRunArguments();
 			
-		}else if(! pLauncherProfile->GetRunArguments().IsEmpty()){
-			if(! runArguments.IsEmpty()){
+		}else if(!pLauncherProfile->GetRunArguments().IsEmpty()){
+			if(!runArguments.IsEmpty()){
 				runArguments += " ";
 			}
 			runArguments += pLauncherProfile->GetRunArguments();
@@ -813,8 +813,8 @@ void projTestRunner::pSendLaunchParameters(){
 		// TODO get this from engine controller somehow
 	}
 	
-	if(! pProfile->GetRunArguments().IsEmpty()){
-		if(! runArguments.IsEmpty()){
+	if(!pProfile->GetRunArguments().IsEmpty()){
+		if(!runArguments.IsEmpty()){
 			runArguments += " ";
 		}
 		runArguments += pProfile->GetRunArguments();

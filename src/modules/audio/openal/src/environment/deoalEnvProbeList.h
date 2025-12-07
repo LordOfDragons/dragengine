@@ -83,42 +83,42 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Parent world. */
-	inline deoalAWorld &GetWorld() const{return pWorld;}
+	inline deoalAWorld &GetWorld() const{ return pWorld; }
 	
 	
 	
 	/** \brief Probe range. */
-	inline float GetRange() const{return pRange;}
+	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set probe range. */
 	void SetRange(float range);
 	
 	/** \brief Attenuation reference distance. */
-	inline float GetAttenuationRefDist() const{return pAttenuationRefDist;}
+	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
 	
 	/** \brief Attenuation rolloff. */
-	inline float GetAttenuationRolloff() const{return pAttenuationRolloff;}
+	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
 	/** \brief Attenuation distance offset. */
-	inline float GetAttenuationDistanceOffset() const{return pAttenuationDistanceOffset;}
+	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
 	/** \brief Set attenuation parameters. */
 	void SetAttenuation(float refDist, float rolloff, float distanceOffset);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Ray-tracing world BVH or NULL. */
-	inline deoalRTWorldBVH *GetRTWorldBVH() const{return pRTWorldBVH;}
+	inline deoalRTWorldBVH *GetRTWorldBVH() const{ return pRTWorldBVH; }
 	
 	/** \brief Set ray-tracing world bvh or NULL. */
 	void SetRTWorldBVH(deoalRTWorldBVH *bvh);
 	
 	/** \brief Set ray tracing config to use. */
-	inline const deoalATRayTracing::sConfigSoundTracing *GetRTConfig() const{return pRTConfig;}
+	inline const deoalATRayTracing::sConfigSoundTracing *GetRTConfig() const{ return pRTConfig; }
 	
 	/** \brief Set ray tracing config to use. */
 	void SetRTConfig(const deoalATRayTracing::sConfigSoundTracing *config);
@@ -126,13 +126,13 @@ public:
 	
 	
 	/** \brief Probe reuse distance. */
-	inline double GetReuseDistance() const{return pReuseDistance;}
+	inline double GetReuseDistance() const{ return pReuseDistance; }
 	
 	/** \brief Probe reuse distance squared for faster comparison. */
-	inline double GetReuseDistanceSquared() const{return pReuseDistanceSquared;}
+	inline double GetReuseDistanceSquared() const{ return pReuseDistanceSquared; }
 	
 	/** \brief Maximum number of proves to keep. */
-	inline int GetMaxProbeCount() const{return pMaxProbeCount;}
+	inline int GetMaxProbeCount() const{ return pMaxProbeCount; }
 	
 	
 	

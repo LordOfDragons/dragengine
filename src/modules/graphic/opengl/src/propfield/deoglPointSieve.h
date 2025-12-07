@@ -64,16 +64,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the sieve size in x direction. */
-	inline float GetSieveSizeX() const{return pSieveSizeX;}
+	inline float GetSieveSizeX() const{ return pSieveSizeX; }
 	/** Retrieves the sieve size in z direction. */
-	inline float GetSieveSizeZ() const{return pSieveSizeZ;}
+	inline float GetSieveSizeZ() const{ return pSieveSizeZ; }
 	
 	/** Retrieves the number of buckets in the x direction. */
-	inline int GetBucketCountX() const{return pBucketCountX;}
+	inline int GetBucketCountX() const{ return pBucketCountX; }
 	/** Retrieves the number of buckets in the z direction. */
-	inline int GetBucketCountZ() const{return pBucketCountZ;}
+	inline int GetBucketCountZ() const{ return pBucketCountZ; }
 	/** Retrieves the number of buckets. */
-	inline int GetBucketCount() const{return pBucketCount;}
+	inline int GetBucketCount() const{ return pBucketCount; }
 	/** Retrieves the bucket at the given index. */
 	deoglPointSieveBucket &GetBucketAt(int index) const;
 	/** Retrieves the bucket at the given index. */

@@ -54,7 +54,7 @@ pEnvironment(environment),
 pState(esInitial),
 pEnableDebug(false)
 {
-	if(! (size > decPoint(1, 1))){
+	if(!(size > decPoint(1, 1))){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,7 +84,7 @@ void igdeGDPreviewCreator::SetImage(deImage *image){
 }
 
 void igdeGDPreviewCreator::AddListener(igdeGDPreviewListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -143,7 +143,7 @@ void igdeGDPreviewCreator::NotifyImageCreated(deImage *image){
 }
 
 void igdeGDPreviewCreator::DebugLog(const char *message){
-	if(! pEnableDebug){
+	if(!pEnableDebug){
 		return;
 	}
 	
@@ -176,7 +176,7 @@ void igdeGDPreviewCreator::pUpdate(){
 	}
 	
 	if(pState == esWaitCanvasReady){
-		if(! IsCanvasReadyForRender()){
+		if(!IsCanvasReadyForRender()){
 			return;
 		}
 		DebugLog("canvas ready for render");

@@ -44,7 +44,7 @@ seUSourceRemoveEffect::seUSourceRemoveEffect(seSource *source, seEffect *effect)
 pEffect(NULL),
 pSource(NULL)
 {
-	if(! effect || ! source){
+	if(!effect || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

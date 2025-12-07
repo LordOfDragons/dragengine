@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{return pFormat;}
+	inline eValueFormats GetFormat() const{ return pFormat; }
 	
 	/** \brief Value. */
-	inline int64_t GetInt() const{return pValue;}
+	inline int64_t GetInt() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetInt(int64_t value);

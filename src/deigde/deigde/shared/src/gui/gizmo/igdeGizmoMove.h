@@ -115,7 +115,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active action or eaNone. */
-	inline eActions GetAction() const{return pAction;}
+	inline eActions GetAction() const{ return pAction; }
 	
 	/** \brief Get object position. */
 	virtual decDVector GetObjectPosition() = 0;

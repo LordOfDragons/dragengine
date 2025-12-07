@@ -85,7 +85,7 @@ void deoalASynthesizerInstance::UpdateParameters(){
 	
 	pAdvanceUpdateTracker();
 	
-	if(! pInstance){
+	if(!pInstance){
 		return;
 	}
 	

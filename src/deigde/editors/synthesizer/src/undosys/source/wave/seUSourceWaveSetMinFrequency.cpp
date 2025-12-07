@@ -42,7 +42,7 @@
 seUSourceWaveSetMinFrequency::seUSourceWaveSetMinFrequency(seSourceWave *source, float newFrequency) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

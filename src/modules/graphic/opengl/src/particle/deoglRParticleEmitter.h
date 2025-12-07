@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render threaf. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Shared VBO layout. */
 	deoglVBOLayout *GetVBOLayoutShared();

@@ -240,7 +240,7 @@ deGraphicOpenGl::~deGraphicOpenGl(){
 ///////////////
 
 bool deGraphicOpenGl::Init(deRenderWindow *renderWindow){
-	if(! renderWindow){
+	if(!renderWindow){
 		return false;
 	}
 	
@@ -341,7 +341,7 @@ void deGraphicOpenGl::RenderWindows(){
 	// rendering is finished soon enough to wait for this event or to skip synchronization
 	// and running another game frame update
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
-	if(! pRenderThread->MainThreadWaitFinishRendering()){
+	if(!pRenderThread->MainThreadWaitFinishRendering()){
 // 		LogInfoFormat( "RenderWindows() %d", __LINE__ );
 		return; // enough time left to run another game frame update
 	}
@@ -589,7 +589,7 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	
 	connection.opengl = {};
 	
-	if(! pRenderThread->HasContext()){
+	if(!pRenderThread->HasContext()){
 		return;
 	}
 	
@@ -665,7 +665,7 @@ void deGraphicOpenGl::SetParameterValue(const char *name, const char *value){
 
 
 void deGraphicOpenGl::PauseParallelProcessingUpdate(){
-	if(! pRenderThread){
+	if(!pRenderThread){
 		return;
 	}
 	

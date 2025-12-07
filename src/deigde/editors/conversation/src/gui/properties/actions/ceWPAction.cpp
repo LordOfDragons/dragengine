@@ -73,7 +73,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -98,7 +98,7 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -124,7 +124,7 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -148,7 +148,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if(! topic || ! action || comboBox->GetText() == action->GetWaitForActorID()){
+		if(!topic || !action || comboBox->GetText() == action->GetWaitForActorID()){
 			return;
 		}
 		
@@ -195,7 +195,7 @@ void ceWPAction::CreateGUICommon(igdeContainerForm &container){
 }
 
 void ceWPAction::UpdateCommonParams(){
-	if(! pEditDelay){
+	if(!pEditDelay){
 		return;
 	}
 	
@@ -228,14 +228,14 @@ void ceWPAction::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! list.GetAt(i)->GetID().IsEmpty()){
+			if(!list.GetAt(i)->GetID().IsEmpty()){
 				const decString &id = list.GetAt(i)->GetID();
 				const decString &aliasID = list.GetAt(i)->GetAliasID();
 				
-				if(! combobox.HasItem(id)){
+				if(!combobox.HasItem(id)){
 					combobox.AddItem(id);
 				}
-				if(! aliasID.IsEmpty() && ! combobox.HasItem(aliasID)){
+				if(!aliasID.IsEmpty() && !combobox.HasItem(aliasID)){
 					combobox.AddItem(aliasID);
 				}
 			}
@@ -259,14 +259,14 @@ void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList(igdeComboBox &combobox){
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! list.GetAt(i)->GetID().IsEmpty()){
+			if(!list.GetAt(i)->GetID().IsEmpty()){
 				const decString &id = list.GetAt(i)->GetID();
 				const decString &aliasID = list.GetAt(i)->GetAliasID();
 				
-				if(! combobox.HasItem(id)){
+				if(!combobox.HasItem(id)){
 					combobox.AddItem(id);
 				}
-				if(! aliasID.IsEmpty() && ! combobox.HasItem(aliasID)){
+				if(!aliasID.IsEmpty() && !combobox.HasItem(aliasID)){
 					combobox.AddItem(aliasID);
 				}
 			}

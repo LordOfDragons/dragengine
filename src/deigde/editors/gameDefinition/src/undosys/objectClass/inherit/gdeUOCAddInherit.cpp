@@ -44,7 +44,7 @@ gdeUOCAddInherit::gdeUOCAddInherit(gdeObjectClass *objectClass, gdeOCInherit *in
 pObjectClass(NULL),
 pInherit(NULL)
 {
-	if(! objectClass || ! inherit){
+	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
 	}
 	

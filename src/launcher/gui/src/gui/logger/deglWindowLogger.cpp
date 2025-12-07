@@ -143,7 +143,7 @@ void deglWindowLogger::SetLogger(delLoggerHistory *logger){
 void deglWindowLogger::UpdateLogs(){
 	ClearLogsTable();
 	
-	if(! pLogger){
+	if(!pLogger){
 		return;
 	}
 	

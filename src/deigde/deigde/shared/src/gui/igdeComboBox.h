@@ -101,34 +101,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ComboBox is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Visible rows in drop down list. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Set number of visible rows in drop down list. */
 	void SetRows(int rows);
 	
 	/** \brief Text is editable. */
-	inline bool GetEditable() const{return pEditable;}
+	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if text is editable. */
 	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Mark widget as having an invalue value. */
-	inline bool GetInvalidValue() const{return pInvalidValue;}
+	inline bool GetInvalidValue() const{ return pInvalidValue; }
 	
 	/** \brief Set to mark widget as having an invalid value. */
 	void SetInvalidValue(bool invalidValue);
@@ -189,7 +189,7 @@ public:
 	
 	
 	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{return pSorter;}
+	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
 	void SetSorter(igdeListItemSorter *sorter);
@@ -203,7 +203,7 @@ public:
 	
 	
 	/** \brief Index of selected item or -1. */
-	inline int GetSelection() const{return pSelection;}
+	inline int GetSelection() const{ return pSelection; }
 	
 	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;
@@ -224,7 +224,7 @@ public:
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text, bool changing = false);

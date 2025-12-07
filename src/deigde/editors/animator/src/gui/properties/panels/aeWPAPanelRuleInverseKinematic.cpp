@@ -89,7 +89,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -129,7 +129,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -152,7 +152,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -175,7 +175,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -194,7 +194,7 @@ public:
 	cEditGoalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetGoalPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetGoalPosition())
 			? new aeURuleIKSetGoalPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -204,7 +204,7 @@ public:
 	cEditGoalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetGoalOrientation())
+		return !editVector->GetVector().IsEqualTo(rule->GetGoalOrientation())
 			? new aeURuleIKSetGoalRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -214,7 +214,7 @@ public:
 	cEditLocalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetLocalPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetLocalPosition())
 			? new aeURuleIKSetLocalPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -224,7 +224,7 @@ public:
 	cEditLocalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetLocalOrientation())
+		return !editVector->GetVector().IsEqualTo(rule->GetLocalOrientation())
 			? new aeURuleIKSetLocalRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -296,7 +296,7 @@ public:
 	cEditReachCenter(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetReachCenter())
+		return !editVector->GetVector().IsEqualTo(rule->GetReachCenter())
 			? new aeURuleIKSetReachCenter(rule, editVector->GetVector()) : NULL;
 	}
 };

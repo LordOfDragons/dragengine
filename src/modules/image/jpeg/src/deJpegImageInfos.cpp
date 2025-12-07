@@ -50,7 +50,7 @@ pDataBuffer(NULL),
 pDataBufferPosition(0),
 pReader(NULL)
 {
-	if(! module || ! filename){
+	if(!module || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -78,7 +78,7 @@ deJpegImageInfo::~deJpegImageInfo(){
 ////////////////
 
 void deJpegImageInfo::InitRead(decBaseFileReader *reader){
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -87,7 +87,7 @@ void deJpegImageInfo::InitRead(decBaseFileReader *reader){
 	pFileSize = reader->GetLength();
 	pFilePosition = 0;
 	
-	if(! pDataBuffer){
+	if(!pDataBuffer){
 		pDataBuffer = new JOCTET[1024];
 	}
 	pDataBufferPosition = 0;
@@ -97,7 +97,7 @@ void deJpegImageInfo::InitRead(decBaseFileReader *reader){
 }
 
 void deJpegImageInfo::ReadNext(){
-	if(! pReader || ! pDataBuffer){
+	if(!pReader || !pDataBuffer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -115,7 +115,7 @@ void deJpegImageInfo::ReadNext(){
 }
 
 void deJpegImageInfo::SkipNext(int bytes){
-	if(! pReader || ! pDataBuffer){
+	if(!pReader || !pDataBuffer){
 		DETHROW(deeInvalidParam);
 	}
 	

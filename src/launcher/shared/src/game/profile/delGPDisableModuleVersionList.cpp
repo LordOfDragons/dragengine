@@ -65,10 +65,10 @@ delGPDisableModuleVersion *delGPDisableModuleVersionList::GetAt(int index) const
 
 delGPDisableModuleVersion *delGPDisableModuleVersionList::GetWith(
 const char *name, const char *version) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
-	if(! version){
+	if(!version){
 		DETHROW_INFO(deeNullPointer, "version");
 	}
 	
@@ -98,10 +98,10 @@ int delGPDisableModuleVersionList::IndexOf(delGPDisableModuleVersion *entry) con
 }
 
 int delGPDisableModuleVersionList::IndexOfWith(const char *name, const char *version) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
-	if(! version){
+	if(!version){
 		DETHROW_INFO(deeNullPointer, "version");
 	}
 	
@@ -119,7 +119,7 @@ int delGPDisableModuleVersionList::IndexOfWith(const char *name, const char *ver
 }
 
 void delGPDisableModuleVersionList::Add(delGPDisableModuleVersion *entry){
-	if(! entry){
+	if(!entry){
 		DETHROW_INFO(deeNullPointer, "entry");
 	}
 	if(HasWith(entry->GetName(), entry->GetVersion())){

@@ -51,7 +51,7 @@ ceIGDEModule::~ceIGDEModule(){
 ///////////////
 
 void ceIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new ceWindowMain(*this));
 	}
 }

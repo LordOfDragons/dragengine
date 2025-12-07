@@ -68,7 +68,7 @@ void dearControllerStates::SetStateCount(int count){
 		
 		if(count > 0){
 			pStates = new sState[count];
-			if(! pStates) DETHROW(deeOutOfMemory);
+			if(!pStates) DETHROW(deeOutOfMemory);
 		}
 		pStateCount = count;
 	}

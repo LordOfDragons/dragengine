@@ -406,7 +406,7 @@ deClassARLimit::nfSetCoordinateFrame::nfSetCoordinateFrame(const sInitData &init
 	p_AddParameter(init.clsARLimitCFrame); // coordinateFrame
 }
 void deClassARLimit::nfSetCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -445,7 +445,7 @@ deClassARLimit::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARLimit::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -476,7 +476,7 @@ deClassARLimit::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 }
 void deClassARLimit::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -575,7 +575,7 @@ void deClassARLimit::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -583,7 +583,7 @@ deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
 }
 
 void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -607,11 +607,11 @@ void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 }
 
 void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

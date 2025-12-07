@@ -110,7 +110,7 @@ decXmlAttValue *decXmlElementTag::FindAttribute(const char *name) const{
 	
 	for(i=0; i<count; i++){
 		decXmlElement &element = *GetElementAt(i);
-		if(! element.CanCastToAttValue()){
+		if(!element.CanCastToAttValue()){
 			continue;
 		}
 		

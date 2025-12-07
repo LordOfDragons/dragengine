@@ -105,10 +105,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline aeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

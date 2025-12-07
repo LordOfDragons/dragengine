@@ -261,10 +261,10 @@ public:
 	int GetTokenAt(int index);
 	
 	/** \brief Line number of the current token. */
-	inline int GetTokenLineNumber() const{return pTokenLine;}
+	inline int GetTokenLineNumber() const{ return pTokenLine; }
 	
 	/** \brief Position number of the current token. */
-	inline int GetTokenPositionNumber() const{return pTokenPos;}
+	inline int GetTokenPositionNumber() const{ return pTokenPos; }
 	
 	/** \brief Clear current token buffer. */
 	void ClearToken();
@@ -287,7 +287,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Clean string buffer. */
-	inline const char *GetCleanString() const{return (const char *)pCleanString ;}
+	inline const char *GetCleanString() const{ return (const char *)pCleanString ; }
 	
 	/** \brief Copy number of characters from token buffer to clean string buffer 0-terminated. */
 	void SetCleanString(int length);

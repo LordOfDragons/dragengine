@@ -81,15 +81,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief AI module. */
-	inline deDEAIModule &GetDEAI() const{return pDEAI;}
+	inline deDEAIModule &GetDEAI() const{ return pDEAI; }
 	
 	/** \brief Navigation space resource. */
-	inline const deNavigationBlocker &GetNavigationBlocker() const{return pNavBlocker;}
+	inline const deNavigationBlocker &GetNavigationBlocker() const{ return pNavBlocker; }
 	
 	
 	
 	/** \brief Parent world or \em NULL if not set. */
-	inline dedaiWorld *GetParentWorld() const{return pParentWorld;}
+	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL if not set. */
 	void SetParentWorld(dedaiWorld *world);
@@ -111,14 +111,14 @@ public:
 	
 	
 	/** \brief Convex volume list used to block navigation spaces. */
-	inline decConvexVolumeList &GetConvexVolumeList(){return pConvexVolumeList;}
-	inline const decConvexVolumeList &GetConvexVolumeList() const{return pConvexVolumeList;}
+	inline decConvexVolumeList &GetConvexVolumeList(){ return pConvexVolumeList; }
+	inline const decConvexVolumeList &GetConvexVolumeList() const{ return pConvexVolumeList; }
 	
 	/** \brief Prepare navigation blocker if not ready yet. */
 	void Prepare();
 	
 	/** \brief Debug drawer shape for the blocker or NULL if not existing. */
-	inline deDebugDrawerShape *GetDDSBlocker() const{return pDDSBlocker;}
+	inline deDebugDrawerShape *GetDDSBlocker() const{ return pDDSBlocker; }
 	
 	/**
 	 * \brief Update debug drawer shape for the space.

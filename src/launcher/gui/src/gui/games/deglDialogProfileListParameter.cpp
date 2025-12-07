@@ -64,7 +64,7 @@ pCheckBox(nullptr),
 pTextField(nullptr),
 pCustomized(false)
 {
-	if(! container){
+	if(!container){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -83,7 +83,7 @@ pCustomized(false)
 	}
 	
 	// add label
-	const char * const name = ! parameter.GetInfo().GetDisplayName().IsEmpty()
+	const char * const name = !parameter.GetInfo().GetDisplayName().IsEmpty()
 		? parameter.GetInfo().GetDisplayName() : parameter.GetInfo().GetName();
 	
 	pLabel = new FXLabel(container, name, nullptr, LAYOUT_FILL_X | LAYOUT_FILL_Y | LABEL_NORMAL | JUSTIFY_LEFT);
@@ -237,7 +237,7 @@ bool deglDialogProfileListParameter::ProcessSelChanged(FXObject *sender){
 
 void deglDialogProfileListParameter::SetParameterValue(const char *value){
 	delGPModule::Ref profileModule(pProfile.GetModules().GetNamed(pModuleName));
-	if(! profileModule){
+	if(!profileModule){
 		if(pParameter.GetValue() == value){
 			return;
 		}
@@ -249,7 +249,7 @@ void deglDialogProfileListParameter::SetParameterValue(const char *value){
 	
 	const decString &parameterName = pParameter.GetInfo().GetName();
 	delGPMParameter::Ref profileParameter(mpParamList.GetNamed(parameterName));
-	if(! profileParameter){
+	if(!profileParameter){
 		if(pParameter.GetValue() == value){
 			return;
 		}

@@ -54,7 +54,7 @@
 ////////////////////////////
 
 ceCAActorSpeak::ceCAActorSpeak(deEngine *engine) : ceConversationAction(eatActorSpeak){
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -105,7 +105,7 @@ ceCAActorSpeak::~ceCAActorSpeak(){
 ///////////////
 
 deSound *ceCAActorSpeak::GetEngineSound(){
-	if(! pLoaded){
+	if(!pLoaded){
 		pLoadSound();
 	}
 	
@@ -127,7 +127,7 @@ void ceCAActorSpeak::SetTextBoxTextTranslate(const char *text){
 }
 
 decUnicodeString ceCAActorSpeak::ResolveTextBoxText(const ceConversation &conversation) const{
-	if(! pTextBoxTextTranslate.IsEmpty()){
+	if(!pTextBoxTextTranslate.IsEmpty()){
 		const ceLangPack * const langpack = conversation.GetLanguagePack();
 		if(langpack){
 			const ceLangPackEntry * const entry = langpack->GetEntryNamed(pTextBoxTextTranslate);
@@ -144,7 +144,7 @@ void ceCAActorSpeak::SetTextBoxTextStyle(const char *style){
 }
 
 void ceCAActorSpeak::SetPathSound(const char *path){
-	if(! pPathSound.Equals(path)){
+	if(!pPathSound.Equals(path)){
 		pPathSound = path;
 		
 		if(pEngSound){
@@ -156,7 +156,7 @@ void ceCAActorSpeak::SetPathSound(const char *path){
 }
 
 void ceCAActorSpeak::SetMovement(const char *movement){
-	if(! movement){
+	if(!movement){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,7 +191,7 @@ void ceCAActorSpeak::pLoadSound(){
 	deSound *sound = NULL;
 	
 	try{
-		if(! pPathSound.IsEmpty()){
+		if(!pPathSound.IsEmpty()){
 			sound = pEngine->GetSoundManager()->LoadSound(pPathSound.GetString(), "/", false);
 		}
 		

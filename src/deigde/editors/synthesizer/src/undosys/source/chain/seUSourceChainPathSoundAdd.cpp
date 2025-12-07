@@ -42,7 +42,7 @@
 seUSourceChainPathSoundAdd::seUSourceChainPathSoundAdd(seSourceChain *source, const char *path) :
 pSource(NULL)
 {
-	if(! source || ! path){
+	if(!source || !path){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -83,11 +83,11 @@ bool meCLIdentify::HasDecal() const{
 void meCLIdentify::CollisionResponse(deCollider*, deCollisionInfo *info){
 	if(info->IsCollider()){
 		meObject * const object = pGetObjectForCollider(info->GetCollider());
-		if(! object){
+		if(!object){
 			return;
 		}
 		
-		if(! pObject || info->GetDistance() < pBestDistance){
+		if(!pObject || info->GetDistance() < pBestDistance){
 			pObject = object;
 		}
 	}

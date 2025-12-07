@@ -68,12 +68,12 @@ seVCIDragNode::~seVCIDragNode(){
 ///////////////
 
 bool seVCIDragNode::OnDragBegin(){
-	if(! pView.GetSkin() || pDragAction != edaNone || GetDragState() != edsLeft){
+	if(!pView.GetSkin() || pDragAction != edaNone || GetDragState() != edsLeft){
 		return false;
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if(! property){
+	if(!property){
 		return 0;
 	}
 	
@@ -165,11 +165,11 @@ bool seVCIDragNode::OnDragBegin(){
 		}
 		
 	}else{
-		if(node && ! node->GetSelected()){
+		if(node && !node->GetSelected()){
 			property->GetNodeSelection().RemoveAll();
 			property->GetNodeSelection().Add(node);
 			
-		}else if(! node){
+		}else if(!node){
 			property->GetNodeSelection().RemoveAll();
 		}
 	}
@@ -246,7 +246,7 @@ void seVCIDragNode::pMove(){
 		}
 		
 		seProperty * const property = pView.GetActiveProperty();
-		if(! property){
+		if(!property){
 			return;
 		}
 		
@@ -270,7 +270,7 @@ void seVCIDragNode::pRotate(){
 		}
 		
 		seProperty * const property = pView.GetActiveProperty();
-		if(! property){
+		if(!property){
 			return;
 		}
 		
@@ -321,7 +321,7 @@ void seVCIDragNode::pResize(){
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
@@ -420,7 +420,7 @@ void seVCIDragNode::pResize(){
 		break;
 	}
 	
-	if(! pUndo){
+	if(!pUndo){
 		pUndo.TakeOver(new seUPropertyNodesResize(selection.GetSelected(),
 			pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
@@ -458,7 +458,7 @@ void seVCIDragNode::pShear(){
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
@@ -541,7 +541,7 @@ void seVCIDragNode::pShear(){
 		break;
 	}
 	
-	if(! pUndo){
+	if(!pUndo){
 		pUndo.TakeOver(new seUPropertyNodesShear(selection.GetSelected(),
 				pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo);

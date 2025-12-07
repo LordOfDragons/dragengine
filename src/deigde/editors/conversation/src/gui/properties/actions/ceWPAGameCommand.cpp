@@ -73,7 +73,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetCommand()){
+		if(!topic || !action || textField->GetText() == action->GetCommand()){
 			return;
 		}
 		
@@ -93,12 +93,12 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
 		decString text(action->GetCommand());
-		if(! igdeCommonDialogs::GetMultilineString(
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Command", "Command:", text)
 		|| text == action->GetCommand()){

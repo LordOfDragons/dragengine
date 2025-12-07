@@ -43,7 +43,7 @@ lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry *entry, cons
 pEntry(NULL),
 pNewName(newName)
 {
-	if(! entry){
+	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
 	

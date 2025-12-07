@@ -87,7 +87,7 @@ void deModioUserConfig::SetModDisabled(const decString &id, bool disabled){
 		pDisabledMods.Add(id);
 		
 	}else{
-		if(! pDisabledMods.Has(id)){
+		if(!pDisabledMods.Has(id)){
 			return;
 		}
 		pDisabledMods.Remove(id);
@@ -104,7 +104,7 @@ void deModioUserConfig::SetModDisabled(const decString &id, bool disabled){
 
 Modio::Rating deModioUserConfig::GetUserRating(const decString &id) const{
 	int rating = 0;
-	if(! pUserRatings.GetAt(id, &rating)){
+	if(!pUserRatings.GetAt(id, &rating)){
 		return Modio::Rating::Neutral;
 	}
 	

@@ -56,7 +56,7 @@ void deClassServerListener::nfClientConnected::RunFunction(dsRunTime *rt, dsValu
 // constructor
 deClassServerListener::deClassServerListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("ServerListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;

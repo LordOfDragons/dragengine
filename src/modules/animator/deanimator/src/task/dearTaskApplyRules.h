@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator instance owning this task. */
-	inline dearAnimatorInstance &GetInstance() const{return pInstance;}
+	inline dearAnimatorInstance &GetInstance() const{ return pInstance; }
 	
 	/** Instance dropped task. */
 	void Drop();

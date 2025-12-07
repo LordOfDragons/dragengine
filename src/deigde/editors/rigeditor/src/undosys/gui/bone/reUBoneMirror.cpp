@@ -67,7 +67,7 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 		if(boneCount > 0){
 			// create bones array
 			pBones = new sBone[boneCount];
-			if(! pBones) DETHROW(deeOutOfMemory);
+			if(!pBones) DETHROW(deeOutOfMemory);
 			
 			// clear all entries just setting the bone
 			while(pBoneCount < boneCount){
@@ -100,7 +100,7 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 					ubone.oldDynamic = boneTarget->GetDynamic();
 					
 					ubone.oldShapes = new reRigShapeList;
-					if(! ubone.oldShapes) DETHROW(deeOutOfMemory);
+					if(!ubone.oldShapes) DETHROW(deeOutOfMemory);
 					
 					shapeCount = boneTarget->GetShapeCount();
 					for(s=0; s<shapeCount; s++){
@@ -108,7 +108,7 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 					}
 					
 					ubone.oldConstraints = new reRigConstraintList;
-					if(! ubone.oldConstraints) DETHROW(deeOutOfMemory);
+					if(!ubone.oldConstraints) DETHROW(deeOutOfMemory);
 					
 					constraintCount = boneTarget->GetConstraintCount();
 					for(c=0; c<constraintCount; c++){
@@ -199,7 +199,7 @@ void reUBoneMirror::Redo(){
 		
 		for(b=0; b<pBoneCount; b++){
 			const sBone &ubone = pBones[b];
-			if(! ubone.boneTarget){
+			if(!ubone.boneTarget){
 				continue;
 			}
 			

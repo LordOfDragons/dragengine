@@ -44,7 +44,7 @@
 
 ceUCAASpeakStripSetPause::ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *word, float newPause){
-	if(! topic || ! actorSpeak || ! word){
+	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
 	

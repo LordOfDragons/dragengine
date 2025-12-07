@@ -44,7 +44,7 @@ seUSourceSynthConTargetLess::seUSourceSynthConTargetLess(seSourceSynthesizer *so
 pSource(NULL),
 pOldController(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

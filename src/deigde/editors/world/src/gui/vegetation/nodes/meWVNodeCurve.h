@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleCurve *GetRuleCurve() const{return pRuleCurve;}
+	inline meHTVRuleCurve *GetRuleCurve() const{ return pRuleCurve; }
 	
 	/** \brief Update node. */
 	virtual void Update();

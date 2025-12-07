@@ -92,7 +92,7 @@ PyObject *spModuleGraphicSystem::cfSetWindowGeometry(PyObject *myself, PyObject 
 	int width, height;
 	bool fullScreen;
 	
-	if(! PyArg_ParseTuple(args, "iib", &width, &height, &fullScreen)){
+	if(!PyArg_ParseTuple(args, "iib", &width, &height, &fullScreen)){
 		return NULL;
 	}
 	
@@ -109,7 +109,7 @@ PyObject *spModuleGraphicSystem::cfSetWindowTitle(PyObject *myself, PyObject *ar
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	char *title;
 	
-	if(! PyArg_ParseTuple(args, "s", &title)){
+	if(!PyArg_ParseTuple(args, "s", &title)){
 		return NULL;
 	}
 	

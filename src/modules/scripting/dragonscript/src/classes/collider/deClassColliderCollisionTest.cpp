@@ -84,7 +84,7 @@ void deClassColliderCollisionTest::nfNewCopy::RunFunction(dsRunTime *rt, dsValue
 	nd.parentCollider = NULL;
 	
 	// create collision test
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	const deColliderCollisionTest &other = *(((sCCTNatDat*)p_GetNativeData(rt->GetValue(0)))->collisionTest);
@@ -175,7 +175,7 @@ void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, 
 	const decVector &origin = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject());
 	
-	if(! touchSensor){
+	if(!touchSensor){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -219,7 +219,7 @@ void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *
 	const decVector &direction = ds.GetClassVector()->GetVector(
 		rt->GetValue(5)->GetRealObject());
 	
-	if(! touchSensor){
+	if(!touchSensor){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -898,7 +898,7 @@ void deClassColliderCollisionTest::CreateClassMembers(dsEngine *engine){
 ///////////////
 
 deColliderCollisionTest *deClassColliderCollisionTest::GetCollisionTest(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -907,11 +907,11 @@ deColliderCollisionTest *deClassColliderCollisionTest::GetCollisionTest(dsRealOb
 
 void deClassColliderCollisionTest::PushCollisionTest(dsRunTime *rt,
 deColliderCollisionTest *collisionTest, deCollider *parentCollider){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! collisionTest){
+	if(!collisionTest){
 		rt->PushObject(NULL, this);
 		return;
 	}
@@ -929,14 +929,14 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 }
 
 deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	return ((sCCTNatDat*)p_GetNativeData(myself->GetBuffer()))->parentCollider;
 }
 
 void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider *collider) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	

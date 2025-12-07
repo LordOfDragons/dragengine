@@ -92,7 +92,7 @@ void meFilterObjectsByClass::SetClassNamesFrom(const decStringSet &set){
 
 
 bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	const decString &objclass = object->GetClassName();
 	int c, count = pClassNames.GetCount();
@@ -103,7 +103,7 @@ bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
 	// reject if this is a ghost object
 	if(pRejectGhosts){
 		const igdeGDClass *gdclass = object->GetGDClass();
-		if(gdclass && (gdclass->GetIsGhost() || ! gdclass->GetCanInstantiate())){
+		if(gdclass && (gdclass->GetIsGhost() || !gdclass->GetCanInstantiate())){
 			return false;
 		}
 	}
@@ -115,5 +115,5 @@ bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
 		}
 	}
 	
-	return ! pMatchInclusive;
+	return !pMatchInclusive;
 }

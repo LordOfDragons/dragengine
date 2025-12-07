@@ -97,7 +97,7 @@ void igdeNativeNullApplication::Initialize(decUnicodeStringList&){
 }
 
 void igdeNativeNullApplication::Run(){
-	while(! pQuitRequested){
+	while(!pQuitRequested){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 		if(mainWindow){
 			mainWindow->OnFrameUpdate();
@@ -147,11 +147,11 @@ void igdeNativeNullApplication::ShowError(const deException &exception) const{
 
 void igdeNativeNullApplication::RunModalWhileShown(igdeWindow &window){
 	igdeNativeNullWindow * const native = (igdeNativeNullWindow*)window.GetNativeWidget();
-	if(! native){
+	if(!native){
 		DETHROW(deeInvalidParam);
 	}
 	
-	while(! pQuitRequested && ! native->GetIsClosed()){
+	while(!pQuitRequested && !native->GetIsClosed()){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 		if(mainWindow){
 			mainWindow->OnFrameUpdate();

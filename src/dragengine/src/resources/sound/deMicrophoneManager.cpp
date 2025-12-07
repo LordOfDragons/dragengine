@@ -71,7 +71,7 @@ deMicrophone *deMicrophoneManager::CreateMicrophone(){
 	
 	try{
 		microphone = new deMicrophone(this);
-		if(! microphone) DETHROW(deeOutOfMemory);
+		if(!microphone) DETHROW(deeOutOfMemory);
 		
 		GetAudioSystem()->LoadMicrophone(microphone);
 		
@@ -108,7 +108,7 @@ void deMicrophoneManager::SystemAudioLoad(){
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(microphone){
-		if(! microphone->GetPeerAudio()){
+		if(!microphone->GetPeerAudio()){
 			audSys.LoadMicrophone(microphone);
 		}
 		

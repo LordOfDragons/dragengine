@@ -130,7 +130,7 @@ void decDateTime::SetFrom(const TIME_SYSTEM systemTime){
 		tmval = *localtime(&stime);
 	#endif
 #else
-	if(! localtime_r(&stime, &tmval)){
+	if(!localtime_r(&stime, &tmval)){
 		DETHROW(deeInvalidParam);
 	}
 #endif // OS_W32

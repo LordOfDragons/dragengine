@@ -65,7 +65,7 @@ igdeGDParticleEmitter *igdeDialogBrowserParticleEmitter::GetSelectedParticleEmit
 }
 
 void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticleEmitter *gdParticleEmitter){
-	if(! gdParticleEmitter){
+	if(!gdParticleEmitter){
 		return;
 	}
 	

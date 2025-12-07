@@ -106,37 +106,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to use. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path to use. */
 	void SetPath(const char *path);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
 	void SetRotation(const decVector &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
 	
 	/** \brief Layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
 	void SetLayer(int layer);
 	
 	/** \brief Space type. */
-	inline deNavigationSpace::eSpaceTypes GetType() const{return pType;}
+	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set space type. */
 	void SetType(deNavigationSpace::eSpaceTypes type);
@@ -147,7 +147,7 @@ public:
 	 *          larger blocking priority. If a blocker shape exists it blocks
 	 *          all navigation meshes with equal or less blocking priority.
 	 */
-	inline int GetBlockingPriority() const{return pBlockingPriority;}
+	inline int GetBlockingPriority() const{ return pBlockingPriority; }
 	
 	/**
 	 * \brief Set blocking priority.
@@ -158,17 +158,17 @@ public:
 	void SetBlockingPriority(int priority);
 	
 	/** \brief Blocker shape list. */
-	inline decShapeList &GetBlockerShapeList(){return pBlockerShapeList;}
-	inline const decShapeList &GetBlockerShapeList() const{return pBlockerShapeList;}
+	inline decShapeList &GetBlockerShapeList(){ return pBlockerShapeList; }
+	inline const decShapeList &GetBlockerShapeList() const{ return pBlockerShapeList; }
 	
 	/** \brief Snap distance. */
-	inline float GetSnapDistance() const{return pSnapDistance;}
+	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/** \brief Set snap distance. */
 	void SetSnapDistance(float distance);
 	
 	/** \brief Snap angle. */
-	inline float GetSnapAngle() const{return pSnapAngle;}
+	inline float GetSnapAngle() const{ return pSnapAngle; }
 	
 	/** \brief Set snap angle. */
 	void SetSnapAngle(float angle);

@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){return pObject;}
+	inline jobject Ptr(){ return pObject; }
 	
 	/** \brief Auto-cast. */
-	inline operator jobject(){return pObject;}
+	inline operator jobject(){ return pObject; }
 	
 	/** \brief Testing. */
-	inline operator bool(){return pObject != NULL;}
+	inline operator bool(){ return pObject != NULL; }
 	
 	/** \brief Testing. */
-	inline bool operator!(){return pObject == NULL;}
+	inline bool operator!(){ return pObject == NULL; }
 	
 	/** \brief Copy. */
 	jniGlobalJObject &operator=(const jniGlobalJObject &object);
@@ -111,16 +111,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){return pClass;}
+	inline jobject Ptr(){ return pClass; }
 	
 	/** \brief Auto-cast. */
-	inline operator jclass(){return pClass;}
+	inline operator jclass(){ return pClass; }
 	
 	/** \brief Testing. */
-	inline operator bool(){return pClass != NULL;}
+	inline operator bool(){ return pClass != NULL; }
 	
 	/** \brief Testing. */
-	inline bool operator!(){return pClass == NULL;}
+	inline bool operator!(){ return pClass == NULL; }
 	
 	/** \brief Copy. */
 	jniGlobalJClass &operator=(const jniGlobalJClass &clazz);
@@ -166,16 +166,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){return pString;}
+	inline jobject Ptr(){ return pString; }
 	
 	/** \brief Auto-cast. */
-	inline operator jstring(){return pString;}
+	inline operator jstring(){ return pString; }
 	
 	/** \brief Testing. */
-	inline operator bool(){return pString != NULL;}
+	inline operator bool(){ return pString != NULL; }
 	
 	/** \brief Testing. */
-	inline bool operator!(){return pString == NULL;}
+	inline bool operator!(){ return pString == NULL; }
 	
 	/** \brief Auto-cast to decString. */
 	operator decString();

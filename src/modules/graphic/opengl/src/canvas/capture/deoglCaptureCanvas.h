@@ -62,15 +62,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOgl(){return pOgl;}
-	inline const deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl(){ return pOgl; }
+	inline const deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Capture canvas engine resource. */
-	inline deCaptureCanvas &GetCaptureCanvas(){return pCaptureCanvas;}
-	inline const deCaptureCanvas &GetCaptureCanvas() const{return pCaptureCanvas;}
+	inline deCaptureCanvas &GetCaptureCanvas(){ return pCaptureCanvas; }
+	inline const deCaptureCanvas &GetCaptureCanvas() const{ return pCaptureCanvas; }
 	
 	/** Render capture canvas or \em NULL if not set. */
-	inline deoglRCaptureCanvas *GetRCaptureCanvas() const{return pRCaptureCanvas;}
+	inline deoglRCaptureCanvas *GetRCaptureCanvas() const{ return pRCaptureCanvas; }
 	
 	
 	

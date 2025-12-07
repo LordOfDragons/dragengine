@@ -48,14 +48,14 @@ pObjectClass(NULL),
 pComponent(NULL),
 pTexture(NULL)
 {
-	if(! objectClass || ! component || ! texture){
+	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetComponents().Has(component)){
+	if(!objectClass->GetComponents().Has(component)){
 		DETHROW(deeInvalidParam);
 	}
-	if(! component->GetTextures().Has(texture)){
+	if(!component->GetTextures().Has(texture)){
 		DETHROW(deeInvalidParam);
 	}
 	

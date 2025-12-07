@@ -95,7 +95,7 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Game definition skin to create preview for. */
-	inline igdeGDSkin *GetGDSkin() const{return pGDSkin;}
+	inline igdeGDSkin *GetGDSkin() const{ return pGDSkin; }
 	
 	
 	

@@ -88,7 +88,7 @@ void decXmlVisitorCleanCharData::VisitCharacterData(decXmlCharacterData &data){
 			}else{
 				if(hasSpace){
 					hasSpace = false;
-					if(! pIsFirstElement || curPos > 0){
+					if(!pIsFirstElement || curPos > 0){
 						newData[curPos++] = ' ';
 					}
 				}
@@ -97,7 +97,7 @@ void decXmlVisitorCleanCharData::VisitCharacterData(decXmlCharacterData &data){
 			}
 		}
 		
-		if(hasSpace && ! pIsLastElement){
+		if(hasSpace && !pIsLastElement){
 			newData[curPos++] = ' ';
 		}
 		

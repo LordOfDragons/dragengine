@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
-	if(! vlayer || ! link) DETHROW(deeInvalidParam);
+	if(!vlayer || !link) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pLink = NULL;

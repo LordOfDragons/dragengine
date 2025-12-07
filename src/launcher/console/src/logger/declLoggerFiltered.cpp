@@ -63,7 +63,7 @@ void declLoggerFiltered::SetLoggerError(deLogger *logger){
 
 
 void declLoggerFiltered::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ void declLoggerFiltered::LogInfo(const char *source, const char *message){
 }
 
 void declLoggerFiltered::LogInfoFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void declLoggerFiltered::LogInfoFormat(const char *source, const char *message, 
 }
 
 void declLoggerFiltered::LogInfoFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -98,7 +98,7 @@ void declLoggerFiltered::LogInfoFormatUsing(const char *source, const char *mess
 
 
 void declLoggerFiltered::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ void declLoggerFiltered::LogWarn(const char *source, const char *message){
 }
 
 void declLoggerFiltered::LogWarnFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -121,7 +121,7 @@ void declLoggerFiltered::LogWarnFormat(const char *source, const char *message, 
 }
 
 void declLoggerFiltered::LogWarnFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -133,7 +133,7 @@ void declLoggerFiltered::LogWarnFormatUsing(const char *source, const char *mess
 
 
 void declLoggerFiltered::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -143,7 +143,7 @@ void declLoggerFiltered::LogError(const char *source, const char *message){
 }
 
 void declLoggerFiltered::LogErrorFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -156,7 +156,7 @@ void declLoggerFiltered::LogErrorFormat(const char *source, const char *message,
 }
 
 void declLoggerFiltered::LogErrorFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

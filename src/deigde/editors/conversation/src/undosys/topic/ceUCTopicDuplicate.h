@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate topic. */
-	inline ceConversationTopic *GetDuplicateTopic() const{return pTopic;}
+	inline ceConversationTopic *GetDuplicateTopic() const{ return pTopic; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Address. */
-	inline const decString &GetAddress() const{return pAddress;}
+	inline const decString &GetAddress() const{ return pAddress; }
 	
 	/**
 	 * \brief Set address.
@@ -103,13 +103,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Network system peer object. */
-	inline deBaseNetworkServer *GetPeerNetwork() const{return pPeerNetwork;}
+	inline deBaseNetworkServer *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
 	void SetPeerNetwork(deBaseNetworkServer *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingServer *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingServer *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
 	void SetPeerScripting(deBaseScriptingServer *peer);

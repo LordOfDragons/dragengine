@@ -76,7 +76,7 @@ void meWPSObjectListener::ObjectSelectionChanged(meWorld *world){
 	pPanel.UpdateIdentifierLists();
 	pPanel.UpdateLight();
 	
-	if(object && ! object->GetActiveTexture() && object->GetTextureCount() > 0){
+	if(object && !object->GetActiveTexture() && object->GetTextureCount() > 0){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;
@@ -94,7 +94,7 @@ void meWPSObjectListener::ObjectSelectionChanged(meWorld *world){
 }
 
 void meWPSObjectListener::ObjectChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -102,7 +102,7 @@ void meWPSObjectListener::ObjectChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectListener::ObjectClassChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -112,7 +112,7 @@ void meWPSObjectListener::ObjectClassChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectListener::ObjectGeometryChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -120,7 +120,7 @@ void meWPSObjectListener::ObjectGeometryChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectListener::ObjectPropertiesChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -130,7 +130,7 @@ void meWPSObjectListener::ObjectPropertiesChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectListener::ObjectActivePropertyChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -156,13 +156,13 @@ void meWPSObjectListener::ObjectActiveAttachBehaviorChanged(meWorld*, meObject *
 }
 
 void meWPSObjectListener::ObjectTextureCountChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateTextureList();
 	
-	if(! object->GetActiveTexture() && object->GetTextureCount() > 0){
+	if(!object->GetActiveTexture() && object->GetTextureCount() > 0){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;
@@ -178,7 +178,7 @@ void meWPSObjectListener::ObjectTextureCountChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectListener::ObjectActiveTextureChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -189,7 +189,7 @@ void meWPSObjectListener::ObjectActiveTextureChanged(meWorld*, meObject *object)
 }
 
 void meWPSObjectListener::ObjectTextureChanged(meWorld*, meObject *object, meObjectTexture *texture){
-	if(! object->GetActive() || texture != object->GetActiveTexture()){
+	if(!object->GetActive() || texture != object->GetActiveTexture()){
 		return;
 	}
 	
@@ -197,7 +197,7 @@ void meWPSObjectListener::ObjectTextureChanged(meWorld*, meObject *object, meObj
 }
 
 void meWPSObjectListener::ObjectTexturePropertiesChanged(meWorld*, meObject *object, meObjectTexture *texture){
-	if(! object->GetActive() || texture != object->GetActiveTexture()){
+	if(!object->GetActive() || texture != object->GetActiveTexture()){
 		return;
 	}
 	
@@ -206,7 +206,7 @@ void meWPSObjectListener::ObjectTexturePropertiesChanged(meWorld*, meObject *obj
 }
 
 void meWPSObjectListener::ObjectTextureActivePropertyChanged(meWorld*, meObject *object, meObjectTexture *texture){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	if(texture != object->GetActiveTexture()){

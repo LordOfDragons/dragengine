@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation){
-	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;

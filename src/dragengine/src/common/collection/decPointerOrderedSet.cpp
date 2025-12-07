@@ -264,7 +264,7 @@ bool decPointerOrderedSet::Equals(const decPointerOrderedSet &set) const{
 	}
 	
 	for(p=0; p<pPointerCount; p++){
-		if(! set.Has(pPointers[p])){
+		if(!set.Has(pPointers[p])){
 			return false;
 		}
 	}

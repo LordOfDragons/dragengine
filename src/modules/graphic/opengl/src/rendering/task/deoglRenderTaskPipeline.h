@@ -79,13 +79,13 @@ public:
 	int GetTotalSubInstanceCount() const;
 	
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
 	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Number of render task textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Render task texture at index. */
 	deoglRenderTaskTexture *GetTextureAt(int index) const;

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetSkinPath::peeUTypeSetSkinPath(peeType *type, const char *newPath){
-	if(! type || ! newPath){
+	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}
 	

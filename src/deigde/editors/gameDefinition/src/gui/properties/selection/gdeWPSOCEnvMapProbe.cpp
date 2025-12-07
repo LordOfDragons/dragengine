@@ -84,7 +84,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if(! envprobe){
+		if(!envprobe){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if(! envprobe){
+		if(!envprobe){
 			return;
 		}
 		
@@ -304,7 +304,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCEnvMapProbe * const envprobe = pPanel.GetEnvMapProbe();
-		if(! envprobe){
+		if(!envprobe){
 			return;
 		}
 		

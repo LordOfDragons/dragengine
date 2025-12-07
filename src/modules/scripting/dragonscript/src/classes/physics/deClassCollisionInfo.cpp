@@ -305,7 +305,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsParticleCollisionResponse); // response
 }
 void deClassCollisionInfo::nfSetParticleResponse::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -390,7 +390,7 @@ void deClassCollisionInfo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	deClassCollisionInfo *clsCI = (deClassCollisionInfo*)GetOwnerClass();
 	dsValue *objOther = rt->GetValue(0);
-	if(! p_IsObjOfType(objOther, clsCI)){
+	if(!p_IsObjOfType(objOther, clsCI)){
 		rt->PushBool(false);
 	}else{
 		deCollisionInfo *otherResponse = ((sCINatDat*)p_GetNativeData(objOther))->info;
@@ -416,7 +416,7 @@ void deClassCollisionInfo::nfHashCode::RunFunction(dsRunTime *rt, dsValue *mysel
 // constructor
 deClassCollisionInfo::deClassCollisionInfo(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("CollisionInfo", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
@@ -490,7 +490,7 @@ void deClassCollisionInfo::CreateClassMembers(dsEngine *engine){
 }
 
 deCollisionInfo *deClassCollisionInfo::GetInfo(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -498,11 +498,11 @@ deCollisionInfo *deClassCollisionInfo::GetInfo(dsRealObject *myself) const{
 }
 
 void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo *info){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! info){
+	if(!info){
 		rt->PushObject(NULL, this);
 		return;
 	}

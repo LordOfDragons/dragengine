@@ -69,7 +69,7 @@ void deClassServer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create server
 	nd->server = svrMgr->CreateServer();
-	if(! nd->server) DSTHROW(dueOutOfMemory);
+	if(!nd->server) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -186,7 +186,7 @@ void deClassServer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassServer *clsSvr = (deClassServer*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSvr)){
+	if(!p_IsObjOfType(obj, clsSvr)){
 		rt->PushBool(false);
 	}else{
 		deServer *otherServer = ((sSvrNatDat*)p_GetNativeData(obj))->server;
@@ -204,7 +204,7 @@ void deClassServer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassServer::deClassServer(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Server", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -260,7 +260,7 @@ void deClassServer::CreateClassMembers(dsEngine *engine){
 }
 
 deServer *deClassServer::GetServer(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -268,11 +268,11 @@ deServer *deClassServer::GetServer(dsRealObject *myself) const{
 }
 
 void deClassServer::PushServer(dsRunTime *rt, deServer *server){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! server){
+	if(!server){
 		rt->PushObject(NULL, this);
 		return;
 	}

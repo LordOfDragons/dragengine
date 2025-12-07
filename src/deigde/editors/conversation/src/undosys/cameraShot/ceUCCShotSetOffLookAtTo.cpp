@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo(ceCameraShot *cameraShot, const decVector &newPos){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	

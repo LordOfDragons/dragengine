@@ -79,7 +79,7 @@ deoalDOctree *deoalDefaultDOctree::CreateOctree(int octant) const{
 	
 	// create child node
 	node = (deoalDefaultDOctree*)new deoalDefaultDOctree(nc, halfSize);
-	if(! node) DETHROW(deeOutOfMemory);
+	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -94,7 +94,7 @@ deoalDefaultDOctree *deoalDefaultDOctree::InsertIntoTree(void *element, const de
 	
 	for(d=0; d<maxDepth; d++){
 		nextNode = curNode->GetNodeAtBox(boxCenter, boxHalfSize);
-		if(! nextNode) break;
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
@@ -121,12 +121,12 @@ int deoalDefaultDOctree::IndexOfElement(void *element) const{
 }
 
 void deoalDefaultDOctree::AddElement(void *element){
-	if(! element) DETHROW(deeInvalidParam);
+	if(!element) DETHROW(deeInvalidParam);
 	
 	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
 		void **newArray = new void*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pElements){
 			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;

@@ -56,7 +56,7 @@ ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action) :
 ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondition),
 pAction(NULL)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ ceWPTTIMAWaitCondition::~ceWPTTIMAWaitCondition(){
 
 ceWPTTIMAWait *ceWPTTIMAWaitCondition::GetModelWait() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -98,7 +98,7 @@ void ceWPTTIMAWaitCondition::Update(){
 }
 
 void ceWPTTIMAWaitCondition::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ void ceWPTTIMAWaitCondition::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -134,7 +134,7 @@ void ceWPTTIMAWaitCondition::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void ceWPTTIMAWaitCondition::ContextMenuCondition(
 igdeMenuCascade &contextMenu, ceConversationCondition *condition){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -142,7 +142,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

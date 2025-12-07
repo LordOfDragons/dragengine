@@ -84,66 +84,66 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{return pMove1Name;}
+	inline const decString &GetLeadingMoveName() const{ return pMove1Name; }
 	
 	/** \brief Set leading animation move name. */
 	void SetLeadingMoveName(const char *moveName);
 	
 	/** \brief Leading animation move time. */
-	inline float GetLeadingMoveTime() const{return pMove1Time;}
+	inline float GetLeadingMoveTime() const{ return pMove1Time; }
 	
 	/** \brief Set leading animation move time. */
 	void SetLeadingMoveTime(float moveTime);
 	
 	/** \brief Name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{return pMove2Name;}
+	inline const decString &GetReferenceMoveName() const{ return pMove2Name; }
 	
 	/** \brief Set reference animation move name. */
 	void SetReferenceMoveName(const char *moveName);
 	
 	/** \brief Reference animation move time. */
-	inline float GetReferenceMoveTime() const{return pMove2Time;}
+	inline float GetReferenceMoveTime() const{ return pMove2Time; }
 	
 	/** \brief Set reference animation move time. */
 	void SetReferenceMoveTime(float moveTime);
 	
 	/** \brief Reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{return pUseSameMove;}
+	inline bool GetUseSameMove() const{ return pUseSameMove; }
 	
 	/** \brief Set if reference move is the same as the leading move. */
 	void SetUseSameMove(bool useSameMove);
 	
 	/** \brief Determines if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Leading move time target. */
-	inline deAnimatorControllerTarget &GetTargetLeadingMoveTime(){return pTargetLeadMoveTime;}
-	inline const deAnimatorControllerTarget &GetTargetLeadingMoveTime() const{return pTargetLeadMoveTime;}
+	inline deAnimatorControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }
+	inline const deAnimatorControllerTarget &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
 	
 	/** \brief Reference move time target. */
-	inline deAnimatorControllerTarget &GetTargetReferenceMoveTime(){return pTargetRefMoveTime;}
-	inline const deAnimatorControllerTarget &GetTargetReferenceMoveTime() const{return pTargetRefMoveTime;}
+	inline deAnimatorControllerTarget &GetTargetReferenceMoveTime(){ return pTargetRefMoveTime; }
+	inline const deAnimatorControllerTarget &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
 	/*@}*/
 	
 	

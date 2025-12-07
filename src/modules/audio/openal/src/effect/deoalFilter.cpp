@@ -48,7 +48,7 @@ pGainLF(1.0f),
 pGainHF(1.0f),
 pFilter(0)
 {
-	if(! audioThread.GetExtensions().GetHasEFX()){
+	if(!audioThread.GetExtensions().GetHasEFX()){
 		DETHROW(deeInvalidParam);
 	}
 	

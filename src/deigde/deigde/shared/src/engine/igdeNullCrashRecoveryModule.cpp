@@ -55,7 +55,7 @@ igdeNullCrashRecoveryModule::cModule::~cModule(){
 
 void igdeNullCrashRecoveryModule::cModule::CreateModule(){
 	SetModule(new igdeNullCrashRecoveryModule(*this));
-	if(! GetModule()){
+	if(!GetModule()){
 		SetErrorCode(eecCreateModuleFailed);
 	}
 }

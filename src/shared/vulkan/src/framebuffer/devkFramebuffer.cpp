@@ -43,7 +43,7 @@ pRenderPass(renderPass),
 pConfiguration(configuration),
 pFramebuffer(VK_NULL_HANDLE)
 {
-	if(! renderPass){
+	if(!renderPass){
 		DETHROW_INFO(deeNullPointer, "renderPass");
 	}
 	

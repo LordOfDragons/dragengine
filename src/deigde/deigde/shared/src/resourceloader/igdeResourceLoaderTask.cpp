@@ -55,7 +55,7 @@ igdeResourceLoaderTask::~igdeResourceLoaderTask(){
 //////////////
 
 void igdeResourceLoaderTask::AddListener(igdeResourceLoaderListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.AddIfAbsent(listener);
@@ -66,7 +66,7 @@ void igdeResourceLoaderTask::RemoveListener(igdeResourceLoaderListener *listener
 }
 
 void igdeResourceLoaderTask::NotifyLoadingFinished(deLogger &logger, deFileResource *resource){
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	

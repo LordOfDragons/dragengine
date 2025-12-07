@@ -79,14 +79,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editor module. */
-	inline igdeEditorModule &GetEditorModule() const{return pEditorModule;}
+	inline igdeEditorModule &GetEditorModule() const{ return pEditorModule; }
 	
 	/** \brief Parent editor module is the active module. */
-	inline bool GetActiveModule() const{return pActiveModule;}
+	inline bool GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Recent files. */
-	inline igdeRecentFiles &GetRecentFiles(){return pRecentFiles;}
-	inline const igdeRecentFiles &GetRecentFiles() const{return pRecentFiles;}
+	inline igdeRecentFiles &GetRecentFiles(){ return pRecentFiles; }
+	inline const igdeRecentFiles &GetRecentFiles() const{ return pRecentFiles; }
 	
 	/** \brief Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();

@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected decals. */
-	inline const meDecalList &GetSelected() const{return pSelection;}
+	inline const meDecalList &GetSelected() const{ return pSelection; }
 	/** Adds a decals to the selection if not included already. */
 	void Add(meDecal *decal);
 	/** Removes a decals from the selection if included. */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active decals or NULL if there is none. */
-	inline meDecal *GetActive() const{return pActive;}
+	inline meDecal *GetActive() const{ return pActive; }
 	/** Determines if there is an active decals. */
 	bool HasActive() const;
 	/** Sets the active decals or NULL if there is none. */

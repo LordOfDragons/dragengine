@@ -71,7 +71,7 @@ pRangePitch(pMaxPitch - pMinPitch),
 pTargetTime(synthesizer, firstLink, effect.GetTargetTime()),
 pTargetPitch(synthesizer, firstLink, effect.GetTargetPitch())
 {
-	SetDisabled(! effect.GetEnabled());
+	SetDisabled(!effect.GetEnabled());
 	if(GetDisabled()){
 		return;
 	}

@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Light. */
-	gdeOCLight *GetLight() const{return pLight;}
+	gdeOCLight *GetLight() const{ return pLight; }
 	/*@}*/
 };
 

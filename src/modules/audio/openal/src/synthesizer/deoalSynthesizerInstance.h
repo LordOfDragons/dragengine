@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{return pOal;}
+	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	/** \brief Instance. */
-	inline deSynthesizerInstance &GetInstance() const{return pInstance;}
+	inline deSynthesizerInstance &GetInstance() const{ return pInstance; }
 	
 	/** \brief Audio peer. */
-	inline deoalASynthesizerInstance *GetAInstance() const{return pAInstance;}
+	inline deoalASynthesizerInstance *GetAInstance() const{ return pAInstance; }
 	
 	/** \brief Update tracker. */
-	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
+	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	
 	
 	

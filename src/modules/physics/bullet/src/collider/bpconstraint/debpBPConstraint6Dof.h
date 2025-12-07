@@ -87,7 +87,7 @@ public:
 	void SetHasJointFrictionAngular(int index, bool enabled);
 	
 	/** Damping. */
-	inline btScalar GetDamping() const{return pDamping;}
+	inline btScalar GetDamping() const{ return pDamping; }
 	
 	/** Set damping. */
 	void SetDamping(btScalar damping);

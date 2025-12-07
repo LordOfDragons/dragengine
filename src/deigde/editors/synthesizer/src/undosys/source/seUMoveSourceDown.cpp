@@ -44,7 +44,7 @@ seUMoveSourceDown::seUMoveSourceDown(seSynthesizer *synthesizer, seSource *sourc
 pSynthesizer(NULL),
 pSource(NULL)
 {
-	if(! synthesizer || ! source){
+	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

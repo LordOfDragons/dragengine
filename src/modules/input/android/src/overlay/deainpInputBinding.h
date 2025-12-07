@@ -71,37 +71,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Device identifier. */
-	inline const decString &GetDeviceID() const{return pDeviceID;}
+	inline const decString &GetDeviceID() const{ return pDeviceID; }
 	
 	/** \brief Set device identifier. */
 	void SetDeviceID(const char *id);
 	
 	/** \brief Axis identifier or empty string. */
-	inline const decString &GetAxisID() const{return pAxisID;}
+	inline const decString &GetAxisID() const{ return pAxisID; }
 	
 	/** \brief Set axis identifier or empty string. */
 	void SetAxisID(const char *id);
 	
 	/** \brief Button identifier or empty string. */
-	inline const decString &GetButtonID() const{return pButtonID;}
+	inline const decString &GetButtonID() const{ return pButtonID; }
 	
 	/** \brief Set button identifier or empty string. */
 	void SetButtonID(const char *id);
 	
 	/** \brief Invert axis. */
-	inline bool GetInvertAxis() const{return pInvertAxis;}
+	inline bool GetInvertAxis() const{ return pInvertAxis; }
 	
 	/** \brief Set invert axis. */
 	void SetInvertAxis(bool invertAxis);
 	
 	/** \brief Device index or -1 if not matching. */
-	inline int GetDeviceIndex() const{return pDeviceIndex;}
+	inline int GetDeviceIndex() const{ return pDeviceIndex; }
 	
 	/** \brief Axis index or -1 if not matching. */
-	inline int GetAxisIndex() const{return pAxisIndex;}
+	inline int GetAxisIndex() const{ return pAxisIndex; }
 	
 	/** \brief Button index or -1 if not matching. */
-	inline int GetButtonIndex() const{return pButtonIndex;}
+	inline int GetButtonIndex() const{ return pButtonIndex; }
 	
 	
 	

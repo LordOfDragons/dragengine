@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject(gdeGameDefinition &gameDefinit
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
-	if(! snapPoint){
+	if(!snapPoint){
 		return NULL;
 	}
 	

@@ -72,22 +72,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the collider constraint. */
-	inline debpColliderConstraint *GetConstraint() const{return pConstraint;}
+	inline debpColliderConstraint *GetConstraint() const{ return pConstraint; }
 	
 	/** \brief Determines if an axis is broken. */
 	bool IsAxisBroke(eBreakingAxes axis) const;
 	/** \brief Determines if the linear x axis is broke. */
-	inline IsLinearXBroke() const{return pAxisBroke[ebaLinearX];}
+	inline IsLinearXBroke() const{ return pAxisBroke[ebaLinearX]; }
 	/** \brief Determines if the linear y axis is broke. */
-	inline IsLinearYBroke() const{return pAxisBroke[ebaLinearY];}
+	inline IsLinearYBroke() const{ return pAxisBroke[ebaLinearY]; }
 	/** \brief Determines if the linear z axis is broke. */
-	inline IsLinearZBroke() const{return pAxisBroke[ebaLinearZ];}
+	inline IsLinearZBroke() const{ return pAxisBroke[ebaLinearZ]; }
 	/** \brief Determines if the angular x axis is broke. */
-	inline IsAngularXBroke() const{return pAxisBroke[ebaAngularX];}
+	inline IsAngularXBroke() const{ return pAxisBroke[ebaAngularX]; }
 	/** \brief Determines if the angular y axis is broke. */
-	inline IsAngularYBroke() const{return pAxisBroke[ebaAngularY];}
+	inline IsAngularYBroke() const{ return pAxisBroke[ebaAngularY]; }
 	/** \brief Determines if the angular z axis is broke. */
-	inline IsAngularZBroke() const{return pAxisBroke[ebaAngularZ];}
+	inline IsAngularZBroke() const{ return pAxisBroke[ebaAngularZ]; }
 	/** \brief Sets if an axis is broken. */
 	void SetAxisBroke(eBreakingAxes axis, bool broke);
 	/** \brief Sets if the linear x axis is broke. */

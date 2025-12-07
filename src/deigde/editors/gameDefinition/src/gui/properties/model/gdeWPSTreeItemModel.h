@@ -104,7 +104,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Tree. */
-	inline gdeWPSTreeModel &GetTree() const{return pTree;}
+	inline gdeWPSTreeModel &GetTree() const{ return pTree; }
 	
 	/** \brief Window selection. */
 	gdeWindowMain &GetWindowMain() const;
@@ -113,7 +113,7 @@ public:
 	gdeGameDefinition &GetGameDefinition() const;
 	
 	/** \brief Tree item type. */
-	inline eTypes GetType() const{return pType;}
+	inline eTypes GetType() const{ return pType; }
 	
 	
 	

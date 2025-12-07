@@ -106,7 +106,7 @@ dearRuleAnimation::~dearRuleAnimation(){
 
 void dearRuleAnimation::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled() || ! pMove){
+	if(!GetEnabled() || !pMove){
 		return;
 	}
 	
@@ -143,7 +143,7 @@ DEBUG_RESET_TIMERS;
 			const dearAnimationKeyframe * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if(! keyframe){
+			if(!keyframe){
 				boneState.BlendWithDefault(blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 				continue;
 			}
@@ -190,7 +190,7 @@ DEBUG_RESET_TIMERS;
 			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if(! keyframe){
+			if(!keyframe){
 				vpsState.BlendWithDefault(blendMode, blendFactor, pEnableVPS);
 				continue;
 			}

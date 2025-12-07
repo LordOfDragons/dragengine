@@ -66,21 +66,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{return pDisplay;}
+	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	
 	
 	/** \brief Title. */
-	inline const decString &GetTitle() const{return pTitle;}
+	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
 	/** \brief Content layout. */
-	inline dealWidgetLayoutFlow *GetContent() const{return pContent;}
+	inline dealWidgetLayoutFlow *GetContent() const{ return pContent; }
 	
 	/** \brief Popup dialog or \em NULL if not set. */
-	inline dealDialog *GetPopupDialog() const{return pPopupDialog;}
+	inline dealDialog *GetPopupDialog() const{ return pPopupDialog; }
 	
 	/** \brief Pop up or down dialog replacing the previous one if set. */
 	void SetPopupDialog(dealDialog *dialog);

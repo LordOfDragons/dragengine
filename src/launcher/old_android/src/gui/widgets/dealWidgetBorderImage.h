@@ -54,25 +54,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Left border size. */
-	inline int getBorderLeft() const{return pBorderLeft;}
+	inline int getBorderLeft() const{ return pBorderLeft; }
 	
 	/** \brief Set left border size. */
 	void SetBorderLeft(int size);
 	
 	/** \brief Top border size. */
-	inline int getBorderTop() const{return pBorderTop;}
+	inline int getBorderTop() const{ return pBorderTop; }
 	
 	/** \brief Set top border size. */
 	void SetBorderTop(int size);
 	
 	/** \brief Right border size. */
-	inline int getBorderRight() const{return pBorderRight;}
+	inline int getBorderRight() const{ return pBorderRight; }
 	
 	/** \brief Set right border size. */
 	void SetBorderRight(int size);
 	
 	/** \brief Bottom border size. */
-	inline int getBorderBottom() const{return pBorderBottom;}
+	inline int getBorderBottom() const{ return pBorderBottom; }
 	
 	/** \brief Set bottom border size. */
 	void SetBorderBottom(int size);

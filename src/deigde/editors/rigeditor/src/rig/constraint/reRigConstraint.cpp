@@ -64,7 +64,7 @@
 ////////////////////////////
 
 reRigConstraint::reRigConstraint(deEngine *engine){
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	

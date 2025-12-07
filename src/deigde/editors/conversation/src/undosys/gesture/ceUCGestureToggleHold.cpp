@@ -42,7 +42,7 @@
 ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture *gesture) :
 pGesture(NULL)
 {
-	if(! gesture){
+	if(!gesture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ ceUCGestureToggleHold::~ceUCGestureToggleHold(){
 ///////////////
 
 void ceUCGestureToggleHold::Undo(){
-	pGesture->SetHold(! pGesture->GetHold());
+	pGesture->SetHold(!pGesture->GetHold());
 }
 
 void ceUCGestureToggleHold::Redo(){
-	pGesture->SetHold(! pGesture->GetHold());
+	pGesture->SetHold(!pGesture->GetHold());
 }

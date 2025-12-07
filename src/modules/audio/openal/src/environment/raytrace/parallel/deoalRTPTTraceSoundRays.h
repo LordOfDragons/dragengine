@@ -236,59 +236,59 @@ public:
 	
 	
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** \brief Sound ray list. */
-	inline const deoalSoundRayList &GetSoundRayList() const{return pSoundRayList;}
+	inline const deoalSoundRayList &GetSoundRayList() const{ return pSoundRayList; }
 	
 	/** \brief Mean free path. */
-	inline float GetMeanFreePath() const{return pMeanFreePath;}
+	inline float GetMeanFreePath() const{ return pMeanFreePath; }
 	
 	/** \brief Room volume sum. */
-	inline float GetRoomVolume() const{return pRoomVolume;}
+	inline float GetRoomVolume() const{ return pRoomVolume; }
 	
 	/** \brief Room surface sum. */
-	inline float GetRoomSurface() const{return pRoomSurface;}
+	inline float GetRoomSurface() const{ return pRoomSurface; }
 	
 	/** \brief Sabine sum for medium frequencies. */
-	inline float GetSabineMedium() const{return pSabineMedium;}
+	inline float GetSabineMedium() const{ return pSabineMedium; }
 	
 	/** \brief Sabine sum for low frequencies. */
-	inline float GetSabineLow() const{return pSabineLow;}
+	inline float GetSabineLow() const{ return pSabineLow; }
 	
 	/** \brief Sabine sum for high frequencies. */
-	inline float GetSabineHigh() const{return pSabineHigh;}
+	inline float GetSabineHigh() const{ return pSabineHigh; }
 	
 	/** \brief Absorption sum for low frequencies. */
-	inline float GetAbsorptionLow() const{return pAbsorptionLow;}
+	inline float GetAbsorptionLow() const{ return pAbsorptionLow; }
 	
 	/** \brief Absorption sum for medium frequencies. */
-	inline float GetAbsorptionMedium() const{return pAbsorptionMedium;}
+	inline float GetAbsorptionMedium() const{ return pAbsorptionMedium; }
 	
 	/** \brief Absorption sum for high frequencies. */
-	inline float GetAbsorptionHigh() const{return pAbsorptionHigh;}
+	inline float GetAbsorptionHigh() const{ return pAbsorptionHigh; }
 	
 	/** \brief Absorption count. */
-	inline int GetAbsorptionCount() const{return pAbsorptionCount;}
+	inline int GetAbsorptionCount() const{ return pAbsorptionCount; }
 	
 	/** \brief Number of first hit rays. */
-	inline int GetFirstHitCount() const{return pFirstHitCount;}
+	inline int GetFirstHitCount() const{ return pFirstHitCount; }
 	
 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
-	inline deoalWOVRayHitsElement &wovRayHitsElement(){return pWOVRayHitsElement;}
-	inline deoalRayTraceResult &rayTraceResult(){return pRTResult;}
+	inline deoalWOVRayHitsElement &wovRayHitsElement(){ return pWOVRayHitsElement; }
+	inline deoalRayTraceResult &rayTraceResult(){ return pRTResult; }
 	#endif
 	#ifdef RTWOVRAYHITSELEMENT_DO_TIMING
-	inline deoalRTWOVRayHitsElement &rtwovRayHitsElement(){return pRTWOVRayHitsElement;}
+	inline deoalRTWOVRayHitsElement &rtwovRayHitsElement(){ return pRTWOVRayHitsElement; }
 	#endif
 	#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
-	inline deoalRTWOVRayHitsClosest &rtwovRayHitsClosest(){return pRTWOVRayHitsClosest;}
+	inline deoalRTWOVRayHitsClosest &rtwovRayHitsClosest(){ return pRTWOVRayHitsClosest; }
 	#endif
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
-	inline deoalRTWOVRayBlocked &rtwovRayBlocked(){return pRTWOVRayBlocked;}
+	inline deoalRTWOVRayBlocked &rtwovRayBlocked(){ return pRTWOVRayBlocked; }
 	#endif
 	/*@}*/
 	

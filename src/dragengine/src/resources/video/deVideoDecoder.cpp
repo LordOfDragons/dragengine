@@ -46,7 +46,7 @@ pPeerVideo(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
-	if(! video){
+	if(!video){
 		DETHROW(deeInvalidParam);
 	}
 }

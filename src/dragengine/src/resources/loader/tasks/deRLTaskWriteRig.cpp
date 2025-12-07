@@ -54,7 +54,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertRig
 pRig(rig),
 pSucceeded(false)
 {
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	SetType(etWrite);
@@ -72,7 +72,7 @@ void deRLTaskWriteRig::Run(){
 	LogRunEnter();
 	deBaseRigModule * const module = (deBaseRigModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtRig, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

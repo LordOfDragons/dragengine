@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeParticleEmitter *GetParticleEmitter() const{return pParticleEmitter;}
+	inline gdeParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	
 	

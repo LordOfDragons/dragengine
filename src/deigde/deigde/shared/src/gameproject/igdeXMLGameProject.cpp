@@ -80,7 +80,7 @@ void igdeXMLGameProject::Load(decBaseFileReader &reader, igdeGameProject &projec
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "gameProject"){
+	if(!root || root->GetName() != "gameProject"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -159,7 +159,7 @@ void igdeXMLGameProject::pWriteProject(decXmlWriter &writer, const igdeGameProje
 	writer.WriteDataTagString("projectGameDefinition", project.GetPathProjectGameDefinition());
 	
 	writer.WriteOpeningTagStart("scriptModule");
-	if(! project.GetScriptModuleVersion().IsEmpty()){
+	if(!project.GetScriptModuleVersion().IsEmpty()){
 		writer.WriteAttributeString("version", project.GetScriptModuleVersion());
 	}
 	writer.WriteOpeningTagEnd(false, false);

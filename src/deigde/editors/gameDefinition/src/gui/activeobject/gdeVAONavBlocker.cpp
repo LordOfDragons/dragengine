@@ -58,7 +58,7 @@ gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavBlocker(ocnavblocker),
 pDDSBlocker(NULL)
 {
-	if(! ocnavblocker){
+	if(!ocnavblocker){
 		DETHROW(deeInvalidParam);
 	}
 	ocnavblocker->AddReference();

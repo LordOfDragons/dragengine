@@ -125,15 +125,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the value-A to use if there is no input value-A. */
-	inline float GetValueA() const{return pValueA;}
+	inline float GetValueA() const{ return pValueA; }
 	/** Sets the value-A to use if there is no input value-A. */
 	void SetValueA(float value);
 	/** Retrieves the value-B to use if there is no input value-B. */
-	inline float GetValueB() const{return pValueB;}
+	inline float GetValueB() const{ return pValueB; }
 	/** Sets the value-B to use if there is no input value-B. */
 	void SetValueB(float value);
 	/** Retrieves the operator. */
-	inline eOperators GetOperator() const{return pOperator;}
+	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
 	void SetOperator(eOperators oper);
 	

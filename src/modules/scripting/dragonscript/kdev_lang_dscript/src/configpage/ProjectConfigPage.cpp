@@ -71,7 +71,7 @@ void ProjectConfigPage::btnPathIncludeSelect(){
 	path = QFileDialog::getExistingDirectory(this, i18n("Select Include Directory"),
 		path, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 	
-	if(! path.isEmpty()){
+	if(!path.isEmpty()){
 		pUI->editPathInclude->setText(path);
 	}
 }
@@ -97,7 +97,7 @@ void ProjectConfigPage::btnPathIncludeAdd(){
 
 void ProjectConfigPage::btnPathIncludeRemove(){
 	const QModelIndex index(pUI->listPathInclude->currentIndex());
-	if(! index.isValid()){
+	if(!index.isValid()){
 		return;
 	}
 	

@@ -147,7 +147,7 @@ feFontGlyph* feFontGlyph::Copy() const{
 	
 	try{
 		glyph = new feFontGlyph;
-		if(! glyph) DETHROW(deeOutOfMemory);
+		if(!glyph) DETHROW(deeOutOfMemory);
 		
 		glyph->pCode = pCode;
 		glyph->pU = pU;

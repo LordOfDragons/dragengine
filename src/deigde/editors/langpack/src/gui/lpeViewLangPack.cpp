@@ -86,7 +86,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		lpeLangPackEntry * const entry = pView.GetActiveEntry();
-		if(! entry || entry->GetLangPack() != pView.GetLangPack()){
+		if(!entry || entry->GetLangPack() != pView.GetLangPack()){
 			return;
 		}
 		
@@ -120,7 +120,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		lpeLangPackEntry * const entry = pView.GetActiveEntry();
-		if(! entry){
+		if(!entry){
 			return;
 		}
 		
@@ -168,7 +168,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeIconListBox *listBox){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if(! langpack || pView.preventUpdate){
+		if(!langpack || pView.preventUpdate){
 			return;
 		}
 		
@@ -181,7 +181,7 @@ public:
 	//   something like ListBoxClicked, ItemClicked
 	virtual void OnItemSelected(igdeIconListBox *listBox, int index){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if(! langpack || pView.preventUpdate){
+		if(!langpack || pView.preventUpdate){
 			return;
 		}
 		
@@ -191,7 +191,7 @@ public:
 	
 	virtual void OnItemDeselected(igdeIconListBox *listBox, int index){
 		lpeLangPack * const langpack = pView.GetLangPack();
-		if(! langpack || pView.preventUpdate){
+		if(!langpack || pView.preventUpdate){
 			return;
 		}
 		
@@ -404,12 +404,12 @@ void lpeViewLangPack::SelectActiveEntry(){
 }
 
 void lpeViewLangPack::SelectEntryNamed(const char *name){
-	if(! pLangPack){
+	if(!pLangPack){
 		return;
 	}
 	
 	lpeLangPackEntry *entry = pLangPack->GetEntryList().GetNamed(name);
-	if(! entry && pRefLangPack){
+	if(!entry && pRefLangPack){
 		entry = pRefLangPack->GetEntryList().GetNamed(name);
 	}
 	SelectEntry(entry);
@@ -427,7 +427,7 @@ void lpeViewLangPack::SelectEntry(lpeLangPackEntry *entry){
 }
 
 void lpeViewLangPack::SelectNextMissingEntry(){
-	if(! pLangPack || ! pRefLangPack){
+	if(!pLangPack || !pRefLangPack){
 		return;
 	}
 	
@@ -483,7 +483,7 @@ void lpeViewLangPack::UpdateActiveEntry(){
 }
 
 void lpeViewLangPack::UpdateEntrySelection(){
-	if(! pLangPack){
+	if(!pLangPack){
 		return;
 	}
 	

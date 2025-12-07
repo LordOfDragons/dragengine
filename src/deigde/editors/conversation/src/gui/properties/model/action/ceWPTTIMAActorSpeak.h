@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorSpeak *GetActionActorSpeak() const{return (ceCAActorSpeak*)GetAction();}
+	inline ceCAActorSpeak *GetActionActorSpeak() const{ return (ceCAActorSpeak*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

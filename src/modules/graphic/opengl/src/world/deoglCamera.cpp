@@ -190,7 +190,7 @@ void deoglCamera::SyncToRender(){
 	}
 	
 	if(pDirtyPlanCamParams){
-		if(! pEnableVR){
+		if(!pEnableVR){
 			pRCamera->GetPlan().SetCameraParameters(pCamera.GetFov(), pCamera.GetFovRatio(),
 				pCamera.GetImageDistance(), pCamera.GetViewDistance());
 		}
@@ -230,7 +230,7 @@ void deoglCamera::SyncToRender(){
 	// vr
 	if(pDirtyVR){
 		pRCamera->EnableVR(pEnableVR);
-		if(! pEnableVR && pOgl.GetVRCamera() == this){
+		if(!pEnableVR && pOgl.GetVRCamera() == this){
 			pOgl.SetVRCamera(nullptr);
 		}
 		pDirtyVR = false;

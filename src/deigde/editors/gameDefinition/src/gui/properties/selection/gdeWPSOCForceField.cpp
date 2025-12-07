@@ -92,7 +92,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if(! forceField){
+		if(!forceField){
 			return;
 		}
 		
@@ -116,7 +116,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if(! forceField){
+		if(!forceField){
 			return;
 		}
 		
@@ -141,7 +141,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if(! forceField){
+		if(!forceField){
 			return;
 		}
 		
@@ -178,7 +178,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if(! forceField){
+		if(!forceField){
 			return;
 		}
 		
@@ -200,7 +200,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCForceField *forceField){
-		return ! forceField->GetPosition().IsEqualTo(vector)
+		return !forceField->GetPosition().IsEqualTo(vector)
 			? new gdeUOCForceFieldSetPosition(objectClass, forceField, vector) : NULL;
 	}
 };
@@ -211,7 +211,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCForceField *forceField){
-		return ! forceField->GetRotation().IsEqualTo(vector)
+		return !forceField->GetRotation().IsEqualTo(vector)
 			? new gdeUOCForceFieldSetRotation(objectClass, forceField, vector) : NULL;
 	}
 };
@@ -286,7 +286,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCForceField *forceField){
-		if(! comboBox.GetSelectedItem()){
+		if(!comboBox.GetSelectedItem()){
 			return NULL;
 		}
 		const deForceField::eFieldTypes value =
@@ -302,7 +302,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCForceField *forceField){
-		if(! comboBox.GetSelectedItem()){
+		if(!comboBox.GetSelectedItem()){
 			return NULL;
 		}
 		const deForceField::eApplicationTypes value =
@@ -318,7 +318,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCForceField *forceField){
-		return ! forceField->GetDirection().IsEqualTo(vector)
+		return !forceField->GetDirection().IsEqualTo(vector)
 			? new gdeUOCForceFieldSetDirection(objectClass, forceField, vector) : NULL;
 	}
 };
@@ -425,7 +425,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if(! forceField){
+		if(!forceField){
 			return;
 		}
 		
@@ -460,7 +460,7 @@ public:
 	cComboTriggerNameTarget(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetForceField()){
+		if(!pPanel.GetForceField()){
 			return;
 		}
 		

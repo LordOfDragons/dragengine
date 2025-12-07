@@ -70,7 +70,7 @@
 ////////////////////////////
 
 meSaveSupport::meSaveSupport(meWindowMain *windowMain){
-	if(! windowMain) DETHROW(deeInvalidParam);
+	if(!windowMain) DETHROW(deeInvalidParam);
 	
 	pWindowMain = windowMain;
 }
@@ -84,7 +84,7 @@ meSaveSupport::~meSaveSupport(){
 ///////////////
 
 void meSaveSupport::SaveWorldWithDependencies(meWorld *world, bool forceAskForFilename){
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -93,7 +93,7 @@ void meSaveSupport::SaveWorldWithDependencies(meWorld *world, bool forceAskForFi
 	SaveWorld(world, forceAskForFilename);
 	
 	// now continue saving
-	if(! worldDepChanged){
+	if(!worldDepChanged){
 		return;
 	}
 	
@@ -134,21 +134,21 @@ void meSaveSupport::SaveWorldWithDependencies(meWorld *world, bool forceAskForFi
 
 
 void meSaveSupport::SaveWorld(meWorld *world, bool forceAskForFilename){
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! world->GetChanged() && ! forceAskForFilename){
+	if(!world->GetChanged() && !forceAskForFilename){
 		return;
 	}
 	
 	decString filename(world->GetFilePath());
 	
-	if(! world->GetSaved() || forceAskForFilename){
+	if(!world->GetSaved() || forceAskForFilename){
 		igdeFilePatternList filePatternList;
 		
 		GetWorldPatterns(filePatternList);
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save World",
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save World",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
 			return;
 		}
@@ -180,18 +180,18 @@ void meSaveSupport::SaveWorld(meWorld *world, bool forceAskForFilename){
 
 void meSaveSupport::SaveHeightTerrain(meWorld &world, bool forceAskForFilename){
 	meHeightTerrain &heightTerrain = *world.GetHeightTerrain();
-	if(! heightTerrain.GetChanged() && ! forceAskForFilename){
+	if(!heightTerrain.GetChanged() && !forceAskForFilename){
 		return;
 	}
 	
 	decString filename(decPath::AbsolutePathUnix(heightTerrain.GetPathHT(),
 		world.GetDirectoryPath()).GetPathUnix());
 	
-	if(! heightTerrain.GetSaved() || forceAskForFilename){
+	if(!heightTerrain.GetSaved() || forceAskForFilename){
 		igdeFilePatternList filePatternList;
 		
 		GetHeightTerrainSectorPatterns(filePatternList);
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Sector",
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Sector",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
 			return;
 		}
@@ -214,11 +214,11 @@ void meSaveSupport::SaveHeightTerrain(meWorld &world, bool forceAskForFilename){
 }
 
 void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename){
-	if(! world || ! sector){
+	if(!world || !sector){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! sector->GetHeightImageChanged() && ! forceAskForFilename){
+	if(!sector->GetHeightImageChanged() && !forceAskForFilename){
 		return;
 	}
 	
@@ -242,8 +242,8 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 		bitCount = 32;
 	}
 	
-	if(! sector->GetHeightImageSaved() || forceAskForFilename){
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Height Image",
+	if(!sector->GetHeightImageSaved() || forceAskForFilename){
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Height Image",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -289,11 +289,11 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 }
 
 void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename){
-	if(! sector){
+	if(!sector){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! sector->GetVisibilityChanged() && ! forceAskForFilename){
+	if(!sector->GetVisibilityChanged() && !forceAskForFilename){
 		return;
 	}
 	
@@ -306,8 +306,8 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 	deImage *saveImage = NULL;
 	sGrayscale8 *pixels;
 	
-	if(! sector->GetVisibilitySaved() || forceAskForFilename){
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Visibility Image",
+	if(!sector->GetVisibilitySaved() || forceAskForFilename){
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Visibility Image",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -350,16 +350,16 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 
 void meSaveSupport::SaveHTTextureMaskImage(meWorld *world, meHeightTerrainSector *sector,
 meHeightTerrainTexture *texture, bool forceAskForFilename){
-	if(! world || ! sector || ! texture){
+	if(!world || !sector || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! texture->GetMaskChanged() && ! forceAskForFilename){
+	if(!texture->GetMaskChanged() && !forceAskForFilename){
 		return;
 	}
 	
 	deImage * const mask = texture->GetMaskImage();
-	if(! mask){
+	if(!mask){
 		return;
 	}
 	
@@ -368,8 +368,8 @@ meHeightTerrainTexture *texture, bool forceAskForFilename){
 	
 	deImageManager *imgmgr = texture->GetEngine()->GetImageManager();
 	
-	if(! texture->GetMaskSaved() || forceAskForFilename){
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Texture Mask Image",
+	if(!texture->GetMaskSaved() || forceAskForFilename){
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Texture Mask Image",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){
@@ -393,10 +393,10 @@ meHeightTerrainTexture *texture, bool forceAskForFilename){
 }
 
 void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navspace, bool forceAskForFilename){
-	if(! navspace.GetNavSpaceChanged() && ! forceAskForFilename){
+	if(!navspace.GetNavSpaceChanged() && !forceAskForFilename){
 		return;
 	}
-	if(! navspace.GetEngineNavSpace()){
+	if(!navspace.GetEngineNavSpace()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -405,13 +405,13 @@ void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navs
 	
 	igdeLoadSaveHTNavSpace saveNavSpace(pWindowMain->GetEnvironment(), LOGSOURCE);
 	
-	if(! navspace.GetNavSpaceSaved() || forceAskForFilename){
+	if(!navspace.GetNavSpaceSaved() || forceAskForFilename){
 		igdeFilePatternList fpl;
 		igdeFilePattern *fp = new igdeFilePattern(saveNavSpace.GetName(),
 			saveNavSpace.GetPattern(), saveNavSpace.GetDefaultExtension());
 		fpl.AddFilePattern(fp);
 		
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save height terrain navigation space",
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save height terrain navigation space",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), fpl, filename ) ){
 			return;
 		}
@@ -429,19 +429,19 @@ void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navs
 }
 
 void meSaveSupport::SaveHTPFCache(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename){
-	if(! world || ! sector){
+	if(!world || !sector){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! sector->GetPFCacheChanged() && ! forceAskForFilename){
+	if(!sector->GetPFCacheChanged() && !forceAskForFilename){
 		return;
 	}
 	
 	decString filename(decPath::AbsolutePathUnix(sector->GetPathPFCacheImage(),
 		world->GetDirectoryPath()).GetPathUnix());
 	
-	if(! sector->GetPFCacheSaved() || forceAskForFilename){
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Prop Field Cache",
+	if(!sector->GetPFCacheSaved() || forceAskForFilename){
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Prop Field Cache",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		pWindowMain->GetLoadSaveSystem().GetPropFieldCacheFilePatterns(), filename)){
 			return;
@@ -466,19 +466,19 @@ void meSaveSupport::SaveHTPFCache(meWorld *world, meHeightTerrainSector *sector,
 }
 
 void meSaveSupport::SaveNavigationSpace(meWorld *world, meNavigationSpace *navspace, bool forceAskForFilename){
-	if(! world || ! navspace){
+	if(!world || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(/* ! navspace->GetChanged() && */ ! forceAskForFilename){
+	if(/* !navspace->GetChanged() && */ !forceAskForFilename){
 		return;
 	}
 	
 	decString filename(decPath::AbsolutePathUnix(navspace->GetFilename(),
 		world->GetDirectoryPath()).GetPathUnix());
 	
-	if(/* ! navspace->GetSaved() || */ forceAskForFilename){
-		if(! igdeCommonDialogs::GetFileSave(pWindowMain, "Save Navigation Space",
+	if(/* !navspace->GetSaved() || */ forceAskForFilename){
+		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Navigation Space",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(),
 		*pWindowMain->GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltImage ),
 		filename)){

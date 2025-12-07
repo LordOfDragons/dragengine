@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, float newValue){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

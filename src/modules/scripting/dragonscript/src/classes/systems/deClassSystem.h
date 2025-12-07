@@ -52,7 +52,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS(){return pDS;}
+	inline deScriptingDragonScript *GetDS(){ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	/*@}*/

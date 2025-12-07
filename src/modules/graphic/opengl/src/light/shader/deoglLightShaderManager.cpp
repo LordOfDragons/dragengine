@@ -43,13 +43,13 @@
 ////////777///////////////
 
 static const char *vUnitSourceCodePath[deoglLightShaderManager::EUSCP_COUNT] = {
-	"V DefRen Light", //<! euscpVertexLight
-	"V DefRen Light Particle", //<! euscpVertexParticle
+	"V DefRen Light", //<!euscpVertexLight
+	"V DefRen Light Particle", //<!euscpVertexParticle
 	
-	"G DefRen Light Particle", //<! euscpGeometryParticle
-	"G DefRen Light Stereo", //<! euscpGeometryStereo
+	"G DefRen Light Particle", //<!euscpGeometryParticle
+	"G DefRen Light Stereo", //<!euscpGeometryStereo
 	
-	"F DefRen Light" //<! euscpFragmentLight
+	"F DefRen Light" //<!euscpFragmentLight
 };
 
 

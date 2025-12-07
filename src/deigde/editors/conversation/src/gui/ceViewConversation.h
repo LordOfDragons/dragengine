@@ -75,7 +75,7 @@ public:
 	void ResetView();
 	
 	/** \brief Monitored conversation. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);
@@ -84,7 +84,7 @@ public:
 	void GetViewportWithRatio(decBoundary &viewport) const;
 	
 	/** \brief Rule of thirds aid canvas. */
-	inline ceCanvasRuleOfThirdsAid *GetRuleOfThirdsAid() const{return pRuleOfThirdsAid;}
+	inline ceCanvasRuleOfThirdsAid *GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

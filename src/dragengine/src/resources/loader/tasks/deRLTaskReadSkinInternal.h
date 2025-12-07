@@ -66,10 +66,10 @@ public:
 		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task);
 		virtual ~cInternalTask();
 		
-		inline deSkinPropertyImage *GetPropertyImage() const{return pPropertyImage;}
-		inline deSkinPropertyNodeImage *GetNodeImage() const{return pNodeImage;}
-		inline deSkinPropertyNodeText *GetNodeText() const{return pNodeText;}
-		inline deResourceLoaderTask *GetTask() const{return pTask;}
+		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
+		inline deSkinPropertyNodeImage *GetNodeImage() const{ return pNodeImage; }
+		inline deSkinPropertyNodeText *GetNodeText() const{ return pNodeText; }
+		inline deResourceLoaderTask *GetTask() const{ return pTask; }
 	};
 	
 	
@@ -102,7 +102,7 @@ public:
 	virtual void Finished();
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	/*@}*/
 	
 	

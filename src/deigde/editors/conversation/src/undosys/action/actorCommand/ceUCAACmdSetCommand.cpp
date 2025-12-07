@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand){
-	if(! topic || ! newCommand) DETHROW(deeInvalidParam);
+	if(!topic || !newCommand) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

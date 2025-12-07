@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent grid. */
-	inline dedaiSpaceGrid *GetGrid() const{return pGrid;}
+	inline dedaiSpaceGrid *GetGrid() const{ return pGrid; }
 	
 	/** \brief Set parent grid. */
 	void SetGrid(dedaiSpaceGrid *grid);
 	
 	/** \brief Vertex index. */
-	inline unsigned short GetIndex() const{return pIndex;}
+	inline unsigned short GetIndex() const{ return pIndex; }
 	
 	/** \brief Set vertex index. */
 	void SetIndex(unsigned short index);
@@ -76,31 +76,31 @@ public:
 	
 	
 	/** \brief Index of the first vertex. */
-	inline unsigned short GetVertex1() const{return pVertex1;}
+	inline unsigned short GetVertex1() const{ return pVertex1; }
 	
 	/** \brief Set index of the first vertex. */
 	void SetVertex1(unsigned short vertex);
 	
 	/** \brief Index of the second vertex. */
-	inline unsigned short GetVertex2() const{return pVertex2;}
+	inline unsigned short GetVertex2() const{ return pVertex2; }
 	
 	/** \brief Set index of the second vertex. */
 	void SetVertex2(unsigned short vertex);
 	
 	/** \brief Type number to use traveling the edge from the first vertex to the second. */
-	inline unsigned short GetTypeNumber1() const{return pTypeNumber1;}
+	inline unsigned short GetTypeNumber1() const{ return pTypeNumber1; }
 	
 	/** \brief Set type number to use traveling the edge from the first vertex to the second. */
 	void SetTypeNumber1(unsigned short typeNumber);
 	
 	/** \brief Type number to use traveling the edge from the second vertex to the first. */
-	inline unsigned short GetTypeNumber2() const{return pTypeNumber2;}
+	inline unsigned short GetTypeNumber2() const{ return pTypeNumber2; }
 	
 	/** \brief Set type number to use traveling the edge from the second vertex to the first. */
 	void SetTypeNumber2(unsigned short typeNumber);
 	
 	/** \brief Length of the edge. */
-	inline float GetLength() const{return pLength;}
+	inline float GetLength() const{ return pLength; }
 	
 	/** \brief Set length of the edge. */
 	void SetLength(float length);

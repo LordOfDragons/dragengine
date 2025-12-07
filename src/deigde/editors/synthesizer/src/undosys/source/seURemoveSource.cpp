@@ -44,7 +44,7 @@ seURemoveSource::seURemoveSource(seSynthesizer *synthesizer, seSource *source) :
 pSynthesizer(NULL),
 pSource(NULL)
 {
-	if(! synthesizer || ! source){
+	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

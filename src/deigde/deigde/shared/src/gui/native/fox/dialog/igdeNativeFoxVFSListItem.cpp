@@ -80,7 +80,7 @@ void igdeNativeFoxVFSListItem::UpdateText(const char* pattern){
 	FXString text, format;
 	
 	while(*pattern){
-		if(! text.empty()){
+		if(!text.empty()){
 			text.append("\t");
 		}
 		
@@ -164,7 +164,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameAsc(const FXIconItem *item1, const FXIc
 		return FOX_STRING_COMPARE(file1.GetFileName(), file2.GetFileName());
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{
@@ -183,7 +183,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameDesc(const FXIconItem *item1, const FXI
 		return FOX_STRING_COMPARE(file2.GetFileName(), file1.GetFileName());
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{
@@ -206,7 +206,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeAsc(const FXIconItem *item1, const FXIc
 		return result;
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{
@@ -229,7 +229,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeDesc(const FXIconItem *item1, const FXI
 		return result;
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{
@@ -252,7 +252,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeAsc(const FXIconItem *item1, const F
 		return result;
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{
@@ -275,7 +275,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeDesc(const FXIconItem *item1, const 
 		return result;
 		
 	}else{
-		if(isDir1 && ! isDir2){
+		if(isDir1 && !isDir2){
 			return -1;
 			
 		}else{

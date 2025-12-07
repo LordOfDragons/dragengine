@@ -68,22 +68,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Triangle mesh shape. */
-	inline btTriangleMeshShape *GetMeshShape() const{return pMeshShape;}
+	inline btTriangleMeshShape *GetMeshShape() const{ return pMeshShape; }
 	
 	/** \brief Index vertex array. */
-	inline btTriangleIndexVertexArray *GetIndexVertexArray() const{return pIndexVertexArray;}
+	inline btTriangleIndexVertexArray *GetIndexVertexArray() const{ return pIndexVertexArray; }
 	
 	/** \brief Vertices. */
-	inline btScalar *GetVertices() const{return pVertices;}
+	inline btScalar *GetVertices() const{ return pVertices; }
 	
 	/** \brief Faces. */
-	inline int *GetFaces() const{return pFaces;}
+	inline int *GetFaces() const{ return pFaces; }
 	
 	/** \brief Vertex count. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	/*@}*/
 };
 

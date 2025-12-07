@@ -70,12 +70,12 @@ const webm::TrackEntry &track_entry){
 	if(pTrackOpen){
 		return webm::Status(webm::Status::Code::kOkCompleted);
 	}
-	if(! track_entry.is_enabled.value()){
+	if(!track_entry.is_enabled.value()){
 		return webm::Status(webm::Status::Code::kOkCompleted);
 	}
 	
 	try{
-		if(! pOpenTrack(track_entry)){
+		if(!pOpenTrack(track_entry)){
 			return webm::Status(webm::Status::Code::kOkCompleted);
 		}
 		
@@ -103,7 +103,7 @@ webm::Status dewmTrackCallback::OnBlockGroupEnd(const webm::ElementMetadata &,
 const webm::BlockGroup &block_group){
 	// WebM requires BlockMore.id to be 1. since BlockMore.id have to be unique
 	// this means there exists at most 1 BlockMore per BlockGroup
-	if(! block_group.additions.value().block_mores.empty()){
+	if(!block_group.additions.value().block_mores.empty()){
 		try{
 			pProcessAdditional(block_group.additions.value().block_mores.front().value().data.value());
 			
@@ -123,7 +123,7 @@ const webm::Block &block, webm::Action *action){
 
 webm::Status dewmTrackCallback::OnFrame(const webm::FrameMetadata &, webm::Reader *reader,
 std::uint64_t *bytes_remaining){
-	if(! pTrackOpen){
+	if(!pTrackOpen){
 		pModule.LogError("Tried to process frame without open track");
 		return webm::Status(100);
 	}
@@ -200,7 +200,7 @@ void dewmTrackCallback::pEndSegment(){
 //////////////////////
 
 webm::Status dewmTrackCallback::pProcessBlock(const webm::Block &block, webm::Action *action){
-	if(! pTrackOpen){
+	if(!pTrackOpen){
 		pModule.LogError("Tried to process block without open track");
 		*action = webm::Action::kSkip;
 		return webm::Status(100);

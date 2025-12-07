@@ -114,7 +114,7 @@ bool saeWordList::HasNamed(const char *name) const{
 }
 
 void saeWordList::Add(saeWord *word){
-	if(! word || HasNamed(word->GetName())){
+	if(!word || HasNamed(word->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

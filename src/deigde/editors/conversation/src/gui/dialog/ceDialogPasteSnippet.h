@@ -97,7 +97,7 @@ public:
 	 * 
 	 * Present after dialog returned successfully.
 	 */
-	inline const ceConversationActionList &GetActions() const{return pActions;}
+	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	
 	
 	

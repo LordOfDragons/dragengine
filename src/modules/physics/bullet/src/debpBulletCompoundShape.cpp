@@ -54,7 +54,7 @@ debpBulletCompoundShape::~debpBulletCompoundShape(){
 ///////////////
 
 void debpBulletCompoundShape::AddChildShape(debpBulletShape *shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	pChildShapes.Add(shape);

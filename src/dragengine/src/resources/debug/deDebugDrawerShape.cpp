@@ -90,7 +90,7 @@ deDebugDrawerShapeFace *deDebugDrawerShape::GetFaceAt(int index) const{
 
 void deDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
 	// no pFaces.Has(face) check. for large number of faces this becomes very slow
-	if(! face){
+	if(!face){
 		DETHROW(deeInvalidParam);
 	}
 	pFaces.Add(face);

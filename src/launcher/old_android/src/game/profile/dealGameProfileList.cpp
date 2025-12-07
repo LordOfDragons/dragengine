@@ -60,7 +60,7 @@ dealGameProfile *dealGameProfileList::GetAt(int index) const{
 }
 
 dealGameProfile *dealGameProfileList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ int dealGameProfileList::IndexOf(dealGameProfile *profile) const{
 }
 
 int dealGameProfileList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ int dealGameProfileList::IndexOfNamed(const char *name) const{
 }
 
 void dealGameProfileList::Add(dealGameProfile *profile){
-	if(! profile || HasNamed(profile->GetName())){
+	if(!profile || HasNamed(profile->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

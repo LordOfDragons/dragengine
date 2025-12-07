@@ -59,7 +59,7 @@ const deoalEffectSlot::Ref &deoalSharedEffectSlot::GetEffectSlot(){
 		DropEffectSlot();
 	}
 	
-	if(! pEffectSlot){
+	if(!pEffectSlot){
 		pEffectSlot = pAudioThread.GetEffectSlotManager().Bind(this, 1000.0f);
 	}
 	
@@ -86,7 +86,7 @@ void deoalSharedEffectSlot::AddSpeaker(deoalASpeaker *speaker){
 	
 	pSpeakers.Add(speaker);
 	
-	if(! pRefSpeaker){
+	if(!pRefSpeaker){
 		pRefSpeaker = speaker;
 		UpdateEffectSlot();
 	}
@@ -143,11 +143,11 @@ void deoalSharedEffectSlot::MoveSpeakerFront(deoalASpeaker *speaker){
 
 void deoalSharedEffectSlot::UpdateEffectSlot(){
 	(void)GetEffectSlot();
-	if(! pEffectSlot){
+	if(!pEffectSlot){
 		return;
 	}
 	
-	if(! pRefSpeaker || ! pRefSpeaker->GetEnvironment()){
+	if(!pRefSpeaker || !pRefSpeaker->GetEnvironment()){
 		// pEffectSlot->SetEffectType( AL_EFFECT_NULL );
 		// pEffectSlot->UpdateSlot( 0.0f );
 		return;

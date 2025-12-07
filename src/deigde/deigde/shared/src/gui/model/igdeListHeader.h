@@ -81,19 +81,19 @@ public:
 	/** \title Management */
 	/*@{*/
 	/** \brief Title. */
-	inline const decString &GetTitle() const{return pTitle;}
+	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Size in pixels. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size in pixels. */
 	void SetSize(int size);

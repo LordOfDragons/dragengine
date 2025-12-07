@@ -533,7 +533,7 @@ void deClassInputSystem::OnFrameUpdate(){
 //////////////////////
 
 void deClassInputSystem::pUpdateCachedDevices(){
-	if(! pCacheDirty){
+	if(!pCacheDirty){
 		return;
 	}
 	

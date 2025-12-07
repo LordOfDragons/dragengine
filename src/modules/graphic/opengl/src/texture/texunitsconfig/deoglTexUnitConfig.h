@@ -100,22 +100,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Texture or \em NULL if not used. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Cube map or \em NULL if not used. */
-	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
+	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
 	/** Array texture or \em NULL if not used. */
-	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/** Texture buffer object or 0 if not used. */
-	inline GLuint GetTBO() const{return pTBO;}
+	inline GLuint GetTBO() const{ return pTBO; }
 	
 	/** Special texture or eSpecialTextures::estNone if not used. */
-	inline int GetSpecial() const{return pSpecial;}
+	inline int GetSpecial() const{ return pSpecial; }
 	
 	/** Texture sampler configuration or \em NULL if not used. */
-	inline deoglTexSamplerConfig *GetSampler() const{return pSampler;}
+	inline deoglTexSamplerConfig *GetSampler() const{ return pSampler; }
 	
 	/** Apply texture unit configuration. */
 	void Apply(deoglRenderThread &renderThread, int stage) const;

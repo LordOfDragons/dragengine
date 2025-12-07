@@ -44,7 +44,7 @@
 ////////////////////////////
 
 meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
-	if(! world || ! sector || ! image) DETHROW(deeInvalidParam);
+	if(!world || !sector || !image) DETHROW(deeInvalidParam);
 	
 	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);
 	

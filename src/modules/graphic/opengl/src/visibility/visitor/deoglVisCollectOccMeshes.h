@@ -58,18 +58,18 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the minimum extend of the box used to visit the occlusion meshes. */
-	inline const decDVector &GetVisitMinExtend() const{return pVisitMinExtend;}
+	inline const decDVector &GetVisitMinExtend() const{ return pVisitMinExtend; }
 	/** Retrieves the maximum extend of the box used to visit the occlusion meshes. */
-	inline const decDVector &GetVisitMaxExtend() const{return pVisitMaxExtend;}
+	inline const decDVector &GetVisitMaxExtend() const{ return pVisitMaxExtend; }
 	/** Sets the extends of the box used to visit the occlusion meshes. */
 	void SetVisitExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	/** Retrieves the inverse matrix hull to transfor the occlusion meshes into the hull space. */
-	inline const decDMatrix &GetMatrixInvHull() const{return pMatrixInvHull;}
+	inline const decDMatrix &GetMatrixInvHull() const{ return pMatrixInvHull; }
 	/** Sets the inverse matrix hull to transfor the occlusion meshes into the hull space. */
 	void SetMatrixInvHull(const decDMatrix &matrixInvHull);
 	
 	/** Retrieves the triangle sorter. */
-	inline deoglTriangleSorter *GetTriangleSorter() const{return pTriangleSorter;}
+	inline deoglTriangleSorter *GetTriangleSorter() const{ return pTriangleSorter; }
 	
 	/** Reset the visitor clearing the triangle sorter. */
 	void Reset();

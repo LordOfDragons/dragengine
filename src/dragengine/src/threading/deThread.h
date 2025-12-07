@@ -117,7 +117,7 @@ protected:
 	 * 
 	 * Locked while changing thread state.
 	 */
-	inline deMutex &GetMutexState(){return pMutexState;}
+	inline deMutex &GetMutexState(){ return pMutexState; }
 	
 	
 private:

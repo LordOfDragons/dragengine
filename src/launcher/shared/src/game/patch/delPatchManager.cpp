@@ -127,7 +127,7 @@ void delPatchManager::LoadPatchFromDisk(delEngineInstance &instance, const decSt
 		
 		patchXML.ReadFromFile(reader, patch);
 		
-		if(! decPath::IsNativePathAbsolute(patch->GetPatchDirectory())){
+		if(!decPath::IsNativePathAbsolute(patch->GetPatchDirectory())){
 			decPath baseDir(decPath::CreatePathNative(path));
 			baseDir.RemoveLastComponent();
 			baseDir.AddUnixPath(patch->GetPatchDirectory());
@@ -188,7 +188,7 @@ const decPath &path, delPatchList &list){
 	int i;
 	for(i=0; i<count; i++){
 		delPatch * const patch = subList.GetAt(i);
-		if(! list.HasWithID(patch->GetIdentifier())){
+		if(!list.HasWithID(patch->GetIdentifier())){
 			list.Add(patch);
 		}
 	}

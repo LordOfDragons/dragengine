@@ -39,7 +39,7 @@ pRule(rule),
 pIndex(index),
 pNewValue(newValue)
 {
-	if(! rule || ! newValue || rule->HasMatchName(newValue)){
+	if(!rule || !newValue || rule->HasMatchName(newValue)){
 		DETHROW(deeInvalidParam);
 	}
 	

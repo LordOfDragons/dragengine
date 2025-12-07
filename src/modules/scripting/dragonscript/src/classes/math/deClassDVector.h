@@ -50,13 +50,13 @@ public:
 	~deClassDVector();
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
 	const decDVector &GetDVector(dsRealObject *This) const;
 	void PushDVector(dsRunTime *rt, const decDVector &vector);
 	
-	deClassVector *GetClassVector() const{return pClsVec;}
+	deClassVector *GetClassVector() const{ return pClsVec; }
 
 private:
 	struct sInitData{

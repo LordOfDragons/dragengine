@@ -82,7 +82,7 @@ int igdeGDSkinManager::IndexOfSkin(igdeGDSkin *skin) const{
 }
 
 int igdeGDSkinManager::IndexOfSkinWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pSkins.GetCount();
@@ -98,7 +98,7 @@ int igdeGDSkinManager::IndexOfSkinWithPath(const char *path) const{
 }
 
 int igdeGDSkinManager::IndexOfSkinWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pSkins.GetCount();
@@ -114,7 +114,7 @@ int igdeGDSkinManager::IndexOfSkinWithName(const char *name) const{
 }
 
 int igdeGDSkinManager::IndexOfSkinWithPathOrName(const char *path, const char *name) const{
-	if(! path || ! name){
+	if(!path || !name){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pSkins.GetCount();
@@ -135,7 +135,7 @@ igdeGDSkin *igdeGDSkinManager::GetSkinAt(int index) const{
 }
 
 igdeGDSkin *igdeGDSkinManager::GetSkinWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pSkins.GetCount();
@@ -152,7 +152,7 @@ igdeGDSkin *igdeGDSkinManager::GetSkinWithPath(const char *path) const{
 }
 
 igdeGDSkin *igdeGDSkinManager::GetSkinWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pSkins.GetCount();
@@ -169,7 +169,7 @@ igdeGDSkin *igdeGDSkinManager::GetSkinWithName(const char *name) const{
 }
 
 void igdeGDSkinManager::AddSkin(igdeGDSkin *skin){
-	if(! skin || HasSkinWithPathOrName(skin->GetPath(), skin->GetName())){
+	if(!skin || HasSkinWithPathOrName(skin->GetPath(), skin->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pSkins.Add(skin);
@@ -237,7 +237,7 @@ void igdeGDSkinManager::UpdateWith(const igdeGDSkinManager &skinManager){
 		const igdeGDSkin &otherSkin = *skinManager.GetSkinAt(i);
 		
 		igdeGDSkin *skinCheck = GetSkinWithPath(otherSkin.GetPath());
-		if(! skinCheck){
+		if(!skinCheck){
 			skinCheck = GetSkinWithName(otherSkin.GetName());
 		}
 		
@@ -251,7 +251,7 @@ void igdeGDSkinManager::UpdateWith(const igdeGDSkinManager &skinManager){
 	pCategories->UpdateWith(skinManager.pCategories);
 	pAutoFindPath = skinManager.pAutoFindPath;
 	
-	if(! skinManager.pDefaultSkinPath.IsEmpty()){
+	if(!skinManager.pDefaultSkinPath.IsEmpty()){
 		pDefaultSkinPath = skinManager.pDefaultSkinPath;
 	}
 }
@@ -291,7 +291,7 @@ public:
 	}
 	
 	virtual bool VisitFile(const deVirtualFileSystem &, const decPath &path){
-		if(! path.GetLastComponent().MatchesPattern(pPattern)){
+		if(!path.GetLastComponent().MatchesPattern(pPattern)){
 			return true;
 		}
 		

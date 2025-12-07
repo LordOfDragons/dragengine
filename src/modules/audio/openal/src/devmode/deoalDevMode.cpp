@@ -76,7 +76,7 @@ bool deoalDevMode::ExecuteCommand(const decUnicodeArgumentList &command, decUnic
 		pCmdEnable(command, answer);
 		return true;
 	}
-	if(! pEnabled){
+	if(!pEnabled){
 		return false;
 	}
 	

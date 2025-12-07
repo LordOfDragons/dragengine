@@ -82,10 +82,10 @@ public:
 	
 	
 	/** \brief  mouse device. */
-	inline deainpDeviceMouse *GetMouse() const{return pMouse;}
+	inline deainpDeviceMouse *GetMouse() const{ return pMouse; }
 	
 	/** \brief  keyboard device. */
-	inline deainpDeviceKeyboard *GetKeyboard() const{return pKeyboard;}
+	inline deainpDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
 	
 	
 	

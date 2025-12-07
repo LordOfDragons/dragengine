@@ -136,7 +136,7 @@ public:
 	virtual void UpdateSelectedPoint();
 	virtual void UpdateClamp();
 	
-	inline igdeViewCurveBezier &GetOwner() const{return *pOwner;}
+	inline igdeViewCurveBezier &GetOwner() const{ return *pOwner; }
 	
 	void SetGridZoom(const decVector2 &zoom);
 	virtual void ResetView();
@@ -244,10 +244,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View curve bezier. */
-	inline igdeNativeFoxViewCurveBezierView &GetView() const{return *pView;}
+	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
 	
 	/** \brief Resizer or \em NULL. */
-	inline igdeNativeFoxResizer *GetResizser() const{return pResizer;}
+	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	/*@}*/
 	
 	

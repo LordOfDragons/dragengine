@@ -43,7 +43,7 @@
 aeUControllerToggleClamp::aeUControllerToggleClamp(aeController *controller) :
 pController(controller)
 {
-	if(! controller || ! controller->GetAnimator()){
+	if(!controller || !controller->GetAnimator()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -60,7 +60,7 @@ aeUControllerToggleClamp::~aeUControllerToggleClamp(){
 
 void aeUControllerToggleClamp::Undo(){
 	aeController &controller = (aeController&)(deObject&)pController;
-	controller.SetClamp(! controller.GetClamp());
+	controller.SetClamp(!controller.GetClamp());
 }
 
 void aeUControllerToggleClamp::Redo(){

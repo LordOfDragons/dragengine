@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int index){
-	if(! topic || ! wait || ! action){
+	if(!topic || !wait || !action){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > wait->GetActions().GetCount()){

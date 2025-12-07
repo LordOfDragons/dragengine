@@ -57,7 +57,7 @@ const meDecalList &list, const decStringDictionary &properties){
 		
 		for(i=0; i<count; i++){
 			decal = list.GetAt(i);
-			if(! decal->GetWorld()){
+			if(!decal->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetCamDistFrom::ceUCCShotSetCamDistFrom(ceCameraShot *cameraShot, float newDist){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	

@@ -193,7 +193,7 @@ decBaseFileReader &reader){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "particleEmitter") != 0){
+	if(!root || strcmp(root->GetName(), "particleEmitter") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -223,7 +223,7 @@ deParticleEmitter &particleEmitter){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -254,7 +254,7 @@ deParticleEmitter &particleEmitter){
 	try{
 		for(i=0; i<count; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -300,7 +300,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -389,7 +389,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type){
 		}else if(strcmp(tag->GetName(), "trailController") == 0){
 			identifier = GetAttributeString(*tag, "id");
 			deParticleEmitterType::eEmitControllers controller;
-			if(! ControllerForName(identifier, controller)){
+			if(!ControllerForName(identifier, controller)){
 				LogErrorUnknownValue(*tag, identifier);
 				continue;
 			}
@@ -440,7 +440,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type){
 		}else if(strcmp(tag->GetName(), "emitController") == 0){
 			identifier = GetAttributeString(*tag, "id");
 			deParticleEmitterType::eEmitControllers controller;
-			if(! ControllerForName(identifier, controller)){
+			if(!ControllerForName(identifier, controller)){
 				LogErrorUnknownValue(*tag, identifier);
 				continue;
 			}
@@ -467,14 +467,14 @@ deParticleEmitterType &type){
 	int i;
 	
 	deParticleEmitterType::eParameters parameterType = deParticleEmitterType::epTimeToLive;
-	if(! ParameterForName(id, parameterType)){
+	if(!ParameterForName(id, parameterType)){
 		LogErrorUnknownValue(root, id);
 	}
 	deParticleEmitterParameter &parameter = type.GetParameter(parameterType);
 	
 	for(i=0; i<count; i++){
 		tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

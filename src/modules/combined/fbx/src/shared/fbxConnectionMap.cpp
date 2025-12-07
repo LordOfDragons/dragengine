@@ -70,7 +70,7 @@ fbxConnectionMap::~fbxConnectionMap(){
 ///////////////
 
 void fbxConnectionMap::Add(fbxConnection *connection){
-	if(! connection){
+	if(!connection){
 		DETHROW(deeInvalidParam);
 	}
 	

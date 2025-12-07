@@ -150,9 +150,9 @@ void saeSAnimation::Dispose(){
 
 
 void saeSAnimation::SetDisplayModelPath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pDisplayModelPath.Equals(path)){
+	if(!pDisplayModelPath.Equals(path)){
 		pDisplayModelPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
@@ -160,9 +160,9 @@ void saeSAnimation::SetDisplayModelPath(const char *path){
 }
 
 void saeSAnimation::SetDisplaySkinPath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pDisplaySkinPath.Equals(path)){
+	if(!pDisplaySkinPath.Equals(path)){
 		pDisplaySkinPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
@@ -170,9 +170,9 @@ void saeSAnimation::SetDisplaySkinPath(const char *path){
 }
 
 void saeSAnimation::SetDisplayRigPath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pDisplayRigPath.Equals(path)){
+	if(!pDisplayRigPath.Equals(path)){
 		pDisplayRigPath = path;
 		pUpdateComponent();
 		NotifyModelChanged();
@@ -180,9 +180,9 @@ void saeSAnimation::SetDisplayRigPath(const char *path){
 }
 
 void saeSAnimation::SetRigPath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pRigPath.Equals(path)){
+	if(!pRigPath.Equals(path)){
 		pRigPath = path;
 		pUpdateAnimRig();
 		NotifySAnimationChanged();
@@ -190,9 +190,9 @@ void saeSAnimation::SetRigPath(const char *path){
 }
 
 void saeSAnimation::SetAnimationPath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pAnimationPath.Equals(path)){
+	if(!pAnimationPath.Equals(path)){
 		pAnimationPath = path;
 		pUpdateAnimRig();
 		NotifySAnimationChanged();
@@ -301,7 +301,7 @@ void saeSAnimation::RebuildAnimator(){
 			pEngAnimator->AddLink(engLink);
 			
 			// add an animation rule for the new viseme
-			if(! vertexPositionSet.IsEmpty()){
+			if(!vertexPositionSet.IsEmpty()){
 				const deAnimatorRuleStateManipulator::Ref rule(
 					deAnimatorRuleStateManipulator::Ref::NewWith());
 				rule->GetListVertexPositionSets().Add(vertexPositionSet);
@@ -374,7 +374,7 @@ void saeSAnimation::Update(float elapsed){
 		}break;
 		
 	case edmWord:{
-		if(! pActiveWord){
+		if(!pActiveWord){
 			break;
 		}
 		
@@ -489,13 +489,13 @@ void saeSAnimation::AddPhoneme(saePhoneme *phoneme){
 	phoneme->SetSAnimation(this);
 	NotifyPhonemeStructureChanged();
 	
-	if(! pActivePhoneme){
+	if(!pActivePhoneme){
 		SetActivePhoneme(phoneme);
 	}
 }
 
 void saeSAnimation::RemovePhoneme(saePhoneme *phoneme){
-	if(! phoneme || phoneme->GetSAnimation() != this) DETHROW(deeInvalidParam);
+	if(!phoneme || phoneme->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(phoneme->GetActive()){
 		if(pPhonemeList.GetCount() == 1){
@@ -563,13 +563,13 @@ void saeSAnimation::AddWord(saeWord *word){
 	word->SetSAnimation(this);
 	NotifyWordStructureChanged();
 	
-	if(! pActiveWord){
+	if(!pActiveWord){
 		SetActiveWord(word);
 	}
 }
 
 void saeSAnimation::RemoveWord(saeWord *word){
-	if(! word || word->GetSAnimation() != this) DETHROW(deeInvalidParam);
+	if(!word || word->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(word->GetActive()){
 		if(pWordList.GetCount() == 1){
@@ -636,7 +636,7 @@ void saeSAnimation::SetActiveWord(saeWord *word){
 //////////////
 
 void saeSAnimation::AddListener(saeSAnimationListener *listener){
-	if(! listener) DETHROW(deeInvalidParam);
+	if(!listener) DETHROW(deeInvalidParam);
 	
 	pListeners.Add(listener);
 }
@@ -826,13 +826,13 @@ void saeSAnimation::pUpdateComponent(){
 	
 	// try to load the resources if possible
 	try{
-		if(! pDisplayModelPath.IsEmpty()){
+		if(!pDisplayModelPath.IsEmpty()){
 			displayModel.TakeOver(engine.GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath()));
 		}
-		if(! pDisplaySkinPath.IsEmpty()){
+		if(!pDisplaySkinPath.IsEmpty()){
 			displaySkin.TakeOver(engine.GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath()));
 		}
-		if(! pDisplayRigPath.IsEmpty()){
+		if(!pDisplayRigPath.IsEmpty()){
 			displayRig.TakeOver(engine.GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath()));
 		}
 		
@@ -841,7 +841,7 @@ void saeSAnimation::pUpdateComponent(){
 	}
 	
 	// if the skin is missing use the default one
-	if(! displaySkin && gamedef){
+	if(!displaySkin && gamedef){
 		displaySkin = gamedef->GetDefaultSkin();
 	}
 	
@@ -881,7 +881,7 @@ void saeSAnimation::pUpdateAnimRig(){
 	deRig::Ref rig;
 	
 	try{
-		if(! pAnimationPath.IsEmpty()){
+		if(!pAnimationPath.IsEmpty()){
 			animation.TakeOver(engine.GetAnimationManager()->LoadAnimation(
 				pAnimationPath, GetDirectoryPath()));
 		}
@@ -892,7 +892,7 @@ void saeSAnimation::pUpdateAnimRig(){
 	pEngAnimator->SetAnimation(animation);
 	
 	try{
-		if(! pRigPath.IsEmpty()){
+		if(!pRigPath.IsEmpty()){
 			rig.TakeOver(engine.GetRigManager()->LoadRig(pRigPath, GetDirectoryPath()));
 		}
 		

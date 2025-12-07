@@ -69,7 +69,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionLogic * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || ! comboBox->GetSelectedItem()){
+		if(!topic || !action || !condition || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

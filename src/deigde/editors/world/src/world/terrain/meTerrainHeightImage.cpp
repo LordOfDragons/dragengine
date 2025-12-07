@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meTerrainHeightImage::meTerrainHeightImage(deImage *image){
-	if(! image) DETHROW(deeInvalidParam);
+	if(!image) DETHROW(deeInvalidParam);
 	
 	pWidth = image->GetWidth();
 	pHeight = image->GetHeight();

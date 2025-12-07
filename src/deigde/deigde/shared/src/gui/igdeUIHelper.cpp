@@ -1095,7 +1095,7 @@ const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxList
 
 void igdeUIHelper::IconListBox(const sColumnHeader *headers, int headerCount,
 const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener *listener){
-	if(! headers || headerCount < 1){
+	if(!headers || headerCount < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1105,7 +1105,7 @@ const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener 
 
 void igdeUIHelper::IconListBox(const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
 const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener *listener){
-	if(! headers || headerCount < 1){
+	if(!headers || headerCount < 1){
 		DETHROW(deeInvalidParam);
 	}
 	

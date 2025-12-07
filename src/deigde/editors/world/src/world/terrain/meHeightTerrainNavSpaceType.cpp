@@ -122,12 +122,12 @@ void meHeightTerrainNavSpaceType::SetType(int type){
 
 
 void meHeightTerrainNavSpaceType::NotifyChanged(){
-	if(! pNavSpace){
+	if(!pNavSpace){
 		return;
 	}
 	
 	meHeightTerrainSector * const sector = pNavSpace->GetHTSector();
-	if(! sector){
+	if(!sector){
 		return;
 	}
 	
@@ -138,12 +138,12 @@ void meHeightTerrainNavSpaceType::NotifyChanged(){
 }
 
 void meHeightTerrainNavSpaceType::NotifyTypeChanged(){
-	if(! pNavSpace){
+	if(!pNavSpace){
 		return;
 	}
 	
 	meHeightTerrainSector * const sector = pNavSpace->GetHTSector();
-	if(! sector){
+	if(!sector){
 		return;
 	}
 	
@@ -166,8 +166,8 @@ void meHeightTerrainNavSpaceType::SetDDShape(deDebugDrawerShape *shape){
 }
 
 void meHeightTerrainNavSpaceType::UpdateHeights(){
-	if(! pDDShape || ! pNavSpace || ! pNavSpace->GetHTSector()
-	|| ! pNavSpace->GetHTSector()->GetHeightTerrain()){
+	if(!pDDShape || !pNavSpace || !pNavSpace->GetHTSector()
+	|| !pNavSpace->GetHTSector()->GetHeightTerrain()){
 		return;
 	}
 	
@@ -215,7 +215,7 @@ int meHeightTerrainNavSpaceType::IndexOfFace(meHeightTerrainNavSpaceFace *face) 
 }
 
 void meHeightTerrainNavSpaceType::AddFace(meHeightTerrainNavSpaceFace *face){
-	if(! face){
+	if(!face){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -235,7 +235,7 @@ void meHeightTerrainNavSpaceType::AddFace(meHeightTerrainNavSpaceFace *face){
 }
 
 void meHeightTerrainNavSpaceType::RemoveFace(meHeightTerrainNavSpaceFace *face){
-	if(! pFaces.Has(face)){
+	if(!pFaces.Has(face)){
 		DETHROW(deeInvalidParam);
 	}
 	face->SetType(NULL);
@@ -271,7 +271,7 @@ void meHeightTerrainNavSpaceType::RemoveAllFaces(){
 }
 
 void meHeightTerrainNavSpaceType::NotifyFacesChanged(){
-	if(! pNavSpace || ! pNavSpace->GetHTSector()){
+	if(!pNavSpace || !pNavSpace->GetHTSector()){
 		return;
 	}
 	
@@ -295,13 +295,13 @@ void meHeightTerrainNavSpaceType::UpdateDDFaces(){
 //////////////////////
 
 void meHeightTerrainNavSpaceType::pUpdateDDFaces(){
-	if(! pDDShape){
+	if(!pDDShape){
 		return;
 	}
 	
 	pDDShape->RemoveAllFaces();
 	
-	if(! pNavSpace || ! pNavSpace->GetHTSector() || ! pNavSpace->GetHTSector()->GetHeightTerrain()){
+	if(!pNavSpace || !pNavSpace->GetHTSector() || !pNavSpace->GetHTSector()->GetHeightTerrain()){
 		return;
 	}
 	

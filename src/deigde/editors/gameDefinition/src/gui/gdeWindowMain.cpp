@@ -275,13 +275,13 @@ void gdeWindowMain::CreateNewGameDefinition(){
 }
 
 void gdeWindowMain::LoadGameProject(bool silentErrors){
-	if(! pViewActiveObject->GetCanRender()){
+	if(!pViewActiveObject->GetCanRender()){
 		return;
 	}
 	
 	// load game definition
 	const igdeGameProject * const project = GetEnvironment().GetGameProject();
-	if(! project){
+	if(!project){
 		return;
 	}
 	
@@ -296,7 +296,7 @@ void gdeWindowMain::LoadGameProject(bool silentErrors){
 		gameDefinition = pLoadSaveSystem->LoadGameDefinition(path.GetPathNative());
 		
 	}catch(const deException &e){
-		if(! silentErrors){
+		if(!silentErrors){
 			DisplayException(e);
 		}
 		return;
@@ -323,7 +323,7 @@ void gdeWindowMain::LoadGameProject(bool silentErrors){
 			gameDefinition->UpdateBaseGameDefinitions(*pLoadSaveSystem);
 			
 		}catch(const deException &e){
-			if(! silentErrors){
+			if(!silentErrors){
 				DisplayException(e);
 			}
 		}
@@ -331,7 +331,7 @@ void gdeWindowMain::LoadGameProject(bool silentErrors){
 }
 
 void gdeWindowMain::SaveGameDefinition(const char *filename){
-	if(! pActiveGameDefinition){
+	if(!pActiveGameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -382,7 +382,7 @@ void gdeWindowMain::OnDeactivate(){
 
 
 void gdeWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -398,7 +398,7 @@ void gdeWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 bool gdeWindowMain::SaveDocument(const char *filename){
-	if(! pActiveGameDefinition){
+	if(!pActiveGameDefinition){
 		return false;
 	}
 	if(pActiveGameDefinition->GetFilePath() != filename){
@@ -489,7 +489,7 @@ public:
 			filename = path.GetPathNative();
 		}
 		
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Game Definition",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Game Definition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -537,7 +537,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if(! gamedef){
+		if(!gamedef){
 			return;
 		}
 		
@@ -553,7 +553,7 @@ public:
 			filename = path.GetPathNative().GetString();
 		}
 		
-		if(! igdeCommonDialogs::GetFileSave(&pWindow, "Save Game Definition",
+		if(!igdeCommonDialogs::GetFileSave(&pWindow, "Save Game Definition",
 		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
@@ -575,7 +575,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if(! gamedef){
+		if(!gamedef){
 			return;
 		}
 		
@@ -656,7 +656,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if(! gamedef){
+		if(!gamedef){
 			return;
 		}
 		
@@ -679,7 +679,7 @@ public:
 		"Show all environment map probes", deInputEvent::ekcE){}
 	
 	virtual void OnAction(){
-		pWindow.GetViewActiveObject().SetShowEnvMapProbes(! pWindow.GetViewActiveObject().GetShowEnvMapProbes());
+		pWindow.GetViewActiveObject().SetShowEnvMapProbes(!pWindow.GetViewActiveObject().GetShowEnvMapProbes());
 	}
 	
 	virtual void Update(){
@@ -694,7 +694,7 @@ public:
 		"Show all navigation blockers", deInputEvent::ekcL){}
 	
 	virtual void OnAction(){
-		pWindow.GetViewActiveObject().SetShowNavBlockers(! pWindow.GetViewActiveObject().GetShowNavBlockers());
+		pWindow.GetViewActiveObject().SetShowNavBlockers(!pWindow.GetViewActiveObject().GetShowNavBlockers());
 	}
 	
 	virtual void Update(){

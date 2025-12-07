@@ -143,10 +143,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Android app. */
-	inline android_app &GetAndroidApp() const{return pAndroidApp;}
+	inline android_app &GetAndroidApp() const{ return pAndroidApp; }
 	
 	/** \brief JNI environment. */
-	inline JNIEnv *GetJniEnv() const{return pJniEnv;}
+	inline JNIEnv *GetJniEnv() const{ return pJniEnv; }
 	
 	/** \brief Android application internal path. */
 	const char *GetInternalPath() const;
@@ -161,23 +161,23 @@ public:
 	deLogger &GetLogger() const;
 	
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay(){return pDisplay;}
-	inline const dealDisplay &GetDisplay() const{return pDisplay;}
+	inline dealDisplay &GetDisplay(){ return pDisplay; }
+	inline const dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	/** \brief File system. */
-	inline deVirtualFileSystem *GetFileSystem(){return pFileSystem;}
+	inline deVirtualFileSystem *GetFileSystem(){ return pFileSystem; }
 	
 	/** \brief Configuration. */
-	inline dealConfiguration &GetConfiguration(){return pConfiguration;}
-	inline const dealConfiguration &GetConfiguration() const{return pConfiguration;}
+	inline dealConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const dealConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Game manager. */
-	inline dealGameManager &GetGameManager(){return pGameManager;}
-	inline const dealGameManager &GetGameManager() const{return pGameManager;}
+	inline dealGameManager &GetGameManager(){ return pGameManager; }
+	inline const dealGameManager &GetGameManager() const{ return pGameManager; }
 	
 	/** \brief Get engine. */
-	inline dealEngine &GetEngine(){return pEngine;}
-	inline const dealEngine &GetEngine() const{return pEngine;}
+	inline dealEngine &GetEngine(){ return pEngine; }
+	inline const dealEngine &GetEngine() const{ return pEngine; }
 	
 	
 	
@@ -250,7 +250,7 @@ public:
 	void ProcessInputEvent(const AInputEvent &event);
 	
 	/** \brief Focused. */
-	inline bool Focused() const{return pFocused;}
+	inline bool Focused() const{ return pFocused; }
 	
 	/** \brief Focus gained. */
 	void FocusGained();
@@ -265,7 +265,7 @@ public:
 	void AppStop();
 	
 	/** \brief Application is frozen. */
-	inline bool Frozen() const{return pFrozen;}
+	inline bool Frozen() const{ return pFrozen; }
 	
 	/** \brief Pause application. */
 	void AppPause();

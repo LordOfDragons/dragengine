@@ -61,9 +61,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the cylinder shape. */
-	inline decShapeCylinder *GetShapeCylinder() const{return pSCylinder;}
+	inline decShapeCylinder *GetShapeCylinder() const{ return pSCylinder; }
 	/** Retrieves the cylinder collision volume. */
-	inline const debpDCollisionCylinder &GetCollisionCylinder() const{return pCCylinder;}
+	inline const debpDCollisionCylinder &GetCollisionCylinder() const{ return pCCylinder; }
 	
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);

@@ -99,7 +99,7 @@ public:
 	cTreeObjects(gdeWPSelection &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
-		if(! pPanel.GetGameDefinition() || ! pPanel.GetModelTreeObjects() 
+		if(!pPanel.GetGameDefinition() || !pPanel.GetModelTreeObjects() 
 		|| pPanel.GetModelTreeObjects()->GetIgnoreSelectionChange()){
 			return;
 		}
@@ -300,7 +300,7 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 void gdeWPSelection::SelectedObjectChanged(){
-	if(! pGameDefinition){
+	if(!pGameDefinition){
 		pSwitcher->SetCurrent(epNone);
 		return;
 	}
@@ -383,7 +383,7 @@ void gdeWPSelection::SelectedObjectChanged(){
 }
 
 void gdeWPSelection::Find(const char *text){
-	if(! pGameDefinition){
+	if(!pGameDefinition){
 		return;
 	}
 	

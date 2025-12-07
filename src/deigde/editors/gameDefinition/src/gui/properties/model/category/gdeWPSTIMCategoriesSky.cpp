@@ -109,7 +109,7 @@ void gdeWPSTIMCategoriesSky::CategoriesChanged(){
 		gdeWPSTIMCategorySky * const modelCategory = (gdeWPSTIMCategorySky*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelCategory->GetCategory())){
+		if(!list.Has(modelCategory->GetCategory())){
 			RemoveModel(modelCategory);
 		}
 	}
@@ -142,7 +142,7 @@ void gdeWPSTIMCategoriesSky::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMCategoriesSky::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

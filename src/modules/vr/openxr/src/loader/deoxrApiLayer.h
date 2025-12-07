@@ -95,13 +95,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Configuration file. */
-	inline const decString &GetConfigFile() const{return pConfigFile;}
+	inline const decString &GetConfigFile() const{ return pConfigFile; }
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Library path. */
-	inline const decString &GetLibraryPath() const{return pLibraryPath;}
+	inline const decString &GetLibraryPath() const{ return pLibraryPath; }
 	
 	/** Library is loaded. */
 	bool IsLoaded() const;

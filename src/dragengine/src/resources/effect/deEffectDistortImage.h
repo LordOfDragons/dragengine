@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or null if not set. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or null to remove it. */
 	void SetImage(deImage *image);
@@ -86,13 +86,13 @@ public:
 	void SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates);
 	
 	/** \brief Strength in u direction. */
-	inline float GetStrengthU() const{return pStrengthU;}
+	inline float GetStrengthU() const{ return pStrengthU; }
 	
 	/** \brief Set strength in u direction. */
 	void SetStrengthU(float strength);
 	
 	/** \brief Strength in v direction. */
-	inline float GetStrengthV() const{return pStrengthV;}
+	inline float GetStrengthV() const{ return pStrengthV; }
 	
 	/** \brief Set strength in v direction. */
 	void SetStrengthV(float strength);

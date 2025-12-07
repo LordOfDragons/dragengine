@@ -67,34 +67,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Count of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Use float format. */
-	inline bool GetIsFloat() const{return pIsFloat;}
+	inline bool GetIsFloat() const{ return pIsFloat; }
 	
 	/** Format matches. */
 	bool Matches(int width, int height, int layers, int componentCount, bool isFloat) const;
 	
 	/** Texture is in use. */
-	inline bool GetInUse() const{return pInUse;}
+	inline bool GetInUse() const{ return pInUse; }
 	
 	/** Set if texture is in use. */
 	void SetInUse(bool inUse);
 	
 	/** Texture. */
-	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/** GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{return pMemoryUsageGPU;}
+	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	
 	/** Update GPU memory consumption. */
 	void UpdateMemoryUsage();

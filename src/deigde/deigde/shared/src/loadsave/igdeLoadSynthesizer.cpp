@@ -116,7 +116,7 @@ deSynthesizer &synthesizer, decBaseFileReader &reader){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "synthesizer") != 0){
+	if(!root || strcmp(root->GetName(), "synthesizer") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -133,7 +133,7 @@ const char *basePath, deSynthesizer &synthesizer){
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -185,7 +185,7 @@ void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthe
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -212,7 +212,7 @@ void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer 
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -273,7 +273,7 @@ const char *basePath, deSynthesizer &synthesizer){
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -286,7 +286,7 @@ const char *basePath, deSynthesizer &synthesizer){
 			if(tagName == "sound"){
 				const decString path(GetCDataString(*tag));
 				
-				if(! path.IsEmpty()){
+				if(!path.IsEmpty()){
 					deSound *sound = NULL;
 					
 					try{
@@ -355,7 +355,7 @@ deSynthesizerSource *igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -431,7 +431,7 @@ const char *basePath, deSynthesizer &synthesizer){
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -444,7 +444,7 @@ const char *basePath, deSynthesizer &synthesizer){
 			if(tagName == "sound"){
 				const decString path(GetCDataString(*tag));
 				
-				if(! path.IsEmpty()){
+				if(!path.IsEmpty()){
 					deSound *sound = NULL;
 					
 					try{
@@ -514,7 +514,7 @@ const char *basePath, deSynthesizer &synthesizer){
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -590,7 +590,7 @@ const char *basePath, deSynthesizer &synthesizer){
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -727,7 +727,7 @@ deSynthesizer &synthesizer, deSynthesizerControllerTarget &target){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -760,7 +760,7 @@ deSynthesizer &synthesizer){
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			

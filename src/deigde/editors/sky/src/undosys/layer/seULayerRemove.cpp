@@ -45,12 +45,12 @@ pSky(NULL),
 pLayer(NULL),
 pIndex(0)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
 	seSky * const sky = layer->GetSky();
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

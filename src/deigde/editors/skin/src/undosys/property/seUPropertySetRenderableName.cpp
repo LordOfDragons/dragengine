@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property, const char *newName){
-	if(! property || ! newName) DETHROW(deeInvalidParam);
+	if(!property || !newName) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	

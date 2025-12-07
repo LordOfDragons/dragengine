@@ -88,7 +88,7 @@ public:
 	bool IsValidParent(deResource *parent) const;
 	
 	/** \brief Network state is read only. */
-	inline bool GetReadOnly() const{return pReadOnly;}
+	inline bool GetReadOnly() const{ return pReadOnly; }
 	/*@}*/
 	
 	
@@ -119,13 +119,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Network system peer object. */
-	inline deBaseNetworkState *GetPeerNetwork() const{return pPeerNetwork;}
+	inline deBaseNetworkState *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
 	void SetPeerNetwork (deBaseNetworkState *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingNetworkState *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingNetworkState *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
 	void SetPeerScripting(deBaseScriptingNetworkState *peer);
@@ -136,19 +136,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deNetworkState *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next networkState in the parent world linked list. */
 	void SetLLWorldPrev(deNetworkState *networkState);
 	
 	/** \brief Next networkState in the parent world linked list. */
-	inline deNetworkState *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deNetworkState *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next networkState in the parent world linked list. */
 	void SetLLWorldNext(deNetworkState *networkState);

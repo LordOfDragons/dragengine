@@ -91,7 +91,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -107,9 +107,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
-	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
-	inline igdeActionContextMenu *GetActionControllerMenu() const{return pActionControllerMenu;}
+	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline igdeActionContextMenu *GetActionControllerMenu() const{ return pActionControllerMenu; }
 	
 	
 	

@@ -81,7 +81,7 @@ dePropField::~dePropField(){
 //////////
 
 void dePropField::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pPeerGraphic) pPeerGraphic->PositionChanged();
@@ -98,7 +98,7 @@ dePropFieldType *dePropField::GetTypeAt(int index) const{
 }
 
 int dePropField::IndexOfType(dePropFieldType *type) const{
-	if(! type) DETHROW(deeInvalidParam);
+	if(!type) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pTypeCount; i++){
@@ -111,12 +111,12 @@ int dePropField::IndexOfType(dePropFieldType *type) const{
 }
 
 void dePropField::AddType(dePropFieldType *type){
-	if(! type) DETHROW(deeInvalidParam);
+	if(!type) DETHROW(deeInvalidParam);
 	
 	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
 		dePropFieldType **newArray = new dePropFieldType*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTypes){
 			memcpy(newArray, pTypes, sizeof(dePropFieldType*) * pTypeSize);
 			delete [] pTypes;

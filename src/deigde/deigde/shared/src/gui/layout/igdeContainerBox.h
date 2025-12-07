@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Layout axis. */
-	inline eAxis GetAxis() const{return pAxis;}
+	inline eAxis GetAxis() const{ return pAxis; }
 	
 	/** \brief Spacing. */
-	inline int GetSpacing() const{return pSpacing;}
+	inline int GetSpacing() const{ return pSpacing; }
 	/*@}*/
 	
 	

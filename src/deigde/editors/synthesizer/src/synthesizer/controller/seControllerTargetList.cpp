@@ -72,14 +72,14 @@ bool seControllerTargetList::Has(seControllerTarget *target) const{
 }
 
 void seControllerTargetList::Add(seControllerTarget *target){
-	if(! target || Has(target)){
+	if(!target || Has(target)){
 		DETHROW(deeInvalidParam);
 	}
 	pTargets.Add(target);
 }
 
 void seControllerTargetList::Insert(seControllerTarget *target, int index){
-	if(! target || Has(target)){
+	if(!target || Has(target)){
 		DETHROW(deeInvalidParam);
 	}
 	pTargets.Insert(target, index);

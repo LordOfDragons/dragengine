@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Maximum VBO size. */
-	inline int GetMaxSize() const{return pMaxSize;}
+	inline int GetMaxSize() const{ return pMaxSize; }
 	
 	/** Maximum IBO size. */
-	inline int GetMaxIndexSize() const{return pMaxIndexSize;}
+	inline int GetMaxIndexSize() const{ return pMaxIndexSize; }
 	
 	/** Count of lists. */
 	int GetCount() const;

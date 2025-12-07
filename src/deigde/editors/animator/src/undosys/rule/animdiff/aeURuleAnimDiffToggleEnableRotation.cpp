@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation(aeRuleAnimationDifference *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleAnimDiffToggleEnableRotation::~aeURuleAnimDiffToggleEnableRotation(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleAnimDiffToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 

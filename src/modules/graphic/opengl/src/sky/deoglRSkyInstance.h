@@ -90,10 +90,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world or \em NULL. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
 	void SetParentWorld(deoglRWorld *world);
@@ -101,7 +101,7 @@ public:
 	
 	
 	/** Render sky or \em NULL. */
-	inline deoglRSky *GetRSky() const{return pRSky;}
+	inline deoglRSky *GetRSky() const{ return pRSky; }
 	
 	/**
 	 * Set render sky or \em NULL.
@@ -113,26 +113,26 @@ public:
 	
 	
 	/** Rendering order. */
-	inline int GetOrder() const{return pOrder;}
+	inline int GetOrder() const{ return pOrder; }
 	
 	/** Set rendering order. */
 	void SetOrder(int order);
 	
 	/** Layer mask. */
-	inline  const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline  const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Passthrough transparency factor. */
-	inline float GetPassthroughTransparency() const{return pPassthroughTransparency;}
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
 	
 	/** Set passthrough transparency factor. */
 	void SetPassthroughTransparency(float transparency);
 	
 	
 	/** Number of controller states. */
-	inline int GetControllerStateCount() const{return pControllerStateCount;}
+	inline int GetControllerStateCount() const{ return pControllerStateCount; }
 	
 	/** Controller state at index. */
 	float GetControllerStateAt(int index) const;
@@ -147,7 +147,7 @@ public:
 	
 	
 	/** Number of layers. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Layer at index. */
 	deoglRSkyInstanceLayer &GetLayerAt(int index) const;
@@ -161,18 +161,18 @@ public:
 	
 	
 	/** Total sky light intensity. */
-	inline float GetTotalSkyLightIntensity() const{return pTotalSkyLightIntensity;}
+	inline float GetTotalSkyLightIntensity() const{ return pTotalSkyLightIntensity; }
 	
 	/** Total sky ambient only light intensity. */
-	inline float GetTotalSkyAmbientIntensity() const{return pTotalSkyAmbientIntensity;}
+	inline float GetTotalSkyAmbientIntensity() const{ return pTotalSkyAmbientIntensity; }
 	
 	/** Total sky light color. */
-	inline const decColor &GetTotalSkyLightColor() const{return pTotalSkyLightColor;}
+	inline const decColor &GetTotalSkyLightColor() const{ return pTotalSkyLightColor; }
 	
 	
 	
 	/** Environment map timer. */
-	inline float GetEnvironmentMapTimer() const{return pEnvMapTimer;}
+	inline float GetEnvironmentMapTimer() const{ return pEnvMapTimer; }
 	
 	/** Set environment map timer. */
 	void SetEnvironmentMapTimer(float timer);
@@ -208,7 +208,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.

@@ -69,25 +69,25 @@ class DE_DLL_EXPORT igdeEnvironment{
 public:
 	/** \brief File Pattern List Types. */
 	enum eFilePatternListTypes{
-		efpltAll, //<! All files.
-		efpltAnimation, //<! Animation.
-		efpltAnimator, //<! Animator.
-		efpltFont, //<! Font.
-		efpltImage, //<! Image.
-		efpltLanguagePack, //<! Language pack.
-		efpltModel, //<! Model.
-		efpltNavigationSpace, //<! Navigation space.
-		efpltOcclusionMesh, //<! Occlusion mesh.
-		efpltParticleEmitter, //<! Particle Emitter.
-		efpltRig, //<! Rig.
-		efpltSkin, //<! Skin.
-		efpltSky, //<! Sky.
-		efpltSynthesizer, //<! Synthesizer.
-		efpltSound, //<! Sound.
-		efpltVideo, //<! Video.
-		efpltSpeechAnimation, //<! Speech animation.
-		efpltCamera, //<! Camera file.
-		efpltWorld //<! World file.
+		efpltAll, //<!All files.
+		efpltAnimation, //<!Animation.
+		efpltAnimator, //<!Animator.
+		efpltFont, //<!Font.
+		efpltImage, //<!Image.
+		efpltLanguagePack, //<!Language pack.
+		efpltModel, //<!Model.
+		efpltNavigationSpace, //<!Navigation space.
+		efpltOcclusionMesh, //<!Occlusion mesh.
+		efpltParticleEmitter, //<!Particle Emitter.
+		efpltRig, //<!Rig.
+		efpltSkin, //<!Skin.
+		efpltSky, //<!Sky.
+		efpltSynthesizer, //<!Synthesizer.
+		efpltSound, //<!Sound.
+		efpltVideo, //<!Video.
+		efpltSpeechAnimation, //<!Speech animation.
+		efpltCamera, //<!Camera file.
+		efpltWorld //<!World file.
 	};
 	
 	/** \brief Stock icons. */
@@ -137,14 +137,14 @@ public:
 	
 	/** \brief System colors. */
 	enum eSystemColors{
-		escWindowBackground, //<! Window background color.
-		escWindowForeground, //<! Window foreground color.
-		escWidgetBackground, //<! Widget background color.
-		escWidgetForeground, //<! Widget foreground color.
-		escWidgetHighlight, //<! Widget highlight color.
-		escWidgetShadow, //<! Widget shadow color.
-		escWidgetSelectedBackground, //<! Widget selected background color.
-		escWidgetSelectedForeground //<! Widget selected foreground color.
+		escWindowBackground, //<!Window background color.
+		escWindowForeground, //<!Window foreground color.
+		escWidgetBackground, //<!Widget background color.
+		escWidgetForeground, //<!Widget foreground color.
+		escWidgetHighlight, //<!Widget highlight color.
+		escWidgetShadow, //<!Widget shadow color.
+		escWidgetSelectedBackground, //<!Widget selected background color.
+		escWidgetSelectedForeground //<!Widget selected foreground color.
 	};
 	
 	/** \brief Stock skins. */

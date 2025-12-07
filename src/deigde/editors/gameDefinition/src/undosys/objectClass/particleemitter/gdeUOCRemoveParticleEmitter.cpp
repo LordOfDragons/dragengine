@@ -45,11 +45,11 @@ gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass *objectC
 pObjectClass(NULL),
 pParticleEmitter(NULL)
 {
-	if(! objectClass || ! particleEmitter){
+	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetParticleEmitters().Has(particleEmitter)){
+	if(!objectClass->GetParticleEmitters().Has(particleEmitter)){
 		DETHROW(deeInvalidParam);
 	}
 	

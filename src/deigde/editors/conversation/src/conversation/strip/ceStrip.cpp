@@ -45,7 +45,7 @@ ceStrip::ceStrip(){
 }
 
 ceStrip::ceStrip(const char *id, float duration, float pause){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -69,7 +69,7 @@ ceStrip::~ceStrip(){
 ///////////////
 
 void ceStrip::SetID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	pID = id;
@@ -102,5 +102,5 @@ bool ceStrip::operator==(const ceStrip &strip) const{
 }
 
 bool ceStrip::operator!=(const ceStrip &strip) const{
-	return ! (*this == strip);
+	return !(*this == strip);
 }

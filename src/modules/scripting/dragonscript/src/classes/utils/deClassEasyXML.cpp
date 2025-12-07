@@ -118,7 +118,7 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// check arguments
 	const char * const filename = rt->GetValue(0)->GetString();
-	if(! filename){
+	if(!filename){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -175,7 +175,7 @@ void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// check arguments
 	const char * const filename = rt->GetValue(0)->GetString();
-	if(! filename){
+	if(!filename){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -296,7 +296,7 @@ void deClassEasyXML::nfSetRootElement::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	decXmlElement * const element = ds.GetClassEasyXMLElement()->GetElement(
 		rt->GetValue(0)->GetRealObject());
-	if(! element){
+	if(!element){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -319,7 +319,7 @@ void deClassEasyXML::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->GetValue(0)->GetRealObject());
 	const bool compact = rt->GetValue(1)->GetBool();
 	
-	if(! fileWriter){
+	if(!fileWriter){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -353,7 +353,7 @@ void deClassEasyXML::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsXML)){
+	if(!p_IsObjOfType(obj, clsXML)){
 		rt->PushBool(false);
 		
 	}else{
@@ -420,18 +420,18 @@ void deClassEasyXML::CreateClassMembers(dsEngine *engine){
 }
 
 dedsXmlDocument *deClassEasyXML::GetDocument(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((sXMLNatDat*)p_GetNativeData(myself->GetBuffer()))->document;
 }
 
 void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! document){
+	if(!document){
 		rt->PushObject(NULL, this);
 		return;
 	}

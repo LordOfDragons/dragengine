@@ -55,19 +55,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of front walls. */
-	inline unsigned short GetFrontWallCount() const{return pFrontWallCount;}
+	inline unsigned short GetFrontWallCount() const{ return pFrontWallCount; }
 	
 	/** \brief Set number of front walls. */
 	void SetFrontWallCount(unsigned short count);
 	
 	/** \brief Number of back walls. */
-	inline unsigned short GetBackWallCount() const{return pBackWallCount;}
+	inline unsigned short GetBackWallCount() const{ return pBackWallCount; }
 	
 	/** \brief Set number of back walls. */
 	void SetBackWallCount(unsigned short count);
 	
 	/** \brief Type number. */
-	inline unsigned short GetType() const{return pType;}
+	inline unsigned short GetType() const{ return pType; }
 	
 	/** \brief Set type number. */
 	void SetType(unsigned short type);

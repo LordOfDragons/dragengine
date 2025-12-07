@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent texture. */
-	inline deoglPersistentRenderTaskTexture *GetParentTexture() const{return pParentTexture;}
+	inline deoglPersistentRenderTaskTexture *GetParentTexture() const{ return pParentTexture; }
 	
 	/** Set parent texture. */
 	void SetParentTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** VAO. */
-	inline const deoglVAO *GetVAO() const{return pVAO;}
+	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
 	void SetVAO(const deoglVAO *vao);
@@ -121,8 +121,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTexture(){return pLLTexture;}
-	inline const decPointerLinkedList::cListEntry &GetLLTexture() const{return pLLTexture;}
+	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
+	inline const decPointerLinkedList::cListEntry &GetLLTexture() const{ return pLLTexture; }
 	/*@}*/
 };
 

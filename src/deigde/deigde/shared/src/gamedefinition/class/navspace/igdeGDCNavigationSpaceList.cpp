@@ -71,7 +71,7 @@ bool igdeGDCNavigationSpaceList::Has(igdeGDCNavigationSpace *navSpace) const{
 }
 
 void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace *navSpace){
-	if(! navSpace){
+	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace *navSpace){
 }
 
 void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace *navSpace, int index){
-	if(! navSpace){
+	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	

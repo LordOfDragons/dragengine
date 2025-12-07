@@ -46,7 +46,7 @@
 ////////////////////////////
 
 mePropField::mePropField(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pWorld = NULL;
@@ -108,7 +108,7 @@ void mePropField::SetWorld(meWorld *world){
 
 
 void mePropField::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		pEngPF->SetPosition(position);
@@ -134,7 +134,7 @@ mePropFieldType *mePropField::GetTypeAt(int index) const{
 }
 
 int mePropField::IndexOfType(mePropFieldType *type) const{
-	if(! type) DETHROW(deeInvalidParam);
+	if(!type) DETHROW(deeInvalidParam);
 	int t;
 	
 	for(t=0; t<pTypeCount; t++){
@@ -147,12 +147,12 @@ int mePropField::IndexOfType(mePropFieldType *type) const{
 }
 
 void mePropField::AddType(mePropFieldType *type){
-	if(! type) DETHROW(deeInvalidParam);
+	if(!type) DETHROW(deeInvalidParam);
 	
 	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
 		mePropFieldType **newArray = new mePropFieldType*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTypes){
 			memcpy(newArray, pTypes, sizeof(mePropFieldType*) * pTypeSize);
 			delete [] pTypes;

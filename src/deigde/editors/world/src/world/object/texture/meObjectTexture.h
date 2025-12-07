@@ -86,10 +86,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Parent object or \em NULL if not set. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Set parent object or \em NULL if not set. */
 	void SetObject(meObject *object);
@@ -97,10 +97,10 @@ public:
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Skin file path. */
-	inline const decString &GetSkinPath() const{return pSkinPath;}
+	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	
 	/** \brief Set skin file path. */
 	void SetSkinPath(const char *skinPath);
@@ -109,24 +109,24 @@ public:
 	void LoadSkin();
 	
 	/** \brief Engine skin or \em NULL if not found. */
-	inline deSkin *GetEngineSkin() const{return pEngSkin;}
+	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	
 	/** \brief Texture coordinates offset. */
-	inline const decVector2 &GetTexCoordOffset() const{return pTexCoordOffset;}
+	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	
 	/** \brief Set texture coordinates offset. */
 	void SetTexCoordOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinates scaling. */
-	inline const decVector2 &GetTexCoordScaling() const{return pTexCoordScaling;}
+	inline const decVector2 &GetTexCoordScaling() const{ return pTexCoordScaling; }
 	
 	/** \brief Set texture coordinates scaling. */
 	void SetTexCoordScaling(const decVector2 &scaling);
 	
 	/** \brief Texture coordinates rotation. */
-	inline float GetTexCoordRotation() const{return pTexCoordRotation;}
+	inline float GetTexCoordRotation() const{ return pTexCoordRotation; }
 	
 	/** \brief Set texture coordinates rotation. */
 	void SetTexCoordRotation(float rotation);
@@ -134,7 +134,7 @@ public:
 	
 	
 	/** \brief Color tint. */
-	inline const decColor &GetColorTint() const{return pColorTint;}
+	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
 	/** \brief Set color tint. */
 	void SetColorTint(const decColor &color);
@@ -142,7 +142,7 @@ public:
 	
 	
 	/** \brief Dynamic skin or \em NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Update dynamic skin. */
 	void UpdateDynamicSkin();
@@ -164,7 +164,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property. */
 	void SetProperty(const char *key, const char *value);
@@ -179,7 +179,7 @@ public:
 	void RemoveAllProperties();
 	
 	/** \brief Active property. */
-	inline const decString &GetActiveProperty() const{return pActiveProperty;}
+	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** \brief Set active property. */
 	void SetActiveProperty(const char *property);

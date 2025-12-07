@@ -108,7 +108,7 @@ deClassSSSound::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSSSound::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -154,7 +154,7 @@ deClassSSSound::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 	p_AddParameter(init.clsSSSoundTarget); // target
 }
 void deClassSSSound::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -332,7 +332,7 @@ void deClassSSSound::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerSourceSound *deClassSSSound::GetSource(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -340,7 +340,7 @@ deSynthesizerSourceSound *deClassSSSound::GetSource(dsRealObject *myself) const{
 }
 
 void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -364,11 +364,11 @@ void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 }
 
 void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! source){
+	if(!source){
 		rt->PushObject(NULL, this);
 		return;
 	}

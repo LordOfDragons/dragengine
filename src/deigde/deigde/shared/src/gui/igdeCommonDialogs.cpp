@@ -204,7 +204,7 @@ decString &value){
 
 bool igdeCommonDialogs::GetMultilineString(igdeWidget *owner, const char *title,
 const char *text, decString &value){
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -223,7 +223,7 @@ const char *text, decString &value){
 
 bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
 const char *text, decString &value, const decStringList &proposals){
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 	

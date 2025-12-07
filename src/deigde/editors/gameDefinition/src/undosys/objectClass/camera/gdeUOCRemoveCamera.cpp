@@ -45,11 +45,11 @@ gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass *objectClass, gdeOCCamera 
 pObjectClass(NULL),
 pCamera(NULL)
 {
-	if(! objectClass || ! camera){
+	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetCameras().Has(camera)){
+	if(!objectClass->GetCameras().Has(camera)){
 		DETHROW(deeInvalidParam);
 	}
 	

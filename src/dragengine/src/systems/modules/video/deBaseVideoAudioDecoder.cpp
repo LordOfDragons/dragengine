@@ -39,7 +39,7 @@
 deBaseVideoAudioDecoder::deBaseVideoAudioDecoder(decBaseFileReader *file) :
 pFile(file)
 {
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 }

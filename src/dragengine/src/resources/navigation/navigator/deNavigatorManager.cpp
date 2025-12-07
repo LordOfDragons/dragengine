@@ -70,7 +70,7 @@ deNavigator *deNavigatorManager::CreateNavigator(){
 	
 	try{
 		navigator = new deNavigator(this);
-		if(! navigator){
+		if(!navigator){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -109,7 +109,7 @@ void deNavigatorManager::SystemAILoad(){
 	deAISystem &aisys = *GetAISystem();
 	
 	while(navigator){
-		if(! navigator->GetPeerAI()){
+		if(!navigator->GetPeerAI()){
 			aisys.LoadNavigator(navigator);
 		}
 		

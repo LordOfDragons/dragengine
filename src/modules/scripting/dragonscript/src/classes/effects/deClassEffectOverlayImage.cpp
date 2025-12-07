@@ -140,7 +140,7 @@ void deClassEffectOverlayImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 	deClassEffectOverlayImage * const clsEffOverImg = (deClassEffectOverlayImage*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsEffOverImg)){
+	if(!p_IsObjOfType(obj, clsEffOverImg)){
 		rt->PushBool(false);
 		
 	}else{
@@ -204,7 +204,7 @@ void deClassEffectOverlayImage::CreateClassMembers(dsEngine *engine){
 
 
 deEffectOverlayImage *deClassEffectOverlayImage::GetEffect(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -212,11 +212,11 @@ deEffectOverlayImage *deClassEffectOverlayImage::GetEffect(dsRealObject *myself)
 }
 
 void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic){
-	if(! action || ! topic) DETHROW(deeInvalidParam);
+	if(!action || !topic) DETHROW(deeInvalidParam);
 	
 	pAction = NULL;
 	pTopic = NULL;

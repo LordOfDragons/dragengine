@@ -153,37 +153,37 @@ public:
 	/*@{*/
 #ifdef OS_ANDROID
 	/** \brief Configuration. */
-	inline const sConfig &GetConfig() const{return pConfig;}
+	inline const sConfig &GetConfig() const{ return pConfig; }
 #endif
 	
 	/** \brief System config path. */
-	inline const decString &GetPathConfigSystem() const{return pPathConfigSystem;}
+	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	
 	/** \brief User config path. */
-	inline const decString &GetPathConfigUser() const{return pPathConfigUser;}
+	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
 	
 	/** \brief Shares path. */
-	inline const decString &GetPathShares() const{return pPathShares;}
+	inline const decString &GetPathShares() const{ return pPathShares; }
 	
 	/** \brief Games path. */
-	inline const decString &GetPathGames() const{return pPathGames;}
+	inline const decString &GetPathGames() const{ return pPathGames; }
 	
 	/** \brief Logs path. */
-	inline const decString &GetPathLogs() const{return pPathLogs;}
+	inline const decString &GetPathLogs() const{ return pPathLogs; }
 	
 	
 	
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{return pVFS;}
+	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
 	
 	/** \brief Logger. */
-	inline deLoggerChain *GetLogger() const{return pLogger;}
+	inline deLoggerChain *GetLogger() const{ return pLogger; }
 	
 	/** \brief Logger history. */
-	inline delLoggerHistory *GetLoggerHistory() const{return pLoggerHistory;}
+	inline delLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
 	
 	/** \brief Log source. */
-	inline const decString &GetLogSource() const{return pLogSource;}
+	inline const decString &GetLogSource() const{ return pLogSource; }
 	
 	/**
 	 * \brief Add file logger.
@@ -196,22 +196,22 @@ public:
 	
 	
 	/** \brief Engine. */
-	inline delEngine &GetEngine(){return pEngine;}
-	inline const delEngine &GetEngine() const{return pEngine;}
+	inline delEngine &GetEngine(){ return pEngine; }
+	inline const delEngine &GetEngine() const{ return pEngine; }
 	
 	/** \brief Game manager. */
-	inline delGameManager &GetGameManager(){return pGameManager;}
-	inline const delGameManager &GetGameManager() const{return pGameManager;}
+	inline delGameManager &GetGameManager(){ return pGameManager; }
+	inline const delGameManager &GetGameManager() const{ return pGameManager; }
 	
 	/** \brief Patch manager. */
-	inline delPatchManager &GetPatchManager(){return pPatchManager;}
-	inline const delPatchManager &GetPatchManager() const{return pPatchManager;}
+	inline delPatchManager &GetPatchManager(){ return pPatchManager; }
+	inline const delPatchManager &GetPatchManager() const{ return pPatchManager; }
 	
 	/**
 	 * \brief Engine instance factory.
 	 * \version 1.10
 	 */
-	inline delEngineInstance::Factory &GetEngineInstanceFactory() const{return pEngineInstanceFactory;}
+	inline delEngineInstance::Factory &GetEngineInstanceFactory() const{ return pEngineInstanceFactory; }
 	
 	/**
 	 * \brief Set engine instance factory.

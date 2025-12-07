@@ -58,10 +58,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent rig. */
-	inline reRig *GetParentRig() const{return pRig;}
+	inline reRig *GetParentRig() const{ return pRig; }
 	
 	/** Retrieves the number of selected constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	/** Retrieves the constraint at the given index. */
 	reRigConstraint *GetConstraintAt(int index) const;
 	/** Determines if the given constraint exists. */
@@ -78,7 +78,7 @@ public:
 	void RemoveAllConstraints();
 	
 	/** Retrieves the active constraint or NULL. */
-	inline reRigConstraint *GetActiveConstraint() const{return pActiveConstraint;}
+	inline reRigConstraint *GetActiveConstraint() const{ return pActiveConstraint; }
 	/** Determines if an active constraint exists. */
 	bool HasActiveConstraint() const;
 	/** Sets the acitve constraint or NULL. */

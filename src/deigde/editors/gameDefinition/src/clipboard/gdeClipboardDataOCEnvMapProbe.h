@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe. */
-	gdeOCEnvMapProbe *GetEnvMapProbe() const{return pEnvMapProbe;}
+	gdeOCEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
 	/*@}*/
 };
 

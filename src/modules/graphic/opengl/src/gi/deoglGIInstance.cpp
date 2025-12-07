@@ -77,7 +77,7 @@ void deoglGIInstance::cListenerLink::ChangeInstance(bool hard) const{
 	if(hard){
 		instance.SetHardChanged(true);
 	}
-	if(! instance.GetChanged()){
+	if(!instance.GetChanged()){
 		instance.GetInstances().InstanceChanged(instance);
 	}
 	
@@ -152,7 +152,7 @@ void deoglGIInstance::cComponentListener::MovementHintChanged(deoglRComponent&){
 }
 
 void deoglGIInstance::cComponentListener::VisibilityChanged(deoglRComponent &component){
-	if(! component.GetVisible()){
+	if(!component.GetVisible()){
 		pLink.RemoveInstance();
 	}
 }
@@ -274,14 +274,14 @@ void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
 	pMoved = false;
 	pRecheckDynamic = false;
 	
-	if(! component){
+	if(!component){
 		return;
 	}
 	
 	pMinExtend = component->GetMinimumExtend();
 	pMaxExtend = component->GetMaximumExtend();
 	
-	if(! pComponentListener){
+	if(!pComponentListener){
 		pComponentListener.TakeOverWith(*this);
 	}
 	component->AddListener(pComponentListener);
@@ -328,16 +328,16 @@ void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
 	pMinExtend.SetZero();
 	pMaxExtend.SetZero();
 	
-	if(! decal || ! decal->GetParentComponent() || dynamic){
+	if(!decal || !decal->GetParentComponent() || dynamic){
 		return;
 	}
 	
-	if(! pDecalListener){
+	if(!pDecalListener){
 		pDecalListener.TakeOverWith(*this);
 	}
 	decal->AddListener(pDecalListener);
 	
-	if(! pDecalComponentListener){
+	if(!pDecalComponentListener){
 		pDecalComponentListener.TakeOverWith(*this);
 	}
 	decal->GetParentComponent()->AddListener(pDecalComponentListener);
@@ -354,7 +354,7 @@ void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
 	}else{
 		decal->PrepareGILocalBVH();
 		pGIBVHLocal = decal->GetGIBVHLocal();
-		if(! pGIBVHLocal){
+		if(!pGIBVHLocal){
 			return;
 		}
 		
@@ -375,7 +375,7 @@ void deoglGIInstance::SetExtendsFromBVHLocal(){
 	pMinExtend.SetZero();
 	pMaxExtend.SetZero();
 	
-	if(! pGIBVHLocal || ! pGIBVHLocal->GetTBOVertex()){
+	if(!pGIBVHLocal || !pGIBVHLocal->GetTBOVertex()){
 		return;
 	}
 	
@@ -384,7 +384,7 @@ void deoglGIInstance::SetExtendsFromBVHLocal(){
 		matrix = pComponent->GetMatrix();
 		
 	}else if(pDecal){
-		if(! pDecal->GetParentComponent()){
+		if(!pDecal->GetParentComponent()){
 			return;
 		}
 		matrix = pDecal->GetParentComponent()->GetMatrix();
@@ -535,7 +535,7 @@ void deoglGIInstance::SetDirtyTUCs(bool dirty){
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIInstance::GetBlockMaterial(){
-	if(! pBlockMaterial){
+	if(!pBlockMaterial){
 		pBlockMaterial.TakeOver(pInstances.GetGIState().GetRenderThread().GetGI().GetBVHShared()
 			.GetSharedTBOMaterial()->AddBlock(pTBOMaterial, pTBOMaterial2));
 	}

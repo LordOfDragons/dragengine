@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
@@ -66,11 +66,11 @@ meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){
 ///////////////
 
 void meUHTVRuleMapToggleInversed::Undo(){
-	pRule->SetInversed(! pRule->GetInversed());
+	pRule->SetInversed(!pRule->GetInversed());
 	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMapToggleInversed::Redo(){
-	pRule->SetInversed(! pRule->GetInversed());
+	pRule->SetInversed(!pRule->GetInversed());
 	pVLayer->NotifyRuleChanged(pRule);
 }

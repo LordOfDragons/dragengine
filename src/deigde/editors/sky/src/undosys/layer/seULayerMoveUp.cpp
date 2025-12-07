@@ -44,12 +44,12 @@ seULayerMoveUp::seULayerMoveUp(seLayer *layer) :
 pLayer(NULL),
 pIndex(0)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const seSky * const sky = layer->GetSky();
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -57,7 +57,7 @@ FXListItem(text),
 pFont(font),
 pParameterName(parameterName)
 {
-	if(! parameterName || ! font){
+	if(!parameterName || !font){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -71,7 +71,7 @@ deglDPLListItemParam::~deglDPLListItemParam(){
 ///////////////
 
 void deglDPLListItemParam::SetFont(FXFont *font){
-	if(! font){
+	if(!font){
 		DETHROW(deeInvalidParam);
 	}
 	pFont = font;
@@ -84,7 +84,7 @@ void deglDPLListItemParam::draw(const FXList *list, FXDC &dc, FXint xx, FXint yy
 	if(icon){
 		ih = icon->getHeight();
 	}
-	if(! label.empty()){
+	if(!label.empty()){
 		th = pFont->getFontHeight();
 	}
 	
@@ -106,10 +106,10 @@ void deglDPLListItemParam::draw(const FXList *list, FXDC &dc, FXint xx, FXint yy
 		xx += ICON_SPACING + icon->getWidth();
 	}
 	
-	if(! label.empty()){
+	if(!label.empty()){
 		dc.setFont(pFont);
 		
-		if(! isEnabled()){
+		if(!isEnabled()){
 			dc.setForeground(makeShadowColor(list->getBackColor()));
 			
 		}else if(isSelected()){

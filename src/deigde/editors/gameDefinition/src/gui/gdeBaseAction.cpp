@@ -68,7 +68,7 @@ pWindowMain(windowMain){
 
 void gdeBaseAction::OnAction(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return;
 	}
 	

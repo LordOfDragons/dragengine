@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCForceFieldCopy::OnActionSubObject(gdeGameDefinition &gameDefini
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
-	if(! forceField){
+	if(!forceField){
 		return NULL;
 	}
 	

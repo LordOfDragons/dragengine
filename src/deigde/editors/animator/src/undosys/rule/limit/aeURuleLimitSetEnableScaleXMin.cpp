@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnableScaleXMin::aeURuleLimitSetEnableScaleXMin(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableScaleXMin::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleXMin::Redo(){
-	pRule->SetEnableScalingXMin(! pRule->GetEnableScalingXMin());
+	pRule->SetEnableScalingXMin(!pRule->GetEnableScalingXMin());
 }

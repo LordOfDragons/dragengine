@@ -14,7 +14,7 @@
 
 // assert macros
 #define ASSERT_TRUE(expr) \
-	if(! (expr)) \
+	if(!(expr)) \
 		DETHROW_INFO(deeTestFailed, "AssertTrue failed")
 
 #define ASSERT_FALSE(expr) \
@@ -38,7 +38,7 @@
 		DETHROW_INFO(deeTestFailed, "AssertNFEqual failed")
 
 #define ASSERT_NOT_NULL(expr) \
-	if(! (expr)) \
+	if(!(expr)) \
 		DETHROW_INFO(deeTestFailed, "AssertNotNull failed")
 
 #define ASSERT_NULL(expr) \
@@ -46,7 +46,7 @@
 		DETHROW_INFO(deeTestFailed, "AssertNull failed")
 
 #define ASSERT_NEW(expr) \
-	if(! (expr)) \
+	if(!(expr)) \
 		DETHROW(deeOutOfMemory)
 
 #define ASSERT_DOES_FAIL(expr) \
@@ -57,7 +57,7 @@
 		}catch(const deException &){ \
 			failed = true; \
 		} \
-		if(! failed){ \
+		if(!failed){ \
 			DETHROW_INFO(deeTestFailed, "AssertDoesFail failed"); \
 		} \
 	}
@@ -69,7 +69,7 @@ private:
 	int pSubTest;
 public:
 	detCase();
-	inline int GetSubTestNum() const{return pSubTest;}
+	inline int GetSubTestNum() const{ return pSubTest; }
 	virtual ~detCase(){}
 	virtual void Prepare() = 0;
 	virtual void Run() = 0;

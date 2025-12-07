@@ -143,7 +143,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator || ! comboBox->GetSelectedItem()){
+		if(!animator || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -311,7 +311,7 @@ public:
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator){
+		if(!animator){
 			return;
 		}
 		
@@ -337,7 +337,7 @@ public:
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
-		if(! leg){
+		if(!leg){
 			return;
 		}
 		
@@ -351,7 +351,7 @@ public:
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
-		if(! leg){
+		if(!leg){
 			return;
 		}
 		
@@ -365,7 +365,7 @@ public:
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
-		if(! leg){
+		if(!leg){
 			return;
 		}
 		
@@ -379,7 +379,7 @@ public:
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
-		if(! leg){
+		if(!leg){
 			return;
 		}
 		
@@ -393,7 +393,7 @@ public:
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
 		aeAnimatorLocomotionLeg * const leg = pPanel.GetLeg();
-		if(! leg){
+		if(!leg){
 			return;
 		}
 		
@@ -407,7 +407,7 @@ public:
 		"Show Shapes", NULL, "Determines if shapes are shown"){ }
 	
 	virtual void OnAction(aeAnimator &animator){
-		animator.GetLocomotion().SetShowShapes(! animator.GetLocomotion().GetShowShapes());
+		animator.GetLocomotion().SetShowShapes(!animator.GetLocomotion().GetShowShapes());
 	}
 	
 	virtual void Update(const aeAnimator &animator){
@@ -422,7 +422,7 @@ public:
 		"Use Feet-On-Ground IK", NULL, "Determines the feet-on-ground IK is used"){}
 	
 	virtual void OnAction(aeAnimator &animator){
-		animator.GetLocomotion().SetUseFoGIK(! animator.GetLocomotion().GetUseFoGIK());
+		animator.GetLocomotion().SetUseFoGIK(!animator.GetLocomotion().GetUseFoGIK());
 	}
 	
 	virtual void Update(const aeAnimator &animator){
@@ -615,7 +615,7 @@ void aeWPPlayground::SetAnimator(aeAnimator *animator){
 }
 
 aeAnimatorLocomotionLeg *aeWPPlayground::GetLeg() const{
-	if(! pAnimator){
+	if(!pAnimator){
 		return NULL;
 	}
 	

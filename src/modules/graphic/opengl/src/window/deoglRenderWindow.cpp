@@ -224,7 +224,7 @@ void deoglRenderWindow::pCleanUp(){
 		pRRenderWindow->FreeReference();
 	}
 	
-	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 	pRenderWindow.SetWindow(0);
 	#endif
 	

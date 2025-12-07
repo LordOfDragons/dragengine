@@ -109,7 +109,7 @@ public:
 	virtual void OnAction(){
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
-		if(! skin || ! texture){
+		if(!skin || !texture){
 			return;
 		}
 		
@@ -179,7 +179,7 @@ public:
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if(! skin || ! texture || ! property){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
@@ -204,7 +204,7 @@ public:
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if(! skin || ! texture || ! property){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
@@ -229,7 +229,7 @@ public:
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if(! skin || ! texture || ! property){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
@@ -279,7 +279,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		seTexture * const texture = pPanel.GetTexture();
 		const decString &value = textField->GetText();
-		if(! texture || texture->GetName() == value){
+		if(!texture || texture->GetName() == value){
 			return;
 		}
 		
@@ -363,7 +363,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seProperty * const property = pPanel.GetProperty();
-		if(! property || ! comboBox->GetSelectedItem()){
+		if(!property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -415,7 +415,7 @@ public:
 	cColorPropertyColor(seWPTexture &panel) : cBaseColorBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property){
-		return ! property->GetColor().IsEqualTo(colorBox.GetColor())
+		return !property->GetColor().IsEqualTo(colorBox.GetColor())
 			? new seUPropertySetColor(property, colorBox.GetColor()) : nullptr;
 	}
 };
@@ -483,7 +483,7 @@ public:
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if(! skin || ! texture || ! property || ! comboBox->GetSelectedItem()){
+		if(!skin || !texture || !property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -505,7 +505,7 @@ public:
 	cColorPropertyConstructed(seWPTexture &panel) : cBaseColorBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property){
-		return ! property->GetNodeColor().IsEqualTo(colorBox.GetColor())
+		return !property->GetNodeColor().IsEqualTo(colorBox.GetColor())
 			? new seUPropertySetConstructedColor(property, colorBox.GetColor()) : nullptr;
 	}
 };
@@ -517,7 +517,7 @@ public:
 	
 	virtual void OnPoint3Changed(igdeEditPoint3 *editPoint3){
 		seProperty * const property = pPanel.GetProperty();
-		if(! property || property->GetNodeGroup()->GetSize() == editPoint3->GetPoint3()){
+		if(!property || property->GetNodeGroup()->GetSize() == editPoint3->GetPoint3()){
 			return;
 		}
 		
@@ -564,7 +564,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSkin * const skin = pPanel.GetSkin();
 		seProperty * const property = pPanel.GetProperty();
-		if(! skin || ! pPanel.GetTexture() || ! property || ! comboBox->GetSelectedItem()){
+		if(!skin || !pPanel.GetTexture() || !property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

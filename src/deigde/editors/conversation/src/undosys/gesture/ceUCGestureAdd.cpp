@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture){
-	if(! conversation || ! gesture) DETHROW(deeInvalidParam);
+	if(!conversation || !gesture) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pGesture = NULL;

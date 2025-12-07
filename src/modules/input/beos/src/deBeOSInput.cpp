@@ -344,7 +344,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 			break;
 		}
 		
-		if(! pKeyStates[virtualKeyCode]){
+		if(!pKeyStates[virtualKeyCode]){
 			break;
 		}
 		pKeyStates[virtualKeyCode] = false;
@@ -402,7 +402,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 			break;
 		}
 		
-		if(! pKeyStates[virtualKeyCode]){
+		if(!pKeyStates[virtualKeyCode]){
 			break;
 		}
 		pKeyStates[virtualKeyCode] = false;
@@ -445,7 +445,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 		const uint32 masks[3] = {B_PRIMARY_MOUSE_BUTTON, B_SECONDARY_MOUSE_BUTTON, B_TERTIARY_MOUSE_BUTTON};
 		int i;
 		for(i=0; i<3; i++){
-			if(! (buttons & masks[i])){
+			if(!(buttons & masks[i])){
 				continue;
 			}
 			
@@ -465,7 +465,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 		// the render windows. fortunately it is not important which BView we are using
 		// as long as it is connected to the app_server. for this reason we take the first
 		// BView inside the current application window if present
-		if(! pOSBeOS->GetWindow() || pOSBeOS->GetWindow()->CountChildren() == 0){
+		if(!pOSBeOS->GetWindow() || pOSBeOS->GetWindow()->CountChildren() == 0){
 			break;
 		}
 		
@@ -536,7 +536,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 }
 
 void deBeOSInput::CaptureInputDevicesChanged(){
-	if(! pOSBeOS){
+	if(!pOSBeOS){
 		return; // not inited yet
 	}
 	
@@ -545,7 +545,7 @@ void deBeOSInput::CaptureInputDevicesChanged(){
 }
 
 void deBeOSInput::AppActivationChanged(){
-	if(! pOSBeOS){
+	if(!pOSBeOS){
 		return; // not inited yet
 	}
 	
@@ -612,7 +612,7 @@ const timeval& eventTime){
 
 void deBeOSInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
@@ -626,18 +626,18 @@ void deBeOSInput::pCenterPointer(){
 
 void deBeOSInput::pQueryMousePosition(bool sendEvents){
 	const bool capture = GetGameEngine()->GetInputSystem()->GetCaptureInputDevices();
-	if(capture && ! pIsListening){
+	if(capture && !pIsListening){
 		return;
 	}
 	
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	
 	BWindow * const window = renderWindow->GetWindow();
 	BView * const view = window->CurrentFocus();
-	if(! view){
+	if(!view){
 		return;
 	}
 	
@@ -652,7 +652,7 @@ void deBeOSInput::pQueryMousePosition(bool sendEvents){
 	const int positionY = (int)(devicePosition.y + 0.5f);
 	
 	if(capture){
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		
@@ -684,7 +684,7 @@ void deBeOSInput::pQueryMousePosition(bool sendEvents){
 		pLastMouseX = positionX;
 		pLastMouseY = positionY;
 		
-		if(! sendEvents){
+		if(!sendEvents){
 			return;
 		}
 		if(diffX == 0 && diffY == 0){

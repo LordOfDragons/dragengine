@@ -297,11 +297,11 @@ void detString::TestOperators(){
 	
 	// operator ! , is empty
 	ASSERT_TRUE(string1.IsEmpty());
-	ASSERT_TRUE(! string1);
+	ASSERT_TRUE(!string1);
 	
 	string1.Set(orgstr1);
 	ASSERT_FALSE(string1.IsEmpty());
-	ASSERT_FALSE(! string1);
+	ASSERT_FALSE(!string1);
 	
 	// const char *operator , get character pointer
 	ASSERT_TRUE(strcmp((const char *)string1, orgstr1) == 0);

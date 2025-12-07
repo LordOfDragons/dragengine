@@ -58,25 +58,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index of the texture. */
-	inline int GetTexture() const{return pTexture;}
+	inline int GetTexture() const{ return pTexture; }
 	
 	/** \brief Set index of the texture. */
 	void SetTexture(int texture);
 	
 	/** \brief Index of the first vertex. */
-	inline int GetVertex1() const{return pVertex[0];}
+	inline int GetVertex1() const{ return pVertex[0]; }
 	
 	/** \brief Set index of the first vertex. */
 	void SetVertex1(int vertex);
 	
 	/** \brief Index of the second vertex. */
-	inline int GetVertex2() const{return pVertex[1];}
+	inline int GetVertex2() const{ return pVertex[1]; }
 	
 	/** \brief Set index of the second vertex. */
 	void SetVertex2(int vertex);
 	
 	/** \brief Index of the third vertex. */
-	inline int GetVertex3() const{return pVertex[2];}
+	inline int GetVertex3() const{ return pVertex[2]; }
 	
 	/** \brief Set index of the third vertex. */
 	void SetVertex3(int vertex);
@@ -88,19 +88,19 @@ public:
 	void SetVertexAt(int corner, int vertex);
 	
 	/** \brief Index of the first normal. */
-	inline int GetNormal1() const{return pNormal[0];}
+	inline int GetNormal1() const{ return pNormal[0]; }
 	
 	/** \brief Set index of the first normal. */
 	void SetNormal1(int normal);
 	
 	/** \brief Index of the second normal. */
-	inline int GetNormal2() const{return pNormal[1];}
+	inline int GetNormal2() const{ return pNormal[1]; }
 	
 	/** \brief Set index of the second normal. */
 	void SetNormal2(int normal);
 	
 	/** \brief Index of the third normal. */
-	inline int GetNormal3() const{return pNormal[2];}
+	inline int GetNormal3() const{ return pNormal[2]; }
 	
 	/** \brief Set index of the third normal. */
 	void SetNormal3(int normal);
@@ -112,19 +112,19 @@ public:
 	void SetNormalAt(int corner, int normal);
 	
 	/** \brief Index of the first tangent. */
-	inline int GetTangent1() const{return pTangent[0];}
+	inline int GetTangent1() const{ return pTangent[0]; }
 	
 	/** \brief Set index of the first tangent. */
 	void SetTangent1(int tangent);
 	
 	/** \brief Index of the second tangent. */
-	inline int GetTangent2() const{return pTangent[1];}
+	inline int GetTangent2() const{ return pTangent[1]; }
 	
 	/** \brief Set index of the second tangent. */
 	void SetTangent2(int tangent);
 	
 	/** \brief Index of the third tangent. */
-	inline int GetTangent3() const{return pTangent[2];}
+	inline int GetTangent3() const{ return pTangent[2]; }
 	
 	/** \brief Set index of the third tangent. */
 	void SetTangent3(int tangent);
@@ -136,19 +136,19 @@ public:
 	void SetTangentAt(int corner, int tangent);
 	
 	/** \brief First texture coordinates index. */
-	inline int GetTextureCoordinates1() const{return pTextureCoordinates[0];}
+	inline int GetTextureCoordinates1() const{ return pTextureCoordinates[0]; }
 	
 	/** \brief Set first texture coordinates index. */
 	void SetTextureCoordinates1(int textureCoordinates);
 	
 	/** \brief Second texture coordinates index. */
-	inline int GetTextureCoordinates2() const{return pTextureCoordinates[1];}
+	inline int GetTextureCoordinates2() const{ return pTextureCoordinates[1]; }
 	
 	/** \brief Set second texture coordinates index. */
 	void SetTextureCoordinates2(int textureCoordinates);
 	
 	/** \brief Third texture coordinates index. */
-	inline int GetTextureCoordinates3() const{return pTextureCoordinates[2];}
+	inline int GetTextureCoordinates3() const{ return pTextureCoordinates[2]; }
 	
 	/** \brief Set third texture coordinates index. */
 	void SetTextureCoordinates3(int textureCoordinates);
@@ -160,13 +160,13 @@ public:
 	void SetTextureCoordinatesAt(int corner, int textureCoordinates);
 	
 	/** \brief Face normal. */
-	inline const decVector &GetFaceNormal() const{return pFaceNormal;}
+	inline const decVector &GetFaceNormal() const{ return pFaceNormal; }
 	
 	/** \brief Set face normal. */
 	void SetFaceNormal(const decVector &normal);
 	
 	/** \brief Face tangent. */
-	inline const decVector &GetFaceTangent() const{return pFaceTangent;}
+	inline const decVector &GetFaceTangent() const{ return pFaceTangent; }
 	
 	/** \brief Set face tangent. */
 	void SetFaceTangent(const decVector &tangent);

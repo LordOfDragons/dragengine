@@ -45,7 +45,7 @@
 ////////////////////////////
 
 feFontBuilder::feFontBuilder(feFont *font){
-	if(! font) DETHROW(deeInvalidParam);
+	if(!font) DETHROW(deeInvalidParam);
 	
 	pFont = font;
 }
@@ -59,7 +59,7 @@ feFontBuilder::~feFontBuilder(){
 ///////////////
 
 void feFontBuilder::BuildFont(deFont *engFont){
-	if(! engFont){
+	if(!engFont){
 		DETHROW(deeInvalidParam);
 	}
 	

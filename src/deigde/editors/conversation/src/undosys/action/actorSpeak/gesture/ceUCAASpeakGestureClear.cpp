@@ -46,7 +46,7 @@ ceUCAASpeakGestureClear::ceUCAASpeakGestureClear(ceConversationTopic *topic, ceC
 pTopic(NULL),
 pActorSpeak(NULL)
 {
-	if(! topic || ! actorSpeak){
+	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	

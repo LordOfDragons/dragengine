@@ -69,18 +69,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO. */
-	inline const deoglDynamicTBO::Ref &GetTBO() const{return pTBO;}
-	inline const deoglDynamicTBO::Ref &GetTBO2() const{return pTBO2;}
+	inline const deoglDynamicTBO::Ref &GetTBO() const{ return pTBO; }
+	inline const deoglDynamicTBO::Ref &GetTBO2() const{ return pTBO2; }
 	
 	/** Stride in pixel for one unit. */
-	inline int GetStride() const{return pStride;}
-	inline int GetStride2() const{return pStride2;}
+	inline int GetStride() const{ return pStride; }
+	inline int GetStride2() const{ return pStride2; }
 	
 	/** Prepare TBO data if required. This does not upload the TBO data just prepare it. */
 	void Prepare();
 	
 	/** Used size in units. */
-	inline int GetUsedSize() const{return pUsedSize;}
+	inline int GetUsedSize() const{ return pUsedSize; }
 	
 	/** Update used sizes in units. */
 	void UpdateUsedSizes();

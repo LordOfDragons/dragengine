@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Writer or NULL. */
-	inline decXmlWriter *GetWriter(){return pWriter;}
+	inline decXmlWriter *GetWriter(){ return pWriter; }
 	
 	/** \brief Write compact XML for example for network transfer. */
-	inline bool GetCompact() const{return pCompact;}
+	inline bool GetCompact() const{ return pCompact; }
 	
 	/** \brief Set to write compact XML for example for network transfer. */
 	void SetCompact(bool compact);

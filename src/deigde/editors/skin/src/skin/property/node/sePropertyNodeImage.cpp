@@ -87,7 +87,7 @@ void sePropertyNodeImage::SetPath(const char *path){
 void sePropertyNodeImage::UpdateImage(){
 	deImage *image = NULL;
 	
-	if(! pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin()){
+	if(!pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin()){
 		const decString &basePath = GetProperty()->GetTexture()->GetSkin()->GetDirectoryPath();
 		
 		try{
@@ -112,7 +112,7 @@ void sePropertyNodeImage::UpdateImage(){
 }
 
 void sePropertyNodeImage::SetRepeat(const decPoint &count){
-	if(! (count >= decPoint(1, 1))){
+	if(!(count >= decPoint(1, 1))){
 		DETHROW(deeInvalidParam);
 	}
 	

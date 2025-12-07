@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent height terrain navigation space. */
-	meHeightTerrainNavSpace *GetNavSpace() const{return pNavSpace;}
+	meHeightTerrainNavSpace *GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Set parent height terrain navigation space. */
 	void SetNavSpace(meHeightTerrainNavSpace *navspace);
@@ -83,19 +83,19 @@ public:
 	
 	
 	/** \brief Display name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
 	void SetName(const char *name);
 	
 	/** \brief Display color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set display color. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Navigation space type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	
 	/** \brief Set navigation type. */
 	void SetType(int type);
@@ -111,7 +111,7 @@ public:
 	
 	
 	/** \brief Debug drawer shape or \em NULL. */
-	inline deDebugDrawerShape *GetDDShape() const{return pDDShape;}
+	inline deDebugDrawerShape *GetDDShape() const{ return pDDShape; }
 	
 	/** \brief Set debug drawer shape or \em NULL. */
 	void SetDDShape(deDebugDrawerShape *shape);

@@ -71,7 +71,7 @@ pViewMode(evmList),
 pSelection(-1),
 pMinimumSize(minimumSize),
 pDescription(description){
-	if(! (minimumSize >= decPoint())){
+	if(!(minimumSize >= decPoint())){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -95,7 +95,7 @@ void igdeIconListBox::SetEnabled(bool enabled){
 }
 
 void igdeIconListBox::SetMinimumSize(const decPoint &size){
-	if(! (size >= decPoint())){
+	if(!(size >= decPoint())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -158,7 +158,7 @@ int igdeIconListBox::IndexOfItem(igdeListItem *item) const{
 }
 
 int igdeIconListBox::IndexOfItem(const char *item) const{
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,7 +188,7 @@ int igdeIconListBox::IndexOfItemWithData(void *data) const{
 }
 
 void igdeIconListBox::AddItem(igdeListItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	pItems.Add(item);
@@ -224,7 +224,7 @@ const decStringList &details, igdeIcon *icon, void *data){
 }
 
 void igdeIconListBox::InsertItem(int index, igdeListItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -354,7 +354,7 @@ static void igdeIconListBox_Sort(decObjectList &items, igdeListItemSorter &sorte
 }
 
 void igdeIconListBox::SortItems(){
-	if(! pSorter){
+	if(!pSorter){
 		return;
 	}
 	
@@ -462,7 +462,7 @@ void igdeIconListBox::DeselectItem(int index){
 	}
 	
 	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(! item.GetSelected()){
+	if(!item.GetSelected()){
 		return;
 	}
 	
@@ -481,7 +481,7 @@ void igdeIconListBox::DeselectAllItems(){
 	
 	for(i=0; i<count; i++){
 		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
-		if(! item.GetSelected()){
+		if(!item.GetSelected()){
 			continue;
 		}
 		
@@ -529,7 +529,7 @@ bool igdeIconListBox::HasHeader(igdeListHeader *header) const{
 }
 
 void igdeIconListBox::AddHeader(igdeListHeader *header){
-	if(! header || pHeaders.Has(header)){
+	if(!header || pHeaders.Has(header)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -572,7 +572,7 @@ void igdeIconListBox::NotifyHeaderClicked(int index){
 
 
 void igdeIconListBox::EnsureItemVisible(int index){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -586,7 +586,7 @@ void igdeIconListBox::EnsureSelectedItemVisible(){
 }
 
 void igdeIconListBox::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -606,7 +606,7 @@ void igdeIconListBox::ShowContextMenu(const decPoint &position){
 
 
 void igdeIconListBox::AddListener(igdeIconListBoxListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -653,7 +653,7 @@ void igdeIconListBox::CreateNativeWidget(){
 }
 
 void igdeIconListBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -677,7 +677,7 @@ void igdeIconListBox::OnItemRemoved(int index){
 }
 
 void igdeIconListBox::OnAllItemsRemoved(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -46,7 +46,7 @@ pOffset(offset),
 pLength(length),
 pModificationTime(decDateTime::GetSystemTime())
 {
-	if(! filename || fileDescriptor == 0){
+	if(!filename || fileDescriptor == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

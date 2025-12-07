@@ -41,7 +41,7 @@
 ////////////////////////////
 
 spScriptFileList::spScriptFileList(ScriptingPython *sp){
-	if(! sp){
+	if(!sp){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -116,7 +116,7 @@ bool spScriptFileList::HasWithFullName(const char *fullname) const{
 }
 
 void spScriptFileList::Add(spScriptFile *entry){
-	if(! entry || HasWithFullName(entry->GetFullModuleName().GetString())){
+	if(!entry || HasWithFullName(entry->GetFullModuleName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	

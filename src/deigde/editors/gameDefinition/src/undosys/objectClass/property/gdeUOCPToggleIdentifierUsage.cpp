@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeProperty *property) :
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,11 +73,11 @@ gdeUOCPToggleIdentifierUsage::~gdeUOCPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUOCPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pObjectClass->NotifyPropertyChanged(pProperty);
 }

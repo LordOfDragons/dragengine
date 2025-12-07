@@ -90,31 +90,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	inline const decPoint &GetPointCount() const{return pPointCount;}
+	inline const decPoint &GetPointCount() const{ return pPointCount; }
 	
 	/** \brief Set number of points. */
 	void SetPointCount(const decPoint &pointCount);
 	
 	/** \brief Size of the grid. */
-	inline const decVector2 &GetSize() const{return pSize;}
+	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size of the grid. */
 	void SetSize(const decVector2 &size);
 	
 	/** \brief Scaling. */
-	inline float GetScaling() const{return pScaling;}
+	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(float scaling);
 	
 	/** \brief Path of the image used to store the height map or NULL if not used. */
-	inline const decString &GetPathHeightImage() const{return pPathHeightImage;}
+	inline const decString &GetPathHeightImage() const{ return pPathHeightImage; }
 	
 	/** \brief Set path of the image used to store the height map or NULL if not used. */
 	void SetPathHeightImage(const  char *path);
 	
 	/** \brief Height image or NULL if not set. */
-	inline deImage *GetHeightImage() const{return pHeightImage;}
+	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
 	void SetHeightImage(deImage *heightImage);
@@ -128,7 +128,7 @@ public:
 	/** \name Face Visibility */
 	/*@{*/
 	/** \brief Path of the image used to store the visibility map or NULL if not used. */
-	inline const decString &GetPathVisibilityImage() const{return pPathVisImage;}
+	inline const decString &GetPathVisibilityImage() const{ return pPathVisImage; }
 	
 	/** \brief Set path of the image used to store the visibility map or NULL if not used. */
 	void SetPathVisibilityImage(const  char *path);

@@ -63,8 +63,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieve the collider collision test. */
-	inline deColliderCollisionTest &GetCollisionTest(){return pCollisionTest;}
-	inline const deColliderCollisionTest &GetCollisionTest() const{return pCollisionTest;}
+	inline deColliderCollisionTest &GetCollisionTest(){ return pCollisionTest; }
+	inline const deColliderCollisionTest &GetCollisionTest() const{ return pCollisionTest; }
 	
 	/** \brief Collider collision test changed. */
 	void CollisionTestChanged();

@@ -259,7 +259,7 @@ deAnimatorRule *aeRuleForeignState::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleForeignState;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
 		InitEngineRule(engRule);

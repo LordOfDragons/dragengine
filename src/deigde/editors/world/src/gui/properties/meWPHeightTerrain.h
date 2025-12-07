@@ -175,10 +175,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties panel. */
-	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -190,7 +190,7 @@ public:
 	meHeightTerrainSector *GetSector() const;
 	
 	/** \brief Texture. */
-	inline meHeightTerrainTexture *GetTexture() const{return pTexture;}
+	inline meHeightTerrainTexture *GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture. */
 	void SetTexture(meHeightTerrainTexture *texture);
@@ -202,13 +202,13 @@ public:
 	meHeightTerrainNavSpaceType *GetActiveNavSpaceType() const;
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{return pVLayer;}
+	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
 	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Vegetation layer variation. */
-	inline meHTVVariation *GetVVariation() const{return pVVariation;}
+	inline meHTVVariation *GetVVariation() const{ return pVVariation; }
 	
 	/** \brief Set vegetation layer variation. */
 	void SetVVariation(meHTVVariation *vvariation);
@@ -268,25 +268,25 @@ public:
 	void UpdateVVariation();
 	
 	
-	inline igdeAction *GetActionTextureAdd() const{return pActionTextureAdd;}
-	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
+	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
-	inline igdeAction *GetActionNavSpaceAdd() const{return pActionNavSpaceAdd;}
-	inline igdeAction *GetActionNavSpaceRemove() const{return pActionNavSpaceRemove;}
+	inline igdeAction *GetActionNavSpaceAdd() const{ return pActionNavSpaceAdd; }
+	inline igdeAction *GetActionNavSpaceRemove() const{ return pActionNavSpaceRemove; }
 	
-	inline igdeAction *GetActionNavSpaceTypeAdd() const{return pActionNavSpaceTypeAdd;}
-	inline igdeAction *GetActionNavSpaceTypeRemove() const{return pActionNavSpaceTypeRemove;}
+	inline igdeAction *GetActionNavSpaceTypeAdd() const{ return pActionNavSpaceTypeAdd; }
+	inline igdeAction *GetActionNavSpaceTypeRemove() const{ return pActionNavSpaceTypeRemove; }
 	
-	inline igdeAction *GetActionNavSpaceFaceAdd() const{return pActionNavSpaceFaceAdd;}
-	inline igdeAction *GetActionNavSpaceFaceRemove() const{return pActionNavSpaceFaceRemove;}
+	inline igdeAction *GetActionNavSpaceFaceAdd() const{ return pActionNavSpaceFaceAdd; }
+	inline igdeAction *GetActionNavSpaceFaceRemove() const{ return pActionNavSpaceFaceRemove; }
 	
-	inline igdeAction *GetActionVLayerAdd() const{return pActionVLayerAdd;}
-	inline igdeAction *GetActionVLayerRemove() const{return pActionVLayerRemove;}
-	inline igdeAction *GetActionVLayerUp() const{return pActionVLayerUp;}
-	inline igdeAction *GetActionVLayerDown() const{return pActionVLayerDown;}
+	inline igdeAction *GetActionVLayerAdd() const{ return pActionVLayerAdd; }
+	inline igdeAction *GetActionVLayerRemove() const{ return pActionVLayerRemove; }
+	inline igdeAction *GetActionVLayerUp() const{ return pActionVLayerUp; }
+	inline igdeAction *GetActionVLayerDown() const{ return pActionVLayerDown; }
 	
-	inline igdeAction *GetActionVVariationAdd() const{return pActionVVariationAdd;}
-	inline igdeAction *GetActionVVariationRemove() const{return pActionVVariationRemove;}
+	inline igdeAction *GetActionVVariationAdd() const{ return pActionVVariationAdd; }
+	inline igdeAction *GetActionVVariationRemove() const{ return pActionVVariationRemove; }
 	/*@}*/
 };
 

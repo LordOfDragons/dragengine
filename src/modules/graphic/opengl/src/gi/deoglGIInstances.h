@@ -83,14 +83,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** GI state. */
-	inline deoglGIState &GetGIState() const{return pGIState;}
+	inline deoglGIState &GetGIState() const{ return pGIState; }
 	
 	/** Classify content. */
 	static bool IsComponentStatic(const deoglRComponent &component);
 	static bool IsDecalStatic(const deoglRDecal &decal);
 	
 	/** Count of available instance slots. */
-	inline int GetInstanceCount() const{return pInstances.GetCount();}
+	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
 	
 	/** Instance at slot. */
 	deoglGIInstance &GetInstanceAt(int slot) const;
@@ -120,10 +120,10 @@ public:
 	
 	
 	/** Dynamic boxes list. */
-	inline const sBox * const GetDynamicBoxes() const{return pDynamicBoxes;}
+	inline const sBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
 	
 	/** Count of dynamic boxes. */
-	inline int GetDynamicBoxCount() const{return pDynamicBoxCount;}
+	inline int GetDynamicBoxCount() const{ return pDynamicBoxCount; }
 	
 	/** Update dynamic boxes list from dynamic instances while enlarging boxes. */
 	void UpdateDynamicBoxes(const decDVector &offset, const decVector &enlarge);

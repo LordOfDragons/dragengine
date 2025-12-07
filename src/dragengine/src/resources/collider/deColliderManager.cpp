@@ -69,7 +69,7 @@ deColliderVolume *deColliderManager::CreateColliderVolume(){
 	// create and add collider
 	try{
 		collider = new deColliderVolume(this);
-		if(! collider) DETHROW(deeOutOfMemory);
+		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
@@ -88,7 +88,7 @@ deColliderRig *deColliderManager::CreateColliderRig(){
 	// create and add collider
 	try{
 		collider = new deColliderRig(this);
-		if(! collider) DETHROW(deeOutOfMemory);
+		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
@@ -107,7 +107,7 @@ deColliderComponent *deColliderManager::CreateColliderComponent(){
 	// create and add collider
 	try{
 		collider = new deColliderComponent(this);
-		if(! collider) DETHROW(deeOutOfMemory);
+		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
@@ -139,7 +139,7 @@ void deColliderManager::SystemPhysicsLoad(){
 	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
 	while(collider){
-		if(! collider->GetPeerPhysics()){
+		if(!collider->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadCollider(collider);
 		}
 		
@@ -160,7 +160,7 @@ void deColliderManager::SystemScriptingLoad(){
 	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
 	while(collider){
-		if(! collider->GetPeerScripting()){
+		if(!collider->GetPeerScripting()){
 			GetScriptingSystem()->LoadCollider(collider);
 		}
 		

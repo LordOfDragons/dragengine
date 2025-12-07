@@ -83,7 +83,7 @@ deDebugBlockInfo::~deDebugBlockInfo(){
 ///////////////
 
 void deDebugBlockInfo::SetFont(deFont *font){
-	if(! font){
+	if(!font){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,7 +160,7 @@ void deDebugBlockInfo::AddToOverlay(){
 }
 
 void deDebugBlockInfo::RemoveFromOverlay(){
-	if(! pView->GetParentView()){
+	if(!pView->GetParentView()){
 		return;
 	}
 	
@@ -319,7 +319,7 @@ decPoint deDebugBlockInfo::pTextSize(const deFont &font, const char *text){
 	int lineWidth = 0;
 	int textWidth = 0;
 	
-	while(! utf8Decoder.HasReachedEnd()){
+	while(!utf8Decoder.HasReachedEnd()){
 		const int character = utf8Decoder.DecodeNextCharacter();
 		
 		if(character == '\n'){

@@ -61,7 +61,7 @@ void deoglFence::Arm(){
 }
 
 bool deoglFence::HasFired(){
-	if(! pFence){
+	if(!pFence){
 		return true;
 	}
 	
@@ -88,7 +88,7 @@ bool deoglFence::HasFired(){
 }
 
 void deoglFence::Wait(){
-	if(! pFence){
+	if(!pFence){
 		return;
 	}
 	

@@ -156,7 +156,7 @@ void demdlTexCoordSorter::Sort(){
 			}
 			
 			// entry not found. add new entry and use next index
-			if(! entry){
+			if(!entry){
 				pTexCoords[pTexCoordCount] = texCoords; // for GetTexCoordAt()
 				*corners++ = pTexCoordCount;
 				
@@ -193,7 +193,7 @@ void demdlTexCoordSorter::Sort(){
 				const decVector2 * const ptrTexCoord2 = pTexCoords + pTexCoordSetCount * t;
 				
 				for(s=0; s<pTexCoordSetCount; s++){
-					if(! ptrTexCoord2[s].IsEqualTo(ptrTexCoord1[s])){
+					if(!ptrTexCoord2[s].IsEqualTo(ptrTexCoord1[s])){
 						break; // no match possible, skip the rest
 					}
 				}
@@ -281,7 +281,7 @@ int demdlTexCoordSorter::HashTexCoords(const decVector2 *texCoords) const{
 bool demdlTexCoordSorter::TexCoordsAreEqual(const decVector2 *texCoords1, const decVector2 *texCoords2) const{
 	int i;
 	for(i=0; i<pTexCoordSetCount; i++){
-		if(! texCoords1[i].IsEqualTo(texCoords2[i])){
+		if(!texCoords1[i].IsEqualTo(texCoords2[i])){
 			// one texture coordinate does not match. we can stop checking here
 			return false;
 		}

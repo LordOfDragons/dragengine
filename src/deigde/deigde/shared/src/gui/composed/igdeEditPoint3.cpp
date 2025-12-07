@@ -151,7 +151,7 @@ void igdeEditPoint3::Focus(){
 
 
 void igdeEditPoint3::AddListener(igdeEditPoint3Listener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

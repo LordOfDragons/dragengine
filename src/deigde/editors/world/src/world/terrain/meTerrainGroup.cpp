@@ -76,7 +76,7 @@ meObject *meTerrainGroup::GetObject(int index) const{
 }
 
 int meTerrainGroup::FindObject(meObject *onj) const{
-	if(! onj) return -1;
+	if(!onj) return -1;
 	int i;
 	for(i=0; i<pObjectCount; i++){
 		if(pObjects[i] == onj) return i;
@@ -89,12 +89,12 @@ bool meTerrainGroup::HasObject(meObject *onj) const{
 }
 
 void meTerrainGroup::AddObject(meObject *onj){
-	if(! onj) DETHROW(deeInvalidParam);
+	if(!onj) DETHROW(deeInvalidParam);
 	if(HasObject(onj)) return;
 	if(pObjectCount == pObjectSize){
 		int i, newSize = pObjectCount * 3 / 2 + 1;
 		meObject **newArray = new meObject*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pObjects){
 			for(i=0; i<pObjectCount; i++) newArray[i] = pObjects[i];
 			delete [] pObjects;

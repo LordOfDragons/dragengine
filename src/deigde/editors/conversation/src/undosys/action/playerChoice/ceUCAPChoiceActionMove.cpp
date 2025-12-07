@@ -44,7 +44,7 @@
 
 ceUCAPChoiceActionMove::ceUCAPChoiceActionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
 ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
-	if(! topic || ! playerChoice || ! action){
+	if(!topic || !playerChoice || !action){
 		DETHROW(deeInvalidParam);
 	}
 	

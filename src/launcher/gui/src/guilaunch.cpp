@@ -133,7 +133,7 @@ int main(int argc, char **argv){
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
 	int nArgs;
 	LPWSTR * const szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-	if(! szArglist){
+	if(!szArglist){
 		wprintf(L"CommandLineToArgvW failed\n");
 		return 0;
 	}

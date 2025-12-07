@@ -47,7 +47,7 @@
 ////////////////////////////
 
 meWeather::meWeather(meWorld *world){
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 }

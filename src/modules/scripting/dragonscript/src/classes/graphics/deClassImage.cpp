@@ -77,7 +77,7 @@ void deClassImage::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject *listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener) DSTHROW(dueInvalidParam);
+	if(!listener) DSTHROW(dueInvalidParam);
 	
 	clsImg->GetScriptModule()->GetResourceLoader()->AddRequest(filename,
 		deResourceLoader::ertImage, listener);
@@ -289,7 +289,7 @@ void deClassImage::CreateClassMembers(dsEngine *engine){
 }
 
 deImage *deClassImage::GetImage(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -297,11 +297,11 @@ deImage *deClassImage::GetImage(dsRealObject *myself) const{
 }
 
 void deClassImage::PushImage(dsRunTime *rt, deImage *image){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! image){
+	if(!image){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -392,7 +392,7 @@ void deoglRenderGeometry::RenderTask(const deoglComputeRenderTask &renderTask){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglComputeRenderTask::sStep * const steps = renderTask.GetSteps();
-	if(! steps){
+	if(!steps){
 		return;
 	}
 	
@@ -655,7 +655,7 @@ void deoglRenderGeometry::RenderTask(const deoglComputeRenderTask &renderTask){
 
 void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask){
 	const decPointerLinkedList::cListEntry *iterPipeline = renderTask.GetRootPipeline();
-	if(! iterPipeline){
+	if(!iterPipeline){
 		return;
 	}
 	
@@ -691,7 +691,7 @@ void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask
 			while(iterVAO){
 				const deoglPersistentRenderTaskVAO &rtvao = *((deoglPersistentRenderTaskVAO*)iterVAO->GetOwner());
 				const decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
-				if(! iterInstance){
+				if(!iterInstance){
 					iterVAO = iterVAO->GetNext();
 					continue;
 				}

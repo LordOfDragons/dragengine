@@ -51,12 +51,12 @@ seUPropertyNodeSetSize(node, GetSizeFromImage(node))
 ///////////////
 
 decPoint3 seUPropertyNodeImageSizeFromImage::GetSizeFromImage(const sePropertyNodeImage *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const deImage * const image = node->GetImage();
-	if(! image){
+	if(!image){
 		DETHROW(deeInvalidParam);
 	}
 	

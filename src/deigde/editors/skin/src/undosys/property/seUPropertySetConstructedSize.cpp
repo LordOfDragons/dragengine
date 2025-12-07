@@ -45,7 +45,7 @@ seProperty *property, const decPoint3 &newValue) :
 pProperty(NULL),
 pNewValue(newValue)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	

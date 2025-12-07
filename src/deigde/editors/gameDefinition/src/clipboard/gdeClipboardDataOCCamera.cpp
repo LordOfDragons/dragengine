@@ -42,7 +42,7 @@ gdeClipboardDataOCCamera::gdeClipboardDataOCCamera(gdeOCCamera *camera) :
 igdeClipboardData(TYPE_NAME),
 pCamera(NULL)
 {
-	if(! camera){
+	if(!camera){
 		DETHROW(deeInvalidParam);
 	}
 	

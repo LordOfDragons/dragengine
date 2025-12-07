@@ -149,7 +149,7 @@ const decDVector &dedaiNavBlocker::GetMaximumExtends(){
 
 
 void dedaiNavBlocker::Prepare(){
-	if(! pParentWorld || ! pDirtyShape){
+	if(!pParentWorld || !pDirtyShape){
 		return;
 	}
 	
@@ -165,7 +165,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 	
 	if(devmode.GetEnabled() && devmode.GetShowBlockers() && pNavBlocker.GetEnabled()){
 		// ensure the debug drawer exists
-		if(! pDebugDrawer){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			
@@ -182,7 +182,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 		// ensure the debug drawer shapes exists
 		bool updateShapes = false;
 		
-		if(! pDDSBlocker){
+		if(!pDDSBlocker){
 			pDDSBlocker = new deDebugDrawerShape;
 			pDDSBlocker->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
 			pDDSBlocker->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
@@ -211,7 +211,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 }
 
 void dedaiNavBlocker::UpdateDDSBlockerShape(){
-	if(! pDDSBlocker){
+	if(!pDDSBlocker){
 		return;
 	}
 	
@@ -311,7 +311,7 @@ void dedaiNavBlocker::ScalingChanged(){
 }
 
 void dedaiNavBlocker::LayerChanged(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -400,7 +400,7 @@ void dedaiNavBlocker::pUpdateExtends(){
 }
 
 void dedaiNavBlocker::pUpdateBlocker(){
-	if(! pDDSBlocker){
+	if(!pDDSBlocker){
 		return;
 	}
 	
@@ -423,7 +423,7 @@ void dedaiNavBlocker::pUpdateConvexVolumeList(){
 }
 
 void dedaiNavBlocker::pInvalidateLayerBlocking(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	

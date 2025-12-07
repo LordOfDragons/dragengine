@@ -230,7 +230,7 @@ void feFont::RemoveGlyph(feFontGlyph *glyph){
 
 void feFont::RemoveGlyphWithCode (int code) {
 	feFontGlyph *glyph = pGlyphs.GetGlyphWithCode(code);
-	if(! glyph) DETHROW(deeInvalidParam);
+	if(!glyph) DETHROW(deeInvalidParam);
 	glyph->SetParentFont(NULL);
 	pGlyphs.RemoveGlyph(glyph);
 	NotifyGlyphStructureChanged();

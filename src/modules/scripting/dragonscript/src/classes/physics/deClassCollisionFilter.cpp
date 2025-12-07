@@ -203,7 +203,7 @@ void deClassCollisionFilter::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue 
 	const deClassFileReader &clsFileReader = *clsCF.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -225,7 +225,7 @@ void deClassCollisionFilter::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *
 	const deClassFileWriter &clsFileWriter = *clsCF.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -257,7 +257,7 @@ void deClassCollisionFilter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassCollisionFilter * const clsCF = (deClassCollisionFilter*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsCF)){
+	if(!p_IsObjOfType(object, clsCF)){
 		rt->PushBool(false);
 		
 	}else{
@@ -294,7 +294,7 @@ void deClassCollisionFilter::nfToString::RunFunction(dsRunTime *rt, dsValue *mys
 
 deClassCollisionFilter::deClassCollisionFilter(deScriptingDragonScript *ds) :
 dsClass("CollisionFilter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -353,7 +353,7 @@ void deClassCollisionFilter::CreateClassMembers(dsEngine *engine){
 }
 
 const decCollisionFilter &deClassCollisionFilter::GetCollisionFilter(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -361,7 +361,7 @@ const decCollisionFilter &deClassCollisionFilter::GetCollisionFilter(dsRealObjec
 }
 
 void deClassCollisionFilter::PushCollisionFilter(dsRunTime *rt, const decCollisionFilter &collisionFilter){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

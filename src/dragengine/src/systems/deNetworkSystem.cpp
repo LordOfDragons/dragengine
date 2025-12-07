@@ -82,7 +82,7 @@ void deNetworkSystem::PostStart(){
 	int i;
 	
 	// init module
-	if(! pActiveModule->Init()){
+	if(!pActiveModule->Init()){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -114,33 +114,33 @@ void deNetworkSystem::PreStop(){
 ////////////////////
 
 void deNetworkSystem::ProcessNetwork(){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	pActiveModule->ProcessNetwork();
 }
 
 void deNetworkSystem::LoadServer(deServer *server){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	if(server->GetPeerNetwork()) DETHROW(deeInvalidParam);
 	server->SetPeerNetwork(pActiveModule->CreateServer(server));
-	if(! server->GetPeerNetwork()) DETHROW(deeOutOfMemory);
+	if(!server->GetPeerNetwork()) DETHROW(deeOutOfMemory);
 }
 
 void deNetworkSystem::LoadConnection(deConnection *connection){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	if(connection->GetPeerNetwork()) DETHROW(deeInvalidParam);
 	connection->SetPeerNetwork(pActiveModule->CreateConnection(connection));
-	if(! connection->GetPeerNetwork()) DETHROW(deeOutOfMemory);
+	if(!connection->GetPeerNetwork()) DETHROW(deeOutOfMemory);
 }
 
 void deNetworkSystem::LoadState(deNetworkState *state){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	if(state->GetPeerNetwork()) DETHROW(deeInvalidParam);
 	state->SetPeerNetwork (pActiveModule->CreateState(state));
-	if(! state->GetPeerNetwork()) DETHROW(deeOutOfMemory);
+	if(!state->GetPeerNetwork()) DETHROW(deeOutOfMemory);
 }
 
 void deNetworkSystem::LoadWorld(deWorld *world){
@@ -149,7 +149,7 @@ void deNetworkSystem::LoadWorld(deWorld *world){
 			DETHROW(deeInvalidParam);
 		}
 		world->SetPeerNetwork(pActiveModule->CreateWorld(world));
-		if(! world->GetPeerNetwork()){
+		if(!world->GetPeerNetwork()){
 			DETHROW(deeOutOfMemory);
 		}
 	}

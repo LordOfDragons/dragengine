@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -66,7 +66,7 @@ public:
 	/** \brief Push component. */
 	void PushComponent(dsRunTime *rt, dedsInputDevice *device, int index);
 	
-	inline dsClass *GetClassInputDeviceComponentType() const{return pClsInputDeviceComponentType;}
+	inline dsClass *GetClassInputDeviceComponentType() const{ return pClsInputDeviceComponentType; }
 	/*@}*/
 	
 	

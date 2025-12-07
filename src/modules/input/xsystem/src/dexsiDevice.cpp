@@ -166,7 +166,7 @@ void dexsiDevice::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -338,7 +338,7 @@ int dexsiDevice::GetFeedbackCount() const{
 }
 
 void dexsiDevice::AddFeedback(dexsiDeviceFeedback *feedback){
-	if(! feedback){
+	if(!feedback){
 		DETHROW(deeNullPointer);
 	}
 	pFeedbacks.Add(feedback);
@@ -461,7 +461,7 @@ void dexsiDevice::Update(){
 }
 
 void dexsiDevice::SendDirtyAxisEvents(){
-	if(! pDirtyAxesValues){
+	if(!pDirtyAxesValues){
 		return;
 	}
 	
@@ -507,7 +507,7 @@ void dexsiDevice::pPrepareXDeviceTypeAtoms(){
 		XI_JOYSTICK
 	};
 	
-	if(! XInternAtoms(pModule.GetOSUnix()->GetDisplay(), (char**)names,
+	if(!XInternAtoms(pModule.GetOSUnix()->GetDisplay(), (char**)names,
 	exdtOther, false, &pXDeviceTypeAtoms[0])){
 		DETHROW(deeInvalidParam);
 	}

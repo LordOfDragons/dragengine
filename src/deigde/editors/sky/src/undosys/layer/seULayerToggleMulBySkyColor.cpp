@@ -42,7 +42,7 @@
 seULayerToggleMulBySkyColor::seULayerToggleMulBySkyColor(seLayer *layer) :
 pLayer(NULL)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ seULayerToggleMulBySkyColor::~seULayerToggleMulBySkyColor(){
 ///////////////
 
 void seULayerToggleMulBySkyColor::Undo(){
-	pLayer->SetMultiplyBySkyColor(! pLayer->GetMuliplyBySkyColor());
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
 }
 
 void seULayerToggleMulBySkyColor::Redo(){
-	pLayer->SetMultiplyBySkyColor(! pLayer->GetMuliplyBySkyColor());
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
 }

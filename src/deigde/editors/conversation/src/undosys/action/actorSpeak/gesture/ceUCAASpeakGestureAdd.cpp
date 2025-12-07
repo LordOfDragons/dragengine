@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakGestureAdd::ceUCAASpeakGestureAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, int index){
-	if(! topic || ! actorSpeak || ! gesture){
+	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetGestureList().GetCount()){

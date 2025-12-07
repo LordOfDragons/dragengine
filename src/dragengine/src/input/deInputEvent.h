@@ -259,8 +259,8 @@ public:
 	 * \version 1.6
 	 */
 	enum eSources{
-		esInput, //<! Originates from Input System
-		esVR //<! Originates from VR System
+		esInput, //<!Originates from Input System
+		esVR //<!Originates from VR System
 	};
 	
 	/**
@@ -324,7 +324,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Event type. */
-	inline eEvents GetType() const{return pType;}
+	inline eEvents GetType() const{ return pType; }
 	
 	/**
 	 * \brief Set event type.
@@ -333,7 +333,7 @@ public:
 	void SetType(eEvents type);
 	
 	/** \brief Event device. */
-	inline int GetDevice() const{return pDevice;}
+	inline int GetDevice() const{ return pDevice; }
 	
 	/**
 	 * \brief Set event device.
@@ -346,7 +346,7 @@ public:
 	 * 
 	 * This is a button or axis index.
 	 */
-	inline int GetCode() const{return pCode;}
+	inline int GetCode() const{ return pCode; }
 	
 	/**
 	 * \brief Set event code.
@@ -360,7 +360,7 @@ public:
 	 * 
 	 * ORed combination of members of deInputEvent::eStateModifiers.
 	 */
-	inline int GetState() const{return pState;}
+	inline int GetState() const{ return pState; }
 	
 	/**
 	 * \brief Set event state.
@@ -374,7 +374,7 @@ public:
 	 * 
 	 * Used for eeKeyPress and eeKeyRelease only.
 	 */
-	inline eKeyCodes GetKeyCode() const{return pKeyCode;}
+	inline eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/**
 	 * \brief Set key code to identify important keys.
@@ -384,31 +384,31 @@ public:
 	void SetKeyCode(eKeyCodes keyCode);
 	
 	/** \brief Key character if a keyboard event. */
-	inline int GetKeyChar() const{return pKeyChar;}
+	inline int GetKeyChar() const{ return pKeyChar; }
 	
 	/** \brief Set key character if a keyboard event. */
 	void SetKeyChar(int keyChar);
 	
 	/** \brief X position if a mouse event. */
-	inline int GetX() const{return pX;}
+	inline int GetX() const{ return pX; }
 	
 	/** \brief Set X position if a mouse event. */
 	void SetX(int x);
 	
 	/** \brief Y position if a mouse event. */
-	inline int GetY() const{return pY;}
+	inline int GetY() const{ return pY; }
 	
 	/** \brief Set Y position if a mouse event. */
 	void SetY(int y);
 	
 	/** \brief Value if axis event. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value if axis event. */
 	void SetValue(float value);
 	
 	/** \brief Time the event occurred. */
-	inline const timeval &GetTime() const{return pTime;}
+	inline const timeval &GetTime() const{ return pTime; }
 	
 	/** \brief Set time the event occurred. */
 	void SetTime(const timeval &eventTime);
@@ -417,7 +417,7 @@ public:
 	 * \brief Source of the input event.
 	 * \version 1.6
 	 */
-	inline eSources GetSource() const{return pSource;}
+	inline eSources GetSource() const{ return pSource; }
 	
 	/**
 	 * \brief Set source of the input event.
@@ -431,7 +431,7 @@ public:
 	 * 
 	 * Used to distinguish between multiple keys producing the same key code.
 	 */
-	inline eKeyLocation GetKeyLocation() const{return pKeyLocation;}
+	inline eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
 	
 	/**
 	 * \brief Set location of key on keyboard.

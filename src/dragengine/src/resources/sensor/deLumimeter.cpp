@@ -63,7 +63,7 @@ deLumimeter::~deLumimeter(){
 ///////////////
 
 void deLumimeter::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pPeerGraphic) pPeerGraphic->PositionChanged();
@@ -71,7 +71,7 @@ void deLumimeter::SetPosition(const decDVector &position){
 }
 
 void deLumimeter::SetDirection(const decVector &direction){
-	if(! direction.IsEqualTo(pDirection)){
+	if(!direction.IsEqualTo(pDirection)){
 		pDirection = direction;
 		
 		if(pPeerGraphic) pPeerGraphic->DirectionChanged();

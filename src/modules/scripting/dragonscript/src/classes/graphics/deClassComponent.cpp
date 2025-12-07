@@ -352,7 +352,7 @@ void deClassComponent::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	component->SetPosition(clsComp->GetClassDVector()->GetDVector(obj));
 }
@@ -367,7 +367,7 @@ void deClassComponent::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	component->SetOrientation(clsComp->GetClassQuaternion()->GetQuaternion(obj));
 }
@@ -381,7 +381,7 @@ void deClassComponent::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself)
 	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	component->SetScaling(clsComp->GetScriptModule()->GetVector(obj));
 }
 
@@ -498,7 +498,7 @@ void deClassComponent::nfBoneGetName::RunFunction(dsRunTime *rt, dsValue *myself
 	const int index = rt->GetValue(0)->GetInt();
 	const deRig * const rig = component.GetRig();
 	
-	if(! rig){
+	if(!rig){
 		DSTHROW(dueOutOfBoundary);
 	}
 	
@@ -857,7 +857,7 @@ void deClassComponent::nfVertexPositionSetGetNameAt::RunFunction(dsRunTime *rt, 
 	const int index = rt->GetValue(0)->GetInt();
 	const deModel * const model = component.GetModel();
 	
-	if(! model){
+	if(!model){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -881,7 +881,7 @@ dsFunction(init.clsCom, "vertexPositionSetGetWeightNamed", DSFT_FUNCTION, DSTM_P
 }
 void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
-	if(! component.GetModel()){
+	if(!component.GetModel()){
 		DSTHROW(dueNullPointer);
 	}
 	rt->PushFloat(component.GetVertexPositionSetWeightAt(
@@ -908,7 +908,7 @@ dsFunction(init.clsCom, "vertexPositionSetSetWeightNamed", DSFT_FUNCTION, DSTM_P
 }
 void deClassComponent::nfVertexPositionSetSetWeightNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
-	if(! component.GetModel()){
+	if(!component.GetModel()){
 		DSTHROW(dueNullPointer);
 	}
 	component.SetVertexPositionSetWeightAt(
@@ -938,7 +938,7 @@ void deClassComponent::nfCopyBonesToComponent::RunFunction(dsRunTime *rt, dsValu
 	const deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
 	
 	deComponent * const otherComponent = clsComp.GetComponent(rt->GetValue(0)->GetRealObject());
-	if(! otherComponent){
+	if(!otherComponent){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -996,7 +996,7 @@ void deClassComponent::nfGetTextureNameAt::RunFunction(dsRunTime *rt, dsValue *m
 	const int index = rt->GetValue(0)->GetInt();
 	
 	const deModel * const model = component.GetModel();
-	if(! model){
+	if(!model){
 		DSTHROW_INFO(dueNullPointer, "model");
 	}
 	
@@ -1174,13 +1174,13 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfForEachDecal::RunFunction(dsRunTime *rt, dsValue *myself){
 	dsValue * const valueBlock = rt->GetValue(0);
-	if(! valueBlock->GetRealObject()){
+	if(!valueBlock->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
 	const deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
 	deDecal *decal = component.GetRootDecal();
-	if(! decal){
+	if(!decal){
 		return;
 	}
 	
@@ -1217,7 +1217,7 @@ void deClassComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
-	if(! p_IsObjOfType(obj, clsComp)){
+	if(!p_IsObjOfType(obj, clsComp)){
 		rt->PushBool(false);
 	}else{
 		deComponent *otherComp = ((sCompNatDat*)p_GetNativeData(obj))->component;
@@ -1248,7 +1248,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsComponentHintMovement); // type
 }
 void deClassComponent::nfSetHintMovement::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1310,7 +1310,7 @@ void deClassComponent::nfSetHintGIImportance::RunFunction(dsRunTime *rt, dsValue
 
 deClassComponent::deClassComponent(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
 dsClass("Component", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! GameEngine || ! ScrMgr) DSTHROW(dueInvalidParam);
+	if(!GameEngine || !ScrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = GameEngine;
 	pScrMgr = ScrMgr;
@@ -1473,7 +1473,7 @@ void deClassComponent::CreateClassMembers(dsEngine *engine){
 }
 
 deComponent *deClassComponent::GetComponent(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -1481,11 +1481,11 @@ deComponent *deClassComponent::GetComponent(dsRealObject *myself) const{
 }
 
 void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! component){
+	if(!component){
 		rt->PushObject(NULL, this);
 		return;
 	}

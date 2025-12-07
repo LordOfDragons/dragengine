@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleGeometry *GetRuleGeometry() const{return pRuleGeometry;}
+	inline meHTVRuleGeometry *GetRuleGeometry() const{ return pRuleGeometry; }
 	
 	/** \brief Update node. */
 	virtual void Update();

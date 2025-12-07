@@ -76,25 +76,25 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Debug info. */
-	inline deoglRenderWorldInfo &GetDebugInfo(){return pDebugInfo;}
+	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
 	/** Render parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{return pRenderPB;}
+	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{ return pRenderPB; }
 	
 	/** Render task. */
-	inline deoglRenderTask *GetRenderTask() const{return pRenderTask;}
+	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
 	
 	/** Render task for particles. */
-	inline deoglRenderTaskParticles *GetRenderTaskParticles() const{return pRenderTaskParticles;}
+	inline deoglRenderTaskParticles *GetRenderTaskParticles() const{ return pRenderTaskParticles; }
 	
 	/** Add to render task. */
-	inline deoglAddToRenderTask *GetAddToRenderTask() const{return pAddToRenderTask;}
+	inline deoglAddToRenderTask *GetAddToRenderTask() const{ return pAddToRenderTask; }
 	
 	/** Add to render task particles. */
-	inline deoglAddToRenderTaskParticles *GetAddToRenderTaskParticles() const{return pAddToRenderTaskParticles;}
+	inline deoglAddToRenderTaskParticles *GetAddToRenderTaskParticles() const{ return pAddToRenderTaskParticles; }
 	
 	/** Particle sorter. */
-	inline deoglParticleSorter *GetParticleSorter() const{return pParticleSorter;}
+	inline deoglParticleSorter *GetParticleSorter() const{ return pParticleSorter; }
 	
 	
 	

@@ -70,25 +70,25 @@ public:
 	
 	
 	/** \brief Checked. */
-	inline bool GetChecked() const{return pChecked;}
+	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set checked. */
 	void SetChecked(bool checked);
 	
 	/** \brief Frame color. */
-	inline FXColor GetColorFrame() const{return pColorFrame;}
+	inline FXColor GetColorFrame() const{ return pColorFrame; }
 	
 	/** \brief Set frame color. */
 	void SetColorFrame(FXColor color);
 	
 	/** \brief Checked fill color. */
-	inline FXColor GetColorFillChecked() const{return pColorFillChecked;}
+	inline FXColor GetColorFillChecked() const{ return pColorFillChecked; }
 	
 	/** \brief Set checked fill color. */
 	void SetColorFillChecked(FXColor color);
 	
 	/** \brief Unchecked fill color. */
-	inline FXColor GetColorFillUnchecked() const{return pColorFillUnchecked;}
+	inline FXColor GetColorFillUnchecked() const{ return pColorFillUnchecked; }
 	
 	/** \brief Set unchecked fill color. */
 	void SetColorFillUnchecked(FXColor color);

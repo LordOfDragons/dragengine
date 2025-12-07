@@ -51,7 +51,7 @@
 /////////////////
 
 debpConvexResultCallback::debpConvexResultCallback(deCollisionInfo *colinfo){
-	if(! colinfo){
+	if(!colinfo){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -75,7 +75,7 @@ void debpConvexResultCallback::Reset(){
 
 
 void debpConvexResultCallback::SetTestRay(const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void debpConvexResultCallback::SetTestRay(const decCollisionFilter *collisionFil
 }
 
 void debpConvexResultCallback::SetTestShape(debpShape *shape, deBaseScriptingCollider *listener){
-	if(shape && ! listener){
+	if(shape && !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -97,7 +97,7 @@ void debpConvexResultCallback::SetTestShape(debpShape *shape, deBaseScriptingCol
 }
 
 void debpConvexResultCallback::SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener){
-	if(collider && ! listener){
+	if(collider && !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -114,7 +114,7 @@ void debpConvexResultCallback::SetTestCollider(debpCollider *collider, deBaseScr
 
 bool debpConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if(! ConvexResultCallback::needsCollision(proxy0)){
+	if(!ConvexResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
@@ -145,7 +145,7 @@ bool debpConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 			// check if a collision is possible according to the collider listener. this uses
 			// the set listener instead of the collider listener
 			deCollider * const engCollider = &collider->GetCollider();
-			if(pListener && ! pListener->CanHitCollider(engOrgCollider, engCollider)){
+			if(pListener && !pListener->CanHitCollider(engOrgCollider, engCollider)){
 				return false;
 			}
 			
@@ -157,7 +157,7 @@ bool debpConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 			}
 			
 			// check if a collision is possible according to the collider listener
-			if(! pListener->CanHitCollider(NULL, engCollider)){
+			if(!pListener->CanHitCollider(NULL, engCollider)){
 				return false;
 			}
 		}

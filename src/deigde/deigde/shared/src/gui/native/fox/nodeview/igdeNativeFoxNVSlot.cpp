@@ -105,12 +105,12 @@ igdeNativeFoxNVSlot::~igdeNativeFoxNVSlot(){
 }
 
 igdeNativeFoxNVSlot *igdeNativeFoxNVSlot::CreateNativeWidget(igdeNVSlot &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -182,7 +182,7 @@ decPoint igdeNativeFoxNVSlot::GetCenter() const{
 decPoint igdeNativeFoxNVSlot::GetCenterNode() const{
 	decPoint center(GetCenter());
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetNativeWidget()){
 		return center;
 	}
 	
@@ -196,8 +196,8 @@ decPoint igdeNativeFoxNVSlot::GetCenterNode() const{
 decPoint igdeNativeFoxNVSlot::GetCenterBoard() const{
 	decPoint center(GetCenter());
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeContainer()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeContainer()){
 		return center;
 	}
 	
@@ -217,7 +217,7 @@ decPoint igdeNativeFoxNVSlot::GetConnector() const{
 decPoint igdeNativeFoxNVSlot::GetConnectorNode() const{
 	decPoint position(GetConnector());
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetNativeWidget()){
 		return position;
 	}
 	
@@ -231,8 +231,8 @@ decPoint igdeNativeFoxNVSlot::GetConnectorNode() const{
 decPoint igdeNativeFoxNVSlot::GetConnectorBoard() const{
 	decPoint position(GetConnector());
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeContainer()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeContainer()){
 		return position;
 	}
 	
@@ -320,14 +320,14 @@ long igdeNativeFoxNVSlot::onSocketLeftMouseDown(FXObject*, FXSelector, void*){
 		return 1;
 	}
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
 		return 1;
 	}
 	
 	pSocket->grab();
 	pIsDnd = pSocket->beginDrag(&pDragTypeSocket, 1);
-	if(! pIsDnd){
+	if(!pIsDnd){
 		pSocket->ungrab();
 		return 1;
 	}
@@ -340,12 +340,12 @@ long igdeNativeFoxNVSlot::onSocketLeftMouseDown(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxNVSlot::onSocketMouseMoved(FXObject*, FXSelector, void *pdata){
-	if(! pIsDnd){
+	if(!pIsDnd){
 		return 1;
 	}
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
 		return 1;
 	}
 	
@@ -375,7 +375,7 @@ long igdeNativeFoxNVSlot::onSocketMouseMoved(FXObject*, FXSelector, void *pdata)
 }
 
 long igdeNativeFoxNVSlot::onSocketLeftMouseUp(FXObject*, FXSelector, void*){
-	if(! pIsDnd){
+	if(!pIsDnd){
 		return 1;
 	}
 	
@@ -400,8 +400,8 @@ long igdeNativeFoxNVSlot::onSocketDndLeave(FXObject*, FXSelector, void*){
 		return 1;
 	}
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
 		return 1;
 	}
 	
@@ -417,8 +417,8 @@ long igdeNativeFoxNVSlot::onSocketDndDrop(FXObject*, FXSelector, void*){
 		return 1;
 	}
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
 		return 1;
 	}
 	
@@ -433,8 +433,8 @@ long igdeNativeFoxNVSlot::onSocketDndMotion(FXObject*, FXSelector, void *pdata){
 		return 1;
 	}
 	
-	if(! pOwner->GetOwnerNode() || ! pOwner->GetOwnerNode()->GetOwnerBoard()
-	|| ! pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
+	if(!pOwner->GetOwnerNode() || !pOwner->GetOwnerNode()->GetOwnerBoard()
+	|| !pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget()){
 		pSocket->acceptDrop(DRAG_REJECT);
 		return 1;
 	}
@@ -473,7 +473,7 @@ long meWVNodeSlot::onLeftMouseDown(FXObject*, FXSelector, void*){
 	int x = event->win_x;
 	int y = event->win_y;
 	
-	if(! pIsInput){
+	if(!pIsInput){
 		translateCoordinatesTo(vlayerRelX, vlayerRelY, windowVegetation, x, y);
 		windowVegetation->AddLinkStartingWith(vlayerRelX, vlayerRelY, this);
 	}

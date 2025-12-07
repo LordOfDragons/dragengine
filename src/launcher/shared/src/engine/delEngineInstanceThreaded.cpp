@@ -170,18 +170,18 @@ bool delEngineInstanceThreaded::StartEngine(){
 			secattr.bInheritHandle = TRUE;
 			secattr.lpSecurityDescriptor = NULL;
 			
-			if(! CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
+			if(!CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
 				DETHROW_INFO(deeInvalidAction, "create in-read pipe failed");
 			}
-			if(! CreatePipe(&pipesOutRead, &pipesOutWrite, &secattr, 0)){
+			if(!CreatePipe(&pipesOutRead, &pipesOutWrite, &secattr, 0)){
 				DETHROW_INFO(deeInvalidAction, "create out-write pipe failed");
 			}
 //			printf( "pipes in(%p,%p) out(%p,%p)...\n", pipesInRead, pipesInWrite, pipesOutRead, pipesOutWrite );
 			
-			if(! SetHandleInformation(pipesInWrite, HANDLE_FLAG_INHERIT, 0)){
+			if(!SetHandleInformation(pipesInWrite, HANDLE_FLAG_INHERIT, 0)){
 				DETHROW_INFO(deeInvalidAction, "set handle information in-write failed");
 			}
-			if(! SetHandleInformation(pipesOutRead, HANDLE_FLAG_INHERIT, 0)){
+			if(!SetHandleInformation(pipesOutRead, HANDLE_FLAG_INHERIT, 0)){
 				DETHROW_INFO(deeInvalidAction, "set handle information out-read failed");
 			}
 			
@@ -198,12 +198,12 @@ bool delEngineInstanceThreaded::StartEngine(){
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if(! CreateProcess(NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
+			if(!CreateProcess(NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
 				DETHROW_INFO(deeInvalidAction, "create process failed");
 			}
 			
 //			printf( "send out pipe...\n" );
-			if(! WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
 				DETHROW_INFO(deeInvalidAction, "send out pipe failed");
 			}
 			if(bytesWritten < sizeof(pipesOutWrite)){
@@ -214,7 +214,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 			logFileLength = (unsigned short)strlen(logFile.GetPathNative());
 			
 //			printf( "send log file length...\n" );
-			if(! WriteFile(pipesInWrite, &logFileLength, sizeof(logFileLength), &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &logFileLength, sizeof(logFileLength), &bytesWritten, NULL)){
 				DETHROW_INFO(deeInvalidAction, "send log file length failed");
 			}
 			if(bytesWritten < sizeof(logFileLength)){
@@ -222,7 +222,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 			}
 			
 //			printf( "send log file name...\n" );
-			if(! WriteFile(pipesInWrite, logFile.GetPathNative(), (int)logFileLength, &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, logFile.GetPathNative(), (int)logFileLength, &bytesWritten, NULL)){
 				DETHROW_INFO(deeInvalidAction, "send log file name failed");
 			}
 			if(bytesWritten < (DWORD)logFileLength){
@@ -234,7 +234,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 				flags |= 0x1;
 			}
 			
-			if(! WriteFile(pipesInWrite, &flags, 1, &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &flags, 1, &bytesWritten, NULL)){
 				DETHROW_INFO(deeInvalidAction, "send flags failed");
 			}
 			if(bytesWritten < 1){
@@ -243,7 +243,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 			
 			// read sync
 //			printf( "reading sync\n" );
-			if(! ReadFile(pipesOutRead, &sync, 1, &bytesRead, NULL)){
+			if(!ReadFile(pipesOutRead, &sync, 1, &bytesRead, NULL)){
 				DETHROW_INFO(deeInvalidParam, "read sync failed");
 			}
 			if(bytesRead < 1){
@@ -296,7 +296,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 		// connect logger
 		/*
 		pReadLog = new delEngineInstanceThreadedReadLog(this, pLogger);
-		if(! pReadLog) DETHROW(deeOutOfMemory);
+		if(!pReadLog) DETHROW(deeOutOfMemory);
 		
 		pReadLog->Start();
 		*/
@@ -312,7 +312,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 	// solution here
 	fflush(NULL);
 	
-	if(! pProcessID){
+	if(!pProcessID){
 		int pipesIn[2] = {0, 0};
 		int pipesOut[2] = {0, 0};
 		
@@ -367,7 +367,7 @@ void delEngineInstanceThreaded::StopEngine(){
 	if(pProcessHandle != INVALID_HANDLE_VALUE){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 			"Stopping game engine in process %i", (int)pProcessID);
-		if(! StopProcess()){
+		if(!StopProcess()){
 			TerminateProcess(pProcessHandle, 0);
 			WaitForSingleObject(pProcessHandle, 5000);
 		}
@@ -389,7 +389,7 @@ void delEngineInstanceThreaded::StopEngine(){
 	if(pProcessID){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 			"Stopping game engine in process %i", pProcessID);
-		if(! StopProcess()){
+		if(!StopProcess()){
 			kill(pProcessID, SIGKILL);
 			waitpid(pProcessID, NULL, 0);
 		}
@@ -511,13 +511,13 @@ void delEngineInstanceThreaded::WriteToPipe(const void *data, int length){
 	DWORD bytesWritten = 0;
 	
 	if(pPipeIn == INVALID_HANDLE_VALUE
-	|| ! WriteFile(pPipeIn, data, length, &bytesWritten, NULL)
+	|| !WriteFile(pPipeIn, data, length, &bytesWritten, NULL)
 	|| (int)bytesWritten != length){
 		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if(! pPipeOut || write(pPipeIn, data, length) < length){
+	if(!pPipeOut || write(pPipeIn, data, length) < length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
@@ -562,13 +562,13 @@ void delEngineInstanceThreaded::ReadFromPipe(void *data, int length){
 	DWORD bytesRead = 0;
 	
 	if(pPipeOut == INVALID_HANDLE_VALUE
-	|| ! ReadFile(pPipeOut, data, length, &bytesRead, NULL)
+	|| !ReadFile(pPipeOut, data, length, &bytesRead, NULL)
 	|| (int)bytesRead != length){
 		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if(! pPipeOut || read(pPipeOut, data, length) != length){
+	if(!pPipeOut || read(pPipeOut, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
@@ -584,7 +584,7 @@ bool delEngineInstanceThreaded::CheckCanReadPipe(){
 	return PeekNamedPipe(pPipeOut, NULL, 0, NULL, &readableBytes, NULL) && readableBytes > 0;
 	
 	#else
-	if(! pPipeOut){
+	if(!pPipeOut){
 		return false;
 	}
 	
@@ -705,10 +705,10 @@ void delEngineInstanceThreaded::GetInternalModules(delEngineModuleList &list){
 }
 
 int delEngineInstanceThreaded::GetModuleStatus(const char *moduleName, const char *moduleVersion){
-	if(! moduleName){
+	if(!moduleName){
 		DETHROW_INFO(deeNullPointer, "moduleName");
 	}
-	if(! moduleVersion){
+	if(!moduleVersion){
 		DETHROW_INFO(deeNullPointer, "moduleVersion");
 	}
 	
@@ -789,16 +789,16 @@ void delEngineInstanceThreaded::GetModuleParams(delEngineModule &module){
 
 void delEngineInstanceThreaded::SetModuleParameter(const char *moduleName, const char *moduleVersion,
 const char *parameter, const char *value){
-	if(! moduleName){
+	if(!moduleName){
 		DETHROW_INFO(deeNullPointer, "moduleName");
 	}
-	if(! moduleVersion){
+	if(!moduleVersion){
 		DETHROW_INFO(deeNullPointer, "moduleVersion");
 	}
-	if(! parameter){
+	if(!parameter){
 		DETHROW_INFO(deeNullPointer, "parameter");
 	}
-	if(! value){
+	if(!value){
 		DETHROW_INFO(deeNullPointer, "value");
 	}
 	
@@ -818,10 +818,10 @@ const char *parameter, const char *value){
 }
 
 void delEngineInstanceThreaded::ActivateModule(const char *moduleName, const char *moduleVersion){
-	if(! moduleName){
+	if(!moduleName){
 		DETHROW_INFO(deeNullPointer, "moduleName");
 	}
-	if(! moduleVersion){
+	if(!moduleVersion){
 		DETHROW_INFO(deeNullPointer, "moduleVersion");
 	}
 	
@@ -839,10 +839,10 @@ void delEngineInstanceThreaded::ActivateModule(const char *moduleName, const cha
 }
 
 void delEngineInstanceThreaded::EnableModule(const char *moduleName, const char *moduleVersion, bool enable){
-	if(! moduleName){
+	if(!moduleName){
 		DETHROW_INFO(deeNullPointer, "moduleName");
 	}
-	if(! moduleVersion){
+	if(!moduleVersion){
 		DETHROW_INFO(deeNullPointer, "moduleVersion");
 	}
 	
@@ -861,7 +861,7 @@ void delEngineInstanceThreaded::EnableModule(const char *moduleName, const char 
 }
 
 void delEngineInstanceThreaded::SetDataDirectory(const char *directory){
-	if(! directory){
+	if(!directory){
 		DETHROW_INFO(deeNullPointer, "directory");
 	}
 	
@@ -875,7 +875,7 @@ void delEngineInstanceThreaded::SetDataDirectory(const char *directory){
 }
 
 void delEngineInstanceThreaded::SetCacheAppID(const char *cacheAppID){
-	if(! cacheAppID){
+	if(!cacheAppID){
 		DETHROW_INFO(deeNullPointer, "cacheAppID");
 	}
 	
@@ -891,7 +891,7 @@ void delEngineInstanceThreaded::SetCacheAppID(const char *cacheAppID){
 }
 
 void delEngineInstanceThreaded::SetPathOverlay(const char* path){
-	if(! path){
+	if(!path){
 		DETHROW_INFO(deeNullPointer, "path");
 	}
 	
@@ -907,7 +907,7 @@ void delEngineInstanceThreaded::SetPathOverlay(const char* path){
 }
 
 void delEngineInstanceThreaded::SetPathCapture(const char* path){
-	if(! path){
+	if(!path){
 		DETHROW_INFO(deeNullPointer, "path");
 	}
 	
@@ -923,7 +923,7 @@ void delEngineInstanceThreaded::SetPathCapture(const char* path){
 }
 
 void delEngineInstanceThreaded::SetPathConfig(const char* path){
-	if(! path){
+	if(!path){
 		DETHROW_INFO(deeNullPointer, "path");
 	}
 	
@@ -1027,7 +1027,7 @@ void delEngineInstanceThreaded::ModulesAddVFSContainers(const char *stage){
 
 void delEngineInstanceThreaded::SetCmdLineArgs(const char *arguments)
 {
-    if(! arguments){
+    if(!arguments){
 		DETHROW_INFO(deeNullPointer, "arguments");
 	}
 	
@@ -1050,7 +1050,7 @@ const char *windowTitle, const char *iconPath){
 	if(height < 1){
 		DETHROW_INFO(deeInvalidAction, "height < 1");
 	}
-	if(! windowTitle){
+	if(!windowTitle){
 		DETHROW_INFO(deeNullPointer, "windowTitle");
 	}
 	
@@ -1077,7 +1077,7 @@ delGPModuleList *collectChangedParams){
 
 void delEngineInstanceThreaded::StartGame(const char *scriptDirectory, const char *scriptVersion,
 const char *gameObject, delGPModuleList *collectChangedParams){
-	if(! scriptDirectory || ! scriptVersion){
+	if(!scriptDirectory || !scriptVersion){
 		DETHROW_INFO(deeNullPointer, "scriptDirectory");
 	}
 	
@@ -1115,14 +1115,14 @@ void delEngineInstanceThreaded::StopGame(){
 }
 
 int delEngineInstanceThreaded::IsGameRunning(){
-	if(! IsEngineRunning()){
+	if(!IsEngineRunning()){
 		return 0;
 	}
 	
 	// check if the process is still running. could be it crashed for some reason
 #ifdef OS_W32
 	DWORD exitCode = 0;
-	if(! GetExitCodeProcess(pProcessHandle, &exitCode)){
+	if(!GetExitCodeProcess(pProcessHandle, &exitCode)){
 		// child stopped for some reason. kill it to make sure all is cleaned up one way or the other
 		KillEngine();
 		return 0;
@@ -1185,7 +1185,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 				}
 				
 				module = pGameCollectChangedParams->GetNamed(moduleName);
-				if(! module){
+				if(!module){
 					module.TakeOver(new delGPModule(moduleName));
 					pGameCollectChangedParams->Add(module);
 				}
@@ -1231,7 +1231,7 @@ int delEngineInstanceThreaded::GetDisplayResolutions(int display, decPoint *reso
 	if(resolutionCount < 0){
 		DETHROW_INFO(deeInvalidParam, "resolutionCount < 0");
 	}
-	if(resolutionCount > 0 && ! resolutions){
+	if(resolutionCount > 0 && !resolutions){
 		DETHROW_INFO(deeInvalidParam, "resolutionCount > 0 with resolutions = nullptr");
 	}
 	

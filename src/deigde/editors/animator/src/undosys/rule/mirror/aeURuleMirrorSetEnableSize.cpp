@@ -36,7 +36,7 @@
 aeURuleMirrorSetEnableSize::aeURuleMirrorSetEnableSize(aeRuleMirror *rule) :
 pRule(rule)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -52,9 +52,9 @@ aeURuleMirrorSetEnableSize::~aeURuleMirrorSetEnableSize(){
 ///////////////
 
 void aeURuleMirrorSetEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleMirrorSetEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }

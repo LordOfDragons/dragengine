@@ -210,7 +210,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Color2LogLum Stereo");
 		}
 		pAsyncGetPipeline(pPipelineColor2LogLumStereo, pipconf, sources, defines);
@@ -227,7 +227,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Average LogLum Stereo");
 		}
 		pAsyncGetPipeline(pPipelineAvgLogLumStereo, pipconf, sources, defines);
@@ -259,7 +259,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Bright-Pass Stereo");
 		}
 		pAsyncGetPipeline(pPipelineBrightPassStereo, pipconf, sources, defines);
@@ -274,7 +274,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer()){
+		if(!renderThread.GetChoices().GetRenderFSQuadStereoVSLayer()){
 			sources = shaderManager.GetSourcesNamed("ToneMap Bloom Down-Sample Stereo");
 		}
 		pAsyncGetPipeline(pPipelineBloomDownSampleStereo, pipconf, sources, defines);
@@ -291,7 +291,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Bloom Blur Stereo");
 		}
 		pAsyncGetPipeline(pPipelineBloomBlurStereo, pipconf, sources, defines);
@@ -311,7 +311,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Bloom Add Stereo");
 		}
 		pAsyncGetPipeline(pPipelineBloomAddStereo, pipconf, sources, defines);
@@ -334,7 +334,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Tone Mapping Stereo");
 		}
 		pAsyncGetPipeline(pPipelineToneMapStereo, pipconf, sources, defines);
@@ -359,7 +359,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Finalize Stereo");
 		}
 		pAsyncGetPipeline(pPipelineLdrStereo, pipconf, sources, defines);
@@ -380,7 +380,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("ToneMap Luminance Prepare Stereo");
 		}
 		pAsyncGetPipeline(pPipelineLumPrepareStereo, pipconf, sources, defines);
@@ -584,7 +584,7 @@ DEBUG_PRINT_TIMER("ToneMap: LogLum");
 		
 		RenderFullScreenQuad(plan);
 		
-		modeTarget = ! modeTarget;
+		modeTarget = !modeTarget;
 	}
 DEBUG_PRINT_TIMER("ToneMap: Average");
 	
@@ -648,7 +648,7 @@ DEBUG_PRINT_TIMER("ToneMap: Average");
 	OGL_CHECK(renderThread, glViewport(0, 0, 1, 1));
 	OGL_CHECK(renderThread, glScissor(0, 0, 1, 1));
 	
-	if(modeTarget && ! useTextureBarrier){
+	if(modeTarget && !useTextureBarrier){
 		tsmgr.EnableArrayTexture(0, *defren.GetTextureTemporary2(), GetSamplerClampLinear());
 		
 	}else{

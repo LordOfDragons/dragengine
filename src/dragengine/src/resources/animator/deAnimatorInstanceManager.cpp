@@ -69,7 +69,7 @@ deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
 	
 	try{
 		instance = new deAnimatorInstance(this);
-		if(! instance) DETHROW(deeOutOfMemory);
+		if(!instance) DETHROW(deeOutOfMemory);
 		
 		GetAnimatorSystem()->LoadAnimatorInstance(instance);
 		
@@ -107,7 +107,7 @@ void deAnimatorInstanceManager::SystemAnimatorLoad(){
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
 	while(instance){
-		if(! instance->GetPeerAnimator()){
+		if(!instance->GetPeerAnimator()){
 			aniSys.LoadAnimatorInstance(instance);
 		}
 		

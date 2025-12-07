@@ -194,7 +194,7 @@ void deoglSkinStateCNShape::pPrepareVBOBlock(deoglSkinState &state){
 		}
 	}
 	
-	if(! pVBOBlock){
+	if(!pVBOBlock){
 		pVBOBlock = state.GetRenderThread().GetBufferObject().GetSharedVBOListForType(
 			deoglRTBufferObject::esvbolCanvasPaint).AddData(pointCount);
 		pVBOBlockPointCount = pointCount;

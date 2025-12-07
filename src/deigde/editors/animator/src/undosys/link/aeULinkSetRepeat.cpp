@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetRepeat::aeULinkSetRepeat(aeLink *link, int newRepeat){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

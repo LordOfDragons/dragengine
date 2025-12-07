@@ -70,7 +70,7 @@ deoglRParticleEmitter::~deoglRParticleEmitter(){
 ///////////////
 
 deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
-	if(! pVBOLayoutShared){
+	if(!pVBOLayoutShared){
 		pVBOLayoutShared = new deoglVBOLayout;
 		
 		// name        | offset | type  | components
@@ -109,7 +109,7 @@ deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
 }
 
 deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutLocal(){
-	if(! pVBOLayoutLocal){
+	if(!pVBOLayoutLocal){
 		pVBOLayoutLocal = new deoglVBOLayout;
 		
 		// name        | offset | type  | components
@@ -153,7 +153,7 @@ void deoglRParticleEmitter::RemoveAllTypes(){
 }
 
 void deoglRParticleEmitter::AddType(deoglRParticleEmitterType *type){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	pTypes.Add(type);

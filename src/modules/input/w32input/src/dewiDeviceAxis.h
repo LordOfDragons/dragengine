@@ -96,28 +96,28 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Input module. */
-	inline deWindowsInput &GetModule() const{return pModule;}
+	inline deWindowsInput &GetModule() const{ return pModule; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Type. */
-	inline deInputDeviceAxis::eAxisTypes GetType() const{return pType;}
+	inline deInputDeviceAxis::eAxisTypes GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deInputDeviceAxis::eAxisTypes type);
@@ -125,16 +125,16 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
@@ -142,43 +142,43 @@ public:
 	
 	
 	/** Minimum value. */
-	inline int GetMinimum() const{return pMinimum;}
+	inline int GetMinimum() const{ return pMinimum; }
 	
 	/** Set minimum value. */
 	void SetMinimum(int minimum);
 	
 	/** Maximum value. */
-	inline int GetMaximum() const{return pMaximum;}
+	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** Set maximum value. */
 	void SetMaximum(int maximum);
 	
 	/** Fuzz. */
-	inline int GetFuzz() const{return pFuzz;}
+	inline int GetFuzz() const{ return pFuzz; }
 	
 	/** Set fuzz. */
 	void SetFuzz(int fuzz);
 	
 	/** Flat. */
-	inline int GetFlat() const{return pFlat;}
+	inline int GetFlat() const{ return pFlat; }
 	
 	/** Set flat. */
 	void SetFlat(int flat);
 	
 	/** Axis is absolute. */
-	inline bool GetAbsolute() const{return pAbsolute;}
+	inline bool GetAbsolute() const{ return pAbsolute; }
 	
 	/** Set if axis is absolute. */
 	void SetAbsolute(bool absolute);
 	
 	/** Wheel around other axis. */
-	inline bool GetWheelOtherAxis() const{return pWheelOtherAxis;}
+	inline bool GetWheelOtherAxis() const{ return pWheelOtherAxis; }
 	
 	/** Set to wheel around other axis. */
 	void SetWheelOtherAxis(bool otherAxis);
 	
 	/** Wheel changed value. */
-	inline int GetWheelChange() const{return pWheelChange;}
+	inline int GetWheelChange() const{ return pWheelChange; }
 	
 	/** Set wheel change value. */
 	void SetWheelChange(int change, int modifiers, DWORD eventTime);
@@ -187,7 +187,7 @@ public:
 	void IncrementWheelChange(int amount, int modifiers, DWORD eventTime);
 	
 	/** Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** Set value. */
 	void SetValue(float value);
@@ -195,49 +195,49 @@ public:
 	
 	
 	/** WI specific code. */
-	inline int GetWICode() const{return pWICode;}
+	inline int GetWICode() const{ return pWICode; }
 	
 	/** Set WI specific code. */
 	void SetWICode(int code);
 
 	/** WinRT reading index axis. */
-	inline int GetWinRTReadingIndexAxis() const{return pWinRTReadingIndexAxis;}
+	inline int GetWinRTReadingIndexAxis() const{ return pWinRTReadingIndexAxis; }
 
 	/** Set WinRT reading index axis. */
 	void SetWinRTReadingIndexAxis(int index);
 
 	/** Inverse axis. */
-	inline bool GetWinRTInverseAxis() const{return pWinRTInverseAxis;}
+	inline bool GetWinRTInverseAxis() const{ return pWinRTInverseAxis; }
 
 	/** Set inverse axis. */
 	void SetWinRTInverseAxis(bool winRTInverseAxis);
 
 	/** WinRT reading index switch. */
-	inline int GetWinRTReadingIndexSwitch() const{return pWinRTReadingIndexSwitch;}
+	inline int GetWinRTReadingIndexSwitch() const{ return pWinRTReadingIndexSwitch; }
 
 	/** Set WinRT reading index switch. */
 	void SetWinRTReadingIndexSwitch(int index);
 
 	/** WinRT reading switch direction. */
-	inline int GetWinRTReadingDirectionSwitch() const{return pWinRTReadingDirectionSwitch;}
+	inline int GetWinRTReadingDirectionSwitch() const{ return pWinRTReadingDirectionSwitch; }
 
 	/** Set WinRT reading switch direction. */
 	void SetWinRTReadingDirectionSwitch(int direction);
 
 	/** WinRT reading positive button index. */
-	inline int GetWinRTReadingButtonPositive() const {return pWinRTReadingButtonPositive;}
+	inline int GetWinRTReadingButtonPositive() const { return pWinRTReadingButtonPositive; }
 
 	/** Set WinRT reading positive button index. */
 	void SetWinRTReadingButtonPositive(int index);
 
 	/** WinRT reading negative button index. */
-	inline int GetWinRTReadingButtonNegative() const {return pWinRTReadingButtonNegative;}
+	inline int GetWinRTReadingButtonNegative() const { return pWinRTReadingButtonNegative; }
 	
 	/** Set WinRT reading negative button index. */
 	void SetWinRTReadingButtonNegative(int index);
 
 	/** Is battery level. */
-	inline bool GetIsBatteryLevel() const{return pIsBatteryLevel;}
+	inline bool GetIsBatteryLevel() const{ return pIsBatteryLevel; }
 
 	/** Set is battery level. */
 	void SetIsBatteryLevel(bool isBatteryLevel);

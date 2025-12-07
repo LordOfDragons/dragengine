@@ -74,7 +74,7 @@ void desynConfiguration::SetStreamBufSizeThreshold(int threshold){
 void desynConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pModule.GetVFS();
 	const decPath path(decPath::CreatePathNative("/config/desynthesizer.xml"));
-	if(! vfs.ExistsFile(path)){
+	if(!vfs.ExistsFile(path)){
 		return;
 	}
 	
@@ -205,7 +205,7 @@ void desynConfiguration::pLoadConfig(decBaseFileReader *file){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "config") != 0){
+	if(!root || strcmp(root->GetName(), "config") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -215,7 +215,7 @@ void desynConfiguration::pLoadConfig(decBaseFileReader *file){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = pGetTagAt(*root, i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

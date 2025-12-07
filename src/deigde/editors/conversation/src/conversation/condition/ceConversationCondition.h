@@ -92,11 +92,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline eConditionTypes GetType() const{return pType;}
+	inline eConditionTypes GetType() const{ return pType; }
 	
 	/** \brief List of expanded lists in a tree view. */
-	inline decIntSet &GetTreeExpandedLists(){return pTreeExpandedLists;}
-	inline const decIntSet &GetTreeExpandedLists() const{return pTreeExpandedLists;}
+	inline decIntSet &GetTreeExpandedLists(){ return pTreeExpandedLists; }
+	inline const decIntSet &GetTreeExpandedLists() const{ return pTreeExpandedLists; }
 	
 	/** \brief Create copy of condition. */
     virtual ceConversationCondition *CreateCopy() const = 0;

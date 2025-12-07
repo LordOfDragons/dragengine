@@ -41,10 +41,10 @@
 ////////////////////////////
 
 meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nscaling){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pOldScaling = object->GetScaling();
 	pNewScaling = nscaling;

@@ -42,7 +42,7 @@
 seUSourceSynthConTargetMore::seUSourceSynthConTargetMore(seSourceSynthesizer *source) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

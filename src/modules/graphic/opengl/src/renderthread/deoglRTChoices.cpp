@@ -128,11 +128,11 @@ deoglRTChoices::deoglRTChoices(deoglRenderThread &renderThread){
 	// inverse depth
 	pUseInverseDepth = conf.GetUseInverseDepth();
 	
-	if(! caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
-	||  ! caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF)
-	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
-	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF)
-	||  ! pglClipControl){
+	if(!caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
+	||  !caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF)
+	||  !caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
+	||  !caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF)
+	||  !pglClipControl){
 		pUseInverseDepth = false; // not supported
 	}
 	

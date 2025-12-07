@@ -114,10 +114,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline seWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{return pSkin;}
+	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(seSkin *skin);

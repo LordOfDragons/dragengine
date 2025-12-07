@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectDistortImage &GetEffectDistortImage() const{return pEffectDistortImage;}
+	inline const deEffectDistortImage &GetEffectDistortImage() const{ return pEffectDistortImage; }
 	
 	
 	

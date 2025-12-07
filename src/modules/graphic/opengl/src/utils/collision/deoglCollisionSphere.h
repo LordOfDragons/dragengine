@@ -130,11 +130,11 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the center point of the sphere. */
-	inline const decVector &GetCenter() const{return pCenter;}
+	inline const decVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the radius of the sphere. */
-	inline float GetRadius() const{return pRadius;}
+	inline float GetRadius() const{ return pRadius; }
 	/** Retrieves the sqaured radius of the sphere. */
-	inline float GetSquareRadius() const{return pSquareRadius;}
+	inline float GetSquareRadius() const{ return pSquareRadius; }
 	/** Sets the center point of the sphere. */
 	void SetCenter(const decVector &center);
 	/**

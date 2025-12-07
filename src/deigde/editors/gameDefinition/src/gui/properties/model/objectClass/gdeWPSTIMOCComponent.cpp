@@ -52,7 +52,7 @@ gdeWPSTIMOCComponent::gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass
 gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index),
 pComponent(NULL)
 {
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,32 +84,32 @@ void gdeWPSTIMOCComponent::Validate(){
 bool gdeWPSTIMOCComponent::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pComponent->GetModelPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetModelPath()))){
+	if(!pComponent->GetModelPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetModelPath()))){
 		return false;
 	}
-	if(! pComponent->GetSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetSkinPath()))){
+	if(!pComponent->GetSkinPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetSkinPath()))){
 		return false;
 	}
-	if(! pComponent->GetRigPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetRigPath()))){
+	if(!pComponent->GetRigPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetRigPath()))){
 		return false;
 	}
-	if(! pComponent->GetAnimatorPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimatorPath()))){
+	if(!pComponent->GetAnimatorPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimatorPath()))){
 		return false;
 	}
-	if(! pComponent->GetAnimationPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimationPath()))){
+	if(!pComponent->GetAnimationPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimationPath()))){
 		return false;
 	}
-	if(! pComponent->GetOcclusionMeshPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetOcclusionMeshPath()))){
+	if(!pComponent->GetOcclusionMeshPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetOcclusionMeshPath()))){
 		return false;
 	}
-	if(! pComponent->GetAudioModelPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAudioModelPath()))){
+	if(!pComponent->GetAudioModelPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAudioModelPath()))){
 		return false;
 	}
 	

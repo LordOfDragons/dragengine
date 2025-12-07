@@ -116,7 +116,7 @@ void gdeOCNavigationSpace::SetSnapAngle(float angle){
 
 
 bool gdeOCNavigationSpace::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCNavigationSpace::GetPropertyName(eProperties property) const{

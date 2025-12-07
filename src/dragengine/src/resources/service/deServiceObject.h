@@ -136,12 +136,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value type. */
-	inline eValueType GetValueType() const{return pValueType;}
+	inline eValueType GetValueType() const{ return pValueType; }
 	
 	
 	
 	/** \brief Is boolean value. */
-	inline bool IsBoolean() const{return pValueType == evtBoolean;}
+	inline bool IsBoolean() const{ return pValueType == evtBoolean; }
 	
 	/**
 	 * \brief Boolean value.
@@ -158,7 +158,7 @@ public:
 	
 	
 	/** \brief Is integer value. */
-	inline bool IsInteger() const{return pValueType == evtInteger;}
+	inline bool IsInteger() const{ return pValueType == evtInteger; }
 	
 	/**
 	 * \brief Integer value.
@@ -175,7 +175,7 @@ public:
 	
 	
 	/** \brief Is float value. */
-	inline bool IsFloat() const{return pValueType == evtFloat;}
+	inline bool IsFloat() const{ return pValueType == evtFloat; }
 	
 	/**
 	 * \brief Float value.
@@ -192,7 +192,7 @@ public:
 	
 	
 	/** \brief Is string value. */
-	inline bool IsString() const{return pValueType == evtString;}
+	inline bool IsString() const{ return pValueType == evtString; }
 	
 	/**
 	 * \brief String value.
@@ -209,7 +209,7 @@ public:
 	
 	
 	/** \brief Is resource value. */
-	inline bool IsResource() const{return pValueType == evtResource;}
+	inline bool IsResource() const{ return pValueType == evtResource; }
 	
 	/**
 	 * \brief Resource value.
@@ -226,7 +226,7 @@ public:
 	
 	
 	/** \brief Is data value. */
-	inline bool IsData() const{return pValueType == evtData;}
+	inline bool IsData() const{ return pValueType == evtData; }
 	
 	/**
 	 * \brief Data value.
@@ -243,10 +243,10 @@ public:
 	
 	
 	/** \brief Is list value. */
-	inline bool IsList() const{return pValueType == evtList;}
+	inline bool IsList() const{ return pValueType == evtList; }
 	
 	/** \brief Is dictionary value. */
-	inline bool IsDictionary() const{return pValueType == evtDictionary;}
+	inline bool IsDictionary() const{ return pValueType == evtDictionary; }
 	
 	/**
 	 * \brief Count of child objects.

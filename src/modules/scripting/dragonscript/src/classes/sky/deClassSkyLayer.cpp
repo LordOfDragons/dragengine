@@ -435,7 +435,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyTarget){
 }
 void deClassSkyLayer::nfGetTarget::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyLayerNatDat &nd = *((sSkyLayerNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -511,7 +511,7 @@ void deClassSkyLayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyLayerNatDat &nd = *((const sSkyLayerNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyLink)){
+	if(!p_IsObjOfType(obj, clsSkyLink)){
 		rt->PushBool(false);
 		
 	}else{
@@ -608,7 +608,7 @@ void deClassSkyLayer::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
-	if(! rt || ! sky || index < 0 || index >= sky->GetLayerCount()){
+	if(!rt || !sky || index < 0 || index >= sky->GetLayerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

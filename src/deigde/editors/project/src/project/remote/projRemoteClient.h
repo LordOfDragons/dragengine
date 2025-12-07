@@ -87,14 +87,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject &GetProject() const{return pProject;}
+	inline projProject &GetProject() const{ return pProject; }
 	
 	/** \brief Reference in parent server or nullptr if not found. */
 	Ref GetRefInServer() const;
 	
 	
 	/** \brief Path to log file. */
-	inline const decString &GetPathLogFile() const{return pPathLogFile;}
+	inline const decString &GetPathLogFile() const{ return pPathLogFile; }
 	
 	/** \brief Read next log data if available or empty string otherwise. */
 	decString ReadNextLogData();

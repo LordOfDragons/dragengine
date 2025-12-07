@@ -50,7 +50,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline ceWindowMain &GetWindowMain() const{return *pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return *pWindowMain; }
 	/*@}*/
 };
 

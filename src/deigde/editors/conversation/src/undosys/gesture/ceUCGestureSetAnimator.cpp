@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *newAnimator){
-	if(! gesture || ! newAnimator) DETHROW(deeInvalidParam);
+	if(!gesture || !newAnimator) DETHROW(deeInvalidParam);
 	
 	pGesture = NULL;
 	

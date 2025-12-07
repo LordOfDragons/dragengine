@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Decal face. */
-	inline bool GetDecalFace() const{return pDecalFace;}
+	inline bool GetDecalFace() const{ return pDecalFace; }
 	
 	/** Set if decal face. */
 	void SetDecalFace(bool decalFace);

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

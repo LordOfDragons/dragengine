@@ -77,7 +77,7 @@ void deCanvasText::SetFontSize(float size){
 }
 
 void deCanvasText::SetText(const char *text){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	

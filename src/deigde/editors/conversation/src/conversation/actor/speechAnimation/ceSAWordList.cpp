@@ -110,7 +110,7 @@ bool ceSAWordList::HasNamed(const char *name) const{
 }
 
 void ceSAWordList::Add(ceSAWord *word){
-	if(! word || HasNamed(word->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!word || HasNamed(word->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pWords.Add(word);
 }

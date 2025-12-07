@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath){
-	if(! topic || ! newPath) DETHROW(deeInvalidParam);
+	if(!topic || !newPath) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;

@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bezier curve. */
-	inline const decCurveBezier3D &GetCurve() const{return pCurve;}
+	inline const decCurveBezier3D &GetCurve() const{ return pCurve; }
 	
 	/** \brief Evaluate curve at the given position in the range from 0 to 1 relative to the curve length. */
 	decVector EvaluateAt(int segment, float blend) const;

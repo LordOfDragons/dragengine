@@ -51,7 +51,7 @@ igdeNullScriptModule::cModule::cModule(deModuleSystem *system) : deInternalModul
 igdeNullScriptModule::cModule::~cModule(){}
 void igdeNullScriptModule::cModule::CreateModule(){
 	SetModule(new igdeNullScriptModule(*this));
-	if(! GetModule()) SetErrorCode(eecCreateModuleFailed);
+	if(!GetModule()) SetErrorCode(eecCreateModuleFailed);
 }
 
 

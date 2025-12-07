@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *cameraShot){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
@@ -62,9 +62,9 @@ ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
 ///////////////
 
 void ceUCCShotToggleRelativeToLookAt::Undo(){
-	pCameraShot->SetRelativeToLookAt(! pCameraShot->GetRelativeToLookAt());
+	pCameraShot->SetRelativeToLookAt(!pCameraShot->GetRelativeToLookAt());
 }
 
 void ceUCCShotToggleRelativeToLookAt::Redo(){
-	pCameraShot->SetRelativeToLookAt(! pCameraShot->GetRelativeToLookAt());
+	pCameraShot->SetRelativeToLookAt(!pCameraShot->GetRelativeToLookAt());
 }

@@ -67,11 +67,11 @@ deAnimationKeyframe *deAnimationKeyframeList::GetKeyframe(int index) const{
 }
 
 void deAnimationKeyframeList::AddKeyframe(deAnimationKeyframe *keyframe){
-	if(! keyframe) DETHROW(deeInvalidParam);
+	if(!keyframe) DETHROW(deeInvalidParam);
 	if(pKeyframeCount == pKeyframeSize){
 		int i, newSize = pKeyframeCount * 3 / 2 + 1;
 		deAnimationKeyframe **newArray = new deAnimationKeyframe*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pKeyframes){
 			for(i=0; i<pKeyframeCount; i++) newArray[i] = pKeyframes[i];
 			delete [] pKeyframes;

@@ -52,7 +52,7 @@
 ////////////////////////////
 
 debpCDVHitModelFace::debpCDVHitModelFace(debpCollisionDetection *coldet){
-	if(! coldet) DETHROW(deeInvalidParam);
+	if(!coldet) DETHROW(deeInvalidParam);
 	
 	pColDet = coldet;
 	
@@ -110,7 +110,7 @@ void debpCDVHitModelFace::SetTestCollider(debpCollider *collider){
 /////////////
 
 void debpCDVHitModelFace::VisitNode(debpDOctree *node, int intersection){
-	if(! pHasCollision){
+	if(!pHasCollision){
 		const debpModelOctree &rnode = *((debpModelOctree*)node);
 		int f, faceIndex, faceCount = rnode.GetFaceCount();
 		

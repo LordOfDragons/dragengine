@@ -46,7 +46,7 @@ pObjectClass(NULL),
 pSnapPoint(NULL),
 pNewValue(newValue)
 {
-	if(! objectClass || ! snapPoint){
+	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

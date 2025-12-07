@@ -103,7 +103,7 @@ meHTVRule::~meHTVRule(){
 ///////////////
 
 void meHTVRule::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
@@ -124,7 +124,7 @@ meHTVRSlot &meHTVRule::GetSlotAt(int slot) const{
 }
 
 bool meHTVRule::DependsOn(meHTVRule *rule) const{
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	// by definition we depend on ourself
 	if(rule == this) return true;
@@ -135,7 +135,7 @@ bool meHTVRule::DependsOn(meHTVRule *rule) const{
 	
 	for(s=0; s<pSlotCount; s++){
 		const meHTVRSlot &slot = pSlots[s];
-		if(! slot.GetIsInput()){
+		if(!slot.GetIsInput()){
 			continue;
 		}
 		

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetRotTo::ceUCCShotSetRotTo(ceCameraShot *cameraShot, const decVector &newRot){
-	if(! cameraShot){
+	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
 	

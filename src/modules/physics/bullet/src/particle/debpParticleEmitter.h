@@ -62,12 +62,12 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{return pBullet;}
+	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
 	/** Retrieves the force field. */
-	inline deParticleEmitter *GetEmitter() const{return pEmitter;}
+	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves the type at the given position. */
 	debpParticleEmitterType &GetTypeAt(int index);
 	const debpParticleEmitterType &GetTypeAt(int index) const;

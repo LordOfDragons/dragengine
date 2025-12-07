@@ -50,7 +50,7 @@
 ////////////////////////////
 
 meHTVegetationLayer::meHTVegetationLayer(deEngine *engine, const char *name){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pHeightTerrain = NULL;
@@ -85,7 +85,7 @@ void meHTVegetationLayer::SetHeightTerrain(meHeightTerrain *heightTerrain){
 }
 
 void meHTVegetationLayer::SetViewCenter(const decVector2 &center){
-	if(! center.IsEqualTo(pViewCenter)){
+	if(!center.IsEqualTo(pViewCenter)){
 		pViewCenter = center;
 		
 		if(pHeightTerrain){
@@ -95,9 +95,9 @@ void meHTVegetationLayer::SetViewCenter(const decVector2 &center){
 }
 
 void meHTVegetationLayer::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		pName = name;
 		
 		if(pHeightTerrain){
@@ -118,7 +118,7 @@ meHTVVariation *meHTVegetationLayer::GetVariationAt(int index) const{
 }
 
 int meHTVegetationLayer::IndexOfVariation(meHTVVariation *variation) const{
-	if(! variation) DETHROW(deeInvalidParam);
+	if(!variation) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pVariationCount; i++){
@@ -129,7 +129,7 @@ int meHTVegetationLayer::IndexOfVariation(meHTVVariation *variation) const{
 }
 
 bool meHTVegetationLayer::HasVariation(meHTVVariation *variation) const{
-	if(! variation) DETHROW(deeInvalidParam);
+	if(!variation) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pVariationCount; i++){
@@ -140,12 +140,12 @@ bool meHTVegetationLayer::HasVariation(meHTVVariation *variation) const{
 }
 
 void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
-	if(! variation) DETHROW(deeInvalidParam);
+	if(!variation) DETHROW(deeInvalidParam);
 	
 	if(pVariationCount == pVariationSize){
 		int newSize = pVariationCount * 3 / 2 + 1;
 		meHTVVariation **newArray = new meHTVVariation*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pVariations){
 			memcpy(newArray, pVariations, sizeof(meHTVVariation*) * pVariationSize);
 			delete [] pVariations;
@@ -160,7 +160,7 @@ void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
 	variation->AddReference();
 	variation->SetVLayer(this);
 	
-	if(! pActiveVariation) SetActiveVariation(variation);
+	if(!pActiveVariation) SetActiveVariation(variation);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -170,14 +170,14 @@ void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
 }
 
 void meHTVegetationLayer::InsertVariation(int before, meHTVVariation *variation){
-	if(before < 0 || before > pVariationCount || ! variation) DETHROW(deeInvalidParam);
+	if(before < 0 || before > pVariationCount || !variation) DETHROW(deeInvalidParam);
 	
 	int i;
 	
 	if(pVariationCount == pVariationSize){
 		int newSize = pVariationCount * 3 / 2 + 1;
 		meHTVVariation **newArray = new meHTVVariation*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pVariations){
 			memcpy(newArray, pVariations, sizeof(meHTVVariation*) * pVariationSize);
 			delete [] pVariations;
@@ -195,7 +195,7 @@ void meHTVegetationLayer::InsertVariation(int before, meHTVVariation *variation)
 	variation->AddReference();
 	variation->SetVLayer(this);
 	
-	if(! pActiveVariation) SetActiveVariation(variation);
+	if(!pActiveVariation) SetActiveVariation(variation);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -290,7 +290,7 @@ meHTVRule *meHTVegetationLayer::GetRuleAt(int index) const{
 }
 
 int meHTVegetationLayer::IndexOfRule(meHTVRule *rule) const{
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pRuleCount; i++){
@@ -301,7 +301,7 @@ int meHTVegetationLayer::IndexOfRule(meHTVRule *rule) const{
 }
 
 bool meHTVegetationLayer::HasRule(meHTVRule *rule) const{
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pRuleCount; i++){
@@ -312,12 +312,12 @@ bool meHTVegetationLayer::HasRule(meHTVRule *rule) const{
 }
 
 void meHTVegetationLayer::AddRule(meHTVRule *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	if(pRuleCount == pRuleSize){
 		int newSize = pRuleCount * 3 / 2 + 1;
 		meHTVRule **newArray = new meHTVRule*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pRules){
 			memcpy(newArray, pRules, sizeof(meHTVRule*) * pRuleSize);
 			delete [] pRules;
@@ -337,7 +337,7 @@ void meHTVegetationLayer::AddRule(meHTVRule *rule){
 		pHeightTerrain->InvalidateAllPropFields();
 	}
 	
-	if(! pActiveRule) SetActiveRule(rule);
+	if(!pActiveRule) SetActiveRule(rule);
 }
 
 void meHTVegetationLayer::RemoveRule(meHTVRule *rule){
@@ -428,7 +428,7 @@ meHTVRLink *meHTVegetationLayer::GetLinkAt(int index) const{
 }
 
 int meHTVegetationLayer::IndexOfLink(meHTVRLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLinkCount; i++){
@@ -439,7 +439,7 @@ int meHTVegetationLayer::IndexOfLink(meHTVRLink *link) const{
 }
 
 bool meHTVegetationLayer::HasLink(meHTVRLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLinkCount; i++){
@@ -450,12 +450,12 @@ bool meHTVegetationLayer::HasLink(meHTVRLink *link) const{
 }
 
 void meHTVegetationLayer::AddLink(meHTVRLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	if(pLinkCount == pLinkSize){
 		int newSize = pLinkCount * 3 / 2 + 1;
 		meHTVRLink **newArray = new meHTVRLink*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLinks){
 			memcpy(newArray, pLinks, sizeof(meHTVRLink*) * pLinkSize);
 			delete [] pLinks;
@@ -508,10 +508,10 @@ void meHTVegetationLayer::RemoveAllLinks(){
 }
 
 bool meHTVegetationLayer::LinkProducesLoop(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot){
-	if(! sourceRule || sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){
+	if(!sourceRule || sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){
 		DETHROW(deeInvalidParam);
 	}
-	if(! destinationRule || destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount()){
+	if(!destinationRule || destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

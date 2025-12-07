@@ -72,7 +72,7 @@ pFont(ButtonFont(powner, guitheme))
 {
 	setFont((FXFont*)pFont->GetNativeFont());
 	
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	setTipText(powner.GetDescription().GetString());
@@ -83,12 +83,12 @@ igdeNativeFoxButton::~igdeNativeFoxButton(){
 }
 
 igdeNativeFoxButton *igdeNativeFoxButton::CreateNativeWidget(igdeButton &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -238,7 +238,7 @@ int igdeNativeFoxButton::ButtonPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxButton::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -256,7 +256,7 @@ long igdeNativeFoxButton::onCommand(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxButton::onUpdate(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if(! action){
+	if(!action){
 		return 0;
 	}
 	

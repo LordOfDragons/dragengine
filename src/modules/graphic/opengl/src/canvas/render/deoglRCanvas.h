@@ -80,64 +80,64 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Position. */
-	inline const decVector2 &GetPosition() const{return pPosition;}
+	inline const decVector2 &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decVector2 &position);
 	
 	/** Size. */
-	inline const decVector2 &GetSize() const{return pSize;}
+	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** Set size. */
 	virtual void SetSize(const decVector2 &size);
 	
 	/** Transformation matrix. */
-	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Set transformation matrix. */
 	void SetTransform(const decTexMatrix2 &transform);
 	
 	/** Color transformation matrix. */
-	inline const decColorMatrix &GetColorTransform() const{return pColorTransform;}
+	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
 	/** Set color transformation matrix. */
 	void SetColorTransform(const decColorMatrix &transform);
 	
 	/** Order used for sorting. */
-	inline float GetOrder() const{return pOrder;}
+	inline float GetOrder() const{ return pOrder; }
 	
 	/** Set order. */
 	void SetOrder(float order);
 	
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
 	void SetTransparency(float transparency);
 	
 	/** Blend mode. */
-	inline deCanvas::eBlendModes GetBlendMode() const{return pBlendMode;}
+	inline deCanvas::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** Set blend mode. */
 	void SetBlendMode(deCanvas::eBlendModes mode);
 	
 	/** Mask. */
-	inline deoglRCanvas *GetMask() const{return pMask;}
+	inline deoglRCanvas *GetMask() const{ return pMask; }
 	
 	/** Set mask. */
 	void SetMask(deoglRCanvas *mask);
 	
 	/** Visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set visible. */
 	void SetVisible(bool visible);
 	
 	/** Mask render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetMaskRenderTarget() const{return pMaskRenderTarget;}
+	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
 	
 	/** Dirty mask render target if present. */
 	void DirtyMaskRenderTarget();

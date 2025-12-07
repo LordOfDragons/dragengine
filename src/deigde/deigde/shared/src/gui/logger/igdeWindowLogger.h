@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger or NULL. */
-	inline igdeLoggerHistory *GetLogger() const{return pLogger;}
+	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger or NULL. */
 	void SetLogger(igdeLoggerHistory *logger);

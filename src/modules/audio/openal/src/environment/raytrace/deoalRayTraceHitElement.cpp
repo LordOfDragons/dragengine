@@ -70,7 +70,7 @@ void deoalRayTraceHitElement::SetEmpty(){
 
 void deoalRayTraceHitElement::SetComponentFace(float distance, const decDVector &point,
 const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
-	if(! component || face < 0){
+	if(!component || face < 0){
 		DETHROW(deeInvalidParam);
 	}
 	

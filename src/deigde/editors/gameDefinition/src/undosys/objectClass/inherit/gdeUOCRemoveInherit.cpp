@@ -44,11 +44,11 @@ gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass *objectClass, gdeOCInher
 pObjectClass(NULL),
 pInherit(NULL)
 {
-	if(! objectClass || ! inherit){
+	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetInherits().Has(inherit)){
+	if(!objectClass->GetInherits().Has(inherit)){
 		DETHROW(deeInvalidParam);
 	}
 	

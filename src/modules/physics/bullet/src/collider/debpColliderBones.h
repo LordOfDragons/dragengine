@@ -90,7 +90,7 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** Number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** Bone at index which can be NULL. */
 	debpColliderBone *GetBoneAt(int index) const;
@@ -99,13 +99,13 @@ public:
 	bool HasBoneAt(int index) const;
 	
 	/** Root bone index or -1 if there is none. */
-	inline int GetRootBoneIndex() const{return pRootBone;}
+	inline int GetRootBoneIndex() const{ return pRootBone; }
 	
 	/** Root bone or NULL if there is none. */
 	debpColliderBone *GetRootBone() const;
 	
 	/** Number of physics bones. */
-	inline int GetBonePhysicsCount() const{return pBonePhysicsCount;}
+	inline int GetBonePhysicsCount() const{ return pBonePhysicsCount; }
 	
 	/** hysics Physics bone at index. */
 	debpColliderBone &GetBonePhysicsAt(int index) const;

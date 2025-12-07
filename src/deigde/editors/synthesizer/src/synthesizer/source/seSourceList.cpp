@@ -72,14 +72,14 @@ bool seSourceList::Has(seSource *source) const{
 }
 
 void seSourceList::Add(seSource *source){
-	if(! source || Has(source)){
+	if(!source || Has(source)){
 		DETHROW(deeInvalidParam);
 	}
 	pSources.Add(source);
 }
 
 void seSourceList::Insert(seSource *source, int index){
-	if(! source || Has(source)){
+	if(!source || Has(source)){
 		DETHROW(deeInvalidParam);
 	}
 	pSources.Insert(source, index);

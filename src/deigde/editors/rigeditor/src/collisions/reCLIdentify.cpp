@@ -48,7 +48,7 @@
 ////////////////////////////
 
 reCLIdentify::reCLIdentify(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	pBone = NULL;

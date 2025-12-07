@@ -1425,12 +1425,12 @@ double debpDCollisionBox::BoxMoveHitsBox(debpDCollisionBox *box, const decDVecto
 //////////////////////
 
 void debpDCollisionBox::GetEnclosingSphere(debpDCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	sphere->SetAll(pCenter, pHalfSize.Length());
 }
 
 void debpDCollisionBox::GetEnclosingBox(debpDCollisionBox *box){
-	if(! box){
+	if(!box){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1486,7 +1486,7 @@ decDVector debpDCollisionBox::NormalAtPoint(const decDVector &point){
 	bool sideZ = (sideZPos || sideZNeg);
 	
 	// normal along x axis
-	if(sideX && ! sideY && ! sideZ){
+	if(sideX && !sideY && !sideZ){
 		if(sideXPos){
 			return pAxisX;
 			
@@ -1496,7 +1496,7 @@ decDVector debpDCollisionBox::NormalAtPoint(const decDVector &point){
 	}
 	
 	// normal along y axis
-	if(sideY && ! sideX && ! sideZ){
+	if(sideY && !sideX && !sideZ){
 		if(sideYPos){
 			return pAxisY;
 			
@@ -1506,7 +1506,7 @@ decDVector debpDCollisionBox::NormalAtPoint(const decDVector &point){
 	}
 	
 	// normal along z axis
-	if(sideZ && ! sideX && ! sideY){
+	if(sideZ && !sideX && !sideY){
 		if(sideZPos){
 			return pAxisZ;
 			
@@ -1516,7 +1516,7 @@ decDVector debpDCollisionBox::NormalAtPoint(const decDVector &point){
 	}
 	
 	// normal inside
-	if(! sideX && ! sideY && ! sideZ){
+	if(!sideX && !sideY && !sideZ){
 		double fx = fabs(localPoint.x);
 		double fy = fabs(localPoint.y);
 		double fz = fabs(localPoint.z);
@@ -1598,7 +1598,7 @@ bool debpDCollisionBox::RayHitsVolume(const decDVector &rayOrigin, const decDVec
 /////////////
 
 void debpDCollisionBox::Visit(debpDCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitBox(this);
 }
 

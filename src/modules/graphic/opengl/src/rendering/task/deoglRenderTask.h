@@ -114,7 +114,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Clear render task. */
 	void Clear();
@@ -127,25 +127,25 @@ public:
 		const decDVector &position, const decDVector &direction);
 	
 	/** Render parameter shader parameter block or NULL. */
-	inline deoglSPBlockUBO *GetRenderParamBlock() const{return pRenderParamBlock;}
+	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
 	/** Set render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	/** Instances texture buffer object or NULL. */
-	inline GLuint GetTBOInstances() const{return pTBOInstances;}
+	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
 	/** Set instances texture buffer object or NULL to use none. */
 	void SetTBOInstances(GLuint tbo);
 	
 	/** Use SPB instance flags. */
-	inline bool GetUseSPBInstanceFlags() const{return pUseSPBInstanceFlags;}
+	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
 	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags(bool useFlags);
 	
 	/** Use vertex shader stereo rendering. */
-	inline bool GetRenderVSStereo() const{return pRenderVSStereo;}
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
 	/** Set use vertex shader stereo rendering. */
 	void SetRenderVSStereo(bool renderVSStereo);
@@ -155,12 +155,12 @@ public:
 	 * struct of oglDrawElementsIndirectCommand and oglDrawArraysIndirectCommand allowing
 	 * to  use one VBO for both. Use sizeof(oglDrawIndirectCommand) as stride.
 	 */
-	inline GLuint GetVBODrawIndirect() const{return pVBODrawIndirect;}
+	inline GLuint GetVBODrawIndirect() const{ return pVBODrawIndirect; }
 	
 	
 	
 	/** Number of pipelines. */
-	inline int GetPipelineCount() const{return pPipelineCount;}
+	inline int GetPipelineCount() const{ return pPipelineCount; }
 	
 	/** Pipeline at index. */
 	deoglRenderTaskPipeline *GetPipelineAt(int index) const;

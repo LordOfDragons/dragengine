@@ -102,7 +102,7 @@ void deoxrDPHMD::pAddDevice(){
 }
 
 void deoxrDPHMD::pRemoveDevice(){
-	if(! pDevice){
+	if(!pDevice){
 		return;
 	}
 	

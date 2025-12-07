@@ -43,7 +43,7 @@ pNode(NULL),
 pChildren(NULL),
 pCount(0)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -110,7 +110,7 @@ void seUPNGroupMoveNodes::pCleanUp(){
 }
 
 void seUPNGroupMoveNodes::pClearChildNodes(){
-	if(! pChildren){
+	if(!pChildren){
 		return;
 	}
 	

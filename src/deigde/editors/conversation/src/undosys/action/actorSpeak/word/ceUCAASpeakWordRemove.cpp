@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word){
-	if(! topic || ! actorSpeak || ! word){
+	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
 	

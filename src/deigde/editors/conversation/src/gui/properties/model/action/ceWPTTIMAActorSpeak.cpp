@@ -65,7 +65,7 @@ void ceWPTTIMAActorSpeak::Update(){
 	text.Format("%s: ", action.GetActor().GetString());
 	description = text;
 	
-	if(! action.GetTextBoxTextTranslate().IsEmpty()){
+	if(!action.GetTextBoxTextTranslate().IsEmpty()){
 		const ceLangPack * const langpack = GetConversation().GetLanguagePack();
 		ceLangPackEntry::Ref entry;
 		
@@ -84,7 +84,7 @@ void ceWPTTIMAActorSpeak::Update(){
 		tbtext = action.GetTextBoxText().ToUTF8();
 	}
 	
-	if(! tbtext.IsEmpty()){
+	if(!tbtext.IsEmpty()){
 		const decString lineTBText(tbtext.Split('\n').GetAt(0));
 		
 		if(lineTBText.GetLength() > 40){

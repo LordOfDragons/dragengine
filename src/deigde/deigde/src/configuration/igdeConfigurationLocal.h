@@ -59,18 +59,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Recent editor files. */
-	inline igdeRecentFiles &GetRecentEditorFiles(){return pRecentEditorFiles;}
-	inline const igdeRecentFiles &GetRecentEditorFiles() const{return pRecentEditorFiles;}
+	inline igdeRecentFiles &GetRecentEditorFiles(){ return pRecentEditorFiles; }
+	inline const igdeRecentFiles &GetRecentEditorFiles() const{ return pRecentEditorFiles; }
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

@@ -66,9 +66,9 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the test point. */
-	inline const decVector &GetTestPoint() const{return pTestPoint;}
+	inline const decVector &GetTestPoint() const{ return pTestPoint; }
 	/** Retrieves the maximum search distance. */
-	inline float GetMaxRadius() const{return pMaxRadius;}
+	inline float GetMaxRadius() const{ return pMaxRadius; }
 	/** Sets the test point and maximum search radius. */
 	void SetTestPoint(const decVector &testPoint, float maxRadius);
 	
@@ -79,7 +79,7 @@ public:
 	void Reset();
 	
 	/** Retrieves the face index or -1 if not found. */
-	inline int GetFaceIndex() const{return pFaceIndex;}
+	inline int GetFaceIndex() const{ return pFaceIndex; }
 	
 	/** Convenience method to visit stored model lod returning the found face or -1 if not found. */
 	int FindClosestFace(const decVector &testPoint, float maxRadius);

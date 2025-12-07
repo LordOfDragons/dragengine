@@ -71,7 +71,7 @@ static decTimer timer;
 ////////////////////////////
 
 debpParticleEmitterInstance::debpParticleEmitterInstance(dePhysicsBullet *bullet, deParticleEmitterInstance *instance){
-	if(! bullet || ! instance){
+	if(!bullet || !instance){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -211,7 +211,7 @@ void debpParticleEmitterInstance::PrepareParticles(float elapsed){
 
 void debpParticleEmitterInstance::ApplyForceFields(float elapsed){
 	// TODO track force fields to update only if they are nearby
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -260,7 +260,7 @@ void debpParticleEmitterInstance::RequestCheckForLastParticle(){
 }
 
 void debpParticleEmitterInstance::CheckForLastParticle(){
-	if(! pCheckForLastParticle || pInstance->GetEnableCasting()){
+	if(!pCheckForLastParticle || pInstance->GetEnableCasting()){
 		return;
 	}
 	if(pInstance->GetEmitter()->GetEmitBurst() && pBurstTimer < pInstance->GetEmitter()->GetBurstLifetime()){

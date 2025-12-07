@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(float value);

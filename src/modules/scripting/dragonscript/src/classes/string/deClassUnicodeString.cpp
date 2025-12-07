@@ -62,7 +62,7 @@ void deClassUnicodeString::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	// clear ( important )
 	nd->string = NULL;
 	nd->string = new decUnicodeString;
-	if(! nd->string) DSTHROW(dueOutOfMemory);
+	if(!nd->string) DSTHROW(dueOutOfMemory);
 }
 
 // public func new( UnicodeString string )
@@ -78,12 +78,12 @@ void deClassUnicodeString::nfNewFrom::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
-	if(! objStr) DSTHROW(dueNullPointer);
+	if(!objStr) DSTHROW(dueNullPointer);
 	sUSNatDat *other = (sUSNatDat*)p_GetNativeData(rt->GetValue(0));
 	
 	// create copy
 	nd->string = new decUnicodeString(*other->string);
-	if(! nd->string) DSTHROW(dueOutOfMemory);
+	if(!nd->string) DSTHROW(dueOutOfMemory);
 }
 
 // public static func newFromUTF8( String string )
@@ -107,7 +107,7 @@ void deClassUnicodeString::nfNewFromCharacter::RunFunction(dsRunTime *rt, dsValu
 	nd->string = NULL;
 	// create copy
 	nd->string = new decUnicodeString(rt->GetValue(0)->GetInt());
-	if(! nd->string) DSTHROW(dueOutOfMemory);
+	if(!nd->string) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -286,7 +286,7 @@ void deClassUnicodeString::nfCompareTo::RunFunction(dsRunTime *rt, dsValue *myse
 	decUnicodeString *string = ((sUSNatDat*)p_GetNativeData(myself))->string;
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
-	if(! objStr) DSTHROW(dueNullPointer);
+	if(!objStr) DSTHROW(dueNullPointer);
 	sUSNatDat *other = (sUSNatDat*)p_GetNativeData(rt->GetValue(0));
 	// compare
 	rt->PushInt(string->Compare(*other->string));
@@ -301,7 +301,7 @@ void deClassUnicodeString::nfCompareToNoCase::RunFunction(dsRunTime *rt, dsValue
 	decUnicodeString *string = ((sUSNatDat*)p_GetNativeData(myself))->string;
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
-	if(! objStr) DSTHROW(dueNullPointer);
+	if(!objStr) DSTHROW(dueNullPointer);
 	sUSNatDat *other = (sUSNatDat*)p_GetNativeData(rt->GetValue(0));
 	// compare
 	rt->PushInt(string->CompareInsensitive(*other->string));
@@ -317,7 +317,7 @@ void deClassUnicodeString::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassUnicodeString *clsUS = (deClassUnicodeString*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsUS)){
+	if(!p_IsObjOfType(object, clsUS)){
 		rt->PushBool(false);
 	}else{
 		decUnicodeString *otherString = ((sUSNatDat*)p_GetNativeData(object))->string;
@@ -346,7 +346,7 @@ void deClassUnicodeString::nfCompare::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassUnicodeString * const clsUS = (deClassUnicodeString*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsUS)){
+	if(!p_IsObjOfType(object, clsUS)){
 		rt->PushInt(0);
 		
 	}else{
@@ -433,7 +433,7 @@ void deClassUnicodeString::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassUnicodeString &clsUS = *((deClassUnicodeString*)GetOwnerClass());
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
-	if(! objStr) DSTHROW(dueNullPointer);
+	if(!objStr) DSTHROW(dueNullPointer);
 	sUSNatDat *other = (sUSNatDat*)p_GetNativeData(rt->GetValue(0));
 	
 	clsUS.PushUnicodeString(rt, *string + *other->string);
@@ -512,7 +512,7 @@ void deClassUnicodeString::nfOpAddObject::RunFunction(dsRunTime *rt, dsValue *my
 		rt->RunFunctionFast(object, funcIndexToString);
 		objectString = rt->GetReturnString();
 	}
-	if(! objectString) objectString = "<null>";
+	if(!objectString) objectString = "<null>";
 	
 	decUnicodeString unicode(*string);
 	unicode.AppendFromUTF8(objectString);
@@ -605,7 +605,7 @@ const decUnicodeString &deClassUnicodeString::GetUnicodeString(dsRealObject *mys
 }
 
 const decString deClassUnicodeString::GetUTF8(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	return ((sUSNatDat*)p_GetNativeData(myself->GetBuffer()))->string->ToUTF8();

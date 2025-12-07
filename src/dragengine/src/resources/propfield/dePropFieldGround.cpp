@@ -88,7 +88,7 @@ deComponent *dePropFieldGround::GetComponentAt(int index) const{
 }
 
 int dePropFieldGround::IndexOfComponent(deComponent *component) const{
-	if(! component) DETHROW(deeInvalidParam);
+	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
 	
@@ -102,7 +102,7 @@ int dePropFieldGround::IndexOfComponent(deComponent *component) const{
 }
 
 bool dePropFieldGround::HasComponent(deComponent *component) const{
-	if(! component) DETHROW(deeInvalidParam);
+	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
 	
@@ -116,12 +116,12 @@ bool dePropFieldGround::HasComponent(deComponent *component) const{
 }
 
 void dePropFieldGround::AddComponent(deComponent *component){
-	if(! component) DETHROW(deeInvalidParam);
+	if(!component) DETHROW(deeInvalidParam);
 	
 	if(pComponentCount == pComponentSize){
 		int newSize = pComponentSize * 3 / 2 + 1;
 		deComponent **newArray = new deComponent*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pComponents){
 			memcpy(newArray, pComponents, sizeof(deComponent*) * pComponentSize);
 			delete [] pComponents;

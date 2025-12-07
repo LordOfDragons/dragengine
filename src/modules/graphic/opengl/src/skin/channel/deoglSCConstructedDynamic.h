@@ -55,7 +55,7 @@ public:
 	static bool IsDynamic(deSkinPropertyNode &node);
 	
 	/** Dynamic. */
-	inline bool GetDynamic() const{return pDynamic;}
+	inline bool GetDynamic() const{ return pDynamic; }
 	/*@}*/
 	
 	

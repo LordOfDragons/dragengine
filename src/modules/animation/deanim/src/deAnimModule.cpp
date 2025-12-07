@@ -264,7 +264,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 			writer.WriteByte(flags);
 			
 			// write keyframes if required
-			if(! config.ignoreBone && (config.hasVarPos || config.hasVarRot || config.hasVarScale)){
+			if(!config.ignoreBone && (config.hasVarPos || config.hasVarRot || config.hasVarScale)){
 				if(config.fewKeyframes){
 					// we have to calculate first the real keyframe count. this is required since
 					// due to sampling two keyframes can fall on the same frame number. in this
@@ -361,7 +361,7 @@ void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &a
 			writer.WriteByte(flags);
 			
 			// write keyframes if required
-			if(! config.ignoreSet && config.hasVarWeight){
+			if(!config.ignoreSet && config.hasVarWeight){
 				if(config.fewKeyframes){
 					// we have to calculate first the real keyframe count. this is required since
 					// due to sampling two keyframes can fall on the same frame number. in this
@@ -552,7 +552,7 @@ void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &mo
 			info.ignoreBone = (info.boneFlags & FLAG_KF_IGNORE_BONE) == FLAG_KF_IGNORE_BONE;
 			info.formatFloat = (info.boneFlags & FLAG_KF_FORMAT_FLOAT) == FLAG_KF_FORMAT_FLOAT;
 			
-			if(! info.ignoreBone && (info.hasVarPos || info.hasVarRot || info.hasVarScale)){
+			if(!info.ignoreBone && (info.hasVarPos || info.hasVarRot || info.hasVarScale)){
 				pReadKeyframes(reader, *list, info);
 			}
 			
@@ -688,7 +688,7 @@ void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnim
 			info.ignoreSet = (info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET) == FLAG_KFVPS_IGNORE_SET;
 			info.formatFloat = (info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT) == FLAG_KFVPS_FORMAT_FLOAT;
 			
-			if(! info.ignoreSet && info.hasVarWeight){
+			if(!info.ignoreSet && info.hasVarWeight){
 				pReadKeyframes(reader, *list, info);
 			}
 			

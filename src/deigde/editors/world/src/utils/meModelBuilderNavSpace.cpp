@@ -51,7 +51,7 @@
 ////////////////////////////
 
 meModelBuilderNavSpace::meModelBuilderNavSpace(deNavigationSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

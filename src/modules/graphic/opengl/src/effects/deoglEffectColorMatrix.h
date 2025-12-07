@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectColorMatrix &GetEffectColorMatrix() const{return pEffectColorMatrix;}
+	inline const deEffectColorMatrix &GetEffectColorMatrix() const{ return pEffectColorMatrix; }
 	
 	
 	

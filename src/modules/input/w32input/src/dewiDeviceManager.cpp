@@ -306,7 +306,7 @@ void dewiDeviceManager::pProcessAddRemoveDevices(){
 		wrgi::RawGameController const &controller = *iter;
 
 		dewiDevice * const device = GetWithController(controller);
-		if(! device){
+		if(!device){
 			continue;
 		}
 

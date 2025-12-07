@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int index){
-	if(! topic || ! actorSpeak || ! eyesLookAt){
+	if(!topic || !actorSpeak || !eyesLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetEyesLookAtList().GetCount()){

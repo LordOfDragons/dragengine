@@ -93,20 +93,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the vertices. */
-	inline const sVertex *GetVertices() const{return pVertices;}
+	inline const sVertex *GetVertices() const{ return pVertices; }
 	/** Retrieves the indices of the reordered vertices. */
-	inline const int *GetReorderedVertices() const{return pReorderedVertices;}
+	inline const int *GetReorderedVertices() const{ return pReorderedVertices; }
 	/** Sets the number of vertices. This resets the vertices array. */
 	void SetVertexCount(int vertexCount);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the indices of the reordered faces. */
-	inline const int *GetReorderedFaces() const{return pReorderedFaces;}
+	inline const int *GetReorderedFaces() const{ return pReorderedFaces; }
 	/** Retrieves the faces. */
-	inline const sFace *GetFaces() const{return pFaces;}
+	inline const sFace *GetFaces() const{ return pFaces; }
 	/**
 	 * Sets the number of faces. After this call the faces in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all faces using SetFaceAt.
@@ -116,7 +116,7 @@ public:
 	void SetFaceAt(int face, int vertex1, int vertex2, int vertex3);
 	
 	/** Retrieves the number of groups. */
-	inline int GetGroupCount() const{return pGroupCount;}
+	inline int GetGroupCount() const{ return pGroupCount; }
 	/**
 	 * Sets the group count. After this call the groups in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all groups using SetGroupAt.

@@ -43,7 +43,7 @@
 seUSynthesizerSetBytesPerSample::seUSynthesizerSetBytesPerSample(seSynthesizer *synthesizer, int newBytesPerSample) :
 pSynthesizer(NULL)
 {
-	if(! synthesizer){
+	if(!synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

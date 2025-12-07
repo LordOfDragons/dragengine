@@ -55,7 +55,7 @@ decDefaultBSPTree::~decDefaultBSPTree(){
 
 decBSPTree *decDefaultBSPTree::CreateBSPTree(const decVector &faceNormal, float distance) const{
 	decDefaultBSPTree *bsptree = new decDefaultBSPTree(faceNormal, distance);
-	if(! bsptree) DETHROW(deeOutOfMemory);
+	if(!bsptree) DETHROW(deeOutOfMemory);
 	
 	return bsptree;
 }
@@ -70,7 +70,7 @@ void decDefaultBSPTree::AddCoplanarFace(const decBSPTreeFace &face){
 	
 	try{
 		newFace = new decBSPTreeFace;
-		if(! newFace) DETHROW(deeOutOfMemory);
+		if(!newFace) DETHROW(deeOutOfMemory);
 		
 		for(v=0; v<vertexCount; v++){
 			newFace->AddVertex(face.GetVertexAt(v));
@@ -108,12 +108,12 @@ int decDefaultBSPTree::IndexOfFace(decBSPTreeFace *face) const{
 }
 
 void decDefaultBSPTree::AddFace(decBSPTreeFace *face){
-	if(! face) DETHROW(deeInvalidParam);
+	if(!face) DETHROW(deeInvalidParam);
 	
 	if(pFaceCount == pFaceSize){
 		int newSize = pFaceSize * 3 / 2 + 1;
 		decBSPTreeFace **newArray = new decBSPTreeFace*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFaces){
 			memcpy(newArray, pFaces, sizeof(decBSPTreeFace*) * pFaceSize);
 			delete [] pFaces;

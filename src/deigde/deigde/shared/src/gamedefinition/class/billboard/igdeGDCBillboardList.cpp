@@ -71,7 +71,7 @@ bool igdeGDCBillboardList::Has(igdeGDCBillboard *billboard) const{
 }
 
 void igdeGDCBillboardList::Add(igdeGDCBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCBillboardList::Add(igdeGDCBillboard *billboard){
 }
 
 void igdeGDCBillboardList::InsertAt(igdeGDCBillboard *billboard, int index){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	

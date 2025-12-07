@@ -108,7 +108,7 @@ void deConnectionManager::SystemNetworkLoad(){
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
 	while(connection){
-		if(! connection->GetPeerNetwork()){
+		if(!connection->GetPeerNetwork()){
 			netSys.LoadConnection(connection);
 		}
 		
@@ -130,7 +130,7 @@ void deConnectionManager::SystemScriptingLoad(){
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(connection){
-		if(! connection->GetPeerScripting()){
+		if(!connection->GetPeerScripting()){
 			scrSys.LoadConnection(connection);
 		}
 		

@@ -93,7 +93,7 @@ public:
 	
 	
 	/** \brief Owner. */
-	inline igdeNVBoard &GetOwner() const{return *pOwner;}
+	inline igdeNVBoard &GetOwner() const{ return *pOwner; }
 	
 	
 	
@@ -121,13 +121,13 @@ public:
 	void BeginCreateLink(igdeNativeFoxNVSlot *source);
 	
 	/** \brief Link drag and drop source or NULL. */
-	inline igdeNativeFoxNVSlot *GetCreateLinkSource() const{return pCreateLinkSource;}
+	inline igdeNativeFoxNVSlot *GetCreateLinkSource() const{ return pCreateLinkSource; }
 	
 	/** \brief Set create link drag and drop position. */
 	void SetCreateLinkPosition(const decPoint &position);
 	
 	/** \brief Create link drag and drop target or NULL. */
-	inline igdeNativeFoxNVSlot *GetCreateLinkTarget() const{return pCreateLinkTarget;}
+	inline igdeNativeFoxNVSlot *GetCreateLinkTarget() const{ return pCreateLinkTarget; }
 	
 	/** \brief Set create link drag and drop target or NULL. */
 	void SetCreateLinkTarget(igdeNativeFoxNVSlot *target);
@@ -139,7 +139,7 @@ public:
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
 	/** \brief Hover link or NULL. */
-	inline igdeNVLink *GetHoverLink() const{return pHoverLink;}
+	inline igdeNVLink *GetHoverLink() const{ return pHoverLink; }
 	
 	/** \brief Set hover link. */
 	void SetHoverLink(igdeNVLink *link);

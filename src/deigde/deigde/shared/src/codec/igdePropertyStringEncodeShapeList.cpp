@@ -46,7 +46,7 @@
 ////////////////////////////
 
 igdePropertyStringEncodeShapeList::igdePropertyStringEncodeShapeList(decString *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -93,7 +93,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeBox(decShapeBox &box){
 	pAddSeparator();
 	pString->Append("box");
 	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
-	if(! rotation.IsEqualTo(decVector())){
+	if(!rotation.IsEqualTo(decVector())){
 		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
 	pString->AppendFormat(":extends,%g,%g,%g", extends.x, extends.y, extends.z);
@@ -111,14 +111,14 @@ void igdePropertyStringEncodeShapeList::VisitShapeCylinder(decShapeCylinder &cyl
 	pAddSeparator();
 	pString->Append("cylinder");
 	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
-	if(! rotation.IsEqualTo(decVector())){
+	if(!rotation.IsEqualTo(decVector())){
 		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
 	pString->AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
-	if(! topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pString->AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
 	}
-	if(! bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pString->AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
 	}
 }
@@ -135,14 +135,14 @@ void igdePropertyStringEncodeShapeList::VisitShapeCapsule(decShapeCapsule &capsu
 	pAddSeparator();
 	pString->Append("capsule");
 	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
-	if(! rotation.IsEqualTo(decVector())){
+	if(!rotation.IsEqualTo(decVector())){
 		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
 	pString->AppendFormat(":height,%g:radius,%g,%g", height, topRadius, bottomRadius);
-	if(! topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!topAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pString->AppendFormat(":topAxisScaling,%g,%g", topAxisScaling.x, topAxisScaling.y);
 	}
-	if(! bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!bottomAxisScaling.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pString->AppendFormat(":bottomAxisScaling,%g,%g", bottomAxisScaling.x, bottomAxisScaling.y);
 	}
 }
@@ -155,7 +155,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 	pAddSeparator();
 	pString->Append("hull");
 	pString->AppendFormat(":position,%g,%g,%g", position.x, position.y, position.z);
-	if(! rotation.IsEqualTo(decVector())){
+	if(!rotation.IsEqualTo(decVector())){
 		pString->AppendFormat(":rotation,%g,%g,%g", rotation.x, rotation.y, rotation.z);
 	}
 	if(pointCount > 0){

@@ -48,7 +48,7 @@ pIndex(index)
 {
 	const int effectCount = effectList.GetCount();
 	
-	if(! source || effectCount == 0){
+	if(!source || effectCount == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -127,9 +127,9 @@ void seUSourcePasteEffect::Redo(){
 		for(j=0; j<linkCount; j++){
 			seLink * const link = linkList.GetAt(j);
 			
-			if(! synthesizer->GetLinks().Has(link)){
+			if(!synthesizer->GetLinks().Has(link)){
 				seController * const controller = link->GetController();
-				if(controller && ! synthesizer->GetControllers().Has(controller)){
+				if(controller && !synthesizer->GetControllers().Has(controller)){
 					pRemoveControllerList.Add(controller);
 					synthesizer->AddController(controller);
 				}

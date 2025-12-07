@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation(aeRuleInverseKinematic *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeURuleIKSetAdjustOrientation::~aeURuleIKSetAdjustOrientation(){
 ///////////////
 
 void aeURuleIKSetAdjustOrientation::Undo(){
-	pRule->SetAdjustOrientation(! pRule->GetAdjustOrientation());
+	pRule->SetAdjustOrientation(!pRule->GetAdjustOrientation());
 }
 
 void aeURuleIKSetAdjustOrientation::Redo(){
-	pRule->SetAdjustOrientation(! pRule->GetAdjustOrientation());
+	pRule->SetAdjustOrientation(!pRule->GetAdjustOrientation());
 }
 
 

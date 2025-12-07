@@ -43,7 +43,7 @@ seULayerSetOffset::seULayerSetOffset(seLayer *layer, const decVector &newOffset)
 pLayer(NULL),
 pNewOffset(newOffset)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

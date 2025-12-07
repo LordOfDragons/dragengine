@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Disk path to map to the virtual file system. */
-	inline const decPath &GetDiskPath(){return pDiskPath;}
+	inline const decPath &GetDiskPath(){ return pDiskPath; }
 	
 	/** \brief Disk path is read only. */
-	inline bool GetReadOnly() const{return pReadOnly;}
+	inline bool GetReadOnly() const{ return pReadOnly; }
 	
 	/** \brief Set if disk path is read only. */
 	void SetReadOnly(bool readOnly);

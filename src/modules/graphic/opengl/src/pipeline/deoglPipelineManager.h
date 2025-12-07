@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** State. */
-	inline deoglPipelineState &GetState(){return pState;}
+	inline deoglPipelineState &GetState(){ return pState; }
 	
 	/** Pipeline with RTS index or nullptr. Caller does not hold reference. */
 	const deoglPipeline *GetWithRTSIndex(int index);

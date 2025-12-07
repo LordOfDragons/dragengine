@@ -91,7 +91,7 @@ void gdeOCParticleEmitter::SetCasting(bool casting){
 
 
 bool gdeOCParticleEmitter::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCParticleEmitter::GetPropertyName(eProperties property) const{
@@ -116,7 +116,7 @@ bool gdeOCParticleEmitter::HasPropertyWithName(const char *name) const{
 
 
 bool gdeOCParticleEmitter::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &gdeOCParticleEmitter::GetTriggerName(eTriggers trigger) const{

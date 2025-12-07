@@ -37,7 +37,7 @@ aeURuleMirrorSetAxis::aeURuleMirrorSetAxis(aeRuleMirror *rule, deAnimatorRuleMir
 pRule(rule),
 pNewValue(newValue)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

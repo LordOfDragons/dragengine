@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/**
 	 * \brief Point at position.
@@ -105,7 +105,7 @@ public:
 	void RemoveAllPoints();
 	
 	/** \brief Interpolation mode. */
-	inline eInterpolationModes GetInterpolationMode() const{return pInterpolationMode;}
+	inline eInterpolationModes GetInterpolationMode() const{ return pInterpolationMode; }
 	
 	/**
 	 * \brief Set interpolation mode.

@@ -90,7 +90,7 @@ void igdeWOSOForceField::InitTriggers(){
 }
 
 void igdeWOSOForceField::UpdateTriggers(){
-	if(! pForceField){
+	if(!pForceField){
 		return;
 	}
 	
@@ -143,7 +143,7 @@ void igdeWOSOForceField::AsyncLoadFinished(bool success){
 //////////////////////
 
 void igdeWOSOForceField::pUpdateForceField(){
-	if(! pForceField){
+	if(!pForceField){
 		pForceField.TakeOver(GetEngine().GetForceFieldManager()->CreateForceField());
 		
 		UpdateLayerMasks();
@@ -235,17 +235,17 @@ void igdeWOSOForceField::pUpdateForceField(){
 		pForceField->SetShape(pGDForceField.GetShape());
 	}
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddForceField(pForceField);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSOForceField::pDestroyForceField(){
-	if(! pForceField){
+	if(!pForceField){
 		return;
 	}
 	
@@ -262,7 +262,7 @@ void igdeWOSOForceField::pDestroyForceField(){
 void igdeWOSOForceField::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pForceField){
+	if(!pForceField){
 		return;
 	}
 	
@@ -281,7 +281,7 @@ void igdeWOSOForceField::AttachToCollider(){
 			pGDForceField.GetOrientation()));
 		
 		if(colliderComponent){
-			if(! pGDForceField.GetBoneName().IsEmpty()){
+			if(!pGDForceField.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDForceField.GetBoneName());
 			}
@@ -304,7 +304,7 @@ void igdeWOSOForceField::AttachToCollider(){
 }
 
 void igdeWOSOForceField::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	

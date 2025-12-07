@@ -58,7 +58,7 @@ gdeBaseAction(windowMain, "Remove Category",
 
 igdeUndo *gdeMACategoryRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeCategory * const category = gameDefinition.GetActiveCategory();
-	if(! category){
+	if(!category){
 		return NULL;
 	}
 	
@@ -82,7 +82,7 @@ igdeUndo *gdeMACategoryRemove::OnAction(gdeGameDefinition &gameDefinition){
 
 void gdeMACategoryRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

@@ -58,23 +58,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Framebuffer manager. */
-	inline deoglFramebufferManager &GetManager(){return pManager;}
-	inline const deoglFramebufferManager &GetManager() const{return pManager;}
+	inline deoglFramebufferManager &GetManager(){ return pManager; }
+	inline const deoglFramebufferManager &GetManager() const{ return pManager; }
 	
 	/** Primary framebuffer. */
-	inline const deoglFramebuffer::Ref &GetPrimary() const{return pPrimary;}
+	inline const deoglFramebuffer::Ref &GetPrimary() const{ return pPrimary; }
 	
 	/** Active framebuffer. */
-	inline deoglFramebuffer *GetActive() const{return pActive;}
+	inline deoglFramebuffer *GetActive() const{ return pActive; }
 	
 	/** Activate framebuffer or \em NULL to activate the primary framebuffer. */
 	void Activate(deoglFramebuffer *framebuffer);
 	
 	/** Environment map framebuffer. */
-	inline const deoglFramebuffer::Ref &GetEnvMap() const{return pEnvMap;}
+	inline const deoglFramebuffer::Ref &GetEnvMap() const{ return pEnvMap; }
 	
 	/** Environment material map framebuffer. */
-	inline const deoglFramebuffer::Ref &GetEnvMapMaterial() const{return pEnvMapMaterial;}
+	inline const deoglFramebuffer::Ref &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
 	/*@}*/
 	
 private:

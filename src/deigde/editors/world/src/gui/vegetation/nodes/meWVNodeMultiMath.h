@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleMultiMath *GetRuleMultiMath() const{return pRuleMultiMath;}
+	inline meHTVRuleMultiMath *GetRuleMultiMath() const{ return pRuleMultiMath; }
 	
 	/** \brief Update node. */
 	virtual void Update();

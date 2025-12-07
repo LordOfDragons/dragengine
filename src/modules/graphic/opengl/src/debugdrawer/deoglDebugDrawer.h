@@ -62,15 +62,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Debug drawer resource. */
-	inline const deDebugDrawer &GetDebugDrawer() const{return pDebugDrawer;}
+	inline const deDebugDrawer &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
 	/** Render debug drawer. */
-	inline deoglRDebugDrawer *GetRDebugDrawer() const{return pRDebugDrawer;}
+	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

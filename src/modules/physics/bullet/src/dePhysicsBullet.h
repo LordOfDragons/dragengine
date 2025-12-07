@@ -101,10 +101,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{return pColInfo;}
+	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
 	
 	/** \brief Collision detection. */
-	inline debpCollisionDetection &GetCollisionDetection() const{return *pCollisionDetection;}
+	inline debpCollisionDetection &GetCollisionDetection() const{ return *pCollisionDetection; }
 	
 	/** Creates a peer for the given component object. */
 	virtual deBasePhysicsComponent *CreateComponent(deComponent *comp);
@@ -137,14 +137,14 @@ public:
 	/*@}*/
 	
 	/** Retrieves the configuration. */
-	inline debpConfiguration *GetConfiguration() const{return pConfiguration;}
+	inline debpConfiguration *GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Developer mode. */
-	inline debpDeveloperMode &GetDeveloperMode(){return pDeveloperMode;}
-	inline const debpDeveloperMode &GetDeveloperMode() const{return pDeveloperMode;}
+	inline debpDeveloperMode &GetDeveloperMode(){ return pDeveloperMode; }
+	inline const debpDeveloperMode &GetDeveloperMode() const{ return pDeveloperMode; }
 	
-	inline debpDebug &GetDebug(){return pDebug;}
-	inline const debpDebug &GetDebug() const{return pDebug;}
+	inline debpDebug &GetDebug(){ return pDebug; }
+	inline const debpDebug &GetDebug() const{ return pDebug; }
 };
 
 #endif

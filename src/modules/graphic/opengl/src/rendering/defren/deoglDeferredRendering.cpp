@@ -370,7 +370,7 @@ pTexRenderDocDebug(nullptr)
 		
 		// full screen quad vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFullScreenQuad));
-		if(! pVBOFullScreenQuad){
+		if(!pVBOFullScreenQuad){
 			DETHROW(deeOutOfMemory);
 		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFullScreenQuad));
@@ -386,7 +386,7 @@ pTexRenderDocDebug(nullptr)
 		
 		// billboard vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOBillboard));
-		if(! pVBOBillboard){
+		if(!pVBOBillboard){
 			DETHROW(deeOutOfMemory);
 		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOBillboard));
@@ -548,11 +548,11 @@ deoglArrayTexture *deoglDeferredRendering::GetDepthTexture2() const{
 }
 
 void deoglDeferredRendering::SwapDepthTextures(){
-	pModeDepth = ! pModeDepth;
+	pModeDepth = !pModeDepth;
 }
 
 void deoglDeferredRendering::CopyFirstDepthToSecond(bool copyDepth, bool copyStencil){
-	if(! copyDepth && ! copyStencil){
+	if(!copyDepth && !copyStencil){
 		return;
 	}
 	
@@ -605,7 +605,7 @@ void deoglDeferredRendering::CopyFirstDepthToSecond(bool copyDepth, bool copySte
 }
 
 void deoglDeferredRendering::CopyFirstDepthToThirdDepth(bool copyDepth, bool copyStencil){
-	if(! copyDepth && ! copyStencil){
+	if(!copyDepth && !copyStencil){
 		return;
 	}
 	
@@ -650,7 +650,7 @@ void deoglDeferredRendering::CopyFirstDepthToXRayDepth(bool copyDepth, bool copy
 	//          with rendering which means shaders using the XRay depth texture
 	//          will NOT see the blitted content. who designed such a mess?!
 #if 0
-	if(! copyDepth && ! copyStencil){
+	if(!copyDepth && !copyStencil){
 		return;
 	}
 	
@@ -784,7 +784,7 @@ void deoglDeferredRendering::InitPostProcessTarget(){
 }
 
 void deoglDeferredRendering::SwapPostProcessTarget(){
-	pModePostProcess = ! pModePostProcess;
+	pModePostProcess = !pModePostProcess;
 }
 
 deoglArrayTexture *deoglDeferredRendering::GetPostProcessTexture() const{

@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** Effect slot. */
 	const deoalEffectSlot::Ref &GetEffectSlot();
@@ -96,7 +96,7 @@ public:
 	void MoveSpeakerFront(deoalASpeaker *speaker);
 	
 	/** Reference speaker or nullptr. */
-	inline deoalASpeaker *GetReferenceSpeaker() const{return pRefSpeaker;}
+	inline deoalASpeaker *GetReferenceSpeaker() const{ return pRefSpeaker; }
 	
 	/** Update effect slot. */
 	void UpdateEffectSlot();

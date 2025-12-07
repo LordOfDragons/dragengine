@@ -251,13 +251,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Resources type stored in this manager. */
-	inline int GetResourceType() const{return pResourceType;}
+	inline int GetResourceType() const{ return pResourceType; }
 	
 	/** \brief Name to use as the source for this module for logging. */
-	inline const decString &GetLoggingName() const{return pLoggingName;}
+	inline const decString &GetLoggingName() const{ return pLoggingName; }
 	
 	/** \brief Set name to use as the source for this module for logging. */
 	void SetLoggingName(const char *name);

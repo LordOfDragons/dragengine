@@ -73,7 +73,7 @@ deoglGIBVHDynamic::~deoglGIBVHDynamic(){
 
 void deoglGIBVHDynamic::UpdateBVHExtends(){
 	const deoglBVHNode * const rootNode = pGIBVHLocal.GetBVH().GetRootNode();
-	if(! rootNode){
+	if(!rootNode){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void deoglGIBVHDynamic::UpdateVertices(const oglVector3 *positions, int count){
 
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockNode(){
-	if(! pBlockNode){
+	if(!pBlockNode){
 		pBlockNode.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBONode()
 			->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox));
 	}
@@ -136,7 +136,7 @@ const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockNode(){
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockVertex(){
-	if(! pBlockVertex){
+	if(!pBlockVertex){
 		pBlockVertex.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBOVertex()
 			->AddBlock(pTBOVertex));
 	}

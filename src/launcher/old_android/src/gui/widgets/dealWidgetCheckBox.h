@@ -85,15 +85,15 @@ public:
 	void SetImage(dealImage *image);
 	
 	/** \brief Bordered box image widget for unchecked state. */
-	inline dealWidgetImage &GetBoxImageUnchecked() const{return *pBoxImageUnchecked;}
+	inline dealWidgetImage &GetBoxImageUnchecked() const{ return *pBoxImageUnchecked; }
 	
 	/** \brief Bordered box image widget for checked state. */
-	inline dealWidgetImage &GetBoxImageChecked() const{return *pBoxImageChecked;}
+	inline dealWidgetImage &GetBoxImageChecked() const{ return *pBoxImageChecked; }
 	
 	
 	
 	/** \brief Button is checked. */
-	inline bool GetChecked() const{return pChecked;}
+	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if button is checked. */
 	void SetChecked(bool checked);

@@ -70,21 +70,21 @@ int sePropertyNodeList::IndexOf(sePropertyNode *node) const{
 }
 
 void sePropertyNodeList::Add(sePropertyNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	pNodes.Add(node);
 }
 
 void sePropertyNodeList::AddIfAbsent(sePropertyNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	pNodes.AddIfAbsent(node);
 }
 
 void sePropertyNodeList::Insert(int index, sePropertyNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	pNodes.Insert(node, index);

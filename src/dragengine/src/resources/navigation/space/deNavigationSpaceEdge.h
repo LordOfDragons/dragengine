@@ -55,25 +55,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index of the first vertex. */
-	inline unsigned short GetVertex1() const{return pVertex1;}
+	inline unsigned short GetVertex1() const{ return pVertex1; }
 	
 	/** \brief Set index of the first vertex. */
 	void SetVertex1(unsigned short vertex);
 	
 	/** \brief Index of the second vertex. */
-	inline unsigned short GetVertex2() const{return pVertex2;}
+	inline unsigned short GetVertex2() const{ return pVertex2; }
 	
 	/** \brief Set index of the second vertex. */
 	void SetVertex2(unsigned short vertex);
 	
 	/** \brief Type to use for this edge to travel from the first to the second vertex. */
-	inline unsigned short GetType1() const{return pType1;}
+	inline unsigned short GetType1() const{ return pType1; }
 	
 	/** \brief Set type to use for this edge to travel from the first to the second vertex. */
 	void SetType1(unsigned short type);
 	
 	/** \brief Type to use for this edge to travel from the second to the second first. */
-	inline unsigned short GetType2() const{return pType2;}
+	inline unsigned short GetType2() const{ return pType2; }
 	
 	/** \brief Set type to use for this edge to travel from the second to the second first. */
 	void SetType2(unsigned short type);

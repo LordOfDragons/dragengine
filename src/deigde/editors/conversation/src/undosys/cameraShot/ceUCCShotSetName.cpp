@@ -50,7 +50,7 @@
 ////////////////////////////
 
 ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName){
-	if(! cameraShot || ! newName) DETHROW(deeInvalidParam);
+	if(!cameraShot || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = cameraShot->GetConversation()->GetFileList();
 	const int fileCount = fileList.GetCount();

@@ -45,7 +45,7 @@
 
 ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionLogic *logic, ceConversationCondition *condition){
-	if(! topic || ! action || ! logic || ! condition) DETHROW(deeInvalidParam);
+	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

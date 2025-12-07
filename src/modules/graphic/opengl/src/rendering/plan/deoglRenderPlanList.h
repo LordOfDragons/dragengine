@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of render plans. */
-	inline int GetCount() const{return pPlanCount;}
+	inline int GetCount() const{ return pPlanCount; }
 	/** Retrieves the index of the render plan or -1 if not in the list. */
 	int IndexOf(deoglRenderPlan *plan) const;
 	/** Determines if the render plan exists. */

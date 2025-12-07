@@ -120,7 +120,7 @@ void igdeXMLGameDefinition::Load(decBaseFileReader &file, igdeGameDefinition &ga
 	
 	// parse xml tree
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root){
+	if(!root){
 		DETHROW(deeInvalidParam);
 	}
 	if(strcmp(root->GetName(), "gameDefinition") != 0){
@@ -148,7 +148,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -188,21 +188,21 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 		}else if(tagName == "findPathClasses"){
 			const char * const cdata = GetCDataString(*tag);
 			decStringList &autoPath = gamedef.GetClassManager()->GetAutoFindPath();
-			if(cdata && ! autoPath.Has(cdata)){
+			if(cdata && !autoPath.Has(cdata)){
 				autoPath.Add(cdata);
 			}
 			
 		}else if(tagName == "findPathSkins"){
 			const char * const cdata = GetCDataString(*tag);
 			decStringList &autoPath = gamedef.GetSkinManager()->GetAutoFindPath();
-			if(cdata && ! autoPath.Has(cdata)){
+			if(cdata && !autoPath.Has(cdata)){
 				autoPath.Add(cdata);
 			}
 			
 		}else if(tagName == "findPathSkies"){
 			const char * const cdata = GetCDataString(*tag);
 			decStringList &autoPath = gamedef.GetSkyManager()->GetAutoFindPath();
-			if(cdata && ! autoPath.Has(cdata)){
+			if(cdata && !autoPath.Has(cdata)){
 				autoPath.Add(cdata);
 			}
 			
@@ -272,7 +272,7 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -472,7 +472,7 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const  tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -628,7 +628,7 @@ void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, i
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -731,7 +731,7 @@ void igdeXMLGameDefinition::pParseClassInherit(const decXmlElementTag &root, igd
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -764,7 +764,7 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -823,7 +823,7 @@ void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeG
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1032,7 +1032,7 @@ igdeGDClass &gdclass){
 		
 		for(i=0; i<count; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1082,7 +1082,7 @@ void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &r
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1163,7 +1163,7 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1337,7 +1337,7 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1439,7 +1439,7 @@ void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igd
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1558,7 +1558,7 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &r
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1670,7 +1670,7 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag 
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1828,7 +1828,7 @@ void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igd
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1879,7 +1879,7 @@ void igdeXMLGameDefinition::pParseProperty(const decXmlElementTag &root, igdeGDP
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2045,7 +2045,7 @@ void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &
 	
 	for(e=0; e<root.GetElementCount(); e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2077,7 +2077,7 @@ void igdeXMLGameDefinition::pParseCamera(const decXmlElementTag &root, igdeGDCam
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2129,7 +2129,7 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2142,10 +2142,10 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		}
 	}
 	
-	if(! path){
+	if(!path){
 		LogErrorMissingTag(root, "path");
 	}
-	if(! name){
+	if(!name){
 		LogErrorMissingTag(root, "name");
 	}
 	
@@ -2161,7 +2161,7 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -2205,7 +2205,7 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 	// first we have to look for the important tags which are required to construct a new skin.
 	for(e=0; e<root.GetElementCount(); e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2218,10 +2218,10 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 		}
 	}
 	
-	if(! strPath){
+	if(!strPath){
 		LogErrorMissingTag(root, "path");
 	}
-	if(! strName){
+	if(!strName){
 		LogErrorMissingTag(root, "name");
 	}
 	
@@ -2233,14 +2233,14 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 	}
 	
 	skin = new igdeGDSkin(strPath, strName);
-	if(! skin) DETHROW(deeOutOfMemory);
+	if(!skin) DETHROW(deeOutOfMemory);
 	
 	skinManager.AddSkin(skin);
 	
 	// now we read all the other tags.
 	for(e=0; e<root.GetElementCount(); e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2273,7 +2273,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 	// first we have to look for the important tags which are required to construct a new sky.
 	for(e=0; e<root.GetElementCount(); e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2286,10 +2286,10 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		}
 	}
 	
-	if(! strPath){
+	if(!strPath){
 		LogErrorMissingTag(root, "path");
 	}
-	if(! strName){
+	if(!strName){
 		LogErrorMissingTag(root, "name");
 	}
 	
@@ -2307,7 +2307,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 	// now we read all the other tags.
 	for(e=0; e<root.GetElementCount(); e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2350,7 +2350,7 @@ void igdeXMLGameDefinition::pParseGDCategories(const decXmlElementTag &root, igd
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2378,7 +2378,7 @@ void igdeXMLGameDefinition::pParseRootCategory(const decXmlElementTag &root, igd
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2402,7 +2402,7 @@ void igdeXMLGameDefinition::pParseCategory(const decXmlElementTag &root, igdeGDC
 	// first we have to look for the important name tag which is required to construct and add a new category.
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2430,7 +2430,7 @@ void igdeXMLGameDefinition::pParseCategory(const decXmlElementTag &root, igdeGDC
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

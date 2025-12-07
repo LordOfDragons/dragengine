@@ -71,7 +71,7 @@ bool igdeGDCComponentList::Has(igdeGDCComponent *component) const{
 }
 
 void igdeGDCComponentList::Add(igdeGDCComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCComponentList::Add(igdeGDCComponent *component){
 }
 
 void igdeGDCComponentList::InsertAt(igdeGDCComponent *component, int index){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

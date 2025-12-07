@@ -65,7 +65,7 @@ pEnvironment(environment),
 
 pColliderOwner(this)
 {
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 	

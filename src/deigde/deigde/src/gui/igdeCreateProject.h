@@ -107,7 +107,7 @@ public:
 	void SetScriptModule(const char *module);
 	
 	/** \brief Base game definitions. */
-	inline decStringList &GetBaseGameDefs(){return pBaseGameDefs;}
+	inline decStringList &GetBaseGameDefs(){ return pBaseGameDefs; }
 	
 	/** \brief Set project template or \em NULL. */
 	void SetTemplate(const igdeTemplate *atemplate);
@@ -115,7 +115,7 @@ public:
 	
 	
 	/** \brief Created project or \em NULL. */
-	inline igdeGameProject *GetProject() const{return pProject;}
+	inline igdeGameProject *GetProject() const{ return pProject; }
 	
 	
 	

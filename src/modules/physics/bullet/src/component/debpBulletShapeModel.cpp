@@ -52,7 +52,7 @@ pFaces(faces),
 pVertexCount(vertexCount),
 pFaceCount(faceCount)
 {
-	if(! indexVertexArray || vertexCount < 0 || faceCount < 0){
+	if(!indexVertexArray || vertexCount < 0 || faceCount < 0){
 		DETHROW(deeInvalidParam);
 	}
 }

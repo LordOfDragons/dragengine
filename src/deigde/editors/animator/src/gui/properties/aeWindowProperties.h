@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline aeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Animator. */
 	void SetAnimator(aeAnimator *animator);

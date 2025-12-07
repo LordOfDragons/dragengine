@@ -75,7 +75,7 @@ void deClassAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd->animator = NULL;
 	// create animator
 	nd->animator = aniMgr->CreateAnimator();
-	if(! nd->animator) DSTHROW(dueOutOfMemory);
+	if(!nd->animator) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -173,7 +173,7 @@ void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *
 	try{
 		while(animator->GetControllerCount() < count){
 			controller = new deAnimatorController;
-			if(! controller) DSTHROW(dueOutOfMemory);
+			if(!controller) DSTHROW(dueOutOfMemory);
 			animator->AddController(controller);
 			controller = NULL;
 		}
@@ -254,7 +254,7 @@ void deClassAnimator::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		link = new deAnimatorLink;
-		if(! link) DSTHROW(dueOutOfMemory);
+		if(!link) DSTHROW(dueOutOfMemory);
 		
 		link->SetController(rt->GetValue(0)->GetInt());
 		
@@ -475,7 +475,7 @@ void deClassAnimator::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
 	dsRealObject *objRule = rt->GetValue(0)->GetRealObject();
-	if(! objRule) DSTHROW(dueNullPointer);
+	if(!objRule) DSTHROW(dueNullPointer);
 	
 	deAnimatorRule *rule = clsArR.GetRule(objRule);
 	
@@ -594,7 +594,7 @@ void deClassAnimator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
-	if(! p_IsObjOfType(obj, clsAr)){
+	if(!p_IsObjOfType(obj, clsAr)){
 		rt->PushBool(false);
 	}else{
 		deAnimator *otherAnimator = ((sArNatDat*)p_GetNativeData(obj))->animator;
@@ -626,7 +626,7 @@ void deClassAnimator::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassAnimator::deClassAnimator(deScriptingDragonScript *ds) :
 dsClass("Animator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pDS = ds;
@@ -717,7 +717,7 @@ void deClassAnimator::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimator *deClassAnimator::GetAnimator(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -725,11 +725,11 @@ deAnimator *deClassAnimator::GetAnimator(dsRealObject *myself) const{
 }
 
 void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! animator){
+	if(!animator){
 		rt->PushObject(NULL, this);
 		return;
 	}

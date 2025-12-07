@@ -88,7 +88,7 @@ reRigShape *reRigShapeCapsule::Duplicate() const{
 	
 	try{
 		shape = new reRigShapeCapsule(GetEngine());
-		if(! shape) DETHROW(deeOutOfMemory);
+		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());
 		shape->SetOrientation(GetOrientation());

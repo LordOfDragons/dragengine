@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation){
-	if(! target) DETHROW(deeInvalidParam);
+	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	

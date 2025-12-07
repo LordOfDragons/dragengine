@@ -73,7 +73,7 @@ void deoalATContext::OpenDevice(){
 		pDevice = alcOpenDevice(deviceName);
 	}
 	
-	if(! pDevice){
+	if(!pDevice){
 		logger.LogErrorFormat("alcOpenDevice(%s) failed", deviceName.GetString());
 		DETHROW(deeInvalidParam);
 	}
@@ -118,7 +118,7 @@ void deoalATContext::CreateContext(){
 	attributes[index++] = ALC_INVALID;
 	
 	pContext = alcCreateContext(pDevice, attributes);
-	if(! pContext){
+	if(!pContext){
 		logger.LogError("alcCreateContext failed");
 		DETHROW(deeInvalidParam);
 	}

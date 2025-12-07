@@ -45,7 +45,7 @@ gdeOCSpeaker *speaker, float newValue) :
 pObjectClass(NULL),
 pSpeaker(NULL)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

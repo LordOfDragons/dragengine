@@ -129,7 +129,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel(deoglSkinChannel::eChannelTyp
 		break;
 		
 	default:
-		if(! pOglTex.GetVariationU() && ! pOglTex.GetVariationV()){
+		if(!pOglTex.GetVariationU() && !pOglTex.GetVariationV()){
 			pRequiredSize.z = 1;
 		}
 	}
@@ -138,7 +138,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel(deoglSkinChannel::eChannelTyp
 	// since a deviation map could be stored in the alpha channel
 	if(channel == deoglSkinChannel::ectNormal){
 		// if the channel is not defined there is no need for a deviation map too
-		if(! pIsDefined){
+		if(!pIsDefined){
 			
 		// if the normal map is uniform the deviation map is 0. this does not require an alpha channel
 		// if the shader disables the deviation processing. otherwise the channel is required since
@@ -182,7 +182,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel(deoglSkinChannel::eChannelTyp
 void deoglVSDetermineChannelFormat::VisitProperty(deSkinProperty &property){
 	const deoglSkinPropertyMap::ePropertyTypes channelType = deoglSkinPropertyMap::GetTypeFor(property.GetType());
 	
-	if(! pChannelMatches(channelType)){
+	if(!pChannelMatches(channelType)){
 		return;
 	}
 	
@@ -229,11 +229,11 @@ bool deoglVSDetermineChannelFormat::SetRequiredSize(const decPoint3 &size){
 }
 
 void deoglVSDetermineChannelFormat::SetSharedImage(deoglRImage *image){
-	if(! image){
+	if(!image){
 		return;
 	}
 	
-	if(! pIsDefined){
+	if(!pIsDefined){
 		pSharedImage = image;
 		pIsDefined = true;
 		
@@ -363,7 +363,7 @@ bool deoglVSDetermineChannelFormat::pChannelMatches(const deoglSkinPropertyMap::
 void deoglVSDetermineChannelFormat::pProcessPropertyImage(const deSkinPropertyImage &property,
 const deoglSkinPropertyMap::ePropertyTypes channelType){
 	const deImage * const image = property.GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	
@@ -599,7 +599,7 @@ deoglRImage *image, int requiredComponentCount){
 		if(pRequiredComponentCount < requiredComponentCount){
 			pRequiredComponentCount = requiredComponentCount;
 		}
-		if(image->GetBitCount() > 8 && ! pRequiresFloat){
+		if(image->GetBitCount() > 8 && !pRequiresFloat){
 			pRequiresFloat = true;
 		}
 		

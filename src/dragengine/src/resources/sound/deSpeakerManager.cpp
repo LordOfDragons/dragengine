@@ -73,7 +73,7 @@ deSpeaker *deSpeakerManager::CreateSpeaker(){
 	
 	try{
 		speaker = new deSpeaker(this);
-		if(! speaker) DETHROW(deeOutOfMemory);
+		if(!speaker) DETHROW(deeOutOfMemory);
 		
 		GetAudioSystem()->LoadSpeaker(speaker);
 		GetScriptingSystem()->LoadSpeaker(speaker);
@@ -111,7 +111,7 @@ void deSpeakerManager::SystemAudioLoad(){
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(speaker){
-		if(! speaker->GetPeerAudio()){
+		if(!speaker->GetPeerAudio()){
 			audSys.LoadSpeaker(speaker);
 		}
 		
@@ -133,7 +133,7 @@ void deSpeakerManager::SystemScriptingLoad(){
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
 	while(speaker){
-		if(! speaker->GetPeerScripting()){
+		if(!speaker->GetPeerScripting()){
 			scriptingSystem.LoadSpeaker(speaker);
 		}
 		speaker = (deSpeaker*)speaker->GetLLManagerNext();

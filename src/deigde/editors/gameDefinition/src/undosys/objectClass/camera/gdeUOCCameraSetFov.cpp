@@ -44,7 +44,7 @@ gdeUOCCameraSetFov::gdeUOCCameraSetFov(gdeObjectClass *objectClass, gdeOCCamera 
 pObjectClass(NULL),
 pCamera(NULL)
 {
-	if(! objectClass || ! camera){
+	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
 	}
 	

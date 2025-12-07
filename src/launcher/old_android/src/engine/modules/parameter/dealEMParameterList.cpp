@@ -60,7 +60,7 @@ dealEMParameter *dealEMParameterList::GetParameterAt(int index) const{
 }
 
 dealEMParameter *dealEMParameterList::GetParameterNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	int i, count = pParameters.GetCount();
 	dealEMParameter *parameter;
@@ -88,7 +88,7 @@ int dealEMParameterList::IndexOfParameter(dealEMParameter *parameter) const{
 }
 
 int dealEMParameterList::IndexOfParameterNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	int i, count = pParameters.GetCount();
 	
@@ -102,7 +102,7 @@ int dealEMParameterList::IndexOfParameterNamed(const char *name) const{
 }
 
 void dealEMParameterList::AddParameter(dealEMParameter *parameter){
-	if(! parameter || HasParameterNamed(parameter->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!parameter || HasParameterNamed(parameter->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pParameters.Add(parameter);
 }

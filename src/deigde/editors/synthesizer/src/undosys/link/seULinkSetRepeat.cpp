@@ -43,7 +43,7 @@
 seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
 pLink(NULL)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

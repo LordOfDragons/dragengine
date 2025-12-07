@@ -71,7 +71,7 @@ void reConfigurationXML::ReadFromFile(decBaseFileReader &reader, reConfiguration
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "rigEditor") != 0){
+	if(!root || strcmp(root->GetName(), "rigEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ void reConfigurationXML::pReadConfig(const decXmlElementTag &root, reConfigurati
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

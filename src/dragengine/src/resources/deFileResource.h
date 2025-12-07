@@ -78,13 +78,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system or NULL if build from memory. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{return pVirtualFileSystem;}
+	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVirtualFileSystem; }
 	
 	/** \brief Filename or empty string if build from memory. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Modification time used to detect resources changing on disk while loaded. */
-	inline TIME_SYSTEM GetModificationTime() const{return pModificationTime;}
+	inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
 	
 	/**
 	 * \brief Set modification time used to detect resources changing on disk while loaded.
@@ -93,7 +93,7 @@ public:
 	void SetModificationTime(TIME_SYSTEM modificationTime);
 	
 	/** \brief Resource is asynchron. */
-	inline bool GetAsynchron() const{return pAsynchron;}
+	inline bool GetAsynchron() const{ return pAsynchron; }
 	
 	/** \brief Set if resource is asynchron. */
 	void SetAsynchron(bool asynchron);
@@ -106,7 +106,7 @@ public:
 	 * \warning Internal Use Only. Do not call!
 	 */
 	/*@{*/
-	inline bool GetOutdated() const{return pOutdated;}
+	inline bool GetOutdated() const{ return pOutdated; }
 	void MarkOutdated();
 	/*@}*/
 };

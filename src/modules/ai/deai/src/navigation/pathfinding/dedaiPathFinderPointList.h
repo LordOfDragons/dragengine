@@ -50,9 +50,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of points. */
-	inline int GetCount() const{return pPointCount;}
+	inline int GetCount() const{ return pPointCount; }
 	/** Determines if the list is empty. */
-	inline bool IsEmpty() const{return pPointCount == 0;}
+	inline bool IsEmpty() const{ return pPointCount == 0; }
 	/** Retrieves the top point. */
 	const decVector &GetFirst() const;
 	/** Retrieves the given point from the start of the list. */

@@ -41,7 +41,7 @@
 
 aeURuleLimitSetCFrame::aeURuleLimitSetCFrame(aeRuleLimit *rule,
 deAnimatorRuleLimit::eCoordinateFrames newCoordFrame){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

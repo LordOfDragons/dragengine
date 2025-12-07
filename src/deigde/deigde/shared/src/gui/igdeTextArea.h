@@ -98,31 +98,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief TextArea is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in text area. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Set visible columns in text area. */
 	void SetColumns(int columns);
 	
 	/** \brief Visible rows in text area. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Set visible rows in text area. */
 	void SetRows(int rows);
 	
 	/** \brief Text is editable. */
-	inline bool GetEditable() const{return pEditable;}
+	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if text is editable. */
 	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -153,7 +153,7 @@ public:
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/**
 	 * \brief Set text.

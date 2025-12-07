@@ -86,22 +86,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component used for casting or NULL. */
-	inline deComponent *GetComponent() const{return pComponent;}
+	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
 	void SetComponent(deComponent *component);
 	
 	/** \brief Dynamic skin or null if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or null if not used. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Particle array or NULL if not set. */
-	inline sParticle *GetParticleArray() const{return pParticleArray;}
+	inline sParticle *GetParticleArray() const{ return pParticleArray; }
 	
 	/** \brief Number of particles. */
-	inline int GetParticleCount() const{return pParticleCount;}
+	inline int GetParticleCount() const{ return pParticleCount; }
 	
 	/**
 	 * \brief Set the particle array and number of particles.

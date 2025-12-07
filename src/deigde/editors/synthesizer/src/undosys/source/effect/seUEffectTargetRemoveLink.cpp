@@ -47,7 +47,7 @@ pEffect(NULL),
 pTarget(NULL),
 pLink(NULL)
 {
-	if(! effect || ! target || ! link){
+	if(!effect || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	

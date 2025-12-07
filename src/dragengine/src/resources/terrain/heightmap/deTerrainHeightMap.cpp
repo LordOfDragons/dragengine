@@ -264,11 +264,11 @@ void deTerrainHeightMap::SetAllFacesVisible(bool visible){
 //////////////////////
 
 void deTerrainHeightMap::pCreateVisibleFaces(){
-	if(! pVisibleFaces){
+	if(!pVisibleFaces){
 		int byteCount = (((pPointCount.x - 1) * (pPointCount.y - 1) - 1) >> 3) + 1;
 		
 		pVisibleFaces = new unsigned char[byteCount];
-		if(! pVisibleFaces) DETHROW(deeOutOfMemory);
+		if(!pVisibleFaces) DETHROW(deeOutOfMemory);
 		
 		memset(pVisibleFaces, 255, byteCount);
 		

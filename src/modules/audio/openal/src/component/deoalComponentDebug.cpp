@@ -119,7 +119,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 		&& world && microphone && microphone->GetParentWorld() == world
 		&& layerMask.Matches(microphone->GetMicrophone().GetLayerMask());
 	
-	if(! enabled){
+	if(!enabled){
 		if(pDDFaces){
 			if(pDDFaces->GetParentWorld()){
 				pDDFaces->GetParentWorld()->RemoveDebugDrawer(pDDFaces);
@@ -129,7 +129,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 		return;
 	}
 	
-	if(! pDDFaces){
+	if(!pDDFaces){
 		pDDFaces.TakeOver(pComponent.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDFaces->SetXRay(true);
 		pDDFaces->SetVisible(true);
@@ -138,7 +138,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 	
 	pDDFaces->RemoveAllShapes();
 	
-	if(! pComponent.GetAudioModel()){
+	if(!pComponent.GetAudioModel()){
 		return;
 	}
 	
@@ -162,7 +162,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 		}
 		
 		const deoalComponentTexture &componentTexture = pComponent.GetTextureAt(index);
-		if(! componentTexture.GetATexture()->GetAffectsSound()){
+		if(!componentTexture.GetATexture()->GetAffectsSound()){
 			continue;
 		}
 		

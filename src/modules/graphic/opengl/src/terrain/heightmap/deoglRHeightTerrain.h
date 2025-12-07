@@ -81,19 +81,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
 	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Height image size. */
-	inline int GetSectorResolution() const{return pSectorResolution;}
+	inline int GetSectorResolution() const{ return pSectorResolution; }
 	
 	/** Sector dimension. */
-	inline float GetSectorSize() const{return pSectorSize;}
+	inline float GetSectorSize() const{ return pSectorSize; }
 	
 	/** Prepare for render. */
 	void PrepareForRender();

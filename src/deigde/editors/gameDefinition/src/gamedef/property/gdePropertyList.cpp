@@ -113,7 +113,7 @@ bool gdePropertyList::HasNamed(const char *name) const{
 }
 
 void gdePropertyList::Add(gdeProperty *property){
-	if(! property || HasNamed(property->GetName())){
+	if(!property || HasNamed(property->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

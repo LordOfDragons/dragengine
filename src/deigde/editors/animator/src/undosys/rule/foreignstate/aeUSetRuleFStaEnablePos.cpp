@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleFStaEnablePos::~aeUSetRuleFStaEnablePos(){
 ///////////////
 
 void aeUSetRuleFStaEnablePos::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeUSetRuleFStaEnablePos::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

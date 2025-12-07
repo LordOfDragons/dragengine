@@ -74,15 +74,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Prop field. */
-	inline const dePropField &GetPropField() const{return pPropField;}
+	inline const dePropField &GetPropField() const{ return pPropField; }
 	
 	
 	
 	/** Render prop field. */
-	inline deoglRPropField *GetRPropField() const{return pRPropField;}
+	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -90,7 +90,7 @@ public:
 	
 	
 	/** LOD level. */
-	inline int GetLODLevel() const{return pLODLevel;}
+	inline int GetLODLevel() const{ return pLODLevel; }
 	
 	/** Set lod level not doing the updates yet. */
 	void SetLODLevel(int level);

@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active module or NULL if none is active. */
-	inline deBaseInputModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseInputModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Input queue. */
-	inline deInputEventQueue &GetEventQueue() const{return *pEventQueue;}
+	inline deInputEventQueue &GetEventQueue() const{ return *pEventQueue; }
 	
 	/** \brief Clear event queues. */
 	void ClearEventQueues();
@@ -77,7 +77,7 @@ public:
 	void AppActivationChanged();
 	
 	/** \brief Input devices are captured by the active input module if supported. */
-	inline bool GetCaptureInputDevices() const{return pCaptureInputDevices;}
+	inline bool GetCaptureInputDevices() const{ return pCaptureInputDevices; }
 	
 	/** \brief Set if input devices are captured by the active input module if supported. */
 	void SetCaptureInputDevices(bool captureInputDevices);

@@ -81,7 +81,7 @@ pLibHandle(NULL)
 		// negotiate
 		pNegotiate();
 		oxr.LogInfo("OpenXR library negotiated");
-		if(! xrGetInstanceProcAddr){
+		if(!xrGetInstanceProcAddr){
 			DETHROW_INFO(deeInvalidAction, "runtime provided no xrGetInstanceProcAddr");
 		}
 		
@@ -186,7 +186,7 @@ void deoxrLoader::pLoadOpenXR(){
 	
 	#ifdef HAS_LIB_DL
 	pLibHandle = dlopen(pRuntimeLibraryPath, RTLD_NOW);
-	if(! pLibHandle){
+	if(!pLibHandle){
 		pOxr.LogErrorFormat("dlerror: %s.", dlerror());
 		DETHROW_INFO(deeInvalidAction, "Load OpenXR library failed");
 	}
@@ -197,7 +197,7 @@ void deoxrLoader::pLoadOpenXR(){
 	deOSWindows::Utf8ToWide(pRuntimeLibraryPath, widePath, MAX_PATH);
 	pLibHandle = LoadLibrary(widePath);
 	
-	if(! pLibHandle){
+	if(!pLibHandle){
 		int err = GetLastError();
 		wchar_t messageBuffer[251];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -220,7 +220,7 @@ void deoxrLoader::pLoadFunctions(){
 		}
 	#define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN(name) \
 		if(xrGetInstanceProcAddr(XR_NULL_HANDLE, #name, (PFN_xrVoidFunction*)&name) != XR_SUCCESS){ \
-			pOxr.LogInfoFormat("Function " #name " not found! Broken VR Runtime!"); \
+			pOxr.LogInfoFormat("Function " #name " not found!Broken VR Runtime!"); \
 		}
 	
 	#include "../deoxrFunctionNames.h"
@@ -328,7 +328,7 @@ void deoxrLoader::pNegotiate(){
 	fNegotiate = (PFN_xrNegotiateLoaderRuntimeInterface)GetProcAddress(pLibHandle, "xrNegotiateLoaderRuntimeInterface");
 	#endif
 	
-	if(! fNegotiate){
+	if(!fNegotiate){
 		DETHROW_INFO(deeInvalidAction, "Function xrNegotiateLoaderRuntimeInterface not found");
 	}
 	

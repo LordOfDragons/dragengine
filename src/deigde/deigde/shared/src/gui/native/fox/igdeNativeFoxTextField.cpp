@@ -86,12 +86,12 @@ igdeNativeFoxTextField::~igdeNativeFoxTextField(){
 }
 
 igdeNativeFoxTextField *igdeNativeFoxTextField::CreateNativeWidget(igdeTextField &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -207,7 +207,7 @@ int igdeNativeFoxTextField::TextFieldPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxTextField::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -224,7 +224,7 @@ long igdeNativeFoxTextField::onCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxTextField::onChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -242,7 +242,7 @@ long igdeNativeFoxTextField::onChanged(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxTextField::onKeyPress(FXObject *sender, FXSelector selector, void *pdata){
 	// returning 1 from this function stops FXTextField from processing
-	if(! pOwner->GetEnabled() || pPreventKeyPressHook){
+	if(!pOwner->GetEnabled() || pPreventKeyPressHook){
 		return 0;
 	}
 	

@@ -79,7 +79,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{return pObjectClass;}
+	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
 	
 	
 	

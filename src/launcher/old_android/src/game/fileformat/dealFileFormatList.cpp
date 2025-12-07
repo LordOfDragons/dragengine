@@ -68,7 +68,7 @@ int dealFileFormatList::IndexOfFormat(dealFileFormat *format) const{
 }
 
 void dealFileFormatList::AddFormat(dealFileFormat *format){
-	if(! format){
+	if(!format){
 		DETHROW(deeInvalidParam);
 	}
 	pFormats.Add(format);

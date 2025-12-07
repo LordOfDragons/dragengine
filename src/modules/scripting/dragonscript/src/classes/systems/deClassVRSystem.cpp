@@ -635,7 +635,7 @@ void deClassVRSystem::OnFrameUpdate(){
 //////////////////////
 
 void deClassVRSystem::pUpdateCachedDevices(){
-	if(! pCacheDirty){
+	if(!pCacheDirty){
 		return;
 	}
 	

@@ -108,7 +108,7 @@ void deSynthesizerManager::SystemSynthesizerLoad(){
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
 	while(synthesizer){
-		if(! synthesizer->GetPeerSynthesizer()){
+		if(!synthesizer->GetPeerSynthesizer()){
 			synthSys.LoadSynthesizer(synthesizer);
 		}
 		

@@ -273,19 +273,19 @@ void deoglRTContext::InitPhase3(deRenderWindow *renderWindow){
 	// triggered below has to be in the main thread to keep all window handling there
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	
-	if(! renderWindow->GetCanvasView()->GetPeerGraphic()){
+	if(!renderWindow->GetCanvasView()->GetPeerGraphic()){
 		renderWindow->GetCanvasView()->SetPeerGraphic(new deoglCanvasView(ogl, *renderWindow->GetCanvasView()));
 	}
 	
-	if(! renderWindow->GetPeerGraphic()){
+	if(!renderWindow->GetPeerGraphic()){
 		// deoglRenderWindow is calling CreateWindow. this one is important to be in the main thread
 		renderWindow->SetPeerGraphic(new deoglRenderWindow(ogl, *renderWindow));
-		if(! renderWindow->GetPeerGraphic()){
+		if(!renderWindow->GetPeerGraphic()){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	if(! renderWindow->GetHostWindow()){
+	if(!renderWindow->GetHostWindow()){
 		((deoglRenderWindow*)renderWindow->GetPeerGraphic())->GetRRenderWindow()->CenterOnScreen();
 	}
 	
@@ -411,7 +411,7 @@ void deoglRTContext::TerminateAppWindow(){
 
 void deoglRTContext::ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bool forceIfNull){
 	// NULL should be prevented for the time being. pick the first available window if possible
-	if(! rrenderWindow && pRenderThread.GetRRenderWindowList().GetCount() > 0 && ! forceIfNull){
+	if(!rrenderWindow && pRenderThread.GetRRenderWindowList().GetCount() > 0 && !forceIfNull){
 		rrenderWindow = (deoglRRenderWindow*)pRenderThread.GetRRenderWindowList().GetAt(0);
 	}
 	
@@ -449,7 +449,7 @@ void deoglRTContext::ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bo
 		pContextMakeCurrent(rrenderWindow->GetView());
 		
 #elif defined OS_W32
-		if(! wglMakeCurrent(rrenderWindow->GetWindowDC(), pContext)){
+		if(!wglMakeCurrent(rrenderWindow->GetWindowDC(), pContext)){
 			pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 				__FILE__, __LINE__, GetLastError());
 		}
@@ -486,7 +486,7 @@ void deoglRTContext::ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bo
 		pGLContextMakeCurrent(NULL);
 		
 #elif defined OS_W32
-		if(! wglMakeCurrent(NULL, NULL)){
+		if(!wglMakeCurrent(NULL, NULL)){
 			pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 				__FILE__, __LINE__, GetLastError());
 		}
@@ -770,11 +770,11 @@ void deoglRTContext::pOpenDisplay(){
 	const char *dispName = getenv("DISPLAY");
 	
 	// open display
-	if(! dispName){
+	if(!dispName){
 		dispName = "";
 	}
 	pDisplay = XOpenDisplay(dispName);
-	if(! pDisplay){
+	if(!pDisplay){
 		pRenderThread.GetLogger().LogErrorFormat("Cannot not open display %s\n", XDisplayName(dispName));
 		DETHROW(deeInvalidAction);
 	}
@@ -883,7 +883,7 @@ void deoglRTContext::pChooseFBConfig(){
 	try{
 		// try to find a matching fbconfig
 		configs = glXChooseFBConfig(pDisplay, pScreen, attribs, &configCount);
-		if(configCount == 0 || ! configs){
+		if(configCount == 0 || !configs){
 			DETHROW_INFO(deeInvalidAction, "glXChooseFBConfig failed");
 		}
 		
@@ -957,7 +957,7 @@ void deoglRTContext::pChooseVisual(){
 	
 	pVisInfo = glXChooseVisual(pDisplay, pScreen, attrList);
 	
-	if(! pVisInfo){
+	if(!pVisInfo){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -993,7 +993,7 @@ void deoglRTContext::pCreateContext(){
 	PFNGLXCREATECONTEXTATTRIBSARBPROC pglXCreateContextAttribs = NULL;
 	pglXCreateContextAttribs = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
 		GetFunctionPointer("glXCreateContextAttribsARB");
-	if(! pglXCreateContextAttribs){
+	if(!pglXCreateContextAttribs){
 		pglXCreateContextAttribs = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
 			GetFunctionPointer("glXCreateContextAttribs");
 	}
@@ -1062,7 +1062,7 @@ void deoglRTContext::pCreateContext(){
 				vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
 		}
 		
-		if(! pContext){
+		if(!pContext){
 			logger.LogWarn("No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method");
 			pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True);
@@ -1095,7 +1095,7 @@ void deoglRTContext::pCreateContext(){
 	DEASSERT_NOTNULL(pContext)
 	DEASSERT_NOTNULL(pLoaderContext)
 	
-	if(! glXIsDirect(pDisplay, pContext)){
+	if(!glXIsDirect(pDisplay, pContext)){
 		logger.LogError("No matching direct rendering context found!");
 		DETHROW(deeInvalidAction);
 	}
@@ -1116,7 +1116,7 @@ void deoglRTContext::pCreateContext(){
 }
 
 void deoglRTContext::pFreeContext(){
-	if(! pDisplay){
+	if(!pDisplay){
 		return;
 	}
 	
@@ -1480,7 +1480,7 @@ void deoglRTContext::pRegisterWindowClass(){
 	wce.hbrBackground = NULL;
 	wce.style = CS_OWNDC;
 	
-	if(! RegisterClassEx(&wce)){
+	if(!RegisterClassEx(&wce)){
 		DETHROW(deeOutOfMemory);
 	}
 }
@@ -1497,7 +1497,7 @@ void deoglRTContext::pCreateContext(){
 	// create a context using the old method
 	logger.LogInfo("Creating OpenGL Context using old method");
 	pContext = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
-	if(! pContext){
+	if(!pContext){
 		logger.LogErrorFormat("wglCreateContext failed with code %d", (int)GetLastError());
 		DETHROW(deeOutOfMemory);
 	}
@@ -1510,7 +1510,7 @@ void deoglRTContext::pCreateContext(){
 	PFNWGLCREATECONTEXTATTRIBSARBPROC pwglCreateContextAttribs = NULL;
 	pwglCreateContextAttribs = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
 		GetFunctionPointer("wglCreateContextAttribs");
-	if(! pwglCreateContextAttribs){
+	if(!pwglCreateContextAttribs){
 		pwglCreateContextAttribs = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
 			GetFunctionPointer("wglCreateContextAttribsARB");
 	}
@@ -1574,7 +1574,7 @@ void deoglRTContext::pCreateContext(){
 				vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
 		}
 		
-		if(! pContext){
+		if(!pContext){
 			logger.LogWarn("No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method");
 			pContext = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
@@ -1600,7 +1600,7 @@ void deoglRTContext::pCreateContext(){
 		logger.LogInfoFormat("Functions required for new OpenGL Context creation not found");
 	}
 	
-	if(! pContext){
+	if(!pContext){
 		logger.LogErrorFormat("wglCreateContext with code %i", (int)GetLastError());
 		DETHROW(deeOutOfMemory);
 	}

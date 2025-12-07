@@ -69,7 +69,7 @@ void decXmlVisitorWriter::SetCompact(bool compact){
 }
 
 void decXmlVisitorWriter::WriteDocument(decBaseFileWriter *file, decXmlDocument &document){
-	if(! file || ! document.GetRoot()){
+	if(!file || !document.GetRoot()){
 		DETHROW(deeInvalidParam);
 	}
 	if(pWriter){
@@ -83,7 +83,7 @@ void decXmlVisitorWriter::WriteDocument(decBaseFileWriter *file, decXmlDocument 
 		pWriter = new decXmlWriter(file);
 		pWriter->WriteXMLDeclaration();
 		
-		if(! document.GetDocType().IsEmpty() && ! document.GetSystemLiteral()){
+		if(!document.GetDocType().IsEmpty() && !document.GetSystemLiteral()){
 			pWriter->WriteDocTypeDeclaration(document.GetDocType(), document.GetSystemLiteral());
 		}
 		
@@ -107,7 +107,7 @@ void decXmlVisitorWriter::WriteDocument(decBaseFileWriter *file, decXmlDocument 
 /////////////
 
 void decXmlVisitorWriter::VisitComment(decXmlComment &comment){
-	pWriter->WriteComment(comment.GetComment(), ! pCompact && pTagIndent, ! pCompact && pTagNewline);
+	pWriter->WriteComment(comment.GetComment(), !pCompact && pTagIndent, !pCompact && pTagNewline);
 }
 
 void decXmlVisitorWriter::VisitPI(decXmlPI &pi){
@@ -150,7 +150,7 @@ void decXmlVisitorWriter::VisitElementTag(decXmlElementTag &tag){
 	}
 	
 	// write opening tag
-	pWriter->WriteOpeningTagStart(tag.GetName(), ! pCompact && tagIndent);
+	pWriter->WriteOpeningTagStart(tag.GetName(), !pCompact && tagIndent);
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &child = *tag.GetElementAt(i);
@@ -160,21 +160,21 @@ void decXmlVisitorWriter::VisitElementTag(decXmlElementTag &tag){
 		}
 	}
 	
-	pWriter->WriteOpeningTagEnd(emptyTag, ((emptyTag && tagNewline) || firstChildIsTag) && ! pCompact);
+	pWriter->WriteOpeningTagEnd(emptyTag, ((emptyTag && tagNewline) || firstChildIsTag) && !pCompact);
 	
 	// write tag content if present
-	if(! emptyTag){
-		pTagNewline = pTagIndent = hasTags && ! hasCData;
+	if(!emptyTag){
+		pTagNewline = pTagIndent = hasTags && !hasCData;
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElement &child = *tag.GetElementAt(i);
-			if(! child.CanCastToAttValue()){
+			if(!child.CanCastToAttValue()){
 				child.Visit(*this);
 			}
 		}
 		
 		// write end tag
-		pWriter->WriteClosingTag(tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact && tagNewline);
+		pWriter->WriteClosingTag(tag.GetName(), !lastChildCData && !pCompact, !pCompact && tagNewline);
 	}
 	
 	pTagIndent = tagIndent;

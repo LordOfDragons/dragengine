@@ -118,87 +118,87 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{return pOvr;}
+	inline deVROpenVR &GetOvr() const{ return pOvr; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
 	
 	/** Device index. */
-	inline vr::TrackedDeviceIndex_t GetDeviceIndex() const{return pDeviceIndex;}
+	inline vr::TrackedDeviceIndex_t GetDeviceIndex() const{ return pDeviceIndex; }
 	
 	/** Device class. */
-	inline vr::TrackedDeviceClass GetDeviceClass() const{return pDeviceClass;}
+	inline vr::TrackedDeviceClass GetDeviceClass() const{ return pDeviceClass; }
 	
 	/** Controller role. */
-	inline vr::ETrackedControllerRole GetControllerRole() const{return pControllerRole;}
+	inline vr::ETrackedControllerRole GetControllerRole() const{ return pControllerRole; }
 	
 	/** Input value path. */
-	inline const decString &GetInputValuePath() const{return pInputValuePath;}
+	inline const decString &GetInputValuePath() const{ return pInputValuePath; }
 	
 	/** Input value handler. */
-	inline vr::VRInputValueHandle_t GetInputValueHandle() const{return pInputValueHandle;}
+	inline vr::VRInputValueHandle_t GetInputValueHandle() const{ return pInputValueHandle; }
 	
 	/** Pose action handle. */
-	inline vr::VRActionHandle_t GetActionPose() const{return pActionPose;}
+	inline vr::VRActionHandle_t GetActionPose() const{ return pActionPose; }
 	
 	/** Hand pose action handle. */
-	inline vr::VRActionHandle_t GetActionHandPose() const{return pActionHandPose;}
+	inline vr::VRActionHandle_t GetActionHandPose() const{ return pActionHandPose; }
 	
 	
 	
 	/** Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
+	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** Set device type. */
 	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Name number or -1 it not set. */
-	inline int GetNameNumber() const{return pNameNumber;}
+	inline int GetNameNumber() const{ return pNameNumber; }
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
 	
 	/** Bone configuration. */
-	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{return pBoneConfiguration;}
+	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
 	
 	/** Set bone configuration. */
 	void SetBoneConfiguration(deInputDevice::eBoneConfigurations config);
 	
 	/** Render model. */
-	inline deovrRenderModel *GetRenderModel() const{return pRenderModel;}
+	inline deovrRenderModel *GetRenderModel() const{ return pRenderModel; }
 	
 	/** Set render model. */
 	void SetRenderModel(deovrRenderModel *renderModel);
 	
 	/** Texture map. */
-	inline deovrTextureMap *GetTextureMap() const{return pTextureMap;}
+	inline deovrTextureMap *GetTextureMap() const{ return pTextureMap; }
 	
 	/** Set texture map. */
 	void SetTextureMap(deovrTextureMap *textureMap);
@@ -280,7 +280,7 @@ public:
 	void ResetStates();
 	
 	/** State. */
-	inline const vr::VRControllerState_t &GetState() const{return pState;}
+	inline const vr::VRControllerState_t &GetState() const{ return pState; }
 	
 	/** Get device pose. */
 	void GetDevicePose(deInputDevicePose &pose);
@@ -289,7 +289,7 @@ public:
 	void GetBonePose(int bone, bool withController, deInputDevicePose &pose);
 	
 	/** Skeletal summary data. */
-	inline const vr::VRSkeletalSummaryData_t &GetSkeletalSummaryData() const{return pSkeletalSummeryData;}
+	inline const vr::VRSkeletalSummaryData_t &GetSkeletalSummaryData() const{ return pSkeletalSummeryData; }
 	/*@}*/
 	
 	

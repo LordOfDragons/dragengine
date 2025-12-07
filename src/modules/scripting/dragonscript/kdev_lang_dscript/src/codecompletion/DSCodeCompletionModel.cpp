@@ -46,7 +46,7 @@ bool userInsertion, const Cursor &position){
 	
 	// we're probably dealing with string formatting completion
 	// is there any other case where this condition is true?
-	if (! userInsertion && inserted.startsWith('{')) {
+	if (!userInsertion && inserted.startsWith('{')) {
 		return true;
 	}
 	*/

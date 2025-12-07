@@ -75,7 +75,7 @@ public:
 	/** @name Elements */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{return pElementCount;}
+	inline int GetElementCount() const{ return pElementCount; }
 	/** Retrieves the element at the given index. */
 	void *GetElementAt(int index) const;
 	/** Retrieves the index of the given element or -1 if not found. */

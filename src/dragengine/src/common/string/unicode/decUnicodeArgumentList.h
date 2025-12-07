@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of arguments. */
-	inline int GetArgumentCount() const{return pArgumentCount;}
+	inline int GetArgumentCount() const{ return pArgumentCount; }
 	
 	/** \brief Argument at the given index. */
 	const decUnicodeString *GetArgumentAt(int index) const;

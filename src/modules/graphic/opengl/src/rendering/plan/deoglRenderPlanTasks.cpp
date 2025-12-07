@@ -164,13 +164,13 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks(const deoglRenderPlanMasked *
 	
 	// we check state here since this could be a rebuild due to too small SSBO size.
 	// rebuilding is not required for all render tasks so check first
-	if(! (rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady)){
+	if(!(rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady)){
 		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "SolidDepth");
 		pBuildCRTSolidDepth(pCRTSolidDepth, mask, false);
 		renderCompute.BuildRenderTask(pPlan, pCRTSolidDepth);
 	}
 	
-	if(! (rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady)){
+	if(!(rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady)){
 		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "SolidGeometry");
 		if(pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esBuilding){
 			pBuildCRTSolidGeometry(pCRTSolidGeometry, mask, false);
@@ -178,7 +178,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks(const deoglRenderPlanMasked *
 		renderCompute.BuildRenderTask(pPlan, pCRTSolidGeometry);
 	}
 	
-	if(! (rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady)){
+	if(!(rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady)){
 		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "XRay.SolidDepth");
 		if(pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esBuilding){
 			pBuildCRTSolidDepth(pCRTSolidDepthXRay, mask, true);
@@ -186,7 +186,7 @@ void deoglRenderPlanTasks::BuildComputeRenderTasks(const deoglRenderPlanMasked *
 		renderCompute.BuildRenderTask(pPlan, pCRTSolidDepthXRay);
 	}
 	
-	if(! (rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady)){
+	if(!(rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady)){
 		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "XRay.SolidGeometry");
 		if(pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esBuilding){
 			pBuildCRTSolidGeometry(pCRTSolidGeometryXRay, mask, true);
@@ -236,7 +236,7 @@ void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
-	if(! pTaskDepth){
+	if(!pTaskDepth){
 		return;
 	}
 	
@@ -302,7 +302,7 @@ static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRende
 // DEBUG
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
-	if(! pTaskGeometry){
+	if(!pTaskGeometry){
 		return;
 	}
 	

@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of instances. */
-	inline int GetCount() const{return pInstanceCount;}
+	inline int GetCount() const{ return pInstanceCount; }
 	
 	/** Index of the instance or -1 if not in the list. */
 	int IndexOf(deoglRParticleEmitterInstance *instance) const;

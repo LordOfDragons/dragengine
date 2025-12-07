@@ -55,10 +55,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the number of load save skins. */
-	inline int GetLSSkinCount() const{return pLSSkinCount;}
+	inline int GetLSSkinCount() const{ return pLSSkinCount; }
 	/** Retrieves the load save skin at the given index. */
 	seLoadSaveSkin *GetLSSkinAt(int index) const;
 	/** Retrieves the index of the load save skin. */

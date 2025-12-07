@@ -128,7 +128,7 @@ void aeRule::SetEngineRule(deAnimatorRule *engRule){
 }
 
 void aeRule::InitEngineRule(deAnimatorRule *engRule) const{
-	if(! engRule){
+	if(!engRule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -153,7 +153,7 @@ void aeRule::SetParentGroup(aeRuleGroup *group){
 
 
 void aeRule::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 	
@@ -295,9 +295,9 @@ void aeRule::SetListBones(const decStringSet &bones){
 }
 
 void aeRule::AddBone(const char *bone){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
-	if(! pListBones.Has(bone)){
+	if(!pListBones.Has(bone)){
 		pListBones.Add(bone);
 		
 		if(pEngRule){
@@ -354,7 +354,7 @@ void aeRule::SetListVertexPositionSets(const decStringSet &sets){
 void aeRule::AddVertexPositionSet(const char *vertexPositionSet){
 	DEASSERT_NOTNULL(vertexPositionSet)
 	
-	if(! pListVertexPositionSets.Has(vertexPositionSet)){
+	if(!pListVertexPositionSets.Has(vertexPositionSet)){
 		pListVertexPositionSets.Add(vertexPositionSet);
 		
 		if(pEngRule){

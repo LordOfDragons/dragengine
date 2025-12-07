@@ -93,15 +93,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld &GetWorld() const{return pWorld;}
+	inline meWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Engine height terrain. */
-	inline deHeightTerrain *GetEngineHeightTerrain() const{return pEngHT;}
+	inline deHeightTerrain *GetEngineHeightTerrain() const{ return pEngHT; }
 	
 	
 	
 	/** \brief Height terrain file path. */
-	inline const decString &GetPathHT() const{return pPathHT;}
+	inline const decString &GetPathHT() const{ return pPathHT; }
 	
 	/** \brief Set height terrain file path. */
 	void SetPathHT(const char *path);
@@ -110,19 +110,19 @@ public:
 	decString GetBaseDirectory() const;
 	
 	/** \brief World dependency has changed. */
-	inline bool GetDepChanged() const{return pDepChanged;}
+	inline bool GetDepChanged() const{ return pDepChanged; }
 	
 	/** \brief Set if world dependency has changed. */
 	void SetDepChanged(bool changed);
 	
 	/** \brief World has changed. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	
 	/** \brief Set if world has changed. */
 	void SetChanged(bool changed);
 	
 	/** \brief World has saved. */
-	inline bool GetSaved() const{return pSaved;}
+	inline bool GetSaved() const{ return pSaved; }
 	
 	/** \brief Set if world has saved. */
 	void SetSaved(bool saved);
@@ -130,25 +130,25 @@ public:
 	
 	
 	/** \brief Sector size. */
-	inline float GetSectorSize() const{return pSectorSize;}
+	inline float GetSectorSize() const{ return pSectorSize; }
 	
 	/** \brief Set sector size. */
 	void SetSectorSize(float size);
 	
 	/** \brief Sector resolution. */
-	inline int GetSectorResolution() const{return pSectorResolution;}
+	inline int GetSectorResolution() const{ return pSectorResolution; }
 	
 	/** \brief Set sector resolution. */
 	void SetSectorResolution(int resolution);
 	
 	/** \brief Base height. */
-	inline float GetBaseHeight() const{return pBaseHeight;}
+	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
 	/** \brief Set base height. */
 	void SetBaseHeight(float height);
 	
 	/** \brief Height scaling. */
-	inline float GetHeightScaling() const{return pHeightScaling;}
+	inline float GetHeightScaling() const{ return pHeightScaling; }
 	
 	/** \brief Set height scaling. */
 	void SetHeightScaling(float scaling);
@@ -243,7 +243,7 @@ public:
 	void RemoveAllSectors();
 	
 	/** \brief Active sector. */
-	inline meHeightTerrainSector *GetActiveSector() const{return pActiveSector;}
+	inline meHeightTerrainSector *GetActiveSector() const{ return pActiveSector; }
 	
 	/** \brief Set active sector. */
 	void SetActiveSector(meHeightTerrainSector *sector);
@@ -281,7 +281,7 @@ public:
 	void RemoveAllVLayers();
 	
 	/** \brief Active vegetation layer or NULL. */
-	inline meHTVegetationLayer *GetActiveVLayer() const{return pActiveVLayer;}
+	inline meHTVegetationLayer *GetActiveVLayer() const{ return pActiveVLayer; }
 	
 	/** \brief Set active vegetation layer or NULL. */
 	void SetActiveVLayer(meHTVegetationLayer *vlayer);

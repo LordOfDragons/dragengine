@@ -63,8 +63,8 @@ public:
 	
 	/** Extension. */
 	enum eExtension{
-		extKHRMaintenance3, //<! VK_KHR_MAINTENANCE3_EXTENSION_NAME
-		extEXTDescriptorIndexing //<! VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME 
+		extKHRMaintenance3, //<!VK_KHR_MAINTENANCE3_EXTENSION_NAME
+		extEXTDescriptorIndexing //<!VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME 
 	};
 	
 	static const int ExtensionCount = extEXTDescriptorIndexing + 1;
@@ -193,32 +193,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner instance. */
-	inline devkInstance &GetInstance() const{return pInstance;}
+	inline devkInstance &GetInstance() const{ return pInstance; }
 	
 	/** Physical device. */
-	inline VkPhysicalDevice GetPhysicalDevice() const{return pPhysicalDevice;}
+	inline VkPhysicalDevice GetPhysicalDevice() const{ return pPhysicalDevice; }
 	
 	/** Device properties. */
-	inline const VkPhysicalDeviceProperties &GetProperties() const{return pProperties;}
+	inline const VkPhysicalDeviceProperties &GetProperties() const{ return pProperties; }
 	
 	/** Configuration. */
-	inline const DeviceConfig &GetConfig() const{return pConfig;}
+	inline const DeviceConfig &GetConfig() const{ return pConfig; }
 	
 	/** Device. */
-	inline VkDevice GetDevice() const{return pDevice;}
-	inline operator VkDevice() const{return pDevice;}
+	inline VkDevice GetDevice() const{ return pDevice; }
+	inline operator VkDevice() const{ return pDevice; }
 	
 	/** Descriptor set layout manager. */
-	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){return pDescriptorSetLayoutManager;}
-	inline const devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager() const{return pDescriptorSetLayoutManager;}
+	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){ return pDescriptorSetLayoutManager; }
+	inline const devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager() const{ return pDescriptorSetLayoutManager; }
 	
 	/** Shader module manager. */
-	inline devkShaderModuleManager &GetShaderModuleManager(){return pShaderModuleManager;}
-	inline const devkShaderModuleManager &GetShaderModuleManager() const{return pShaderModuleManager;}
+	inline devkShaderModuleManager &GetShaderModuleManager(){ return pShaderModuleManager; }
+	inline const devkShaderModuleManager &GetShaderModuleManager() const{ return pShaderModuleManager; }
 	
 	/** Pipeline manager. */
-	inline devkPipelineManager &GetPipelineManager(){return pPipelineManager;}
-	inline const devkPipelineManager &GetPipelineManager() const{return pPipelineManager;}
+	inline devkPipelineManager &GetPipelineManager(){ return pPipelineManager; }
+	inline const devkPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
 	
 	/** Extension is supported. */
 	bool SupportsExtension(eExtension extension) const;
@@ -229,7 +229,7 @@ public:
 	
 	
 	/** Count of supported formats. */
-	inline int GetSupportedFormatCount() const{return pSupportedFormatCount;}
+	inline int GetSupportedFormatCount() const{ return pSupportedFormatCount; }
 	
 	/** Supported format at index. */
 	const devkFormat &GetSupportedFormatAt(int index) const;
@@ -243,7 +243,7 @@ public:
 	
 	
 	/** Device memory properties. */
-	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{return pMemoryProperties;}
+	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{ return pMemoryProperties; }
 	
 	/** Index of matching memory type. */
 	uint32_t IndexOfMemoryType(VkMemoryPropertyFlags property, uint32_t bits) const;
@@ -258,7 +258,7 @@ public:
 	devkQueue &GetGraphicQueueAt(int index) const;
 	
 	/** First graphic queue. */
-	inline devkQueue &GetGraphicQueue() const{return GetGraphicQueueAt(0);}
+	inline devkQueue &GetGraphicQueue() const{ return GetGraphicQueueAt(0); }
 	
 	/** Count of compute queues. */
 	int GetComputeQueueCount() const;
@@ -267,7 +267,7 @@ public:
 	devkQueue &GetComputeQueueAt(int index) const;
 	
 	/** First compute queue. */
-	devkQueue &GetComputeQueue() const{return GetComputeQueueAt(0);}
+	devkQueue &GetComputeQueue() const{ return GetComputeQueueAt(0); }
 	
 	/** Count of transfer queues. */
 	int GetTransferQueueCount() const;
@@ -276,7 +276,7 @@ public:
 	devkQueue &GetTransferQueueAt(int index) const;
 	
 	/** Get first transfer queue. */
-	devkQueue &GetTransferQueue() const{return GetTransferQueueAt(0);}
+	devkQueue &GetTransferQueue() const{ return GetTransferQueueAt(0); }
 	/*@}*/
 	
 	

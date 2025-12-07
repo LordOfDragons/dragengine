@@ -44,7 +44,7 @@ gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObj
 pGameDefinition(NULL),
 pObjectClass(NULL)
 {
-	if(! gameDefinition || ! objectClass){
+	if(!gameDefinition || !objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

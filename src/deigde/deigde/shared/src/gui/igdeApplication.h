@@ -96,7 +96,7 @@ public:
 	void RunModalWhileShown(igdeWindow &window);
 	
 	/** \brief For internal use only. */
-	inline void *GetNativeApplication() const{return pNativeApplication;}
+	inline void *GetNativeApplication() const{ return pNativeApplication; }
 	
 	
 	/**

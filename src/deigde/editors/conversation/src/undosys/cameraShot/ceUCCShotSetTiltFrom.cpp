@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintToggleIsRope::reUConstraintToggleIsRope(reRigConstraint *constraint){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ reUConstraintToggleIsRope::~reUConstraintToggleIsRope(){
 ///////////////
 
 void reUConstraintToggleIsRope::Undo(){
-	pConstraint->SetIsRope(! pConstraint->GetIsRope());
+	pConstraint->SetIsRope(!pConstraint->GetIsRope());
 }
 
 void reUConstraintToggleIsRope::Redo(){
-	pConstraint->SetIsRope(! pConstraint->GetIsRope());
+	pConstraint->SetIsRope(!pConstraint->GetIsRope());
 }

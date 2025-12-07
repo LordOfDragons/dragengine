@@ -67,25 +67,25 @@ bool meObjectList::Has(meObject *object) const{
 }
 
 void meObjectList::Add(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	pObjects.Add(object);
 }
 
 void meObjectList::AddIfAbsent(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	pObjects.AddIfAbsent(object);
 }
 
 void meObjectList::Remove(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	pObjects.Remove(object);
 }
 
 void meObjectList::RemoveIfPresent(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	pObjects.RemoveIfPresent(object);
 }

@@ -61,31 +61,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Visit billboards. */
-	inline bool GetVisitBillboards() const{return pVisitBillboards;}
+	inline bool GetVisitBillboards() const{ return pVisitBillboards; }
 	
 	/** Set if billboards are visited. */
 	void SetVisitBillboards(bool visitBillboards);
 	
 	/** Visit particle emitters. */
-	inline bool GetVisitParticleEmitters() const{return pVisitParticleEmitters;}
+	inline bool GetVisitParticleEmitters() const{ return pVisitParticleEmitters; }
 	
 	/** Set if particle emitters are visited. */
 	void SetVisitParticleEmitters(bool visitEmitters);
 	
 	/** Visit components. */
-	inline bool GetVisitComponents() const{return pVisitComponents;}
+	inline bool GetVisitComponents() const{ return pVisitComponents; }
 	
 	/** Set if components are visited. */
 	void SetVisitComponents(bool visitComponents);
 	
 	/** Visit lights. */
-	inline bool GetVisitLights() const{return pVisitLights;}
+	inline bool GetVisitLights() const{ return pVisitLights; }
 	
 	/** Set if lights are visited. */
 	void SetVisitLights(bool visitLights);
 	
 	/** Visit environment maps. */
-	inline bool GetVisitEnvMaps() const{return pVisitEnvMaps;}
+	inline bool GetVisitEnvMaps() const{ return pVisitEnvMaps; }
 	
 	/** Set if environment maps are visited. */
 	void SetVisitEnvMaps(bool visitEnvMaps);

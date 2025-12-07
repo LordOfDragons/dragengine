@@ -42,7 +42,7 @@
 aeUAnimatorRemoveBone::aeUAnimatorRemoveBone(aeAnimator* animator, const char* pattern) :
 pAnimator(animator)
 {
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	

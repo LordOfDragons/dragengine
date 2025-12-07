@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Input module. */
-	inline deAndroidInput &GetAndroidInput() const{return pAndroidInput;}
+	inline deAndroidInput &GetAndroidInput() const{ return pAndroidInput; }
 	
 	/** \brief Canvas for this overlay. */
-	inline deCanvasView *GetCanvas() const{return pCanvas;}
+	inline deCanvasView *GetCanvas() const{ return pCanvas; }
 	
 	
 	
@@ -83,7 +83,7 @@ public:
 	bool HasPointer() const;
 	
 	/** \brief Tracked android pointer or -1 if not tracking a pointer. */
-	inline int GetPointer() const{return pPointer;}
+	inline int GetPointer() const{ return pPointer; }
 	
 	/** \brief Clear pointer. */
 	void ClearPointer();
@@ -95,18 +95,18 @@ public:
 	decPoint PointerMove(const decPoint &position);
 	
 	/** \brief Pointer position. */
-	inline const decPoint &GetPointerPosition() const{return pPointerPosition;}
+	inline const decPoint &GetPointerPosition() const{ return pPointerPosition; }
 	
 	
 	
 	/** \brief Horizontal layout. */
-	inline const deainpLayout &GetLayoutHorizontal() const{return pLayoutHorizontal;}
+	inline const deainpLayout &GetLayoutHorizontal() const{ return pLayoutHorizontal; }
 	
 	/** \brief Set horizontal layout. */
 	void SetLayoutHorizontal(const deainpLayout &layout);
 	
 	/** \brief Vertical layout. */
-	inline const deainpLayout &GetLayoutVertical() const{return pLayoutVertical;}
+	inline const deainpLayout &GetLayoutVertical() const{ return pLayoutVertical; }
 	
 	/** \brief Set vertical layout. */
 	void SetLayoutVertical(const deainpLayout &layout);

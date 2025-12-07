@@ -46,17 +46,17 @@ pTexture(texture),
 pKey(key),
 pValue(value)
 {
-	if(! texture || strlen(key) == 0){
+	if(!texture || strlen(key) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

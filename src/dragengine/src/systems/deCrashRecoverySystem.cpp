@@ -58,7 +58,7 @@ void deCrashRecoverySystem::ClearPermanents(){
 
 // overload those
 void deCrashRecoverySystem::PostStart(){
-	if(! pActiveModule->Init()) DETHROW(deeInvalidAction);
+	if(!pActiveModule->Init()) DETHROW(deeInvalidAction);
 }
 void deCrashRecoverySystem::PreStop(){
 	// remove all parallel tasks if present
@@ -69,6 +69,6 @@ void deCrashRecoverySystem::PreStop(){
 
 // management
 bool deCrashRecoverySystem::RecoverFromError(){
-	if(! GetIsRunning()) return false;
+	if(!GetIsRunning()) return false;
 	return pActiveModule->RecoverFromError();
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot(aeRuleForeignState *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleFStaEnableRot::~aeUSetRuleFStaEnableRot(){
 ///////////////
 
 void aeUSetRuleFStaEnableRot::Undo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeUSetRuleFStaEnableRot::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 

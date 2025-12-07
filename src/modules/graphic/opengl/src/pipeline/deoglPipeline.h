@@ -147,26 +147,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 #ifdef BACKEND_OPENGL
 	/** Configuration. */
-	inline const deoglPipelineConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline const deoglPipelineConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Shader program. */
 	deoglShaderCompiled &GetShader() const;
 	
 #elif defined BACKEND_VULKAN
 	/** Pipeline. */
-	inline devkPipeline *GetVkPipeline() const{return pVkPipeline;}
+	inline devkPipeline *GetVkPipeline() const{ return pVkPipeline; }
 #endif
 	
 	
 	
 	/** Render task shared pipeline index or -1. */
-	inline int GetRTSIndex() const{return pRTSIndex;}
+	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
 	/** Set render task shader pipeline. */
 	void SetRTSIndex(int index);

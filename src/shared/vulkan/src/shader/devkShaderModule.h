@@ -69,19 +69,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{return pDevice;}
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Shader source. */
-	inline const char *GetSource() const{return pSource;}
+	inline const char *GetSource() const{ return pSource; }
 	
 	/** Shader source length. */
-	inline int GetSourceLength() const{return pSourceLength;}
+	inline int GetSourceLength() const{ return pSourceLength; }
 	
 	/** Shader module. */
-	inline VkShaderModule GetModule() const{return pModule;}
+	inline VkShaderModule GetModule() const{ return pModule; }
 	/*@}*/
 	
 	

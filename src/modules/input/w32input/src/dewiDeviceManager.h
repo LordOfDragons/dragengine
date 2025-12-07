@@ -105,10 +105,10 @@ public:
 	
 	
 	/** Mouse device. */
-	inline const dewiDeviceMouse::Ref &GetMouse() const{return pMouse;}
+	inline const dewiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** Keyboard device. */
-	inline const dewiDeviceKeyboard::Ref &GetKeyboard() const{return pKeyboard;}
+	inline const dewiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 
 	

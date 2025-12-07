@@ -56,12 +56,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
-	inline dsClass *GetClassColliderConstraintDof() const{return pClsColliderConstraintDof;}
+	inline dsClass *GetClassColliderConstraintDof() const{ return pClsColliderConstraintDof; }
 	/*@}*/
 	
 	

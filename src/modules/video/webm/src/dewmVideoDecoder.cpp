@@ -97,7 +97,7 @@ void dewmVideoDecoder::SetPosition(int position){
 
 bool dewmVideoDecoder::DecodeFrame(void *buffer, int){
 	pCallback->SetResBuffer(buffer);
-	if(! pParser->Feed(pCallback, pReader).ok()){
+	if(!pParser->Feed(pCallback, pReader).ok()){
 		return false;
 	}
 	

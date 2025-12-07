@@ -172,32 +172,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the environment. */
-	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the object wrapper. */
-	inline const igdeWObject::Ref &GetObjectWrapper() const{return pWObject;}
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
 	/** \brief Retrieves the collision detection collider. */
-	inline deColliderVolume *GetColDetCollider() const{return pColDetCollider;}
+	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
+	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** \brief Dispose of the component. */
 	void Dispose();
 	
 	/** \brief Retrieves the camera or nullptr if not existing. */
-	inline meCamera *GetCamera() const{return pCamera;}
+	inline meCamera *GetCamera() const{ return pCamera; }
 	
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	void SetWorld(meWorld *world);
 	
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	void SetSelected(bool selected);
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	void SetActive(bool active);
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	void SetVisible(bool visible);
 	/** \brief Determines if missing textures are shown. */
-	inline bool GetShowMissingTextures() const{return pShowMissingTextures;}
+	inline bool GetShowMissingTextures() const{ return pShowMissingTextures; }
 	/** \brief Sets if missing textures are shown. */
 	void SetShowMissingTextures(bool showMissingTextures);
 	
@@ -250,27 +250,27 @@ public:
 	void Update(float elapsed);
 	
 	/** \brief Retrieves the class name. */
-	inline const decString &GetClassName() const{return pClassName;}
+	inline const decString &GetClassName() const{ return pClassName; }
 	/** \brief Sets the class name. */
 	void SetClassName(const char *className);
 	
 	/** \brief Retrieves the game definition class or NULL if not found. */
-	inline igdeGDClass *GetGDClass() const{return pClassDef;}
+	inline igdeGDClass *GetGDClass() const{ return pClassDef; }
 	
 	/** \brief Retrieves the position. */
-	inline decDVector GetPosition() const{return pPosition;}
+	inline decDVector GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
 	void SetPosition(const decDVector &pos);
 	/** \brief Retrieves the rotation. */
-	inline decVector GetRotation() const{return pRotation;}
+	inline decVector GetRotation() const{ return pRotation; }
 	/** \brief Sets the rotation. */
 	void SetRotation(const decVector &rot);
 	/** \brief Retrieves the size. */
-	inline decVector GetSize() const{return pSize;}
+	inline decVector GetSize() const{ return pSize; }
 	/** \brief Sets the size. */
 	void SetSize(const decVector &size);
 	/** \brief Retrieves the scaling. */
-	inline decVector GetScaling() const{return pScaling;}
+	inline decVector GetScaling() const{ return pScaling; }
 	/** \brief Sets the scaling. */
 	void SetScaling(const decVector &scaling);
 	
@@ -278,7 +278,7 @@ public:
 	void SetSizeAndScaling(const decVector &size, const decVector &scaling);
 	
 	/** \brief ID. */
-	inline const decUniqueID &GetID() const{return pID;}
+	inline const decUniqueID &GetID() const{ return pID; }
 	
 	/** \brief Set ID. */
 	void SetID(const decUniqueID &id);
@@ -289,17 +289,17 @@ public:
 	
 	
 	/** \brief Object this object is attached to or \em NULL. */
-	inline meObject *GetAttachedTo() const{return pAttachedTo;}
+	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set object this object is attached to or \em NULL. */
 	void SetAttachedTo(meObject *object);
 	
 	/** \brief List of attached objects. */
-	inline meObjectList &GetAttachedObjectsList(){return pAttachedObjectsList;}
-	inline const meObjectList &GetAttachedObjectsList() const {return pAttachedObjectsList;}
+	inline meObjectList &GetAttachedObjectsList(){ return pAttachedObjectsList; }
+	inline const meObjectList &GetAttachedObjectsList() const { return pAttachedObjectsList; }
 	
 	/** \brief Attachted to ID used temporary for loading. */
-	inline const decString &GetAttachedToID() const{return pAttachedToID;}
+	inline const decString &GetAttachedToID() const{ return pAttachedToID; }
 	
 	/** \brief Set attachted to ID used temporary for loading. */
 	void SetAttachedToID(const char *id);
@@ -340,7 +340,7 @@ public:
 	/** \name Decals */
 	/*@{*/
 	/** \brief Retrieves the number of decals. */
-	inline int GetDecalCount() const{return pDecalCount;}
+	inline int GetDecalCount() const{ return pDecalCount; }
 	/** \brief Retrieves the decal at the given index. */
 	meDecal *GetDecalAt(int index) const;
 	/** \brief Retrieves the index of the decal of -1 if not found. */
@@ -380,7 +380,7 @@ public:
 	/** \name Texture */
 	/*@{*/
 	/** \brief Retrieves the number of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	/** \brief Retrieves the texture at the given index. */
 	meObjectTexture *GetTextureAt(int index) const;
 	/** \brief Retrieves the texture with the given name of NULL if not found. */
@@ -400,7 +400,7 @@ public:
 	/** \brief Removes all textures. */
 	void RemoveAllTextures();
 	/** \brief Retrieves the active texture or NULL. */
-	inline meObjectTexture *GetActiveTexture() const{return pActiveTexture;}
+	inline meObjectTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** \brief Sets the active texture or NULL. */
 	void SetActiveTexture(meObjectTexture *texture);
 	/** \brief Updates the engine component textures. */
@@ -421,7 +421,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property. */
 	void SetProperty(const char *key, const char *value);
@@ -436,7 +436,7 @@ public:
 	void RemoveAllProperties();
 	
 	/** \brief Active property. */
-	inline const decString &GetActiveProperty() const{return pActiveProperty;}
+	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** \brief Set active property. */
 	void SetActiveProperty(const char *property);
@@ -458,13 +458,13 @@ public:
 	/** \name Attach behaviors */
 	/*@{*/
 	/** \brief Attach behaviors. */
-	inline const decStringList &GetAttachBehaviors() const{return pAttachBehaviors;}
+	inline const decStringList &GetAttachBehaviors() const{ return pAttachBehaviors; }
 	
 	/** \brief Set attach behaviors. */
 	void SetAttachBehaviors(const decStringList &list);
 	
 	/** \brief Active attach behavior. */
-	inline int GetActiveAttachBehavior() const{return pActiveAttachBehavior;}
+	inline int GetActiveAttachBehavior() const{ return pActiveAttachBehavior; }
 	
 	/** \brief Set active attach behavior. */
 	void SetActiveAttachBehavior(int attachBehavior);

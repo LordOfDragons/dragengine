@@ -72,7 +72,7 @@ bool gdeOCNavigationBlockerList::Has(gdeOCNavigationBlocker *blocker) const{
 }
 
 void gdeOCNavigationBlockerList::Add(gdeOCNavigationBlocker *blocker){
-	if(! blocker || Has(blocker)){
+	if(!blocker || Has(blocker)){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Add(blocker);

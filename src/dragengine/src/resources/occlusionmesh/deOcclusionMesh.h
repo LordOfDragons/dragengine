@@ -109,7 +109,7 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Set number of bones. */
 	void SetBoneCount(int count);
@@ -118,7 +118,7 @@ public:
 	deOcclusionMeshBone &GetBoneAt(int index) const;
 	
 	/** \brief Pointer to the bones. */
-	inline deOcclusionMeshBone *GetBones() const{return pBones;}
+	inline deOcclusionMeshBone *GetBones() const{ return pBones; }
 	
 	/** \brief Index of the bone with the given name or -1 if not found. */
 	int IndexOfBoneNamed(const char *name) const;
@@ -132,7 +132,7 @@ public:
 	/** \name Weight Sets */
 	/*@{*/
 	/** \brief Number of weights. */
-	inline int GetWeightCount() const{return pWeightCount;}
+	inline int GetWeightCount() const{ return pWeightCount; }
 	
 	/** \brief Set number of weights. */
 	void SetWeightCount(int count);
@@ -141,10 +141,10 @@ public:
 	deOcclusionMeshWeight &GetWeightAt(int index) const;
 	
 	/** \brief Pointer to the weights. */
-	inline deOcclusionMeshWeight *GetWeights() const{return pWeights;}
+	inline deOcclusionMeshWeight *GetWeights() const{ return pWeights; }
 	
 	/** \brief Number of weight groups. */
-	inline int GetWeightGroupCount() const{return pWeightGroupCount;}
+	inline int GetWeightGroupCount() const{ return pWeightGroupCount; }
 	
 	/** \brief Set number of weight groups. */
 	void SetWeightGroupCount(int count);
@@ -156,7 +156,7 @@ public:
 	void SetWeightGroupAt(int index, int weightSetCount) const;
 	
 	/** \brief Pointer to the weight groups. */
-	inline int *GetWeightGroups() const{return pWeightGroups;}
+	inline int *GetWeightGroups() const{ return pWeightGroups; }
 	/*@}*/
 	
 	
@@ -164,7 +164,7 @@ public:
 	/** \name Vertices */
 	/*@{*/
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Set number of vertices. */
 	void SetVertexCount(int count);
@@ -173,7 +173,7 @@ public:
 	deOcclusionMeshVertex &GetVertexAt(int index) const;
 	
 	/** \brief Pointer to the vertices. */
-	inline deOcclusionMeshVertex *GetVertices() const{return pVertices;}
+	inline deOcclusionMeshVertex *GetVertices() const{ return pVertices; }
 	/*@}*/
 	
 	
@@ -181,7 +181,7 @@ public:
 	/** \name Corners */
 	/*@{*/
 	/** \brief Number of corners. */
-	inline int GetCornerCount() const{return pCornerCount;}
+	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
 	void SetCornerCount(int count);
@@ -193,7 +193,7 @@ public:
 	void SetCornerAt(int index, unsigned short vertexIndex);
 	
 	/** \brief Pointer to the corners. */
-	inline unsigned short *GetCorners() const{return pCorners;}
+	inline unsigned short *GetCorners() const{ return pCorners; }
 	/*@}*/
 	
 	
@@ -201,13 +201,13 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Set number of faces. */
 	void SetFaceCount(int count);
 	
 	/** \brief Number of faces at the end of the face list that are double sided not single sided. */
-	inline int GetDoubleSidedFaceCount() const{return pDoubleSidedFaceCount;}
+	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
 	/** \brief Set number of faces at the end of the face list that are double sided not single sided. */
 	void SetDoubleSidedFaceCount(int count);
@@ -219,7 +219,7 @@ public:
 	void SetFaceAt(int index, unsigned short cornerCount);
 	
 	/** \brief Pointer to the face corner counts. */
-	inline unsigned short *GetFaces() const{return pFaces;}
+	inline unsigned short *GetFaces() const{ return pFaces; }
 	/*@}*/
 	
 	
@@ -227,7 +227,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicOcclusionMesh *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicOcclusionMesh *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicOcclusionMesh *peer);

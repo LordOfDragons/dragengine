@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAStopTopic *GetActionStopTopic() const{return (ceCAStopTopic*)GetAction();}
+	inline ceCAStopTopic *GetActionStopTopic() const{ return (ceCAStopTopic*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

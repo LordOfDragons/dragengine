@@ -42,7 +42,7 @@
 seUSourceChainPathSoundRemoveAll::seUSourceChainPathSoundRemoveAll(seSourceChain *source) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -42,7 +42,7 @@
 seUToggleSourceSoundLooping::seUToggleSourceSoundLooping(seSourceSound *source) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void seUToggleSourceSoundLooping::Undo(){
 }
 
 void seUToggleSourceSoundLooping::Redo(){
-	pSource->SetLooping(! pSource->GetLooping());
+	pSource->SetLooping(!pSource->GetLooping());
 }

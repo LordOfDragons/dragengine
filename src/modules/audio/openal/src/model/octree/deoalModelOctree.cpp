@@ -105,7 +105,7 @@ void deoalModelOctree::ClearFaces(){
 }
 
 void deoalModelOctree::InsertFaceIntoTree(deoalModelFace *face, int maxDepth){
-	if(! face || maxDepth < 0){
+	if(!face || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void deoalModelOctree::InsertFaceIntoTree(deoalModelFace *face, int maxDepth){
 }
 
 void deoalModelOctree::InsertFaceOverlap(deoalModelFace *face, int depth){
-	if(! face || depth < 0){
+	if(!face || depth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -148,7 +148,7 @@ const decVector &halfExtend, int maxDepth){
 	
 	for(i=0; i<maxDepth; i++){
 		deoalModelOctree * const nextNode = (deoalModelOctree*)curNode->GetNodeAtBox(center, halfExtend);
-		if(! nextNode){
+		if(!nextNode){
 			break;
 		}
 		curNode = nextNode;
@@ -168,7 +168,7 @@ deoalModelOctree *deoalModelOctree::pGetNodeFor(const decVector &position, int m
 		}
 		
 		deoalModelOctree *nextNode = (deoalModelOctree*)curNode->GetNodeAt(octant);
-		if(! nextNode){
+		if(!nextNode){
 			nextNode = (deoalModelOctree*)curNode->CreateOctree(octant);
 			curNode->SetNodeAt(octant, nextNode);
 		}
@@ -222,11 +222,11 @@ deoalCollisionTriangle &triangle, int depth){
 		}
 		
 		deoalCollisionBox box(nodeCenter, halfExtend);
-		if(! triangle.BoxHitsTriangle(&box)){
+		if(!triangle.BoxHitsTriangle(&box)){
 			continue;
 		}
 		
-		if(! node){
+		if(!node){
 			node = new deoalModelOctree(nodeCenter, halfExtend);
 			SetNodeAt(i, node);
 		}

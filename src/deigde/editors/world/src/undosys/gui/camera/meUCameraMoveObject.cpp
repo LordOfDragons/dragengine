@@ -62,7 +62,7 @@ void meUCameraMoveObject::SetNewPosition(const decDVector &position){
 }
 
 bool meUCameraMoveObject::HasChanged() const{
-	return ! pNewPosition.IsEqualTo(pOldPosition);
+	return !pNewPosition.IsEqualTo(pOldPosition);
 }
 
 void meUCameraMoveObject::Undo(){

@@ -54,7 +54,7 @@ pIndexData(NULL),
 pValid(false),
 pEmpty(true)
 {
-	if(! vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0){
+	if(!vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -130,13 +130,13 @@ void deoglSharedVBOBlock::SetEmpty(bool empty){
 void deoglSharedVBOBlock::SetValid(bool valid){
 	pValid = valid;
 	
-	if(! valid && pVBO){
+	if(!valid && pVBO){
 		pVBO->MarkDirty();
 	}
 }
 
 void deoglSharedVBOBlock::Prepare(){
-	if(! pVBO){
+	if(!pVBO){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -149,7 +149,7 @@ void deoglSharedVBOBlock::Prepare(){
 //////////////////////
 
 void deoglSharedVBOBlock::pReallocData(){
-	if(! pVBO){
+	if(!pVBO){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -164,10 +164,10 @@ void deoglSharedVBOBlock::pReallocData(){
 		}
 		
 	}else{
-		if(pSize > 0 && ! pData){
+		if(pSize > 0 && !pData){
 			pData = new unsigned char[pVBO->GetParentList()->GetLayout().GetStride() * pSize];
 		}
-		if(pIndexCount > 0 && ! pIndexData){
+		if(pIndexCount > 0 && !pIndexData){
 			const int indexSize = pVBO->GetParentList()->GetLayout().GetIndexSize();
 			
 			if(indexSize > 0){

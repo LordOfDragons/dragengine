@@ -66,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Height terrain. */
-	inline const deHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
+	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Render height terrain. */
-	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{return pRHeightTerrain;}
+	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{ return pRHeightTerrain; }
 	
 	/** Update. */
 	void Update(float elapsed);

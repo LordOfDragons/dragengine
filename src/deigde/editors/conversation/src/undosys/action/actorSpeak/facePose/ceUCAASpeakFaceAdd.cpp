@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakFaceAdd::ceUCAASpeakFaceAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, int index){
-	if(! topic || ! actorSpeak || ! facePose){
+	if(!topic || !actorSpeak || !facePose){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetFacePoseList().GetCount()){

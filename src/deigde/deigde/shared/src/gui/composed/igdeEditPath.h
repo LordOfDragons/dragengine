@@ -207,7 +207,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resource type. */
-	inline igdeEnvironment::eFilePatternListTypes GetResourceType() const{return pResourceType;}
+	inline igdeEnvironment::eFilePatternListTypes GetResourceType() const{ return pResourceType; }
 	
 	/**
 	 * \brief Set resource type.
@@ -221,8 +221,8 @@ public:
 	 * 
 	 * If you change the content call SetSelectPathActions() to make the changes effective.
 	 */
-	inline igdeFilePatternList &GetCustomPatternList(){return pCustomPatternList;}
-	inline const igdeFilePatternList &GetCustomPatternList() const{return pCustomPatternList;}
+	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
+	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
 	
 	
 	
@@ -276,7 +276,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
-	inline const decString &GetDefaultPath() const{return pDefaultPath;}
+	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
 	
 	/** \brief Set default path. */
 	void SetDefaultPath(const char *path);
@@ -285,7 +285,7 @@ public:
 	bool IsPathValid() const;
 	
 	/** \brief Auto validate path if changed. */
-	inline bool GetAutoValidatePath() const{return pAutoValidatePath;}
+	inline bool GetAutoValidatePath() const{ return pAutoValidatePath; }
 	
 	/** \brief Set if path is auto validated if changed. */
 	void SetAutoValidatePath(bool autoValidatePath);
@@ -294,14 +294,14 @@ public:
 	void ValidatePath();
 	
 	/** \brief Use game virtual file system or native file system. */
-	inline bool GetUseGameVFS() const{return pUseGameVFS;}
+	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
 	
 	/**
 	 * \brief Base path or empty string.
 	 * 
 	 * If base is set relative path can be entered.
 	 */
-	inline const decString &GetBasePath() const{return pBasePath;}
+	inline const decString &GetBasePath() const{ return pBasePath; }
 	
 	/**
 	 * \brief Set base path or empty string.

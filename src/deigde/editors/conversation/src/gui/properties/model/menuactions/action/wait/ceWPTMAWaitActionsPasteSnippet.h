@@ -61,13 +61,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief If-else action. */
-	inline ceCAWait *GetWait() const{return pWait;}
+	inline ceCAWait *GetWait() const{ return pWait; }
 	
 	/** \brief Index to insert action at. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
 	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);

@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** VBO this block belongs to. */
-	inline deoglSharedVBO *GetVBO() const{return pVBO;}
+	inline deoglSharedVBO *GetVBO() const{ return pVBO; }
 	
 	/** Drop VBO. For internal use only. */
 	void DropVBO();
@@ -87,41 +87,41 @@ public:
 	
 	
 	/** Offset to block (points). */
-	inline int GetOffset() const{return pOffset;}
+	inline int GetOffset() const{ return pOffset; }
 	
 	/** Size of block. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** Set size of block. Sets data pointer to NULL. */
 	void SetSize(int size);
 	
 	/** Data pointer or NULL if block is empty. */
-	inline unsigned char *GetData() const{return pData;}
+	inline unsigned char *GetData() const{ return pData; }
 	
 	
 	
 	/** Offset to index block. */
-	inline int GetIndexOffset() const{return pIndexOffset;}
+	inline int GetIndexOffset() const{ return pIndexOffset; }
 	
 	/** Count of indices in block. */
-	inline int GetIndexCount() const{return pIndexCount;}
+	inline int GetIndexCount() const{ return pIndexCount; }
 	
 	/** Set count of indices in block. Sets index data pointer to NULL. */
 	void SetIndexCount(int count);
 	
 	/** Index data pointer or NULL if block is empty. */
-	inline unsigned char *GetIndexData() const{return pIndexData;}
+	inline unsigned char *GetIndexData() const{ return pIndexData; }
 	
 	
 	
 	/** Block is empty. */
-	inline bool GetEmpty() const{return pEmpty;}
+	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
 	void SetEmpty(bool empty);
 	
 	/** Block is valid. */
-	inline bool GetValid() const{return pValid;}
+	inline bool GetValid() const{ return pValid; }
 	
 	/** Set if block is valid. */
 	void SetValid(bool valid);

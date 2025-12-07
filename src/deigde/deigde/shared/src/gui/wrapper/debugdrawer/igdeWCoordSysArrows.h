@@ -75,55 +75,55 @@ public:
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
 	void SetScale(const decVector &scale);
 	
 	/** \brief X axis color. */
-	inline const decColor &GetColorAxisX() const{return pColorAxisX;}
+	inline const decColor &GetColorAxisX() const{ return pColorAxisX; }
 	
 	/** \brief Set x axis color. */
 	void SetAxisXColor(const decColor &color);
 	
 	/** \brief Y axis color. */
-	inline const decColor &GetColorAxisY() const{return pColorAxisY;}
+	inline const decColor &GetColorAxisY() const{ return pColorAxisY; }
 	
 	/** \brief Set y axis color. */
 	void SetAxisYColor(const decColor &color);
 	
 	/** \brief Z axis color. */
-	inline const decColor &GetColorAxisZ() const{return pColorAxisZ;}
+	inline const decColor &GetColorAxisZ() const{ return pColorAxisZ; }
 	
 	/** \brief Set z axis color. */
 	void SetAxisZColor(const decColor &color);
 	
 	/** \brief Length of the arrows. */
-	inline float GetArrowLength() const{return pArrowLength;}
+	inline float GetArrowLength() const{ return pArrowLength; }
 	
 	/** \brief Set length of the arrows. */
 	void SetArrowLength(float length);
 	
 	/** \brief Size of the arrow heads. */
-	inline float GetArrowSize() const{return pArrowSize;}
+	inline float GetArrowSize() const{ return pArrowSize; }
 	
 	/** \brief Set size of the arrow heads. */
 	void SetArrowSize(float size);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the debug drawer shape is visible. */
 	void SetVisible(bool visible);

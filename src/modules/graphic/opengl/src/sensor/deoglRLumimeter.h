@@ -80,13 +80,13 @@ public:
 	void MarkDirty();
 	
 	/** Parent world or \em NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent scene or \em NULL if not set. */
 	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Octree node or \em NULL if not inserted into the parent world octree. */
-	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
+	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
 	 * Set octree node or \em NULL if not inserted into the parent world octree.
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decDVector &position);
@@ -111,10 +111,10 @@ public:
 	void UpdateMeasurements();
 	
 	/** Measured luminance. */
-	inline float GetLuminance() const{return pLuminance;}
+	inline float GetLuminance() const{ return pLuminance; }
 	
 	/** Measured color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	
 	
@@ -150,7 +150,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.

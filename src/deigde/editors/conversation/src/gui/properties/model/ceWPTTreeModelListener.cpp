@@ -211,7 +211,7 @@ ceConversationTopic *topic, ceConversationAction*, ceConversationCondition *cond
 void ceWPTTreeModelListener::ActiveChanged(ceConversation *conversation,
 ceConversationFile *file, ceConversationTopic *topic){
 	if(conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
-	|| topic != file->GetActiveTopic() || ! pModel.GetTreeList() || pModel.GetPreventUpdate()){
+	|| topic != file->GetActiveTopic() || !pModel.GetTreeList() || pModel.GetPreventUpdate()){
 		return;
 	}
 	

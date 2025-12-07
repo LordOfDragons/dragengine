@@ -44,7 +44,7 @@ gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass *objectCla
 pObjectClass(NULL),
 pSpeaker(NULL)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -72,7 +72,7 @@ gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
 ///////////////
 
 void gdeUOCSpeakerToggleLooping::Undo(){
-	pSpeaker->SetLooping(! pSpeaker->GetLooping());
+	pSpeaker->SetLooping(!pSpeaker->GetLooping());
 	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 

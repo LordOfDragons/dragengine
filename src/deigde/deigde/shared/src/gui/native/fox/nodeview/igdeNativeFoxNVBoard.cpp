@@ -87,12 +87,12 @@ igdeNativeFoxNVBoard::~igdeNativeFoxNVBoard(){
 }
 
 igdeNativeFoxNVBoard *igdeNativeFoxNVBoard::CreateNativeWidget(igdeNVBoard &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -210,7 +210,7 @@ igdeNVLink *igdeNativeFoxNVBoard::ClosestLinkNear(const decPoint &position, floa
 			continue;
 		}
 		
-		if(! bestLink || distance <= bestDistance){
+		if(!bestLink || distance <= bestDistance){
 			bestLink = link;
 			bestDistance = distance;
 		}
@@ -289,7 +289,7 @@ long igdeNativeFoxNVBoard::onLeftMousePress(FXObject*, FXSelector, void *pdata){
 	const bool shift = (event.state & SHIFTMASK) == SHIFTMASK;
 	const bool control = (event.state & CONTROLMASK) == CONTROLMASK;
 	
-	if(shift && ! control){
+	if(shift && !control){
 		SetHoverLink(NULL);
 		pDragBoard.Set(event.win_x, event.win_y);
 		pIsDragBoard = true;
@@ -369,7 +369,7 @@ void igdeNativeFoxNVBoard::DrawLinks(FXDC &dc) const{
 }
 
 void igdeNativeFoxNVBoard::DrawCreateLink(FXDC &dc) const{
-	if(! pCreateLinkSource){
+	if(!pCreateLinkSource){
 		return;
 	}
 	
@@ -514,7 +514,7 @@ const decVector2 &bp4) const{
 			if(fabsf(lnor * tp1 - ldot) < 0.5f){
 				loc1 = ldir * (tp1 - lpos);
 				loc2 = ldir * (tp2 - lpos);
-				return ! ((loc1 < 0.5f && loc2 < 0.5f) || (loc1 > llen + 0.5f && loc2 > llen + 0.5f));
+				return !((loc1 < 0.5f && loc2 < 0.5f) || (loc1 > llen + 0.5f && loc2 > llen + 0.5f));
 			}
 			
 		}else{

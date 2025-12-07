@@ -122,7 +122,7 @@ void deClassStringID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(
 		rt->GetValue(0)->GetRealObject());
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -142,7 +142,7 @@ void deClassStringID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(
 		rt->GetValue(0)->GetRealObject());
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -275,14 +275,14 @@ int deClassStringID::GetStringCount() const{
 }
 
 int deClassStringID::GetStringID(dsRealObject *myself){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	return ((sStrIDNatDat*)p_GetNativeData(myself->GetBuffer()))->index;
 }
 
 void deClassStringID::PushStringID(dsRunTime *rt, int index){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -291,7 +291,7 @@ void deClassStringID::PushStringID(dsRunTime *rt, int index){
 }
 
 int deClassStringID::InsertString(const char *string){
-	if(! string){
+	if(!string){
 		DSTHROW(dueInvalidParam);
 	}
 	

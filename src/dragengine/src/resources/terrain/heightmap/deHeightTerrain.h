@@ -113,25 +113,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Size in meters of sectors along the X and Z axis.. */
-	inline float GetSectorSize() const{return pSectorSize;}
+	inline float GetSectorSize() const{ return pSectorSize; }
 	
 	/** \brief Resolution of sectors (width and height of height images). */
-	inline int GetSectorResolution() const{return pSectorResolution;}
+	inline int GetSectorResolution() const{ return pSectorResolution; }
 	
 	/** \brief Base height in meters. */
-	inline float GetBaseHeight() const{return pBaseHeight;}
+	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
 	/** \brief Set base height in meters. */
 	void SetBaseHeight(float height);
 	
 	/** \brief Height scaling. */
-	inline float GetHeightScaling() const{return pHeightScaling;}
+	inline float GetHeightScaling() const{ return pHeightScaling; }
 	
 	/** \brief Set height scaling. */
 	void SetHeightScaling(float scaling);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
@@ -172,25 +172,25 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicHeightTerrain *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicHeightTerrain *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicHeightTerrain *peer);
 	
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsHeightTerrain *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsHeightTerrain *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsHeightTerrain *peer);
 	
 	/** \brief Audio system peer or NULL. */
-	inline deBaseAudioHeightTerrain *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioHeightTerrain *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set Audio system peer or NULL. */
 	void SetPeerAudio(deBaseAudioHeightTerrain *peer);
 	
 	/** \brief AI system peer or NULL. */
-	inline deBaseAIHeightTerrain *GetPeerAI() const{return pPeerAI;}
+	inline deBaseAIHeightTerrain *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer or NULL. */
 	void SetPeerAI(deBaseAIHeightTerrain *peer);

@@ -44,7 +44,7 @@ gdeUOCTPSetMaxValue::gdeUOCTPSetMaxValue(gdeObjectClass *objectClass, gdePropert
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline declLauncher &GetLauncher() const{return pLauncher;}
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** Run action. */
 	void Run();

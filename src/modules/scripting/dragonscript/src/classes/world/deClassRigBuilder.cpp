@@ -77,7 +77,7 @@ public:
 		pRig = NULL;
 	}
 	
-	inline deRig *GetRig() const{return pRig;}
+	inline deRig *GetRig() const{ return pRig; }
 };
 
 
@@ -160,7 +160,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -176,7 +176,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetModelCollision::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -206,7 +206,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -257,7 +257,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -301,7 +301,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfAddBoneConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -352,10 +352,10 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
-	if(! rt->GetValue(2)->GetRealObject()){
+	if(!rt->GetValue(2)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -395,7 +395,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetRootBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -410,7 +410,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -426,7 +426,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfSetShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetRig()){
+	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	

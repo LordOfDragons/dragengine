@@ -101,7 +101,7 @@ public:
 	cSpinActive(meWPSObjectShape &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
-		if(! pPanel.IsActivePropertyShape()){
+		if(!pPanel.IsActivePropertyShape()){
 			return;
 		}
 		
@@ -125,7 +125,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meObject * const object = pPanel.GetActiveObject();
-		if(object && ! pPreventUpdate){
+		if(object && !pPreventUpdate){
 			object->SetActiveProperty(comboBox->GetText());
 		}
 	}
@@ -258,7 +258,7 @@ const decString &meWPSObjectShape::GetActiveProperty() const{
 bool meWPSObjectShape::IsActivePropertyShape() const{
 	meObject * const activeObject = GetActiveObject();
 	const decString &activeProperty = GetActiveProperty();
-	return activeObject && ! activeProperty.IsEmpty()
+	return activeObject && !activeProperty.IsEmpty()
 		&& activeObject->IsPropertyShapeOrShapeList(activeProperty);
 }
 
@@ -443,7 +443,7 @@ void meWPSObjectShape::UpdateActiveShape(){
 
 void meWPSObjectShape::UpdateObjectShapeShapes(){
 	const meObject * const activeObject = GetActiveObject();
-	if(! activeObject || ! activeObject->GetActive()){
+	if(!activeObject || !activeObject->GetActive()){
 		return;
 	}
 	
@@ -506,7 +506,7 @@ void meWPSObjectShape::OnShapeChanged(){
 	const eShapePanels activePanel = (eShapePanels)pSwitcherShapeType->GetCurrent();
 	const decString &activeProperty = GetActiveProperty();
 	meObject * const object = GetActiveObject();
-	if(! object || activeProperty.IsEmpty() || activePanel == espNone){
+	if(!object || activeProperty.IsEmpty() || activePanel == espNone){
 		return;
 	}
 	
@@ -633,7 +633,7 @@ void meWPSObjectShape::pCreateShapePanels(){
 
 void meWPSObjectShape::pDisplayPropertyInfo(){
 	const meObject * const object = GetActiveObject();
-	if(! object){
+	if(!object){
 		pTextInfos->ClearText();
 		return;
 	}

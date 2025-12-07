@@ -66,7 +66,7 @@ meWEFFilterKernel::meWEFFilterKernel(){}
 meWEFFilterKernel::meWEFFilterKernel(deEffectFilterKernel *effectFilterKernel, meWindowEffects *windowEffects, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT,
 0, 0, 0, 0, 0, 0, 0, 0){
-	if(! effectFilterKernel || ! windowEffects) DETHROW(deeInvalidParam);
+	if(!effectFilterKernel || !windowEffects) DETHROW(deeInvalidParam);
 	int kernelRows = effectFilterKernel->GetKernelRows();
 	int kernelCols = effectFilterKernel->GetKernelCols();
 	int i, padding = 3, spacing = 3;
@@ -193,12 +193,12 @@ void meWEFFilterKernel::UpdateFilterKernel(){
 }
 
 void meWEFFilterKernel::AddTemplate(meWTFilterKernel *aTemplate){
-	if(! aTemplate) DETHROW(deeInvalidParam);
+	if(!aTemplate) DETHROW(deeInvalidParam);
 	
 	if(pTemplateCount == pTemplateSize){
 		int i, newSize = pTemplateCount * 3 / 2 + 1;
 		meWTFilterKernel **newArray = new meWTFilterKernel*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pTemplates){
 			for(i=0; i<pTemplateCount; i++) newArray[i] = pTemplates[i];
@@ -352,14 +352,14 @@ void meWEFFilterKernel::pAddTemplates(){
 	try{
 		// Identity
 		aTemplate = new meWTFilterKernel("Null Filter 3x3", 3, 3, 1.0f);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
 		
 		// Simple Blur
 		aTemplate = new meWTFilterKernel("Simple Blur 3x3", 3, 3, 1.0f);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		aTemplate->SetKernelValueAt(0, 0, 0.1f);
 		aTemplate->SetKernelValueAt(1, 0, 0.1f);
@@ -376,7 +376,7 @@ void meWEFFilterKernel::pAddTemplates(){
 		
 		// Edge detection
 		aTemplate = new meWTFilterKernel("2 Way Edge Detection 3x3", 3, 3, 1.0f);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		aTemplate->SetKernelValueAt(0, 0, 0.0f);
 		aTemplate->SetKernelValueAt(1, 0, -1.0f);
@@ -393,7 +393,7 @@ void meWEFFilterKernel::pAddTemplates(){
 		
 		// Edge detection
 		aTemplate = new meWTFilterKernel("3 Way Edge Detection 3x3", 3, 3, 1.0f);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		aTemplate->SetKernelValueAt(0, 0, -1.0f);
 		aTemplate->SetKernelValueAt(1, 0, -1.0f);

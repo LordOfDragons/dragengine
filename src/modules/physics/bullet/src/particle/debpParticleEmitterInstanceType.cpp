@@ -419,7 +419,7 @@ void debpParticleEmitterInstanceType::StepParticles(float elapsed){
 		for(i=0; i<pParticleCount; i++){
 			sParticle &particle = pParticles[i];
 			
-			if(! ParticleSimulate(particle, elapsed)){
+			if(!ParticleSimulate(particle, elapsed)){
 				KillParticle(i);
 				i--;
 			}
@@ -549,7 +549,7 @@ void debpParticleEmitterInstanceType::OnTypeChanged(){
 	
 	pComponent = NULL;
 	
-	if(! pInstance){
+	if(!pInstance){
 		return;
 	}
 	
@@ -560,7 +560,7 @@ void debpParticleEmitterInstanceType::OnTypeChanged(){
 	
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt(pType);
 	const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
-	if(! type.GetModel()){
+	if(!type.GetModel()){
 		return;
 	}
 	
@@ -729,7 +729,7 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 				
 				ParticleSetProgressParams(particleProgress);
 				//ParticleCreateTrailEmitter( particleProgress ); // does this make sense? it would be possible
-				if(! ParticleSimulate(particleProgress, simTimeStep)){
+				if(!ParticleSimulate(particleProgress, simTimeStep)){
 					break;
 				}
 			}
@@ -1053,7 +1053,7 @@ void debpParticleEmitterInstanceType::ParticleCastMatrix(decDMatrix &matrix){
 
 void debpParticleEmitterInstanceType::ParticleCreateTrailEmitter(sParticle &particle){
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt(pType);
-	if(! engType.GetTrailEmitter() || ! pInstance->GetParentWorld()){
+	if(!engType.GetTrailEmitter() || !pInstance->GetParentWorld()){
 		return;
 	}
 	
@@ -1236,7 +1236,7 @@ public:
 	}
 	
 	virtual bool needsCollision(btBroadphaseProxy *proxy0) const {
-		if(! ClosestConvexResultCallback::needsCollision(proxy0)){
+		if(!ClosestConvexResultCallback::needsCollision(proxy0)){
 			return false;
 		}
 		
@@ -1246,7 +1246,7 @@ public:
 		if(colObj.IsOwnerCollider()){
 			deCollider &collider = colObj.GetOwnerCollider()->GetCollider();
 			return pInstance.GetCollisionFilter().Collides(collider.GetCollisionFilter())
-				&& ! pInstance.HasIgnoreCollider(&collider);
+				&& !pInstance.HasIgnoreCollider(&collider);
 			
 		}else if(colObj.IsOwnerHTSector()){
 			return pInstance.GetCollisionFilter().Collides(colObj.GetOwnerHTSector()
@@ -1258,7 +1258,7 @@ public:
 };
 
 bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle, float elapsed){
-	if(! pInstance->GetParentWorld()){
+	if(!pInstance->GetParentWorld()){
 		return true; // happens during loading while warmstarting
 	}
 	
@@ -1302,7 +1302,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 		dynamicsWorld.convexSweepTest(&sphereShape, btTransformFrom, btTransformTo, rayResult, BT_ZERO);
 		}
 		
-		if(! rayResult.hasHit()){
+		if(!rayResult.hasHit()){
 			particle.position += displacement;
 			//pBullet->LogInfoFormat( "no hit: pos=(%g,%g,%g)", particle.position.getX(), particle.position.getY(), particle.position.getZ() );
 			break;
@@ -1510,7 +1510,7 @@ deParticleEmitterInstance &instance, float linearVelocity){
 }
 
 void debpParticleEmitterInstanceType::ParticleUpdateTrailEmitter(const sParticle &particle){
-	if(! particle.trailEmitter){
+	if(!particle.trailEmitter){
 		return;
 	}
 	

@@ -56,10 +56,10 @@ pReader(NULL)
 		pReader = new dethOggReader(module, *file);
 		
 		pReader->ReadStreamHeaders(infos);
-		if(! infos.GetHeaderFinished()){
+		if(!infos.GetHeaderFinished()){
 			DETHROW(deeInvalidParam);
 		}
-		if(! pReader->GetStream()){
+		if(!pReader->GetStream()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -129,7 +129,7 @@ void dethVideoDecoder::SetPosition(int position){
 
 bool dethVideoDecoder::DecodeFrame(void *buffer, int){
 	th_ycbcr_buffer tbuffer;
-	if(! pReader->GetStream()->GetDecodedFrame(tbuffer)){
+	if(!pReader->GetStream()->GetDecodedFrame(tbuffer)){
 		return false;
 	}
 	

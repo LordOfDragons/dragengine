@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
-	if(! target || ! newBone){
+	if(!target || !newBone){
 		DETHROW(deeInvalidParam);
 	}
 	

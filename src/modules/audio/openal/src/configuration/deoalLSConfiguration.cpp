@@ -65,7 +65,7 @@ deoalLSConfiguration::~deoalLSConfiguration(){
 void deoalLSConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pOal.GetVFS();
 	const decPath path(decPath::CreatePathNative("/config/openal.xml"));
-	if(! vfs.ExistsFile(path)){
+	if(!vfs.ExistsFile(path)){
 		return;
 	}
 	
@@ -198,7 +198,7 @@ void deoalLSConfiguration::pLoadConfig(decBaseFileReader *file){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "config") != 0){
+	if(!root || strcmp(root->GetName(), "config") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -208,7 +208,7 @@ void deoalLSConfiguration::pLoadConfig(decBaseFileReader *file){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = pGetTagAt(*root, i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

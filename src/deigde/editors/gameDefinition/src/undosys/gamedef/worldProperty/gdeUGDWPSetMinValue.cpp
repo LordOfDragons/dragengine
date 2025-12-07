@@ -44,7 +44,7 @@ gdeUGDWPSetMinValue::gdeUGDWPSetMinValue(gdeGameDefinition *gamedef, gdeProperty
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

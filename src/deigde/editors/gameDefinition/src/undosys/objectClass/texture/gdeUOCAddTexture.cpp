@@ -44,7 +44,7 @@ gdeUOCAddTexture::gdeUOCAddTexture(gdeObjectClass *objectClass, gdeOCComponentTe
 pObjectClass(NULL),
 pTexture(NULL)
 {
-	if(! objectClass || ! texture){
+	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	

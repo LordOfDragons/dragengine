@@ -68,16 +68,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
+	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 	
 	/** \brief If-case. */
-	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
+	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Index to insert action at. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
 	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);

@@ -45,11 +45,11 @@ gdeUOCRemoveForceField::gdeUOCRemoveForceField(gdeObjectClass *objectClass, gdeO
 pObjectClass(NULL),
 pForceField(NULL)
 {
-	if(! objectClass || ! forceField){
+	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetForceFields().Has(forceField)){
+	if(!objectClass->GetForceFields().Has(forceField)){
 		DETHROW(deeInvalidParam);
 	}
 	

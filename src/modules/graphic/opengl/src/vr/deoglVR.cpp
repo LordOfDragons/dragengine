@@ -148,7 +148,7 @@ void deoglVR::DropFBOStereo(){
 
 
 const deoglRenderTarget::Ref &deoglVR::GetRenderTargetDebugPanel(){
-	if(! pRenderTargetDebugPanel){
+	if(!pRenderTargetDebugPanel){
 		pRenderTargetDebugPanel.TakeOver(new deoglRenderTarget(
 			pCamera.GetRenderThread(), pDebugPanelSize, 4, 8));
 		pRenderTargetDebugPanel->PrepareFramebuffer();
@@ -195,7 +195,7 @@ void deoglVR::WaitBeginFrameFinished(){
 	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
 	deBaseVRModule * const vrmodule = renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	if(! vrmodule){
+	if(!vrmodule){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void deoglVR::Render(){
 	
 	pState = esSubmit;
 	
-	if(! pCamera.GetPlan().GetWorld()){
+	if(!pCamera.GetPlan().GetWorld()){
 		return;
 	}
 	
@@ -226,7 +226,7 @@ void deoglVR::Render(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(renderThread, "VR.Render");
-	if(! pUseRenderStereo){
+	if(!pUseRenderStereo){
 		pLeftEye.Render();
 		pRightEye.Render();
 		return;
@@ -271,7 +271,7 @@ void deoglVR::Submit(){
 	pState = esRender;
 	
 	deBaseVRModule * const vrmodule = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	if(! vrmodule){
+	if(!vrmodule){
 		return;
 	}
 	
@@ -333,7 +333,7 @@ void deoglVR::pGetParameters(){
 }
 
 int deoglVR::pCalcTargetFPS(float frameTime) const{
-	if(frameTime < 1.0f / 90.0f || ! pTimeHistoryFrame.HasMetrics()){
+	if(frameTime < 1.0f / 90.0f || !pTimeHistoryFrame.HasMetrics()){
 		return 90; // we can reach 90Hz. do not frame limit
 		
 	}else if(frameTime < 1.0f / 45.0f){

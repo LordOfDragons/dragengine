@@ -64,15 +64,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline deoglRenderTaskSharedPool &GetPool() const{return pPool;}
+	inline deoglRenderTaskSharedPool &GetPool() const{ return pPool; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
 	/** Texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{return pTUC;}
+	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
 	void SetTUC(deoglTexUnitsConfig *tuc);

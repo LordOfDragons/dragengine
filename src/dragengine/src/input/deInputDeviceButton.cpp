@@ -87,7 +87,7 @@ deImage *deInputDeviceButton::GetDisplayIconAt(int index) const{
 }
 
 void deInputDeviceButton::AddDisplayIcon(deImage *image){
-	if(! image){
+	if(!image){
 		DETHROW(deeNullPointer);
 	}
 	pDisplayIcons.Add(image);

@@ -95,17 +95,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	/** Sets the parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
 	/** Retrieves the index of the engine animator instance controller to update in the future. */
-	inline int GetEngineControllerIndex() const{return pEngControllerIndex;}
+	inline int GetEngineControllerIndex() const{ return pEngControllerIndex; }
 	/** Sets the index of the engine animator instance controller to update in the future. */
 	void SetEngineControllerIndex(int index);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the world filename. */
 	void SetName(const char *filename);
 	/** Updates the controller if required. */
@@ -116,57 +116,57 @@ public:
 	void InverseValue();
 	
 	/** Retrieves the minimum value. */
-	inline float GetMinimumValue() const{return pMinValue;}
+	inline float GetMinimumValue() const{ return pMinValue; }
 	/** Sets the minimum value. */
 	void SetMinimumValue(float value);
 	/** Retrieves the maximum value. */
-	inline float GetMaximumValue() const{return pMaxValue;}
+	inline float GetMaximumValue() const{ return pMaxValue; }
 	/** Sets the maximum value. */
 	void SetMaximumValue(float value);
 	/** Retrieves the current value. */
-	inline float GetCurrentValue() const{return pCurValue;}
+	inline float GetCurrentValue() const{ return pCurValue; }
 	/** Sets the current value. */
 	void SetCurrentValue(float value);
 	/** Increments the current value. */
 	void IncrementCurrentValue(float incrementBy);
 	/** Determines if the controller is frozen. */
-	inline bool GetFrozen() const{return pFrozen;}
+	inline bool GetFrozen() const{ return pFrozen; }
 	/** Sets if the controller is frozen. */
 	void SetFrozen(bool frozen);
 	/** Determines if values passed the range are clamped or wrapped around. */
-	inline bool GetClamp() const{return pClamp;}
+	inline bool GetClamp() const{ return pClamp; }
 	/** Sets if values passed the range are clamped or wrapped around. */
 	void SetClamp(bool clamp);
 	
 	/** Retrieves the controller vector. */
-	inline const decVector &GetVector() const{return pVector;}
+	inline const decVector &GetVector() const{ return pVector; }
 	/** Sets the controller vector. */
 	void SetVector(const decVector &vector);
 	
 	/** Retrieves the locomotion attribute this target is controlled by. */
-	inline int GetLocomotionAttribute() const{return pLocoAttr;}
+	inline int GetLocomotionAttribute() const{ return pLocoAttr; }
 	/** Sets the locomotion attribute this target is controlled by. */
 	void SetLocomotionAttribute(int attribute);
 	/** Retrieves the locomotion leg this target is controlled by. */
-	inline int GetLocomotionLeg() const{return pLocoLeg;}
+	inline int GetLocomotionLeg() const{ return pLocoLeg; }
 	/** Sets the locomotion leg this target is controlled by. */
 	void SetLocomotionLeg(int leg);
 	
 	/** Vector simulation. */
-	inline eVectorSimulation GetVectorSimulation() const{return pVectorSimulation;}
+	inline eVectorSimulation GetVectorSimulation() const{ return pVectorSimulation; }
 	
 	/** Set vector simulation. */
 	void SetVectorSimulation(eVectorSimulation simulation);
 	
 	/** Default value. */
-	inline float GetDefaultValue() const{return pDefaultValue;}
+	inline float GetDefaultValue() const{ return pDefaultValue; }
 	void SetDefaultValue(float value);
 	
 	/** Default vector. */
-	inline const decVector &GetDefaultVector() const{return pDefaultVector;}
+	inline const decVector &GetDefaultVector() const{ return pDefaultVector; }
 	void SetDefaultVector(const decVector &vector);
 	
-	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{return pGizmoIKPosition;}
+	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }
 	/*@}*/
 	
 	

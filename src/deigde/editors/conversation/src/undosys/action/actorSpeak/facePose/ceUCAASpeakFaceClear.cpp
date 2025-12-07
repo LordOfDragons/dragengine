@@ -46,7 +46,7 @@ ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic *topic, ceCAActor
 pTopic(NULL),
 pActorSpeak(NULL)
 {
-	if(! topic || ! actorSpeak){
+	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	

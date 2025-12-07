@@ -84,7 +84,7 @@ public:
 	virtual void DestroyNativeWidget();
 	
 	/** \brief View curve bezier. */
-	inline igdeNativeFoxViewCurveBezierView &GetView() const{return *pView;}
+	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
 	/*@}*/
 };
 

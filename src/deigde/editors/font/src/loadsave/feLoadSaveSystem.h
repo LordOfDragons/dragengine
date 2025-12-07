@@ -62,10 +62,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline feWindowMain *GetWindowMain() const{return pWndMain;}
+	inline feWindowMain *GetWindowMain() const{ return pWndMain; }
 	
 	/** Retrieves the number of load save fonts. */
-	inline int GetLSFontCount() const{return pLSFontCount;}
+	inline int GetLSFontCount() const{ return pLSFontCount; }
 	/** Retrieves the load save font at the given index. */
 	feLoadSaveFont *GetLSFontAt(int index) const;
 	/** Retrieves the index of the load save font. */

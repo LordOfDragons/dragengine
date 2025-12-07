@@ -138,13 +138,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render plan. */
-	inline deoglRenderPlan &GetPlan() const{return pPlan;}
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
 	/** Sky instance. */
-	inline deoglRSkyInstance *GetSky() const{return pSky;}
+	inline deoglRSkyInstance *GetSky() const{ return pSky; }
 	
 	/** Sky layer. */
-	inline deoglRSkyInstanceLayer *GetLayer() const{return pLayer;}
+	inline deoglRSkyInstanceLayer *GetLayer() const{ return pLayer; }
 	
 	/** Set sky layer. */
 	void SetLayer(deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer);
@@ -152,14 +152,14 @@ public:
 	
 	
 	/** Collide list with potentially shadow casting elements. */
-	inline deoglCollideList &GetCollideList(){return pCollideList;}
-	inline const deoglCollideList &GetCollideList() const{return pCollideList;}
+	inline deoglCollideList &GetCollideList(){ return pCollideList; }
+	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
 	
 	/** Frustum box min extend. */
-	inline const decVector &GetFrustumBoxMinExtend() const{return pFrustumBoxMinExtend;}
+	inline const decVector &GetFrustumBoxMinExtend() const{ return pFrustumBoxMinExtend; }
 	
 	/** Frustum box max extend. */
-	inline const decVector &GetFrustumBoxMaxExtend() const{return pFrustumBoxMaxExtend;}
+	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	/** Set frustom box extends. */
 	void SetFrustumBoxExtend(const decVector &minExtend, const decVector &maxExtend);
@@ -167,7 +167,7 @@ public:
 	
 	
 	/** Occlusion test. */
-	inline deoglOcclusionTest *GetOcclusionTest() const{return pOcclusionTest;}
+	inline deoglOcclusionTest *GetOcclusionTest() const{ return pOcclusionTest; }
 	
 	/** Set occlusion test. */
 	void SetOcclusionTest(deoglOcclusionTest *occlusionTest);
@@ -175,19 +175,19 @@ public:
 	
 	
 	/** Plan has been planed. */
-	inline bool GetPlanned() const{return pPlanned;}
+	inline bool GetPlanned() const{ return pPlanned; }
 	
 	/** Clear plan is planned. */
 	void ClearPlanned();
 	
 	/** Use light. */
-	inline bool GetUseLight() const{return pUseLight;}
+	inline bool GetUseLight() const{ return pUseLight; }
 	
 	/** Use shadow casting. */
-	inline bool GetUseShadow() const{return pUseShadow;}
+	inline bool GetUseShadow() const{ return pUseShadow; }
 	
 	/** Shadow layer count. */
-	inline int GetShadowLayerCount() const{return pShadowLayerCount;}
+	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
 	
 	/** Shadow layer at index. */
 	sShadowLayer &GetShadowLayerAt(int index);
@@ -196,8 +196,8 @@ public:
 	
 	
 	/** GI collide list with potentially shadow casting elements. */
-	inline deoglCollideList &GetGICollideList(){return pGICollideList;}
-	inline const deoglCollideList &GetGICollideList() const{return pGICollideList;}
+	inline deoglCollideList &GetGICollideList(){ return pGICollideList; }
+	inline const deoglCollideList &GetGICollideList() const{ return pGICollideList; }
 	
 	/** GI box min extend. */
 // 	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
@@ -206,47 +206,47 @@ public:
 // 	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
 	
 	/** GI shadow size. */
-	inline int GetGIShadowSize() const{return pGIShadowSize;}
+	inline int GetGIShadowSize() const{ return pGIShadowSize; }
 	
 	/** GI shadow layer. */
-	inline sShadowLayer &GetGIShadowLayer(){return pGIShadowLayer;}
-	inline const sShadowLayer &GetGIShadowLayer() const{return pGIShadowLayer;}
+	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
+	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
 	
 	/** Update static GI shadow map. */
-	inline bool GetGIShadowUpdateStatic() const{return pGIShadowUpdateStatic;}
+	inline bool GetGIShadowUpdateStatic() const{ return pGIShadowUpdateStatic; }
 	
 	/** GI render task. */
-	inline deoglRenderTask &GetGIRenderTaskStatic(){return pGIRenderTaskStatic;}
-	inline const deoglRenderTask &GetGIRenderTaskStatic() const{return pGIRenderTaskStatic;}
+	inline deoglRenderTask &GetGIRenderTaskStatic(){ return pGIRenderTaskStatic; }
+	inline const deoglRenderTask &GetGIRenderTaskStatic() const{ return pGIRenderTaskStatic; }
 	
-	inline deoglRenderTask &GetGIRenderTaskDynamic(){return pGIRenderTaskDynamic;}
-	inline const deoglRenderTask &GetGIRenderTaskDynamic() const{return pGIRenderTaskDynamic;}
+	inline deoglRenderTask &GetGIRenderTaskDynamic(){ return pGIRenderTaskDynamic; }
+	inline const deoglRenderTask &GetGIRenderTaskDynamic() const{ return pGIRenderTaskDynamic; }
 	
 	/** GI add to render task. */
-	inline deoglAddToRenderTask &GetGIRenderTaskAddStatic(){return pGIRenderTaskAddStatic;}
-	inline const deoglAddToRenderTask &GetGIRenderTaskAddStatic() const{return pGIRenderTaskAddStatic;}
+	inline deoglAddToRenderTask &GetGIRenderTaskAddStatic(){ return pGIRenderTaskAddStatic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddStatic() const{ return pGIRenderTaskAddStatic; }
 	
-	inline deoglAddToRenderTask &GetGIRenderTaskAddDynamic(){return pGIRenderTaskAddDynamic;}
-	inline const deoglAddToRenderTask &GetGIRenderTaskAddDynamic() const{return pGIRenderTaskAddDynamic;}
+	inline deoglAddToRenderTask &GetGIRenderTaskAddDynamic(){ return pGIRenderTaskAddDynamic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddDynamic() const{ return pGIRenderTaskAddDynamic; }
 	
 	
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{return pUBOFindConfig;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{return pSSBOCounters;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{return pSSBOVisibleElements;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{return pSSBOVisibleElements2;}
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
 	
 	void SwapVisibleElements();
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIStatic() const{return pUBOFindConfigGIStatic;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIStatic() const{return pSSBOCountersGIStatic;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIStatic() const{return pSSBOVisibleElementsGIStatic;}
-	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIStatic() const{return pCRTShadowGIStatic;}
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIStatic() const{ return pUBOFindConfigGIStatic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIStatic() const{ return pSSBOCountersGIStatic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIStatic() const{ return pSSBOVisibleElementsGIStatic; }
+	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIStatic() const{ return pCRTShadowGIStatic; }
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIDynamic() const{return pUBOFindConfigGIDynamic;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIDynamic() const{return pSSBOCountersGIDynamic;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIDynamic() const{return pSSBOVisibleElementsGIDynamic;}
-	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIDynamic() const{return pCRTShadowGIDynamic;}
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGIDynamic() const{ return pUBOFindConfigGIDynamic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGIDynamic() const{ return pSSBOCountersGIDynamic; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGIDynamic() const{ return pSSBOVisibleElementsGIDynamic; }
+	inline const deoglComputeRenderTask::Ref &GetCRTShadowGIDynamic() const{ return pCRTShadowGIDynamic; }
 	
 	
 	

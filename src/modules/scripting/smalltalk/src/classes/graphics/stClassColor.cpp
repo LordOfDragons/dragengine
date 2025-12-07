@@ -56,7 +56,7 @@ struct csClr : public csObject{
 ////////////////////////////
 
 stClassColor::stClassColor(ScriptingSmalltalk *st){
-	if(! st) DETHROW(deeInvalidParam);
+	if(!st) DETHROW(deeInvalidParam);
 	
 	pST = st;
 	
@@ -98,7 +98,7 @@ stClassColor::~stClassColor(){
 
 void stClassColor::SetUpLinks(){
 	pOOPClass = gst_class_name_to_oop("DEColor");
-	if(! pOOPClass) DETHROW(deeInvalidParam);
+	if(!pOOPClass) DETHROW(deeInvalidParam);
 	
 	csClrClass &csclass = *((csClrClass*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST->GetClassScripting()->GetSingleton();
@@ -115,7 +115,7 @@ OOP stClassColor::ColorToOOP(const decColor &color){
 	OOP oopColor = NULL;
 	
 	oopColor = pST->CreateNewObjectWithInit(pOOPClass, sizeof(csClr) - sizeof(csObject));
-	if(! oopColor || oopColor == pST->GetNil()) DETHROW(deeOutOfMemory);
+	if(!oopColor || oopColor == pST->GetNil()) DETHROW(deeOutOfMemory);
 	
 	csClr &csobject = *((csClr*)OOP_TO_OBJ(oopColor));
 	csobject.clsClr = this;

@@ -192,7 +192,7 @@ pCalcSizePending(true)
 	pEditGameDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditGameDir->setEditable(false);
 	pLabProblemGameDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(! pLabProblemGameDir) DETHROW(deeOutOfMemory);
+	if(!pLabProblemGameDir) DETHROW(deeOutOfMemory);
 	pLabProblemGameDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemGameDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemGameDir->setTextColor(configuration.GetTextColorProblem());
@@ -207,7 +207,7 @@ pCalcSizePending(true)
 	pEditDataDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditDataDir->setEditable(false);
 	pLabProblemDataDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(! pLabProblemDataDir) DETHROW(deeOutOfMemory);
+	if(!pLabProblemDataDir) DETHROW(deeOutOfMemory);
 	pLabProblemDataDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemDataDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemDataDir->setTextColor(configuration.GetTextColorProblem());
@@ -222,7 +222,7 @@ pCalcSizePending(true)
 	pEditScriptDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditScriptDir->setEditable(false);
 	pLabProblemScriptDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(! pLabProblemScriptDir) DETHROW(deeOutOfMemory);
+	if(!pLabProblemScriptDir) DETHROW(deeOutOfMemory);
 	pLabProblemScriptDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemScriptDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemScriptDir->setTextColor(configuration.GetTextColorProblem());
@@ -242,7 +242,7 @@ pCalcSizePending(true)
 	pBtnScriptModuleInfo = guiBuilder.CreateButton(frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information");
 	pBtnScriptModuleInfo->setLayoutHints(pBtnScriptModuleInfo->getLayoutHints() | LAYOUT_FILL_Y);
 	pLabProblemScriptModule = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(! pLabProblemScriptModule) DETHROW(deeOutOfMemory);
+	if(!pLabProblemScriptModule) DETHROW(deeOutOfMemory);
 	pLabProblemScriptModule->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemScriptModule->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemScriptModule->setTextColor(configuration.GetTextColorProblem());
@@ -384,7 +384,7 @@ pCalcSizePending(true)
 	new FXSeparator(frameGroup);
 	
 	frameLine = new FXHorizontalFrame(frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0);
-	if(! frameLine) DETHROW(deeOutOfMemory);
+	if(!frameLine) DETHROW(deeOutOfMemory);
 	new FXButton(frameLine, "Accept", nullptr, this, ID_ACCEPT, LAYOUT_CENTER_X
 		| FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30);
 	new FXButton(frameLine, "Cancel", nullptr, this, ID_CANCEL, LAYOUT_CENTER_X
@@ -455,7 +455,7 @@ void deglDialogGameProperties::UpdateGame(){
 			.GetNamedAtLeast(game.GetScriptModule(), game.GetScriptModuleVersion());
 	}
 	
-	if(! engineModule){
+	if(!engineModule){
 		pLabStatusScriptModule->setIcon(pWindowMain->GetIconInvalidSmall());
 		pLabProblemScriptModule->setText("The required Script Module does not exist.");
 		pLabProblemScriptModule->show();
@@ -509,9 +509,9 @@ void deglDialogGameProperties::UpdateGame(){
 	}
 	
 	validateGameProfile = game.GetActiveProfile();
-	if(! validateGameProfile){
+	if(!validateGameProfile){
 		validateGameProfile = gameManager.GetActiveProfile();
-		if(! validateGameProfile){
+		if(!validateGameProfile){
 			validateGameProfile = gameManager.GetDefaultProfile();
 		}
 	}
@@ -657,7 +657,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 		// add module supporting this file format
 		matchingModule = nullptr;
 		
-		if(! deModuleSystem::IsSingleType(formatType)){
+		if(!deModuleSystem::IsSingleType(formatType)){
 			for(m=0; m<moduleCount; m++){
 				module = moduleList.GetAt(m);
 				
@@ -703,7 +703,7 @@ void deglDialogGameProperties::UpdateDiscUsage(){
 	getApp()->addTimeout(this, ID_TIMER_UPDATE_CALCSIZE, INTERVAL_TIMER_UPDATE_CALCSIZE, nullptr);
 	
 	pEditSizeDelgaFile->setText("0");
-	if(! game.GetDelgaFile().IsEmpty()){
+	if(!game.GetDelgaFile().IsEmpty()){
 		try{
 			pEditSizeDelgaFile->setText(FormatSize1024(FXFile(game.GetDelgaFile().GetString()).size()));
 			
@@ -890,11 +890,11 @@ long deglDialogGameProperties::onBtnEditProfiles(FXObject*, FXSelector, void*){
 		if(pCBProfile->getCurrentItem() != -1){
 			profile = (delGameProfile*)pCBProfile->getItemData(pCBProfile->getCurrentItem());
 		}
-		if(! profile){
+		if(!profile){
 			profile = GetGame().GetCustomProfile();
-			if(! profile){
+			if(!profile){
 				profile = gameManager.GetActiveProfile();
-				if(! profile){
+				if(!profile){
 					profile = gameManager.GetDefaultProfile();
 				}
 			}
@@ -918,7 +918,7 @@ long deglDialogGameProperties::onBtnEditProfiles(FXObject*, FXSelector, void*){
 
 long deglDialogGameProperties::onBtnDropCustomProfile(FXObject*, FXSelector, void*){
 	delGame &game = GetGame();
-	if(! game.GetCustomProfile()){
+	if(!game.GetCustomProfile()){
 		return 1;
 	}
 	
@@ -964,7 +964,7 @@ long deglDialogGameProperties::onBtnPatches(FXObject*, FXSelector, void*){
 		FXMenuPane popup(this);
 		
 		command = new FXMenuCommand(&popup, "Uninstall Patch", nullptr, this, ID_PU_PATCH_UNINSTALL);
-		if(! isPatchSelected){
+		if(!isPatchSelected){
 			command->disable();
 		}
 		
@@ -999,7 +999,7 @@ long deglDialogGameProperties::onPUPatchUninstall(FXObject*, FXSelector, void*){
 					"This game is running. Cannot uninstall patches.");
 				return 1;
 			}
-			if(! patch.GetDelgaFile().IsEmpty() && game->GetDelgaFile() == patch.GetDelgaFile()){
+			if(!patch.GetDelgaFile().IsEmpty() && game->GetDelgaFile() == patch.GetDelgaFile()){
 				FXMessageBox::information(this, MBOX_OK, "Uninstall Patch",
 					"This game uses the same *.delga file. Cannot uninstall patches. Install game instead.");
 				return 1;
@@ -1010,7 +1010,7 @@ long deglDialogGameProperties::onPUPatchUninstall(FXObject*, FXSelector, void*){
 	try{
 		const decUuid gameID(GetGame().GetIdentifier());
 		
-		if(! deglUninstall(*pWindowMain).UninstallPatch(patch)){
+		if(!deglUninstall(*pWindowMain).UninstallPatch(patch)){
 			return 1;
 		}
 		
@@ -1113,7 +1113,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 	int i;
 	
 	for(i=0; i<pCacheCount; i++){
-		if(! pCaches[i].calcSize){
+		if(!pCaches[i].calcSize){
 			continue;
 		}
 		
@@ -1189,7 +1189,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize(FXObject*, FXSelector, void
 //////////////////////
 
 void deglDialogGameProperties::pDeleteCaches(){
-	if(! pCaches){
+	if(!pCaches){
 		return;
 	}
 	
@@ -1201,7 +1201,7 @@ void deglDialogGameProperties::pDeleteCaches(){
 	}
 	
 	for(i=0; i<pCacheCount; i++){
-		if(! pCaches[i].calcSize){
+		if(!pCaches[i].calcSize){
 			continue;
 		}
 		

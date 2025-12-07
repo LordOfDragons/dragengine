@@ -152,7 +152,7 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 	deLoadableModule * const loadedModule = pCBModule->GetSelectedItem()
 		? (deLoadableModule*)pCBModule->GetSelectedItem()->GetData() : NULL;
 	
-	if(! loadedModule){
+	if(!loadedModule){
 		pEditType->SetText("");
 		pEditDescription->SetText("");
 		pEditAuthor->SetText("");

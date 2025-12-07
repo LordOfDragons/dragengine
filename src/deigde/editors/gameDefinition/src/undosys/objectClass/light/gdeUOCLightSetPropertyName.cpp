@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pLight(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	

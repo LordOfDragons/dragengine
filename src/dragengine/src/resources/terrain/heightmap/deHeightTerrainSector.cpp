@@ -127,11 +127,11 @@ void deHeightTerrainSector::CalculateHeightExtends(float &minHeight, float &maxH
 	minHeight = 0.0f;
 	maxHeight = 0.0f;
 	
-	if(! pHeightImage || ! pParentHeightTerrain){
+	if(!pHeightImage || !pParentHeightTerrain){
 		return;
 	}
 	
-	if(! pHeightImage->GetData()){
+	if(!pHeightImage->GetData()){
 		DETHROW(deeInvalidParam); // data not retained. user has to use SetForceRetainImageData
 		// note: this entire calculate extends thing is deprecated anyways and should be done by physics module
 	}
@@ -196,7 +196,7 @@ void deHeightTerrainSector::CalculateHeightExtends(float &minHeight, float &maxH
 ////////////////////
 
 bool deHeightTerrainSector::GetFaceVisibleAt(int x, int y) const{
-	if(! pParentHeightTerrain){
+	if(!pParentHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
@@ -204,7 +204,7 @@ bool deHeightTerrainSector::GetFaceVisibleAt(int x, int y) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pVisibleFaces){
+	if(!pVisibleFaces){
 		return true;
 	}
 	
@@ -213,7 +213,7 @@ bool deHeightTerrainSector::GetFaceVisibleAt(int x, int y) const{
 }
 
 void deHeightTerrainSector::SetFaceVisibleAt(int x, int y, bool visible){
-	if(! pParentHeightTerrain){
+	if(!pParentHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
@@ -307,7 +307,7 @@ void deHeightTerrainSector::RemoveAllTextures(){
 ///////////
 
 void deHeightTerrainSector::AddDecal(deDecal *decal){
-	if(! decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
+	if(!decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -338,7 +338,7 @@ void deHeightTerrainSector::AddDecal(deDecal *decal){
 }
 
 void deHeightTerrainSector::RemoveDecal(deDecal *decal){
-	if(! decal || decal->GetParentHeightTerrainSector() != this){
+	if(!decal || decal->GetParentHeightTerrainSector() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -486,7 +486,7 @@ void deHeightTerrainSector::pCreateVisibleFaces(){
 		return;
 	}
 	
-	if(! pParentHeightTerrain){
+	if(!pParentHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();

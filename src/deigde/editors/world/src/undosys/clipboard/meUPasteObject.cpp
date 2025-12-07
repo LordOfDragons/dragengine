@@ -44,7 +44,7 @@
 ////////////////////////////
 
 meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
-	if(! world || ! clip){
+	if(!world || !clip){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -142,7 +142,7 @@ void meUPasteObject::Redo(){
 		if(attachToIndex != -1){
 			object->SetAttachedTo(pObjects.GetAt(attachToIndex));
 			
-		}else if(! object->GetAttachedToID().IsEmpty()){
+		}else if(!object->GetAttachedToID().IsEmpty()){
 			object->SetAttachedTo(pWorld->GetObjectWithID(object->GetAttachedToID()));
 		}
 	}

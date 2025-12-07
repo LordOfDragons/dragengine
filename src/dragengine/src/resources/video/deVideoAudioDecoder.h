@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video. */
-	deVideo *GetVideo() const{return pVideo;}
+	deVideo *GetVideo() const{ return pVideo; }
 	
 	
 	
@@ -106,7 +106,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Decoder peer. */
-	inline deBaseVideoAudioDecoder *GetPeerVideo() const{return pPeerVideo;}
+	inline deBaseVideoAudioDecoder *GetPeerVideo() const{ return pPeerVideo; }
 	
 	/** \brief Set decoder peer. */
 	void SetPeerVideo(deBaseVideoAudioDecoder *peer);
@@ -120,7 +120,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Previous resource in the resource manager linked list. */
-	inline deVideoAudioDecoder *GetLLManagerPrev() const{return pLLManagerPrev;}
+	inline deVideoAudioDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
@@ -129,7 +129,7 @@ public:
 	void SetLLManagerPrev(deVideoAudioDecoder *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
-	inline deVideoAudioDecoder *GetLLManagerNext() const{return pLLManagerNext;}
+	inline deVideoAudioDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.

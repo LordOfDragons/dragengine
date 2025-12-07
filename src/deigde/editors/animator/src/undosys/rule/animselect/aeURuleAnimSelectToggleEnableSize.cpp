@@ -43,7 +43,7 @@ aeURuleAnimSelectToggleEnableSize::aeURuleAnimSelectToggleEnableSize(
 aeRuleAnimationSelect *rule) :
 pRule(NULL)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -65,9 +65,9 @@ aeURuleAnimSelectToggleEnableSize::~aeURuleAnimSelectToggleEnableSize(){
 ///////////////
 
 void aeURuleAnimSelectToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleAnimSelectToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }

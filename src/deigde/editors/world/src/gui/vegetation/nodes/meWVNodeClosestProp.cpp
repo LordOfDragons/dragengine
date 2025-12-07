@@ -88,7 +88,7 @@ public:
 		igdeAction("", NULL, "Select Object Class"), pNode(node){}
 	
 	virtual void OnAction(){
-		if(! pNode.GetGameDefinition()){
+		if(!pNode.GetGameDefinition()){
 			return;
 		}
 		

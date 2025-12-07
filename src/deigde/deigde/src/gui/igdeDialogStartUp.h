@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Load selected recent game project. */
 	void LoadSelectedRecentProject();

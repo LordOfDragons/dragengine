@@ -67,7 +67,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
-			component->SetNegate(! component->GetNegate());
+			component->SetNegate(!component->GetNegate());
 			pEditor.UpdateExpressionFromTree();
 			pEditor.UpdateTree();
 		}
@@ -89,7 +89,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
-			component->SetCurState(! component->GetCurState());
+			component->SetCurState(!component->GetCurState());
 			pEditor.UpdateExpressionFromTree();
 			pEditor.UpdateTree();
 		}
@@ -203,7 +203,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		const igdeTreeItem * const selection = pEditor.GetSelectedTreeItem();
-		if(! component || ! selection){
+		if(!component || !selection){
 			return;
 		}
 		
@@ -361,7 +361,7 @@ void igdeTriggerExpressionEditor::SetTargetList(const igdeTriggerTargetList *tar
 }
 
 void igdeTriggerExpressionEditor::SetExpression(const char *expression){
-	if(! expression){
+	if(!expression){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -620,7 +620,7 @@ igdeTriggerExpressionComponent *igdeTriggerExpressionEditor::GetSelectedComponen
 
 void igdeTriggerExpressionEditor::UpdateFromTargetList(){
 	const decString filter(pEditFilterTargetName->GetText().GetLower());
-	const bool hasFilter = ! filter.IsEmpty();
+	const bool hasFilter = !filter.IsEmpty();
 	
 	pListTargetName->RemoveAllItems();
 	

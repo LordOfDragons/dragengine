@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime(peeEmitter *emitter, float newLifetime){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	

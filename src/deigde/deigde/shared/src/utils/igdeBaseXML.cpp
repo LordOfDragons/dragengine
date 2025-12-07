@@ -53,7 +53,7 @@ igdeBaseXML::igdeBaseXML(deLogger *logger, const char *loggerSource) :
 pLogger(logger),
 pLoggerSource(loggerSource)
 {
-	if(! logger){
+	if(!logger){
 		DETHROW(deeInvalidParam);
 	}
 	logger->AddReference();
@@ -306,7 +306,7 @@ void igdeBaseXML::ReadCurveBezier(const decXmlElementTag &root, decCurveBezier &
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -346,7 +346,7 @@ void igdeBaseXML::ReadCurveBezierPoint(const decXmlElementTag &root, decCurveBez
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -366,10 +366,10 @@ void igdeBaseXML::ReadCurveBezierPoint(const decXmlElementTag &root, decCurveBez
 		}
 	}
 	
-	if(! hasHandle1){
+	if(!hasHandle1){
 		handle1 = coordinates;
 	}
-	if(! hasHandle2){
+	if(!hasHandle2){
 		handle2 = coordinates;
 	}
 	curve.AddPoint(decCurveBezierPoint(coordinates, handle1, handle2));
@@ -454,7 +454,7 @@ void igdeBaseXML::ReadPoint3(const decXmlElementTag &tag, decPoint3 &point){
 
 
 void igdeBaseXML::WriteMultilineString(decXmlWriter &writer, const char *name, const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -469,7 +469,7 @@ void igdeBaseXML::WriteMultilineString(decXmlWriter &writer, const char *name, c
 }
 
 void igdeBaseXML::WriteTextMultilineString(decXmlWriter &writer, const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	

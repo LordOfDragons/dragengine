@@ -41,7 +41,7 @@
 devkPipelineCompute::devkPipelineCompute(devkDevice &device, const devkPipelineConfiguration &configuration) :
 devkPipeline(device, configuration)
 {
-	if(! configuration.GetShaderCompute()){
+	if(!configuration.GetShaderCompute()){
 		DETHROW_INFO(deeNullPointer, "configuration.shaderCompute");
 	}
 	

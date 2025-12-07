@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -85,7 +85,7 @@ public:
 	/** \brief Pushes a rule. */
 	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationSelect *rule);
 	
-	inline dsClass *GetClassARAnimationSelectTarget() const{return pClsARAnimationSelectTarget;}
+	inline dsClass *GetClassARAnimationSelectTarget() const{ return pClsARAnimationSelectTarget; }
 	/*@}*/
 	
 private:

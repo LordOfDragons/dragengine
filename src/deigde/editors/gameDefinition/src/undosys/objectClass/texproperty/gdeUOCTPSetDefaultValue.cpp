@@ -45,7 +45,7 @@ gdeUOCTPSetDefaultValue::gdeUOCTPSetDefaultValue(gdeObjectClass *objectClass,
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -129,14 +129,14 @@ void igdeDialog::AddChild(igdeWidget *child){
 }
 
 void igdeDialog::AddContent(igdeWidget *content, igdeWidget *buttonBar){
-	if(! content || ! buttonBar){
+	if(!content || !buttonBar){
 		DETHROW(deeInvalidParam);
 	}
 	pAddContent(content, NULL, NULL, NULL, buttonBar);
 }
 
 void igdeDialog::AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar){
-	if(! content || ! header || ! buttonBar){
+	if(!content || !header || !buttonBar){
 		DETHROW(deeInvalidParam);
 	}
 	pAddContent(content, header, NULL, NULL, buttonBar);
@@ -144,7 +144,7 @@ void igdeDialog::AddContent(igdeWidget *content, igdeWidget *header, igdeWidget 
 
 void igdeDialog::AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
 igdeWidget *rightPanel, igdeWidget *buttonBar){
-	if(! content || ! header || ! buttonBar){
+	if(!content || !header || !buttonBar){
 		DETHROW(deeInvalidParam);
 	}
 	pAddContent(content, header, leftPanel, rightPanel, buttonBar);
@@ -169,13 +169,13 @@ igdeAction *action1, igdeAction *action2, igdeAction *action3){
 
 void igdeDialog::CreateButtonBar(igdeContainer::Ref &buttonBar,
 igdeAction **actions, int actionCount){
-	if(! actions || actionCount < 0){
+	if(!actions || actionCount < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	for(i=0; i<actionCount; i++){
-		if(! actions[i]){
+		if(!actions[i]){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -209,7 +209,7 @@ const char *textAccept, const char *textCancel){
 
 
 bool igdeDialog::Run(igdeWidget *owner){
-	if(! owner->GetNativeWidget()){
+	if(!owner->GetNativeWidget()){
 		DETHROW(deeInvalidParam);
 	}
 	if(GetNativeWidget()){
@@ -252,7 +252,7 @@ bool igdeDialog::Cancel(){
 }
 
 void igdeDialog::CloseDialog(bool accepted){
-	if(! GetNativeContainer()){
+	if(!GetNativeContainer()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -286,7 +286,7 @@ void igdeDialog::CreateNativeWidget(){
 }
 
 void igdeDialog::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

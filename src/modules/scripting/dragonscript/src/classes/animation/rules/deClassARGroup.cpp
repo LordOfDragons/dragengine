@@ -179,7 +179,7 @@ deClassARGroup::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunc
 }
 void deClassARGroup::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -213,7 +213,7 @@ deClassARGroup::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 }
 void deClassARGroup::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -262,7 +262,7 @@ deClassARGroup::nfSetApplicationType::nfSetApplicationType(const sInitData &init
 	p_AddParameter(init.clsARGroupApplication); // applicationType
 }
 void deClassARGroup::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -289,7 +289,7 @@ void deClassARGroup::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
 	
 	deAnimatorRule * const rule = clsRule.GetRule(rt->GetValue(0)->GetRealObject());
-	if(! rule){
+	if(!rule){
 		DSTHROW(dueNullPointer);
 	}
 	nd.rule->AddRule(rule);
@@ -309,7 +309,7 @@ void deClassARGroup::nfRemoveRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
 	
 	deAnimatorRule * const rule = clsRule.GetRule(rt->GetValue(0)->GetRealObject());
-	if(! rule){
+	if(!rule){
 		DSTHROW(dueNullPointer);
 	}
 	nd.rule->RemoveRule(rule);
@@ -402,7 +402,7 @@ void deClassARGroup::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -410,7 +410,7 @@ deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
 }
 
 void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -434,11 +434,11 @@ void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 }
 
 void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

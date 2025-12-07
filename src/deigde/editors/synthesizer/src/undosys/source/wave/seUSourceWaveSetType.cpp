@@ -41,7 +41,7 @@
 seUSourceWaveSetType::seUSourceWaveSetType(seSourceWave *source, deSynthesizerSourceWave::eWaveType newType) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

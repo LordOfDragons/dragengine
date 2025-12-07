@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
-	if(! rule || ! pattern){
+	if(!rule || !pattern){
 		DETHROW(deeInvalidParam);
 	}
 	

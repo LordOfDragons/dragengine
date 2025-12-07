@@ -72,13 +72,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view or NULL if not set. */
-	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view or NULL to unset. */
 	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Repeat count along X axis. */
-	inline int GetRepeatX() const{return pRepeatX;}
+	inline int GetRepeatX() const{ return pRepeatX; }
 	
 	/**
 	 * \brief Set repeat count along X axis.
@@ -87,7 +87,7 @@ public:
 	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
-	inline int GetRepeatY() const{return pRepeatY;}
+	inline int GetRepeatY() const{ return pRepeatY; }
 	
 	/**
 	 * \brief Set repeat count along Y axis.

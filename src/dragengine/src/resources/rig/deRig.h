@@ -112,13 +112,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Central mass point position. */
-	inline const decVector &GetCentralMassPoint() const{return pCMP;}
+	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
 	
 	/** \brief Set central mass point position. */
 	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Use component model for collision instead of shapes if present. */
-	inline bool GetModelCollision() const{return pModelCollision;}
+	inline bool GetModelCollision() const{ return pModelCollision; }
 	
 	/** \brief Set if component model is used for collision instead of shapes if present. */
 	void SetModelCollision(bool modelCollision);
@@ -137,7 +137,7 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/**
 	 * \brief Bone at index.
@@ -161,7 +161,7 @@ public:
 	void RemoveAllBones();
 	
 	/** \brief Index of physics root bone or -1 if not set. */
-	inline int GetRootBone() const{return pRootBone;}
+	inline int GetRootBone() const{ return pRootBone; }
 	
 	/**
 	 * \brief Set physics root bone or -1 if not set.
@@ -175,7 +175,7 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{return pShapes;}
+	inline const decShapeList &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Set shapes.
@@ -185,7 +185,7 @@ public:
 	void SetShapes(const decShapeList &shapes);
 	
 	/** \brief Shape properties. */
-	inline const decStringList &GetShapeProperties() const{return pShapeProperties;}
+	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }
 	
 	/**
 	 * \brief Set shape properties.
@@ -199,7 +199,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Physics system peer or NULL if not set. */
-	inline deBasePhysicsRig *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsRig *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer or NULL if not set. */
 	void SetPeerPhysics(deBasePhysicsRig *peer);

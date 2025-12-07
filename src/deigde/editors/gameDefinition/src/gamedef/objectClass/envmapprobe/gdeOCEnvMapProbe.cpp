@@ -122,7 +122,7 @@ bool gdeOCEnvMapProbe::IsPropertySet(int property) const{
 	if(property < 0 || property > epAttachRotation){
 		DETHROW(deeInvalidParam);
 	}
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString& gdeOCEnvMapProbe::GetPropertyName(int property) const{
@@ -133,7 +133,7 @@ const decString& gdeOCEnvMapProbe::GetPropertyName(int property) const{
 }
 
 void gdeOCEnvMapProbe::SetPropertyName(int property, const char *name){
-	if(property < 0 || property > epAttachRotation || ! name){
+	if(property < 0 || property > epAttachRotation || !name){
 		DETHROW(deeInvalidParam);
 	}
 	pPropertyNames[property] = name;

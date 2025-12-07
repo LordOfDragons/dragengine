@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Particle Emitter",
 igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

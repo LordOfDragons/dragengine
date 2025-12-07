@@ -74,18 +74,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Owner component or NULL. */
-	inline deoglRComponent *GetOwnerComponent() const{return pOwnerComponent;}
+	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
 	/** Owner billboard or NULL. */
-	inline deoglRBillboard *GetOwnerBillboard() const{return pOwnerBillboard;}
+	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
 	/** Owner decal or NULL. */
-	inline deoglRDecal *GetOwnerDecal() const{return pOwnerDecal;}
+	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
 	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;

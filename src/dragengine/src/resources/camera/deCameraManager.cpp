@@ -66,7 +66,7 @@ deCamera *deCameraManager::CreateCamera(){
 	// create and add camera
 	try{
 		camera = new deCamera(this);
-		if(! camera) DETHROW(deeOutOfMemory);
+		if(!camera) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadCamera(camera);
 		pCameras.Add(camera);
 		
@@ -99,7 +99,7 @@ void deCameraManager::SystemGraphicLoad(){
 	deCamera *camera = (deCamera*)pCameras.GetRoot();
 	
 	while(camera){
-		if(! camera->GetPeerGraphic()){
+		if(!camera->GetPeerGraphic()){
 			GetGraphicSystem()->LoadCamera(camera);
 		}
 		

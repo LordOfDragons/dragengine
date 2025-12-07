@@ -1035,7 +1035,7 @@ deoglRDynamicSkin *dynamicSkin) const{
 
 void deoglSkinShader::SetTUCCommon(deoglTexUnitConfig *units, const deoglSkinTexture &skinTexture,
 deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin){
-	if(! units){
+	if(!units){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1293,7 +1293,7 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin){
 
 void deoglSkinShader::SetTUCPerObjectEnvMap(deoglTexUnitConfig *units,
 deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade){
-	if(! units){
+	if(!units){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1304,7 +1304,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 	if(pTextureTargets[ettEnvMap] == -1){
 		return;
 	}
-	if(! units[pTextureTargets[ettEnvMap]].IsDisabled()){
+	if(!units[pTextureTargets[ettEnvMap]].IsDisabled()){
 		return;
 	}
 	
@@ -1374,7 +1374,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 	}
 	
 	// in all other cases use the provided env map
-	if(! envmap || (! envmap->GetEnvironmentMap() && ! envmap->GetEquiEnvMap())){
+	if(!envmap || (!envmap->GetEnvironmentMap() && !envmap->GetEquiEnvMap())){
 		envmap = envmapSky;
 	}
 	
@@ -1406,7 +1406,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 	
 	deoglTexUnitConfig &unitEnvMapFade = units[pTextureTargets[ettEnvMapFade]];
 	
-	if(! envmapFade || (! envmapFade->GetEnvironmentMap() && ! envmapFade->GetEquiEnvMap())){
+	if(!envmapFade || (!envmapFade->GetEnvironmentMap() && !envmapFade->GetEquiEnvMap())){
 		envmapFade = envmap;
 	}
 	

@@ -55,7 +55,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deBaseCrashRecoveryModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseCrashRecoveryModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Yield control to the active crash recovery module. */
 	bool RecoverFromError();

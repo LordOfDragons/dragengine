@@ -65,22 +65,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source module or NULL if the error occurred in the engine itself. */
-	inline deLoadableModule *GetSourceModule() const{return pSourceModule;}
+	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
 	
 	/** \brief Source function. */
-	inline const decString &GetSourceFunction() const{return pSourceFunc;}
+	inline const decString &GetSourceFunction() const{ return pSourceFunc; }
 	
 	/** \brief Source line. */
-	inline int GetSourceLine() const{return pSourceLine;}
+	inline int GetSourceLine() const{ return pSourceLine; }
 	/*@}*/
 
 	/** \name Trace Value Management */
 	/*@{*/
 	/** \brief Determines if there exist trace values. */
-	inline bool HasValues() const{return pValueCount > 0;}
+	inline bool HasValues() const{ return pValueCount > 0; }
 	
 	/** \brief Count of trace values. */
-	inline int GetValueCount() const{return pValueCount;}
+	inline int GetValueCount() const{ return pValueCount; }
 	
 	/** \brief Indexed trace value. */
 	deErrorTraceValue *GetValue(int index) const;

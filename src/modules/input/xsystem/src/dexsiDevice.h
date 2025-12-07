@@ -142,48 +142,48 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** X-System input module. */
-	inline deXSystemInput &GetModule() const{return pModule;}
+	inline deXSystemInput &GetModule() const{ return pModule; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
 	
 	/** Source. */
-	inline eSources GetSource() const{return pSource;}
+	inline eSources GetSource() const{ return pSource; }
 	
 	
 	
 	/** Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
+	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** Set device type. */
 	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Display image. */
-	inline const deImage::Ref &GetDisplayImage() const{return pDisplayImage;}
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
@@ -254,10 +254,10 @@ public:
 	
 	
 	/** First key code. */
-	inline int GetX11FirstKeyCode() const{return pX11FirstKeyCode;}
+	inline int GetX11FirstKeyCode() const{ return pX11FirstKeyCode; }
 	
 	/** Key code count. */
-	inline int GetX11KeyCodeCount() const{return pX11KeyCodeCount;}
+	inline int GetX11KeyCodeCount() const{ return pX11KeyCodeCount; }
 	
 	/** Reset key code map. */
 	void ResetX11KeyCodeMap(int firstKeyCode, int keyCodeCount);
@@ -271,7 +271,7 @@ public:
 	
 	
 	/** One or more axes values are dirty. */
-	inline bool GetDirtyAxesValues() const{return pDirtyAxesValues;}
+	inline bool GetDirtyAxesValues() const{ return pDirtyAxesValues; }
 	
 	/** Set if one or more axes values are dirty. */
 	void SetDirtyAxesValues(bool dirty);

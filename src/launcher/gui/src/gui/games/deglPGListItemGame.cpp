@@ -50,7 +50,7 @@ FXIconItem("", nullptr, nullptr, nullptr),
 pPanelGames(panelGames),
 pGame(game)
 {
-	if(! panelGames || ! game){
+	if(!panelGames || !game){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,10 +64,10 @@ pGame(game)
 	if(game->GetCanRun() && profile->GetValid()){
 		gameStatus = "Ready";
 		
-	}else if(! profile->GetValid()){
+	}else if(!profile->GetValid()){
 		gameStatus = "Profile Broken";
 		
-	}else if(! game->GetAllFormatsSupported()){
+	}else if(!game->GetAllFormatsSupported()){
 		gameStatus = "Missing Modules";
 		
 	}else{

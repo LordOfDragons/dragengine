@@ -71,7 +71,7 @@ void delEngineModuleXML::ReadFromFile(const char *filename, decBaseFileReader &r
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "module"){
+	if(!root || root->GetName() != "module"){
 		DETHROW_INFO(deeInvalidParam, "missing root tag 'module'");
 	}
 	
@@ -95,7 +95,7 @@ void delEngineModuleXML::pReadModule(const decXmlElementTag &root, delEngineModu
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -148,7 +148,7 @@ void delEngineModuleXML::pReadModuleLibrary(const decXmlElementTag &root, delEng
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

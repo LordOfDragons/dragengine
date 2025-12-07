@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText){
-	if(! phoneme || ! newText) DETHROW(deeInvalidParam);
+	if(!phoneme || !newText) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	

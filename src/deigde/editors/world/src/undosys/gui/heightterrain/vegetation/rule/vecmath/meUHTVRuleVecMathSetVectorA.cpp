@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVRuleVecMathSetVectorA::meUHTVRuleVecMathSetVectorA(meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule, const decVector &nvalue){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

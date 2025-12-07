@@ -132,12 +132,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	
 	
 	/** \brief Parent texture or \em NULL if not set. */
-	inline seTexture *GetTexture() const{return pTexture;}
+	inline seTexture *GetTexture() const{ return pTexture; }
 	
 	/** \brief Set parent texture or \em NULL if not set. */
 	void SetTexture(seTexture *texture);
@@ -145,25 +145,25 @@ public:
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Value type. */
-	inline eValueTypes GetValueType() const{return pValueType;}
+	inline eValueTypes GetValueType() const{ return pValueType; }
 	
 	/** \brief Set value type. */
 	void SetValueType(eValueTypes type);
 	
 	/** \brief Name of renderable. */
-	inline const decString &GetRenderableName() const{return pRenderableName;}
+	inline const decString &GetRenderableName() const{ return pRenderableName; }
 	
 	/** \brief Set name of renderable. */
 	void SetRenderableName(const char *name);
 	
 	/** \brief Name of bone. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone. */
 	void SetBoneName(const char *name);
@@ -171,7 +171,7 @@ public:
 	
 	
 	/** \brief Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(float value);
@@ -179,7 +179,7 @@ public:
 	
 	
 	/** \brief Static color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set static color. */
 	void SetColor(const decColor &color);
@@ -187,13 +187,13 @@ public:
 	
 	
 	/** \brief Image path. */
-	inline const decString &GetImagePath() const{return pPathImage;}
+	inline const decString &GetImagePath() const{ return pPathImage; }
 	
 	/** \brief Set image path. */
 	void SetImagePath(const char *imagePath);
 	
 	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetEngineImage() const{return pEngImage;}
+	inline deImage *GetEngineImage() const{ return pEngImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();
@@ -201,19 +201,19 @@ public:
 	
 	
 	/** \brief Video path. */
-	inline const decString &GetVideoPath() const{return pPathVideo;}
+	inline const decString &GetVideoPath() const{ return pPathVideo; }
 	
 	/** \brief Set video path. */
 	void SetVideoPath(const char *videoPath);
 	
 	/** \brief Video or \em NULL if not set. */
-	inline deVideo *GetEngineVideo() const{return pEngVideo;}
+	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
 	
 	/** \brief Update video. */
 	void UpdateVideo();
 	
 	/** \brief Video playback time is shared across instances. */
-	inline bool GetVideoSharedTime() const{return pVideoSharedTime;}
+	inline bool GetVideoSharedTime() const{ return pVideoSharedTime; }
 	
 	/** \brief Set if video playback time is shared across instances. */
 	void SetVideoSharedTime(bool shareTime);
@@ -229,53 +229,53 @@ public:
 	
 	
 	/** \brief Node group. */
-	inline sePropertyNodeGroup *GetNodeGroup() const{return pNodeGroup;}
+	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
 	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
 	
 	/** \brief Engine node group or \em NULL if not set. */
-	inline deSkinPropertyNodeGroup *GetEngineNodeGroup() const{return pEngNodeGroup;}
+	inline deSkinPropertyNodeGroup *GetEngineNodeGroup() const{ return pEngNodeGroup; }
 	
 	/** \brief Update engine node group. */
 	void UpdateEngineNodeGroup();
 	
 	/** \brief Node selection. */
 	sePropertyNodeSelection &GetNodeSelection(){return pNodeSelection;}
-	const sePropertyNodeSelection &GetNodeSelection() const{return pNodeSelection;}
+	const sePropertyNodeSelection &GetNodeSelection() const{ return pNodeSelection; }
 	
 	/** \brief Active node group or \em NULL. */
-	inline sePropertyNodeGroup *GetActiveNodeGroup() const{return pActiveNodeGroup;}
+	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
 	/** \brief Set active node group or \em NULL. */
 	void SetActiveNodeGroup(sePropertyNodeGroup *node);
 	
 	/** \brief Active node layer or \em NULL. */
-	inline int GetActiveNodeLayer() const{return pActiveNodeLayer;}
+	inline int GetActiveNodeLayer() const{ return pActiveNodeLayer; }
 	
 	/** \brief Set active node layer or \em NULL. */
 	void SetActiveNodeLayer(int layer);
 	
 	/** \brief Node color. */
-	inline const decColor &GetNodeColor() const{return pNodeColor;}
+	inline const decColor &GetNodeColor() const{ return pNodeColor; }
 	
 	/** \brief Set node color. */
 	void SetNodeColor(const decColor &color);
 	
 	/** \brief Nodes are tiled along x axis. */
-	inline bool GetNodeTileX() const{return pNodeTileX;}
+	inline bool GetNodeTileX() const{ return pNodeTileX; }
 	
 	/** \brief Set if nodes are tiled along x axis. */
 	void SetNodeTileX(bool tileX);
 	
 	/** \brief Nodes are tiled along y axis. */
-	inline bool GetNodeTileY() const{return pNodeTileY;}
+	inline bool GetNodeTileY() const{ return pNodeTileY; }
 	
 	/** \brief Set if nodes are tiled along y axis. */
 	void SetNodeTileY(bool tileY);
 	
 	/** \brief Node bit count. */
-	inline int GetNodeBitCount() const{return pNodeBitCount;}
+	inline int GetNodeBitCount() const{ return pNodeBitCount; }
 	
 	/** \brief Set node bit count. */
 	void SetNodeBitCount(int bitCount);
@@ -283,13 +283,13 @@ public:
 	
 	
 	/** \brief Property is the active one. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if property is the active one. */
 	void SetActive(bool active);
 	
 	/** \brief Property is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if property is selected. */
 	void SetSelected(bool selected);

@@ -48,7 +48,7 @@
 ////////////////////////////
 
 reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density){
-	if(! rig || bones.GetCount() == 0){
+	if(!rig || bones.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

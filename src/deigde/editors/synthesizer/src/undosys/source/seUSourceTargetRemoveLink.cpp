@@ -47,7 +47,7 @@ pSource(NULL),
 pTarget(NULL),
 pLink(NULL)
 {
-	if(! source || ! target || ! link){
+	if(!source || !target || !link){
 		DETHROW(deeInvalidParam);
 	}
 	

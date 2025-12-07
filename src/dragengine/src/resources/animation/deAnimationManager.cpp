@@ -75,7 +75,7 @@ deAnimation * deAnimationManager::GetAnimationWith(const char *filename) const{
 
 deAnimation *deAnimationManager::GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deAnimation * const animation = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
-	return animation && ! animation->GetOutdated() ? animation : NULL;
+	return animation && !animation->GetOutdated() ? animation : NULL;
 }
 
 deAnimation *deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
@@ -84,7 +84,7 @@ deAnimation *deAnimationManager::CreateAnimation(const char *filename, deAnimati
 
 deAnimation *deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
 const char *filename, deAnimationBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	deAnimation *anim=NULL, *findAnim;
@@ -94,7 +94,7 @@ const char *filename, deAnimationBuilder &builder){
 		// filename is not empty in which case an unnamed animation is created
 		if(filename[0] != '\0'){
 			findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
-			if(findAnim && ! findAnim->GetOutdated()){
+			if(findAnim && !findAnim->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
@@ -132,7 +132,7 @@ const char *filename, const char *basePath){
 	decPath path;
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -186,7 +186,7 @@ const char *filename, const char *basePath){
 }
 
 void deAnimationManager::AddLoadedAnimation(deAnimation *animation){
-	if(! animation){
+	if(!animation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -255,7 +255,7 @@ void deAnimationManager::SystemAnimatorLoad(){
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
 	while(animation){
-		if(! animation->GetPeerAnimator()){
+		if(!animation->GetPeerAnimator()){
 			aniSys.LoadAnimation(animation);
 		}
 		animation = (deAnimation*)animation->GetLLManagerNext();

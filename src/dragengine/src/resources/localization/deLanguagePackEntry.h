@@ -54,13 +54,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Text. */
-	inline const decUnicodeString &GetText() const{return pText;}
+	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const decUnicodeString &text);

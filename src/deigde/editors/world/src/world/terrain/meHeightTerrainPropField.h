@@ -80,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent height terrain sector or \em NULL. */
-	inline meHeightTerrainSector *GetHTSector() const{return pHTSector;}
+	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Set parent height terrain sector or \em NULL. */
 	void SetHTSector(meHeightTerrainSector *htsector);
@@ -88,10 +88,10 @@ public:
 	
 	
 	/** \brief Minimum extend. */
-	inline const decVector2 &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector2 &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extend. */
-	inline const decVector2 &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector2 &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** \brief Set extends. */
 	void SetExtend(const decVector2 &minimum, const decVector2 &maximum);
@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Engine prop field. */
-	inline dePropField *GetEnginePropField() const{return pEngPF;}
+	inline dePropField *GetEnginePropField() const{ return pEngPF; }
 	
 	
 	
@@ -128,10 +128,10 @@ public:
 	
 	
 	/** \brief Prop field has to be kept clean. */
-	inline bool GetKeepClean() const{return pKeepClean;}
+	inline bool GetKeepClean() const{ return pKeepClean; }
 	
 	/** \brief Number of vegetation instances. */
-	inline int GetVInstanceCount() const{return pVInstanceCount;}
+	inline int GetVInstanceCount() const{ return pVInstanceCount; }
 	
 	/** \brief Vegetation instance at index. */
 	meHTVInstance &GetVInstanceAt(int index) const;

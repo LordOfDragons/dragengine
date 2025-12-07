@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
-	if(! target || ! newID) DETHROW(deeInvalidParam);
+	if(!target || !newID) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	

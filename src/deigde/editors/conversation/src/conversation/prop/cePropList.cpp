@@ -68,7 +68,7 @@ bool cePropList::Has(ceProp *prop) const{
 }
 
 void cePropList::Add(ceProp *prop){
-	if(! prop){
+	if(!prop){
 		DETHROW(deeInvalidParam);
 	}
 	

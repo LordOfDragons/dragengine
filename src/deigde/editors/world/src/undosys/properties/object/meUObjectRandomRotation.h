@@ -62,7 +62,7 @@ private:
 			}
 		}
 		
-		inline const decVector &GetNewOrientation() const{return pNewRotation;}
+		inline const decVector &GetNewOrientation() const{ return pNewRotation; }
 	};
 	
 	

@@ -369,7 +369,7 @@ void deClassSynthesizer::nfAddSource::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	dsRealObject * const objSource = rt->GetValue(0)->GetRealObject();
 	deSynthesizerSource *source = clsSynS.GetSource(objSource);
-	if(! source){
+	if(!source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -425,7 +425,7 @@ void deClassSynthesizer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSynthesizer * const clsSyn = (deClassSynthesizer*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSyn)){
+	if(!p_IsObjOfType(obj, clsSyn)){
 		rt->PushBool(false);
 		
 	}else{
@@ -532,7 +532,7 @@ void deClassSynthesizer::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizer *deClassSynthesizer::GetSynthesizer(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -540,11 +540,11 @@ deSynthesizer *deClassSynthesizer::GetSynthesizer(dsRealObject *myself) const{
 }
 
 void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesizer){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! synthesizer){
+	if(!synthesizer){
 		rt->PushObject(NULL, this);
 		return;
 	}

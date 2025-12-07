@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pLinks = NULL;
@@ -74,10 +74,10 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 ///////////////
 
 void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	meHTVRLink **newArray = new meHTVRLink*[pLinkCount + 1];
-	if(! newArray) DETHROW(deeOutOfMemory);
+	if(!newArray) DETHROW(deeOutOfMemory);
 	if(pLinks){
 		memcpy(newArray, pLinks, sizeof(meHTVRLink*) * pLinkCount);
 		delete [] pLinks;

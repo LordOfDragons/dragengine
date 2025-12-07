@@ -77,7 +77,7 @@ stClassVector2::~stClassVector2(){
 
 void stClassVector2::SetUpLinks(){
 	pOOPClass = gst_class_name_to_oop("DEVector2");
-	if(! pOOPClass){
+	if(!pOOPClass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,7 +100,7 @@ OOP stClassVector2::Vector2ToOOP(const decVector2 &vector){
 	OOP oopVector = NULL;
 	
 	oopVector = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csVector2) - sizeof(csObject));
-	if(! oopVector || oopVector == pST.GetNil()){
+	if(!oopVector || oopVector == pST.GetNil()){
 		DETHROW(deeOutOfMemory);
 	}
 	

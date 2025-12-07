@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	/** Retrieves the renderable texture for reading only at the given location. */
 	const deoglRenderableColorTexture *GetTextureAt(int index) const;
 	

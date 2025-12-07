@@ -381,7 +381,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary(deoglRenderPlanLight &planLight)
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
 	const bool useAmbient = planLight.GetUseAmbient();
 	
-	if(! scsolid.GetStaticMap()){
+	if(!scsolid.GetStaticMap()){
 		DETHROW(deeInvalidParam);
 		// or simply return the full box boundary instead?
 	}
@@ -544,15 +544,15 @@ void deoglRenderLightSpot::RenderLight(deoglRenderPlanLight &planLight, bool sol
 const deoglRenderPlanMasked *mask){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
-	if(! cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
+	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
 		cllight.SetCulled(true);
 	}
 	
-	const bool lightGeometry = ! cllight.GetCulled();
+	const bool lightGeometry = !cllight.GetCulled();
 	deoglRenderPlan &plan = planLight.GetPlan();
-	deoglGIState * const giState = ! mask && solid ? plan.GetUpdateGIState() : NULL;
+	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : NULL;
 	
-	if(! lightGeometry && ! giState){
+	if(!lightGeometry && !giState){
 		return;
 	}
 	
@@ -601,7 +601,7 @@ const deoglRenderPlanMasked *mask){
 			for(i=0; i<count; i++){
 				const deoglRComponent &component = *clistStatic.GetComponentAt(i)->GetComponent();
 				
-				if(! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
+				if(!component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
 					shadowParams.transparentStaticShadow = true;
 					break;
 				}
@@ -611,7 +611,7 @@ const deoglRenderPlanMasked *mask){
 			for(i=0; i<count; i++){
 				const deoglRComponent &component = *clistDynamic.GetComponentAt(i)->GetComponent();
 				
-				if(! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
+				if(!component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
 					shadowParams.transparentDynamicShadow = true;
 					break;
 				}
@@ -1090,7 +1090,7 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 			shadowMapper.SetForeignSolidDepthTexture(scsolid.ObtainStaticMapWithSize(
 				staticShadowMapSize, false, renderThread.GetChoices().GetUseInverseDepth()));
 			
-			if(! shadowParams.solid && shadowParams.transparentStaticShadow){
+			if(!shadowParams.solid && shadowParams.transparentStaticShadow){
 				shadowMapper.SetForeignTransparentDepthTexture(
 					sctransp.ObtainStaticShadowMapWithSize(staticTranspShadowMapSize,
 						renderThread.GetChoices().GetUseInverseDepth()));
@@ -1120,7 +1120,7 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 				shadowMapper.DropForeignAmbientTextures();
 			}
 			
-			if(! light.GetLightVolumeCropBox()){
+			if(!light.GetLightVolumeCropBox()){
 				updateBoxBoundary = true;
 			}
 		}
@@ -1175,7 +1175,7 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 		}
 		
 		// drop shadow map if size changed
-		if(! useTemporary){
+		if(!useTemporary){
 			if(scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != dynamicShadowMapSize){
 				LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicMap())
 				scsolid.DropDynamic();
@@ -1196,22 +1196,22 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 		bool requiresUpdate = false;
 		
 		if(useTemporary){
-			requiresUpdate = ! scsolid.GetTemporaryMap();
+			requiresUpdate = !scsolid.GetTemporaryMap();
 			if(useAmbient){
-				requiresUpdate |= ! scambient.GetTemporaryMap();
+				requiresUpdate |= !scambient.GetTemporaryMap();
 			}
 			if(shadowParams.transparentDynamicShadow){
-				requiresUpdate |= ! sctransp.GetTemporaryShadowMap() || ! sctransp.GetTemporaryColorMap();
+				requiresUpdate |= !sctransp.GetTemporaryShadowMap() || !sctransp.GetTemporaryColorMap();
 			}
 			
 		}else{
-			requiresUpdate = ! scsolid.GetDynamicMap() || scsolid.GetDirtyDynamic();
+			requiresUpdate = !scsolid.GetDynamicMap() || scsolid.GetDirtyDynamic();
 			if(useAmbient){
-				requiresUpdate |= ! scambient.GetDynamicMap() || scambient.GetDirtyDynamic();
+				requiresUpdate |= !scambient.GetDynamicMap() || scambient.GetDirtyDynamic();
 			}
 			if(shadowParams.transparentDynamicShadow){
-				requiresUpdate |= ! sctransp.GetDynamicShadowMap()
-					|| ! sctransp.GetDynamicColorMap() || sctransp.GetDirtyDynamic();
+				requiresUpdate |= !sctransp.GetDynamicShadowMap()
+					|| !sctransp.GetDynamicColorMap() || sctransp.GetDirtyDynamic();
 			}
 		}
 		
@@ -1257,7 +1257,7 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 			
 			shadowMapper.DropForeignTextures();
 			
-			if(! useTemporary){
+			if(!useTemporary){
 				scsolid.SetDirtyDynamic(false);
 				if(shadowParams.transparentDynamicShadow){
 					sctransp.SetDirtyDynamic(false);
@@ -1279,13 +1279,13 @@ void deoglRenderLightSpot::RenderShadows(deoglRenderPlanLight &planLight, sShado
 				
 				shadowMapper.DropForeignAmbientTextures();
 				
-				if(! useTemporary){
+				if(!useTemporary){
 					scambient.SetDirtyDynamic(false);
 				}
 			}
 		}
 		
-		if(! useTemporary){
+		if(!useTemporary){
 			scsolid.ResetLastUseDynamic();
 			if(shadowParams.transparentStaticShadow){
 				sctransp.ResetLastUseDynamic();

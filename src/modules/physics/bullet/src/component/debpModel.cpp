@@ -163,7 +163,7 @@ void debpModel::PrepareNormals(){
 }
 
 int debpModel::IndexOfFaceWithProbability(float probability) const{
-	if(! pFaceProbabilities){
+	if(!pFaceProbabilities){
 		DETHROW(deeInvalidParam); // somebody forgot to retain the data first
 	}
 	

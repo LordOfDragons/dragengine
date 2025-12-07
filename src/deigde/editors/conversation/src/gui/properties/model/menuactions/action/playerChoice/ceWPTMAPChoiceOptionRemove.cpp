@@ -60,7 +60,7 @@ pTopic(&topic),
 pPlayerChoice(&playerChoice),
 pOption(option)
 {
-	if(! option){
+	if(!option){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -75,13 +75,13 @@ void ceWPTMAPChoiceOptionRemove::OnAction(){
 		pTopic, pPlayerChoice, pOption));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if(! wptopic.GetActionTreeModel()){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = (ceWPTTIMAPlayerChoice*)model.DeepFindAction(pPlayerChoice);
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	

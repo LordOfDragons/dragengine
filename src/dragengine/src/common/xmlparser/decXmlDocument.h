@@ -72,31 +72,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Encoding. */
-	inline const decString &GetEncoding() const{return pEncoding;}
+	inline const decString &GetEncoding() const{ return pEncoding; }
 	
 	/** \brief Set encoding. */
 	void SetEncoding(const char *encoding);
 	
 	/** \brief Doc type. */
-	inline const decString &GetDocType() const{return pDocType;}
+	inline const decString &GetDocType() const{ return pDocType; }
 	
 	/** \brief Set doc type. */
 	void SetDocType(const char *docType);
 	
 	/** \brief System literal. */
-	inline const decString &GetSystemLiteral() const{return pSysLit;}
+	inline const decString &GetSystemLiteral() const{ return pSysLit; }
 	
 	/** \brief Set system literal. */
 	void SetSystemLiteral(const char *sysLit);
 	
 	/** \brief Public literal. */
-	inline const decString &GetPublicLiteral() const{return pPubLit;}
+	inline const decString &GetPublicLiteral() const{ return pPubLit; }
 	
 	/** \brief Set public literal. */
 	void SetPublicLiteral(const char *sysLit);
 	
 	/** \brief Standalone. */
-	inline bool GetStandalone() const{return pStandalone;}
+	inline bool GetStandalone() const{ return pStandalone; }
 	
 	/** \brief Set standalone. */
 	void SetStandalone(bool standalone);

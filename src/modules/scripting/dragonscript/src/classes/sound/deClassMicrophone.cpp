@@ -112,7 +112,7 @@ deClassMicrophone::nfSetType::nfSetType(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsMicrophoneType); // type
 }
 void deClassMicrophone::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -144,7 +144,7 @@ void deClassMicrophone::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassMicrophone *clsMic = (deClassMicrophone*)GetOwnerClass();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	microphone->SetPosition(clsMic->GetClassDVector()->GetDVector(obj));
 }
@@ -172,7 +172,7 @@ void deClassMicrophone::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *my
 	deClassQuaternion *clsQuat = clsMic->GetScriptModule()->GetClassQuaternion();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	microphone->SetOrientation(clsQuat->GetQuaternion(obj));
 }
@@ -200,7 +200,7 @@ void deClassMicrophone::nfSetVelocity::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassVector *clsVec = clsMic->GetScriptModule()->GetClassVector();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	microphone->SetVelocity(clsVec->GetVector(obj));
 }
@@ -338,7 +338,7 @@ void deClassMicrophone::nfAddSpeaker::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassMicrophone *clsMic = (deClassMicrophone*)GetOwnerClass();
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
-	if(! object) DSTHROW(dueNullPointer);
+	if(!object) DSTHROW(dueNullPointer);
 	
 	microphone->AddSpeaker(clsMic->GetClassSpeaker()->GetSpeaker(object));
 }
@@ -353,7 +353,7 @@ void deClassMicrophone::nfRemoveSpeaker::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassMicrophone *clsMic = (deClassMicrophone*)GetOwnerClass();
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
-	if(! object) DSTHROW(dueNullPointer);
+	if(!object) DSTHROW(dueNullPointer);
 	
 	microphone->RemoveSpeaker(clsMic->GetClassSpeaker()->GetSpeaker(object));
 }
@@ -391,7 +391,7 @@ void deClassMicrophone::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassMicrophone *clsMic = (deClassMicrophone*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsMic)){
+	if(!p_IsObjOfType(obj, clsMic)){
 		rt->PushBool(false);
 	}else{
 		deMicrophone *otherMicrophone = ((sMicNatDat*)p_GetNativeData(obj))->microphone;
@@ -409,7 +409,7 @@ void deClassMicrophone::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassMicrophone::deClassMicrophone(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Microphone", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -492,7 +492,7 @@ void deClassMicrophone::CreateClassMembers(dsEngine *engine){
 }
 
 deMicrophone *deClassMicrophone::GetMicrophone(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -500,11 +500,11 @@ deMicrophone *deClassMicrophone::GetMicrophone(dsRealObject *myself) const{
 }
 
 void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! microphone){
+	if(!microphone){
 		rt->PushObject(NULL, this);
 		return;
 	}

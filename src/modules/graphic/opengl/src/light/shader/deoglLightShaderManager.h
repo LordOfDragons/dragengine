@@ -73,7 +73,7 @@ private:
 	public:
 		cPrepareShader(deoglLightShaderManager &manager, const deoglLightShader::Ref &shader);
 		
-		inline const deoglLightShader::Ref &GetShader() const{return pShader;}
+		inline const deoglLightShader::Ref &GetShader() const{ return pShader; }
 		
 		void AddListener(cGetShaderListener *listener);
 		
@@ -103,7 +103,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves a unit source code path. */
 	const char *GetUnitSourceCodePath(int unitSourceCodePath) const;

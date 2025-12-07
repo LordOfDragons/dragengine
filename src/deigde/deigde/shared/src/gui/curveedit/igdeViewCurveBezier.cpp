@@ -84,7 +84,7 @@ void igdeViewCurveBezier::cActionEditSelectedPoint::OnAction(){
 	
 	igdeDialogCurveBezierCoord::Ref dialog(igdeDialogCurveBezierCoord::Ref::NewWith(
 		pView.GetEnvironment(), pView.GetCurve().GetPointAt(selectedPoint)));
-	if(! dialog->Run(&pView)){
+	if(!dialog->Run(&pView)){
 		return;
 	}
 	
@@ -284,7 +284,7 @@ pView(view){
 void igdeViewCurveBezier::cActionEditClamp::OnAction(){
 	igdeDialogCurveBezierClamp::Ref dialog(igdeDialogCurveBezierClamp::Ref::NewWith(
 		pView.GetEnvironment(), pView.GetClamp(), pView.GetClampMin(), pView.GetClampMax()));
-	if(! dialog->Run(&pView)){
+	if(!dialog->Run(&pView)){
 		return;
 	}
 	
@@ -571,7 +571,7 @@ void igdeViewCurveBezier::FitViewToCurve(){
 
 
 void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -627,7 +627,7 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 
 
 void igdeViewCurveBezier::AddListener(igdeViewCurveBezierListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -680,7 +680,7 @@ void igdeViewCurveBezier::CreateNativeWidget(){
 }
 
 void igdeViewCurveBezier::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -689,7 +689,7 @@ void igdeViewCurveBezier::DestroyNativeWidget(){
 }
 
 void igdeViewCurveBezier::OnDefaultSizeChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -697,7 +697,7 @@ void igdeViewCurveBezier::OnDefaultSizeChanged(){
 }
 
 void igdeViewCurveBezier::OnCurveChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -705,7 +705,7 @@ void igdeViewCurveBezier::OnCurveChanged(){
 }
 
 void igdeViewCurveBezier::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -713,7 +713,7 @@ void igdeViewCurveBezier::OnEnabledChanged(){
 }
 
 void igdeViewCurveBezier::OnSelectedPointChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -721,7 +721,7 @@ void igdeViewCurveBezier::OnSelectedPointChanged(){
 }
 
 void igdeViewCurveBezier::OnClampChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -729,7 +729,7 @@ void igdeViewCurveBezier::OnClampChanged(){
 }
 
 void igdeViewCurveBezier::OnResetView(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -737,7 +737,7 @@ void igdeViewCurveBezier::OnResetView(){
 }
 
 void igdeViewCurveBezier::OnFitToCurve(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -87,7 +87,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Widget to show context menu below or NULL if not present. */
-	inline igdeWidget *GetWidget() const{return pWidget;}
+	inline igdeWidget *GetWidget() const{ return pWidget; }
 	
 	/** \brief Set widget to show context menu below or NULL if not present. */
 	void SetWidget(igdeWidget *widget);

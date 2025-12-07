@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/**
 	 * Mask value at position.

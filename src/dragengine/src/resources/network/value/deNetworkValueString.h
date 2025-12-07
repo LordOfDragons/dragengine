@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value. */
-	inline const decString &GetString() const{return pValue;}
+	inline const decString &GetString() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetString(const char *value);

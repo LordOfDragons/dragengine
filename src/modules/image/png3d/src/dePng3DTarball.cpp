@@ -156,7 +156,7 @@ void dePng3DTarball::Get3DImageInfos(dePng3DImageInfo &infos, decBaseFileReader 
 		
 		// we detect the 0-blocks just by checking the file names are 0 length.
 		// since 0 length file names do not exist this should be accurate enough
-		if(! header.name[0] && ! header.linkname[0]) break;
+		if(!header.name[0] && !header.linkname[0]) break;
 		
 		// save the position so we can quickly skip to the end of the file
 		position = file.GetPosition();
@@ -259,7 +259,7 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 	try{
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(! rows) DETHROW(deeOutOfMemory);
+		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// read the archive with all files filling the images one by one
 		while(true){
@@ -267,7 +267,7 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 			
 			// we detect the 0-blocks just by checking the file names are 0 length.
 			// since 0 length file names do not exist this should be accurate enough
-			if(! header.name[0] && ! header.linkname[0]) break;
+			if(!header.name[0] && !header.linkname[0]) break;
 			
 			// save the position so we can quickly skip to the end of the file
 			position = file.GetPosition();
@@ -442,7 +442,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(! rows) DETHROW(deeOutOfMemory);
+		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// write file by creating an archive with an image for each z coordinate
 		for(z=0; z<image.GetDepth(); z++){
@@ -546,10 +546,10 @@ void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &inf
 		// create structures
 		readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
 			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
-		if(! readStruct) DETHROW(deeOutOfMemory);
+		if(!readStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(readStruct);
-		if(! infoStruct) DETHROW(deeOutOfMemory);
+		if(!infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
 		png_set_read_fn(readStruct, (png_voidp)&file, (png_rw_ptr)depng3dRead);
@@ -599,7 +599,7 @@ void dePng3DTarball::Get2DImageInfos(dePng3DImageInfo &infos3D, sImageInfos &inf
 }
 
 void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &file, png_bytep *rows){
-	if(! rows) DETHROW(deeInvalidParam);
+	if(!rows) DETHROW(deeInvalidParam);
 	
 	png_structp readStruct = NULL;
 	png_infop infoStruct = NULL;
@@ -618,10 +618,10 @@ void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &f
 		// create structures
 		readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
 			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
-		if(! readStruct) DETHROW(deeOutOfMemory);
+		if(!readStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(readStruct);
-		if(! infoStruct) DETHROW(deeOutOfMemory);
+		if(!infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
 		png_set_read_fn(readStruct, (png_voidp)&file, (png_rw_ptr)depng3dRead);
@@ -729,7 +729,7 @@ void dePng3DTarball::Load2DImage(dePng3DImageInfo &infos3D, decBaseFileReader &f
 }
 
 void dePng3DTarball::Save2DImage(int width, int height, decBaseFileWriter &file, png_bytep *rows, int pngColorType, int pngBitCount){
-	if(! rows) DETHROW(deeInvalidParam);
+	if(!rows) DETHROW(deeInvalidParam);
 	
 	png_structp writeStruct = NULL;
 	png_infop infoStruct = NULL;
@@ -742,10 +742,10 @@ void dePng3DTarball::Save2DImage(int width, int height, decBaseFileWriter &file,
 		// create structures
 		writeStruct = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
 			(png_error_ptr)depng3dError, (png_error_ptr)depng3dWarning, NULL, NULL, NULL);
-		if(! writeStruct) DETHROW(deeOutOfMemory);
+		if(!writeStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(writeStruct);
-		if(! infoStruct) DETHROW(deeOutOfMemory);
+		if(!infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
 		png_set_write_fn(writeStruct, (png_voidp)&file, (png_rw_ptr)depng3dWrite, (png_flush_ptr)depng3dFlush);

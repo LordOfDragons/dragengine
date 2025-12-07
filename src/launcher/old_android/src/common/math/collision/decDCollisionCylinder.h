@@ -172,14 +172,14 @@ public:
 	/**
 	 * Retrieves the cylinder center.
 	 */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/**
 	 * Sets the position.
 	 * @param position Center of cylinder.
 	 */
 	void SetPosition(const decDVector &position);
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/**
 	 * Sets the orientation.
 	 * @param orientation Normalized rotation quaternion.
@@ -188,21 +188,21 @@ public:
 	/** Clears the orientation of the cylinder setting it to the identity quaternion. */
 	void ClearOrientation();
 	/** Retrieves the half height. */
-	inline double GetHalfHeight() const{return pHalfHeight;}
+	inline double GetHalfHeight() const{ return pHalfHeight; }
 	/**
 	 * Sets the half height.
 	 * @param halfHeight Half the height of the cylinder. Has to be greater than 0.
 	 */
 	void SetHalfHeight(double halfHeight);
 	/** Retrieves the top radius. */
-	inline double GetTopRadius() const{return pTopRadius;}
+	inline double GetTopRadius() const{ return pTopRadius; }
 	/**
 	 * Sets the top radius.
 	 * @param radius Radius of the top cylinder cap. Has to be greater than 0.
 	 */
 	void SetTopRadius(double radius);
 	/** Retrieves the bottom radius. */
-	inline double GetBottomRadius() const{return pBottomRadius;}
+	inline double GetBottomRadius() const{ return pBottomRadius; }
 	/**
 	 * Sets the bottom radius.
 	 * @param radius Radius of the bottom cylinder cap. Has to be greater than 0.
@@ -218,33 +218,33 @@ public:
 	 * Determines if this cylinder is oriented.
 	 * @return True if the cylinder has an orientation other than the identity quaternion.
 	 */
-	inline bool GetOriented() const{return pOriented;}
+	inline bool GetOriented() const{ return pOriented; }
 	/**
 	 * Determines if this cylinder is axis aligned.
 	 * @return True if the cylinder has an orientation equal to the identity quaternion.
 	 */
-	inline bool GetAxisAligned() const{return ! pOriented;}
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/**
 	 * Determines if this cylinder is tapered.
 	 * @return True if the top and bottom radius are not identical.
 	 */
-	inline bool GetTapered() const{return pTapered;}
+	inline bool GetTapered() const{ return pTapered; }
 	
 	/**
 	 * Retrieves the X-Axis.
 	 * @return Normalized vector along the X-Axis.
 	 */
-	inline const decDVector &GetAxisX() const{return pAxisX;}
+	inline const decDVector &GetAxisX() const{ return pAxisX; }
 	/**
 	 * Retrieves the Y-Axis.
 	 * @return Normalized vector along the Y-Axis.
 	 */
-	inline const decDVector &GetAxisY() const{return pAxisY;}
+	inline const decDVector &GetAxisY() const{ return pAxisY; }
 	/**
 	 * Retrieves the Z-Axis.
 	 * @return Normalized vector along the Z-Axis.
 	 */
-	inline const decDVector &GetAxisZ() const{return pAxisZ;}
+	inline const decDVector &GetAxisZ() const{ return pAxisZ; }
 	
 	/** Transforms a point from world coordinates into local coordinates. */
 	decDVector WorldToLocal(const decDVector &point) const;

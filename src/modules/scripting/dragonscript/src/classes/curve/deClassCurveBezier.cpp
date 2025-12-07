@@ -66,7 +66,7 @@ void deClassCurveBezier::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.curve = NULL;
 	
 	nd.curve = new decCurveBezier;
-	if(! nd.curve) DSTHROW(dueOutOfMemory);
+	if(!nd.curve) DSTHROW(dueOutOfMemory);
 }
 
 // public func new(CurveBezier curve)
@@ -90,7 +90,7 @@ dsFunction(init.clsCBe, "newDefaultLinear", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCBe){
 }
 void deClassCurveBezier::nfNewDefaultLinear::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -114,7 +114,7 @@ dsFunction(init.clsCBe, "newDefaultBezier", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCBe){
 }
 void deClassCurveBezier::nfNewDefaultBezier::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -232,7 +232,7 @@ void deClassCurveBezier::nfAddPoint::RunFunction(dsRunTime *rt, dsValue *myself)
 	dsRealObject *objPoint = rt->GetValue(0)->GetRealObject();
 	dsRealObject *objHandle1 = rt->GetValue(1)->GetRealObject();
 	dsRealObject *objHandle2 = rt->GetValue(2)->GetRealObject();
-	if(! objPoint || ! objHandle1 || ! objHandle2) DSTHROW(dueNullPointer);
+	if(!objPoint || !objHandle1 || !objHandle2) DSTHROW(dueNullPointer);
 	
 	const decVector2 &point = clsVec2.GetVector2(objPoint);
 	const decVector2 &handle1 = clsVec2.GetVector2(objHandle1);
@@ -333,7 +333,7 @@ deClassCurveBezier::nfSetInterpolationMode::nfSetInterpolationMode(const sInitDa
 	p_AddParameter(init.clsCurveBezierInterpolation); // mode
 }
 void deClassCurveBezier::nfSetInterpolationMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -471,7 +471,7 @@ void deClassCurveBezier::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCurveBezier *clsCBe = (deClassCurveBezier*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCBe)){
+	if(!p_IsObjOfType(obj, clsCBe)){
 		rt->PushBool(false);
 		
 	}else{
@@ -486,17 +486,17 @@ void deClassCurveBezier::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 				const decCurveBezierPoint &pt1 = curve.GetPointAt(p);
 				const decCurveBezierPoint &pt2 = other.GetPointAt(p);
 				
-				if(! pt1.GetPoint().IsEqualTo(pt2.GetPoint())){
+				if(!pt1.GetPoint().IsEqualTo(pt2.GetPoint())){
 					equal = false;
 					break;
 				}
 				
-				if(! pt1.GetHandle1().IsEqualTo(pt2.GetHandle1())){
+				if(!pt1.GetHandle1().IsEqualTo(pt2.GetHandle1())){
 					equal = false;
 					break;
 				}
 				
-				if(! pt1.GetHandle2().IsEqualTo(pt2.GetHandle2())){
+				if(!pt1.GetHandle2().IsEqualTo(pt2.GetHandle2())){
 					equal = false;
 					break;
 				}
@@ -521,7 +521,7 @@ void deClassCurveBezier::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassCurveBezier::deClassCurveBezier(deScriptingDragonScript *ds) :
 dsClass("CurveBezier", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -597,7 +597,7 @@ void deClassCurveBezier::CreateClassMembers(dsEngine *engine){
 }
 
 const decCurveBezier &deClassCurveBezier::GetCurve(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -605,7 +605,7 @@ const decCurveBezier &deClassCurveBezier::GetCurve(dsRealObject *myself) const{
 }
 
 void deClassCurveBezier::PushCurve(dsRunTime *rt, const decCurveBezier &curve){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

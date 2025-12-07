@@ -93,11 +93,11 @@ public:
 	
 	meObject *Find(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
 	
-	inline meObject *Find(Evaluator &evaluator) const{return Find(evaluator, 0, pObjects.GetCount());}
+	inline meObject *Find(Evaluator &evaluator) const{ return Find(evaluator, 0, pObjects.GetCount()); }
 	
 	meObjectList Collect(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
 	
-	inline meObjectList Collect(Evaluator &evaluator) const{return Collect(evaluator, 0, pObjects.GetCount());}
+	inline meObjectList Collect(Evaluator &evaluator) const{ return Collect(evaluator, 0, pObjects.GetCount()); }
 	
 	void RemoveIf(Evaluator &evaluator, int from, int to = -1, int step = 1);
 	

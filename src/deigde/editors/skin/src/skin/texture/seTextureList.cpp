@@ -110,13 +110,13 @@ bool seTextureList::HasNamed(const char *name) const{
 }
 
 void seTextureList::Add(seTexture *texture){
-	if(! texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pTextures.Add(texture);
 }
 
 void seTextureList::InsertAt(seTexture *texture, int index){
-	if(! texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pTextures.Insert(texture, index);
 }

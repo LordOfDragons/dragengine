@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meHTVRLink::meHTVRLink(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot){
-	if(! sourceRule || ! destinationRule){
+	if(!sourceRule || !destinationRule){
 		DETHROW(deeInvalidParam);
 	}
 	if(sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){

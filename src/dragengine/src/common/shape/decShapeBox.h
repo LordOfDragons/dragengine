@@ -76,13 +76,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Half extends. */
-	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
+	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
 	/** \brief Set half extends. */
 	void SetHalfExtends(const decVector &halfExtends);
 	
 	/** \brief Tapering. */
-	inline const decVector2 &GetTapering() const{return pTapering;}
+	inline const decVector2 &GetTapering() const{ return pTapering; }
 	
 	/** \brief Set tapering. */
 	void SetTapering(const decVector2 &tapering);

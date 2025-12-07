@@ -62,14 +62,14 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deTouchSensor *GetTouchSensor(dsRealObject *myself) const;
 	void PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
-	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{return pClsTSL;}
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassCollider *GetClassCollider() const{return pClsCol;}
-	inline deClassQuaternion *GetClassQuaternion() const{return pClsQuat;}
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{ return pClsTSL; }
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
+	inline deClassQuaternion *GetClassQuaternion() const{ return pClsQuat; }
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 private:
 	struct sInitData{

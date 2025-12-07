@@ -47,7 +47,7 @@ pGameDefinition(NULL),
 pProperty(NULL),
 pFilePattern(NULL)
 {
-	if(! gamedef || ! property || ! filePattern){
+	if(!gamedef || !property || !filePattern){
 		DETHROW(deeInvalidParam);
 	}
 	

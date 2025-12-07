@@ -49,7 +49,7 @@ FXIconItem("", nullptr, nullptr, nullptr),
 pPanelEngine(panelEngine),
 pModule(module)
 {
-	if(! panelEngine || ! module){
+	if(!panelEngine || !module){
 		DETHROW(deeInvalidParam);
 	}
 	

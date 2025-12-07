@@ -55,7 +55,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the created value. */
-	inline debnValue *GetValue() const{return pValue;}
+	inline debnValue *GetValue() const{ return pValue; }
 	/** Resets the visitor. */
 	void Reset();
 	/*@}*/

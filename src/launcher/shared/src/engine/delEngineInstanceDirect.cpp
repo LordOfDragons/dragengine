@@ -47,8 +47,7 @@
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
 #else
-#	error OS not supported!
-#endif
+#	error OS not supported!#endif
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deCmdLineArgs.h>
 #include <dragengine/common/file/decPath.h>
@@ -213,7 +212,7 @@ bool delEngineInstanceDirect::StartEngine(){
 	try{
 		deLogger::Ref engineLogger(pEngineLogger);
 		
-		if(! engineLogger){
+		if(!engineLogger){
 			decPath diskPath(decPath::CreatePathNative(GetLauncher().GetPathLogs()));
 			diskPath.AddUnixPath(GetLogFile());
 			

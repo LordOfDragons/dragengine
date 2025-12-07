@@ -196,7 +196,7 @@ deParticleEmitterController *deParticleEmitter::GetControllerAt(int index) const
 }
 
 int deParticleEmitter::IndexOfController(deParticleEmitterController *controller) const{
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -222,7 +222,7 @@ int deParticleEmitter::IndexOfControllerNamed(const char *name) const{
 }
 
 bool deParticleEmitter::HasController(deParticleEmitterController *controller) const{
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	int i;
 	
@@ -236,12 +236,12 @@ bool deParticleEmitter::HasController(deParticleEmitterController *controller) c
 }
 
 void deParticleEmitter::AddController(deParticleEmitterController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
 		deParticleEmitterController **newArray = new deParticleEmitterController*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pControllers){
 			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;

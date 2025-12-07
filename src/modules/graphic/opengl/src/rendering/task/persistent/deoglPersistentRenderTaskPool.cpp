@@ -164,7 +164,7 @@ deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskPool::GetSubInsta
 
 
 void deoglPersistentRenderTaskPool::ReturnOwner(deoglPersistentRenderTaskOwner *owner){
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -173,7 +173,7 @@ void deoglPersistentRenderTaskPool::ReturnOwner(deoglPersistentRenderTaskOwner *
 }
 
 void deoglPersistentRenderTaskPool::ReturnPipeline(deoglPersistentRenderTaskPipeline *pipeline){
-	if(! pipeline){
+	if(!pipeline){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -182,7 +182,7 @@ void deoglPersistentRenderTaskPool::ReturnPipeline(deoglPersistentRenderTaskPipe
 }
 
 void deoglPersistentRenderTaskPool::ReturnTexture(deoglPersistentRenderTaskTexture *texture){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,7 +191,7 @@ void deoglPersistentRenderTaskPool::ReturnTexture(deoglPersistentRenderTaskTextu
 }
 
 void deoglPersistentRenderTaskPool::ReturnVAO(deoglPersistentRenderTaskVAO *vao){
-	if(! vao){
+	if(!vao){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -200,7 +200,7 @@ void deoglPersistentRenderTaskPool::ReturnVAO(deoglPersistentRenderTaskVAO *vao)
 }
 
 void deoglPersistentRenderTaskPool::ReturnInstance(deoglPersistentRenderTaskInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -209,7 +209,7 @@ void deoglPersistentRenderTaskPool::ReturnInstance(deoglPersistentRenderTaskInst
 }
 
 void deoglPersistentRenderTaskPool::ReturnSubInstance(deoglPersistentRenderTaskSubInstance *subInstance){
-	if(! subInstance){
+	if(!subInstance){
 		DETHROW(deeInvalidParam);
 	}
 	

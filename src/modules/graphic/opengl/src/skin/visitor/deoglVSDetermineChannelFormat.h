@@ -83,31 +83,31 @@ public:
 	
 	
 	/** Channel has defined format. */
-	inline bool GetIsDefined() const{return pIsDefined;}
+	inline bool GetIsDefined() const{ return pIsDefined; }
 	
 	/** Required texture size. */
-	inline const decPoint3 &GetRequiredSize() const{return pRequiredSize;}
+	inline const decPoint3 &GetRequiredSize() const{ return pRequiredSize; }
 	
 	/** Required component count. */
-	inline int GetRequiredComponentCount() const{return pRequiredComponentCount;}
+	inline int GetRequiredComponentCount() const{ return pRequiredComponentCount; }
 	
 	/** Float format is required. */
-	inline bool GetRequiresFloat() const{return pRequiresFloat;}
+	inline bool GetRequiresFloat() const{ return pRequiresFloat; }
 	
 	/** Channel is uniform. */
-	inline bool GetIsUniform() const{return pIsUniform;}
+	inline bool GetIsUniform() const{ return pIsUniform; }
 	
 	/** Channel is dynamic. */
-	inline bool GetIsDynamic() const{return pIsDynamic;}
+	inline bool GetIsDynamic() const{ return pIsDynamic; }
 	
 	/** Mip mapping is allowed. */
-	inline bool GetAllowMipMap() const{return pAllowMipMap;}
+	inline bool GetAllowMipMap() const{ return pAllowMipMap; }
 	
 	/** Shared image. */
-	inline deoglRImage *GetSharedImage() const{return pSharedImage;}
+	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }
 	
 	/** Texture type. */
-	inline deoglSkinChannel::eTextureType GetTextureType() const{return pTextureType;}
+	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
 	
 	
 	

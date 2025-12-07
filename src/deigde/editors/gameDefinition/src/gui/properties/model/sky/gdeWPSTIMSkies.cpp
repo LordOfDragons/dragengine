@@ -84,7 +84,7 @@ void gdeWPSTIMSkies::StructureChanged(){
 		gdeSky * const sky = list.GetAt(i);
 		gdeWPSTIMSky * const modelSky = GetChildWith(sky);
 		
-		if(! modelSky){
+		if(!modelSky){
 			item.TakeOver(new gdeWPSTIMSky(GetTree(), list.GetAt(i)));
 			AppendModel(item);
 		}
@@ -96,7 +96,7 @@ void gdeWPSTIMSkies::StructureChanged(){
 		gdeWPSTIMSky * const modelSky = (gdeWPSTIMSky*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelSky->GetSky())){
+		if(!list.Has(modelSky->GetSky())){
 			RemoveModel(modelSky);
 		}
 	}
@@ -129,7 +129,7 @@ void gdeWPSTIMSkies::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMSkies::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

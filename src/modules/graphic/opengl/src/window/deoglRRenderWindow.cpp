@@ -453,7 +453,7 @@ void deoglRRenderWindow::CreateWindow(){
 	pWindow = CreateWindowEx(exStyle, wideName, L"Drag[en]gine OpenGL", style, 0, 0,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, parentWindow,
 		NULL, pRenderThread.GetContext().GetOSWindow()->GetInstApp(), NULL);
-	if(! pWindow){
+	if(!pWindow){
 		pRenderThread.GetLogger().LogErrorFormat("CreateWindowEx failed with error %lu", GetLastError());
 		DETHROW(deeOutOfMemory);
 	}
@@ -463,7 +463,7 @@ void deoglRRenderWindow::CreateWindow(){
 	
 	// create the context
 	pWindowDC = GetDC(pWindow);
-	if(! pWindowDC){
+	if(!pWindowDC){
 		pRenderThread.GetLogger().LogErrorFormat("GetDC failed with error %lu", GetLastError());
 		DETHROW(deeOutOfMemory);
 	}
@@ -485,7 +485,7 @@ void deoglRRenderWindow::CreateWindow(){
 	SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
 	
 	// activate window just in case windows messes up again
-	if(! pHostWindow){
+	if(!pHostWindow){
 		SetActiveWindow(pWindow);
 	}
 	
@@ -585,7 +585,7 @@ void deoglRRenderWindow::CreateWindow(){
 }
 
 void deoglRRenderWindow::SwapBuffers(){
-	if(! pSwapBuffers){
+	if(!pSwapBuffers){
 		return;
 	}
 	
@@ -612,7 +612,7 @@ void deoglRRenderWindow::SwapBuffers(){
 #elif defined OS_W32
 	pUpdateVSync();
 	
-	if(! ::SwapBuffers(pWindowDC)){
+	if(!::SwapBuffers(pWindowDC)){
 		pRenderThread.GetLogger().LogErrorFormat("SwapBuffers failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError());
 	}
@@ -652,11 +652,11 @@ void deoglRRenderWindow::SwapBuffers(){
 }
 
 void deoglRRenderWindow::Render(){
-	if(! pPaint || ! pRCanvasView || pWidth < 1 || pHeight < 1){
+	if(!pPaint || !pRCanvasView || pWidth < 1 || pHeight < 1){
 		return;
 	}
 #ifdef OS_MACOS
-	if(! pWindow){
+	if(!pWindow){
 		return; // window got closed under our nose
 	}
 #endif
@@ -670,7 +670,7 @@ void deoglRRenderWindow::Render(){
 	glDisable(GL_DITHER);
 	
 	// prepare canvas
-	deoglRCanvas * const debugOverlayCanvas = ! pRenderThread.GetVRCamera()
+	deoglRCanvas * const debugOverlayCanvas = !pRenderThread.GetVRCamera()
 		? pRenderThread.GetCanvasDebugOverlay() : nullptr;
 	
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
@@ -759,7 +759,7 @@ void deoglRRenderWindow::Capture(){
 
 void deoglRRenderWindow::CenterOnScreen(){
 #ifdef OS_BEOS
-	if(! pWindow){
+	if(!pWindow){
 		return;
 	}
 	const decPoint screenSize(pRenderThread.GetContext().GetOSBeOS()->GetDisplayCurrentResolution(0));
@@ -769,7 +769,7 @@ void deoglRRenderWindow::CenterOnScreen(){
 	pMacOSCenterOnScreen();
 	
 #elif defined OS_W32
-	if(! pWindow){
+	if(!pWindow){
 		return;
 	}
 	const decPoint screenSize(pRenderThread.GetContext().GetOSWindow()->GetDisplayCurrentResolution(0));
@@ -850,7 +850,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 #ifdef OS_BEOS
 	if(pWindow){
 		pWindow->SetBlockQuitRequested(false);
-		if(! pWindow->IsLocked()){
+		if(!pWindow->IsLocked()){
 			pWindow->Lock();
 		}
 		pWindow->Quit(); // does unlock itself
@@ -966,7 +966,7 @@ void deoglRRenderWindow::pSetWindowTitle(){
 		XTextProperty textProp;
 		const char * const title = pTitle.GetString();
 		
-		if(! XStringListToTextProperty((char**)&title, 1, &textProp)){
+		if(!XStringListToTextProperty((char**)&title, 1, &textProp)){
 			DETHROW(deeOutOfMemory);
 		}
 		XSetWMName(display, pWindow, &textProp);
@@ -1093,7 +1093,7 @@ void deoglRRenderWindow::pSetIcon(){
 	
 #elif defined OS_W32
 	// NOTE under windows alpha=0 means solid and alpha=255 transparent
-	if(! pWindow || ! pIcon){
+	if(!pWindow || !pIcon){
 		return;
 	}
 	
@@ -1421,7 +1421,7 @@ void deoglRRenderWindow::pUpdateVSync(){
 	}
 	
 	// apply changes if required
-	if(! pInitSwapInterval){
+	if(!pInitSwapInterval){
 		return;
 	}
 	

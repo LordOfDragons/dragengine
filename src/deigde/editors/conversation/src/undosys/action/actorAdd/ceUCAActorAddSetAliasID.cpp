@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID){
-	if(! topic || ! newAliasID){
+	if(!topic || !newAliasID){
 		DETHROW(deeInvalidParam);
 	}
 	

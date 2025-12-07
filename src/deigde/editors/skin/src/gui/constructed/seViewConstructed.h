@@ -81,7 +81,7 @@ public:
 	void SetSkin(seSkin *skin);
 	
 	/** \brief Constructed view. */
-	inline seViewConstructedView &GetViewNode() const{return *pViewNode;}
+	inline seViewConstructedView &GetViewNode() const{ return *pViewNode; }
 	
 	
 	

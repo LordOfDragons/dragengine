@@ -41,7 +41,7 @@
 seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty *property) :
 pProperty(NULL)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,9 +63,9 @@ seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
 ///////////////
 
 void seUPropertyConstructedToggleTileY::Undo(){
-	pProperty->SetNodeTileY(! pProperty->GetNodeTileY());
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }
 
 void seUPropertyConstructedToggleTileY::Redo(){
-	pProperty->SetNodeTileY(! pProperty->GetNodeTileY());
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }

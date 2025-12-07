@@ -86,13 +86,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
 	void SetBgColor(const decColor &color);
 	
 	/** \brief Button is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
@@ -103,7 +103,7 @@ public:
 	decPoint GetSize() const;
 	
 	/** \brief Offset of board content relative to board center. */
-	inline const decPoint &GetOffset() const{return pOffset;}
+	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset of board content relative to board center. */
 	void SetOffset(const decPoint &offset);
@@ -132,7 +132,7 @@ public:
 	void RemoveAllNodes();
 	
 	/** \brief Active node. or NULL */
-	inline igdeNVNode *GetActiveNode() const{return (igdeNVNode*)(deObject*)pActiveNode;}
+	inline igdeNVNode *GetActiveNode() const{ return (igdeNVNode*)(deObject*)pActiveNode; }
 	
 	/** \brief Set active node or NULL. */
 	void SetActiveNode(igdeNVNode *node);

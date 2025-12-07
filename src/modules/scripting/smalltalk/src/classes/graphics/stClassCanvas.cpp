@@ -157,9 +157,8 @@ stClassCanvas::~stClassCanvas(){
 
 void stClassCanvas::SetUpLinks(){
 	pOOPClass = gst_class_name_to_oop("DECanvas");
-	if(! pOOPClass){
-		DETHROW(deeInvalidParam); // Canvas.st missing !
-	}
+	if(!pOOPClass){
+		DETHROW(deeInvalidParam); // Canvas.st missing !	}
 	
 	csCanvasClass &csclass = *((csCanvasClass*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
@@ -177,7 +176,7 @@ deCanvas *stClassCanvas::OOPToCanvas(OOP object) const{
 }
 
 OOP stClassCanvas::CanvasToOOP(deCanvas *canvas){
-	if(! canvas){
+	if(!canvas){
 		return pST.GetNil();
 	}
 	
@@ -190,7 +189,7 @@ OOP stClassCanvas::CanvasToOOP(deCanvas *canvas){
 	}
 	
 	oopCanvas = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csCanvas) - sizeof(csObject));
-	if(! oopCanvas || oopCanvas == pST.GetNil()){
+	if(!oopCanvas || oopCanvas == pST.GetNil()){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -216,7 +215,7 @@ OOP stClassCanvas::ccNew(OOP self, OOP type){
 	OOP result = NULL;
 	
 	try{
-		if(! IS_OOP(type)){
+		if(!IS_OOP(type)){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -459,7 +458,7 @@ void stClassCanvas::ccSetShapeType(OOP self, OOP shapeType){
 	case deCanvasVisitorIdentify::ectPaint:{
 		deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
 		
-		if(! IS_OOP(shapeType)){
+		if(!IS_OOP(shapeType)){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -679,7 +678,7 @@ void stClassCanvas::ccAddCanvas(OOP self, OOP canvas){
 		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		
 		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas(canvas);
-		if(! canvas){
+		if(!canvas){
 			DETHROW(deeNullPointer);
 		}
 		
@@ -699,7 +698,7 @@ void stClassCanvas::ccRemoveCanvas(OOP self, OOP canvas){
 		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		
 		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas(canvas);
-		if(! canvas){
+		if(!canvas){
 			DETHROW(deeNullPointer);
 		}
 		

@@ -76,7 +76,7 @@ public:
 	virtual deBaseAIHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain);
 	
 	/** \brief Retrieves the developer mode. */
-	inline dedaiDeveloperMode &GetDeveloperMode() const{return *pDeveloperMode;}
+	inline dedaiDeveloperMode &GetDeveloperMode() const{ return *pDeveloperMode; }
 	/*@}*/
 	
 	/** \name Debugging */

@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the command string. */
-	inline const decString &GetCommand() const{return pCommand;}
+	inline const decString &GetCommand() const{ return pCommand; }
 	/** \brief Sets the command string. */
 	void SetCommand(const char *command);
 	

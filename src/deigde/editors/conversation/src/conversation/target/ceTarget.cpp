@@ -74,11 +74,11 @@ void ceTarget::SetConversation(ceConversation *conversation){
 }
 
 void ceTarget::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		if(pConversation && pConversation->GetTargetList().HasNamed(name)){
 			DETHROW(deeInvalidParam);
 		}
@@ -92,11 +92,11 @@ void ceTarget::SetName(const char *name){
 }
 
 void ceTarget::SetActor(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pActor.Equals(id)){
+	if(!pActor.Equals(id)){
 		      pActor = id;
 		
 		if(pConversation){
@@ -106,11 +106,11 @@ void ceTarget::SetActor(const char *id){
 }
 
 void ceTarget::SetCoordSystem(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pCoordSystem.Equals(id)){
+	if(!pCoordSystem.Equals(id)){
 		      pCoordSystem = id;
 		
 		if(pConversation){
@@ -120,11 +120,11 @@ void ceTarget::SetCoordSystem(const char *id){
 }
 
 void ceTarget::SetBone(const char *bone){
-	if(! bone){
+	if(!bone){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pBone.Equals(bone)){
+	if(!pBone.Equals(bone)){
 		pBone = bone;
 		
 		if(pConversation){
@@ -134,7 +134,7 @@ void ceTarget::SetBone(const char *bone){
 }
 
 void ceTarget::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pConversation){
@@ -144,7 +144,7 @@ void ceTarget::SetPosition(const decVector &position){
 }
 
 void ceTarget::SetOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		if(pConversation){
@@ -164,17 +164,17 @@ void ceTarget::GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSy
 	const ceConversationActor *actor = NULL;
 	
 	// coordinate system
-	if(! pCoordSystem.IsEmpty()){
+	if(!pCoordSystem.IsEmpty()){
 		const ceCoordSystem * const coordSystem = playback.GetConversation().GetCoordSystemList().GetWithIDOrAliasID(pCoordSystem);
 		if(coordSystem){
 			coordinateSystem *= decMatrix::CreateRT(coordSystem->GetOrientation() * DEG2RAD, coordSystem->GetPosition());
 		}
 		
 	// actor
-	}else if(! pActor.IsEmpty()){
+	}else if(!pActor.IsEmpty()){
 		actor = actorList.GetWithIDOrAliasID(pActor);
 		if(actor){
-			if(! pBone.IsEmpty()){
+			if(!pBone.IsEmpty()){
 				coordinateSystem *= actor->GetBoneMatrix(pBone);
 			}
 			coordinateSystem *= decMatrix::CreateRT(actor->GetOrientation() * DEG2RAD, actor->GetPosition());

@@ -59,7 +59,7 @@ seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
 ///////////////
 
 bool seTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetSky()){
+	if(!pWindowMain.GetSky()){
 		return false;
 	}
 	

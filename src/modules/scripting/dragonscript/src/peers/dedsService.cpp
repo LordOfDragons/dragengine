@@ -50,7 +50,7 @@ pValOwner(NULL),
 pValCB(NULL),
 pHasCB(false)
 {
-	if(! service){
+	if(!service){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -101,7 +101,7 @@ dsRealObject *dedsService::GetOwner() const{
 }
 
 void dedsService::SetOwner(dsRealObject *object){
-	if(! pValOwner){
+	if(!pValOwner){
 		return;
 	}
 	
@@ -122,7 +122,7 @@ dsRealObject *dedsService::GetCallback() const{
 }
 
 void dedsService::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -143,14 +143,14 @@ void dedsService::SetCallback(dsRealObject *object){
 
 void dedsService::RequestResponse(const decUniqueID &id,
 const deServiceObject::Ref &response, bool finished){
-	if(! pHasCB){
+	if(!pHasCB){
 		if(response){
 			response->FreeReference();
 		}
 		return;
 	}
 	
-	if(! response){
+	if(!response){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -171,14 +171,14 @@ const deServiceObject::Ref &response, bool finished){
 }
 
 void dedsService::RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error){
-	if(! pHasCB){
+	if(!pHasCB){
 		if(error){
 			error->FreeReference();
 		}
 		return;
 	}
 	
-	if(! error){
+	if(!error){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -198,14 +198,14 @@ void dedsService::RequestFailed(const decUniqueID &id, const deServiceObject::Re
 }
 
 void dedsService::EventReceived(const deServiceObject::Ref &event){
-	if(! pHasCB){
+	if(!pHasCB){
 		if(event){
 			event->FreeReference();
 		}
 		return;
 	}
 	
-	if(! event){
+	if(!event){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -81,13 +81,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
-	inline GLuint GetTexture() const{return pTexture;}
+	inline GLuint GetTexture() const{ return pTexture; }
 	/** Retrieves the size of the cube map. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	/** Sets the size of the cube map destroying the old cube map if present. */
 	void SetSize(int size);
 	/** Retrieves the texture format. */
-	inline const deoglCapsTextureFormat *GetFormat() const{return pFormat;}
+	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	/** Sets the texture format. */
 	void SetFormat(const deoglCapsTextureFormat *format);
 	/** Sets the texture format by number from the list of mapping texture formats to use. */
@@ -95,15 +95,15 @@ public:
 	/** Sets the texture format by number from the list of fbo texture formats to use. */
 	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	/** Determines if mip mapping has to be used on this cube map. */
-	inline bool GetMipMapped() const{return pMipMapped;}
+	inline bool GetMipMapped() const{ return pMipMapped; }
 	/** Sets if mip mapping has to be used on this cube map. */
 	void SetMipMapped(bool mipmapped);
 	/** Retrieves the mip map level count or 0 to let the hardware auto-generate them. */
-	inline int GetMipMapLevelCount() const{return pMipMapLevelCount;}
+	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	/** Sets the mip map level count or 0 to let the hardware auto-generate them. */
 	void SetMipMapLevelCount(int count);
 	/** Retrieves the real mip map level count which is either mipMapLevelCount or the real texture mip map level count. */
-	inline int GetRealMipMapLevelCount() const{return pRealMipMapLevelCount;}
+	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
 	/** Creates the cube map if not created yet. */
 	void CreateCubeMap();
@@ -132,7 +132,7 @@ public:
 	void CopyFrom(const deoglCubeMap &cubemap, bool withMipMaps, int size, int srcX, int srcY, int destX, int destY);
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{return pMemUse;}
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();

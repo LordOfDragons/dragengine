@@ -79,7 +79,7 @@ void delGameConfigXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "gameConfig"){
+	if(!root || root->GetName() != "gameConfig"){
 		DETHROW_INFO(deeInvalidParam, "missing root tag 'gameConfig'");
 	}
 	
@@ -108,7 +108,7 @@ void delGameConfigXML::pWriteConfig(decXmlWriter &writer, const delGame &game){
 		writer.WriteDataTagString("activeProfile", game.GetActiveProfile()->GetName());
 	}
 	
-	if(! game.GetRunArguments().IsEmpty()){
+	if(!game.GetRunArguments().IsEmpty()){
 		writer.WriteDataTagString("runArguments", game.GetRunArguments());
 	}
 	
@@ -117,13 +117,13 @@ void delGameConfigXML::pWriteConfig(decXmlWriter &writer, const delGame &game){
 		writer.WriteDataTagString("useCustomPatch", game.GetUseCustomPatch().ToHexString(false));
 	}
 	
-	if(! game.GetDelgaFile().IsEmpty()){
+	if(!game.GetDelgaFile().IsEmpty()){
 		writer.WriteDataTagString("delgaFile", game.GetDelgaFile());
 	}
-	if(! game.GetAliasIdentifier().IsEmpty()){
+	if(!game.GetAliasIdentifier().IsEmpty()){
 		writer.WriteDataTagString("aliasIdentifier", game.GetAliasIdentifier());
 	}
-	if(! game.GetTitle().IsEmpty()){
+	if(!game.GetTitle().IsEmpty()){
 		writer.WriteDataTagString("title", game.GetTitle().ToUTF8());
 	}
 	
@@ -186,7 +186,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -205,7 +205,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 				
 			}else{
 				game.SetActiveProfile(pLauncher.GetGameManager().GetProfiles().GetNamed (name));
-				if(! game.GetActiveProfile()){
+				if(!game.GetActiveProfile()){
 					GetLogger()->LogWarnFormat(GetLoggerSource(), "%s(%i:%i): Profile '%s' does not exist",
 						tag->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString());
 				}
@@ -219,7 +219,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 			
 		}else if(tagName == "useCustomPatch"){
 			const decString &value = GetCDataString(*tag);
-			game.SetUseCustomPatch(! value.IsEmpty() ? decUuid(value, false) : decUuid());
+			game.SetUseCustomPatch(!value.IsEmpty() ? decUuid(value, false) : decUuid());
 			
 		}else if(tagName == "delgaFile"){
 			// do not replace if present. this is fallback information

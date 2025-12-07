@@ -63,22 +63,22 @@ public:
 	void Dispose();
 	
 	/** Retrieves the parent world. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	/** Sets the parent world. */
 	void SetWorld(meWorld *world);
 	
 	/** Retrieves the host object or NULL if not attached to any object. */
-	inline meObject *GetHostObject() const{return pHostObject;}
+	inline meObject *GetHostObject() const{ return pHostObject; }
 	/** Sets the host object or NULL if not attached to any object. */
 	void SetHostObject(meObject *object);
 	/** Determines if this camera has a host object. */
 	bool HasHostObject() const;
 	
 	/** Matrix transforming from host object to camera. */
-	inline const decDMatrix &GetHostMatrix() const{return pHostMatrix;}
+	inline const decDMatrix &GetHostMatrix() const{ return pHostMatrix; }
 	
 	/** Matrix transforming from camera to host object. */
-	inline const decDMatrix &GetInvHostMatrix() const{return pInvHostMatrix;}
+	inline const decDMatrix &GetInvHostMatrix() const{ return pInvHostMatrix; }
 	
 	/** Set matrix transforming from host object to camera (and inverse). */
 	void SetHostMatrix(const decDMatrix &matrix);

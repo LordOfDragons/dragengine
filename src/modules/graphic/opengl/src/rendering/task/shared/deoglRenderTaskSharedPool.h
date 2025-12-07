@@ -119,7 +119,7 @@ public:
 	
 	
 	/** Skin textures mutex. */
-	inline deMutex &GetMutexSkinTextures(){return pMutexSkinTextures;}
+	inline deMutex &GetMutexSkinTextures(){ return pMutexSkinTextures; }
 	/*@}*/
 };
 

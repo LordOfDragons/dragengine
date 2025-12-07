@@ -45,7 +45,7 @@ gdeOCNavigationSpace *navspacer, deNavigationSpace::eSpaceTypes newValue) :
 pObjectClass(NULL),
 pNavSpace(NULL)
 {
-	if(! objectClass || ! navspacer){
+	if(!objectClass || !navspacer){
 		DETHROW(deeInvalidParam);
 	}
 	

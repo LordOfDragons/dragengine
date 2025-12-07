@@ -48,7 +48,7 @@ pEnvMapProbe(NULL),
 pOldValue(NULL),
 pNewValue(NULL)
 {
-	if(! objectClass || ! envMapProbe){
+	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

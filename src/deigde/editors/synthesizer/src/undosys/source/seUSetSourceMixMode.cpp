@@ -42,7 +42,7 @@
 seUSetSourceMixMode::seUSetSourceMixMode(seSource *source, deSynthesizerSource::eMixModes newMode) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

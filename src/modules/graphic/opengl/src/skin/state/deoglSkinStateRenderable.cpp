@@ -110,12 +110,12 @@ void deoglSkinStateRenderable::AddRenderPlans(deoglRenderPlan &plan){
 	
 	deoglRDynamicSkin * const dynamicSkin = pSkinState.GetOwnerDynamicSkin();
 	deoglRSkin * const skin = pSkinState.GetOwnerSkin();
-	if(! skin || ! dynamicSkin){
+	if(!skin || !dynamicSkin){
 		return;
 	}
 	
 	deoglRenderPlan * const renderablePlan = dynamicSkin->GetRenderableAt(pHostRenderable)->GetRenderPlan();
-	if(! renderablePlan){
+	if(!renderablePlan){
 		return;
 	}
 	

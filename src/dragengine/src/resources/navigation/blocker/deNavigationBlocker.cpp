@@ -70,7 +70,7 @@ deNavigationBlocker::~deNavigationBlocker(){
 ///////////////
 
 void deNavigationBlocker::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		if(pPeerAI){
 			pPeerAI->PositionChanged();
@@ -79,7 +79,7 @@ void deNavigationBlocker::SetPosition(const decDVector &position){
 }
 
 void deNavigationBlocker::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		if(pPeerAI){
 			pPeerAI->OrientationChanged();
@@ -88,7 +88,7 @@ void deNavigationBlocker::SetOrientation(const decQuaternion &orientation){
 }
 
 void deNavigationBlocker::SetScaling(const decVector &scaling){
-	if(! scaling.IsEqualTo(pScaling)){
+	if(!scaling.IsEqualTo(pScaling)){
 		pScaling = scaling;
 		if(pPeerAI){
 			pPeerAI->ScalingChanged();

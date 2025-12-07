@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resolution in meters used for sampling. */
-	inline float GetResolution() const{return pResolution;}
+	inline float GetResolution() const{ return pResolution; }
 	
 	/** \brief Length of sampled curve in meters. */
-	inline float GetLength() const{return pLength;}
+	inline float GetLength() const{ return pLength; }
 	
 	/** \brief Get evaluation parameter for distance. */
 	void Map(float distance, int &segment, float &blend) const;

@@ -121,7 +121,7 @@ deoglRenderVR::~deoglRenderVR(){
 //////////////
 
 void deoglRenderVR::RenderHiddenArea(deoglRenderPlan &plan, bool clearMask){
-	if(! plan.GetCamera() || ! plan.GetCamera()->GetVR()){
+	if(!plan.GetCamera() || !plan.GetCamera()->GetVR()){
 		return;
 	}
 	
@@ -148,7 +148,7 @@ void deoglRenderVR::RenderHiddenArea(deoglRenderPlan &plan, bool clearMask){
 		return;
 	}
 	
-	if(! model && ! modelLeft && ! modelRight){
+	if(!model && !modelLeft && !modelRight){
 		return;
 	}
 	

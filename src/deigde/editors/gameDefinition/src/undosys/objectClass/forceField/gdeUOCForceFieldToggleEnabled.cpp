@@ -45,7 +45,7 @@ gdeUOCForceFieldToggleEnabled::gdeUOCForceFieldToggleEnabled(
 pObjectClass(NULL),
 pForceField(NULL)
 {
-	if(! objectClass || ! forceField){
+	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
 ///////////////
 
 void gdeUOCForceFieldToggleEnabled::Undo(){
-	pForceField->SetEnabled(! pForceField->GetEnabled());
+	pForceField->SetEnabled(!pForceField->GetEnabled());
 	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 

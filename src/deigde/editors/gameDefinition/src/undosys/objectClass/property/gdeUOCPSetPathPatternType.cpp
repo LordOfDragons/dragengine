@@ -44,7 +44,7 @@ gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

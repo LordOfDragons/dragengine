@@ -55,7 +55,7 @@
 ////////////////////////////
 
 lpeLoadSaveLangPack::lpeLoadSaveLangPack(deBaseLanguagePackModule *module){
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ lpeLoadSaveLangPack::~lpeLoadSaveLangPack(){
 ///////////////
 
 void lpeLoadSaveLangPack::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ void lpeLoadSaveLangPack::SetName(const char *name){
 }
 
 void lpeLoadSaveLangPack::SetPattern(const char *pattern){
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -113,7 +113,7 @@ public:
 };
 
 void lpeLoadSaveLangPack::LoadLangPack(lpeLangPack *langpack, decBaseFileReader *file){
-	if(! langpack || ! file){
+	if(!langpack || !file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -161,7 +161,7 @@ void lpeLoadSaveLangPack::LoadLangPack(lpeLangPack *langpack, decBaseFileReader 
 }
 
 void lpeLoadSaveLangPack::SaveLangPack(lpeLangPack *langpack, decBaseFileWriter *file){
-	if(! langpack || ! file){
+	if(!langpack || !file){
 		DETHROW(deeInvalidParam);
 	}
 	

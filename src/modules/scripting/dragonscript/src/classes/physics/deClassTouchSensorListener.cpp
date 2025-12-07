@@ -68,7 +68,7 @@ void deClassTouchSensorListener::nfColliderLeft::RunFunction(dsRunTime *RT, dsVa
 // constructor
 deClassTouchSensorListener::deClassTouchSensorListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("TouchSensorListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;

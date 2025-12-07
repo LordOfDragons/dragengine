@@ -75,7 +75,7 @@ void dealGameXML::ReadFromFile(decBaseFileReader &reader, dealGame &game){
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "degame") != 0) DETHROW(deeInvalidParam);
+	if(!root || strcmp(root->GetName(), "degame") != 0) DETHROW(deeInvalidParam);
 	
 	pReadGame(*root, game);
 }
@@ -92,7 +92,7 @@ void dealGameXML::pReadGame(const decXmlElementTag &root, dealGame &game){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

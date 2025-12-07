@@ -49,7 +49,7 @@ pBufferMessage(nullptr),
 pBufferMessageLen(0)
 {
 	(void)pEngineInstance;
-	if(! logger){
+	if(!logger){
 		DETHROW_INFO(deeNullPointer, "logger");
 	}
 }
@@ -119,7 +119,7 @@ void delEngineInstanceReadLog::PrepareBufferSource(int requiredLength){
 	}
 	
 	pBufferSource = (char*)realloc(pBufferSource, requiredLength + 1);
-	if(! pBufferSource){
+	if(!pBufferSource){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -132,7 +132,7 @@ void delEngineInstanceReadLog::PrepareBufferMessage(int requiredLength){
 	}
 	
 	pBufferMessage = (char*)realloc(pBufferMessage, requiredLength + 1);
-	if(! pBufferMessage){
+	if(!pBufferMessage){
 		DETHROW(deeOutOfMemory);
 	}
 	

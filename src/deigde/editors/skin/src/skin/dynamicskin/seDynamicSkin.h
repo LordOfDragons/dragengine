@@ -58,10 +58,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent skin. */
-	inline seSkin *GetParentSkin() const{return pParentSkin;}
+	inline seSkin *GetParentSkin() const{ return pParentSkin; }
 	
 	/** Retrieves the engine dynamic skin. */
-	inline deDynamicSkin *GetEngineDynamicSkin() const{return pEngDynamicSkin;}
+	inline deDynamicSkin *GetEngineDynamicSkin() const{ return pEngDynamicSkin; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -74,7 +74,7 @@ public:
 	/** @name Renderables */
 	/*@{*/
 	/** Retrieves the renderable list read-only. */
-	inline const seDynamicSkinRenderableList &GetRenderableList() const{return pRenderableList;}
+	inline const seDynamicSkinRenderableList &GetRenderableList() const{ return pRenderableList; }
 	/** Adds a new renderable. */
 	void AddRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes a renderable. */
@@ -82,7 +82,7 @@ public:
 	/** Removes all renderables. */
 	void RemoveAllRenderables();
 	/** Retrieves the active renderable or NULL if none is active. */
-	inline seDynamicSkinRenderable *GetActiveRenderable() const{return pActiveRenderable;}
+	inline seDynamicSkinRenderable *GetActiveRenderable() const{ return pActiveRenderable; }
 	/** Determines if there is an active renderable or not. */
 	bool HasActiveRenderable() const;
 	/** Sets the active renderable or NULL if none is active. */

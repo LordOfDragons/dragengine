@@ -58,7 +58,7 @@ pColor(1.0f, 1.0f, 1.0f),
 pSelected(false),
 pActive(false)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -134,12 +134,12 @@ void seBody::UpdateRelativeResources(){
 
 
 void seBody::NotifyBodyChanged(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	
 	seSky * const sky = pLayer->GetSky();
-	if(! sky){
+	if(!sky){
 		return;
 	}
 	

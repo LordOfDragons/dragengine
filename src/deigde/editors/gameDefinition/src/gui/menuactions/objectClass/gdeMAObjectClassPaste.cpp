@@ -63,7 +63,7 @@ gdeBaseAction(windowMain, "Paste Object Class",
 igdeUndo *gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataObjectClass::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	
@@ -75,7 +75,7 @@ igdeUndo *gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition){
 	
 	if(list.HasNamed(name)){
 		while(true){
-			if(! igdeCommonDialogs::GetString(&pWindowMain, "Paste Object Class", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(&pWindowMain, "Paste Object Class", "Name:", name)){
 				return NULL;
 			}
 			
@@ -99,7 +99,7 @@ igdeUndo *gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition){
 
 void gdeMAObjectClassPaste::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

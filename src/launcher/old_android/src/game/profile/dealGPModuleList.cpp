@@ -60,7 +60,7 @@ dealGPModule *dealGPModuleList::GetModuleAt(int index) const{
 }
 
 dealGPModule *dealGPModuleList::GetModuleNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ int dealGPModuleList::IndexOfModule(dealGPModule *module) const{
 }
 
 int dealGPModuleList::IndexOfModuleNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ int dealGPModuleList::IndexOfModuleNamed(const char *name) const{
 }
 
 void dealGPModuleList::AddModule(dealGPModule *module){
-	if(! module || HasModuleNamed(module->GetName().GetString())){
+	if(!module || HasModuleNamed(module->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	pModules.Add(module);

@@ -71,7 +71,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		lpeLangPack * const langpack = pPanel.GetLangPack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		
@@ -93,7 +93,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		lpeLangPack * const langpack = pPanel.GetLangPack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		

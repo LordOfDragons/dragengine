@@ -44,7 +44,7 @@
 
 ceUCAIfElseCaseSetCondition::ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
 ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
-	if(! topic || ! ifElse || ! ifcase){
+	if(!topic || !ifElse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	

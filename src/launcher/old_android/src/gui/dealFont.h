@@ -83,16 +83,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{return pDisplay;}
+	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	/** \brief Image. */
-	inline dealImage *GetImage() const{return pImage;}
+	inline dealImage *GetImage() const{ return pImage; }
 	
 	/** \brief Line height. */
-	inline int GetLineHeight() const{return pLineHeight;}
+	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{return pGlyphCount;}
+	inline int GetGlyphCount() const{ return pGlyphCount; }
 	
 	/** \brief Glyph for code. */
 	const sGlyph &GetGlyphFor(int code) const;

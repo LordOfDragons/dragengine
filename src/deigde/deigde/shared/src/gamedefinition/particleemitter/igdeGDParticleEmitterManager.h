@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter list. */
-	inline const igdeGDParticleEmitterList &GetEmitterList() const{return pEmitterList;}
+	inline const igdeGDParticleEmitterList &GetEmitterList() const{ return pEmitterList; }
 	
 	/** \brief Add emitter. */
 	void AddEmitter(igdeGDParticleEmitter *emitter);
@@ -72,10 +72,10 @@ public:
 	void RemoveAllEmitters();
 	
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{return pCategories;}
+	inline igdeGDCategory *GetCategories() const{ return pCategories; }
 	
 	/** \brief Path of default emitter. */
-	inline const decString &GetDefaultPath() const{return pDefaultPath;}
+	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
 	
 	/** \brief Set path of default emitter. */
 	void SetDefaultPath(const char *path);

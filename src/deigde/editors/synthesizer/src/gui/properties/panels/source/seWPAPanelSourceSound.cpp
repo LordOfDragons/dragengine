@@ -68,7 +68,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -90,7 +90,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
 		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
-		if(! source || source->GetPathSound() == editPath->GetPath()){
+		if(!source || source->GetPathSound() == editPath->GetPath()){
 			return;
 		}
 		
@@ -130,7 +130,7 @@ public:
 	
 	virtual void OnAction(){
 		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -245,7 +245,7 @@ void seWPAPanelSourceSound::UpdateSoundInfo(){
 			sound.GetSampleCount(), (float)sound.GetSampleCount() / (float)sound.GetSampleRate());
 		
 		if(GetSynthesizer()->GetChannelCount() < sound.GetChannelCount()){
-			if(! description.IsEmpty()){
+			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
 			description += "Sound has more channels than synthesizer!";
@@ -253,7 +253,7 @@ void seWPAPanelSourceSound::UpdateSoundInfo(){
 		}
 		
 		if(GetSynthesizer()->GetSampleRate() != sound.GetSampleRate()){
-			if(! description.IsEmpty()){
+			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
 			description += "Sound sample rate differs synthesizer!";

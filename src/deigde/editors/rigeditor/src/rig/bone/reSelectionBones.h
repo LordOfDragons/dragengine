@@ -57,10 +57,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent rig. */
-	inline reRig *GetParentRig() const{return pRig;}
+	inline reRig *GetParentRig() const{ return pRig; }
 	
 	/** Retrieves the number of selected bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	/** Retrieves the bone at the given index. */
 	reRigBone *GetBoneAt(int index) const;
 	/** Determines if the given bone exists. */
@@ -77,7 +77,7 @@ public:
 	void RemoveAllBones();
 	
 	/** Retrieves the active bone or NULL. */
-	inline reRigBone *GetActiveBone() const{return pActiveBone;}
+	inline reRigBone *GetActiveBone() const{ return pActiveBone; }
 	/** Determines if an active bone exists. */
 	bool HasActiveBone() const;
 	/** Sets the acitve bone or NULL. */

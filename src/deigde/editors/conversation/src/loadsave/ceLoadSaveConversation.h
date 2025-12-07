@@ -103,9 +103,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Loads the conversation from file. */
 	void LoadConversation(ceConversation &conversation, decBaseFileReader &reader, const char *filename);

@@ -121,7 +121,7 @@ PyObject *spTypeModuleLoader::cfFindModule(PyObject *myself, PyObject *args){
 	decPath vfsPath;
 	bool found;
 	
-	if(! PyArg_ParseTuple(args, "sz", &fullname, &path)){
+	if(!PyArg_ParseTuple(args, "sz", &fullname, &path)){
 		return NULL;
 	}
 	
@@ -137,7 +137,7 @@ PyObject *spTypeModuleLoader::cfFindModule(PyObject *myself, PyObject *args){
 	found = vfsGame.ExistsFile(vfsPath);
 	
 	// if not found try to find the path in the shared scripts
-	if(! found){
+	if(!found){
 		vfsPath.SetFromUnix("/share/scripts");
 		vfsPath.Add(lookupPath);
 		sp.LogInfoFormat("Looking up '%s' in engine scripts", vfsPath.GetPathUnix().GetString());
@@ -163,7 +163,7 @@ PyObject *spTypeModuleLoader::cfLoadModule(PyObject *myself, PyObject *args){
 	const char *fullname = NULL;
 	decPath lookupPath;
 	
-	if(! PyArg_ParseTuple(args, "s", &fullname)){
+	if(!PyArg_ParseTuple(args, "s", &fullname)){
 		return NULL;
 	}
 	

@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{return pLangPack;}
+	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** \brief Set language pack or NULL. */
 	void SetLangPack(lpeLangPack *langpack);

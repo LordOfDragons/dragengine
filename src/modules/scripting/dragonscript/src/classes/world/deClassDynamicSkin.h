@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
@@ -66,7 +66,7 @@ public:
 	/** Pushes a dynamic skin. */
 	void PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin);
 	
-	inline dsClass *GetClassDynamicSkinRenderableType() const{return pClsDynamicSkinRenderableType;}
+	inline dsClass *GetClassDynamicSkinRenderableType() const{ return pClsDynamicSkinRenderableType; }
 	/*@}*/
 	
 private:

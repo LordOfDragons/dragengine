@@ -71,7 +71,7 @@ bool igdeGDCSpeakerList::Has(igdeGDCSpeaker *speaker) const{
 }
 
 void igdeGDCSpeakerList::Add(igdeGDCSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCSpeakerList::Add(igdeGDCSpeaker *speaker){
 }
 
 void igdeGDCSpeakerList::InsertAt(igdeGDCSpeaker *speaker, int index){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

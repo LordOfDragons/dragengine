@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to sound file. */
-	inline const decString &GetPathSound() const{return pPathSound;}
+	inline const decString &GetPathSound() const{ return pPathSound; }
 	
 	/** \brief Set path to sound file. */
 	void SetPathSound(const char *path);
@@ -80,7 +80,7 @@ public:
 	void UpdateSound();
 	
 	/** \brief Sound or \em null if silent. */
-	inline deSound *GetSound() const{return pSound;}
+	inline deSound *GetSound() const{ return pSound; }
 	
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	inline float GetMinSpeed() const{return pMinSpeed;}
+	inline float GetMinSpeed() const{ return pMinSpeed; }
 	
 	/**
 	 * \brief Set minimum play speed.
@@ -103,7 +103,7 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	inline float GetMaxSpeed() const{return pMaxSpeed;}
+	inline float GetMaxSpeed() const{ return pMaxSpeed; }
 	
 	/**
 	 * \brief Set maximum play speed.
@@ -113,7 +113,7 @@ public:
 	void SetMaxSpeed(float speed);
 	
 	/** \brief Sound is played back looping. */
-	inline bool GetLooping() const{return pLooping;}
+	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if sound is played back looping. */
 	void SetLooping(bool looping);
@@ -121,8 +121,8 @@ public:
 	
 	
 	/** \brief Speed target. */
-	inline seControllerTarget &GetTargetSpeed(){return pTargetSpeed;}
-	inline const seControllerTarget &GetTargetSpeed() const{return pTargetSpeed;}
+	inline seControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
+	inline const seControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/**
 	 * \brief Play target.
@@ -131,8 +131,8 @@ public:
 	 *          playback freezing playback position. A value of 0 stops playback and rewinds playback
 	 *          position to the beginning.
 	 */
-	inline seControllerTarget &GetTargetPlay(){return pTargetPlay;}
-	inline const seControllerTarget &GetTargetPlay() const{return pTargetPlay;}
+	inline seControllerTarget &GetTargetPlay(){ return pTargetPlay; }
+	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
 	virtual deSynthesizerSource *CreateEngineSource();

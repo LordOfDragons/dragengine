@@ -65,8 +65,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of decals to manipulate. */
-	inline decObjectList &GetList(){return pList;}
-	inline const decObjectList &GetList() const{return pList;}
+	inline decObjectList &GetList(){ return pList; }
+	inline const decObjectList &GetList() const{ return pList; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

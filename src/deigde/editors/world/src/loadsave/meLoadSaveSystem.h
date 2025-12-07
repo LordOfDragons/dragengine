@@ -68,10 +68,10 @@ public:
 	~meLoadSaveSystem();
 	
 	/** Retrieves the main window. */
-	inline meWindowMain *GetWindowMain() const{return pWndMain;}
+	inline meWindowMain *GetWindowMain() const{ return pWndMain; }
 	
 	// world management
-	inline int GetLSWorldCount() const{return pLSWorldCount;}
+	inline int GetLSWorldCount() const{ return pLSWorldCount; }
 	meLSWorld *GetLSWorldAt(int index) const;
 	meLSWorld *FindLSWorldMatching(const char *filename) const;
 	void AddLSWorld(meLSWorld *world);
@@ -81,7 +81,7 @@ public:
 	
 	// height terrain sectors
 	/** Retrieves the number of height terrain loaders. */
-	inline int GetLSHeightTerrainCount() const{return pLSHTCount;}
+	inline int GetLSHeightTerrainCount() const{ return pLSHTCount; }
 	/** Retrieves the height terrain loader at the given index. */
 	meLSHeightTerrain *GetLSHeightTerrainAt(int index) const;
 	/** Retrieves the matching height terrain loader. */
@@ -94,26 +94,26 @@ public:
 	void SaveHeightTerrain(meHeightTerrain &heightTerrain, const char *filename);
 	
 	/** Retrieves the prop field cache loader. */
-	inline meLSPFCache *GetLSPFCache() const{return pLSPFCache;}
+	inline meLSPFCache *GetLSPFCache() const{ return pLSPFCache; }
 	/** Loads a prop field cache using the matching loader. */
 	void LoadPFCache(meHeightTerrainSector &sector, const char *filename);
 	/** Saves a prop field cache using the matching loader. */
 	void SavePFCache(meHeightTerrainSector &sector, const char *filename);
 	
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList &GetFilePatternList() const{return pFilePatternList;}
+	inline const igdeFilePatternList &GetFilePatternList() const{ return pFilePatternList; }
 	
 	/** Retrieves the prop field cache file patterns. */
-	inline const igdeFilePatternList &GetPropFieldCacheFilePatterns() const{return pPropFieldCacheFilePatterns;}
+	inline const igdeFilePatternList &GetPropFieldCacheFilePatterns() const{ return pPropFieldCacheFilePatterns; }
 	
 	/** \brief Retrieves the load save navigation test. */
-	inline meLoadSaveNavTest *GetLSNavTest(){return pLSNavTest;}
+	inline meLoadSaveNavTest *GetLSNavTest(){ return pLSNavTest; }
 	/** \brief Loads the navigation test from file. */
 	void LoadNavTest(const char *filename, meWorld &world);
 	/** \brief Saves the navigation test to file. */
 	void SaveNavTest(const char *filename, meWorld &world);
 	/** \brief Retrieves the navigation test file pattern list. */
-	inline const igdeFilePatternList *GetNavTestFilePatterns() const{return &pFPNavTest;}
+	inline const igdeFilePatternList *GetNavTestFilePatterns() const{ return &pFPNavTest; }
 	
 private:
 	void pCleanUp();

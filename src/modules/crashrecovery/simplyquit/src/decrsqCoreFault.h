@@ -82,7 +82,7 @@ public:
 	static decrsqCoreFault *GetGlobalCoreFault();
 	
 	/** \brief Module. */
-	inline deCRSimplyQuit &GetModule() const{return pModule;}
+	inline deCRSimplyQuit &GetModule() const{ return pModule; }
 	
 	/** \brief Handle segmentation fault. */
 	void HandleSegFault(int error, void *memoryLocation, void *ptrContext);

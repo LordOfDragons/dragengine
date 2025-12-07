@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Links. */
-	const seLinkList &GetLinks() const{return pLinks;}
+	const seLinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);

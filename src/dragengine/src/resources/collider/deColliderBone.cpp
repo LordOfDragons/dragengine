@@ -46,7 +46,7 @@ pIndex(index),
 pMass(1.0f),
 pDynamic(false)
 {
-	if(! collider || index < 0){
+	if(!collider || index < 0){
 		DETHROW(deeInvalidParam);
 	}
 }

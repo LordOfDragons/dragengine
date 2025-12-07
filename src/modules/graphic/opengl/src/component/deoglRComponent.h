@@ -216,12 +216,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Parent world or NULL if not part of a world. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
 	void SetParentWorld(deoglRWorld *parentWorld);
@@ -230,7 +230,7 @@ public:
 	void HasEnteredWorld();
 	
 	/** Octree node or NULL if not inserted into the parent world octree. */
-	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
+	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
 	 * Set octree node or NULL if not inserted into the parent world octree.
@@ -247,22 +247,22 @@ public:
 	
 	
 	/** Component is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set component is visible. */
 	void SetVisible(bool visible);
 	
 	/** Movement hint. */
-	inline deComponent::eMovementHints GetMovementHint() const{return pMovementHint;}
+	inline deComponent::eMovementHints GetMovementHint() const{ return pMovementHint; }
 	
 	/** Set movement hint. */
 	void SetMovementHint(deComponent::eMovementHints hint);
 	
-	inline int GetGIImportance() const{return pGIImportance;}
+	inline int GetGIImportance() const{ return pGIImportance; }
 	void SetGIImportance(int importance);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
@@ -280,10 +280,10 @@ public:
 	
 	
 	/** Transformation matrix. */
-	inline const decDMatrix &GetMatrix() const{return pMatrix;}
+	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Inverse transformation matrix. */
-	inline const decDMatrix &GetInverseMatrix() const{return pInverseMatrix;}
+	inline const decDMatrix &GetInverseMatrix() const{ return pInverseMatrix; }
 	
 	/** Set matrices. */
 	void SetMatrix(const decDMatrix &matrix);
@@ -291,10 +291,10 @@ public:
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/**
 	 * Update extends of dirty.
@@ -305,13 +305,13 @@ public:
 	
 	
 	/** Marked flag. */
-	inline bool GetMarked() const{return pMarked;}
+	inline bool GetMarked() const{ return pMarked; }
 	
 	/** Set marked flag. */
 	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	/** Sort distance. */
-	inline float GetSortDistance() const{return pSortDistance;}
+	inline float GetSortDistance() const{ return pSortDistance; }
 	
 	/** Set sort distance. */
 	void SetSortDistance(float distance);
@@ -319,13 +319,13 @@ public:
 	
 	
 	/** Model. */
-	inline const deoglRModel::Ref &GetModel() const{return pModel;}
+	inline const deoglRModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Set model or NULL if not set. */
 	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
@@ -334,7 +334,7 @@ public:
 	void RigChanged();
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/**
 	 * Set dynamic skin or NULL if not set.
@@ -343,19 +343,19 @@ public:
 	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin);
 	
 	/** Occlusion mesh or NULL if not set. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{return pOcclusionMesh;}
+	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL if not set. */
 	void SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh);
 	
 	/** Dynamic occlusion mesh or NULL if not set. */
-	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{return pDynamicOcclusionMesh;}
+	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
 	
 	/** Dynamic occlusion mesh requires prepare for render. */
 	void DynOccMeshRequiresPrepareForRender();
 	
 	/** Occlusion mesh shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{return pOccMeshSharedSPBElement;}
+	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup(bool doubleSided) const;
@@ -369,14 +369,14 @@ public:
 	
 	
 	/** Model skin to mappings. */
-	inline const decIntList &GetModelSkinMappings() const{return pModelSkinMappings;}
+	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{return pSkinState;}
+	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/** Skin rendered. */
-	inline deoglSkinRendered &GetSkinRendered(){return pSkinRendered;}
-	inline const deoglSkinRendered &GetSkinRendered() const{return pSkinRendered;}
+	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
+	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
 	void InitSkinStateStates(const deComponent &component);
 	void UpdateSkinStateBones(const deComponent &component);
@@ -395,10 +395,10 @@ public:
 	
 	
 	/** Bone matrices. */
-	inline oglMatrix3x4 *GetBoneMatrices() const{return pBoneMatrices;}
+	inline oglMatrix3x4 *GetBoneMatrices() const{ return pBoneMatrices; }
 	
 	/** Number of bone matrices. */
-	inline int GetBoneMatrixCount() const{return pBoneMatrixCount;}
+	inline int GetBoneMatrixCount() const{ return pBoneMatrixCount; }
 	
 	/** Update the bone matrices if required. */
 	void UpdateBoneMatrices(const deComponent &component);
@@ -406,10 +406,10 @@ public:
 	
 	
 	/** Vertex position sets. */
-	inline float *GetVertexPositionSets() const{return pVertexPositionSetWeights;}
+	inline float *GetVertexPositionSets() const{ return pVertexPositionSetWeights; }
 	
 	/** Vertex position set count. */
-	inline int GetVertexPositionSetCount() const{return pVertexPositionSetCount;}
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
 	
 	/** Update vertex position sets. */
 	void UpdateVertexPositionSets(const deComponent &component);
@@ -436,13 +436,13 @@ public:
 	
 	
 	/** Lit. */
-	inline bool GetLit() const{return pLit;}
+	inline bool GetLit() const{ return pLit; }
 	
 	/** Set lit. */
 	void SetLit(bool lit);
 	
 	/** Occluded. */
-	inline bool GetOccluded() const{return pOccluded;}
+	inline bool GetOccluded() const{ return pOccluded; }
 	
 	/** Set occluded. */
 	void SetOccluded(bool occluded);
@@ -451,25 +451,25 @@ public:
 	
 	
 	/** Render mode. */
-	inline eRenderModes GetRenderMode() const{return pRenderMode;}
+	inline eRenderModes GetRenderMode() const{ return pRenderMode; }
 	
 	/** Set render mode. */
 	void SetRenderMode(eRenderModes renderMode);
 	
 	/** Component has no transparent faces. */
-	inline bool GetSolid() const{return pSolid;}
+	inline bool GetSolid() const{ return pSolid; }
 	
 	/** Component has no transparent XRay faces. */
-	inline bool GetXRaySolid() const{return pXRaySolid;}
+	inline bool GetXRaySolid() const{ return pXRaySolid; }
 	
 	/** Component has no transparent outline. */
-	inline bool GetOutlineSolid() const{return pOutlineSolid;}
+	inline bool GetOutlineSolid() const{ return pOutlineSolid; }
 	
 	/** Mark solid flags dirty. */
 	void DirtySolid();
 	
 	/** Component is render static right now. */
-	inline bool GetRenderStatic() const{return pRenderStatic;}
+	inline bool GetRenderStatic() const{ return pRenderStatic; }
 	
 	/** Set render static. */
 	void SetRenderStatic(bool isStatic);
@@ -481,40 +481,40 @@ public:
 	bool IsGIStatic() const;
 	
 	/** Light list. */
-	inline deoglLightList &GetLightList(){return pLightList;}
-	inline const deoglLightList &GetLightList() const{return pLightList;}
+	inline deoglLightList &GetLightList(){ return pLightList; }
+	inline const deoglLightList &GetLightList() const{ return pLightList; }
 	
 	
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	/** Compute shader octree index. */
-	inline uint32_t GetCSOctreeIndex() const{return pCSOctreeIndex;}
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
 	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	
 	
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{return pRenderEnvMap;}
+	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{return pRenderEnvMapFade;}
+	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);
 	
 	/** Render environment map fade per time. */
-	inline float GetRenderEnvMapFadePerTime() const{return pRenderEnvMapFadePerTime;}
+	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
 	
 	/** Set render environment map fade per time. */
 	void SetRenderEnvMapFadePerTime(float fadePerTime);
 	
 	/** Render environment map fade factor. */
-	inline float GetRenderEnvMapFadeFactor() const{return pRenderEnvMapFadeFactor;}
+	inline float GetRenderEnvMapFadeFactor() const{ return pRenderEnvMapFadeFactor; }
 	
 	/** Set render environment map fade factor. */
 	void SetRenderEnvMapFadeFactor(float factor);
@@ -560,7 +560,7 @@ public:
 	void AddLOD(deoglRComponentLOD *lod);
 	
 	/** LOD error scaling factor. */
-	inline float GetLODErrorScaling() const{return pLODErrorScaling;}
+	inline float GetLODErrorScaling() const{ return pLODErrorScaling; }
 	
 	/** Set LOD error scaling factor. */
 	void SetLODErrorScaling(float errorScaling);
@@ -616,10 +616,10 @@ public:
 	void DirtyTextureParamBlocks();
 	
 	/** Count of textures with outline properties. */
-	inline int GetOutlineTextureCount() const{return pOutlineTextureCount;}
+	inline int GetOutlineTextureCount() const{ return pOutlineTextureCount; }
 	
 	/** Textures are static. */
-	inline bool GetStaticTextures() const{return pStaticTextures;}
+	inline bool GetStaticTextures() const{ return pStaticTextures; }
 	/*@}*/
 	
 	
@@ -724,7 +724,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.
@@ -735,20 +735,20 @@ public:
 	
 	
 	/** Linked list world previous. */
-	inline deoglRComponent *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deoglRComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** Set linked list world previous. */
 	void SetLLWorldPrev(deoglRComponent *component);
 	
 	/** Linked list world next. */
-	inline deoglRComponent *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deoglRComponent *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** Set linked list world next. */
 	void SetLLWorldNext(deoglRComponent *component);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){return pLLPrepareForRenderWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{return pLLPrepareForRenderWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

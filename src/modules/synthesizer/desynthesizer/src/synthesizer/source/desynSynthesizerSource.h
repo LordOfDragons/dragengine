@@ -99,18 +99,18 @@ public:
 	deDESynthesizer &GetModule() const;
 	
 	/** \brief Parent synthesizer. */
-	inline const desynSynthesizer &GetSynthesizer() const{return pSynthesizer;}
+	inline const desynSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
 	
 	
 	
 	/** \brief Source is silent. */
-	inline bool GetSilent() const{return pSilent;}
+	inline bool GetSilent() const{ return pSilent; }
 	
 	/** \brief Set if source is silent. */
 	void SetSilent(bool silent);
 	
 	/** \brief Offset in bytes to state data in synthesizer instances. */
-	inline int GetStateDataOffset() const{return pStateDataOffset;}
+	inline int GetStateDataOffset() const{ return pStateDataOffset; }
 	
 	/** \brief Set offset in bytes to state data in synthesizer instances. */
 	void SetStateDataOffset(int offset);
@@ -118,21 +118,21 @@ public:
 	
 	
 	/** \brief Mix mode. */
-	inline deSynthesizerSource::eMixModes GetMixMode() const{return pMixMode;}
+	inline deSynthesizerSource::eMixModes GetMixMode() const{ return pMixMode; }
 	
 	
 	
 	/** \brief Blend factor target. */
-	inline desynSynthesizerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
-	inline const desynSynthesizerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
+	inline desynSynthesizerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const desynSynthesizerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** \brief Volume target. */
-	inline desynSynthesizerTarget &GetTargetVolume(){return pTargetVolume;}
-	inline const desynSynthesizerTarget &GetTargetVolume() const{return pTargetVolume;}
+	inline desynSynthesizerTarget &GetTargetVolume(){ return pTargetVolume; }
+	inline const desynSynthesizerTarget &GetTargetVolume() const{ return pTargetVolume; }
 	
 	/** \brief Panning target. */
-	inline desynSynthesizerTarget &GetTargetPanning(){return pTargetPanning;}
-	inline const desynSynthesizerTarget &GetTargetPanning() const{return pTargetPanning;}
+	inline desynSynthesizerTarget &GetTargetPanning(){ return pTargetPanning; }
+	inline const desynSynthesizerTarget &GetTargetPanning() const{ return pTargetPanning; }
 	
 	
 	

@@ -70,7 +70,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetEngineController().GetRunning());
+		SetEnabled(!pPanel.GetEngineController().GetRunning());
 	}
 };
 
@@ -223,7 +223,7 @@ void igdeDEStatus::StartEngine(){
 }
 
 void igdeDEStatus::StopEngine(){
-	if(! GetEngineController().GetRunning()){
+	if(!GetEngineController().GetRunning()){
 		return;
 	}
 	

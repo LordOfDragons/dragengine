@@ -61,13 +61,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{return pAction;}
+	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief If-else action. */
-	inline ceCConditionLogic *GetLogic() const{return pLogic;}
+	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for pasting condition. */
 	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);

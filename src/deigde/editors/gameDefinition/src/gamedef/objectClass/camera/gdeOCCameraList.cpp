@@ -72,7 +72,7 @@ bool gdeOCCameraList::Has(gdeOCCamera *camera) const{
 }
 
 void gdeOCCameraList::Add(gdeOCCamera *camera){
-	if(! camera || Has(camera)){
+	if(!camera || Has(camera)){
 		DETHROW(deeInvalidParam);
 	}
 	pCameras.Add(camera);

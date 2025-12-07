@@ -68,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOGL() const{ return pOgl; }
 	
 	/** Render window engine resource. */
-	inline deRenderWindow &GetRenderWindow() const{return pRenderWindow;}
+	inline deRenderWindow &GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** Canvas view. */
-	inline deoglCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deoglCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Render render window. */
-	inline deoglRRenderWindow *GetRRenderWindow() const{return pRRenderWindow;}
+	inline deoglRRenderWindow *GetRRenderWindow() const{ return pRRenderWindow; }
 	
 	
 	

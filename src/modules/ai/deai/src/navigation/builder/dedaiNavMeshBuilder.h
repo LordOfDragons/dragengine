@@ -52,16 +52,16 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of edges. */
-	inline int GetEdgeCount() const{return pEdges.GetCount();}
+	inline int GetEdgeCount() const{ return pEdges.GetCount(); }
 	/** Retrieves an edge. */
-	inline dedaiNavMeshBuilderEdge *GetEdgeAt(int index) const{return (dedaiNavMeshBuilderEdge*)pEdges.GetAt(index);}
+	inline dedaiNavMeshBuilderEdge *GetEdgeAt(int index) const{ return (dedaiNavMeshBuilderEdge*)pEdges.GetAt(index); }
 	/** Retrieves the matching edge creating it if not existing. */
 	dedaiNavMeshBuilderEdge *GetEdgeWith(int vertex1, int vertex2);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{return pFaces.GetCount();}
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/** Retrieves an face. */
-	inline dedaiNavMeshBuilderFace *GetFaceAt(int index) const{return (dedaiNavMeshBuilderFace*)pFaces.GetAt(index);}
+	inline dedaiNavMeshBuilderFace *GetFaceAt(int index) const{ return (dedaiNavMeshBuilderFace*)pFaces.GetAt(index); }
 	/** Adds a new face. */
 	dedaiNavMeshBuilderFace *AddFace();
 	

@@ -46,7 +46,7 @@ gdeWPSTreeItemModel(tree, type),
 pObjectClass(NULL),
 pIndex(index)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

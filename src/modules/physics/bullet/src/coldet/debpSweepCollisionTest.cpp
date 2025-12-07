@@ -134,10 +134,10 @@ const btTransform &to, debpCollisionWorld::ConvexResultCallback &resultCallback)
 
 void debpSweepCollisionTest::SweepTest(debpGhostObject &ghostObject, const btTransform &from,
 const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
-	if(! ghostObject.GetGhostObject()){
+	if(!ghostObject.GetGhostObject()){
 		return;
 	}
-	if(! ghostObject.GetDynamicsWorld()){
+	if(!ghostObject.GetDynamicsWorld()){
 		DETHROW(deeInvalidParam); // tried to do collision detection on ghost object not in a world
 	}
 	
@@ -167,7 +167,7 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
 			
 			for(j=0; j<colobjCount; j++){
 				btCollisionObject * const colobj = colobjs.at(j);
-				if(! resultCallback.needsCollision(colobj->getBroadphaseHandle())){
+				if(!resultCallback.needsCollision(colobj->getBroadphaseHandle())){
 					continue;
 				}
 				
@@ -178,7 +178,7 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
 				btScalar hitLambda = (btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
 				btVector3 hitNormal;
 				
-				if(! btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
+				if(!btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
 					continue;
 				}
 				
@@ -275,7 +275,7 @@ void debpSweepCollisionTest::VisitShapeSphere(decShapeSphere &sphere){
 	cShape *shape = NULL;
 	
 	// determine if the sphere is an ellipsoid. we can't handle this for the time being
-	const bool isEllipsoid = ! axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool isEllipsoid = !axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	if(isEllipsoid){
 		return;
@@ -318,7 +318,7 @@ void debpSweepCollisionTest::VisitShapeBox(decShapeBox &box){
 	cShape *shape = NULL;
 	
 	// determine if the box is tapered
-	const bool isTapered = ! tapering.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool isTapered = !tapering.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	// determine the smallest half extends
 	smallestHalfExtends = halfExtends.x;
@@ -441,7 +441,7 @@ void debpSweepCollisionTest::VisitShapeCapsule(decShapeCapsule &capsule){
 	
 	try{
 		capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
-		if(! capsuleShape){
+		if(!capsuleShape){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -478,7 +478,7 @@ const btVector3 &castShapeAabbMin, const btVector3 &castShapeAabbMax,
 const btTransform &rfrom, const btTransform &rto, const btConvexShape &castShape,
 debpCollisionWorld::ConvexResultCallback &resultCallback){
 	btCollisionShape * const staticCollisionShape = collisionObject.getCollisionShape();
-	if(! staticCollisionShape){
+	if(!staticCollisionShape){
 		return;
 	}
 	
@@ -489,7 +489,7 @@ debpCollisionWorld::ConvexResultCallback &resultCallback){
 	
 	btScalar hitLambda = (btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
 	btVector3 hitNormal;
-	if(! btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
+	if(!btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
 		return;
 	}
 	

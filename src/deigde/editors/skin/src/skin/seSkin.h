@@ -127,63 +127,63 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{return pEngComponent;}
+	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine skin. */
-	inline deSkin *GetEngineSkin() const{return pEngSkin;}
+	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
 	/** Retrieves the particle emitter. */
-	inline deParticleEmitter *GetEngineParticleEmitter() const{return pEngParticleEmitter;}
+	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
 	
 	/** \brief Engine light or NULL. */
-	inline deLight *GetEngineLight() const{return pEngLight;}
+	inline deLight *GetEngineLight() const{ return pEngLight; }
 	
 	/** \brief Preview mode. */
-	inline ePreviewMode GetPreviewMode() const{return pPreviewMode;}
+	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
 	
 	/** \brief Set preview mode. */
 	void SetPreviewMode(ePreviewMode mode);
 	
 	/** Retrieves the model path. */
-	inline const decString &GetModelPath() const{return pModelPath;}
+	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
 	void SetModelPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{return pRigPath;}
+	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
 	void SetRigPath(const char *path);
 	/** Retrieves the animation path. */
-	inline const decString &GetAnimationPath() const{return pAnimationPath;}
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the animation path. */
 	void SetAnimationPath(const char *path);
 	/** Retrieves the name of the move to display. */
-	inline const decString &GetMoveName() const{return pMoveName;}
+	inline const decString &GetMoveName() const{ return pMoveName; }
 	/** Sets the move name to display. */
 	void SetMoveName(const char *moveName);
 	/** Retrieves the move time to display. */
-	inline float GetMoveTime() const{return pMoveTime;}
+	inline float GetMoveTime() const{ return pMoveTime; }
 	/** Sets the move time to display. */
 	void SetMoveTime(float moveTime);
 	/** Determines if the animation is played back. */
-	inline bool GetPlayback() const{return pPlayback;}
+	inline bool GetPlayback() const{ return pPlayback; }
 	/** Sets if the animation is played back. */
 	void SetPlayback(bool playback);
 	
 	/** Retrieves the dynamic skin. */
-	inline seDynamicSkin &GetDynamicSkin() const{return *pDynamicSkin;}
+	inline seDynamicSkin &GetDynamicSkin() const{ return *pDynamicSkin; }
 	
 	/** \brief Enable skin updating if changed. */
-	inline bool GetEnableSkinUpdate() const{return pEnableSkinUpdate;}
+	inline bool GetEnableSkinUpdate() const{ return pEnableSkinUpdate; }
 	
 	/** \brief Set if skin updating if changed is enabled. */
 	void SetEnableSkinUpdate(bool enableSkinUpdate);
@@ -219,7 +219,7 @@ public:
 	/** \name Mapped */
 	/*@{*/
 	/** Mapped list. */
-	inline const seMappedList &GetMappedList() const{return pMappedList;}
+	inline const seMappedList &GetMappedList() const{ return pMappedList; }
 	
 	/** Add mapped. */
 	void AddMapped(seMapped *mapped);
@@ -231,7 +231,7 @@ public:
 	void RemoveAllMapped();
 	
 	/** Active mapped or nullptr. */
-	inline seMapped *GetActiveMapped() const{return pActiveMapped;}
+	inline seMapped *GetActiveMapped() const{ return pActiveMapped; }
 	
 	/** Active mapped is present. */
 	bool HasActiveMapped() const;
@@ -245,7 +245,7 @@ public:
 	/** \name Textures */
 	/*@{*/
 	/** Retrieves the texture list read-only. */
-	inline const seTextureList &GetTextureList() const{return pTextureList;}
+	inline const seTextureList &GetTextureList() const{ return pTextureList; }
 	/** Adds a new texture. */
 	void AddTexture(seTexture *texture);
 	/** Removes a texture. */
@@ -253,7 +253,7 @@ public:
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline seTexture *GetActiveTexture() const{return pActiveTexture;}
+	inline seTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** Determines if there is an active texture or not. */
 	bool HasActiveTexture() const;
 	/** Sets the active texture or NULL if none is active. */

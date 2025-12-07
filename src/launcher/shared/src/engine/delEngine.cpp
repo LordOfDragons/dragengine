@@ -221,7 +221,7 @@ void delEngine::AddModulesFrom(const char *directory, deModuleSystem::eModuleTyp
 			pattern.SetFrom(versionDir);
 			pattern.AddComponent("module.xml");
 			
-			if(! vfs.ExistsFile(pattern)
+			if(!vfs.ExistsFile(pattern)
 			|| vfs.GetFileType(pattern) != deVFSContainer::eftRegularFile){
 				continue;
 			}
@@ -263,7 +263,7 @@ delEngineModule *delEngine::GetBestModuleForType(deModuleSystem::eModuleTypes mo
 		}
 		
 		// no best module found. use this module
-		if(! bestModule){
+		if(!bestModule){
 			bestModule = module;
 			
 		// best module has been found and this module is fallback. skip module
@@ -299,22 +299,22 @@ void delEngine::PutEngineIntoVFS(delEngineInstance &instance){
 		// add the directories so they can be easily used later on.
 		deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 		
-		if(! pPathConfig.IsEmpty()){
+		if(!pPathConfig.IsEmpty()){
 			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/config"),
 				decPath::CreatePathNative(pPathConfig), false));
 		}
 		
-		if(! pPathShare.IsEmpty()){
+		if(!pPathShare.IsEmpty()){
 			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/share"),
 				decPath::CreatePathNative(pPathShare), false));
 		}
 		
-		if(! pPathLib.IsEmpty()){
+		if(!pPathLib.IsEmpty()){
 			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/lib"),
 				decPath::CreatePathNative(pPathLib), false));
 		}
 		
-		if(! pPathCache.IsEmpty()){
+		if(!pPathCache.IsEmpty()){
 			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/cache"),
 				decPath::CreatePathNative(pPathCache), false));
 		}
@@ -692,7 +692,7 @@ void delEngine::LoadConfig(){
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	if(! vfs.ExistsFile(pathFile)){
+	if(!vfs.ExistsFile(pathFile)){
 		logger.LogInfo(pLauncher.GetLogSource(),
 			"Engine configuration file not found, will be created upon exiting");
 		return;
@@ -713,7 +713,7 @@ void delEngine::SaveConfig(){
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	if(! vfs.CanWriteFile(pathFile)){
+	if(!vfs.CanWriteFile(pathFile)){
 		logger.LogErrorFormat(pLauncher.GetLogSource(),
 			"Failed to write engine configuration file (writing file problem)");
 		// DIALOG BOX

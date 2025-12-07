@@ -66,7 +66,7 @@ void igdeLoadTemplate::Load(decBaseFileReader &reader, igdeTemplate &atemplate){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "projectTemplate"){
+	if(!root || root->GetName() != "projectTemplate"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,7 +84,7 @@ void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate 
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -128,7 +128,7 @@ void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile 
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -182,7 +182,7 @@ void igdeLoadTemplate::pReadReplace(const decXmlElementTag &root, igdeTemplateRe
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

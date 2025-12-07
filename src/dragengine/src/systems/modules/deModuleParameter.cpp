@@ -141,7 +141,7 @@ void deModuleParameter::AddSelectionEntries(const deModuleParameter::SelectionEn
 	if(entryCount == 0){
 		return;
 	}
-	if(! entries){
+	if(!entries){
 		DETHROW_INFO(deeNullPointer, "entries");
 	}
 	if(entryCount < 1){

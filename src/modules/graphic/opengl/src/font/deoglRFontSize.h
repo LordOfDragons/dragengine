@@ -60,14 +60,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Font. */
-	inline deoglRFont &GetFont() const{return pFont;}
+	inline deoglRFont &GetFont() const{ return pFont; }
 	
 	/** Font size. */
-	inline const deFontSize &GetFontSize() const{return pSize;}
+	inline const deFontSize &GetFontSize() const{ return pSize; }
 	
 	/** Glyphs. */
-	inline deoglRFontGlyphs &GetGlyphs(){return pGlyphs;}
-	inline const deoglRFontGlyphs &GetGlyphs() const{return pGlyphs;}
+	inline deoglRFontGlyphs &GetGlyphs(){ return pGlyphs; }
+	inline const deoglRFontGlyphs &GetGlyphs() const{ return pGlyphs; }
 	
 	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();

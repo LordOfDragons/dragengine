@@ -116,7 +116,7 @@ void deoalSkinTexture::ProcessProperties(const deSkinTexture &texture){
 		}
 	}
 	
-	pAffectsSound = ! pNoSound && (pAbsorption > FLOAT_SAFE_EPSILON
+	pAffectsSound = !pNoSound && (pAbsorption > FLOAT_SAFE_EPSILON
 		|| pTransmission < 10.0f - FLOAT_SAFE_EPSILON);
 	// the threshold 10 for transmission is arbitrary. if the value is rather large chances
 	// are the artist desired to have no transmission loss. the definition just speaks of

@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/**
 	 * \brief Updates the loader.

@@ -58,10 +58,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent rig. */
-	inline reRig *GetParentRig() const{return pRig;}
+	inline reRig *GetParentRig() const{ return pRig; }
 	
 	/** Retrieves the number of selected shapes. */
-	inline int GetShapeCount() const{return pShapeCount;}
+	inline int GetShapeCount() const{ return pShapeCount; }
 	/** Retrieves the shape at the given index. */
 	reRigShape *GetShapeAt(int index) const;
 	/** Determines if the given shape exists. */
@@ -78,7 +78,7 @@ public:
 	void RemoveAllShapes();
 	
 	/** Retrieves the active shape or NULL. */
-	inline reRigShape *GetActiveShape() const{return pActiveShape;}
+	inline reRigShape *GetActiveShape() const{ return pActiveShape; }
 	/** Determines if an active shape exists. */
 	bool HasActiveShape() const;
 	/** Sets the acitve shape or NULL. */

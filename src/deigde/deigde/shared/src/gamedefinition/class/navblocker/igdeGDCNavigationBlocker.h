@@ -90,43 +90,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScaling() const{return pScaling;}
+	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
 	
 	/** \brief Determines if the blocker is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Sets if the blocker is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
 	void SetLayer(int layer);
 	
 	/** \brief Space type. */
-	inline deNavigationSpace::eSpaceTypes GetType() const{return pType;}
+	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set space type. */
 	void SetType(deNavigationSpace::eSpaceTypes type);
@@ -136,7 +136,7 @@ public:
 	 * 
 	 * Blocks navigation meshes with a smaller or equal blocking priority.
 	 */
-	inline int GetBlockingPriority() const{return pBlockingPriority;}
+	inline int GetBlockingPriority() const{ return pBlockingPriority; }
 	
 	/**
 	 * \brief Set blocking priority.
@@ -146,7 +146,7 @@ public:
 	void SetBlockingPriority(int priority);
 	
 	/** \brief Shape list. */
-	inline const decShapeList &GetShapeList() const{return pShapeList;}
+	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Set shape list. */
 	void SetShapeList(const decShapeList &shapeList);

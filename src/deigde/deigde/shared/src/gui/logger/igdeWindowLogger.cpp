@@ -134,7 +134,7 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 
 
 void igdeWindowLogger::OnFrameUpdate(){
-	if(! pLogger){
+	if(!pLogger){
 		return;
 	}
 	
@@ -188,7 +188,7 @@ void igdeWindowLogger::OnVisibleChanged(){
 
 void igdeWindowLogger::OnLogAdded(){
 	// potentially called from threads. logger mutex is required to be locked
-	if(! pPendingClearLogs){
+	if(!pPendingClearLogs){
 		pPendingAddedLogs++;
 	}
 }

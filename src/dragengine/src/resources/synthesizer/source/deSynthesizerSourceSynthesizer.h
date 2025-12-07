@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if silent. */
-	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
 	void SetSynthesizer(deSynthesizer *synthesizer);
@@ -87,7 +87,7 @@ public:
 	 * 
 	 * This is the number of controllers in the child synthesizer if present or 0 if absent.
 	 */
-	inline int GetConnectionCount() const{return pConnectionCount;}
+	inline int GetConnectionCount() const{ return pConnectionCount; }
 	
 	/** \brief Index of local controller for child controller. */
 	int GetConnectionAt(int childController) const;

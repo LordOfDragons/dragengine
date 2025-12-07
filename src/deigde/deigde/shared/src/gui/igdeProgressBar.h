@@ -86,10 +86,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline eOrientation GetOrientation() const{return pOrientation;}
+	inline eOrientation GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -97,16 +97,16 @@ public:
 	
 	
 	/** \brief Value. */
-	inline int GetValue() const{return pValue;}
+	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(int value);
 	
 	/** \brief Range lower value. */
-	inline int GetLower() const{return pLower;}
+	inline int GetLower() const{ return pLower; }
 	
 	/** \brief Range upper value. */
-	inline int GetUpper() const{return pUpper;}
+	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
 	void SetRange(int lower, int upper);

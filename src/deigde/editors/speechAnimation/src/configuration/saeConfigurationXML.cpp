@@ -71,7 +71,7 @@ void saeConfigurationXML::ReadFromFile(decBaseFileReader &reader, saeConfigurati
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "speechAnimationEditor") != 0){
+	if(!root || strcmp(root->GetName(), "speechAnimationEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void saeConfigurationXML::pReadConfig(const decXmlElementTag &root, saeConfigura
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

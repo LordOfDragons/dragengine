@@ -106,7 +106,7 @@ void igdeProgressBar::CreateNativeWidget(){
 }
 
 void igdeProgressBar::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -95,7 +95,7 @@ void deRLTaskReadSkinPropertyNode::VisitImage(deSkinPropertyNodeImage &node){
 		return;
 	}
 	
-	if(! decPath::IsUnixPathAbsolute(path)){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
 		resourcePath.SetFromUnix(pBasePath);
 		resourcePath.AddUnixPath(path);
@@ -131,7 +131,7 @@ void deRLTaskReadSkinPropertyNode::VisitText(deSkinPropertyNodeText &node){
 		return;
 	}
 	
-	if(! decPath::IsUnixPathAbsolute(path)){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath(decPath::CreatePathUnix(pBasePath));
 		resourcePath.AddUnixPath(path);
 		path = resourcePath.GetPathUnix();

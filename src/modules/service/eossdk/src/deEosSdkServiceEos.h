@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get module. */
-	inline deEosSdk &GetModule() const{return pModule;}
+	inline deEosSdk &GetModule() const{ return pModule; }
 	
 	/** Service. */
-	inline deService *GetService() const{return pService;}
+	inline deService *GetService() const{ return pService; }
 	
 	/** Get handles. */
 	EOS_HAuth GetHandleAuth();

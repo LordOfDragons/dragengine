@@ -69,7 +69,7 @@ deWorld *deWorldManager::CreateWorld(){
 	
 	try{
 		world = new deWorld(this);
-		if(! world){
+		if(!world){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -112,7 +112,7 @@ void deWorldManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(world){
-		if(! world->GetPeerGraphic()){
+		if(!world->GetPeerGraphic()){
 			grasys.LoadWorld(world);
 		}
 		
@@ -134,7 +134,7 @@ void deWorldManager::SystemPhysicsLoad(){
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(world){
-		if(! world->GetPeerPhysics()){
+		if(!world->GetPeerPhysics()){
 			physys.LoadWorld(world);
 		}
 		
@@ -156,7 +156,7 @@ void deWorldManager::SystemAudioLoad(){
 	deAudioSystem &audsys = *GetAudioSystem();
 	
 	while(world){
-		if(! world->GetPeerAudio()){
+		if(!world->GetPeerAudio()){
 			audsys.LoadWorld(world);
 		}
 		
@@ -178,7 +178,7 @@ void deWorldManager::SystemNetworkLoad(){
 	deNetworkSystem &netsys = *GetNetworkSystem();
 	
 	while(world){
-		if(! world->GetPeerNetwork()){
+		if(!world->GetPeerNetwork()){
 			netsys.LoadWorld(world);
 		}
 		
@@ -200,7 +200,7 @@ void deWorldManager::SystemAILoad(){
 	deAISystem &aisys = *GetAISystem();
 	
 	while(world){
-		if(! world->GetPeerAI()){
+		if(!world->GetPeerAI()){
 			aisys.LoadWorld(world);
 		}
 		

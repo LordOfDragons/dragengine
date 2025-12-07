@@ -41,10 +41,10 @@
 ////////////////////////////
 
 seUTextureRemove::seUTextureRemove(seTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	seSkin *skin = texture->GetSkin();
-	if(! skin) DETHROW(deeInvalidParam);
+	if(!skin) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;
 	pSkin = NULL;

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleEnabled::~aeUSetRuleEnabled(){
 ///////////////
 
 void aeUSetRuleEnabled::Undo(){
-	pRule->SetEnabled(! pRule->GetEnabled());
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 void aeUSetRuleEnabled::Redo(){
-	pRule->SetEnabled(! pRule->GetEnabled());
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 

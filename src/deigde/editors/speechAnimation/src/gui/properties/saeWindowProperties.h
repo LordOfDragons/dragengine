@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline saeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline saeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

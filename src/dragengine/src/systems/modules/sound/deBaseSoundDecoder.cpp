@@ -39,7 +39,7 @@
 deBaseSoundDecoder::deBaseSoundDecoder(decBaseFileReader *file) :
 pFile(NULL)
 {
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	

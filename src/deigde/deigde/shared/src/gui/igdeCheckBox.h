@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Menu entry is checked. */
-	inline bool GetChecked() const{return pChecked;}
+	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if menu entry is checked. */
 	void SetChecked(bool checked);

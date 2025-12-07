@@ -68,7 +68,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 		return;
 	}
 	
-	if(! pEnvMapActive){
+	if(!pEnvMapActive){
 		pEnvMapActive = envmap;
 		if(envmap){
 			envmap->AddReference();
@@ -77,7 +77,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	}
 	
 	// has pEnvMapActive and it is not envmap
-	if(! pEnvMapFading){
+	if(!pEnvMapFading){
 		pEnvMapFading = envmap;
 		if(envmap){
 			envmap->AddReference();
@@ -106,7 +106,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 }
 
 void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
-	if(! envmap){
+	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,7 +160,7 @@ bool deoglEnvMapFader::IsFading() const{
 }
 
 void deoglEnvMapFader::Update(float elapsed){
-	if(! pEnvMapFading){
+	if(!pEnvMapFading){
 		return;
 	}
 	

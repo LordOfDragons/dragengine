@@ -174,7 +174,7 @@ void deoalWorldOctree::ClearAll(){
 }
 
 void deoalWorldOctree::InsertComponentIntoTree(deoalAComponent *component, int maxDepth){
-	if(! component || maxDepth < 0){
+	if(!component || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,7 +188,7 @@ void deoalWorldOctree::InsertComponentIntoTree(deoalAComponent *component, int m
 	// if component is already in the octree relocate it if required
 	if(currentNode){
 		// if component is not in the same node as before relocate it
-		if(! currentNode->ContainsBox(center, halfExtends)){
+		if(!currentNode->ContainsBox(center, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveComponent(component);
 			currentNode = NULL;
@@ -196,14 +196,14 @@ void deoalWorldOctree::InsertComponentIntoTree(deoalAComponent *component, int m
 	}
 	
 	// add component if not in tree
-	if(! currentNode){
+	if(!currentNode){
 		currentNode = pGetNodeFor(center, halfExtends, maxDepth);
 		currentNode->AddComponent(component);
 	}
 }
 
 void deoalWorldOctree::InsertMicrophoneIntoTree(deoalAMicrophone *microphone, int maxDepth){
-	if(! microphone || maxDepth < 0){
+	if(!microphone || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -215,7 +215,7 @@ void deoalWorldOctree::InsertMicrophoneIntoTree(deoalAMicrophone *microphone, in
 	// if microphone is already in the octree relocate it if required
 	if(currentNode){
 		// if microphone is not in the same node as before relocate it
-		if(! currentNode->ContainsBox(position, halfExtends)){
+		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveMicrophone(microphone);
 			currentNode = NULL;
@@ -223,14 +223,14 @@ void deoalWorldOctree::InsertMicrophoneIntoTree(deoalAMicrophone *microphone, in
 	}
 	
 	// add microphone if not in tree
-	if(! currentNode){
+	if(!currentNode){
 		currentNode = pGetNodeFor(position, halfExtends, maxDepth);
 		currentNode->AddMicrophone(microphone);
 	}
 }
 
 void deoalWorldOctree::InsertSpeakerIntoTree(deoalASpeaker *speaker, int maxDepth){
-	if(! speaker || maxDepth < 0){
+	if(!speaker || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -243,7 +243,7 @@ void deoalWorldOctree::InsertSpeakerIntoTree(deoalASpeaker *speaker, int maxDept
 	// if speaker is already in the octree relocate it if required
 	if(currentNode){
 		// if speaker is not in the same node as before relocate it
-		if(! currentNode->ContainsBox(position, halfExtends)){
+		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveSpeaker(speaker);
 			currentNode = NULL;
@@ -251,14 +251,14 @@ void deoalWorldOctree::InsertSpeakerIntoTree(deoalASpeaker *speaker, int maxDept
 	}
 	
 	// add speaker if not in tree
-	if(! currentNode){
+	if(!currentNode){
 		currentNode = pGetNodeFor(position, halfExtends, maxDepth);
 		currentNode->AddSpeaker(speaker);
 	}
 }
 
 void deoalWorldOctree::InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDepth){
-	if(! envProbe || maxDepth < 0){
+	if(!envProbe || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -270,7 +270,7 @@ void deoalWorldOctree::InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDe
 	// if environment probe is already in the octree relocate it if required
 	if(currentNode){
 		// if environment probe is not in the same node as before relocate it
-		if(! currentNode->ContainsBox(center, halfExtends)){
+		if(!currentNode->ContainsBox(center, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveEnvProbe(envProbe);
 			currentNode = NULL;
@@ -278,7 +278,7 @@ void deoalWorldOctree::InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDe
 	}
 	
 	// add environment probe if not in tree
-	if(! currentNode){
+	if(!currentNode){
 		currentNode = pGetNodeFor(center, halfExtends, maxDepth);
 		currentNode->AddEnvProbe(envProbe);
 	}
@@ -286,7 +286,7 @@ void deoalWorldOctree::InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDe
 
 void deoalWorldOctree::InsertSoundLevelMeterIntoTree(
 deoalASoundLevelMeter *soundLevelMeter, int maxDepth){
-	if(! soundLevelMeter || maxDepth < 0){
+	if(!soundLevelMeter || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -299,7 +299,7 @@ deoalASoundLevelMeter *soundLevelMeter, int maxDepth){
 	// if soundLevelMeter is already in the octree relocate it if required
 	if(currentNode){
 		// if soundLevelMeter is not in the same node as before relocate it
-		if(! currentNode->ContainsBox(position, halfExtends)){
+		if(!currentNode->ContainsBox(position, halfExtends)){
 			// remove from the current node
 			currentNode->RemoveSoundLevelMeter(soundLevelMeter);
 			currentNode = NULL;
@@ -307,7 +307,7 @@ deoalASoundLevelMeter *soundLevelMeter, int maxDepth){
 	}
 	
 	// add soundLevelMeter if not in tree
-	if(! currentNode){
+	if(!currentNode){
 		currentNode = pGetNodeFor(position, halfExtends, maxDepth);
 		currentNode->AddSoundLevelMeter(soundLevelMeter);
 	}
@@ -331,7 +331,7 @@ int deoalWorldOctree::IndexOfComponent(deoalAComponent *component) const{
 }
 
 void deoalWorldOctree::AddComponent(deoalAComponent *component){
-	if(! component /* || component->GetOctreeNode() */){
+	if(!component /* || component->GetOctreeNode() */){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -371,7 +371,7 @@ int deoalWorldOctree::IndexOfMicrophone(deoalAMicrophone *microphone) const{
 }
 
 void deoalWorldOctree::AddMicrophone(deoalAMicrophone *microphone){
-	if(! microphone /* || microphone->GetOctreeNode() */){
+	if(!microphone /* || microphone->GetOctreeNode() */){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -411,7 +411,7 @@ int deoalWorldOctree::IndexOfSpeaker(deoalASpeaker *speaker) const{
 }
 
 void deoalWorldOctree::AddSpeaker(deoalASpeaker *speaker){
-	if(! speaker || speaker->GetOctreeNode()){
+	if(!speaker || speaker->GetOctreeNode()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -451,7 +451,7 @@ int deoalWorldOctree::IndexOfEnvProbe(deoalEnvProbe *envProbe) const{
 }
 
 void deoalWorldOctree::AddEnvProbe(deoalEnvProbe *envProbe){
-	if(! envProbe /* || envProbe->GetOctreeNode() */){
+	if(!envProbe /* || envProbe->GetOctreeNode() */){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -495,7 +495,7 @@ int deoalWorldOctree::IndexOfSoundLevelMeter(deoalASoundLevelMeter *soundLevelMe
 }
 
 void deoalWorldOctree::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
-	if(! soundLevelMeter || soundLevelMeter->GetOctreeNode()){
+	if(!soundLevelMeter || soundLevelMeter->GetOctreeNode()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -529,7 +529,7 @@ const decDVector &halfSize, int maxDepth){
 	
 	for(i=0; i<maxDepth; i++){
 		deoalDOctree * const nextNode = curNode->GetNodeAtBox(center, halfSize);
-		if(! nextNode){
+		if(!nextNode){
 			break;
 		}
 		curNode = nextNode;
@@ -549,7 +549,7 @@ deoalWorldOctree *deoalWorldOctree::pGetNodeFor(const decDVector &position, int 
 		}
 		
 		deoalDOctree *nextNode = curNode->GetNodeAt(octant);
-		if(! nextNode){
+		if(!nextNode){
 			nextNode = curNode->CreateOctree(octant);
 			curNode->SetNodeAt(octant, nextNode);
 		}

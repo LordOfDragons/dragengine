@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget){
-	if(! cameraShot || ! newTarget){
+	if(!cameraShot || !newTarget){
 		DETHROW(deeInvalidParam);
 	}
 	

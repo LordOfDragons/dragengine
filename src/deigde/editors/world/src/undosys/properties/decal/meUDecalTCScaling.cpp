@@ -42,12 +42,12 @@
 ////////////////////////////
 
 meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

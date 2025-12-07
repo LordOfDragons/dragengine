@@ -47,12 +47,12 @@ pLink(NULL),
 pTargets(NULL),
 pTargetCount(0)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
 	seSky * const sky = link->GetSky();
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -77,7 +77,7 @@ pTargetCount(0)
 				for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
 					const deSkyLayer::eTargets target = (deSkyLayer::eTargets)j;
 					
-					if(! layer->GetTarget(target).GetLinks().Has(link)){
+					if(!layer->GetTarget(target).GetLinks().Has(link)){
 						continue;
 					}
 					

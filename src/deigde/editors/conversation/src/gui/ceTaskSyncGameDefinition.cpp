@@ -60,7 +60,7 @@ ceTaskSyncGameDefinition::~ceTaskSyncGameDefinition(){
 ///////////////
 
 bool ceTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetConversation()){
+	if(!pWindowMain.GetConversation()){
 		return false;
 	}
 	

@@ -73,7 +73,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetCoordSystemID()){
+		if(!topic || !action  || comboBox->GetText() == action->GetCoordSystemID()){
 			return;
 		}
 		
@@ -91,7 +91,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemAdd * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetAliasID()){
+		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){
 			return;
 		}
 		

@@ -149,42 +149,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{return pTrackBone;}
+	inline const decString &GetTrackBone() const{ return pTrackBone; }
 	
 	/** \brief Set name of the track bone or empty string to use none. */
 	void SetTrackBone(const char *boneName);
 	
 	/** \brief Track axis. */
-	inline eTrackAxis GetTrackAxis() const{return pTrackAxis;}
+	inline eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
 	
 	/** \brief Set track axis. */
 	void SetTrackAxis(eTrackAxis axis);
 	
 	/** \brief Up axis. */
-	inline eTrackAxis GetUpAxis() const{return pUpAxis;}
+	inline eTrackAxis GetUpAxis() const{ return pUpAxis; }
 	
 	/** \brief Set up axis. */
 	void SetUpAxis(eTrackAxis axis);
 	
 	/** \brief Up target. */
-	inline eUpTarget GetUpTarget() const{return pUpTarget;}
+	inline eUpTarget GetUpTarget() const{ return pUpTarget; }
 	
 	/** \brief Set up target. */
 	void SetUpTarget(eUpTarget target);
 	
 	/** \brief Locked axis. */
-	inline eLockedAxis GetLockedAxis() const{return pLockedAxis;}
+	inline eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
 	
 	/** \brief Set locked axis. */
 	void SetLockedAxis(eLockedAxis axis);
 	
 	/** \brief Position target. */
-	inline deAnimatorControllerTarget &GetTargetPosition(){return pTargetPosition;}
-	inline const deAnimatorControllerTarget &GetTargetPosition() const{return pTargetPosition;}
+	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const deAnimatorControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** \brief Up target. */
-	inline deAnimatorControllerTarget &GetTargetUp(){return pTargetUp;}
-	inline const deAnimatorControllerTarget &GetTargetUp() const{return pTargetUp;}
+	inline deAnimatorControllerTarget &GetTargetUp(){ return pTargetUp; }
+	inline const deAnimatorControllerTarget &GetTargetUp() const{ return pTargetUp; }
 	/*@}*/
 	
 	

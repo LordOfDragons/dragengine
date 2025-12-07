@@ -45,7 +45,7 @@ gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnv
 pObjectClass(NULL),
 pEnvMapProbe(NULL)
 {
-	if(! objectClass || ! envMapProbe){
+	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

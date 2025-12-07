@@ -116,7 +116,7 @@ dedaiLayer *dedaiWorld::GetLayer(int layer){
 void dedaiWorld::CheckDeveloperMode(){
 	const dedaiDeveloperMode &devmode = pDEAI.GetDeveloperMode();
 	
-	if(! devmode.GetEnabled()){
+	if(!devmode.GetEnabled()){
 		return;
 	}
 	

@@ -65,14 +65,14 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** Framebuffer or nullptr. */
-		inline deoglFramebuffer* Get() const{return pFBO;}
-		inline operator deoglFramebuffer*() const{return pFBO;}
-		inline deoglFramebuffer* operator->() const {return pFBO;}
+		inline deoglFramebuffer* Get() const{ return pFBO; }
+		inline operator deoglFramebuffer*() const{ return pFBO; }
+		inline deoglFramebuffer* operator->() const { return pFBO; }
 		
 		/** Check if empty. */
-		inline bool IsNull() const{return pFBO == nullptr;}
-		inline bool IsNotNull() const{return pFBO != nullptr;}
-		inline operator bool() const{return pFBO != nullptr;}
+		inline bool IsNull() const{ return pFBO == nullptr; }
+		inline bool IsNotNull() const{ return pFBO != nullptr; }
+		inline operator bool() const{ return pFBO != nullptr; }
 		
 		/** Clear. */
 		void Clear();

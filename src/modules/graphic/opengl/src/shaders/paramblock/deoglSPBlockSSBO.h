@@ -109,31 +109,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline eType GetType() const{return pType;}
+	inline eType GetType() const{ return pType; }
 	
 	/** Shader storage buffer object or 0 if not created yet. */
-	inline GLuint GetSSBO() const{return pSSBO;}
+	inline GLuint GetSSBO() const{ return pSSBO; }
 	
 	/** Binding point. */
-	inline int GetBindingPoint() const{return pBindingPoint;}
+	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
 	/** Set binding point. */
 	void SetBindingPoint(int bindingPoint);
 	
 	/** UBO Binding point. */
-	inline int GetBindingPointUBO() const{return pBindingPointUBO;}
+	inline int GetBindingPointUBO() const{ return pBindingPointUBO; }
 	
 	/** Set UBO binding point. */
 	void SetBindingPointUBO(int bindingPoint);
 	
 	/** Atmomic counter binding point. */
-	inline int GetBindingPointAtomic() const{return pBindingPointAtomic;}
+	inline int GetBindingPointAtomic() const{ return pBindingPointAtomic; }
 	
 	/** Set atomic counter binding point. */
 	void SetBindingPointAtomic(int bindingPoint);
 	
 	/** Compact elements. If true mapping individual elements is prohibited. */
-	inline bool GetCompact() const{return pCompact;}
+	inline bool GetCompact() const{ return pCompact; }
 	
 	/** Set if elements are compact. If true mapping individual elements is prohibited. */
 	void SetCompact(bool compact);
@@ -240,7 +240,7 @@ public:
 	
 	
 	/** GPU memory consumption for the VBO. */
-	inline int GetMemoryConsumptionGPUVBO() const{return pMemoryGPUSSBO;}
+	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUSSBO; }
 	
 	/** Debug print configuration. */
 	void DebugPrintConfig(const char *name);

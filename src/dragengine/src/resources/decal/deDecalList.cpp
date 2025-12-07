@@ -60,7 +60,7 @@ deDecal *deDecalList::GetDecalAt(int index) const{
 }
 
 bool deDecalList::HasDecal(deDecal *decal) const{
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pDecalCount; i++){
@@ -73,7 +73,7 @@ bool deDecalList::HasDecal(deDecal *decal) const{
 }
 
 int deDecalList::IndexOfDecal(deDecal *decal) const{
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pDecalCount; i++){

@@ -46,10 +46,10 @@ pSky(NULL),
 pController(NULL),
 pNewValue(newValue)
 {
-	if(! sky || ! controller){
+	if(!sky || !controller){
 		DETHROW(deeInvalidParam);
 	}
-	if(! sky->GetControllers().Has(controller)){
+	if(!sky->GetControllers().Has(controller)){
 		DETHROW(deeInvalidParam);
 	}
 	

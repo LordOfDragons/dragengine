@@ -54,7 +54,7 @@ ceCAActorRemove::~ceCAActorRemove(){
 ///////////////
 
 void ceCAActorRemove::SetActor(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	pActor = id;

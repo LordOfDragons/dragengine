@@ -106,7 +106,7 @@ void aeAttachment::SetAnimator(aeAnimator *animator){
 
 
 void aeAttachment::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -138,7 +138,7 @@ void aeAttachment::SetAttachType(eAttachTypes type){
 }
 
 void aeAttachment::SetBoneName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -172,14 +172,14 @@ void aeAttachment::ResetPhysics(){
 }
 
 void aeAttachment::AttachCollider(){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
 	try{
 		switch(pAttachType){
 		case eatBone:
-			if(! pBoneName.IsEmpty()){
+			if(!pBoneName.IsEmpty()){
 				pObjectWrapper->AttachColliderBone(pAnimator->GetEngineCollider(), pBoneName.GetString(),
 					pObjectWrapper->GetPosition(), pObjectWrapper->GetOrientation());
 			}

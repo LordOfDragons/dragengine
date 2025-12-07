@@ -90,10 +90,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decDVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decDVector &GetRayOrigin() const{ return pRayOrigin; }
 	
 	/** \brief Ray direction. */
-	inline const decDVector &GetRayDirection() const{return pRayDirection;}
+	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Set ray origin and direction. */
 	void SetRay(const decDVector &origin, const decVector &direction);
@@ -101,13 +101,13 @@ public:
 	
 	
 	/** \brief Single selection is used. */
-	inline bool GetSingleSelect() const{return pSingleSelect;}
+	inline bool GetSingleSelect() const{ return pSingleSelect; }
 	
 	/** \brief Set if single selection is used. */
 	void SetSingleSelect(bool singleSelect);
 	
 	/** \brief Rectangular selection is used. */
-	inline bool GetRectSelect() const{return pRectSelect;}
+	inline bool GetRectSelect() const{ return pRectSelect; }
 	
 	/** \brief Set if rectangular selection is used. */
 	void SetRectSelect(bool rectSelect);
@@ -161,8 +161,8 @@ public:
 	void StoreRectSelect();
 	
 	/** \brief Get hit list. */
-	inline meCLHitList &GetHitList(){return pHitList;}
-	inline const meCLHitList &GetHitList() const{return pHitList;}
+	inline meCLHitList &GetHitList(){ return pHitList; }
+	inline const meCLHitList &GetHitList() const{ return pHitList; }
 	
 	/** \brief Prepare for a test clearing only the hit list. */
 	void Prepare();

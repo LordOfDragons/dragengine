@@ -67,11 +67,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Queue. */
-	inline const devkQueue::Ref &GetQueue() const{return pQueue;}
+	inline const devkQueue::Ref &GetQueue() const{ return pQueue; }
 	
 	/** Command pool. */
-	inline VkCommandPool GetPool() const{return pPool;}
-	inline operator VkCommandPool() const{return pPool;}
+	inline VkCommandPool GetPool() const{ return pPool; }
+	inline operator VkCommandPool() const{ return pPool; }
 	
 	/** Get next free command buffer. */
 	devkCommandBuffer *GetCommandBuffer();

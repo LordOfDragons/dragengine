@@ -66,7 +66,7 @@ pDecoding(false),
 pHasDecodedFrame(false),
 pShutDown(false)
 {
-	if(! decoder || ! video){
+	if(!decoder || !video){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void deoglVideoDecodeThread::StartDecode(int frame){
 	const deMutexGuard lock(pMutex);
 // 	printf( "DecodeThread(%p) StartDecode(%p,%p,%i)\n", this, decoder, video, frame );
 	
-	if(pDecoding && ! pHasDecodedFrame){
+	if(pDecoding && !pHasDecodedFrame){
 		if(pFrame == frame){
 			// if the new next frame to decode is identical to the currently decoded frame cancel the next
 			// decoding to avoid wasting time decoding two times the same frame
@@ -293,11 +293,11 @@ void deoglVideoDecodeThread::PreparePixelBuffers(){
 	}
 	
 	// create pixel buffers if not existing
-	if(! pPixelBufferDecode){
+	if(!pPixelBufferDecode){
 		pPixelBufferDecode.TakeOver(new deoglPixelBuffer(pbFormat, width, height, 1));
 	}
 	
-	if(! pPixelBufferTexture){
+	if(!pPixelBufferTexture){
 		pPixelBufferTexture.TakeOver(new deoglPixelBuffer(pbFormat, width, height, 1));
 	}
 }
@@ -312,7 +312,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 	
 	pDecoder->SetPosition(pFrame); // in most cases this should not seek
 	
-	if(! pDecoder->DecodeFrame(pPixelBufferDecode->GetPointer(), pPixelBufferDecode->GetImageSize())){
+	if(!pDecoder->DecodeFrame(pPixelBufferDecode->GetPointer(), pPixelBufferDecode->GetImageSize())){
 		SetErrorPixelBuffer();
 		return;
 	}
@@ -474,7 +474,7 @@ void deoglVideoDecodeThread::SetErrorPixelBuffer(){
 //////////////////////
 
 void deoglVideoDecodeThread::pSafelyShutDownThread(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		return;
 	}
 	

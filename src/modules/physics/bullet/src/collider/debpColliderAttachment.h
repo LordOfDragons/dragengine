@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the collider attachment. */
-	inline deColliderAttachment *GetAttachment() const{return pAttachment;}
+	inline deColliderAttachment *GetAttachment() const{ return pAttachment; }
 	
 	/** Track bone index. */
-	inline int GetTrackBone() const{return pTrackBone;}
+	inline int GetTrackBone() const{ return pTrackBone; }
 	
 	/** Set the track bone index. */
 	void SetTrackBone(int boneIndex);
@@ -89,13 +89,13 @@ public:
 	void SetVpsMappingAt(int index, int boneIndex);
 	
 	/** Determine if mapping is dirty. */
-	inline bool GetDirtyMappings() const{return pDirtyMappings;}
+	inline bool GetDirtyMappings() const{ return pDirtyMappings; }
 	
 	/** Set if mapping is dirty. */
 	void SetDirtyMappings(bool dirtyMappings);
 	
 	/** Relative movement accumulation. */
-	inline const decDMatrix &GetAccumRelMoveMatrix() const{return pAccumRelMoveMatrix;}
+	inline const decDMatrix &GetAccumRelMoveMatrix() const{ return pAccumRelMoveMatrix; }
 	
 	/** Set relative movement accumulation. */
 	void SetAccumRelMoveMatrix(const decDMatrix &matrix);

@@ -178,7 +178,7 @@ void deClassCanvasVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassCanvasVideoPlayer * const clsCVidP = (deClassCanvasVideoPlayer*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCVidP)){
+	if(!p_IsObjOfType(obj, clsCVidP)){
 		rt->PushBool(false);
 		
 	}else{
@@ -246,7 +246,7 @@ void deClassCanvasVideoPlayer::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasVideoPlayer *deClassCanvasVideoPlayer::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -254,11 +254,11 @@ deCanvasVideoPlayer *deClassCanvasVideoPlayer::GetCanvas(dsRealObject *myself) c
 }
 
 void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

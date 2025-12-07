@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for speakerAudible(). */
-	inline int GetFuncIndexSpeakerAudible() const{return pFuncIndexSpeakerAudible;}
+	inline int GetFuncIndexSpeakerAudible() const{ return pFuncIndexSpeakerAudible; }
 	
 	/** \brief Function index for speakerInaudible(). */
-	inline int GetFuncIndexSpeakerInaudible() const{return pFuncIndexSpeakerInaudible;}
+	inline int GetFuncIndexSpeakerInaudible() const{ return pFuncIndexSpeakerInaudible; }
 	
 	
 	

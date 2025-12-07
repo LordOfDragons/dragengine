@@ -74,13 +74,13 @@ public:
 		
 	public:
 		/** \brief Logger to use for new engine instances or nullptr. */
-		inline const deLogger::Ref &GetEngineLogger() const{return pEngineLogger;}
+		inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 		
 		/** \brief Set logger to use for new engine instance or nullptr. */
 		void SetEngineLogger(deLogger *logger);
 		
 		/** \brief Use console. */
-		inline bool GetUseConsole() const{return pUseConsole;}
+		inline bool GetUseConsole() const{ return pUseConsole; }
 		
 		/** \brief Set use console. */
 		void SetUseConsole(bool useConsole);
@@ -90,7 +90,7 @@ public:
 		
 #ifdef OS_ANDROID
 		/** \brief Configuration to use for creating OS instance. */
-		inline const deOSAndroid::sConfig &GetConfig() const{return pConfig;}
+		inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
 		
 		/** \brief Set configuration to use for creating OS instance. */
 		void SetConfig(const deOSAndroid::sConfig &config);
@@ -98,7 +98,7 @@ public:
 		
 #ifdef OS_WEBWASM
 		/** \brief Configuration to use for creating OS instance. */
-		inline const deOSWebWasm::sConfig &GetConfig() const{return pConfig;}
+		inline const deOSWebWasm::sConfig &GetConfig() const{ return pConfig; }
 		
 		/** \brief Set configuration to use for creating OS instance. */
 		void SetConfig(const deOSWebWasm::sConfig &config);
@@ -154,23 +154,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine or nullptr if not running. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Logger to use for new engine instances. */
-	inline const deLogger::Ref &GetLogger() const{return pLogger;}
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger to use for new engine instances. */
 	void SetLogger(deLogger *logger);
 	
 	/** \brief Logger to use for new engine or nullptr to use engine instance logger. */
-	inline const deLogger::Ref &GetEngineLogger() const{return pEngineLogger;}
+	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 	
 	/** \brief Set logger to use for new engine or nullptr to use engine instance logger. */
 	void SetEngineLogger(deLogger *logger);
 		
 #ifdef OS_ANDROID
 	/** \brief Configuration to use for creating OS instance. */
-	inline const deOSAndroid::sConfig &GetConfig() const{return pConfig;}
+	inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
 	
 	/** \brief Set configuration to use for creating OS instance. */
 	void SetConfig(const deOSAndroid::sConfig &config);
@@ -178,7 +178,7 @@ public:
 		
 #ifdef OS_WEBWASM
 	/** \brief Configuration to use for creating OS instance. */
-	inline const deOSWebWasm::sConfig &GetConfig() const{return pConfig;}
+	inline const deOSWebWasm::sConfig &GetConfig() const{ return pConfig; }
 	
 	/** \brief Set configuration to use for creating OS instance. */
 	void SetConfig(const deOSWebWasm::sConfig &config);

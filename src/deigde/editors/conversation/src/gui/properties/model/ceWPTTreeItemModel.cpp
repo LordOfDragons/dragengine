@@ -120,7 +120,7 @@ ceWPTTreeItemModel *ceWPTTreeItemModel::GetChildAt(int index) const{
 }
 
 void ceWPTTreeItemModel::AddChild(ceWPTTreeItemModel *child){
-	if(! child || child->GetParent()){
+	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -134,7 +134,7 @@ void ceWPTTreeItemModel::AddChild(ceWPTTreeItemModel *child){
 }
 
 void ceWPTTreeItemModel::InsertChild(ceWPTTreeItemModel *child, int position){
-	if(! child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
+	if(!child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -148,7 +148,7 @@ void ceWPTTreeItemModel::InsertChild(ceWPTTreeItemModel *child, int position){
 }
 
 void ceWPTTreeItemModel::RemoveChild(ceWPTTreeItemModel *child){
-	if(! child || child->GetParent() != this){
+	if(!child || child->GetParent() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -178,7 +178,7 @@ void ceWPTTreeItemModel::RemoveAllChildren(){
 }
 
 void ceWPTTreeItemModel::MoveChild(ceWPTTreeItemModel *child, int to){
-	if(! child){
+	if(!child){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -204,7 +204,7 @@ void ceWPTTreeItemModel::MoveChild(int from, int to){
 	
 	pChildren.Move(child, to);
 	
-	if(pTreeItem && child->GetTreeItem() && (! otherChild || otherChild->GetTreeItem())){
+	if(pTreeItem && child->GetTreeItem() && (!otherChild || otherChild->GetTreeItem())){
 		igdeTreeItem *otherItem = NULL;
 		if(otherChild){
 			otherItem = otherChild->GetTreeItem();

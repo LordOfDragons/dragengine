@@ -50,7 +50,7 @@ deOcclusionMeshBone::~deOcclusionMeshBone(){
 //////////////
 
 void deOcclusionMeshBone::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

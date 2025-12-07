@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Force Field",
 igdeUndo *gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

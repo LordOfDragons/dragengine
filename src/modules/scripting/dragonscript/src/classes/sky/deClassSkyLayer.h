@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -66,7 +66,7 @@ public:
 	/** \brief Push layer. */
 	void PushLayer(dsRunTime *rt, deSky *sky, int index);
 	
-	inline dsClass *GetClassSkyLayerTargetType() const{return pClsSkyLayerTargetType;}
+	inline dsClass *GetClassSkyLayerTargetType() const{ return pClsSkyLayerTargetType; }
 	/*@}*/
 	
 	

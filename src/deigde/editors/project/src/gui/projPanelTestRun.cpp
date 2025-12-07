@@ -81,7 +81,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.IsRunning() && pPanel.GetSelectedProfile());
+		SetEnabled(!pPanel.IsRunning() && pPanel.GetSelectedProfile());
 	}
 };
 
@@ -403,12 +403,12 @@ bool projPanelTestRun::IsRunning(){
 }
 
 void projPanelTestRun::Start(){
-	if(pIsRunning || ! pProject){
+	if(pIsRunning || !pProject){
 		return;
 	}
 	
 	projProfile * const profile = GetSelectedProfile();
-	if(! profile){
+	if(!profile){
 		return;
 	}
 	
@@ -416,13 +416,13 @@ void projPanelTestRun::Start(){
 		pWindowMain.SaveProject();
 	}
 	
-	if(! GetEnvironment().RequestSaveDocuments("Start Test-Running",
+	if(!GetEnvironment().RequestSaveDocuments("Start Test-Running",
 	"Unsaved changes are present. To start Test-Running it is recommended to save them")){
 		return;
 	}
 	
 	projTRProfile *launchProfile = NULL;
-	if(! pProject->GetActiveLaunchProfile().IsEmpty()){
+	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
 		launchProfile = pTestRunner->GetLauncherProfiles().GetNamed(
 			pProject->GetActiveLaunchProfile());
 	}
@@ -448,7 +448,7 @@ void projPanelTestRun::Start(){
 }
 
 void projPanelTestRun::Quit(){
-	if(! pIsRunning){
+	if(!pIsRunning){
 		return;
 	}
 	
@@ -464,7 +464,7 @@ void projPanelTestRun::Quit(){
 }
 
 void projPanelTestRun::Kill(){
-	if(! pTestRunner->IsRunning()){
+	if(!pTestRunner->IsRunning()){
 		return;
 	}
 	
@@ -629,7 +629,7 @@ void projPanelTestRun::UpdateProfiles(){
 	
 	SelectProfile((projProfile*)(deObject*)pSelectedProfile);
 	
-	if(! pSelectedProfile && pCBProfile->GetItemCount() > 0){
+	if(!pSelectedProfile && pCBProfile->GetItemCount() > 0){
 		SelectProfile((projProfile*)pCBProfile->GetItemAt(0)->GetData());
 	}
 }

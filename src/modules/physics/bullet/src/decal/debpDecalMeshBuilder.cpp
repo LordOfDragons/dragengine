@@ -80,7 +80,7 @@ debpDecalMeshBuilder::~debpDecalMeshBuilder(){
 ///////////////
 
 void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
-	if(! decal || distance < 1e-3f) DETHROW(deeInvalidParam);
+	if(!decal || distance < 1e-3f) DETHROW(deeInvalidParam);
 	decVector halfSize(decal->GetSize() * 0.5f);
 	decConvexVolume *volume = NULL;
 	
@@ -106,15 +106,15 @@ void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	}
 	pDecalBox = new debpDCollisionBox(pOrigin - pDecalView * (pDistance * 0.5f),
 		decVector(halfSize.x, halfSize.y, pDistance * 0.5f), decal->GetOrientation());
-	if(! pDecalBox) DETHROW(deeOutOfMemory);
+	if(!pDecalBox) DETHROW(deeOutOfMemory);
 	
 	// create convex volume list
 	try{
 		pCVolList = new debpDMBConvexVolumeList;
-		if(! pCVolList) DETHROW(deeOutOfMemory);
+		if(!pCVolList) DETHROW(deeOutOfMemory);
 		
 		volume = new decConvexVolume;
-		if(! volume) DETHROW(deeOutOfMemory);
+		if(!volume) DETHROW(deeOutOfMemory);
 		
 		volume->AddVertex(pDecalMatrix * decVector(halfSize.x,  halfSize.y, 0.0f));
 		volume->AddVertex(pDecalMatrix * decVector(-halfSize.x,  halfSize.y, 0.0f));
@@ -164,13 +164,13 @@ void debpDecalMeshBuilder::CutTriangle(const decVector &v1, const decVector &v2,
 
 void debpDecalMeshBuilder::BuildMeshForComponent(debpComponent *oglComponent){
 /*
-	if(! oglComponent){
+	if(!oglComponent){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deComponent *component = oglComponent->GetComponent();
 	deModel *model = component->GetModel();
-	if(! model){
+	if(!model){
 		return;
 	}
 	
@@ -238,7 +238,7 @@ void debpDecalMeshBuilder::BuildMeshForComponent(debpComponent *oglComponent){
 		volumeFace = NULL;
 		try{
 			volumeFace = new debpDMBConvexVolumeFace;
-			if(! volumeFace) DETHROW(deeOutOfMemory);
+			if(!volumeFace) DETHROW(deeOutOfMemory);
 			
 			volumeFaceNormal = (v2 - v1) % (v3 - v2);
 			volumeFaceNormal.Normalize();
@@ -260,7 +260,7 @@ void debpDecalMeshBuilder::BuildMeshForComponent(debpComponent *oglComponent){
 		volumeFace = NULL;
 		try{
 			volumeFace = new debpDMBConvexVolumeFace;
-			if(! volumeFace) DETHROW(deeOutOfMemory);
+			if(!volumeFace) DETHROW(deeOutOfMemory);
 			
 			volumeFace->SetNormal(-volumeFaceNormal);
 			
@@ -297,7 +297,7 @@ void debpDecalMeshBuilder::BuildMeshForComponent(debpComponent *oglComponent){
 		for(vf=0; vf<volumeFaceCount; vf++){
 			volumeFace = (debpDMBConvexVolumeFace*)volume->GetFaceAt(vf);
 			
-			if(! volumeFace->GetDecalFace()) continue;
+			if(!volumeFace->GetDecalFace()) continue;
 			if(volumeFace->GetNormal() * pDecalView > 1e-3) continue;
 			if(volumeFace->GetVertexCount() < 3) continue;
 			
@@ -412,7 +412,7 @@ int debpDecalMeshBuilder::AddPoint(const decVector &point){
 		if(pPointCount == pPointSize){
 			int newSize = pPointSize * 3 / 2 + 1;
 			decVector *newArray = new decVector[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pPoints){
 				memcpy(newArray, pPoints, sizeof(decVector) * pPointSize);
 				delete [] pPoints;
@@ -443,7 +443,7 @@ debpDecalMeshBuilderFace *debpDecalMeshBuilder::AddFace(){
 	if(pFaceCount == pFaceSize){
 		int newSize = pFaceSize * 3 / 2 + 1;
 		debpDecalMeshBuilderFace *newArray = new debpDecalMeshBuilderFace[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFaces){
 			memcpy(newArray, pFaces, sizeof(debpDecalMeshBuilderFace) * pFaceSize);
 			delete [] pFaces;
@@ -472,7 +472,7 @@ void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p
 	
 	try{
 		face = new debpDMBConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();
@@ -498,7 +498,7 @@ void debpDecalMeshBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p
 	
 	try{
 		face = new debpDMBConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();

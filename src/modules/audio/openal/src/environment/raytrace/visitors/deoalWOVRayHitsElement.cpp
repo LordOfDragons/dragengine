@@ -193,7 +193,7 @@ void deoalWOVRayHitsElement::VisitComponent(deoalAComponent *component){
 	
 	deoalAModel &model = *component->GetModel();
 	
-	if(! model.GetRTBVH() && ! component->GetBVH()){
+	if(!model.GetRTBVH() && !component->GetBVH()){
 		return;
 	}
 	
@@ -325,7 +325,7 @@ void deoalWOVRayHitsElement::VisitComponent(deoalAComponent *component){
 				}
 				
 			}else{
-				if(! element.GetForwardFacing()){
+				if(!element.GetForwardFacing()){
 					continue;
 				}
 				

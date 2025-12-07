@@ -72,21 +72,21 @@ public:
 	deDESynthesizer &GetModule() const;
 	
 	/** \brief Parent synthesizer. */
-	inline const desynSynthesizer &GetSynthesizer() const{return pSynthesizer;}
+	inline const desynSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Parent source. */
-	inline desynSynthesizerSource &GetSource() const{return pSource;}
+	inline desynSynthesizerSource &GetSource() const{ return pSource; }
 	
 	
 	
 	/** \brief Effect is disabled. */
-	inline bool GetDisabled() const{return pDisabled;}
+	inline bool GetDisabled() const{ return pDisabled; }
 	
 	/** \brief Set if effect is disabled. */
 	void SetDisabled(bool disabled);
 	
 	/** \brief Offset in bytes to state data in synthesizer instances. */
-	inline int GetStateDataOffset() const{return pStateDataOffset;}
+	inline int GetStateDataOffset() const{ return pStateDataOffset; }
 	
 	/** \brief Set offset in bytes to state data in synthesizer instances. */
 	void SetStateDataOffset(int offset);
@@ -99,12 +99,12 @@ public:
 	}
 	
 	/** \brief Strength target. */
-	inline const desynSynthesizerTarget &GetTargetStrength() const{return pTargetStrength;}
+	inline const desynSynthesizerTarget &GetTargetStrength() const{ return pTargetStrength; }
 	
 	
 	
 	/** \brief Previous effect or \em NULL if this is the first effect in the source. */
-	inline desynSynthesizerEffect *GetPreviousEffect() const{return pPreviousEffect;}
+	inline desynSynthesizerEffect *GetPreviousEffect() const{ return pPreviousEffect; }
 	
 	/** \brief Set previous effect or \em NULL if this is the first effect in the source. */
 	void SetPreviousEffect(desynSynthesizerEffect *effect);

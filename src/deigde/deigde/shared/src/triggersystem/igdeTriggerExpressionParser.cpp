@@ -106,7 +106,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	while(mode != 4 && mode != 5 && state.HasMoreCharacters()){
 		const int character = state.GetNextCharacter();
 		
-		if(mode == 2 && ! component->GetTargetName().IsEmpty()){
+		if(mode == 2 && !component->GetTargetName().IsEmpty()){
 			child.TakeOverWith();
 			child->SetTargetName(component->GetTargetName());
 			child->SetNegate(component->GetNegate());
@@ -188,7 +188,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 		}else if(character == pSymbolGroupEnd){
 			switch(mode){
 			case 3:
-				if(! requireEnd){
+				if(!requireEnd){
 					state.AdjustPosition(-1);
 				}
 				mode = 4;
@@ -378,7 +378,7 @@ void igdeTriggerExpressionParser::ParseTargetName(decString &name, igdeTriggerEx
 		
 		if(quoted){
 			if(character == '\\'){
-				if(! state.HasMoreCharacters()){
+				if(!state.HasMoreCharacters()){
 					DETHROW(deeInvalidParam);
 				}
 				name.AppendCharacter(state.GetNextCharacter());

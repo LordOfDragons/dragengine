@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eTrackAxis newAxis){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

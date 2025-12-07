@@ -129,7 +129,7 @@ void gdeOCBillboard::SetBoneName(const char *boneName){
 
 
 bool gdeOCBillboard::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCBillboard::GetPropertyName(eProperties property) const{

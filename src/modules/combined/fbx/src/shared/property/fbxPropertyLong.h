@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline int64_t GetValue() const{return pValue;}
+	inline int64_t GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(int64_t value);

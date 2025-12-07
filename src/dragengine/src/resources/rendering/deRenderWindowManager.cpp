@@ -139,7 +139,7 @@ void deRenderWindowManager::SystemGraphicLoad(){
 	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
 	
 	while(renderWindow){
-		if(! renderWindow->GetPeerGraphic()){
+		if(!renderWindow->GetPeerGraphic()){
 			GetGraphicSystem()->LoadRenderWindow(renderWindow);
 		}
 		

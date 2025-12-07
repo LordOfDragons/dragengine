@@ -116,31 +116,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actions. */
-	inline igdeAction *GetActionDistSave() const{return pActionDistSave;}
+	inline igdeAction *GetActionDistSave() const{ return pActionDistSave; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
-	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
-	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
-	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
-	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
+	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
+	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
+	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
+	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
+	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	inline igdeAction *GetActionProfileAdd() const{return pActionProfileAdd;}
-	inline igdeAction *GetActionProfileRemove() const{return pActionProfileRemove;}
-	inline igdeAction *GetActionProfileDuplicate() const{return pActionProfileDuplicate;}
-	inline igdeAction *GetActionProfileDistribute() const{return pActionProfileDistribute;}
-	inline igdeAction *GetActionProfileTestRun() const{return pActionProfileTestRun;}
+	inline igdeAction *GetActionProfileAdd() const{ return pActionProfileAdd; }
+	inline igdeAction *GetActionProfileRemove() const{ return pActionProfileRemove; }
+	inline igdeAction *GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
+	inline igdeAction *GetActionProfileDistribute() const{ return pActionProfileDistribute; }
+	inline igdeAction *GetActionProfileTestRun() const{ return pActionProfileTestRun; }
 	
-	inline const igdeActionExternOpen::Ref &GetActionShowDistribute() const{return pActionShowDelga;}
-	inline const igdeActionExternOpen::Ref &GetActionShowContent() const{return pActionShowContent;}
-	inline const igdeActionExternOpen::Ref &GetActionShowConfig() const{return pActionShowConfig;}
-	inline const igdeActionExternOpen::Ref &GetActionShowOverlay() const{return pActionShowOverlay;}
-	inline const igdeActionExternOpen::Ref &GetActionShowCapture() const{return pActionShowCapture;}
-	inline const igdeActionExternOpen::Ref &GetActionShowLogs() const{return pActionShowLogs;}
+	inline const igdeActionExternOpen::Ref &GetActionShowDistribute() const{ return pActionShowDelga; }
+	inline const igdeActionExternOpen::Ref &GetActionShowContent() const{ return pActionShowContent; }
+	inline const igdeActionExternOpen::Ref &GetActionShowConfig() const{ return pActionShowConfig; }
+	inline const igdeActionExternOpen::Ref &GetActionShowOverlay() const{ return pActionShowOverlay; }
+	inline const igdeActionExternOpen::Ref &GetActionShowCapture() const{ return pActionShowCapture; }
+	inline const igdeActionExternOpen::Ref &GetActionShowLogs() const{ return pActionShowLogs; }
 	
-	inline igdeIcon *GetIconStart() const{return pIconStart;}
-	inline igdeIcon *GetIconStop() const{return pIconStop;}
-	inline igdeIcon *GetIconKill() const{return pIconKill;}
-	inline igdeIcon *GetIconDelga() const{return pIconDelga;}
+	inline igdeIcon *GetIconStart() const{ return pIconStart; }
+	inline igdeIcon *GetIconStop() const{ return pIconStop; }
+	inline igdeIcon *GetIconKill() const{ return pIconKill; }
+	inline igdeIcon *GetIconDelga() const{ return pIconDelga; }
 	
 	
 	
@@ -150,18 +150,18 @@ public:
 	
 	
 	/** Configuration. */
-	inline projConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline projConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
-	inline const igdeClipboard &GetClipboard() const{return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Load save system. */
-	inline projLoadSaveSystem &GetLoadSaveSystem(){return pLoadSaveSystem;}
-	inline const projLoadSaveSystem &GetLoadSaveSystem() const{return pLoadSaveSystem;}
+	inline projLoadSaveSystem &GetLoadSaveSystem(){ return pLoadSaveSystem; }
+	inline const projLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** \brief Test-Run panel. */
-	inline projPanelTestRun &GetPanelTestRun() const{return *pPanelTestRun;}
+	inline projPanelTestRun &GetPanelTestRun() const{ return *pPanelTestRun; }
 	
 	/** \brief Activate test-run panel. */
 	void ActivatePanelTestRun();
@@ -169,7 +169,7 @@ public:
 	
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{return pProject;}
+	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
 	void SetProject(projProject *project);

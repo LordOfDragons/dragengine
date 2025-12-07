@@ -79,7 +79,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeCategory * const category = pPanel.GetCategory();
-		if(! category || textField->GetText() == category->GetName()){
+		if(!category || textField->GetText() == category->GetName()){
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeCategory * const category = pPanel.GetCategory();
-		if(! category || textArea->GetText() == category->GetDescription()){
+		if(!category || textArea->GetText() == category->GetDescription()){
 			return;
 		}
 		
@@ -123,7 +123,7 @@ public:
 	
 	virtual igdeUndo *UndoSet(const decStringSet &patterns){
 		gdeCategory * const category = pPanel.GetCategory();
-		if(! category || category->GetAutoCategorizePattern() == patterns){
+		if(!category || category->GetAutoCategorizePattern() == patterns){
 			return NULL;
 		}
 		return new gdeUCategorySetAutoCategorizePattern(pPanel.GetGameDefinition(),
@@ -145,7 +145,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeCategory * const category = pPanel.GetCategory();
-		if(! category){
+		if(!category){
 			return;
 		}
 		
@@ -166,12 +166,12 @@ public:
 	
 	void JumpToElement(igdeListBox &listBox, int index){
 		gdeCategory * const category = pPanel.GetCategory();
-		if(! category){
+		if(!category){
 			return;
 		}
 		
 		const igdeListItem &item = *listBox.GetItemAt(index);
-		if(! item.GetData()){
+		if(!item.GetData()){
 			return;
 		}
 		
@@ -291,7 +291,7 @@ gdeCategory *gdeWPSCategory::GetCategory() const{
 
 gdeUCategoryBase::eCategoryType gdeWPSCategory::GetCategoryType() const{
 	gdeCategory *category = GetCategory();
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -348,7 +348,7 @@ void gdeWPSCategory::UpdateListElements(){
 	pListElements->RemoveAllItems();
 	
 	const gdeCategory * const category = GetCategory();
-	if(! category || ! pGameDefinition){
+	if(!category || !pGameDefinition){
 		return;
 	}
 	

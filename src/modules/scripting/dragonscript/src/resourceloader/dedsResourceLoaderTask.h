@@ -66,14 +66,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	/** Retrieves the resource type. */
-	inline deResourceLoader::eResourceType GetResourceType() const{return pResourceType;}
+	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	/** Determines if this task matches the given filename/resourceType. */
 	bool Matches(const char *filename, deResourceLoader::eResourceType resourceType) const;
 	
 	/** Retrieves the number of listeners. */
-	inline int GetListenerCount() const{return pListenerCount;}
+	inline int GetListenerCount() const{ return pListenerCount; }
 	/** Adds a listener. */
 	void AddListener(dsRealObject *listener);
 	/** Removes a listener. */

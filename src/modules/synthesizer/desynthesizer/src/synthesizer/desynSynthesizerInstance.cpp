@@ -157,11 +157,11 @@ void desynSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int o
 	deMutexGuard guard(pMutex);
 	pPrepare();
 	
-	if(! buffer || pGenerateSampleSize * samples != bufferSize){
+	if(!buffer || pGenerateSampleSize * samples != bufferSize){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pSilent || ! pSynthesizer){
+	if(pSilent || !pSynthesizer){
 		pGenerateSilence(buffer, samples);
 	}
 	
@@ -272,7 +272,7 @@ void desynSynthesizerInstance::pUpdateFormat(){
 
 
 void desynSynthesizerInstance::pClearControllers(){
-	if(! pControllers){
+	if(!pControllers){
 		return;
 	}
 	
@@ -432,7 +432,7 @@ void desynSynthesizerInstance::pCreateStateData(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		return;
 	}
 	
@@ -447,10 +447,10 @@ void desynSynthesizerInstance::pCreateStateData(){
 }
 
 void desynSynthesizerInstance::pFreeStateData(){
-	if(! pStateData){
+	if(!pStateData){
 		return;
 	}
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

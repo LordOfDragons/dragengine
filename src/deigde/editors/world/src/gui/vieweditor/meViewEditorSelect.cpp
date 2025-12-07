@@ -195,7 +195,7 @@ bool meViewEditorSelect::OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, b
 }
 
 void meViewEditorSelect::OnResize(){
-	if(! GetDragLeftMouseButton() || ! pCLSelect || ! pCLSelect->GetRectSelect()){
+	if(!GetDragLeftMouseButton() || !pCLSelect || !pCLSelect->GetRectSelect()){
 		pCanvasSelect->SetVisible(false);
 		return;
 	}
@@ -222,7 +222,7 @@ void meViewEditorSelect::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 	if(GetDragLeftMouseButton() && pCLSelect){
 		const int elementMode = GetElementMode();
 		
-		pCLSelect->SetSingleSelect(! shift);
+		pCLSelect->SetSingleSelect(!shift);
 		pCLSelect->SetRectSelect(false);
 		
 		decLayerMask collisionCategory;
@@ -391,7 +391,7 @@ void meViewEditorSelect::OnMouseMove(int x, int y, bool shift, bool control){
 	pLastMousePosition.Set(x, y);
 	
 	if(GetDragLeftMouseButton() && pCLSelect){
-		if(! pCLSelect->GetRectSelect()){
+		if(!pCLSelect->GetRectSelect()){
 			const int threshold = GetWorldGuiParameters().GetRectSelDragThreshold();
 			const decPoint &dragDist = GetDragDistanceStart();
 			
@@ -531,7 +531,7 @@ public:
 };
 
 void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
-	if(GetDragLeftMouseButton() || GetDragRightMouseButton() || ! pCLBubbleInfo){
+	if(GetDragLeftMouseButton() || GetDragRightMouseButton() || !pCLBubbleInfo){
 		return;
 	}
 	

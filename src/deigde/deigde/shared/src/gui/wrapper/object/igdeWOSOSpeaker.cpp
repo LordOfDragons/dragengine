@@ -84,10 +84,10 @@ public:
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSound, this);
 		pCounter++;
 	}
-	inline deSound *GetSound() const{return pSound;}
+	inline deSound *GetSound() const{ return pSound; }
 	
 	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -103,7 +103,7 @@ public:
 	}
 	
 	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -167,7 +167,7 @@ void igdeWOSOSpeaker::InitTriggers(){
 }
 
 void igdeWOSOSpeaker::UpdateTriggers(){
-	if(! pSpeaker){
+	if(!pSpeaker){
 		return;
 	}
 	
@@ -198,7 +198,7 @@ void igdeWOSOSpeaker::UpdateTriggers(){
 }
 
 void igdeWOSOSpeaker::UpdateVisibility(){
-	if(! pSpeaker){
+	if(!pSpeaker){
 		return;
 	}
 	
@@ -225,7 +225,7 @@ void igdeWOSOSpeaker::Visit(igdeWOSOVisitor &visitor){
 }
 
 void igdeWOSOSpeaker::AsyncLoadFinished(bool success){
-	if(! pResLoad){
+	if(!pResLoad){
 		return;
 	}
 	
@@ -251,7 +251,7 @@ void igdeWOSOSpeaker::pLoadResources(){
 	
 	const decString pathSound(GetStringProperty(
 		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epSound), pGDSpeaker.GetPathSound()));
-	if(! pathSound.IsEmpty()){
+	if(!pathSound.IsEmpty()){
 		rl.LoadSound(pathSound);
 	}
 	
@@ -262,7 +262,7 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 	const igdeWOSOSpeakerResLoadComponent &rl =
 		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
-	if(! pSpeaker){
+	if(!pSpeaker){
 		pSpeaker.TakeOver(GetEngine().GetSpeakerManager()->CreateSpeaker());
 		
 		UpdateLayerMasks();
@@ -289,11 +289,11 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epPlaySpeed),
 		pGDSpeaker.GetPlaySpeed()));
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddSpeaker(pSpeaker);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
@@ -301,7 +301,7 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 }
 
 void igdeWOSOSpeaker::pDestroySpeaker(){
-	if(! pSpeaker){
+	if(!pSpeaker){
 		return;
 	}
 	
@@ -318,7 +318,7 @@ void igdeWOSOSpeaker::pDestroySpeaker(){
 void igdeWOSOSpeaker::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pSpeaker){
+	if(!pSpeaker){
 		return;
 	}
 	
@@ -337,7 +337,7 @@ void igdeWOSOSpeaker::AttachToCollider(){
 			pGDSpeaker.GetOrientation()));
 		
 		if(colliderComponent){
-			if(! pGDSpeaker.GetBoneName().IsEmpty()){
+			if(!pGDSpeaker.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDSpeaker.GetBoneName());
 			}
@@ -360,7 +360,7 @@ void igdeWOSOSpeaker::AttachToCollider(){
 }
 
 void igdeWOSOSpeaker::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
@@ -370,7 +370,7 @@ void igdeWOSOSpeaker::DetachFromCollider(){
 }
 
 bool igdeWOSOSpeaker::pEvalPlaying(){
-	if(! GetWrapper().GetVisible()){
+	if(!GetWrapper().GetVisible()){
 		return false;
 	}
 	

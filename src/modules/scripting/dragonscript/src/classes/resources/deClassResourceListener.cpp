@@ -70,7 +70,7 @@ void deClassResourceListener::nfFailedLoading::RunFunction(dsRunTime *rt, dsValu
 
 deClassResourceListener::deClassResourceListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("ResourceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;

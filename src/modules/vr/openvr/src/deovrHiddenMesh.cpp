@@ -137,7 +137,7 @@ public:
 
 void deovrHiddenMesh::pLoadHiddenMesh(){
 	const vr::HiddenAreaMesh_t mesh = pOvr.GetVRSystem().GetHiddenAreaMesh(pEye, vr::k_eHiddenAreaMesh_Standard);
-	if(! mesh.pVertexData || mesh.unTriangleCount == 0){
+	if(!mesh.pVertexData || mesh.unTriangleCount == 0){
 		return;
 	}
 	

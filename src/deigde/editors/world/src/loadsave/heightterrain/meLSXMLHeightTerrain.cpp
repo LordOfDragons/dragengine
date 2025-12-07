@@ -95,7 +95,7 @@
 meLSXMLHeightTerrain::meLSXMLHeightTerrain(meLoadSaveSystem *lssys) :
 meLSHeightTerrain(lssys->GetWindowMain()->GetLogger(), "LSXMLHeightTerrain")
 {
-	if(! lssys) DETHROW(deeInvalidParam);
+	if(!lssys) DETHROW(deeInvalidParam);
 	
 	pLSSys = lssys;
 	
@@ -123,7 +123,7 @@ void meLSXMLHeightTerrain::LoadFromFile(meHeightTerrain &heightTerrain, decBaseF
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "heightTerrain"){
+	if(!root || root->GetName() != "heightTerrain"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -173,13 +173,13 @@ void meLSXMLHeightTerrain::pSaveSector(decXmlWriter &writer, meHeightTerrainSect
 	
 	int i;
 	
-	if(! sector.GetPathHeightImage().IsEmpty()){
+	if(!sector.GetPathHeightImage().IsEmpty()){
 		writer.WriteDataTagString("heightImage", sector.GetPathHeightImage());
 	}
-	if(! sector.GetPathVisibilityImage().IsEmpty()){
+	if(!sector.GetPathVisibilityImage().IsEmpty()){
 		writer.WriteDataTagString("visibilityImage", sector.GetPathVisibilityImage());
 	}
-	if(! sector.GetPathPFCacheImage().IsEmpty()){
+	if(!sector.GetPathPFCacheImage().IsEmpty()){
 		writer.WriteDataTagString("pfcache", sector.GetPathPFCacheImage());
 	}
 	
@@ -216,7 +216,7 @@ void meLSXMLHeightTerrain::pSaveTexture(decXmlWriter &writer, const meHeightTerr
 	writer.WriteOpeningTagEnd(true);
 	
 	writer.WriteDataTagFloat("uvRotation", texture.GetProjectionRotation());
-	if(! texture.GetPathMask().IsEmpty()){
+	if(!texture.GetPathMask().IsEmpty()){
 		writer.WriteDataTagString("mask", texture.GetPathMask());
 	}
 	
@@ -238,7 +238,7 @@ void meLSXMLHeightTerrain::pSaveNavSpace(decXmlWriter &writer, const meHeightTer
 		pSaveNavSpaceType(writer, *navspace.GetTypeAt(i));
 	}
 	
-	if(! navspace.GetPathNavSpace().IsEmpty()){
+	if(!navspace.GetPathNavSpace().IsEmpty()){
 		writer.WriteDataTagString("path", navspace.GetPathNavSpace());
 	}
 	
@@ -269,7 +269,7 @@ void meLSXMLHeightTerrain::pSaveVLayer(decXmlWriter &writer, const meHTVegetatio
 	
 	writer.WriteOpeningTag("vegetationLayer");
 	
-	if(! vlayer.GetName().IsEmpty()){
+	if(!vlayer.GetName().IsEmpty()){
 		writer.WriteDataTagString("name", vlayer.GetName());
 	}
 	
@@ -346,11 +346,11 @@ void meLSXMLHeightTerrain::pSaveVLayer(decXmlWriter &writer, const meHTVegetatio
 void meLSXMLHeightTerrain::pSaveVLayerVariation(decXmlWriter &writer, const meHTVVariation &variation){
 	writer.WriteOpeningTag("variation");
 	
-	if(! variation.GetPathModel().IsEmpty()){
+	if(!variation.GetPathModel().IsEmpty()){
 		writer.WriteDataTagString("model", variation.GetPathModel());
 	}
 	
-	if(! variation.GetPathSkin().IsEmpty()){
+	if(!variation.GetPathSkin().IsEmpty()){
 		writer.WriteDataTagString("skin", variation.GetPathSkin());
 	}
 	
@@ -371,7 +371,7 @@ void meLSXMLHeightTerrain::pSaveVLayerVariation(decXmlWriter &writer, const meHT
 }
 
 void meLSXMLHeightTerrain::pSaveVLayerRule(decXmlWriter &writer, const meHTVRule &rule){
-	if(! rule.GetName().IsEmpty()){
+	if(!rule.GetName().IsEmpty()){
 		writer.WriteDataTagString("name", rule.GetName());
 	}
 	
@@ -389,7 +389,7 @@ void meLSXMLHeightTerrain::pSaveVLayerRuleClosestProp(decXmlWriter &writer, cons
 	
 	pSaveVLayerRule(writer, rule);
 	
-	if(! rule.GetPropClass().IsEmpty()){
+	if(!rule.GetPropClass().IsEmpty()){
 		writer.WriteDataTagString("propClass", rule.GetPropClass());
 	}
 	
@@ -403,7 +403,7 @@ void meLSXMLHeightTerrain::pSaveVLayerRuleClosestVegetation(decXmlWriter &writer
 	
 	pSaveVLayerRule(writer, rule);
 	
-	if(! rule.GetVegetationType().IsEmpty()){
+	if(!rule.GetVegetationType().IsEmpty()){
 		writer.WriteDataTagString("vegetationType", rule.GetVegetationType());
 	}
 	
@@ -650,7 +650,7 @@ void meLSXMLHeightTerrain::pSaveVLayerRulePropCount(decXmlWriter &writer, const 
 	
 	pSaveVLayerRule(writer, rule);
 	
-	if(! rule.GetPropClass().IsEmpty()){
+	if(!rule.GetPropClass().IsEmpty()){
 		writer.WriteDataTagString("propClass", rule.GetPropClass());
 	}
 	
@@ -683,7 +683,7 @@ void meLSXMLHeightTerrain::pLoadHeightTerrain(decXmlElementTag &root, meHeightTe
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -750,7 +750,7 @@ void meLSXMLHeightTerrain::pLoadSector(decXmlElementTag &root, meHeightTerrainSe
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -793,7 +793,7 @@ void meLSXMLHeightTerrain::pLoadTexture(decXmlElementTag &root, meHeightTerrainS
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -836,7 +836,7 @@ void meLSXMLHeightTerrain::pLoadNavSpace(decXmlElementTag &root, meHeightTerrain
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -876,7 +876,7 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType(decXmlElementTag &root, meHeightTer
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -904,7 +904,7 @@ void meLSXMLHeightTerrain::pLoadVLayer(decXmlElementTag &root, meHeightTerrain &
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -942,7 +942,7 @@ void meLSXMLHeightTerrain::pLoadVLayerVariation(decXmlElementTag &root, meHTVege
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -981,7 +981,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRules(decXmlElementTag &root, meHTVegetati
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1062,7 +1062,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestProp(decXmlElementTag &root, me
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1074,7 +1074,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestProp(decXmlElementTag &root, me
 		}else if(tagName == "searchRadius"){
 			rule->SetSearchRadius(GetCDataFloat(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1089,7 +1089,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestVegetation(decXmlElementTag &ro
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1101,7 +1101,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestVegetation(decXmlElementTag &ro
 		}else if(tagName == "searchRadius"){
 			rule->SetSearchRadius(GetCDataFloat(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1116,7 +1116,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleCombine(decXmlElementTag &root, meHTVe
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1131,7 +1131,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleCombine(decXmlElementTag &root, meHTVe
 		}else if(tagName == "z"){
 			rule->SetZ(GetCDataFloat(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1146,7 +1146,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleComponents(decXmlElementTag &root, meH
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1157,7 +1157,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleComponents(decXmlElementTag &root, meH
 			ReadVector(*tag, vector);
 			rule->SetVector(vector);
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1181,11 +1181,11 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleGeometry(decXmlElementTag &root, meHTV
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
-		if(! pLoadVLayerRule(*tag, rule)){
+		if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1200,7 +1200,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMapping(decXmlElementTag &root, meHTVe
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1218,7 +1218,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMapping(decXmlElementTag &root, meHTVe
 		}else if(tagName == "inversed"){
 			rule->SetInversed(GetCDataInt(*tag) != 0);
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1233,7 +1233,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMath(decXmlElementTag &root, meHTVeget
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1315,7 +1315,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMath(decXmlElementTag &root, meHTVeget
 		}else if(tagName == "value2"){
 			rule->SetValueB(GetCDataFloat(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1330,7 +1330,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMultiMath(decXmlElementTag &root, meHT
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1358,7 +1358,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMultiMath(decXmlElementTag &root, meHT
 				LogWarnUnknownValue(*tag, keyword);
 			}
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1373,11 +1373,11 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleRandom(decXmlElementTag &root, meHTVeg
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
-		if(! pLoadVLayerRule(*tag, rule)){
+		if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1392,7 +1392,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleResult(decXmlElementTag &root, meHTVeg
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1404,7 +1404,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleResult(decXmlElementTag &root, meHTVeg
 		}else if(tagName == "variation"){
 			rule->SetVariation(GetCDataInt(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1419,7 +1419,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleVectorMath(decXmlElementTag &root, meH
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1460,7 +1460,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleVectorMath(decXmlElementTag &root, meH
 			ReadVector(*tag, vector);
 			rule->SetVectorB(vector);
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1475,7 +1475,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleConstant(decXmlElementTag &root, meHTV
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1486,7 +1486,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleConstant(decXmlElementTag &root, meHTV
 			ReadVector(*tag, vector);
 			rule->SetVector(vector);
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -1501,7 +1501,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRulePropCount(decXmlElementTag &root, meHT
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1513,7 +1513,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRulePropCount(decXmlElementTag &root, meHT
 		}else if(tagName == "searchRadius"){
 			rule->SetSearchRadius(GetCDataFloat(*tag));
 			
-		}else if(! pLoadVLayerRule(*tag, rule)){
+		}else if(!pLoadVLayerRule(*tag, rule)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}

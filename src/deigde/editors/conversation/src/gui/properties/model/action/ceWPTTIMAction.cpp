@@ -78,7 +78,7 @@ ceConversation &conversation, ceConversationAction *action) :
 ceWPTTreeItemModel(windowMain, conversation, type),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -101,7 +101,7 @@ ceWPTTIMAction *ceWPTTIMAction::DeepFindAction(ceConversationAction *action){
 }
 
 void ceWPTTIMAction::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void ceWPTTIMAction::BuildPlaybackFromHere() const{
 	
 	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetMainActionStack();
 	cePlaybackActionStackEntry &stackTop = stack.GetTop();
-	if(! stackTop.GetParentList()){
+	if(!stackTop.GetParentList()){
 		DETHROW(deeInvalidParam);
 	}
 	

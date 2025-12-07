@@ -54,7 +54,7 @@ public:
 	/** Creates the class members. */
 	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** Retrieves the occlusion mesh or NULL if object is NULL. */
 	deOcclusionMesh *GetOcclusionMesh(dsRealObject *object) const;

@@ -91,140 +91,140 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the minimum position. */
-	inline const decVector &GetMinimumPosition() const{return pMinPosition;}
+	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	/** Set the minimum position. */
 	void SetMinimumPosition(const decVector &position);
 	/** Retrieve the maximum position. */
-	inline const decVector &GetMaximumPosition() const{return pMaxPosition;}
+	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	/** Set the maximum position. */
 	void SetMaximumPosition(const decVector &position);
 	/** Retrieve the minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{return pMinRotation;}
+	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	/** Set the minimum rotation. */
 	void SetMinimumRotation(const decVector &rotation);
 	/** Retrieve the maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{return pMaxRotation;}
+	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	/** Set the maximum rotation. */
 	void SetMaximumRotation(const decVector &rotation);
 	
 	/** Retrieve the minimum scaling. */
-	inline const decVector &GetMinimumScaling() const{return pMinScaling;}
+	inline const decVector &GetMinimumScaling() const{ return pMinScaling; }
 	
 	/** Set the minimum scaling. */
 	void SetMinimumScaling(const decVector &scaling);
 	
 	/** Retrieve the maximum scaling. */
-	inline const decVector &GetMaximumScaling() const{return pMaxScaling;}
+	inline const decVector &GetMaximumScaling() const{ return pMaxScaling; }
 	
 	/** Set the maximum scaling. */
 	void SetMaximumScaling(const decVector &scaling);
 	
 	/** Retrieve the minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{return pMinVertexPositionSet;}
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
 	
 	/** Set the minimum vertex position set. */
 	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Retrieve the maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{return pMaxVertexPositionSet;}
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
 	
 	/** Set the maximum vertex poosition set. */
 	void SetMaximumVertexPositionSet(float weight);
 	
 	/** Retrieve the coordinate frame to rotate around. */
-	inline deAnimatorRuleLimit::eCoordinateFrames GetCoordinateFrame() const{return pCoordinateFrame;}
+	inline deAnimatorRuleLimit::eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
 	/** Set the coordinate frame to rotate around. */
 	void SetCoordinateFrame(deAnimatorRuleLimit::eCoordinateFrames coordinateFrame);
 	
 	/** Determine if x position is limited to a minimum. */
-	inline bool GetEnablePositionXMin() const{return pEnablePositionXMin;}
+	inline bool GetEnablePositionXMin() const{ return pEnablePositionXMin; }
 	/** Set if x position is limited to a minimum. */
 	void SetEnablePositionXMin(bool enabled);
 	/** Determine if x position is limited to a maximum. */
-	inline bool GetEnablePositionXMax() const{return pEnablePositionXMax;}
+	inline bool GetEnablePositionXMax() const{ return pEnablePositionXMax; }
 	/** Set if x position is limited to a maximum. */
 	void SetEnablePositionXMax(bool enabled);
 	/** Determine if y position is limited to a minimum. */
-	inline bool GetEnablePositionYMin() const{return pEnablePositionYMin;}
+	inline bool GetEnablePositionYMin() const{ return pEnablePositionYMin; }
 	/** Set if y position is limited to a minimum. */
 	void SetEnablePositionYMin(bool enabled);
 	/** Determine if y position is limited to a maximum. */
-	inline bool GetEnablePositionYMax() const{return pEnablePositionYMax;}
+	inline bool GetEnablePositionYMax() const{ return pEnablePositionYMax; }
 	/** Set if y position is limited to a maximum. */
 	void SetEnablePositionYMax(bool enabled);
 	/** Determine if z position is limited to a minimum. */
-	inline bool GetEnablePositionZMin() const{return pEnablePositionZMin;}
+	inline bool GetEnablePositionZMin() const{ return pEnablePositionZMin; }
 	/** Set if z position is limited to a minimum. */
 	void SetEnablePositionZMin(bool enabled);
 	/** Determine if z position is limited to a maximum. */
-	inline bool GetEnablePositionZMax() const{return pEnablePositionZMax;}
+	inline bool GetEnablePositionZMax() const{ return pEnablePositionZMax; }
 	/** Set if z position is limited to a maximum. */
 	void SetEnablePositionZMax(bool enabled);
 	
 	/** Determine if x rotation is limited to a minimum. */
-	inline bool GetEnableRotationXMin() const{return pEnableRotationXMin;}
+	inline bool GetEnableRotationXMin() const{ return pEnableRotationXMin; }
 	/** Set if x rotation is limited to a minimum. */
 	void SetEnableRotationXMin(bool enabled);
 	/** Determine if x rotation is limited to a maximum. */
-	inline bool GetEnableRotationXMax() const{return pEnableRotationXMax;}
+	inline bool GetEnableRotationXMax() const{ return pEnableRotationXMax; }
 	/** Set if x rotation is limited to a maximum. */
 	void SetEnableRotationXMax(bool enabled);
 	/** Determine if y rotation is limited to a minimum. */
-	inline bool GetEnableRotationYMin() const{return pEnableRotationYMin;}
+	inline bool GetEnableRotationYMin() const{ return pEnableRotationYMin; }
 	/** Set if y rotation is limited to a minimum. */
 	void SetEnableRotationYMin(bool enabled);
 	/** Determine if y rotation is limited to a maximum. */
-	inline bool GetEnableRotationYMax() const{return pEnableRotationYMax;}
+	inline bool GetEnableRotationYMax() const{ return pEnableRotationYMax; }
 	/** Set if y rotation is limited to a maximum. */
 	void SetEnableRotationYMax(bool enabled);
 	/** Determine if z rotation is limited to a minimum. */
-	inline bool GetEnableRotationZMin() const{return pEnableRotationZMin;}
+	inline bool GetEnableRotationZMin() const{ return pEnableRotationZMin; }
 	/** Set if z rotation is limited to a minimum. */
 	void SetEnableRotationZMin(bool enabled);
 	/** Determine if z rotation is limited to a maximum. */
-	inline bool GetEnableRotationZMax() const{return pEnableRotationZMax;}
+	inline bool GetEnableRotationZMax() const{ return pEnableRotationZMax; }
 	/** Set if z rotation is limited to a maximum. */
 	void SetEnableRotationZMax(bool enabled);
 	
 	/** Determine if x scaling is limited to a minimum. */
-	inline bool GetEnableScalingXMin() const{return pEnableScalingXMin;}
+	inline bool GetEnableScalingXMin() const{ return pEnableScalingXMin; }
 	/** Set if x scaling is limited to a minimum. */
 	void SetEnableScalingXMin(bool enabled);
 	/** Determine if x scaling is limited to a maximum. */
-	inline bool GetEnableScalingXMax() const{return pEnableScalingXMax;}
+	inline bool GetEnableScalingXMax() const{ return pEnableScalingXMax; }
 	/** Set if x scaling is limited to a maximum. */
 	void SetEnableScalingXMax(bool enabled);
 	/** Determine if y scaling is limited to a minimum. */
-	inline bool GetEnableScalingYMin() const{return pEnableScalingYMin;}
+	inline bool GetEnableScalingYMin() const{ return pEnableScalingYMin; }
 	/** Set if y scaling is limited to a minimum. */
 	void SetEnableScalingYMin(bool enabled);
 	/** Determine if y scaling is limited to a maximum. */
-	inline bool GetEnableScalingYMax() const{return pEnableScalingYMax;}
+	inline bool GetEnableScalingYMax() const{ return pEnableScalingYMax; }
 	/** Set if y scaling is limited to a maximum. */
 	void SetEnableScalingYMax(bool enabled);
 	/** Determine if z scaling is limited to a minimum. */
-	inline bool GetEnableScalingZMin() const{return pEnableScalingZMin;}
+	inline bool GetEnableScalingZMin() const{ return pEnableScalingZMin; }
 	/** Set if z scaling is limited to a minimum. */
 	void SetEnableScalingZMin(bool enabled);
 	/** Determine if z scaling is limited to a maximum. */
-	inline bool GetEnableScalingZMax() const{return pEnableScalingZMax;}
+	inline bool GetEnableScalingZMax() const{ return pEnableScalingZMax; }
 	/** Set if z scaling is limited to a maximum. */
 	void SetEnableScalingZMax(bool enabled);
 	
 	/** Vertex position set is limited to a minimum. */
-	inline bool GetEnableVertexPositionSetMin() const{return pEnableVertexPositionSetMin;}
+	inline bool GetEnableVertexPositionSetMin() const{ return pEnableVertexPositionSetMin; }
 	
 	/** Set if vertex position set is limited to a minimum. */
 	void SetEnableVertexPositionSetMin(bool enabled);
 	
 	/** Vertex position set is limited to a maximum. */
-	inline bool GetEnableVertexPositionSetMax() const{return pEnableVertexPositionSetMax;}
+	inline bool GetEnableVertexPositionSetMax() const{ return pEnableVertexPositionSetMax; }
 	
 	/** Set if vertex position set is limited to a maximum. */
 	void SetEnableVertexPositionSetMax(bool enabled);
 	
 	/** Retrieve the name of the target bone. */
-	inline const decString &GetTargetBone() const{return pTargetBone;}
+	inline const decString &GetTargetBone() const{ return pTargetBone; }
 	
 	/** Set the name of the target bone. */
 	void SetTargetBone(const char *boneName);

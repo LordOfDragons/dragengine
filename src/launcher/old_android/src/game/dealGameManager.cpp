@@ -111,7 +111,7 @@ void dealGameManager::LoadGameList(){
 				reader = vfs.OpenFileForReading(pathFile);
 				
 				game = new dealGame(pLauncher);
-				if(! game) DETHROW(deeOutOfMemory);
+				if(!game) DETHROW(deeOutOfMemory);
 				
 				gameXML.ReadFromFile(*reader, *game);
 				reader->FreeReference();
@@ -165,7 +165,7 @@ void dealGameManager::ApplyProfileChanges(){
 	for(i=0; i<count; i++){
 		dealGame &game = *pGameList.GetAt(i);
 		
-		if(! pProfileList.Has(game.GetGlobalProfile())){
+		if(!pProfileList.Has(game.GetGlobalProfile())){
 			game.SetGlobalProfile(NULL);
 			game.VerifyRequirements();
 		}
@@ -221,7 +221,7 @@ void dealGameManager::CreateDefaultProfile(){
 	deLogger &logger = pLauncher.GetLogger();
 	dealEngineModule *module;
 	
-	if(! pDefaultProfile){
+	if(!pDefaultProfile){
 		pDefaultProfile = new dealGameProfile;
 	}
 	

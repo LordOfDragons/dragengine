@@ -86,7 +86,7 @@ pDecal(decal){
 
 void deoglRDecal::WorldComputeElement::UpdateData(sDataElement &data) const{
 	data.highestLod = 0;
-	if(! pDecal.GetVisible() || ! pDecal.GetParentComponent()){
+	if(!pDecal.GetVisible() || !pDecal.GetParentComponent()){
 		data.geometryCount = 0;
 		return;
 	}
@@ -107,17 +107,17 @@ void deoglRDecal::WorldComputeElement::UpdateData(sDataElement &data) const{
 
 void deoglRDecal::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 	const deoglSharedVBOBlock * const vboBlock = pDecal.GetVBOBlock();
-	if(! vboBlock){
+	if(!vboBlock){
 		return;
 	}
 	
 	const deoglVAO * const vao = vboBlock->GetVBO()->GetVAO();
-	if(! vao || ! vao->GetRTSVAO()){
+	if(!vao || !vao->GetRTSVAO()){
 		return;
 	}
 	
 	deoglSkinTexture * const skinTexture = pDecal.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	
@@ -277,13 +277,13 @@ void deoglRDecal::SetVisible(bool visible){
 
 
 void deoglRDecal::UpdateSkin(float elapsed){
-	if(! pSkinState){
+	if(!pSkinState){
 		return;
 	}
 	
 	pSkinState->AdvanceTime(elapsed);
 	
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -392,7 +392,7 @@ void deoglRDecal::UpdateSkinState(){
 	bool changed = false;
 	
 	if(pSkin && (pDynamicSkin || (pParentComponent && pParentComponent->GetDynamicSkin()))){
-		if(! pSkinState){
+		if(!pSkinState){
 			pSkinState = new deoglSkinState(pRenderThread, *this);
 			changed = true;
 		}
@@ -501,7 +501,7 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType(deoglSkinTexturePipeline
 }
 
 deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
@@ -525,7 +525,7 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor(deoglSkinTexturePipelines::eType
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
@@ -577,7 +577,7 @@ void deoglRDecal::PrepareQuickDispose(){
 }
 
 void deoglRDecal::DynamicSkinRenderablesChanged(){
-	if(! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables()){
+	if(!pDynamicSkin || !pSkin || !pSkin->GetHasRenderables()){
 		return;
 	}
 	
@@ -586,7 +586,7 @@ void deoglRDecal::DynamicSkinRenderablesChanged(){
 }
 
 void deoglRDecal::UpdateRenderableMapping(){
-	if(! pSkinState){
+	if(!pSkinState){
 		return;
 	}
 	
@@ -607,11 +607,11 @@ void deoglRDecal::UpdateRenderableMapping(){
 
 
 void deoglRDecal::PrepareGILocalBVH(){
-	if(pGIBVHLocal && ! pDirtyGIBVHLocal){
+	if(pGIBVHLocal && !pDirtyGIBVHLocal){
 		return;
 	}
 	
-	if(! pParentComponent){
+	if(!pParentComponent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -631,7 +631,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 		disable = true;
 	}
 	
-	if(faceCount > 0 && ! disable){
+	if(faceCount > 0 && !disable){
 		primitives = new deoglBVH::sBuildPrimitive[faceCount];
 		primitiveCount = faceCount;
 		int i;
@@ -653,7 +653,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 	pDirtyGIBVHLocal = false;
 	
 	try{
-		if(! pGIBVHLocal){
+		if(!pGIBVHLocal){
 			pGIBVHLocal = new deoglGIBVHLocal(pRenderThread);
 			
 		}else{
@@ -739,7 +739,7 @@ void deoglRDecal::SetDirtyGIBVH(){
 void deoglRDecal::UpdateStaticTexture(){
 	pStaticTexture = true;
 	
-	if(! pUseSkinState){
+	if(!pUseSkinState){
 		return;
 	}
 	
@@ -816,7 +816,7 @@ void deoglRDecal::NotifyTUCChanged(){
 // #include <dragengine/common/utils/decTimer.h>
 void deoglRDecal::pCreateMeshComponent(){
 	DEASSERT_NULL(pVBOBlock)
-	if(! pParentComponent->GetModel()){
+	if(!pParentComponent->GetModel()){
 		return;
 	}
 	
@@ -911,7 +911,7 @@ void deoglRDecal::pCreateMeshComponent(){
 }
 
 void deoglRDecal::pPrepareVBO(){
-	if(! pDirtyVBO){
+	if(!pDirtyVBO){
 		return;
 	}
 	
@@ -931,7 +931,7 @@ void deoglRDecal::pPrepareVBO(){
 }
 
 void deoglRDecal::pUpdateUseSkin(){
-	if(! pDirtyUseTexture){
+	if(!pDirtyUseTexture){
 		return;
 	}
 	
@@ -979,7 +979,7 @@ void deoglRDecal::pUpdateUseSkin(){
 }
 
 void deoglRDecal::pPrepareTUCs(){
-	if(! pDirtyTUCs){
+	if(!pDirtyTUCs){
 		return;
 	}
 	
@@ -1049,7 +1049,7 @@ void deoglRDecal::pPrepareTUCs(){
 }
 
 void deoglRDecal::pPrepareParamBlocks(){
-	if(! pSharedSPBElement){
+	if(!pSharedSPBElement){
 		if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetSharedSPBList(
 				deoglRTBufferObject::esspblSkinInstanceSSBO).AddElement();
@@ -1084,7 +1084,7 @@ void deoglRDecal::pPrepareParamBlocks(){
 }
 
 void deoglRDecal::pPrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pDirtyPrepareSkinStateRenderables){
+	if(!pDirtyPrepareSkinStateRenderables){
 		return;
 	}
 	pDirtyPrepareSkinStateRenderables = false;
@@ -1096,7 +1096,7 @@ void deoglRDecal::pPrepareSkinStateRenderables(const deoglRenderPlanMasked *rend
 }
 
 void deoglRDecal::pRenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pDirtyRenderSkinStateRenderables){
+	if(!pDirtyRenderSkinStateRenderables){
 		return;
 	}
 	pDirtyRenderSkinStateRenderables = false;
@@ -1113,7 +1113,7 @@ void deoglRDecal::pPrepareSkinStateConstructed(){
 }
 
 void deoglRDecal::pUpdateRTSInstance(){
-	if(! pRTSInstance || ! pVBOBlock){
+	if(!pRTSInstance || !pVBOBlock){
 		return;
 	}
 	
@@ -1124,7 +1124,7 @@ void deoglRDecal::pUpdateRTSInstance(){
 
 void deoglRDecal::pUpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
 int element, deoglSkinShader &skinShader){
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	

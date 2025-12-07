@@ -80,7 +80,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleTrackTo * const rule = (aeRuleTrackTo*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 	cComboTrackAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -124,7 +124,7 @@ public:
 	cComboUpAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -139,7 +139,7 @@ public:
 	cComboUpTarget(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -154,7 +154,7 @@ public:
 	cComboLockedAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		

@@ -160,33 +160,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Loader. */
-	inline deoxrLoader *GetLoader() const{return pLoader;}
+	inline deoxrLoader *GetLoader() const{ return pLoader; }
 	
 	/** Device profiles manager. */
-	inline deoxrDeviceProfileManager &GetDeviceProfiles(){return pDeviceProfiles;}
-	inline const deoxrDeviceProfileManager &GetDeviceProfiles() const{return pDeviceProfiles;}
+	inline deoxrDeviceProfileManager &GetDeviceProfiles(){ return pDeviceProfiles; }
+	inline const deoxrDeviceProfileManager &GetDeviceProfiles() const{ return pDeviceProfiles; }
 	
 	/** Device manager. */
-	inline deoxrDeviceManager &GetDevices(){return pDevices;}
-	inline const deoxrDeviceManager &GetDevices() const{return pDevices;}
+	inline deoxrDeviceManager &GetDevices(){ return pDevices; }
+	inline const deoxrDeviceManager &GetDevices() const{ return pDevices; }
 	
 	/** Instance or nullptr. */
-	inline const deoxrInstance::Ref &GetInstance() const{return pInstance;}
+	inline const deoxrInstance::Ref &GetInstance() const{ return pInstance; }
 	
 	/** System or nullptr. */
-	inline const deoxrSystem::Ref &GetSystem() const{return pSystem;}
+	inline const deoxrSystem::Ref &GetSystem() const{ return pSystem; }
 	
 	/** Session or nullptr. */
-	inline const deoxrSession::Ref &GetSession() const{return pSession;}
+	inline const deoxrSession::Ref &GetSession() const{ return pSession; }
 	
 	/** Action set or nullptr. */
-	inline const deoxrActionSet::Ref &GetActionSet() const{return pActionSet;}
+	inline const deoxrActionSet::Ref &GetActionSet() const{ return pActionSet; }
 	
 	/** Passthrough or nullptr. */
-	inline const deoxrPassthrough::Ref &GetPassthrough() const{return pPassthrough;}
+	inline const deoxrPassthrough::Ref &GetPassthrough() const{ return pPassthrough; }
 	
 	/** Action. */
-	inline deoxrAction *GetAction(eInputActions inputAction) const{return pActions[inputAction];}
+	inline deoxrAction *GetAction(eInputActions inputAction) const{ return pActions[inputAction]; }
 	
 	/** Send event. */
 	void SendEvent(const deInputEvent &event);
@@ -195,8 +195,8 @@ public:
 	void InputEventSetTimestamp(deInputEvent &event) const;
 	
 	/** Graphic api OpenGL. */
-	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){return pGraphicApiOpenGL;}
-	inline const deoxrGraphicApiOpenGL &GetGraphicApiOpenGL() const{return pGraphicApiOpenGL;}
+	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){ return pGraphicApiOpenGL; }
+	inline const deoxrGraphicApiOpenGL &GetGraphicApiOpenGL() const{ return pGraphicApiOpenGL; }
 	
 	/** Wait until ready exit. */
 	void WaitUntilReadyExit();
@@ -205,32 +205,32 @@ public:
 	deoxrSwapchain *GetEyeSwapchain(eEye eye) const;
 	
 	/** Session state. */
-	inline XrSessionState GetSessionState() const{return pSessionState;}
+	inline XrSessionState GetSessionState() const{ return pSessionState; }
 	
 	/** Shutdown requested. */
-	inline bool GetShutdownRequested() const{return pShutdownRequested;}
+	inline bool GetShutdownRequested() const{ return pShutdownRequested; }
 	
 	/** Prevent deletion. */
-	inline bool GetPreventDeletion() const{return pPreventDeletion;}
+	inline bool GetPreventDeletion() const{ return pPreventDeletion; }
 	
 	/** Session restart is pending. */
-	inline bool GetRestartSession() const{return pRestartSession;}
+	inline bool GetRestartSession() const{ return pRestartSession; }
 	
 	/** Request session restart the next time possible. */
 	void RequestRestartSession();
 	
 	/** Last detected system. */
-	inline deoxrSystem::eSystem GetLastDetectedSystem() const{return pLastDetectedSystem;}
+	inline deoxrSystem::eSystem GetLastDetectedSystem() const{ return pLastDetectedSystem; }
 	
 	/** Direct mutex access for special use. */
-	inline deMutex &GetMutexOpenXR(){return pMutexOpenXR;}
+	inline deMutex &GetMutexOpenXR(){ return pMutexOpenXR; }
 	
 	/** Requested feature levels. */
-	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{return pRequestFeatureEyeGazeTracking;}
-	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{return pRequestFeatureFacialTracking;}
+	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
+	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
 	
 	/** Log level. */
-	inline LogLevel GetLogLevel() const{return pLogLevel;}
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
 	void SetLogLevel(LogLevel level){pLogLevel = level;}
 	/*@}*/
 	
@@ -293,7 +293,7 @@ public:
 	virtual bool IsRuntimeRunning();
 	
 	/** Camera or nullptr. */
-	inline deCamera *GetCamera() const{return pCamera;}
+	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera to render on head mounted display. */
 	virtual void SetCamera(deCamera *camera);

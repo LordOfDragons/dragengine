@@ -49,7 +49,7 @@ pArchive(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
-	if(! archive){
+	if(!archive){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -72,7 +72,7 @@ deArchiveContainer::~deArchiveContainer(){
 ///////////////
 
 bool deArchiveContainer::ExistsFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		return false;
 	}
 	
@@ -85,7 +85,7 @@ bool deArchiveContainer::ExistsFile(const decPath &path){
 }
 
 bool deArchiveContainer::CanReadFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		return false;
 	}
 	
@@ -98,7 +98,7 @@ bool deArchiveContainer::CanReadFile(const decPath &path){
 }
 
 bool deArchiveContainer::CanWriteFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		return false;
 	}
 	
@@ -111,7 +111,7 @@ bool deArchiveContainer::CanWriteFile(const decPath &path){
 }
 
 bool deArchiveContainer::CanDeleteFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		return false;
 	}
 	
@@ -124,7 +124,7 @@ bool deArchiveContainer::CanDeleteFile(const decPath &path){
 }
 
 decBaseFileReader *deArchiveContainer::OpenFileForReading(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -137,7 +137,7 @@ decBaseFileReader *deArchiveContainer::OpenFileForReading(const decPath &path){
 }
 
 decBaseFileWriter *deArchiveContainer::OpenFileForWriting(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -150,7 +150,7 @@ decBaseFileWriter *deArchiveContainer::OpenFileForWriting(const decPath &path){
 }
 
 void deArchiveContainer::DeleteFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -163,7 +163,7 @@ void deArchiveContainer::DeleteFile(const decPath &path){
 }
 
 void deArchiveContainer::TouchFile(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -176,7 +176,7 @@ void deArchiveContainer::TouchFile(const decPath &path){
 }
 
 void deArchiveContainer::SearchFiles(const decPath &directory, deContainerFileSearch &searcher){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		return;
 	}
 	
@@ -190,7 +190,7 @@ void deArchiveContainer::SearchFiles(const decPath &directory, deContainerFileSe
 }
 
 deVFSContainer::eFileTypes deArchiveContainer::GetFileType(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -203,7 +203,7 @@ deVFSContainer::eFileTypes deArchiveContainer::GetFileType(const decPath &path){
 }
 
 uint64_t deArchiveContainer::GetFileSize(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
@@ -216,7 +216,7 @@ uint64_t deArchiveContainer::GetFileSize(const decPath &path){
 }
 
 TIME_SYSTEM deArchiveContainer::GetFileModificationTime(const decPath &path){
-	if(! pArchive->GetPeerContainer()){
+	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	

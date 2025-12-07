@@ -60,13 +60,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
+	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 	
 	/** \brief Index to insert action at. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo *CreateUndo(ceConversationAction *action);

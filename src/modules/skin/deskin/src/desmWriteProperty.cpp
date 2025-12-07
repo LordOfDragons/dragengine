@@ -74,10 +74,10 @@ void desmWriteProperty::VisitProperty(deSkinProperty &property){
 void desmWriteProperty::VisitValue(deSkinPropertyValue &property){
 	pWriter.WriteOpeningTagStart("value");
 	pWriter.WriteAttributeString("property", pPropertyType);
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
 	pWriter.WriteOpeningTagEnd(false, false);
@@ -104,10 +104,10 @@ void desmWriteProperty::VisitColor(deSkinPropertyColor &property){
 	if(fabsf(1.0f - color.a) > FLOAT_SAFE_EPSILON){
 		pWriter.WriteAttributeFloat("a", color.a);
 	}
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
 	pWriter.WriteOpeningTagEnd(true);
@@ -116,10 +116,10 @@ void desmWriteProperty::VisitColor(deSkinPropertyColor &property){
 void desmWriteProperty::VisitImage(deSkinPropertyImage &property){
 	pWriter.WriteOpeningTagStart("image");
 	pWriter.WriteAttributeString("property", pPropertyType);
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
 	pWriter.WriteOpeningTagEnd(false, false);
@@ -132,13 +132,13 @@ void desmWriteProperty::VisitImage(deSkinPropertyImage &property){
 void desmWriteProperty::VisitVideo(deSkinPropertyVideo &property){
 	pWriter.WriteOpeningTagStart("video");
 	pWriter.WriteAttributeString("property", pPropertyType);
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
-	if(! property.GetSharedTime()){
+	if(!property.GetSharedTime()){
 		pWriter.WriteAttributeBool("sharedTime", property.GetSharedTime());
 	}
 	pWriter.WriteOpeningTagEnd(false, false);
@@ -151,10 +151,10 @@ void desmWriteProperty::VisitVideo(deSkinPropertyVideo &property){
 void desmWriteProperty::VisitConstructed(deSkinPropertyConstructed &property){
 	pWriter.WriteOpeningTagStart("constructed");
 	pWriter.WriteAttributeString("property", pPropertyType);
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
 	pWriter.WriteOpeningTagEnd();
@@ -170,7 +170,7 @@ void desmWriteProperty::VisitConstructed(deSkinPropertyConstructed &property){
 	pWriter.WriteOpeningTagEnd(true);
 	
 	const decColor &color = property.GetColor();
-	if(! color.IsEqualTo(decColor())){
+	if(!color.IsEqualTo(decColor())){
 		pWriter.WriteOpeningTagStart("color");
 		if(fabsf(color.r) > FLOAT_SAFE_EPSILON){
 			pWriter.WriteAttributeFloat("r", color.r);
@@ -211,10 +211,10 @@ void desmWriteProperty::VisitConstructed(deSkinPropertyConstructed &property){
 void desmWriteProperty::VisitMapped(deSkinPropertyMapped &property){
 	pWriter.WriteOpeningTagStart("mapped");
 	pWriter.WriteAttributeString("property", pPropertyType);
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pWriter.WriteAttributeString("renderable", property.GetRenderable());
 	}
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		pWriter.WriteAttributeString("bone", property.GetBone());
 	}
 	pWriter.WriteOpeningTagEnd();

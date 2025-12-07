@@ -52,11 +52,11 @@ reURotateShape::reURotateShape(reRigShapeList &list){
 	try{
 		if(shapeCount > 0){
 			pShapes = new reUndoDataShape*[shapeCount];
-			if(! pShapes) DETHROW(deeOutOfMemory);
+			if(!pShapes) DETHROW(deeOutOfMemory);
 			
 			while(pShapeCount < shapeCount){
 				pShapes[pShapeCount] = new reUndoDataShape(list.GetShapeAt(pShapeCount));
-				if(! pShapes[pShapeCount]) DETHROW(deeOutOfMemory);
+				if(!pShapes[pShapeCount]) DETHROW(deeOutOfMemory);
 				pShapeCount++;
 			}
 		}

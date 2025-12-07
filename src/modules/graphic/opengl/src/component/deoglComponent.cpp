@@ -837,7 +837,7 @@ int deoglComponent::IndexOfFaceClosestTo(const decVector &vector, float radius){
 				
 				const decVector faceMin = cp1.Smallest(cp2).Smallest(cp3);
 				const decVector faceMax = cp1.Largest(cp2).Largest(cp3);
-				if(! (boxMax >= faceMin && boxMin <= faceMax)){
+				if(!(boxMax >= faceMin && boxMin <= faceMax)){
 					continue;
 				}
 				//a++;
@@ -864,7 +864,7 @@ int deoglComponent::IndexOfFaceClosestTo(const decVector &vector, float radius){
 			for(i=0; i<faceCount; i++){
 				const deoglModelFace &face = faces[i];
 				
-				if(! (boxMax >= face.GetMinExtend() && boxMin <= face.GetMaxExtend())){
+				if(!(boxMax >= face.GetMinExtend() && boxMin <= face.GetMaxExtend())){
 					continue;
 				}
 				//a++;
@@ -970,7 +970,7 @@ void deoglComponent::pCleanUp(){
 
 
 void deoglComponent::pDropLODs(){
-	if(! pLODs){
+	if(!pLODs){
 		return;
 	}
 	
@@ -985,7 +985,7 @@ void deoglComponent::pDropLODs(){
 
 void deoglComponent::pCreateLODs(){
 	const deModel * const model = pComponent.GetModel();
-	if(! model || model->GetLODCount() == 0){
+	if(!model || model->GetLODCount() == 0){
 		return;
 	}
 	
@@ -999,7 +999,7 @@ void deoglComponent::pCreateLODs(){
 }
 
 void deoglComponent::pDropTextures(){
-	if(! pTextures){
+	if(!pTextures){
 		return;
 	}
 	
@@ -1014,7 +1014,7 @@ void deoglComponent::pDropTextures(){
 
 void deoglComponent::pCreateTextures(){
 	const deModel * const model = pComponent.GetModel();
-	if(! model || model->GetTextureCount() == 0){
+	if(!model || model->GetTextureCount() == 0){
 		return;
 	}
 	
@@ -1030,7 +1030,7 @@ void deoglComponent::pCreateTextures(){
 
 
 void deoglComponent::pSyncModel(){
-	if(! pDirtyModel){
+	if(!pDirtyModel){
 		return;
 	}
 	
@@ -1045,7 +1045,7 @@ void deoglComponent::pSyncModel(){
 }
 
 void deoglComponent::pSyncSkin(){
-	if(! pDirtySkin){
+	if(!pDirtySkin){
 		return;
 	}
 	
@@ -1112,7 +1112,7 @@ void deoglComponent::pSyncOcclusionMesh(){
 }
 
 void deoglComponent::pSyncLodTextures(){
-	if(! pDirtyLodTextures){
+	if(!pDirtyLodTextures){
 		return;
 	}
 	
@@ -1149,7 +1149,7 @@ void deoglComponent::pSyncDecals(){
 }
 
 void deoglComponent::pSyncTextureDynamicSkinRenderablesChanged(){
-	if(! pTextureDynamicSkinRenderablesChanged){
+	if(!pTextureDynamicSkinRenderablesChanged){
 		return;
 	}
 	
@@ -1167,7 +1167,7 @@ void deoglComponent::pSyncTextureDynamicSkinRenderablesChanged(){
 void deoglComponent::pCheckRequiresUpdateEverySync(){
 	// if render static is false a timer is running until render static is set to true.
 	// this time runs only while Update() is called
-	pRequiresUpdateEverySync = ! pRComponent->GetRenderStatic();
+	pRequiresUpdateEverySync = !pRComponent->GetRenderStatic();
 	
 	if(pSkinStateController->RequiresSyncEveryFrameUpdate()){
 		pRequiresUpdateEverySync = true;
@@ -1187,7 +1187,7 @@ void deoglComponent::pCheckRequiresUpdateEverySync(){
 
 
 void deoglComponent::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncComponent(this);
 	}
 }

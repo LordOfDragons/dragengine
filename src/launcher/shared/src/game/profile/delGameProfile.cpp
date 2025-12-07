@@ -205,7 +205,7 @@ const char *moduleVersion, int requiredType) const{
 		module = moduleList.GetNamed (moduleName, moduleVersion);
 	}
 	
-	if(! module
+	if(!module
 	|| module->GetType() != requiredType
 	|| module->GetStatus() != delEngineModule::emsReady){
 		return false;

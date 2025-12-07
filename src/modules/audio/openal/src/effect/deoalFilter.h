@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** \brief Filter. */
-	inline ALuint GetFilter() const{return pFilter;}
+	inline ALuint GetFilter() const{ return pFilter; }
 	
 	
 	

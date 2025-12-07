@@ -70,12 +70,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of cases. */
-	inline ceCAIfElseCaseList &GetCases(){return pCases;}
-	inline const ceCAIfElseCaseList &GetCases() const{return pCases;}
+	inline ceCAIfElseCaseList &GetCases(){ return pCases; }
+	inline const ceCAIfElseCaseList &GetCases() const{ return pCases; }
 	
 	/** \brief List of else-actions. */
-	inline ceConversationActionList &GetElseActions(){return pElseActions;}
-	inline const ceConversationActionList &GetElseActions() const{return pElseActions;}
+	inline ceConversationActionList &GetElseActions(){ return pElseActions; }
+	inline const ceConversationActionList &GetElseActions() const{ return pElseActions; }
 	
 	/** \brief Create copy of action. */
 	virtual ceConversationAction *CreateCopy() const;
@@ -86,13 +86,13 @@ public:
 	/** \name UI */
 	/*@{*/
 	/** \brief Tree list item expanded state. */
-	inline bool GetTIMExpanded() const{return pTIMExpanded;}
+	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
 	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Else tree list item expanded state. */
-	inline bool GetTIMElseExpanded() const{return pTIMElseExpanded;}
+	inline bool GetTIMElseExpanded() const{ return pTIMElseExpanded; }
 	
 	/** \brief Set else tree list item expanded state. */
 	void SetTIMElseExpanded(bool expanded);

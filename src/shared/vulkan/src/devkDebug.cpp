@@ -63,11 +63,11 @@ void devkDebug::SetEnabled(bool enabled){
 	}
 	
 	if(enabled){
-		if(! pInstance.SupportsExtension(devkInstance::extEXTDebugReport)){
+		if(!pInstance.SupportsExtension(devkInstance::extEXTDebugReport)){
 			return;
 		}
-		if(! pInstance.SupportsLayer(devkInstance::layerKhronosValidation)
-		&& ! pInstance.SupportsLayer(devkInstance::layerLunargStandardValidation)){
+		if(!pInstance.SupportsLayer(devkInstance::layerKhronosValidation)
+		&& !pInstance.SupportsLayer(devkInstance::layerLunargStandardValidation)){
 			return;
 		}
 		
@@ -82,8 +82,8 @@ void devkDebug::SetEnabled(bool enabled){
 //////////////////////
 
 void devkDebug::pRegisterReportCallback(){
-	if(! pInstance.vkCreateDebugReportCallbackEXT
-	|| ! pInstance.vkDestroyDebugReportCallbackEXT){
+	if(!pInstance.vkCreateDebugReportCallbackEXT
+	|| !pInstance.vkDestroyDebugReportCallbackEXT){
 		return;
 	}
 	
@@ -99,7 +99,7 @@ void devkDebug::pRegisterReportCallback(){
 }
 
 void devkDebug::pUnregisterReportCallback(){
-	if(! pReportCallback){
+	if(!pReportCallback){
 		return;
 	}
 	

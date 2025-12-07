@@ -75,9 +75,9 @@ public:
 	~aeLSAnimator();
 	
 	// management
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	void SetName(const char *name);
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	void SetPattern(const char *pattern);
 	
 	// loading and saving

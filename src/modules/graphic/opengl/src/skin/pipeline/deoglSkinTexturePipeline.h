@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Shader. */
-	inline deoglSkinShader *GetShader() const{return pShader;}
+	inline deoglSkinShader *GetShader() const{ return pShader; }
 	/*@}*/
 };
 

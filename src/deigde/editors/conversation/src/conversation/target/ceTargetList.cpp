@@ -110,7 +110,7 @@ bool ceTargetList::HasNamed(const char *name) const{
 }
 
 void ceTargetList::Add(ceTarget *target){
-	if(! target || HasNamed(target->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!target || HasNamed(target->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pTargets.Add(target);
 }

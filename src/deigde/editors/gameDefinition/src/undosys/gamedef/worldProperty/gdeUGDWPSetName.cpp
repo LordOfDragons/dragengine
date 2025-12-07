@@ -44,7 +44,7 @@ gdeUGDWPSetName::gdeUGDWPSetName(gdeGameDefinition *gamedef, gdeProperty *proper
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

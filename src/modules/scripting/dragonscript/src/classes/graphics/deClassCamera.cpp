@@ -724,7 +724,7 @@ void deClassCamera::nfAddEffect::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCamera &camera = *(((sCamNatDat*)p_GetNativeData(myself))->camera);
 	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	camera.AddEffect(ds.GetClassEffect()->GetEffect(obj));
 }
@@ -739,7 +739,7 @@ void deClassCamera::nfRemoveEffect::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCamera &camera = *(((sCamNatDat*)p_GetNativeData(myself))->camera);
 	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	camera.RemoveEffect(ds.GetClassEffect()->GetEffect(obj));
 }
@@ -784,7 +784,7 @@ void deClassCamera::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCamera * const clsCamera = (deClassCamera*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCamera)){
+	if(!p_IsObjOfType(obj, clsCamera)){
 		rt->PushBool(false);
 		
 	}else{
@@ -910,7 +910,7 @@ void deClassCamera::CreateClassMembers(dsEngine *engine){
 }
 
 deCamera *deClassCamera::GetCamera(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -918,11 +918,11 @@ deCamera *deClassCamera::GetCamera(dsRealObject *myself) const{
 }
 
 void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! camera){
+	if(!camera){
 		rt->PushObject(NULL, this);
 		return;
 	}

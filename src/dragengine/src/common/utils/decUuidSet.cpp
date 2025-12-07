@@ -164,7 +164,7 @@ bool decUuidSet::operator==(const decUuidSet &set) const{
 	}
 	
 	for(i=0; i<pUuidCount; i++){
-		if(! set.Has(pUuids[i])){
+		if(!set.Has(pUuids[i])){
 			return false;
 		}
 	}
@@ -173,7 +173,7 @@ bool decUuidSet::operator==(const decUuidSet &set) const{
 }
 
 bool decUuidSet::operator!=(const decUuidSet &set) const{
-	return ! (*this == set);
+	return !(*this == set);
 }
 
 decUuidSet decUuidSet::operator+(const decUuidSet &set) const{

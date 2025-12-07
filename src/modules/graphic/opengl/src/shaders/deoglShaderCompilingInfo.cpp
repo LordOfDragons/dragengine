@@ -196,7 +196,7 @@ bool deoglShaderCompilingInfo::pShouldBeVisible() const{
 
 void deoglShaderCompilingInfo::pUpdateState(float elapsed){
 	if(pState == esInvisible){
-		if(! pShouldBeVisible()){
+		if(!pShouldBeVisible()){
 			return;
 		}
 		
@@ -222,7 +222,7 @@ void deoglShaderCompilingInfo::pUpdateState(float elapsed){
 	if(pState == esDelayFadeIn){
 		pFrames++;
 		
-		if(! pShouldBeVisible() && pFrames > 1){
+		if(!pShouldBeVisible() && pFrames > 1){
 			pState = esInvisible;
 			pElapsed = 0.0f;
 			return;
@@ -299,7 +299,7 @@ void deoglShaderCompilingInfo::pUpdateTransparency(){
 }
 
 void deoglShaderCompilingInfo::pUpdateCanvas(float elapsed){
-	if(! IsVisible()){
+	if(!IsVisible()){
 		pCanvasView->SetVisible(false);
 		pVideoPlayerCompile->Stop();
 		pVideoPlayerCompile->SetPlayPosition(0.0f);

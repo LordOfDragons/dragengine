@@ -150,7 +150,7 @@ void igdeComboBoxFilter::SetFilterString(const char *filterString){
 	FilterItems();
 	
 	// if the current selection is filtered out use the first one if available
-	if(GetSelection() == -1 && GetItemCount() > 0 && ! GetEditable()){
+	if(GetSelection() == -1 && GetItemCount() > 0 && !GetEditable()){
 		SetSelection(0);
 	}
 }
@@ -176,7 +176,7 @@ void igdeComboBoxFilter::CreateNativeWidget(){
 }
 
 void igdeComboBoxFilter::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -187,7 +187,7 @@ void igdeComboBoxFilter::DestroyNativeWidget(){
 
 
 void igdeComboBoxFilter::OnItemAdded(int index){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -199,7 +199,7 @@ void igdeComboBoxFilter::OnItemAdded(int index){
 }
 
 void igdeComboBoxFilter::OnItemRemoved(int index){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void igdeComboBoxFilter::OnItemRemoved(int index){
 }
 
 void igdeComboBoxFilter::OnAllItemsRemoved(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ void igdeComboBoxFilter::OnItemChanged(int index){
 }
 
 void igdeComboBoxFilter::OnItemMoved(int fromIndex, int toIndex){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -240,7 +240,7 @@ void igdeComboBoxFilter::OnItemMoved(int fromIndex, int toIndex){
 }
 
 void igdeComboBoxFilter::OnItemsSorted(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -257,7 +257,7 @@ void igdeComboBoxFilter::OnTextChanged(){
 }
 
 void igdeComboBoxFilter::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

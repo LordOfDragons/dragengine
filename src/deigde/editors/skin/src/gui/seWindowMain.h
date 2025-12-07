@@ -127,17 +127,17 @@ public:
 	void ResetViews();
 	
 	/** \brief Configuration. */
-	inline seConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline seConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
-	inline const igdeClipboard &GetClipboard() const{return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Load save system. */
-	inline seLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{return pSkin;}
+	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
 	void SetSkin(seSkin *Skin);
@@ -154,16 +154,16 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionMappedAdd() const{return pActionMappedAdd;}
-	inline igdeAction *GetActionMappedRemove() const{return pActionMappedRemove;}
+	inline igdeAction *GetActionMappedAdd() const{ return pActionMappedAdd; }
+	inline igdeAction *GetActionMappedRemove() const{ return pActionMappedRemove; }
 	
-	inline igdeAction *GetActionTextureAdd() const{return pActionTextureAdd;}
-	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
-	inline igdeAction *GetActionTextureImportFromGDef() const{return pActionTextureImportFromGDef;}
-	inline igdeAction *GetActionTextureImportFromFile() const{return pActionTextureImportFromFile;}
+	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline igdeAction *GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
+	inline igdeAction *GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
 	
-	inline igdeAction *GetActionTexturePropertyAdd() const{return pActionPropertyAdd;}
-	inline igdeAction *GetActionTexturePropertyRemove() const{return pActionPropertyRemove;}
+	inline igdeAction *GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
+	inline igdeAction *GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
 	
 	
 	

@@ -71,7 +71,7 @@ deoglOcclusionQuery *deoglOcclusionQueryManager::ClaimQuery(){
 		if(pQueryCount == pQuerySize){
 			int newSize = pQuerySize + 10;
 			deoglOcclusionQuery **newArray = new deoglOcclusionQuery*[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pQueries){
 				memcpy(newArray, pQueries, sizeof(deoglOcclusionQuery*) * pQuerySize);
 				delete [] pQueries;
@@ -81,9 +81,9 @@ deoglOcclusionQuery *deoglOcclusionQueryManager::ClaimQuery(){
 			pQuerySize = newSize;
 		}
 		
-		if(! pQueries[pQueryCount]){
+		if(!pQueries[pQueryCount]){
 			pQueries[pQueryCount] = new deoglOcclusionQuery(pRenderThread);
-			if(! pQueries[pQueryCount]) DETHROW(deeOutOfMemory);
+			if(!pQueries[pQueryCount]) DETHROW(deeOutOfMemory);
 		}
 		
 		return pQueries[pQueryCount++];
@@ -95,7 +95,7 @@ deoglOcclusionQuery *deoglOcclusionQueryManager::ClaimQuery(){
 }
 
 void deoglOcclusionQueryManager::ReleaseQuery(deoglOcclusionQuery *query){
-	if(! query) DETHROW(deeInvalidParam);
+	if(!query) DETHROW(deeInvalidParam);
 	
 	int index = IndexOfQuery(query, pFreeQueryCount, pQueryCount);
 	

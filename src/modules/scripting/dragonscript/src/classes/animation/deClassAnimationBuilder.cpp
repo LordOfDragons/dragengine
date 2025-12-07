@@ -76,7 +76,7 @@ public:
 		pAnimation = NULL;
 	}
 	
-	inline deAnimation *GetAnimation() const{return pAnimation;}
+	inline deAnimation *GetAnimation() const{ return pAnimation; }
 };
 
 
@@ -159,7 +159,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -184,7 +184,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -205,7 +205,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddMove::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -234,7 +234,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddMove2::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -264,7 +264,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -298,7 +298,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddKeyframe::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -329,7 +329,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -361,7 +361,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetAnimation()){
+	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	

@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active panel index. */
-	inline int GetActivePanel() const{return pActivePanel;}
+	inline int GetActivePanel() const{ return pActivePanel; }
 	
 	/** \brief Set active panel by index. */
 	void SetActivePanel(int index);

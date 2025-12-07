@@ -51,7 +51,7 @@
 ////////////////////////////
 
 mePropFieldType::mePropFieldType(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pPropField = NULL;
 	
@@ -85,7 +85,7 @@ void mePropFieldType::SetPropField(mePropField *propField){
 }
 
 void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
-	if(engPFType && ! pPropField) DETHROW(deeInvalidParam);
+	if(engPFType && !pPropField) DETHROW(deeInvalidParam);
 	
 	pEngPFType = engPFType;
 }
@@ -93,7 +93,7 @@ void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
 
 
 dePropFieldType *mePropFieldType::CreateEnginePFType(){
-	if(! pPropField) DETHROW(deeInvalidParam);
+	if(!pPropField) DETHROW(deeInvalidParam);
 	
 	dePropFieldInstance *engPFTInstances = NULL;
 	dePropFieldType *engPFType = NULL;
@@ -206,7 +206,7 @@ void mePropFieldType::SetPathModel(const char *path){
 		pModel = NULL;
 	}
 	
-	if(! pPathModel.IsEmpty()){
+	if(!pPathModel.IsEmpty()){
 		pModel = pEngine->GetModelManager()->LoadModel(pPathModel.GetString(), "/");
 	}
 	
@@ -228,7 +228,7 @@ void mePropFieldType::SetPathSkin(const char *path){
 		pSkin = NULL;
 	}
 	
-	if(! pPathSkin.IsEmpty()){
+	if(!pPathSkin.IsEmpty()){
 		try{
 			pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 			

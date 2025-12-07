@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);

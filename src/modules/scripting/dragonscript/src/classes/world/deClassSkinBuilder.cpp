@@ -106,12 +106,12 @@ public:
 		pSkin = NULL;
 	}
 	
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
-	inline deSkinPropertyConstructed *GetOpenConstructed() const{return pOpenConstructed;}
+	inline deSkinPropertyConstructed *GetOpenConstructed() const{ return pOpenConstructed; }
 	
 	deSkinPropertyNodeGroup *OpenConstructed(int indexTexture, int indexProperty){
-		if(! pSkin || pOpenConstructed){
+		if(!pSkin || pOpenConstructed){
 			DSTHROW(dueInvalidAction);
 		}
 		deSkinPropertyVisitorIdentify identify;
@@ -127,21 +127,21 @@ public:
 	}
 	
 	void OpenGroup(deSkinPropertyNodeGroup *group){
-		if(! pSkin || pOpenConstructed || ! group){
+		if(!pSkin || pOpenConstructed || !group){
 			DSTHROW(dueInvalidAction);
 		}
 		pOpenNodes.Add(group);
 		pNextNodeAsMask = false;
 	}
 	
-	inline bool GetNextNodeAsMask() const{return pNextNodeAsMask;}
+	inline bool GetNextNodeAsMask() const{ return pNextNodeAsMask; }
 	
 	void SetNextNodeAsMask(bool nextNodeAsMask){
 		pNextNodeAsMask = nextNodeAsMask;
 	}
 	
 	void CloseNode(){
-		if(! pSkin || ! pOpenConstructed || pOpenNodes.GetCount() == 0){
+		if(!pSkin || !pOpenConstructed || pOpenNodes.GetCount() == 0){
 			DSTHROW(dueInvalidAction);
 		}
 		pOpenNodes.RemoveFrom(pOpenNodes.GetCount() - 1);
@@ -242,7 +242,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddMapped::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -283,7 +283,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -312,7 +312,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -348,7 +348,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -386,7 +386,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyImage::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -427,7 +427,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyVideo::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -491,7 +491,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -618,7 +618,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -681,7 +681,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddPropertyConstructed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -721,7 +721,7 @@ DSFT_FUNCTION, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfSetPropertyBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -741,7 +741,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfConstructedOpenContent::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -771,7 +771,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddNodeImage::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -847,7 +847,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddNodeText::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -926,7 +926,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddNodeShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -999,7 +999,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfAddNodeGroup::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -1053,7 +1053,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfNextNodeAsMask::RunFunction(dsRunTime*, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -1067,7 +1067,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfCloseNode::RunFunction(dsRunTime*, dsValue *myself){
 	deClassSkinBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetSkin()){
+	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	

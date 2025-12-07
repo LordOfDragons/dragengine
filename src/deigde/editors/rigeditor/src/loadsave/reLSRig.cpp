@@ -63,7 +63,7 @@
 reLSRig::reLSRig(deBaseRigModule *module) :
 pModule(module)
 {
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ public:
 };
 
 void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
-	if(! rig || ! file) DETHROW(deeInvalidParam);
+	if(!rig || !file) DETHROW(deeInvalidParam);
 	deEngine *engine = pModule->GetGameEngine();
 	reCreateRigShape createRigShape(engine);
 	reRigConstraint *constraint = NULL;
@@ -255,7 +255,7 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 }
 
 void reLSRig::SaveRig(reRig *rig, decBaseFileWriter *file){
-	if(! rig || ! file) DETHROW(deeInvalidParam);
+	if(!rig || !file) DETHROW(deeInvalidParam);
 	
 	// this is now another little hack. usually we would have to build a temporary
 	// rig to save but the rig is already existing if nothing is wrong. we rebuild
@@ -263,7 +263,7 @@ void reLSRig::SaveRig(reRig *rig, decBaseFileWriter *file){
 	rig->Rebuild();
 	
 	// if nothing went wrong we have now a rig to save
-	if(! rig->GetEngineRig()) DETHROW(deeInvalidParam);
+	if(!rig->GetEngineRig()) DETHROW(deeInvalidParam);
 	
 	pModule->SaveRig(*file, *rig->GetEngineRig());
 }

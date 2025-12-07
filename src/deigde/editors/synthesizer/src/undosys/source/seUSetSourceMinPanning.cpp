@@ -42,7 +42,7 @@
 seUSetSourceMinPanning::seUSetSourceMinPanning(seSource *source, float newFactor) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -84,7 +84,7 @@ public:
 	/** \name Peers */
 	/*@{*/
 	/** \brief Container peer. */
-	deBaseArchiveContainer *GetPeerContainer() const{return pPeerContainer;}
+	deBaseArchiveContainer *GetPeerContainer() const{ return pPeerContainer; }
 	
 	/** \brief Set peer container. */
 	void SetPeerContainer(deBaseArchiveContainer *peer);

@@ -66,7 +66,7 @@ void deClassInputEvent::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself
 	}
 	
 	sInpEvNatDat &nd = *((sInpEvNatDat*)p_GetNativeData(myself));
-	if(! nd.event){
+	if(!nd.event){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void deClassInputEvent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassInputEvent * const clsInputEvent = (deClassInputEvent*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsInputEvent)){
+	if(!p_IsObjOfType(obj, clsInputEvent)){
 		rt->PushBool(false);
 		
 	}else{
@@ -287,7 +287,7 @@ void deClassInputEvent::CreateClassMembers(dsEngine *engine){
 }
 
 const deInputEvent &deClassInputEvent::GetInputEvent(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -295,7 +295,7 @@ const deInputEvent &deClassInputEvent::GetInputEvent(dsRealObject *myself) const
 }
 
 void deClassInputEvent::PushInputEvent(dsRunTime *rt, const deInputEvent &event){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

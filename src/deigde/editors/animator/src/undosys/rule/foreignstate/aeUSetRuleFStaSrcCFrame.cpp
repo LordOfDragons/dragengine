@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleFStaSrcCFrame::aeUSetRuleFStaSrcCFrame(aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

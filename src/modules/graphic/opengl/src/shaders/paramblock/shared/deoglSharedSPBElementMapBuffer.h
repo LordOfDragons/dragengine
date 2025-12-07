@@ -57,16 +57,16 @@ public:
 	void Map();
 	
 	/** Block or nullptr if not mapped. */
-	inline deoglShaderParameterBlock *GetBlock() const{return pBlock;}
+	inline deoglShaderParameterBlock *GetBlock() const{ return pBlock; }
 	
 	/** Block or throws exception if not mapped. */
 	deoglShaderParameterBlock &GetBlockRef() const;
 	
 	/** Block or nullptr if not mapped. */
-	inline operator deoglShaderParameterBlock*() const{return GetBlock();}
+	inline operator deoglShaderParameterBlock*() const{ return GetBlock(); }
 	
 	/** Block or throws exception if not mapped. */
-	inline operator deoglShaderParameterBlock&() const{return GetBlockRef();}
+	inline operator deoglShaderParameterBlock&() const{ return GetBlockRef(); }
 	
 	/** Unmap block if mapped. */
 	void Unmap();

@@ -178,7 +178,7 @@ deClassARAnimationDifference::nfTargetAddLink::nfTargetAddLink(const sInitData &
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARAnimationDifference::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -216,7 +216,7 @@ deClassARAnimationDifference::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(con
 	p_AddParameter(init.clsARAnimationDifferenceTarget); // target
 }
 void deClassARAnimationDifference::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -375,7 +375,7 @@ void deClassARAnimationDifference::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -383,7 +383,7 @@ deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule(dsRealO
 }
 
 void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -407,11 +407,11 @@ void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimat
 }
 
 void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationDifference *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

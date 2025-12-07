@@ -95,7 +95,7 @@ int decConvexVolumeFace::IndexOfVertex(int vertex) const{
 
 void decConvexVolumeFace::AddVertex(int vertex){
 	int *newArray = new int[pVertexCount + 1];
-	if(! newArray) DETHROW(deeOutOfMemory);
+	if(!newArray) DETHROW(deeOutOfMemory);
 	if(pVertices){
 		int i;
 		for(i=0; i<pVertexCount; i++) newArray[i] = pVertices[i];

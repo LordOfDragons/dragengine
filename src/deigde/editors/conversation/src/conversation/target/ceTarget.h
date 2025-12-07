@@ -75,34 +75,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the conversation or NULL if not set. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	/** Sets the conversation or NULL if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	
 	/** Retrieves the actor ID or an empty string if not set. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor ID or an empty string if not set. */
 	void SetActor(const char *id);
 	/** Retrieves the coordinate system ID or an empty string if not set. */
-	inline const decString &GetCoordSystem() const{return pCoordSystem;}
+	inline const decString &GetCoordSystem() const{ return pCoordSystem; }
 	/** Sets the coordinate system ID or an empty string if not set. */
 	void SetCoordSystem(const char *id);
 	
 	/** Retrieves the bone name to use as coordinate frame or an empty string to use the origin. */
-	inline const decString &GetBone() const{return pBone;}
+	inline const decString &GetBone() const{ return pBone; }
 	/** Sets the bone name to use as coordinate frame or an empty string to use the origin. */
 	void SetBone(const char *bone);
 	/** Retrieves the position relative to the target object. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the start position relative to the target object. */
 	void SetPosition(const decVector &position);
 	/** Retrieves the orientation in degrees relative to the target object. */
-	inline const decVector &GetOrientation() const{return pOrientation;}
+	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** Sets the orientation in degrees relative to the target object. */
 	void SetOrientation(const decVector &orientation);
 	

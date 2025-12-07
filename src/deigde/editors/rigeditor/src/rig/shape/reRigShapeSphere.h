@@ -51,7 +51,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the radius. */
-	inline float GetRadius() const{return pRadius;}
+	inline float GetRadius() const{ return pRadius; }
 	/** Sets the radius. */
 	void SetRadius(float radius);
 	

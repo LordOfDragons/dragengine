@@ -209,7 +209,7 @@ bool deglWindowMain::RunCommandLineActions(){
 		return false;
 	}
 	
-	if(! pLauncher->GetCommandLineInstallDelga().IsEmpty()){
+	if(!pLauncher->GetCommandLineInstallDelga().IsEmpty()){
 		show();
 		try{
 			if(deglInstallDelga(*this).Run(pLauncher->GetCommandLineInstallDelga())){
@@ -221,7 +221,7 @@ bool deglWindowMain::RunCommandLineActions(){
 		}
 		
 	}else if(pLauncher->HasCommandLineRunGame()){
-		if(! pLauncher->RunCommandLineGame()){
+		if(!pLauncher->RunCommandLineGame()){
 			return false;
 		}
 		
@@ -264,9 +264,9 @@ void deglWindowMain::DisplayException(const deException &exception){
 
 
 void deglWindowMain::ShowWindowLogger(){
-	if(! pWindowLogger){
+	if(!pWindowLogger){
 		pWindowLogger = new deglWindowLogger(getApp());
-		if(! pWindowLogger) DETHROW(deeOutOfMemory);
+		if(!pWindowLogger) DETHROW(deeOutOfMemory);
 		
 		pWindowLogger->SetLogger(pLauncher->GetLoggerHistory());
 	}
@@ -340,7 +340,7 @@ long deglWindowMain::onResize(FXObject*, FXSelector, void*){
 	if(pLauncher){
 		deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
 		
-		if(! isMinimized() && ! isMaximized()){
+		if(!isMinimized() && !isMaximized()){
 			// while minimited the position is awefully off like -32000. to be on the
 			// safe side we clamp the position to 0 respective 20 to avoid title bar
 			// to not be accessible anymore

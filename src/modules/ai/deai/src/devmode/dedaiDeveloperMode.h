@@ -67,35 +67,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDEAIModule &GetModule() const{return pDEAI;}
+	inline deDEAIModule &GetModule() const{ return pDEAI; }
 	
 	/** \brief Developer mode is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	
 	
 	/** \brief Show navigation spaces. */
-	inline bool GetShowSpaces() const{return pShowSpaces;}
+	inline bool GetShowSpaces() const{ return pShowSpaces; }
 	
 	/** \brief Show navigation space links. */
-	inline bool GetShowSpaceLinks() const{return pShowSpaceLinks;}
+	inline bool GetShowSpaceLinks() const{ return pShowSpaceLinks; }
 	
 	/** \brief Set space type to highlight on navigation spaces or -1 to disable. */
-	inline int GetSpaceHighlightCostType() const{return pSpaceHighlightCostType;}
+	inline int GetSpaceHighlightCostType() const{ return pSpaceHighlightCostType; }
 	
 	/** \brief Show navigation blockers. */
-	inline bool GetShowBlockers() const{return pShowBlockers;}
+	inline bool GetShowBlockers() const{ return pShowBlockers; }
 	
 	/** \brief Show navigator path. */
-	inline bool GetShowPath() const{return pShowPath;}
+	inline bool GetShowPath() const{ return pShowPath; }
 	
 	/** \brief Show navigator path faces. */
-	inline bool GetShowPathFaces() const{return pShowPathFaces;}
+	inline bool GetShowPathFaces() const{ return pShowPathFaces; }
 	
 	
 	
 	/** \brief Quick debug. */
-	inline int GetQuickDebug() const{return pQuickDebug;}
+	inline int GetQuickDebug() const{ return pQuickDebug; }
 	
 	
 	
@@ -114,7 +114,7 @@ public:
 	void TouchUpdateTracker();
 	
 	/** \brief Update tracker number. */
-	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
+	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	/*@}*/
 	
 	

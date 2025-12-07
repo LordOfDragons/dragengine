@@ -78,7 +78,7 @@ deSkinProperty *deSkinTexture::GetPropertyWithType(const char *type) const{
 }
 
 int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{
-	if(! property) DETHROW(deeInvalidParam);
+	if(!property) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPropertyCount; i++){
@@ -91,7 +91,7 @@ int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{
 }
 
 bool deSkinTexture::HasProperty(deSkinProperty *property) const{
-	if(! property) DETHROW(deeInvalidParam);
+	if(!property) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPropertyCount; i++){
@@ -116,14 +116,14 @@ bool deSkinTexture::HasPropertyWithType(const char *type) const{
 }
 
 void deSkinTexture::AddProperty(deSkinProperty *property){
-	if(! property || HasPropertyWithType(property->GetType().GetString())){
+	if(!property || HasPropertyWithType(property->GetType().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
 	if(pPropertyCount == pPropertySize){
 		int newSize = pPropertySize * 3 / 2 + 1;
 		deSkinProperty **newArray = new deSkinProperty*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pProperties){
 			memcpy(newArray, pProperties, sizeof(deSkinProperty*) * pPropertySize);

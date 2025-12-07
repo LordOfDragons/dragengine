@@ -59,13 +59,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAPlayerChoice *GetActionPlayerChoice() const{return (ceCAPlayerChoice*)GetAction();}
+	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return (ceCAPlayerChoice*)GetAction(); }
 	
 	/** \brief Model with option or \em NULL. */
 	ceWPTTIMAPlayerChoiceOption *GetOptionChild(ceCAPlayerChoiceOption *option) const;
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{return pActions;}
+	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{ return pActions; }
 	
 	/** \brief Update action. */
 	virtual void Update();

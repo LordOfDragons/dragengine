@@ -71,7 +71,7 @@ void deLoggerConsole::LogError(const char *source, const char *message){
 }
 
 void deLoggerConsole::LogPrefix(const char *source, const char *message, const char *prefix){
-	if(! source || ! message || ! prefix){
+	if(!source || !message || !prefix){
 		DETHROW(deeInvalidParam);
 	}
 	

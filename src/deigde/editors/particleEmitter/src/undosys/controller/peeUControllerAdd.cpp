@@ -41,7 +41,7 @@
 ////////////////////////////
 
 peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *controller){
-	if(! emitter || ! controller){
+	if(!emitter || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

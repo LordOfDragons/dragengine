@@ -91,7 +91,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline FXSwitcher *GetSwitcher() const{return pSwitcher;}
+	inline FXSwitcher *GetSwitcher() const{ return pSwitcher; }
 	
 	virtual void AddHeader(const igdeTabBook::cHeader &header);
 	virtual void RemoveHeader(int index);

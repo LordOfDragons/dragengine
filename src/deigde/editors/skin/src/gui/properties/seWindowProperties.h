@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

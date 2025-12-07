@@ -74,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** CCD threshold. */
-	inline float GetCcdThreshold() const{return pCcdThreshold;}
+	inline float GetCcdThreshold() const{ return pCcdThreshold; }
 	
 	/** CCD radius. */
-	inline float GetCcdRadius() const {return pCcdRadius;}
+	inline float GetCcdRadius() const { return pCcdRadius; }
 	
 	/** Set offset. */
 	void SetOffset(const decVector &offset);
@@ -86,7 +86,7 @@ public:
 	void SetScale(const decVector &scale);
 	
 	/** No margin is set on created shapes. */
-	inline bool GetNoMargin() const{return pNoMargin;}
+	inline bool GetNoMargin() const{ return pNoMargin; }
 	
 	/** Set if no margin is set on created shapes. */
 	void SetNoMargin(bool noMargin);

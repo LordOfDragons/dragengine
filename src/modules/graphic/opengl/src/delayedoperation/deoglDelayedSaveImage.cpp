@@ -55,7 +55,7 @@ pDepth(depth),
 pComponentCount(componentCount),
 pBitCount(bitCount),
 pData(data){
-	if(! data){
+	if(!data){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -83,7 +83,7 @@ void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem 
 	try{
 		deBaseImageModule * const module = (deBaseImageModule*)ogl.GetGameEngine()->
 			GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, filename);
-		if(! module){
+		if(!module){
 			DETHROW(deeInvalidParam);
 		}
 		

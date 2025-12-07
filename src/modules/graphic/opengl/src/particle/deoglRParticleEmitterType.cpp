@@ -105,7 +105,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	// 6 parameter curves sampled at 256 positions. this is enough since the particle
 	// data given to us is contained in byte values so precise sampling does not
 	// yield more data than this pre-sampling can yield
-	if(! pParameterSamples){
+	if(!pParameterSamples){
 		pParameterSamples = new float[ESC_COUNT * 256]; // 3'072 entries = 12'288 bytes
 	}
 	
@@ -162,7 +162,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 		pbdata++;
 	}
 	
-	if(! pTextureSamples){
+	if(!pTextureSamples){
 		pTextureSamples = new deoglTexture(pEmitter.GetRenderThread());
 		pTextureSamples->SetSize(256, 4);
 		pTextureSamples->SetMapingFormat(3, true, false);
@@ -317,7 +317,7 @@ deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
 }
 
 deoglSPBlockUBO &deoglRParticleEmitterType::GetLightParameterBlock(){
-	if(! pParamBlockLight){
+	if(!pParamBlockLight){
 		pParamBlockLight = GetPipelines().GetWithRef(deoglLightPipelines::etNoShadow, 0)
 			.GetShader()->CreateSPBLightParam();
 	}

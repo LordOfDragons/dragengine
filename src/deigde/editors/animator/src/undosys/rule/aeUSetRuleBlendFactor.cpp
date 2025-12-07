@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleBlendFactor::aeUSetRuleBlendFactor(aeRule *rule, float newFactor){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

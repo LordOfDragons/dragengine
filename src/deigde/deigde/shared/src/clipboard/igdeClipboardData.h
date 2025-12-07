@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type name of clipboard data. */
-	inline const decString &GetTypeName() const{return pTypeName;}
+	inline const decString &GetTypeName() const{ return pTypeName; }
 	/*@}*/
 };
 

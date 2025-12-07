@@ -51,19 +51,19 @@ pRetained(false)
 	
 	if(image.GetBitCount() == 8){
 		pData8 = image.GetDataGrayscale8();
-		if(! pData8){
+		if(!pData8){
 			DETHROW(deeInvalidParam);
 		}
 		
 	}else if(image.GetBitCount() == 16){
 		pData16 = image.GetDataGrayscale16();
-		if(! pData16){
+		if(!pData16){
 			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
 		pData32 = image.GetDataGrayscale32();
-		if(! pData32){
+		if(!pData32){
 			DETHROW(deeInvalidParam);
 		}
 	}

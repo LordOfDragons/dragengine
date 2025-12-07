@@ -118,7 +118,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editor module. */
-	inline igdeEditorModule &GetEditorModule() const{return pEditorModule;}
+	inline igdeEditorModule &GetEditorModule() const{ return pEditorModule; }
 	
 	
 	

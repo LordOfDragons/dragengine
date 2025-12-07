@@ -114,27 +114,27 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the emitter. */
-	inline deParticleEmitter *GetEmitter() const{return pEmitter;}
+	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
 	/** Sets the emitter. */
 	void SetEmitter(deParticleEmitter *emitter);
 	/** Retrieves the type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/** Sets the type. */
 	void SetType(int type);
 	
 	/** Retrieves the skin or NULL if not set. */
-	inline debpSkin *GetSkin() const{return pSkin;}
+	inline debpSkin *GetSkin() const{ return pSkin; }
 	/** Retrieves the model or NULL if not set. */
-	inline debpModel *GetModel() const{return pModel;}
+	inline debpModel *GetModel() const{ return pModel; }
 	/** Retrieves the model skin or NULL if not set. */
-	inline debpSkin *GetModelSkin() const{return pModelSkin;}
+	inline debpSkin *GetModelSkin() const{ return pModelSkin; }
 	
 	/** Retrieves the linear velocity parameter factor. */
-	inline float GetParamFactorLinVelo() const{return pParamFactorLinVelo;}
+	inline float GetParamFactorLinVelo() const{ return pParamFactorLinVelo; }
 	/** Sets the linear velocity parameter factor. */
 	void SetParamFactorLinVelo(float factor);
 	/** Retrieves the angular velocity parameter factor. */
-	inline float GetParamFactorAngVelo() const{return pParamFactorAngVelo;}
+	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	/** Sets the angular velocity parameter factor. */
 	void SetParamFactorAngVelo(float factor);
 	

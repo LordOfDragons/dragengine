@@ -44,7 +44,7 @@ meUHTNavSpaceAdd::meUHTNavSpaceAdd(meHeightTerrainSector *sector, meHeightTerrai
 pSector(NULL),
 pNavSpace(NULL)
 {
-	if(! sector || ! navspace){
+	if(!sector || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

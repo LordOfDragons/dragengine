@@ -143,7 +143,7 @@ bool decSmoothVector2::operator==(const decSmoothVector2 &other) const{
 }
 
 bool decSmoothVector2::operator!=(const decSmoothVector2 &other) const{
-	return ! pValue.IsEqualTo(other.pValue);
+	return !pValue.IsEqualTo(other.pValue);
 }
 
 decSmoothVector2 &decSmoothVector2::operator=(const decSmoothVector2 &other){

@@ -86,23 +86,23 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Result. */
-	inline deoalRayTraceHitElement &GetResult(){return pResult;}
-	inline const deoalRayTraceHitElement &GetResult() const{return pResult;}
+	inline deoalRayTraceHitElement &GetResult(){ return pResult; }
+	inline const deoalRayTraceHitElement &GetResult() const{ return pResult; }
 	
 	/** \brief Result is set. */
-	inline bool GetHasResult() const{return pHasResult;}
+	inline bool GetHasResult() const{ return pHasResult; }
 	
 	/** \brief Set if result is set. */
 	void SetHasResult(bool hasResult);
 	
 	/** \brief Find front facing hits otherwise back facing hits. */
-	inline bool GetFrontFacing() const{return pFrontFacing;}
+	inline bool GetFrontFacing() const{ return pFrontFacing; }
 	
 	/** \brief Set to find front facing hits or back facing hits. */
 	void SetFrontFacing(bool frontFacing);
 	
 	/** \brief Limit distance. */
-	float GetLimitDistance() const{return pLimitDistance;}
+	float GetLimitDistance() const{ return pLimitDistance; }
 	
 	/** \brief Set limit distance. */
 	void SetLimitDistance(float limitDistance);

@@ -80,7 +80,7 @@ static sFPLMapping vFPLMappings[FPL_MAPPING_COUNT] = {
 ////////////////////////////
 
 igdeLoadSaveSystem::igdeLoadSaveSystem(igdeWindowMain *windowMain){
-	if(! windowMain){
+	if(!windowMain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ igdeLoadSaveSystem::~igdeLoadSaveSystem(){
 ///////////////
 
 igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -131,7 +131,7 @@ igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
 }
 
 void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *filename){
-	if(! project || ! filename){
+	if(!project || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -178,14 +178,14 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 				const int patternCount = patternList.GetCount();
 				
 				for(k=0; k<patternCount; k++){
-					if(! showAllFormat[i].IsEmpty()){
+					if(!showAllFormat[i].IsEmpty()){
 						showAllFormat[i].AppendCharacter(',');
 					}
 					showAllFormat[i].AppendCharacter('*');
 					showAllFormat[i].Append(patternList.GetAt(k));
 				}
 				
-				if(showAllDefaultExtension[i].IsEmpty() && ! loadableModule.GetNoSaving()){
+				if(showAllDefaultExtension[i].IsEmpty() && !loadableModule.GetNoSaving()){
 					showAllDefaultExtension[i] = loadableModule.GetDefaultExtension();
 				}
 			}
@@ -205,7 +205,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 			if(loadableModule.GetType() == vFPLMappings[i].moduleType){
 				pAddPattern(pFPLOpen[vFPLMappings[i].list], loadableModule);
 				
-				if(! loadableModule.GetNoSaving()){
+				if(!loadableModule.GetNoSaving()){
 					pAddPattern(pFPLSave[vFPLMappings[i].list], loadableModule);
 				}
 			}

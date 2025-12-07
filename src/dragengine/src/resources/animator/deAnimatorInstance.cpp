@@ -257,7 +257,7 @@ void deAnimatorInstance::CaptureStateInto(int identifier){
 }
 
 void deAnimatorInstance::StoreFrameInto(int identifier, const char *moveName, float moveTime){
-	if(! moveName){
+	if(!moveName){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -300,7 +300,7 @@ void deAnimatorInstance::pCleanUp(){
 }
 
 void deAnimatorInstance::pUpdateControllers(){
-	if(! pAnimator){
+	if(!pAnimator){
 		pControllerCount = 0;
 		return;
 	}

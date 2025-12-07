@@ -53,7 +53,7 @@
 ////////////////////////////
 
 feFontImage::feFontImage(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pEngImage = NULL;
@@ -130,9 +130,9 @@ void feFontImage::SetSize(int width, int height){
 }
 
 void feFontImage::SetFilename(const char* filename, bool load){
-	if(! filename) DETHROW(deeInvalidParam);
+	if(!filename) DETHROW(deeInvalidParam);
 	
-	if(! pFilename.Equals(filename)){
+	if(!pFilename.Equals(filename)){
 		pFilename = filename;
 		
 		if(load){
@@ -160,7 +160,7 @@ void feFontImage::LoadImage(){
 		pEngImage = NULL;
 	}
 	
-	if(! pFilename.IsEmpty()){
+	if(!pFilename.IsEmpty()){
 		const char *basePath = "/";
 		
 		if(pParentFont){

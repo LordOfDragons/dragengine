@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector to use if there is no input vector. */
-	inline const decVector &GetVector() const{return pVector;}
+	inline const decVector &GetVector() const{ return pVector; }
 	/** Sets the vector to use if there is no input vector. */
 	void SetVector(const decVector &vector);
 	

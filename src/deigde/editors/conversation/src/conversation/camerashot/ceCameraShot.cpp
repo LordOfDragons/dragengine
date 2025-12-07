@@ -115,9 +115,9 @@ void ceCameraShot::SetConversation(ceConversation *conversation){
 }
 
 void ceCameraShot::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		if(pConversation && pConversation->GetCameraShotList().HasNamed(name)) DETHROW(deeInvalidParam);
 		
 		pName = name;
@@ -145,7 +145,7 @@ void ceCameraShot::SetActorCount(int count){
 
 
 void ceCameraShot::SetCameraTarget(const char *target){
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -159,7 +159,7 @@ void ceCameraShot::SetCameraTarget(const char *target){
 }
 
 void ceCameraShot::SetOffsetCameraFrom(const decVector& offset){
-	if(! offset.IsEqualTo(pOffsetCameraFrom)){
+	if(!offset.IsEqualTo(pOffsetCameraFrom)){
 		pOffsetCameraFrom = offset;
 		
 		if(pConversation){
@@ -169,7 +169,7 @@ void ceCameraShot::SetOffsetCameraFrom(const decVector& offset){
 }
 
 void ceCameraShot::SetOffsetCameraTo(const decVector& offset){
-	if(! offset.IsEqualTo(pOffsetCameraTo)){
+	if(!offset.IsEqualTo(pOffsetCameraTo)){
 		pOffsetCameraTo = offset;
 		
 		if(pConversation){
@@ -181,7 +181,7 @@ void ceCameraShot::SetOffsetCameraTo(const decVector& offset){
 
 
 void ceCameraShot::SetLookAtTarget(const char *target){
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -195,7 +195,7 @@ void ceCameraShot::SetLookAtTarget(const char *target){
 }
 
 void ceCameraShot::SetOffsetLookAtFrom(const decVector& offset){
-	if(! offset.IsEqualTo(pOffsetLookAtFrom)){
+	if(!offset.IsEqualTo(pOffsetLookAtFrom)){
 		pOffsetLookAtFrom = offset;
 		
 		if(pConversation){
@@ -205,7 +205,7 @@ void ceCameraShot::SetOffsetLookAtFrom(const decVector& offset){
 }
 
 void ceCameraShot::SetOffsetLookAtTo(const decVector& offset){
-	if(! offset.IsEqualTo(pOffsetLookAtTo)){
+	if(!offset.IsEqualTo(pOffsetLookAtTo)){
 		pOffsetLookAtTo = offset;
 		
 		if(pConversation){
@@ -217,7 +217,7 @@ void ceCameraShot::SetOffsetLookAtTo(const decVector& offset){
 
 
 void ceCameraShot::SetCameraOrbitFrom(const decVector &rotation){
-	if(! rotation.IsEqualTo(pCameraOrbitFrom)){
+	if(!rotation.IsEqualTo(pCameraOrbitFrom)){
 		pCameraOrbitFrom = rotation;
 		
 		if(pConversation){
@@ -227,7 +227,7 @@ void ceCameraShot::SetCameraOrbitFrom(const decVector &rotation){
 }
 
 void ceCameraShot::SetCameraOrbitTo(const decVector &rotation){
-	if(! rotation.IsEqualTo(pCameraOrbitTo)){
+	if(!rotation.IsEqualTo(pCameraOrbitTo)){
 		pCameraOrbitTo = rotation;
 		
 		if(pConversation){
@@ -259,7 +259,7 @@ void ceCameraShot::SetCameraDistanceTo(float distance){
 
 
 void ceCameraShot::SetPositionFrom(const decVector &position){
-	if(! position.IsEqualTo(pPositionFrom)){
+	if(!position.IsEqualTo(pPositionFrom)){
 		pPositionFrom = position;
 		
 		if(pConversation){
@@ -269,7 +269,7 @@ void ceCameraShot::SetPositionFrom(const decVector &position){
 }
 
 void ceCameraShot::SetPositionTo(const decVector &position){
-	if(! position.IsEqualTo(pPositionTo)){
+	if(!position.IsEqualTo(pPositionTo)){
 		pPositionTo = position;
 		
 		if(pConversation){
@@ -279,7 +279,7 @@ void ceCameraShot::SetPositionTo(const decVector &position){
 }
 
 void ceCameraShot::SetRotationFrom(const decVector &rotation){
-	if(! rotation.IsEqualTo(pRotationFrom)){
+	if(!rotation.IsEqualTo(pRotationFrom)){
 		pRotationFrom = rotation;
 		
 		if(pConversation){
@@ -289,7 +289,7 @@ void ceCameraShot::SetRotationFrom(const decVector &rotation){
 }
 
 void ceCameraShot::SetRotationTo(const decVector &rotation){
-	if(! rotation.IsEqualTo(pRotationTo)){
+	if(!rotation.IsEqualTo(pRotationTo)){
 		pRotationTo = rotation;
 		
 		if(pConversation){

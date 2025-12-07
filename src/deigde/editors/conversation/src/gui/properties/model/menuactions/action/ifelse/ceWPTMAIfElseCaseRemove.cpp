@@ -60,7 +60,7 @@ pTopic(&topic),
 pIfElse(&ifElse),
 pIfCase(ifCase)
 {
-	if(! ifCase){
+	if(!ifCase){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -75,13 +75,13 @@ void ceWPTMAIfElseCaseRemove::OnAction(){
 		pTopic, pIfElse, pIfCase));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if(! wptopic.GetActionTreeModel()){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
 	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	

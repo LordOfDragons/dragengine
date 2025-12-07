@@ -108,7 +108,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	inline float GetMinSpeed() const{return pMinSpeed;}
+	inline float GetMinSpeed() const{ return pMinSpeed; }
 	
 	/**
 	 * \brief Set minimum play speed.
@@ -124,7 +124,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	inline float GetMaxSpeed() const{return pMaxSpeed;}
+	inline float GetMaxSpeed() const{ return pMaxSpeed; }
 	
 	/**
 	 * \brief Set maximum play speed.
@@ -137,12 +137,12 @@ public:
 	
 	
 	/** \brief Play speed target. */
-	inline deSynthesizerControllerTarget &GetTargetSpeed(){return pTargetSpeed;}
-	inline const deSynthesizerControllerTarget &GetTargetSpeed() const{return pTargetSpeed;}
+	inline deSynthesizerControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
+	inline const deSynthesizerControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/** \brief Select sound target. */
-	inline deSynthesizerControllerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const deSynthesizerControllerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline deSynthesizerControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const deSynthesizerControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/**
 	 * \brief Play target.
@@ -155,8 +155,8 @@ public:
 	 * sounds. A value of 1/3 pauses the playback freezing playback position. A value of 0
 	 * stops playback and rewinds playback position to the beginning.
 	 */
-	inline deSynthesizerControllerTarget &GetTargetPlay(){return pTargetPlay;}
-	inline const deSynthesizerControllerTarget &GetTargetPlay() const{return pTargetPlay;}
+	inline deSynthesizerControllerTarget &GetTargetPlay(){ return pTargetPlay; }
+	inline const deSynthesizerControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	/*@}*/
 	
 	

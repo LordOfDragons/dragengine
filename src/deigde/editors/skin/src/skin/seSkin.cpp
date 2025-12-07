@@ -338,7 +338,7 @@ void seSkin::SetPlayback(bool playback){
 	
 	pPlayback = playback;
 	
-	pEngAnimatorInstance->GetControllerAt(0).SetFrozen(! playback);
+	pEngAnimatorInstance->GetControllerAt(0).SetFrozen(!playback);
 	
 	NotifyViewChanged();
 }
@@ -400,7 +400,7 @@ void seSkin::Update(float elapsed){
 	
 	pEnvObject->Update(elapsed);
 	
-	if(! pEngAnimatorInstance->GetControllerAt(0).GetFrozen()){
+	if(!pEngAnimatorInstance->GetControllerAt(0).GetFrozen()){
 		pEngAnimatorInstance->GetControllerAt(0).IncrementCurrentValue(elapsed);
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 	}
@@ -416,13 +416,13 @@ void seSkin::Invalidate(){
 }
 
 void seSkin::AssignTextureSkins(){
-	if(! pDirtySkinAssignment){
+	if(!pDirtySkinAssignment){
 		return;
 	}
-	if(! pEngComponent){
+	if(!pEngComponent){
 		return;
 	}
-	if(! pEngComponent->GetModel()){
+	if(!pEngComponent->GetModel()){
 		return;
 	}
 	
@@ -476,7 +476,7 @@ void seSkin::AddMapped(seMapped *mapped){
 	mapped->SetSkin(this);
 	NotifyMappedStructureChanged();
 	
-	if(! pActiveMapped){
+	if(!pActiveMapped){
 		SetActiveMapped(mapped);
 	}
 }
@@ -552,13 +552,13 @@ void seSkin::AddTexture(seTexture *texture){
 	texture->SetSkin(this);
 	NotifyTextureStructureChanged();
 	
-	if(! pActiveTexture){
+	if(!pActiveTexture){
 		SetActiveTexture(texture);
 	}
 }
 
 void seSkin::RemoveTexture(seTexture *texture){
-	if(! texture || texture->GetSkin() != this) DETHROW(deeInvalidParam);
+	if(!texture || texture->GetSkin() != this) DETHROW(deeInvalidParam);
 	
 	if(texture->GetActive()){
 		if(pTextureList.GetCount() > 1){
@@ -621,7 +621,7 @@ void seSkin::SetActiveTexture(seTexture *texture){
 //////////////
 
 void seSkin::AddListener(seSkinListener *listener){
-	if(! listener) DETHROW(deeInvalidParam);
+	if(!listener) DETHROW(deeInvalidParam);
 	
 	pListeners.Add(listener);
 }
@@ -1043,10 +1043,10 @@ void seSkin::pUpdateComponent(){
 	
 	// load model and rig
 	try{
-		if(! pModelPath.IsEmpty()){
+		if(!pModelPath.IsEmpty()){
 			model = GetEngine()->GetModelManager()->LoadModel(pModelPath.GetString(), "/");
 		}
-		if(! pRigPath.IsEmpty()){
+		if(!pRigPath.IsEmpty()){
 			rig = GetEngine()->GetRigManager()->LoadRig(pRigPath.GetString(), "/");
 		}
 		

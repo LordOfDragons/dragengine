@@ -70,7 +70,7 @@ void deClassDecal::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create decal
 	nd.decal = decalMgr.CreateDecal();
-	if(! nd.decal){
+	if(!nd.decal){
 		DSTHROW(dueOutOfMemory);
 	}
 }
@@ -351,7 +351,7 @@ void deClassDecal::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDecal * const clsDecal = (deClassDecal*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsDecal)){
+	if(!p_IsObjOfType(obj, clsDecal)){
 		rt->PushBool(false);
 		
 	}else{
@@ -438,7 +438,7 @@ void deClassDecal::CreateClassMembers(dsEngine *engine){
 }
 
 deDecal *deClassDecal::GetDecal(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -446,11 +446,11 @@ deDecal *deClassDecal::GetDecal(dsRealObject *myself) const{
 }
 
 void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! decal){
+	if(!decal){
 		rt->PushObject(NULL, this);
 		return;
 	}

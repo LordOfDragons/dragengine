@@ -76,7 +76,7 @@ void deClassPropField::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create propfield
 	nd->propfield = pfmgr->CreatePropField();
-	if(! nd->propfield) DSTHROW(dueOutOfMemory);
+	if(!nd->propfield) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -112,7 +112,7 @@ void deClassPropField::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassDVector *clsDVec = clsPF->GetDS()->GetClassDVector();
 	
 	dsRealObject *objPos = rt->GetValue(0)->GetRealObject();
-	if(! objPos) DSTHROW(dueNullPointer);
+	if(!objPos) DSTHROW(dueNullPointer);
 	
 	propfield->SetPosition(clsDVec->GetDVector(objPos));
 }
@@ -211,7 +211,7 @@ void deClassPropField::nfSetInstanceAt::RunFunction(dsRunTime *rt, dsValue *myse
 	dsRealObject *objRot = rt->GetValue(3)->GetRealObject();
 	float scaling = rt->GetValue(4)->GetFloat();
 	
-	if(! objPos || ! objRot) DSTHROW(dueNullPointer);
+	if(!objPos || !objRot) DSTHROW(dueNullPointer);
 	
 	dePropFieldInstance &instance = propfield->GetTypeAt(typeIndex)->GetInstanceAt(instanceIndex);
 	
@@ -278,7 +278,7 @@ void deClassPropField::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsPF)){
+	if(!p_IsObjOfType(obj, clsPF)){
 		rt->PushBool(false);
 		
 	}else{
@@ -299,7 +299,7 @@ void deClassPropField::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassPropField::deClassPropField(deScriptingDragonScript *ds) :
 dsClass("PropField", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -360,7 +360,7 @@ void deClassPropField::CreateClassMembers(dsEngine *engine){
 }
 
 dePropField *deClassPropField::GetPropField(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -368,9 +368,9 @@ dePropField *deClassPropField::GetPropField(dsRealObject *myself) const{
 }
 
 void deClassPropField::PushPropField(dsRunTime *rt, dePropField *propfield){
-	if(! rt) DSTHROW(dueInvalidParam);
+	if(!rt) DSTHROW(dueInvalidParam);
 	
-	if(! propfield){
+	if(!propfield){
 		rt->PushObject(NULL, this);
 		return;
 	}

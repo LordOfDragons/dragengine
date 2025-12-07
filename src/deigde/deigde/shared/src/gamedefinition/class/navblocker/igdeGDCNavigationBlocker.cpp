@@ -115,7 +115,7 @@ void igdeGDCNavigationBlocker::SetShapeList(const decShapeList &shapeList){
 
 
 bool igdeGDCNavigationBlocker::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCNavigationBlocker::GetPropertyName(eProperties property) const{

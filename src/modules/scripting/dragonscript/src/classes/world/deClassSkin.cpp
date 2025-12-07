@@ -90,7 +90,7 @@ void deClassSkin::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -349,7 +349,7 @@ void deClassSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkin * const clsSkin = (deClassSkin*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! object->GetRealObject()
+	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || !object->GetRealObject()
 	|| object->GetRealObject()->GetType() != clsSkin){
 		rt->PushBool(false);
 		
@@ -431,18 +431,18 @@ void deClassSkin::CreateClassMembers(dsEngine *engine){
 }
 
 deSkin *deClassSkin::GetSkin(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((sSkinNatDat*)p_GetNativeData(myself->GetBuffer()))->skin;
 }
 
 void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! skin){
+	if(!skin){
 		rt->PushObject(NULL, this);
 		return;
 	}

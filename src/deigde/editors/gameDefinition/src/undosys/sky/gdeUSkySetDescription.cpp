@@ -43,7 +43,7 @@ gdeUSkySetDescription::gdeUSkySetDescription(
 gdeSky *sky, const char *newValue) :
 pSky(NULL)
 {
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

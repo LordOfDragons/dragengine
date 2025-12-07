@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index of vertex. */
-	inline int GetVertex() const{return pVertex;}
+	inline int GetVertex() const{ return pVertex; }
 	
 	/** \brief Set index of vertex. */
 	void SetVertex(int vertex);
 	
 	/** \brief Vertex position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set vertex position. */
 	void SetPosition(const decVector &position);

@@ -85,7 +85,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSky * const sky = pPanel.GetSky();
 		seLink * const link = pPanel.GetLink();
-		if(! sky || ! link){
+		if(!sky || !link){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSky * const sky = pPanel.GetSky();
 		seLink * const link = pPanel.GetLink();
-		if(! sky || ! link){
+		if(!sky || !link){
 			return;
 		}
 		
@@ -140,7 +140,7 @@ public:
 	
 	virtual void OnAction(){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
@@ -186,7 +186,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
@@ -303,7 +303,7 @@ public:
 		if(pUndo){
 			((seULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
-		}else if(! pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
+		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{

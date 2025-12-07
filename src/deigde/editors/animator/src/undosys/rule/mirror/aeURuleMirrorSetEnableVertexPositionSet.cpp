@@ -50,9 +50,9 @@ aeURuleMirrorSetEnableVertexPositionSet::~aeURuleMirrorSetEnableVertexPositionSe
 ///////////////
 
 void aeURuleMirrorSetEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleMirrorSetEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }

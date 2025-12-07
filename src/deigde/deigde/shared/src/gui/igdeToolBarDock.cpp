@@ -66,7 +66,7 @@ void igdeToolBarDock::CreateNativeWidget(){
 }
 
 void igdeToolBarDock::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

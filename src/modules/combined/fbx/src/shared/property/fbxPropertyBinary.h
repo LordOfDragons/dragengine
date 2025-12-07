@@ -61,10 +61,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline const uint8_t *GetValue() const{return pValue;}
+	inline const uint8_t *GetValue() const{ return pValue; }
 	
 	/** \brief Value length. */
-	inline int GetLength() const{return pLength;}
+	inline int GetLength() const{ return pLength; }
 	
 	/** \brief Set value. */
 	void SetValue(const uint8_t *value, int length);

@@ -43,7 +43,7 @@ meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, 
 pNavSpace(NULL),
 pNewLayer(newLayer)
 {
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

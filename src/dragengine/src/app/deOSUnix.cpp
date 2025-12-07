@@ -280,11 +280,11 @@ pScaleFactor(100)
 		
 		// open display
 		const char *dispName = getenv("DISPLAY");
-		if(! dispName){
+		if(!dispName){
 			dispName = "";
 		}
 		pDisplay = XOpenDisplay(dispName);
-		if(! pDisplay){
+		if(!pDisplay){
 			printf("[OSUNIX] Cannot not open display %s\n", XDisplayName(dispName));
 			DETHROW(deeInvalidAction);
 	    }
@@ -473,12 +473,12 @@ void deOSUnix::SetWindow(Window wnd){
 		int result = XGrabPointer(p_Display, p_CurWindow, True, 0, GrabModeAsync,
 			GrabModeAsync, p_CurWindow, None, CurrentTime);
 		if(result != GrabSuccess){
-			printf("[AppDisplay] Cannot Grab the MousePointer! (%i)\n", result);
+			printf("[AppDisplay] Cannot Grab the MousePointer!(%i)\n", result);
 		}
 		result = XGrabKeyboard(p_Display, p_CurWindow, False, GrabModeAsync, GrabModeAsync,
 			CurrentTime);
 		if(result != GrabSuccess){
-			printf("[AppDisplay] Cannot Grab the Keyboard! (%i)\n", result);
+			printf("[AppDisplay] Cannot Grab the Keyboard!(%i)\n", result);
 		}
 		*/
 	}
@@ -716,7 +716,7 @@ void deOSUnix::pGetDisplayInformation(){
 
 int deOSUnix::pGetGlobalScaling() const{
 	const char * const resourceString = XResourceManagerString(pDisplay);
-	if(! resourceString){
+	if(!resourceString){
 		return 100;
 	}
 	
@@ -732,7 +732,7 @@ int deOSUnix::pGetGlobalScaling() const{
 	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True){
 		return 100;
 	}
-	if(! value.addr){
+	if(!value.addr){
 		return 100;
 	}
 	

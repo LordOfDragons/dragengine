@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
-	if(! rig || ! rootBone) DETHROW(deeInvalidParam);
+	if(!rig || !rootBone) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set Rig Root Bone");
 	

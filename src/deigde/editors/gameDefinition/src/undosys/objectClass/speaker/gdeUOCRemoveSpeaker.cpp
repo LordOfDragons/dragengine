@@ -45,11 +45,11 @@ gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeak
 pObjectClass(NULL),
 pSpeaker(NULL)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetSpeakers().Has(speaker)){
+	if(!objectClass->GetSpeakers().Has(speaker)){
 		DETHROW(deeInvalidParam);
 	}
 	

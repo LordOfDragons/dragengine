@@ -64,7 +64,7 @@ public:
 	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Cached input device count. */
 	int GetCachedDeviceCount();
@@ -78,7 +78,7 @@ public:
 	/** Frame update. */
 	void OnFrameUpdate();
 	
-	inline dsClass *GetClassVRFeatureSupportLevel() const{return pClsVRFeatureSupportLevel;}
+	inline dsClass *GetClassVRFeatureSupportLevel() const{ return pClsVRFeatureSupportLevel; }
 	/*@}*/
 	
 	

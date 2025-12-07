@@ -111,13 +111,13 @@ aeLSAnimator::~aeLSAnimator(){
 ///////////////
 
 void aeLSAnimator::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
 
 void aeLSAnimator::SetPattern(const char *pattern){
-	if(! pattern) DETHROW(deeInvalidParam);
+	if(!pattern) DETHROW(deeInvalidParam);
 	
 	pPattern = pattern;
 }
@@ -128,7 +128,7 @@ void aeLSAnimator::SetPattern(const char *pattern){
 ///////////////////////
 
 void aeLSAnimator::LoadAnimator(aeAnimator *animator, decBaseFileReader *file){
-	if(! animator || ! file){
+	if(!animator || !file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -140,7 +140,7 @@ void aeLSAnimator::LoadAnimator(aeAnimator *animator, decBaseFileReader *file){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root){
+	if(!root){
 		DETHROW(deeInvalidParam);
 	}
 	if(strcmp(root->GetName(), "animator") != 0){
@@ -151,7 +151,7 @@ void aeLSAnimator::LoadAnimator(aeAnimator *animator, decBaseFileReader *file){
 }
 
 void aeLSAnimator::SaveAnimator(aeAnimator *animator, decBaseFileWriter *file){
-	if(! animator || ! file) DETHROW(deeInvalidParam);
+	if(!animator || !file) DETHROW(deeInvalidParam);
 	int i, count;
 	
 	decXmlWriter writer(file);
@@ -315,11 +315,11 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 		
 		const bool hasLiftOffTime = fabsf(leg.GetLiftOffTime()) > FLOAT_SAFE_EPSILON;
 		const bool hasPutDownTime = fabsf(leg.GetPutDownTime() - 0.5f) > FLOAT_SAFE_EPSILON;
-		const bool hasPdposStand = ! pdposStand.IsZero();
-		const bool hasPdposWalk = ! pdposWalk.IsZero();
-		const bool hasPdposRun = ! pdposRun.IsZero();
+		const bool hasPdposStand = !pdposStand.IsZero();
+		const bool hasPdposWalk = !pdposWalk.IsZero();
+		const bool hasPdposRun = !pdposRun.IsZero();
 		
-		if(! hasLiftOffTime && ! hasPutDownTime && ! hasPdposStand && ! hasPdposWalk && ! hasPdposRun){
+		if(!hasLiftOffTime && !hasPutDownTime && !hasPdposStand && !hasPdposWalk && !hasPdposRun){
 			continue;
 		}
 		
@@ -376,7 +376,7 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 	if(controller.GetFrozen()){
 		writer.WriteDataTagBool("frozen", controller.GetFrozen());
 	}
-	if(! controller.GetClamp()){
+	if(!controller.GetClamp()){
 		writer.WriteDataTagBool("clamp", controller.GetClamp());
 	}
 	
@@ -478,7 +478,7 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 	if(fabsf(controller.GetDefaultValue()) > FLOAT_SAFE_EPSILON){
 		writer.WriteDataTagFloat("value", controller.GetDefaultValue());
 	}
-	if(! controller.GetDefaultVector().IsZero()){
+	if(!controller.GetDefaultVector().IsZero()){
 		WriteVector(writer, "vector", controller.GetDefaultVector());
 	}
 	
@@ -499,7 +499,7 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 	if(link.GetRepeat() != 1){
 		writer.WriteDataTagInt("repeat", link.GetRepeat());
 	}
-	if(! link.GetBone().IsEmpty()){
+	if(!link.GetBone().IsEmpty()){
 		writer.WriteDataTagString("bone", link.GetBone());
 	}
 	
@@ -549,7 +549,7 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! link.GetVertexPositionSet().IsEmpty()){
+	if(!link.GetVertexPositionSet().IsEmpty()){
 		writer.WriteDataTagString("vertexPositionSet", link.GetVertexPositionSet());
 	}
 	
@@ -567,8 +567,8 @@ void aeLSAnimator::pSaveLink(decXmlWriter &writer, const aeAnimator &animator, c
 	
 	const decCurveBezier &curve = link.GetCurve();
 	if(curve.GetInterpolationMode() != decCurveBezier::eimLinear || curve.GetPointCount() != 2
-	|| ! curve.GetPointAt(0).GetPoint().IsEqualTo(decVector2(0.0f, 0.0f))
-	|| ! curve.GetPointAt(1).GetPoint().IsEqualTo(decVector2(1.0f, 1.0f))){
+	|| !curve.GetPointAt(0).GetPoint().IsEqualTo(decVector2(0.0f, 0.0f))
+	|| !curve.GetPointAt(1).GetPoint().IsEqualTo(decVector2(1.0f, 1.0f))){
 		WriteCurveBezier(writer, "curve", link.GetCurve());
 	}
 	
@@ -579,7 +579,7 @@ void aeLSAnimator::pSaveRuleCommon(decXmlWriter &writer, const aeAnimator &anima
 	int i, count;
 	
 	writer.WriteDataTagString("name", rule.GetName());
-	if(! rule.GetEnabled()){
+	if(!rule.GetEnabled()){
 		writer.WriteDataTagBool("enabled", rule.GetEnabled());
 	}
 	
@@ -691,16 +691,16 @@ const aeRuleAnimation &rule){
 	writer.WriteDataTagString("moveName", rule.GetMoveName());
 	writer.WriteDataTagFloat("moveTime", rule.GetMoveTime());
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -720,16 +720,16 @@ const aeRuleAnimationDifference &rule){
 	writer.WriteDataTagString("referenceMoveName", rule.GetReferenceMoveName());
 	writer.WriteDataTagFloat("referenceMoveTime", rule.GetReferenceMoveTime());
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -753,16 +753,16 @@ const aeRuleAnimationSelect &rule){
 		writer.WriteDataTagString("move", moves.GetAt(i));
 	}
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -778,7 +778,7 @@ const aeRuleBoneTransformator &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(! rule.GetMinimumTranslation().IsZero()){
+	if(!rule.GetMinimumTranslation().IsZero()){
 		writer.WriteOpeningTagStart("minimumTranslation");
 		writer.WriteAttributeFloat("x", rule.GetMinimumTranslation().x);
 		writer.WriteAttributeFloat("y", rule.GetMinimumTranslation().y);
@@ -786,7 +786,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetMaximumTranslation().IsZero()){
+	if(!rule.GetMaximumTranslation().IsZero()){
 		writer.WriteOpeningTagStart("maximumTranslation");
 		writer.WriteAttributeFloat("x", rule.GetMaximumTranslation().x);
 		writer.WriteAttributeFloat("y", rule.GetMaximumTranslation().y);
@@ -794,7 +794,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetMinimumRotation().IsZero()){
+	if(!rule.GetMinimumRotation().IsZero()){
 		writer.WriteOpeningTagStart("minimumRotation");
 		writer.WriteAttributeFloat("x", rule.GetMinimumRotation().x);
 		writer.WriteAttributeFloat("y", rule.GetMinimumRotation().y);
@@ -802,7 +802,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetMaximumRotation().IsZero()){
+	if(!rule.GetMaximumRotation().IsZero()){
 		writer.WriteOpeningTagStart("maximumRotation");
 		writer.WriteAttributeFloat("x", rule.GetMaximumRotation().x);
 		writer.WriteAttributeFloat("y", rule.GetMaximumRotation().y);
@@ -810,7 +810,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetMinimumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!rule.GetMinimumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("minimumScaling");
 		writer.WriteAttributeFloat("x", rule.GetMinimumScaling().x);
 		writer.WriteAttributeFloat("y", rule.GetMinimumScaling().y);
@@ -818,7 +818,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetMaximumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!rule.GetMaximumScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("maximumScaling");
 		writer.WriteAttributeFloat("x", rule.GetMaximumScaling().x);
 		writer.WriteAttributeFloat("y", rule.GetMaximumScaling().y);
@@ -826,7 +826,7 @@ const aeRuleBoneTransformator &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetAxis().IsEqualTo(decVector(0.0f, 0.0f, 1.0f))){
+	if(!rule.GetAxis().IsEqualTo(decVector(0.0f, 0.0f, 1.0f))){
 		writer.WriteOpeningTagStart("axis");
 		writer.WriteAttributeFloat("x", rule.GetAxis().x);
 		writer.WriteAttributeFloat("y", rule.GetAxis().y);
@@ -858,7 +858,7 @@ const aeRuleBoneTransformator &rule){
 	if(rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
@@ -867,7 +867,7 @@ const aeRuleBoneTransformator &rule){
 	if(rule.GetUseAxis()){
 		writer.WriteDataTagBool("useAxis", rule.GetUseAxis());
 	}
-	if(! rule.GetTargetBone().IsEmpty()){
+	if(!rule.GetTargetBone().IsEmpty()){
 		writer.WriteDataTagString("targetBone", rule.GetTargetBone());
 	}
 	
@@ -948,13 +948,13 @@ const aeRuleStateManipulator &rule){
 	if(rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -972,20 +972,20 @@ const aeRuleStateSnapshot &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(! rule.GetUseLastState()){
+	if(!rule.GetUseLastState()){
 		writer.WriteDataTagBool("useLastState", rule.GetUseLastState());
 	}
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -1030,7 +1030,7 @@ const aeRuleInverseKinematic &rule){
 		writer.WriteDataTagBool("adjustOrientation", rule.GetAdjustOrientation());
 	}
 	
-	if(! rule.GetSolverBone().IsEmpty()){
+	if(!rule.GetSolverBone().IsEmpty()){
 		writer.WriteDataTagString("solverBone", rule.GetSolverBone());
 	}
 	if(rule.GetUseSolverBone()){
@@ -1038,12 +1038,12 @@ const aeRuleInverseKinematic &rule){
 	}
 	
 	writer.WriteDataTagFloat("reachRange", rule.GetReachRange());
-	if(! rule.GetReachBone().IsEmpty()){
+	if(!rule.GetReachBone().IsEmpty()){
 		writer.WriteDataTagString("reachBone", rule.GetReachBone());
 	}
 	
 	const decVector &reachCenter = rule.GetReachCenter();
-	if(! reachCenter.IsZero()){
+	if(!reachCenter.IsZero()){
 		writer.WriteOpeningTagStart("reachCenter");
 		writer.WriteAttributeFloat("x", reachCenter.x);
 		writer.WriteAttributeFloat("y", reachCenter.y);
@@ -1074,16 +1074,16 @@ const aeRuleForeignState &rule){
 	writer.WriteDataTagFloat("scaleSize", rule.GetScaleSize());
 	writer.WriteDataTagFloat("scaleVertexPositionSet", rule.GetScaleVertexPositionSet());
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -1130,7 +1130,7 @@ const aeRuleMirror &rule){
 		break;
 	}
 	
-	if(! rule.GetMirrorBone().IsEmpty()){
+	if(!rule.GetMirrorBone().IsEmpty()){
 		writer.WriteDataTagString("mirrorBone", rule.GetMirrorBone());
 	}
 	
@@ -1159,16 +1159,16 @@ const aeRuleMirror &rule){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -1181,16 +1181,16 @@ const aeRuleGroup &rule){
 	
 	pSaveRuleCommon(writer, animator, rule);
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
 	if(rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -1232,7 +1232,7 @@ const aeRuleSubAnimator &rule){
 	int i;
 	for(i=0; i<connectionCount; i++){
 		aeController * const controller = rule.GetControllerAt(i);
-		if(! controller){
+		if(!controller){
 			continue;
 		}
 		
@@ -1243,16 +1243,16 @@ const aeRuleSubAnimator &rule){
 		writer.WriteClosingTag("connection", false);
 	}
 	
-	if(! rule.GetEnablePosition()){
+	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
 	}
-	if(! rule.GetEnableOrientation()){
+	if(!rule.GetEnableOrientation()){
 		writer.WriteDataTagBool("enableOrientation", rule.GetEnableOrientation());
 	}
-	if(! rule.GetEnableSize()){
+	if(!rule.GetEnableSize()){
 		writer.WriteDataTagBool("enableSize", rule.GetEnableSize());
 	}
-	if(! rule.GetEnableVertexPositionSet()){
+	if(!rule.GetEnableVertexPositionSet()){
 		writer.WriteDataTagBool("enableVertexPositionSet", rule.GetEnableVertexPositionSet());
 	}
 	
@@ -1946,7 +1946,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	// parse tag
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2084,7 +2084,7 @@ aeRule *aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &ani
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "moveName") == 0){
 					rule->SetMoveName(GetCDataString(*tag));
 					
@@ -2142,7 +2142,7 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAni
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "leadingMoveName") == 0){
 					rule->SetLeadingMoveName(GetCDataString(*tag));
 					
@@ -2209,7 +2209,7 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimato
 	
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2275,7 +2275,7 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnima
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "minimumTranslation") == 0){
 					vector.SetZero();
 					pLoadVector(tag, vector);
@@ -2422,7 +2422,7 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimat
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "positionMinimum") == 0){
 					vector.SetZero();
 					pLoadVector(tag, vector);
@@ -2520,7 +2520,7 @@ aeRule *aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator 
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "useLastState") == 0){
 					rule->SetUseLastState(GetCDataBool(*tag));
 					
@@ -2574,7 +2574,7 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimat
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "goalPosition") == 0){
 					vector.SetZero();
 					pLoadVector(tag, vector);
@@ -2704,7 +2704,7 @@ aeRule *aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "scalePosition") == 0){
 					rule->SetScalePosition(GetCDataFloat(*tag));
 					
@@ -2812,7 +2812,7 @@ aeRule *aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animat
 	
 	for(i=0; i<root->GetElementCount(); i++){
 		decXmlElementTag * const tag = root->GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2910,7 +2910,7 @@ aeRule *aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animato
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root->GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -3008,7 +3008,7 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &a
 			}else if(strcmp(tag->GetName(), "connection") == 0){
 				const int controller = pGetAttributeInt(tag, "controller");
 				const decString target(GetCDataString(*tag));
-				if(target.IsEmpty() || ! rule->GetSubAnimator()){
+				if(target.IsEmpty() || !rule->GetSubAnimator()){
 					continue;
 				}
 				
@@ -3044,7 +3044,7 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &a
 					DETHROW(deeInvalidFileFormat);
 				}
 				
-			}else if(! pLoadRuleCommon(tag, animator, rule)){
+			}else if(!pLoadRuleCommon(tag, animator, rule)){
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
 					root->GetName().GetString(), tag->GetLineNumber(),
 					tag->GetPositionNumber(), tag->GetName().GetString());
@@ -3066,7 +3066,7 @@ aeRule *aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &anima
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "trackBone") == 0){
 					if(tag->GetFirstData()){
 						rule->SetTrackBone(GetCDataString(*tag));
@@ -3233,7 +3233,7 @@ aeRule *aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animato
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
 		if(tag){
-			if(! pLoadRuleCommon(tag, animator, rule)){
+			if(!pLoadRuleCommon(tag, animator, rule)){
 				if(strcmp(tag->GetName(), "minimumPosition") == 0){
 					vector.SetZero();
 					pLoadVector(tag, vector);

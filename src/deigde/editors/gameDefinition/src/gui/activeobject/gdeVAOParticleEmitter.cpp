@@ -72,7 +72,7 @@ pOCParticleEmitter(ocemitter),
 pDDSCenter(NULL),
 pDDSCoordSystem(NULL)
 {
-	if(! ocemitter){
+	if(!ocemitter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -113,12 +113,12 @@ void gdeVAOParticleEmitter::RebuildResources(){
 }
 
 void gdeVAOParticleEmitter::AttachResources(){
-	if(! pInstance){
+	if(!pInstance){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	
@@ -156,12 +156,12 @@ void gdeVAOParticleEmitter::AttachResources(){
 }
 
 void gdeVAOParticleEmitter::DetachResources(){
-	if(! pInstance){
+	if(!pInstance){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	

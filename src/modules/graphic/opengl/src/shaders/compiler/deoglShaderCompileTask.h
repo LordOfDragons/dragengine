@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Program to compile. */
-	inline deoglShaderProgram *GetProgram() const{return pProgram;}
+	inline deoglShaderProgram *GetProgram() const{ return pProgram; }
 	
 	/** Listener. */
-	inline deoglShaderCompileListener *GetListener() const{return pListener;}
+	inline deoglShaderCompileListener *GetListener() const{ return pListener; }
 	/*@}*/
 };
 

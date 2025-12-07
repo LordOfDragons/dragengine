@@ -351,7 +351,7 @@ void deClassSynthesizerController::nfSetCurveFrom::RunFunction(dsRunTime *rt, ds
 		: *nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const controllerFrom = rt->GetValue(0);
-	if(! controllerFrom->GetRealObject()){
+	if(!controllerFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -380,7 +380,7 @@ void deClassSynthesizerController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsVa
 		: *nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const controllerFrom = rt->GetValue(0);
-	if(! controllerFrom->GetRealObject()){
+	if(!controllerFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -409,7 +409,7 @@ void deClassSynthesizerController::nfEquals::RunFunction(dsRunTime *rt, dsValue 
 	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSynthesizerCtrl)){
+	if(!p_IsObjOfType(obj, clsSynthesizerCtrl)){
 		rt->PushBool(false);
 		
 	}else{
@@ -490,7 +490,7 @@ void deClassSynthesizerController::CreateClassMembers(dsEngine *engine){
 
 void deClassSynthesizerController::GetController(dsRealObject *myself, deSynthesizer *&synthesizer,
 deSynthesizerInstance *&instance, int &index) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -501,7 +501,7 @@ deSynthesizerInstance *&instance, int &index) const{
 }
 
 void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *synthesizer, int index){
-	if(! rt || ! synthesizer || index < 0 || index >= synthesizer->GetControllerCount()){
+	if(!rt || !synthesizer || index < 0 || index >= synthesizer->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -515,7 +515,7 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *
 }
 
 void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index){
-	if(! rt || ! instance || index < 0 || index >= instance->GetControllerCount()){
+	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

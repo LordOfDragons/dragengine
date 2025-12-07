@@ -129,7 +129,7 @@ void deNavigationSpace::SetLayer(int layer){
 }
 
 void deNavigationSpace::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pPeerAI){
@@ -139,7 +139,7 @@ void deNavigationSpace::SetPosition(const decDVector &position){
 }
 
 void deNavigationSpace::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		if(pPeerAI){
@@ -215,7 +215,7 @@ void deNavigationSpace::SetVertexCount(int count){
 		
 		if(count > 0){
 			pVertices = new decVector[count];
-			if(! pVertices){
+			if(!pVertices){
 				DETHROW(deeOutOfMemory);
 			}
 			pVertexCount = count;
@@ -258,7 +258,7 @@ void deNavigationSpace::SetEdgeCount(int count){
 		
 		if(count > 0){
 			pEdges = new deNavigationSpaceEdge[count];
-			if(! pEdges){
+			if(!pEdges){
 				DETHROW(deeOutOfMemory);
 			}
 			pEdgeCount = count;
@@ -293,7 +293,7 @@ void deNavigationSpace::SetCornerCount(int count){
 		
 		if(count > 0){
 			pCorners = new deNavigationSpaceCorner[count];
-			if(! pCorners){
+			if(!pCorners){
 				DETHROW(deeOutOfMemory);
 			}
 			pCornerCount = count;
@@ -328,7 +328,7 @@ void deNavigationSpace::SetFaceCount(int count){
 		
 		if(count > 0){
 			pFaces = new deNavigationSpaceFace[count];
-			if(! pFaces){
+			if(!pFaces){
 				DETHROW(deeOutOfMemory);
 			}
 			pFaceCount = count;
@@ -363,7 +363,7 @@ void deNavigationSpace::SetWallCount(int count){
 		
 		if(count > 0){
 			pWalls = new deNavigationSpaceWall[count];
-			if(! pWalls){
+			if(!pWalls){
 				DETHROW(deeOutOfMemory);
 			}
 			pWallCount = count;
@@ -398,7 +398,7 @@ void deNavigationSpace::SetRoomCount(int count){
 		
 		if(count > 0){
 			pRooms = new deNavigationSpaceRoom[count];
-			if(! pRooms){
+			if(!pRooms){
 				DETHROW(deeOutOfMemory);
 			}
 			pRoomCount = count;

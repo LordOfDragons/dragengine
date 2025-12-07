@@ -44,7 +44,7 @@ gdeUOCTPSetName::gdeUOCTPSetName(gdeObjectClass *objectClass, gdeProperty *prope
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

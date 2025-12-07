@@ -149,7 +149,7 @@ void igdeCreateProject::CreateProject(){
 	
 	const deLoadableModule * const scriptModule =
 		pWindowMain.GetEngine()->GetModuleSystem()->GetModuleNamed(pScriptModule);
-	if(! scriptModule){
+	if(!scriptModule){
 		DETHROW_INFO(deeInvalidParam, "Script module not found");
 	}
 	pProject->SetScriptModuleVersion(scriptModule->GetVersion());
@@ -212,7 +212,7 @@ void igdeCreateProject::pCreateDirectories(){
 	path.SetFromNative(pNativePathData);
 	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
 		diskDirectory->DeleteFile(pathDeleteMe);
 	}
@@ -223,7 +223,7 @@ void igdeCreateProject::pCreateDirectories(){
 	
 	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
 		diskDirectory->DeleteFile(pathDeleteMe);
 	}
@@ -234,7 +234,7 @@ void igdeCreateProject::pCreateDirectories(){
 	
 	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
 		diskDirectory->DeleteFile(pathDeleteMe);
 	}
@@ -438,7 +438,7 @@ void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 	decString renamePath;
 	
 	// find files
-	if(! file.GetPattern().IsEmpty()){
+	if(!file.GetPattern().IsEmpty()){
 		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
 		deCollectFileSearchVisitor collect(file.GetPattern());
@@ -448,7 +448,7 @@ void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 	}else{
 		list.Add(decPath::CreatePathUnix(file.GetPath()));
 		
-		if(! file.GetPathRename().IsEmpty()){
+		if(!file.GetPathRename().IsEmpty()){
 			renamePath = pReplaceTokens(file.GetPathRename(), pFileRenameTokens, pFileRenameValues);
 		}
 	}
@@ -477,7 +477,7 @@ void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 		}
 		
 		// create project file with content
-		if(! renamePath.IsEmpty()){
+		if(!renamePath.IsEmpty()){
 			path = decPath::CreatePathUnix(renamePath);
 		}
 		

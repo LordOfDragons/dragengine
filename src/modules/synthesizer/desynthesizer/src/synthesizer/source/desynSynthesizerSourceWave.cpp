@@ -62,7 +62,7 @@ pMaxFrequency(source.GetMaxFrequency()),
 pFrequencyRange(pMaxFrequency - pMinFrequency),
 pTargetFrequency(synthesizer, firstLink, source.GetTargetFrequency())
 {
-	SetSilent(! source.GetEnabled());
+	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}

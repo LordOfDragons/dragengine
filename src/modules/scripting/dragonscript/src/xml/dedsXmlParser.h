@@ -45,7 +45,7 @@ public:
 	dedsXmlParser(deLogger *logger);
 	virtual ~dedsXmlParser();
 	// management
-	inline const char *GetParseLog() const{return (const char *)pLog;}
+	inline const char *GetParseLog() const{ return (const char *)pLog; }
 	virtual void UnexpectedEOF(int line, int pos);
 	virtual void UnexpectedToken(int line, int pos, const char *token);
 };

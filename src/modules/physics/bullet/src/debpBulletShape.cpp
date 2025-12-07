@@ -42,7 +42,7 @@
 
 debpBulletShape::debpBulletShape(btCollisionShape *shape) :
 pShape(shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 }

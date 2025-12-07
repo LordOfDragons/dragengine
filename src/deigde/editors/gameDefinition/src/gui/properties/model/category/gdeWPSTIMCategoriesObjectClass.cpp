@@ -111,7 +111,7 @@ void gdeWPSTIMCategoriesObjectClass::CategoriesChanged(){
 		gdeWPSTIMCategoryObjectClass * const modelCategory = (gdeWPSTIMCategoryObjectClass*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelCategory->GetCategory())){
+		if(!list.Has(modelCategory->GetCategory())){
 			RemoveModel(modelCategory);
 		}
 	}
@@ -144,7 +144,7 @@ void gdeWPSTIMCategoriesObjectClass::OnContextMenu(igdeMenuCascade &contextMenu)
 }
 
 void gdeWPSTIMCategoriesObjectClass::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of of weights. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	/** Retrieves the bone index for the given weight. */
 	int GetBoneAt(int index) const;
 	/** Retrieves the factor for the given weight. */
@@ -66,7 +66,7 @@ public:
 	 */
 	void Set(int bone, float weight);
 	/** Retrieves the grouped index. */
-	inline int GetGroupedIndex() const{return pGroupedIndex;}
+	inline int GetGroupedIndex() const{ return pGroupedIndex; }
 	/** Sets the grouped index. */
 	void SetGroupedIndex(int index);
 	/** Removes all weights. */

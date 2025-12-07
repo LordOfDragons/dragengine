@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Hit distance or -1 if not found. */
-	inline float GetHitDistance() const{return pHitDistance;}
+	inline float GetHitDistance() const{ return pHitDistance; }
 	
 	/** Reset. */
 	void Reset();

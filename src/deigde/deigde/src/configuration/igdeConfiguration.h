@@ -69,57 +69,57 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline igdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	/** System config path. */
-	inline const decString &GetPathConfigSystem() const{return pPathConfigSystem;}
+	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	void SetPathConfigSystem(const char *path);
 	
 	/** User config path. */
-	inline const decString &GetPathConfigUser() const{return pPathConfigUser;}
+	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
 	void SetPathConfigUser(const char *path);
 	
 	/** Shares path. */
-	inline const decString &GetPathShares() const{return pPathShares;}
+	inline const decString &GetPathShares() const{ return pPathShares; }
 	void SetPathShares(const char *path);
 	
 	/** Library path. */
-	inline const decString &GetPathLib() const{return pPathLib;}
+	inline const decString &GetPathLib() const{ return pPathLib; }
 	void SetPathLib(const char *path);
 	
 	/** Logs path. */
-	inline const decString &GetPathLogs() const{return pPathLogs;}
+	inline const decString &GetPathLogs() const{ return pPathLogs; }
 	void SetPathLogs(const char *path);
 	
 	/** Default path for projects. */
-	inline const decString &GetPathProjects() const{return pPathProjects;}
+	inline const decString &GetPathProjects() const{ return pPathProjects; }
 	void SetPathProjects(const char *path);
 	
 	
 	/** Path to igde shared data. */
-	inline const decString &GetPathIGDEData() const{return pPathIGDEData;}
+	inline const decString &GetPathIGDEData() const{ return pPathIGDEData; }
 	void SetPathIGDEData(const char *path);
 	
 	/** Path to igde project templates. */
-	inline const decString &GetPathIGDETemplates() const{return pPathIGDETemplates;}
+	inline const decString &GetPathIGDETemplates() const{ return pPathIGDETemplates; }
 	void SetPathIGDETemplates(const char *path);
 	
 	/** Path to igde shared game definitions. */
-	inline const decString &GetPathIGDEGameDefs() const{return pPathIGDEGameDefs;}
+	inline const decString &GetPathIGDEGameDefs() const{ return pPathIGDEGameDefs; }
 	void SetPathIGDEGameDefs(const char *path);
 	
 	/** Path to igde editors shared data. */
-	inline const decString &GetPathIGDEEditorData() const{return pPathIGDEEditorData;}
+	inline const decString &GetPathIGDEEditorData() const{ return pPathIGDEEditorData; }
 	void SetPathIGDEEditorData(const char *path);
 	
 	
 	/** List of recently loaded game project file names. */
-	inline decStringList &GetRecentProjectList(){return pRecentProjectList;}
-	inline const decStringList &GetRecentProjectList() const{return pRecentProjectList;}
+	inline decStringList &GetRecentProjectList(){ return pRecentProjectList; }
+	inline const decStringList &GetRecentProjectList() const{ return pRecentProjectList; }
 	
 	/** Maximal size of the recenr project list. */
-	inline int GetMaxRecentProjectEntries() const{return pMaxRecentProjectEntries;}
+	inline int GetMaxRecentProjectEntries() const{ return pMaxRecentProjectEntries; }
 	void SetMaxRecentProjectEntries(int entries);
 	
 	

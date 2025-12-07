@@ -78,19 +78,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner object class or \em NULL if not set. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Object shape or \em NULL if not set. */
-	inline meObjectShape *GetShape() const{return pShape;}
+	inline meObjectShape *GetShape() const{ return pShape; }
 	
 	/** \brief Snap point or \em NULL if not set. */
-	inline meObjectSnapPoint *GetSnapPoint() const{return pSnapPoint;}
+	inline meObjectSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Owner decal or \em NULL if not set. */
-	inline meDecal *GetDecal() const{return pDecal;}
+	inline meDecal *GetDecal() const{ return pDecal; }
 	
 	/** \brief Owner navigation space or \em NULL if not set. */
-	inline meNavigationSpace *GetNavigationSpace() const{return pNavigationSpace;}
+	inline meNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	
 	

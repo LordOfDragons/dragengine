@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Count of texture units configurations. */
-	inline int GetCount() const{return pTUCCount;}
+	inline int GetCount() const{ return pTUCCount; }
 	
 	/** Root texture units configuration. */
-	inline deoglTexUnitsConfig *GetRoot() const{return pRootTUC;}
+	inline deoglTexUnitsConfig *GetRoot() const{ return pRootTUC; }
 	
 	/**
 	 * Texture units configuration matching parameters. Create texture units configuration

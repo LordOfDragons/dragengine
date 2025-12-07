@@ -41,10 +41,10 @@
 ////////////////////////////
 
 ceUCGestureRemove::ceUCGestureRemove(ceGesture *gesture){
-	if(! gesture) DETHROW(deeInvalidParam);
+	if(!gesture) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = gesture->GetConversation();
-	if(! conversation) DETHROW(deeInvalidParam);
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pGesture = NULL;

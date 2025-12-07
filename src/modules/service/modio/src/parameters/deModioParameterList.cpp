@@ -81,7 +81,7 @@ deModioParameter &deModioParameterList::GetParameterNamed(const char *name) cons
 }
 
 void deModioParameterList::AddParameter(deModioParameter *parameter){
-	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

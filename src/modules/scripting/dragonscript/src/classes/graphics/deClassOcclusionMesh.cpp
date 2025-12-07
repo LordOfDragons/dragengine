@@ -70,7 +70,7 @@ void deClassOcclusionMesh::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// load occlusion mesh
 	nd.occlusionMesh = occmgr.LoadOcclusionMesh(filename, "/");
-	if(! nd.occlusionMesh){
+	if(!nd.occlusionMesh){
 		DSTHROW(dueOutOfMemory);
 	}
 }
@@ -87,7 +87,7 @@ void deClassOcclusionMesh::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -149,7 +149,7 @@ void deClassOcclusionMesh::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsOccM)){
+	if(!p_IsObjOfType(object, clsOccM)){
 		rt->PushBool(false);
 		
 	}else{
@@ -184,7 +184,7 @@ void deClassOcclusionMesh::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself
 
 deClassOcclusionMesh::deClassOcclusionMesh(deScriptingDragonScript *ds) :
 dsClass("OcclusionMesh", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -232,7 +232,7 @@ void deClassOcclusionMesh::CreateClassMembers(dsEngine *engine){
 }
 
 deOcclusionMesh *deClassOcclusionMesh::GetOcclusionMesh(dsRealObject *object) const{
-	if(! object){
+	if(!object){
 		return NULL;
 	}
 	
@@ -240,11 +240,11 @@ deOcclusionMesh *deClassOcclusionMesh::GetOcclusionMesh(dsRealObject *object) co
 }
 
 void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		rt->PushObject(NULL, this);
 		return;
 	}

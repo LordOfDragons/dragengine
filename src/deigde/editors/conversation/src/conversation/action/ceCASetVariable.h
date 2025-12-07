@@ -78,25 +78,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of variable to set. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of variable to set. */
 	void SetName(const char *name);
 	
 	/** \brief Operator. */
-	inline eOperators GetOperator() const{return pOperator;}
+	inline eOperators GetOperator() const{ return pOperator; }
 	
 	/** \brief Set operator. */
 	void SetOperator(eOperators aOperator);
 	
 	/** \brief Value used for operation. */
-	inline int GetValue() const{return pValue;}
+	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value used for operation. */
 	void SetValue(int value);
 	
 	/** \brief Variable used for operation or empty string to use value. */
-	inline const decString &GetValueVariable() const{return pValueVariable;}
+	inline const decString &GetValueVariable() const{ return pValueVariable; }
 	
 	/** \brief Set variable used for operation or empty string to use value. */
 	void SetValueVariable(const char *value);

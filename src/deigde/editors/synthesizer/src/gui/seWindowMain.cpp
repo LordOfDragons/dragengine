@@ -203,7 +203,7 @@ void seWindowMain::SaveSynthesizer(const char *filename){
 
 void seWindowMain::CreateSource(const decString &name,
 deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		return;
 	}
 	
@@ -265,7 +265,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 }
 
 void seWindowMain::CreateEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type, bool insert){
-	if(! pSynthesizer || ! pSynthesizer->GetActiveSource()){
+	if(!pSynthesizer || !pSynthesizer->GetActiveSource()){
 		return;
 	}
 	
@@ -363,7 +363,7 @@ void seWindowMain::OnDeactivate(){
 }
 
 void seWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -421,7 +421,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetSynthesizer()){
+		if(!pWindow.GetSynthesizer()){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetSynthesizer())));
@@ -460,7 +460,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetSynthesizer() || ! pWindow.GetSynthesizer()->GetChanged()
+		if(!pWindow.GetSynthesizer() || !pWindow.GetSynthesizer()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Synthesizer",
 		"Creating a new Synthesizer discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateSynthesizer();

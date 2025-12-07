@@ -88,25 +88,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline const deComponent::Ref &GetComponent() const{return pComponent;}
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Component interaction. */
-	inline const deComponent::Ref &GetComponentInteraction() const{return pComponentInteraction;}
+	inline const deComponent::Ref &GetComponentInteraction() const{ return pComponentInteraction; }
 	
 	/** \brief Collider. */
-	inline const deColliderComponent::Ref &GetCollider() const{return pCollider;}
+	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Interaction collider. */
-	inline const deColliderComponent::Ref &GetColliderInteraction() const{return pColliderInteraction;}
+	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
-	inline deAnimatorInstance *GetAnimator() const{return pAnimator;}
+	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Playback controller index. */
-	inline int GetPlaybackControllerIndex() const{return pPlaybackControllerIndex;}
+	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }
 	
 	/** \brief Ignore component while casting shadows by lights present in the same object. */
-	inline bool GetLightShadowIgnore() const{return pLightShadowIgnore;}
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
 	
 	/** \brief Update parameters. */
 	void UpdateParameters() override;

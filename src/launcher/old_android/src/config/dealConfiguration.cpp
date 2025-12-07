@@ -123,7 +123,7 @@ void dealConfiguration::InitVirtualFileSystem(){
 		// separate locations as we want to read the config files one
 		// by one and mapping both containers to the same path would
 		// shadow the system config files.
-		if(! pPathConfigSystem.IsEmpty()){
+		if(!pPathConfigSystem.IsEmpty()){
 			pathRootDir.SetFromUnix("/config/system");
 			pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
 			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
@@ -133,7 +133,7 @@ void dealConfiguration::InitVirtualFileSystem(){
 			diskDir = NULL;
 		}
 		
-		if(! pPathConfigUser.IsEmpty()){
+		if(!pPathConfigUser.IsEmpty()){
 			pathRootDir.SetFromUnix("/config/user");
 			pathDiskDir.SetFromNative(pPathConfigUser.GetString());
 			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
@@ -148,7 +148,7 @@ void dealConfiguration::InitVirtualFileSystem(){
 		// on top of it though if required later on. the shares container
 		// is set to read-write as the launcher has to potentiall install
 		// new games or uninstall them.
-		if(! pPathShares.IsEmpty()){
+		if(!pPathShares.IsEmpty()){
 			pathRootDir.SetFromUnix("/data");
 			pathDiskDir.SetFromNative(pPathShares.GetString());
 			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
@@ -159,7 +159,7 @@ void dealConfiguration::InitVirtualFileSystem(){
 		}
 		
 		// add the logs directory. this is read-write
-		if(! pPathLogs.IsEmpty()){
+		if(!pPathLogs.IsEmpty()){
 			pathRootDir.SetFromUnix("/logs");
 			pathDiskDir.SetFromNative(pPathLogs.GetString());
 			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);

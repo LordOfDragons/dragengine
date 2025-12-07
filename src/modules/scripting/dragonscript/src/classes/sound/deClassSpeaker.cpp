@@ -79,7 +79,7 @@ void deClassSpeaker::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create speaker
 	nd->speaker = spkMgr->CreateSpeaker();
-	if(! nd->speaker) DSTHROW(dueOutOfMemory);
+	if(!nd->speaker) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -118,7 +118,7 @@ deClassSpeaker::nfSetType::nfSetType(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsSpeakerType); // type
 }
 void deClassSpeaker::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -237,7 +237,7 @@ void deClassSpeaker::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	speaker->SetPosition(clsSpk->GetClassDVector()->GetDVector(obj));
 }
@@ -265,7 +265,7 @@ void deClassSpeaker::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassQuaternion *clsQuat = clsSpk->GetScriptModule()->GetClassQuaternion();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	speaker->SetOrientation(clsQuat->GetQuaternion(obj));
 }
@@ -293,7 +293,7 @@ void deClassSpeaker::nfSetVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector *clsVec = clsSpk->GetScriptModule()->GetClassVector();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	speaker->SetVelocity(clsVec->GetVector(obj));
 }
@@ -552,7 +552,7 @@ deClassSpeaker::nfGetOwner::nfGetOwner(const sInitData &init) : dsFunction(init.
 }
 void deClassSpeaker::nfGetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSpkNatDat &nd = *((sSpkNatDat*)p_GetNativeData(myself));
-	if(! nd.speaker){
+	if(!nd.speaker){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -573,7 +573,7 @@ deClassSpeaker::nfSetOwner::nfSetOwner(const sInitData &init) : dsFunction(init.
 }
 void deClassSpeaker::nfSetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSpkNatDat &nd = *((sSpkNatDat*)p_GetNativeData(myself));
-	if(! nd.speaker){
+	if(!nd.speaker){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -668,7 +668,7 @@ void deClassSpeaker::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSpk)){
+	if(!p_IsObjOfType(obj, clsSpk)){
 		rt->PushBool(false);
 	}else{
 		deSpeaker *otherSpeaker = ((sSpkNatDat*)p_GetNativeData(obj))->speaker;
@@ -686,7 +686,7 @@ void deClassSpeaker::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassSpeaker::deClassSpeaker(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Speaker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -794,7 +794,7 @@ void deClassSpeaker::CreateClassMembers(dsEngine *engine){
 }
 
 deSpeaker *deClassSpeaker::GetSpeaker(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -802,11 +802,11 @@ deSpeaker *deClassSpeaker::GetSpeaker(dsRealObject *myself) const{
 }
 
 void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker *speaker){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! speaker){
+	if(!speaker){
 		rt->PushObject(NULL, this);
 		return;
 	}

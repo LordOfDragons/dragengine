@@ -80,7 +80,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetVariableName()){
+		if(!topic || !action || textField->GetText() == action->GetVariableName()){
 			return;
 		}
 		
@@ -99,7 +99,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();
-		if(! topic || ! action || ! option || textField->GetText() == option->GetText().ToUTF8()){
+		if(!topic || !action || !option || textField->GetText() == option->GetText().ToUTF8()){
 			return;
 		}
 		
@@ -121,12 +121,12 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();
-		if(! topic || ! action || ! option){
+		if(!topic || !action || !option){
 			return;
 		}
 		
 		decString text(option->GetText().ToUTF8());
-		if(! igdeCommonDialogs::GetMultilineString(
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Option Text", "Text:", text)
 		|| text == option->GetText().ToUTF8()){
@@ -174,7 +174,7 @@ ceWPAPlayerChoice::~ceWPAPlayerChoice(){
 
 ceCAPlayerChoice *ceWPAPlayerChoice::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if(! selected){
+	if(!selected){
 		return NULL;
 	}
 	
@@ -215,7 +215,7 @@ ceCAPlayerChoice *ceWPAPlayerChoice::GetAction() const{
 
 ceCAPlayerChoiceOption *ceWPAPlayerChoice::GetActiveOption() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if(! selected){
+	if(!selected){
 		return NULL;
 	}
 	

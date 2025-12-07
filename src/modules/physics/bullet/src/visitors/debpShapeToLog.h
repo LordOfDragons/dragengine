@@ -57,7 +57,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline const decString &GetLog() const{return pLog;}
+	inline const decString &GetLog() const{ return pLog; }
 	
 	void Reset();
 	/*@}*/

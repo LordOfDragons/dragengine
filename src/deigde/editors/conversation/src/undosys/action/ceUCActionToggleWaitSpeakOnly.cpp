@@ -77,6 +77,6 @@ void ceUCActionToggleWaitSpeakOnly::Undo(){
 }
 
 void ceUCActionToggleWaitSpeakOnly::Redo(){
-	pAction->SetWaitSpeakOnly(! pAction->GetWaitSpeakOnly());
+	pAction->SetWaitSpeakOnly(!pAction->GetWaitSpeakOnly());
 	pTopic->NotifyActionChanged(pAction);
 }

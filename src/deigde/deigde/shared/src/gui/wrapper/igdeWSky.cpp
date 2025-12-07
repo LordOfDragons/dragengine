@@ -168,7 +168,7 @@ void igdeWSky::SetPath(const char *path){
 	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
 		->GetSkyManager()->GetSkyList().GetWithPath(path);
 	
-	if(! gdsky){
+	if(!gdsky){
 		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
 			->GetSkyManager()->GetSkyList().GetWithPath(path);
 	}
@@ -188,7 +188,7 @@ void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 
 
 void igdeWSky::OnGameDefinitionChanged(){
-	if(! pGDSky){
+	if(!pGDSky){
 		return; // custom sky or loaded from file
 	}
 	
@@ -249,7 +249,7 @@ void igdeWSky::pLoadSky(const char *path){
 	pAsyncLoadCounter = 0;
 	
 	const decPath vfsPath(decPath::CreatePathUnix(path));
-	if(! engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
+	if(!engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 		pCheckAsyncLoadFinished();
 		return;
 	}

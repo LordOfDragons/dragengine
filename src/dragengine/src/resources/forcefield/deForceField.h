@@ -177,13 +177,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
@@ -191,19 +191,19 @@ public:
 	
 	
 	/** \brief Influence area. */
-	inline const decShapeList &GetInfluenceArea() const{return pInfluenceArea;}
+	inline const decShapeList &GetInfluenceArea() const{ return pInfluenceArea; }
 	
 	/** \brief Set influence area. */
 	void SetInfluenceArea(const decShapeList &area);
 	
 	/** \brief Falloff radius. */
-	inline float GetRadius() const{return pRadius;}
+	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set falloff radius. */
 	void SetRadius(float radius);
 	
 	/** \brief Falloff exponent. */
-	inline float GetExponent() const{return pExponent;}
+	inline float GetExponent() const{ return pExponent; }
 	
 	/** \brief Set falloff exponent. */
 	void SetExponent(float exponent);
@@ -211,37 +211,37 @@ public:
 	
 	
 	/** \brief Field type. */
-	inline eFieldTypes GetFieldType() const{return pFieldType;}
+	inline eFieldTypes GetFieldType() const{ return pFieldType; }
 	
 	/** \brief Set field type. */
 	void SetFieldType(eFieldTypes type);
 	
 	/** \brief Force application type. */
-	inline eApplicationTypes GetApplicationType() const{return pApplicationType;}
+	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set application type. */
 	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Force direction. */
-	inline const decVector &GetDirection() const{return pDirection;}
+	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set force direction. */
 	void SetDirection(const decVector &direction);
 	
 	/** \brief Force in newton. */
-	inline float GetForce() const{return pForce;}
+	inline float GetForce() const{ return pForce; }
 	
 	/** \brief Set force in newton. */
 	void SetForce(float force);
 	
 	/** \brief Fluctuation of direction in radians. */
-	inline float GetFluctuationDirection() const{return pFluctuationDirection;}
+	inline float GetFluctuationDirection() const{ return pFluctuationDirection; }
 	
 	/** \brief Set fluctuation of direction in radians. */
 	void SetFluctuationDirection(float fluctuation);
 	
 	/** \brief Fluctuation of force in newton. */
-	inline float GetFluctuationForce() const{return pFluctuationForce;}
+	inline float GetFluctuationForce() const{ return pFluctuationForce; }
 	
 	/** \brief Set fluctuation of force in newton. */
 	void SetFluctuationForce(float fluctuation);
@@ -249,19 +249,19 @@ public:
 	
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{return pShape;}
+	inline const decShapeList &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
 	void SetShape(const decShapeList &shape);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &filter);
 	
 	/** \brief Force field is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if force field is enabled. */
 	void SetEnabled(bool enabled);
@@ -272,7 +272,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsForceField *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsForceField *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsForceField *peer);
@@ -283,19 +283,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous force field in the parent world linked list. */
-	inline deForceField *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deForceField *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next force field in the parent world linked list. */
 	void SetLLWorldPrev(deForceField *forceField);
 	
 	/** \brief Next force field in the parent world linked list. */
-	inline deForceField *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deForceField *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next force field in the parent world linked list. */
 	void SetLLWorldNext(deForceField *forceField);

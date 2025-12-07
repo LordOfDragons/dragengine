@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Memory consumption. */
-	inline deoglMemoryConsumption &GetConsumption(){return pConsumption;}
+	inline deoglMemoryConsumption &GetConsumption(){ return pConsumption; }
 	/*@}*/
 };
 

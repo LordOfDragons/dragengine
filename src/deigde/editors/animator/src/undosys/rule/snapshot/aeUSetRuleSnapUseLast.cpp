@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleSnapUseLast::~aeUSetRuleSnapUseLast(){
 ///////////////
 
 void aeUSetRuleSnapUseLast::Undo(){
-	pRule->SetUseLastState(! pRule->GetUseLastState());
+	pRule->SetUseLastState(!pRule->GetUseLastState());
 }
 
 void aeUSetRuleSnapUseLast::Redo(){
-	pRule->SetUseLastState(! pRule->GetUseLastState());
+	pRule->SetUseLastState(!pRule->GetUseLastState());
 }
 
 

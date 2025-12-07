@@ -163,7 +163,7 @@ void deoalAWorld::SetSpeakerGain(float gain){
 ///////////////
 
 void deoalAWorld::AddComponent(deoalAComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -258,7 +258,7 @@ void deoalAWorld::RemoveRemovalMarkedComponents(){
 void deoalAWorld::AddSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -371,7 +371,7 @@ void deoalAWorld::RemoveRemovalMarkedSpeakers(){
 ///////////////
 
 void deoalAWorld::AddMicrophone(deoalAMicrophone *microphone){
-	if(! microphone){
+	if(!microphone){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -466,7 +466,7 @@ void deoalAWorld::RemoveRemovalMarkedMicrophones(){
 void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(! soundLevelMeter){
+	if(!soundLevelMeter){
 		DETHROW(deeInvalidParam);
 	}
 	

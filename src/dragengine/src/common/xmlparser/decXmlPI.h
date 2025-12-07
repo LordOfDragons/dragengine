@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Target. */
-	inline const decString &GetTarget() const{return pTarget;}
+	inline const decString &GetTarget() const{ return pTarget; }
 	
 	/** \brief Set target. */
 	void SetTarget(const char *target);
 	
 	/** \brief Command. */
-	inline const decString &GetCommand() const{return pCommand;}
+	inline const decString &GetCommand() const{ return pCommand; }
 	
 	/** \brief Set command. */
 	void SetCommand(const char *command);

@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Snap Point",
 igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

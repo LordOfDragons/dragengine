@@ -44,7 +44,7 @@ gdeUOCPSetMinValue::gdeUOCPSetMinValue(gdeObjectClass *objectClass, gdeProperty 
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

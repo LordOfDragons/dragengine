@@ -189,7 +189,7 @@ public:
 	 * The stored files are kept across restarting the application. If the disk consumption
 	 * grows old files are automatically removed without asking first to keep the size limit.
 	 */
-	inline deVirtualFileSystem &GetVFS() const {return *pVFS;}
+	inline deVirtualFileSystem &GetVFS() const { return *pVFS; }
 	
 	/**
 	 * \brief Native path to read only shares directory.

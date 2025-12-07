@@ -45,7 +45,7 @@
 
 ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionLogic *logic, const ceConversationConditionList &conditions){
-	if(! topic || ! action || ! logic || conditions.GetCount() == 0) DETHROW(deeInvalidParam);
+	if(!topic || !action || !logic || conditions.GetCount() == 0) DETHROW(deeInvalidParam);
 	
 	const int count = conditions.GetCount();
 	ceConversationCondition *newCondition = NULL;

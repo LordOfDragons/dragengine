@@ -70,7 +70,7 @@ deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
 	
 	try{
 		navspace = new deNavigationSpace(this);
-		if(! navspace){
+		if(!navspace){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -109,7 +109,7 @@ void deNavigationSpaceManager::SystemAILoad(){
 	deAISystem &aisys = *GetAISystem();
 	
 	while(navspace){
-		if(! navspace->GetPeerAI()){
+		if(!navspace->GetPeerAI()){
 			aisys.LoadNavigationSpace(navspace);
 		}
 		

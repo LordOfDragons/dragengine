@@ -63,7 +63,7 @@ deoglModelFace *deoglModelFaceList::GetAt(int index) const{
 }
 
 int deoglModelFaceList::IndexOfFace(deoglModelFace *face) const{
-	if(! face) DETHROW(deeInvalidParam);
+	if(!face) DETHROW(deeInvalidParam);
 	
 	int l;
 	
@@ -77,7 +77,7 @@ int deoglModelFaceList::IndexOfFace(deoglModelFace *face) const{
 }
 
 bool deoglModelFaceList::Has(deoglModelFace *face) const{
-	if(! face) DETHROW(deeInvalidParam);
+	if(!face) DETHROW(deeInvalidParam);
 	
 	int l;
 	
@@ -165,7 +165,7 @@ void deoglModelFaceList::pAddFace(deoglModelFace *face){
 	if(pFaceCount == pFaceSize){
 		int newSize = pFaceCount + 10; // * 3 / 2 + 1;
 		deoglModelFace **newArray = new deoglModelFace*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pFaces){
 			memcpy(newArray, pFaces, sizeof(deoglModelFace*) * pFaceSize);

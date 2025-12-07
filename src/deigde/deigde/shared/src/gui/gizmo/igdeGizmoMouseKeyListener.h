@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Gizmo manager. */
-	inline igdeGizmoManager &GetGizmoManager() const{return pGizmoManager;}
+	inline igdeGizmoManager &GetGizmoManager() const{ return pGizmoManager; }
 	
 	/** \brief View. */
-	inline igdeViewRenderWindow &GetView() const{return pView;}
+	inline igdeViewRenderWindow &GetView() const{ return pView; }
 	
 	/** \brief Camera or nullptr. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or nullptr. */
 	void SetCamera(igdeCamera *camera);

@@ -69,15 +69,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOgl(){return pOgl;}
-	inline const deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl(){ return pOgl; }
+	inline const deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Canvas engine resource. */
-	inline deCanvas &GetCanvas(){return pCanvas;}
-	inline const deCanvas &GetCanvas() const{return pCanvas;}
+	inline deCanvas &GetCanvas(){ return pCanvas; }
+	inline const deCanvas &GetCanvas() const{ return pCanvas; }
 	
 	/** Render canvas or \em NULL if not set. */
-	inline deoglRCanvas *GetRCanvas() const{return pRCanvas;}
+	inline deoglRCanvas *GetRCanvas() const{ return pRCanvas; }
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();

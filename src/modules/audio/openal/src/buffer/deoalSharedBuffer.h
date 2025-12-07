@@ -53,10 +53,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline float *GetBuffer() const{return pBuffer;}
+	inline float *GetBuffer() const{ return pBuffer; }
 	
 	/** \brief Number of floats in the buffer. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/**
 	 * \brief Set buffer size.
@@ -65,7 +65,7 @@ public:
 	void SetSize(int size);
 	
 	/** \brief Buffer is in use. */
-	inline bool GetInUse() const{return pInUse;}
+	inline bool GetInUse() const{ return pInUse; }
 	
 	/**
 	 * \brief Set if buffer is in use.

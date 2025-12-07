@@ -42,7 +42,7 @@
 seUSourceChainPathSoundMoveDown::seUSourceChainPathSoundMoveDown(seSourceChain *source, int index) :
 pSource(NULL)
 {
-	if(! source || index < 0 || index >= source->GetPathSounds().GetCount() - 1){
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount() - 1){
 		DETHROW(deeInvalidParam);
 	}
 	

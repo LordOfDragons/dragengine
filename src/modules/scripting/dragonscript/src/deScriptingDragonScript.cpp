@@ -602,7 +602,7 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		#ifdef OS_W32_VS
 		TCHAR envValBuf[MAX_PATH];
 		deOSWindows::Utf8ToWide(pathContrib.GetPathNative(), envValBuf, sizeof(envValBuf));
-		if(! SetEnvironmentVariable(L"DS_PAKAGE_PATH", envValBuf)){
+		if(!SetEnvironmentVariable(L"DS_PAKAGE_PATH", envValBuf)){
 			DSTHROW(dueInvalidAction);
 		}
 
@@ -699,7 +699,7 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 void deScriptingDragonScript::ShutDown(){
 	pVRPlaceholder = nullptr;
 	pLoadingScreen = nullptr;
-	if(! pScriptEngine){
+	if(!pScriptEngine){
 		return;
 	}
 	
@@ -758,7 +758,7 @@ void deScriptingDragonScript::ShutDown(){
 }
 
 void deScriptingDragonScript::LoadPackage(const char *name, const char *directory){
-	if(! name || ! directory){
+	if(!name || !directory){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -774,7 +774,7 @@ void deScriptingDragonScript::LoadPackage(const char *name, const char *director
 		pAddScripts(package, *GetGameEngine()->GetVirtualFileSystem(), directory);
 		
 		// add package to engine
-		if(! pScriptEngine->AddPackage(package)){
+		if(!pScriptEngine->AddPackage(package)){
 			DSTHROW(dueInvalidParam); // DETHROW(deeScriptError)
 		}
 		
@@ -859,10 +859,10 @@ bool deScriptingDragonScript::InitGame(){
 }
 
 bool deScriptingDragonScript::ExitGame(){
-	if(! pGameObj){
+	if(!pGameObj){
 		return true;
 	}
-	if((pState == esReady || pState == esRestartShutdown) && ! pCallFunction("cleanUp")){
+	if((pState == esReady || pState == esRestartShutdown) && !pCallFunction("cleanUp")){
 		return false;
 	}
 	
@@ -1017,10 +1017,10 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		
 	case esCreateGameObject:
 		try{
-			if(! pScriptEngine){
+			if(!pScriptEngine){
 				DSTHROW(dueInvalidParam);
 			}
-			if(! pClsGameObj){
+			if(!pClsGameObj){
 				DSTHROW(dueInvalidParam);
 			}
 			
@@ -1051,7 +1051,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		
 	case esInitGameObject:
 		LogInfo("Init game object");
-		if(! pCallFunction("initGame")){
+		if(!pCallFunction("initGame")){
 			return false;
 		}
 		
@@ -1317,7 +1317,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		// streaming framework is in place
 		package = new dsPackage("Dragonscript Classes");
 		package->AddHostClass(new deClassSystem(this));
-		if(! pScriptEngine->AddPackage(package)){
+		if(!pScriptEngine->AddPackage(package)){
 			DSTHROW(dueInvalidParam); // DETHROW(deeScriptError)
 		}
 		package = NULL;
@@ -1517,7 +1517,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		pAddScripts(package, vfs, "/share/scripts");
 		
 		// compile and add package		
-		if(! pScriptEngine->AddPackage(package)){
+		if(!pScriptEngine->AddPackage(package)){
 			DSTHROW(dueInvalidParam); // DETHROW(deeScriptError)
 		}
 		
@@ -1563,7 +1563,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 	int i;
 	
 	try{
-		if(! pClsGame){
+		if(!pClsGame){
 			DSTHROW_INFO(dueInvalidParam, "Game class could not be found"); // deeScriptError
 		}
 		
@@ -1577,7 +1577,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		
 		// examine package to find class to start
 		package = pScriptEngine->GetPackage(DESM_GAME_PACKAGE);
-		if(! package){
+		if(!package){
 			DSTHROW_INFO(dueInvalidParam, "Game script package could not be found"); // deeScriptError
 		}
 		
@@ -1594,7 +1594,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 				}
 				findBaseCls = findBaseCls->GetBaseClass();
 			};
-			if(! findBaseCls){
+			if(!findBaseCls){
 				continue;
 			}
 			
@@ -1602,7 +1602,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 			break;
 		}
 		
-		if(! pClsGameObj){
+		if(!pClsGameObj){
 			DSTHROW_INFO(dueInvalidParam, "Game class not found"); // deeScriptError
 		}
 		
@@ -1656,7 +1656,7 @@ public:
 	}
 	
 	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
-		if(! path.GetLastComponent().MatchesPattern("*.ds")){
+		if(!path.GetLastComponent().MatchesPattern("*.ds")){
 			return true;
 		}
 		
@@ -1709,17 +1709,17 @@ void deScriptingDragonScript::pAddScripts(dsPackage *package, deVirtualFileSyste
 }
 bool deScriptingDragonScript::pIsFileType(const char *Filename, const char *Extension){
 	const char *vExt = strrchr(Filename, '.');
-	if(! vExt) return false;
+	if(!vExt) return false;
 	return strcmp(vExt+1, Extension) == 0;
 }
 int deScriptingDragonScript::pGetConstantValue(dsClass *theClass, const char *name) const{
 	dsConstant *constant = theClass->FindConstant(name, false);
-	if(! constant) DSTHROW(dueInvalidParam); // deeScriptError
+	if(!constant) DSTHROW(dueInvalidParam); // deeScriptError
 	return constant->GetInt();
 }
 
 bool deScriptingDragonScript::pCallFunction(const char *name){
-	if(! pGameObj){
+	if(!pGameObj){
 		return false;
 	}
 	
@@ -1805,13 +1805,13 @@ void deScriptingDragonScript::pAddExceptionTrace(deErrorTracePoint *tracePoint){
 
 void deScriptingDragonScript::LogExceptionDSTrace(){
 	dsRealObject * const exception = pScriptEngine->GetMainRunTime()->GetRaisedException()->GetRealObject();
-	if(! exception){
+	if(!exception){
 		return;
 	}
 	
 	dsClassException * const clsExcep = (dsClassException*)pScriptEngine->GetClassException();
 	dsExceptionTrace * const trace = clsExcep->GetTrace(exception);
-	if(! trace){
+	if(!trace){
 		return;
 	}
 	
@@ -1902,7 +1902,7 @@ void deScriptingDragonScript::pAddColliderTrace(deErrorTracePoint *tracePoint, d
 }
 
 decString deScriptingDragonScript::BuildFullName(const dsClass *theClass) const{
-	if(! theClass){
+	if(!theClass){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1935,7 +1935,7 @@ void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
 
 
 void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
-	if(! pVFSContainerHideScriptDirectory){
+	if(!pVFSContainerHideScriptDirectory){
 		return;
 	}
 	

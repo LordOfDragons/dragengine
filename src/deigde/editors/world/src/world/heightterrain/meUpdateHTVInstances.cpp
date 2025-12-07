@@ -70,7 +70,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 	meHeightTerrainSector * const htsector = pPropField.GetHTSector();
 	dePropField * const engPF = pPropField.GetEnginePropField();
 	
-	if(! engPF || ! htsector || ! htsector->GetHeightTerrain()){
+	if(!engPF || !htsector || !htsector->GetHeightTerrain()){
 		// this should never fail but to avoid troubles we do nothing if so
 		return;
 	}
@@ -168,7 +168,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 				evaluateInstance = true;
 			}
 			
-			if(! evaluateInstance){
+			if(!evaluateInstance){
 				continue;
 			}
 			

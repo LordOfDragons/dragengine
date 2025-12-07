@@ -266,7 +266,7 @@ void deoglRenderBase::RenderFullScreenQuadVAO(bool useStereo) const{
 //////////
 
 void deoglRenderBase::DebugTimersReset(const deoglRenderPlan &plan, bool waitGPU) {
-	if(! plan.GetDebugTiming()){
+	if(!plan.GetDebugTiming()){
 		return;
 	}
 	
@@ -338,7 +338,7 @@ deoglDebugInformation &debugInfo, int count, bool waitGPU){
 
 void deoglRenderBase::DebugTimerIncrement(const deoglRenderPlan &plan,
 deoglDebugInformation &debugInfo, float elapsed, int count){
-	if(! plan.GetDebugTiming() || ! debugInfo.GetVisible()){
+	if(!plan.GetDebugTiming() || !debugInfo.GetVisible()){
 		return;
 	}
 	
@@ -407,7 +407,7 @@ const deoglShaderDefines &defines, bool assignRTSIndex){
 //////////////////////
 
 void deoglRenderBase::pDebugTimerReset(decTimer &timer, const deoglRenderPlan &plan, bool waitGPU){
-	if(! plan.GetDebugTiming()){
+	if(!plan.GetDebugTiming()){
 		return;
 	}
 	
@@ -419,7 +419,7 @@ void deoglRenderBase::pDebugTimerReset(decTimer &timer, const deoglRenderPlan &p
 
 void deoglRenderBase::pDebugTimerSample(decTimer &timer, const deoglRenderPlan &plan,
 deoglDebugInformation &debugInfo, bool waitGPU){
-	if(! plan.GetDebugTiming() || ! debugInfo.GetVisible()){
+	if(!plan.GetDebugTiming() || !debugInfo.GetVisible()){
 		return;
 	}
 	
@@ -431,7 +431,7 @@ deoglDebugInformation &debugInfo, bool waitGPU){
 
 void deoglRenderBase::pDebugTimerSampleCount(decTimer &timer, const deoglRenderPlan &plan,
 deoglDebugInformation &debugInfo, int count, bool waitGPU){
-	if(! plan.GetDebugTiming() || ! debugInfo.GetVisible()){
+	if(!plan.GetDebugTiming() || !debugInfo.GetVisible()){
 		return;
 	}
 	

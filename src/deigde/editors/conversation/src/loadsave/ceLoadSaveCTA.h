@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Load conversation test actor. */
 	void LoadCTA(ceConversationActor &actor, decBaseFileReader &reader);

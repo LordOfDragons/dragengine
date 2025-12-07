@@ -244,7 +244,7 @@ void deoglFramebuffer::AttachColorTexture(int index, deoglTexture *texture){
 }
 
 void deoglFramebuffer::AttachColorTextureLevel(int index, deoglTexture *texture, int level){
-	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	AttachColorTextureLevel(index, texture->GetTexture(), level);
@@ -255,7 +255,7 @@ void deoglFramebuffer::AttachColorCubeMap(int index, deoglCubeMap* texture){
 }
 
 void deoglFramebuffer::AttachColorCubeMapLevel(int index, deoglCubeMap* texture, int level){
-	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -281,7 +281,7 @@ void deoglFramebuffer::AttachColorCubeMapFace(int index, deoglCubeMap *texture, 
 }
 
 void deoglFramebuffer::AttachColorCubeMapFaceLevel(int index, deoglCubeMap *texture, int face, int level){
-	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture || face < 0 || face > 5){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture || face < 0 || face > 5){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -329,7 +329,7 @@ void deoglFramebuffer::AttachColorArrayTexture(int index, deoglArrayTexture *tex
 }
 
 void deoglFramebuffer::AttachColorArrayTextureLevel(int index, deoglArrayTexture *texture, int level){
-	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -368,7 +368,7 @@ deoglArrayTexture *texture, int layer){
 
 void deoglFramebuffer::AttachColorArrayTextureLayerLevel(int index,
 deoglArrayTexture *texture, int layer, int level){
-	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture){
+	if(pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -430,7 +430,7 @@ void deoglFramebuffer::DetachColorImages(int startIndex){
 }
 
 void deoglFramebuffer::InvalidateColor(int index){
-	if(! pglInvalidateFramebuffer){
+	if(!pglInvalidateFramebuffer){
 		return;
 	}
 	if(pAttColor[index].type == eatNone){
@@ -455,7 +455,7 @@ void deoglFramebuffer::AttachDepthTexture(deoglTexture *texture){
 }
 
 void deoglFramebuffer::AttachDepthTextureLevel(deoglTexture *texture, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -483,7 +483,7 @@ void deoglFramebuffer::AttachDepthCubeMap(deoglCubeMap *texture){
 }
 
 void deoglFramebuffer::AttachDepthCubeMapLevel(deoglCubeMap *texture, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -509,7 +509,7 @@ void deoglFramebuffer::AttachDepthCubeMapFace(deoglCubeMap *texture, int face){
 }
 
 void deoglFramebuffer::AttachDepthCubeMapFaceLevel(deoglCubeMap *texture, int face, int level){
-	if(pPrimary || ! texture || face < 0 || face > 5){
+	if(pPrimary || !texture || face < 0 || face > 5){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -557,7 +557,7 @@ void deoglFramebuffer::AttachDepthArrayTexture(deoglArrayTexture *texture){
 }
 
 void deoglFramebuffer::AttachDepthArrayTextureLevel(deoglArrayTexture *texture, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -594,7 +594,7 @@ void deoglFramebuffer::AttachDepthArrayTextureLayer(deoglArrayTexture *texture, 
 }
 
 void deoglFramebuffer::AttachDepthArrayTextureLayerLevel(deoglArrayTexture *texture, int layer, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -627,7 +627,7 @@ void deoglFramebuffer::DetachDepthImage(){
 }
 
 void deoglFramebuffer::InvalidateDepth(){
-	if(! pglInvalidateFramebuffer){
+	if(!pglInvalidateFramebuffer){
 		return;
 	}
 	if(pAttDepth.type == eatNone){
@@ -652,12 +652,12 @@ void deoglFramebuffer::AttachStencilTexture(deoglTexture *texture){
 }
 
 void deoglFramebuffer::AttachStencilTextureLevel(deoglTexture *texture, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const GLuint image = texture->GetTexture();
-	if(! pAttStencil.DoesNotMatch(image, eatTexture, level)){
+	if(!pAttStencil.DoesNotMatch(image, eatTexture, level)){
 		return;
 	}
 	
@@ -681,7 +681,7 @@ void deoglFramebuffer::AttachStencilArrayTexture(deoglArrayTexture *texture){
 }
 
 void deoglFramebuffer::AttachStencilArrayTextureLevel(deoglArrayTexture *texture, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -718,7 +718,7 @@ void deoglFramebuffer::AttachStencilArrayTextureLayer(deoglArrayTexture *texture
 }
 
 void deoglFramebuffer::AttachStencilArrayTextureLayerLevel(deoglArrayTexture *texture, int layer, int level){
-	if(pPrimary || ! texture){
+	if(pPrimary || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -751,7 +751,7 @@ void deoglFramebuffer::DetachStencilImage(){
 }
 
 void deoglFramebuffer::InvalidateStencil(){
-	if(! pglInvalidateFramebuffer){
+	if(!pglInvalidateFramebuffer){
 		return;
 	}
 	if(pAttStencil.type == eatNone){
@@ -762,7 +762,7 @@ void deoglFramebuffer::InvalidateStencil(){
 }
 
 void deoglFramebuffer::InvalidateDepthStencil(){
-	if(! pglInvalidateFramebuffer){
+	if(!pglInvalidateFramebuffer){
 		return;
 	}
 	
@@ -786,7 +786,7 @@ void deoglFramebuffer::DetachAllImages(){
 }
 
 void deoglFramebuffer::InvalidateAllImages(){
-	if(! pglInvalidateFramebuffer){
+	if(!pglInvalidateFramebuffer){
 		return;
 	}
 	

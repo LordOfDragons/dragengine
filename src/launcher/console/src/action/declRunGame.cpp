@@ -130,7 +130,7 @@ bool declRunGame::ParseArguments(){
 			if(argumentCount - argumentIndex > 0){
 				utf8Value = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 				
-				if(! ParseModuleParameter(utf8Value)){
+				if(!ParseModuleParameter(utf8Value)){
 					return false;
 				}
 				
@@ -314,12 +314,12 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 	
 	parameterValue = value.GetMiddle(separator2 + 1);
 	
-	if(! pModuleParameters){
+	if(!pModuleParameters){
 		pModuleParameters = new delGPModuleList;
 	}
 	
 	module = pModuleParameters->GetNamed(moduleName);
-	if(! module){
+	if(!module){
 		module = new delGPModule;
 		module->SetName(moduleName);
 		pModuleParameters->Add(module);
@@ -328,7 +328,7 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 	delGPMParameterList &parameterList = module->GetParameters();
 	
 	parameter = parameterList.GetNamed(parameterName);
-	if(! parameter){
+	if(!parameter){
 		parameter = new delGPMParameter;
 		parameter->SetName(parameterName);
 		parameterList.Add(parameter);
@@ -351,7 +351,7 @@ bool declRunGame::LocateGame(){
 			// ignore. could be identifier
 		}
 		
-		if(! pGame){
+		if(!pGame){
 			const delGameList matching(gameManager.GetGames().GetWithAlias(pGameIdentifier));
 			if(matching.GetCount() == 1){
 				pGame = matching.GetAt(0);
@@ -390,14 +390,14 @@ bool declRunGame::LocateGame(){
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if(! gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
+		if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
 			pGame->LoadConfig();
 		}
 		
 		pGame->VerifyRequirements();
 	}
 	
-	if(! pGame){
+	if(!pGame){
 		logger.LogErrorFormat(LOGSOURCE, "No game found with identifier '%s'",
 			pGameIdentifier.GetString());
 		return false;
@@ -418,24 +418,24 @@ bool declRunGame::LocateProfile(){
 		
 	}else{
 		profile = gameManager.GetProfiles().GetNamed(pProfileName);
-		if(! profile){
+		if(!profile){
 			logger.LogErrorFormat(LOGSOURCE, "No profile found with name '%s'", pProfileName.GetString());
 			return false;
 		}
 	}
 	
-	if(! profile->GetValid()){
+	if(!profile->GetValid()){
 		PrintProfileProblems(*profile);
 		return false;
 	}
 	
 	// determine patch to use
-	if(! pHasPatchIdentifier){
+	if(!pHasPatchIdentifier){
 		if(pGame->GetUseCustomPatch()){
 			pHasPatchIdentifier = true;
 			pPatchIdentifier = pGame->GetUseCustomPatch();
 			
-		}else if(! pGame->GetUseLatestPatch()){
+		}else if(!pGame->GetUseLatestPatch()){
 			pHasPatchIdentifier = true;
 			pPatchIdentifier.Clear();
 		}
@@ -445,7 +445,7 @@ bool declRunGame::LocateProfile(){
 	pRunParams.SetGameProfile(profile);
 	
 	decString error;
-	if(! pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pPatchIdentifier, error)){
+	if(!pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pPatchIdentifier, error)){
 		logger.LogError(LOGSOURCE, error.GetString());
 		return false;
 	}
@@ -475,7 +475,7 @@ void declRunGame::UpdateRunArguments(){
 		
 	}else{
 		arguments = pGame->GetRunArguments();
-		if(! arguments.IsEmpty()){
+		if(!arguments.IsEmpty()){
 			arguments.Append(" ");
 		}
 		arguments.Append(profile.GetRunArguments());
@@ -484,7 +484,7 @@ void declRunGame::UpdateRunArguments(){
 	const int count = pGameArgs.GetArgumentCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(! arguments.IsEmpty()){
+		if(!arguments.IsEmpty()){
 			arguments.Append(" ");
 		}
 		arguments.Append(pGameArgs.GetArgumentAt(i)->ToUTF8());
@@ -494,14 +494,14 @@ void declRunGame::UpdateRunArguments(){
 }
 
 void declRunGame::ApplyCustomModuleParameters(){
-	if(! pModuleParameters){
+	if(!pModuleParameters){
 		return;
 	}
 	
 	// ensure custom profile exists and is initialized with profile used to run the game
 	delGameProfile::Ref profile = pGame->GetCustomProfile();
 	
-	if(! profile){
+	if(!profile){
 		profile.TakeOver(pLauncher.CreateGameProfile());
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
 		pGame->SetCustomProfile(profile);
@@ -526,7 +526,7 @@ void declRunGame::PrintGameProblems(){
 	for(i=0; i<fileFormatCount; i++){
 		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
 		
-		if(! fileFormat.GetSupported()){
+		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){
 				logger.LogErrorFormat(LOGSOURCE, "- File Format '%s' defines single type %s",
 					fileFormat.GetPattern().GetString(),
@@ -540,7 +540,7 @@ void declRunGame::PrintGameProblems(){
 		}
 	}
 	
-	if(! pGame->GetScriptModuleFound()){
+	if(!pGame->GetScriptModuleFound()){
 		PrintModuleProblem(pGame->GetScriptModule(), deModuleSystem::emtScript);
 	}
 }
@@ -565,7 +565,7 @@ void declRunGame::PrintModuleProblem(const char *moduleName, deModuleSystem::eMo
 	delEngineModule * const module = pLauncher.GetEngine().GetModules().GetNamed(moduleName);
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	if(! module){
+	if(!module){
 		logger.LogErrorFormat(LOGSOURCE, "- %s module '%s' does not exist",
 			deModuleSystem::GetTypeDirectory(moduleType), moduleName);
 		
@@ -619,22 +619,22 @@ void declRunGame::PrintModuleProblem(const char *moduleName, deModuleSystem::eMo
 }
 
 void declRunGame::Run(){
-	if(! ParseArguments()){
+	if(!ParseArguments()){
 		return;
 	}
 	
 	pLauncher.Prepare();
 	
-	if(! LocateGame()){
+	if(!LocateGame()){
 		return;
 	}
 	
-	if(! pGame->GetCanRun()){
+	if(!pGame->GetCanRun()){
 		PrintGameProblems();
 		return;
 	}
 	
-	if(! LocateProfile()){
+	if(!LocateProfile()){
 		return;
 	}
 	

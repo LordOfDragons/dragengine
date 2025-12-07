@@ -108,7 +108,7 @@ int deoxrDeviceManager::IndexOfWithID(const char *id) const{
 }
 
 void deoxrDeviceManager::Add(deoxrDevice *device){
-	if(! device){
+	if(!device){
 		DETHROW_INFO(deeNullPointer, "device");
 	}
 	
@@ -151,7 +151,7 @@ void deoxrDeviceManager::TrackDeviceStates(){
 }
 
 void deoxrDeviceManager::CheckNotifyAttachedDetached(){
-	if(! pNotifyAttachedDetached){
+	if(!pNotifyAttachedDetached){
 		return;
 	}
 	
@@ -265,7 +265,7 @@ void deoxrDeviceManager::LogDevice(const deoxrDevice &device){
 
 
 decString deoxrDeviceManager::NormalizeID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	

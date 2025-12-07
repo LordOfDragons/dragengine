@@ -88,7 +88,7 @@ void deAudioSystem::PostStart(){
 	int i;
 	
 	// init module
-	if(! pActiveModule->Init(pActiveMic)){
+	if(!pActiveModule->Init(pActiveMic)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -148,7 +148,7 @@ void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
 //////////////////////
 
 void deAudioSystem::ProcessAudio(){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -156,11 +156,11 @@ void deAudioSystem::ProcessAudio(){
 }
 
 void deAudioSystem::LoadWorld(deWorld *world){
-	if(! world){
+	if(!world){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -172,11 +172,11 @@ void deAudioSystem::LoadWorld(deWorld *world){
 }
 
 void deAudioSystem::LoadSound(deSound *sound){
-	if(! sound){
+	if(!sound){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -188,11 +188,11 @@ void deAudioSystem::LoadSound(deSound *sound){
 }
 
 void deAudioSystem::LoadSpeaker(deSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -204,11 +204,11 @@ void deAudioSystem::LoadSpeaker(deSpeaker *speaker){
 }
 
 void deAudioSystem::LoadMicrophone(deMicrophone *microphone){
-	if(! microphone){
+	if(!microphone){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -220,11 +220,11 @@ void deAudioSystem::LoadMicrophone(deMicrophone *microphone){
 }
 
 void deAudioSystem::LoadComponent(deComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -236,11 +236,11 @@ void deAudioSystem::LoadComponent(deComponent *component){
 }
 
 void deAudioSystem::LoadSkin(deSkin *skin){
-	if(! skin){
+	if(!skin){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -252,11 +252,11 @@ void deAudioSystem::LoadSkin(deSkin *skin){
 }
 
 void deAudioSystem::LoadModel(deModel *model){
-	if(! model){
+	if(!model){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -268,11 +268,11 @@ void deAudioSystem::LoadModel(deModel *model){
 }
 
 void deAudioSystem::LoadDecal(deDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -284,11 +284,11 @@ void deAudioSystem::LoadDecal(deDecal *decal){
 }
 
 void deAudioSystem::LoadSoundLevelMeter(deSoundLevelMeter *meter){
-	if(! meter){
+	if(!meter){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -300,11 +300,11 @@ void deAudioSystem::LoadSoundLevelMeter(deSoundLevelMeter *meter){
 }
 
 void deAudioSystem::LoadVideoPlayer(deVideoPlayer *videoPlayer){
-	if(! videoPlayer){
+	if(!videoPlayer){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -316,11 +316,11 @@ void deAudioSystem::LoadVideoPlayer(deVideoPlayer *videoPlayer){
 }
 
 void deAudioSystem::LoadSynthesizerInstance(deSynthesizerInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -332,7 +332,7 @@ void deAudioSystem::LoadSynthesizerInstance(deSynthesizerInstance *instance){
 }
 
 void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	

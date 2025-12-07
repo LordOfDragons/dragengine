@@ -300,7 +300,7 @@ void deoglRParticleEmitterInstance::WorldEnvMapLayoutChanged(){
 }
 
 void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
-	if(! pDirtyRenderEnvMap){
+	if(!pDirtyRenderEnvMap){
 		return;
 	}
 	pDirtyRenderEnvMap = false;
@@ -346,7 +346,7 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 }
 
 void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
-	if(! pRenderEnvMap){
+	if(!pRenderEnvMap){
 		return;
 	}
 	
@@ -500,7 +500,7 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 }
 
 void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
-	if(! pDirtyParticles){
+	if(!pDirtyParticles){
 		return;
 	}
 	
@@ -512,9 +512,9 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	// shared vbo
 	const deoglVBOLayout &vboLayoutShared = *pEmitter->GetVBOLayoutShared();
 	
-	if(! pVBOShared){
+	if(!pVBOShared){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOShared));
-		if(! pVBOShared){
+		if(!pVBOShared){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -528,9 +528,9 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	const deoglVBOLayout &vboLayoutLocal = *pEmitter->GetVBOLayoutLocal();
 	const int vboLocalStride = vboLayoutLocal.GetStride();
 	
-	if(! pVBOLocal){
+	if(!pVBOLocal){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOLocal));
-		if(! pVBOLocal){
+		if(!pVBOLocal){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -549,15 +549,15 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	*/
 	
 	// ibo
-	if(! pIBO){
+	if(!pIBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pIBO));
-		if(! pIBO){
+		if(!pIBO){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 	
 	// vao
-	if(! pVAO){
+	if(!pVAO){
 		pVAO = new deoglVAO(pRenderThread);
 		pVAO->SetIndexType(vboLayoutShared.GetIndexType());
 		OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
@@ -712,7 +712,7 @@ void deoglRParticleEmitterInstance::AddIBOEntries(int index1, int index2, int in
 }
 
 void deoglRParticleEmitterInstance::UpdateIBO(){
-	if(! pDirtyIBO){
+	if(!pDirtyIBO){
 		return;
 	}
 	

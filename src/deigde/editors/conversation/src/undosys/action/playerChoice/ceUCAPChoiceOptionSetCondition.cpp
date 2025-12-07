@@ -50,7 +50,7 @@ pOption(NULL),
 pOldCondition(NULL),
 pNewCondition(NULL)
 {
-	if(! topic || ! ifElse || ! ifcase){
+	if(!topic || !ifElse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	

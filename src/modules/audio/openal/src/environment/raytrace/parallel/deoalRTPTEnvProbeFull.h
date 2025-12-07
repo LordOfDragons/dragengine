@@ -152,22 +152,22 @@ public:
 	
 	
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** \brief Gain low frequencies. */
-	inline float GetGainLow() const{return pGainLow;}
+	inline float GetGainLow() const{ return pGainLow; }
 	
 	/** \brief Gain medium frequencies. */
-	inline float GetGainMedium() const{return pGainMedium;}
+	inline float GetGainMedium() const{ return pGainMedium; }
 	
 	/** \brief Gain high frequencies. */
-	inline float GetGainHigh() const{return pGainHigh;}
+	inline float GetGainHigh() const{ return pGainHigh; }
 	
 	/** \brief Delay. */
-	inline float GetDelay() const{return pDelay;}
+	inline float GetDelay() const{ return pDelay; }
 	/*@}*/
 	
 	

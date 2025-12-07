@@ -100,7 +100,7 @@ bool gdeVAOSubObject::PropertyBool(const decString &name, bool defaultValue) con
 
 decColor gdeVAOSubObject::PropertyColor(const decString &name, const decColor &defaultValue) const{
 	const char * const value = pPropertyValue(name);
-	if(! value){
+	if(!value){
 		return defaultValue;
 	}
 	
@@ -123,7 +123,7 @@ decColor gdeVAOSubObject::PropertyColor(const decString &name, const decColor &d
 
 decVector gdeVAOSubObject::PropertyVector(const decString &name, const decVector &defaultValue) const{
 	const char * const value = pPropertyValue(name);
-	if(! value){
+	if(!value){
 		return defaultValue;
 	}
 	
@@ -143,7 +143,7 @@ decVector gdeVAOSubObject::PropertyVector(const decString &name, const decVector
 
 decVector2 gdeVAOSubObject::PropertyVector2(const decString &name, const decVector2 &defaultValue) const{
 	const char * const value = pPropertyValue(name);
-	if(! value){
+	if(!value){
 		return defaultValue;
 	}
 	
@@ -165,7 +165,7 @@ decQuaternion gdeVAOSubObject::PropertyQuaternion(const decString &name, const d
 void gdeVAOSubObject::PropertyShapeList(const decString &name, decShapeList &list, const decShapeList &defaultValue) const{
 	list.RemoveAll();
 	const char * const value = pPropertyValue(name);
-	if(! value){
+	if(!value){
 		list = defaultValue;
 		return;
 	}

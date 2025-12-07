@@ -55,7 +55,7 @@ meObjectSelection::~meObjectSelection(){
 ///////////////
 
 void meObjectSelection::Add(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,7 +64,7 @@ void meObjectSelection::Add(meObject *object){
 }
 
 void meObjectSelection::Remove(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	

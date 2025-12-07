@@ -95,13 +95,13 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		// position update happens in parallel. the detection box though is static so
 		// we do not have to calculate it on our own
 		const deoglGIState * const giState = plan.GetUpdateGIState();
-		if(! giState){
+		if(!giState){
 			DETHROW(deeInvalidParam);
 		}
 		
 		const deoglGICascade &cascade = giState->GetSkyShadowCascade();
 		const deoglSkyLayerGICascade * const slgc = pPlan.GetLayer()->GetGICascade(cascade);
-		if(! slgc){
+		if(!slgc){
 			DETHROW(deeInvalidParam);
 		}
 		

@@ -80,32 +80,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Window state. */
-	inline eWindowStates GetWindowState() const{return pWindowState;}
+	inline eWindowStates GetWindowState() const{ return pWindowState; }
 	
 	/** \brief Set window state. */
 	void SetWindowState(eWindowStates windowState);
 	
 	/** \brief Position in normal state. */
-	inline const decPoint &GetNormalPosition() const{return pNormalPosition;}
+	inline const decPoint &GetNormalPosition() const{ return pNormalPosition; }
 	
 	/** \brief Set position in normal state. */
 	void SetNormalPosition(const decPoint &position);
 	
 	/** \brief Size in normal state. */
-	inline const decPoint &GetNormalSize() const{return pNormalSize;}
+	inline const decPoint &GetNormalSize() const{ return pNormalSize; }
 	
 	/** \brief Set size in normal state. */
 	void SetNormalSize(const decPoint &size);
 	
 	/** \brief Normal position has been set at least once. */
-	inline bool GetNormalPositionSet() const{return pNormalPositionSet;}
+	inline bool GetNormalPositionSet() const{ return pNormalPositionSet; }
 	
 	/** \brief Normal size has been set at least once. */
-	inline bool GetNormalSizeSet() const{return pNormalSizeSet;}
+	inline bool GetNormalSizeSet() const{ return pNormalSizeSet; }
 	
 	
 	/** \brief Get engine controller or NULL if not present. */
-	inline igdeEngineController *GetMainWindowEngineController() const{return pEngineController;}
+	inline igdeEngineController *GetMainWindowEngineController() const{ return pEngineController; }
 	
 	/** \brief Start engine. */
 	void StartEngine();

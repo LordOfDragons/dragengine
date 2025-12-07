@@ -44,11 +44,11 @@ gdeUSkyControllerRemove::gdeUSkyControllerRemove(gdeSky *sky, gdeSkyController *
 pSky(NULL),
 pController(NULL)
 {
-	if(! sky || ! controller){
+	if(!sky || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! sky->GetControllers().Has(controller)){
+	if(!sky->GetControllers().Has(controller)){
 		DETHROW(deeInvalidParam);
 	}
 	

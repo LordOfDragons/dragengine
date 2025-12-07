@@ -144,7 +144,7 @@ igdeMenuCascade *igdeEditorWindow::GetSharedMenuAt(int index) const{
 }
 
 void igdeEditorWindow::AddSharedMenu(igdeMenuCascade *menu){
-	if(! menu){
+	if(!menu){
 		DETHROW(deeInvalidParam);
 	}
 	pSharedMenus.Add(menu);
@@ -184,7 +184,7 @@ igdeToolBar *igdeEditorWindow::GetSharedToolBarAt(int index) const{
 }
 
 void igdeEditorWindow::AddSharedToolBar(igdeToolBar *toolbar){
-	if(! toolbar){
+	if(!toolbar){
 		DETHROW(deeInvalidParam);
 	}
 	pSharedToolBars.Add(toolbar);
@@ -216,7 +216,7 @@ void igdeEditorWindow::RemoveAllSharedToolBars(){
 ///////////////////
 
 void igdeEditorWindow::AddUpdateAction(igdeAction *action){
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	pUpdateActions.AddIfAbsent(action);
@@ -248,7 +248,7 @@ void igdeEditorWindow::CreateNativeWidget(){
 	igdeContainerBox::CreateNativeWidget();
 	
 #ifdef OS_W32
-	if(! pActiveModule){
+	if(!pActiveModule){
 		SaveResourceHandlers();
 	}
 #endif

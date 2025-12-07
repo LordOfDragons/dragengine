@@ -241,7 +241,7 @@ void deoglRCamera::SetToneMapCurve(const decCurveBezier &curve){
 
 void deoglRCamera::EnableVR(bool enable){
 	if(enable){
-		if(! pVR){
+		if(!pVR){
 			pVR = new deoglVR(*this);
 		}
 		
@@ -352,12 +352,12 @@ void deoglRCamera::pCleanUp(){
 }
 
 void deoglRCamera::pPrepareToneMapCurveTexture(){
-	if(! pDirtyToneMapCurve){
+	if(!pDirtyToneMapCurve){
 		return;
 	}
 	pDirtyToneMapCurve = false;
 	
-	if(! pTextureToneMapCurve){
+	if(!pTextureToneMapCurve){
 		pTextureToneMapCurve = new deoglTexture(pRenderThread);
 		pTextureToneMapCurve->SetSize(pToneMapCurveResolution, 1);
 		pTextureToneMapCurve->SetMapingFormat(1, true, false);

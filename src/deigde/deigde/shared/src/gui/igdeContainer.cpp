@@ -80,7 +80,7 @@ int igdeContainer::IndexOfChild(igdeWidget *widget) const{
 }
 
 void igdeContainer::AddChild(igdeWidget *child){
-	if(! child || child->GetParent()){
+	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void igdeContainer::AddChild(igdeWidget *child){
 }
 
 void igdeContainer::RemoveChild(igdeWidget *child){
-	if(! child || child->GetParent() != this || ! pChildren.Has(child)){
+	if(!child || child->GetParent() != this || !pChildren.Has(child)){
 		DETHROW(deeInvalidParam);
 	}
 	

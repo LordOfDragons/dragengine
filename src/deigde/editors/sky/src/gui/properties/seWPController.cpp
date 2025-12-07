@@ -86,7 +86,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSky * const sky = pPanel.GetSky();
 		seController * const controller = pPanel.GetController();
-		if(! sky || ! controller){
+		if(!sky || !controller){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
 		seSky * const sky = pPanel.GetSky();
 		seController * const controller = pPanel.GetController();
-		if(! sky || ! controller){
+		if(!sky || !controller){
 			return;
 		}
 		
@@ -141,7 +141,7 @@ public:
 	
 	virtual void OnAction(){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
@@ -187,7 +187,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		

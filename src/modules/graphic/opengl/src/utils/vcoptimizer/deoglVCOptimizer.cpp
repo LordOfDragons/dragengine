@@ -341,7 +341,7 @@ void deoglVCOptimizer::OptimizeVertexOrder(){
 		for(j=0; j<3; j++){
 			const int vertex = face.vertices[j];
 			
-			if(! pVertices[vertex].consumed){
+			if(!pVertices[vertex].consumed){
 				if(pReorderedVertexCount == pVertexCount){
 					DETHROW(deeInvalidParam);
 				}
@@ -458,7 +458,7 @@ int deoglVCOptimizer::FindBestScoreFaceInCache(){
 			for(j=firstFace; j<limitFace; j++){
 				const sFace &face = pFaces[pVertexFaces[j]];
 				
-				if(! face.consumed && face.score > bestScore){
+				if(!face.consumed && face.score > bestScore){
 					bestFace = pVertexFaces[j];
 					bestScore = face.score;
 				}
@@ -474,7 +474,7 @@ int deoglVCOptimizer::FindBestScoreFace(int firstFace, int faceLimit){
 	int i, bestFace = -1;
 	
 	for(i=firstFace; i<faceLimit; i++){
-		if(! pFaces[i].consumed && pFaces[i].score > bestScore){
+		if(!pFaces[i].consumed && pFaces[i].score > bestScore){
 			bestFace = i;
 			bestScore = pFaces[i].score;
 		}
@@ -485,7 +485,7 @@ int deoglVCOptimizer::FindBestScoreFace(int firstFace, int faceLimit){
 
 int deoglVCOptimizer::FindNextFace(int faceLimit){
 	for(; pNextFaceCheck<faceLimit; pNextFaceCheck++){
-		if(! pFaces[pNextFaceCheck].consumed){
+		if(!pFaces[pNextFaceCheck].consumed){
 			return pNextFaceCheck++;
 		}
 	}

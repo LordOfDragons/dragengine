@@ -296,7 +296,7 @@ public:
 		"Use rest pose", "Displays the rest pose instead of the animation frame"){}
 	
 	virtual void OnAction(reRig &rig){
-		rig.SetUseRestPose(! rig.GetUseRestPose());
+		rig.SetUseRestPose(!rig.GetUseRestPose());
 	}
 };
 
@@ -306,7 +306,7 @@ public:
 		"Playback", "Determines if the animation move is played back"){ }
 	
 	virtual void OnAction(reRig &rig){
-		rig.SetPlaybackMove(! rig.GetPlaybackMove());
+		rig.SetPlaybackMove(!rig.GetPlaybackMove());
 	}
 };
 
@@ -363,7 +363,7 @@ public:
 	
 	virtual void OnAction(reRig &rig){
 		reConfiguration &config = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		config.SetSnapToGrid(! config.GetSnapToGrid());
+		config.SetSnapToGrid(!config.GetSnapToGrid());
 		rig.NotifyViewChanged();
 	}
 };
@@ -481,7 +481,7 @@ public:
 	
 	virtual void OnAction(reRig &rig){
 		reCamera &camera = *rig.GetCamera();
-		camera.SetAttachToBone(! camera.GetAttachToBone());
+		camera.SetAttachToBone(!camera.GetAttachToBone());
 	}
 };
 
@@ -801,8 +801,8 @@ void reWPView::UpdateCamera(){
 	
 	const bool enabled = camera != NULL;
 	
-	pEditCamPosition->SetEnabled(! enableAttach);
-	pEditCamRotation->SetEnabled(! enableAttach);
+	pEditCamPosition->SetEnabled(!enableAttach);
+	pEditCamRotation->SetEnabled(!enableAttach);
 	pEditCamFov->SetEnabled(enabled);
 	pEditCamFovRatio->SetEnabled(enabled);
 	pEditCamImageDist->SetEnabled(enabled);
@@ -953,12 +953,12 @@ void reWPView::UpdateTexture(){
 
 
 reRigTexture* reWPView::GetSelectedTexture() const{
-	if(! pRig){
+	if(!pRig){
 		return NULL;
 	}
 	
 	const igdeListItem * const selection = pCBTexture->GetSelectedItem();
-	if(! selection){
+	if(!selection){
 		return NULL;
 	}
 	

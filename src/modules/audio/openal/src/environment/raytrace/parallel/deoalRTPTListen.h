@@ -189,123 +189,123 @@ public:
 	
 	
 	/** \brief First reflection distance sum. */
-	inline float GetFRSumDistance() const{return pFRSumDistance;}
+	inline float GetFRSumDistance() const{ return pFRSumDistance; }
 	
 	/** \brief First reflection minimum distance. */
-	inline float GetFRMinDistance() const{return pFRMinDistance;}
+	inline float GetFRMinDistance() const{ return pFRMinDistance; }
 	
 	/** \brief First reflection maximum distance. */
-	inline float GetFRMaxDistance() const{return pFRMaxDistance;}
+	inline float GetFRMaxDistance() const{ return pFRMaxDistance; }
 	
 	/** \brief First reflection gain low frequencies. */
-	inline float GetFRGainLow() const{return pFRGainLow;}
+	inline float GetFRGainLow() const{ return pFRGainLow; }
 	
 	/** \brief First reflection gain medium frequencies. */
-	inline float GetFRGainMedium() const{return pFRGainMedium;}
+	inline float GetFRGainMedium() const{ return pFRGainMedium; }
 	
 	/** \brief First reflection gain high frequencies. */
-	inline float GetFRGainHigh() const{return pFRGainHigh;}
+	inline float GetFRGainHigh() const{ return pFRGainHigh; }
 	
 	/** \brief First reflection panning direction. */
-	inline const decVector GetFRPanDirection() const{return pFRPanDirection;}
+	inline const decVector GetFRPanDirection() const{ return pFRPanDirection; }
 	
 	/** \brief First reflection panning direction weight sum. */
-	inline float GetFRPanDirectionWeightSum() const{return pFRPanDirectionWeightSum;}
+	inline float GetFRPanDirectionWeightSum() const{ return pFRPanDirectionWeightSum; }
 	
 	/** \brief Number of first reflections. */
-	inline int GetFRCount() const{return pFRCount;}
+	inline int GetFRCount() const{ return pFRCount; }
 	
 	
 	
 	/** \brief Late reflection gain low frequencies. */
-	inline float GetLRGainLow() const{return pLRGainLow;}
+	inline float GetLRGainLow() const{ return pLRGainLow; }
 	
 	/** \brief Late reflection gain medium frequencies. */
-	inline float GetLRGainMedium() const{return pLRGainMedium;}
+	inline float GetLRGainMedium() const{ return pLRGainMedium; }
 	
 	/** \brief Late reflection gain high frequencies. */
-	inline float GetLRGainHigh() const{return pLRGainHigh;}
+	inline float GetLRGainHigh() const{ return pLRGainHigh; }
 	
 	/** \brief Late reflection panning direction. */
-	inline const decVector GetLRPanDirection() const{return pLRPanDirection;}
+	inline const decVector GetLRPanDirection() const{ return pLRPanDirection; }
 	
 	/** \brief Late reflection panning direction weight sum. */
-	inline float GetLRPanDirectionWeightSum() const{return pLRPanDirectionWeightSum;}
+	inline float GetLRPanDirectionWeightSum() const{ return pLRPanDirectionWeightSum; }
 	
 	/** \brief Number of late reflections. */
-	inline int GetLRCount() const{return pLRCount;}
+	inline int GetLRCount() const{ return pLRCount; }
 	
 	
 	
 	/** \brief Has highest gain contribution. */
-	inline bool GetHasHighestGain() const{return pHasHighestGain;}
+	inline bool GetHasHighestGain() const{ return pHasHighestGain; }
 	
 	/** \brief Gain of highest gain contribution. */
-	inline float GetHighestGainGain() const{return pHighestGainGain;}
+	inline float GetHighestGainGain() const{ return pHighestGainGain; }
 	
 	/** \brief Distance of highest gain contribution. */
-	inline float GetHighestGainDistance() const{return pHighestGainDistance;}
+	inline float GetHighestGainDistance() const{ return pHighestGainDistance; }
 	
 	
 	
 	/** \brief Absorption sum for low frequencies of all hits. */
-	inline float GetAbsorptionSumLow() const{return pAbsorptionSumLow;}
+	inline float GetAbsorptionSumLow() const{ return pAbsorptionSumLow; }
 	
 	/** \brief Absorption sum for medium frequencies of all hits. */
-	inline float GetAbsorptionSumMedium() const{return pAbsorptionSumMedium;}
+	inline float GetAbsorptionSumMedium() const{ return pAbsorptionSumMedium; }
 	
 	/** \brief Absorption sum for high frequencies of all hits. */
-	inline float GetAbsorptionSumHigh() const{return pAbsorptionSumHigh;}
+	inline float GetAbsorptionSumHigh() const{ return pAbsorptionSumHigh; }
 	
 	/** \brief Number of absorptions summed up of all hits. */
-	inline int GetAbsorptionCount() const{return pAbsorptionCount;}
+	inline int GetAbsorptionCount() const{ return pAbsorptionCount; }
 	
 	
 	
 	/** \brief Mean free path sum. */
-	inline float GetMeanFreePathSum() const{return pMeanFreePathSum;}
+	inline float GetMeanFreePathSum() const{ return pMeanFreePathSum; }
 	
 	/** \brief Number of mean free path sum. */
-	inline int GetMeanFreePathCount() const{return pMeanFreePathCount;}
+	inline int GetMeanFreePathCount() const{ return pMeanFreePathCount; }
 	
 	
 	
 	/** \brief Decay time sum for low frequencies. */
-	inline float GetDecayTimeSumLow() const{return pDecayTimeSumLow;}
+	inline float GetDecayTimeSumLow() const{ return pDecayTimeSumLow; }
 	
 	/** \brief Decay time sum for medium frequencies. */
-	inline float GetDecayTimeSumMedium() const{return pDecayTimeSumMedium;}
+	inline float GetDecayTimeSumMedium() const{ return pDecayTimeSumMedium; }
 	
 	/** \brief Decay time sum for high frequencies. */
-	inline float GetDecayTimeSumHigh() const{return pDecayTimeSumHigh;}
+	inline float GetDecayTimeSumHigh() const{ return pDecayTimeSumHigh; }
 	
 	/** \brief Number of decay time sum. */
-	inline int GetDecayTimeCount() const{return pDecayTimeCount;}
+	inline int GetDecayTimeCount() const{ return pDecayTimeCount; }
 	
 	
 	
 	/** \brief Limit reverberation time sum for low frequencies. */
-	inline float GetLimitRevTimeSumLow() const{return pLimitRevTimeSumLow;}
+	inline float GetLimitRevTimeSumLow() const{ return pLimitRevTimeSumLow; }
 	
 	/** \brief Limit reverberation time sum for medium frequencies. */
-	inline float GetLimitRevTimeSumMedium() const{return pLimitRevTimeSumMedium;}
+	inline float GetLimitRevTimeSumMedium() const{ return pLimitRevTimeSumMedium; }
 	
 	/** \brief Limit reverberation time sum for high frequencies. */
-	inline float GetLimitRevTimeSumHigh() const{return pLimitRevTimeSumHigh;}
+	inline float GetLimitRevTimeSumHigh() const{ return pLimitRevTimeSumHigh; }
 	
 	/** \brief Limit reverberation time count. */
-	inline int GetLimitRevTimeCount() const{return pLimitRevTimeCount;}
+	inline int GetLimitRevTimeCount() const{ return pLimitRevTimeCount; }
 	
 	/** \brief Unlimit reverberation time count. */
-	inline int GetUnlimitRevTimeCount() const{return pUnlimitRevTimeCount;}
+	inline int GetUnlimitRevTimeCount() const{ return pUnlimitRevTimeCount; }
 	
 	
 	
 	/** \brief Unsorted impulse response. */
-	inline const deoalImpulseResponse &GetImpulseResponse() const{return pImpulseResponse;}
+	inline const deoalImpulseResponse &GetImpulseResponse() const{ return pImpulseResponse; }
 	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
-	inline deoalRTWOVRayBlocked &rtwovRayBlocked(){return pRTWOVRayBlocked;}
+	inline deoalRTWOVRayBlocked &rtwovRayBlocked(){ return pRTWOVRayBlocked; }
 	#endif
 	/*@}*/
 	

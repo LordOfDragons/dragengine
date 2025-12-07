@@ -61,10 +61,10 @@ void meFilterListObjects::SetAcceptAny(bool acceptAny){
 
 
 void meFilterListObjects::AddFilter(meFilterObjects *filter){
-	if(! filter) DETHROW(deeInvalidParam);
+	if(!filter) DETHROW(deeInvalidParam);
 	
 	meFilterObjects **newArray = new meFilterObjects*[pFilterCount + 1];
-	if(! newArray) DETHROW(deeOutOfMemory);
+	if(!newArray) DETHROW(deeOutOfMemory);
 	if(pFilters){
 		memcpy(newArray, pFilters, sizeof(meFilterObjects*) * pFilterCount);
 		delete [] pFilters;
@@ -90,7 +90,7 @@ void meFilterListObjects::RemoveAllFilters(){
 
 
 bool meFilterListObjects::AcceptObject(meObject *object) const{
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	int f;
 	
@@ -105,7 +105,7 @@ bool meFilterListObjects::AcceptObject(meObject *object) const{
 		
 	}else{
 		for(f=0; f<pFilterCount; f++){
-			if(! pFilters[f]->AcceptObject(object)){
+			if(!pFilters[f]->AcceptObject(object)){
 				return false;
 			}
 		}

@@ -168,7 +168,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	const int componentCount = collideList.GetComponentCount();
 	for(i=0; i<componentCount; i++){
 		deoglCollideListComponent &component = *collideList.GetComponentAt(i);
-		if(! pIsComponentStatic(*component.GetComponent())){
+		if(!pIsComponentStatic(*component.GetComponent())){
 			component.SetLODLevelMax();
 			addToRenderTask.AddComponent(component);
 		}

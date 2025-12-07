@@ -75,24 +75,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the type. */
-	inline ScriptingPython &GetSP() const{return pSP;}
+	inline ScriptingPython &GetSP() const{ return pSP; }
 	
 	/** \brief Retrieves the type name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** \brief Retrieves the type documentation. */
-	inline const decString &GetDocumentation() const{return pDocumentation;}
+	inline const decString &GetDocumentation() const{ return pDocumentation; }
 	/** \brief Sets the type documentation. */
 	void SetDocumentation(const char *documentation);
 	/** \brief Retrieves the parent module or NULL if located in globals. */
-	inline spBaseModule *GetParent() const{return pParent;}
+	inline spBaseModule *GetParent() const{ return pParent; }
 	/** \brief Sets the parent module or NULL if located in globals. */
 	void SetParent(spBaseModule *parent);
 	/** \brief Retrieves the size of the native object data. */
-	inline int GetNativeDataSize() const{return pNativeDataSize;}
+	inline int GetNativeDataSize() const{ return pNativeDataSize; }
 	/** \brief Sets the size of the native object data. */
 	void SetNativeDataSize(int size);
 	/** \brief Determines if the object new method is private. */
-	inline bool GetPrivateNew() const{return pPrivateNew;}
+	inline bool GetPrivateNew() const{ return pPrivateNew; }
 	/** \brief Sets if the object new method is private. */
 	void SetPrivateNew(bool privateNew);
 	
@@ -100,7 +100,7 @@ public:
 	void AddMethod(const char *name, PyCFunction pyFunction, int argumentType, const char *documentation);
 	
 	/** \brief Retrieves the full type name. */
-	inline const decString &GetFullTypeName() const{return pFullTypeName;}
+	inline const decString &GetFullTypeName() const{ return pFullTypeName; }
 	
 	/** \brief Retrieve owner class of a python object. */
 	static spBaseType *GetOwnerClass(PyObject *object);

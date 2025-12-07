@@ -90,33 +90,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animated PNG module. */
-	inline deVideoApng &GetModule() const{return pModule;}
+	inline deVideoApng &GetModule() const{ return pModule; }
 	
 	/** File reader. */
-	inline decBaseFileReader *GetReader() const{return pReader;}
+	inline decBaseFileReader *GetReader() const{ return pReader; }
 	
 	/** Width in pixels. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height in pixels. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** Component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Frame count. */
-	inline int GetFrameCount() const{return pFrameCount;}
+	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** Frame rate. */
-	inline float GetFrameRate() const{return pFrameRate;}
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** First frame (depends on first frame hidden). */
-	inline int GetFirstFrame() const{return pFirstFrame;}
+	inline int GetFirstFrame() const{ return pFirstFrame; }
 	
 	
 	
 	/** Current frame. */
-	inline int GetCurrentFrame() const{return pCurFrame;}
+	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	
 	

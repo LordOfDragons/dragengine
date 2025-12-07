@@ -41,7 +41,7 @@
 ////////////////////////////
 
 peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
-	if(! emitter || ! type){
+	if(!emitter || !type){
 		DETHROW(deeInvalidParam);
 	}
 	

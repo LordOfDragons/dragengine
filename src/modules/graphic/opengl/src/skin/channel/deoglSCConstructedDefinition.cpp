@@ -70,7 +70,7 @@ pDefinition(NULL),
 pVerify(NULL),
 pCacheValid(true)
 {
-	if(! definition || ! verify){
+	if(!definition || !verify){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -125,13 +125,13 @@ void deoglSCConstructedDefinition::VisitGroup(deSkinPropertyNodeGroup &node){
 	
 	pDefinition->WriteByte((uint8_t)entGroup);
 	pWriteBasicProperties(node);
-	if(! pCacheValid){
+	if(!pCacheValid){
 		return;
 	}
 	
 	for(i=0; i<count; i++){
 		node.GetNodeAt(i)->Visit(*this);
-		if(! pCacheValid){
+		if(!pCacheValid){
 			return;
 		}
 	}
@@ -141,7 +141,7 @@ void deoglSCConstructedDefinition::VisitGroup(deSkinPropertyNodeGroup &node){
 void deoglSCConstructedDefinition::VisitImage(deSkinPropertyNodeImage &node){
 	pDefinition->WriteByte((uint8_t)entImage);
 	pWriteBasicProperties(node);
-	if(! pCacheValid){
+	if(!pCacheValid){
 		return;
 	}
 	
@@ -160,7 +160,7 @@ void deoglSCConstructedDefinition::VisitImage(deSkinPropertyNodeImage &node){
 		}
 		
 		const decPath path(decPath::CreatePathUnix(filename));
-		if(! vfs->CanReadFile(path)){
+		if(!vfs->CanReadFile(path)){
 			pCacheValid = false;
 			return;
 		}
@@ -179,7 +179,7 @@ void deoglSCConstructedDefinition::VisitImage(deSkinPropertyNodeImage &node){
 void deoglSCConstructedDefinition::VisitShape(deSkinPropertyNodeShape &node){
 	pDefinition->WriteByte((uint8_t)entShape);
 	pWriteBasicProperties(node);
-	if(! pCacheValid){
+	if(!pCacheValid){
 		return;
 	}
 	
@@ -192,7 +192,7 @@ void deoglSCConstructedDefinition::VisitShape(deSkinPropertyNodeShape &node){
 void deoglSCConstructedDefinition::VisitText(deSkinPropertyNodeText &node){
 	pDefinition->WriteByte((uint8_t)entText);
 	pWriteBasicProperties(node);
-	if(! pCacheValid){
+	if(!pCacheValid){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void deoglSCConstructedDefinition::VisitText(deSkinPropertyNodeText &node){
 		}
 		
 		const decPath path(decPath::CreatePathUnix(filename));
-		if(! vfs->CanReadFile(path)){
+		if(!vfs->CanReadFile(path)){
 			pCacheValid = false;
 			return;
 		}

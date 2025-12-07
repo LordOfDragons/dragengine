@@ -45,7 +45,7 @@ gdeUOCPropertyAdd::gdeUOCPropertyAdd(gdeObjectClass *objectClass, gdeProperty *p
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{return pOal;}
+	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	/** \brief VideoPlayer. */
-	inline deVideoPlayer &GetVideoPlayer() const{return pVideoPlayer;}
+	inline deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Audio peer. */
-	inline deoalAVideoPlayer *GetAVideoPlayer() const{return pAVideoPlayer;}
+	inline deoalAVideoPlayer *GetAVideoPlayer() const{ return pAVideoPlayer; }
 	
 	
 	

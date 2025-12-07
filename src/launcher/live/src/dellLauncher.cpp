@@ -173,7 +173,7 @@ void dellLauncher::pUpdateEnvironment(){
 // 		printf( "setenv: '%s'\n", envParam.GetString() );
 #ifdef OS_W32_VS
 		const int separator = envParam.Find('=');
-		if(! SetEnvironmentVariableA(envParam.GetMiddle(0, separator).GetString(),
+		if(!SetEnvironmentVariableA(envParam.GetMiddle(0, separator).GetString(),
 		envParam.GetMiddle(separator + 1).GetString())){
 			DETHROW(deeInvalidParam);
 		}

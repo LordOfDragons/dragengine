@@ -61,7 +61,7 @@ demdlWeightSet *demdlWeightSetList::GetAt(int index) const{
 }
 
 void demdlWeightSetList::Add(demdlWeightSet *weightSet){
-	if(! weightSet){
+	if(!weightSet){
 		DETHROW(deeInvalidParam);
 	}
 	

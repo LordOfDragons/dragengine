@@ -45,7 +45,7 @@ pVLayer(NULL),
 pRule(NULL),
 pNewOp(nop)
 {
-	if(! vlayer || ! rule){
+	if(!vlayer || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	

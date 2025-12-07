@@ -65,31 +65,31 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Origin. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set origin. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Normalized direction. */
-	inline const decVector &GetDirection() const{return pDirection;}
+	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set normalized direction. */
 	void SetDirection(const decVector &direction);
 	
 	/** \brief Normal. */
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set normal. */
 	void SetNormal(const decVector &normal);
 	
 	/** \brief Length. */
-	inline float GetLength() const{return pLength;}
+	inline float GetLength() const{ return pLength; }
 	
 	/** \brief Set length. */
 	void SetLength(float length);
 	
 	/** \brief Attenuation distance at segment origin. */
-	inline float GetDistance() const{return pDistance;}
+	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Set attenuation distance at segment origin. */
 	void SetDistance(float distance);
@@ -97,19 +97,19 @@ public:
 	
 	
 	/** \brief Gain for low frequencies at segment origin. */
-	inline float GetGainLow() const{return pGainLow;}
+	inline float GetGainLow() const{ return pGainLow; }
 	
 	/** \brief Set gain for low frequencies at segment origin. */
 	void SetGainLow(float gain);
 	
 	/** \brief Gain for medium frequencies at segment origin. */
-	inline float GetGainMedium() const{return pGainMedium;}
+	inline float GetGainMedium() const{ return pGainMedium; }
 	
 	/** \brief Set gain for medium frequencies at segment origin. */
 	void SetGainMedium(float gain);
 	
 	/** \brief Gain for high frequencies at segment origin. */
-	inline float GetGainHigh() const{return pGainHigh;}
+	inline float GetGainHigh() const{ return pGainHigh; }
 	
 	/** \brief Set gain for high frequencies at segment origin. */
 	void SetGainHigh(float gain);
@@ -117,19 +117,19 @@ public:
 	
 	
 	/** \brief Absorption sum for low frequencies at segment origin. */
-	inline float GetAbsorptionSumLow() const{return pAbsorptionSumLow;}
+	inline float GetAbsorptionSumLow() const{ return pAbsorptionSumLow; }
 	
 	/** \brief Set absorption sum for low frequencies at segment origin. */
 	void SetAbsorptionSumLow(float absorption);
 	
 	/** \brief Absorption sum for medium frequencies at segment origin. */
-	inline float GetAbsorptionSumMedium() const{return pAbsorptionSumMedium;}
+	inline float GetAbsorptionSumMedium() const{ return pAbsorptionSumMedium; }
 	
 	/** \brief Set absorption sum for medium frequencies at segment origin. */
 	void SetAbsorptionSumMedium(float absorption);
 	
 	/** \brief Absorption sum for high frequencies at segment origin. */
-	inline float GetAbsorptionSumHigh() const{return pAbsorptionSumHigh;}
+	inline float GetAbsorptionSumHigh() const{ return pAbsorptionSumHigh; }
 	
 	/** \brief Set absorption sum for high frequencies at segment origin. */
 	void SetAbsorptionSumHigh(float absorption);
@@ -137,13 +137,13 @@ public:
 	
 	
 	/** \brief Number of times the ray bounced at the start of the segment. */
-	inline int GetBounceCount() const{return pBounceCount;}
+	inline int GetBounceCount() const{ return pBounceCount; }
 	
 	/** \brief Set number of times the ray bounced at the start of the segment. */
 	void SetBounceCount(int count);
 	
 	/** \brief Number of times the ray transmitted at the start of the segment. */
-	inline int GetTransmittedCount() const{return pTransmittedCount;}
+	inline int GetTransmittedCount() const{ return pTransmittedCount; }
 	
 	/** \brief Set number of times the ray transmitted at the start of the segment. */
 	void SetTransmittedCount(int count);

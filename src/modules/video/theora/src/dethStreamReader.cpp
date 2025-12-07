@@ -50,7 +50,7 @@
 ////////////////////////////
 
 dethStreamReader::dethStreamReader(dethOggReader *reader, int serial){
-	if(! reader) DETHROW(deeInvalidParam);
+	if(!reader) DETHROW(deeInvalidParam);
 	
 	pReader = reader;
 	pSerial = serial;
@@ -125,7 +125,7 @@ void dethStreamReader::SubmitPacket(ogg_packet &packet){
 }
 
 bool dethStreamReader::ReadTheoraHeader(dethInfos &infos){
-	if(! infos.GetHeaderFinished()){
+	if(!infos.GetHeaderFinished()){
 		th_info &tinfo = infos.GetInfo();
 		th_comment &tcomment = infos.GetComment();
 		th_setup_info *tsinfo = infos.GetSetupInfo();
@@ -153,7 +153,7 @@ bool dethStreamReader::ReadTheoraHeader(dethInfos &infos){
 				}
 				
 				pDecoderContext = th_decode_alloc(&tinfo, tsinfo);
-				if(! pDecoderContext) DETHROW(deeOutOfMemory);
+				if(!pDecoderContext) DETHROW(deeOutOfMemory);
 				
 				th_setup_free(tsinfo);
 				infos.SetSetupInfo(NULL);

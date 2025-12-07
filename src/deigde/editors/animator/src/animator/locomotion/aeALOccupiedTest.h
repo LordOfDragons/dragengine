@@ -56,7 +56,7 @@ public:
 	/** Resets the ground checker. */
 	void Reset();
 	/** Determines if a collision has occurred. */
-	inline bool HasCollision() const{return pHasCollision;}
+	inline bool HasCollision() const{ return pHasCollision; }
 	/*@}*/
 	
 	/** \name Notifications */

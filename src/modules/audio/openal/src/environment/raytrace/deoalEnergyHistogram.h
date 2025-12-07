@@ -68,10 +68,10 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of slots. */
-	inline int GetSlotCount() const{return pSlotCount;}
+	inline int GetSlotCount() const{ return pSlotCount; }
 	
 	/** \brief Number of frequency bands. */
-	inline int GetBandCount() const{return pBandCount;}
+	inline int GetBandCount() const{ return pBandCount; }
 	
 	/**
 	 * \brief Set histogram parameters.
@@ -83,10 +83,10 @@ public:
 	
 	/** \brief Set histogram time. */
 	/** \brief Histogram time. */
-	inline float GetTime() const{return pTime;}
+	inline float GetTime() const{ return pTime; }
 	
 	/** \brief Slot time in seconds. */
-	inline float GetSlotTime() const{return pSlotTime;}
+	inline float GetSlotTime() const{ return pSlotTime; }
 	
 	/** \brief Clear histogram. */
 	void Clear();
@@ -144,7 +144,7 @@ public:
 	 * 
 	 * Linear array of values layed out by bands starting with band 0 without padding.
 	 */
-	inline const float *GetEntries() const{return pEntries;}
+	inline const float *GetEntries() const{ return pEntries; }
 	
 	/**
 	 * \brief Integrate band energies.

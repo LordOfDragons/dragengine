@@ -114,7 +114,7 @@ deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt(int index) const{
 }
 
 deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(const deoglRenderTaskSharedVAO *vao){
-	if(! vao){
+	if(!vao){
 		DETHROW(deeInvalidParam);
 	}
 	

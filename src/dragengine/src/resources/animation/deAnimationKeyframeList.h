@@ -57,7 +57,7 @@ public:
 	/** \name Keyframe Management */
 	/*@{*/
 	/** \brief Count of keyframes. */
-	inline int GetKeyframeCount() const{return pKeyframeCount;}
+	inline int GetKeyframeCount() const{ return pKeyframeCount; }
 	
 	/** \brief Keyframe at the given index. */
 	deAnimationKeyframe *GetKeyframe(int index) const;

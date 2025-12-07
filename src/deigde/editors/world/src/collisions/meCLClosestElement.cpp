@@ -130,7 +130,7 @@ void meCLClosestElement::Reset(){
 
 void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsHTSector()){
-		if(! pTestHeightTerrain){
+		if(!pTestHeightTerrain){
 			return;
 		}
 		
@@ -154,18 +154,18 @@ void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	}else if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld.GetEnvironment(), info->GetCollider() );
-		if(! colliderOwner){
+		if(!colliderOwner){
 			return;
 		}
 		
 		if(colliderOwner->GetObject()){
-			if(! pTestObjects){
+			if(!pTestObjects){
 				return;
 			}
 			if(pIgnoreObjects.Has(colliderOwner->GetObject())){
 				return;
 			}
-			if(pFilterObjects && ! pFilterObjects->AcceptObject(colliderOwner->GetObject())){
+			if(pFilterObjects && !pFilterObjects->AcceptObject(colliderOwner->GetObject())){
 				return;
 			}
 			if(pHasHit && info->GetDistance() >= pHitDistance){
@@ -179,7 +179,7 @@ void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 			pHasHit = true;
 			
 		}else if(colliderOwner->GetDecal()){
-			if(! pTestDecals){
+			if(!pTestDecals){
 				return;
 			}
 			if(colliderOwner->GetDecal() == pIgnoreDecal){
@@ -196,7 +196,7 @@ void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 			pHasHit = true;
 			
 		}else if(colliderOwner->GetSnapPoint()){
-			if(! pTestSnapPoints){
+			if(!pTestSnapPoints){
 				return;
 			}
 			if(pHasHit && info->GetDistance() >= pHitDistance){

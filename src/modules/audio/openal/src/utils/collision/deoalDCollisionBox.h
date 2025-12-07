@@ -164,21 +164,21 @@ public:
 	/** @name Parameters */
 	/*@{*/
 	/** Retrieves the center. */
-	inline const decDVector &GetCenter() const{return pCenter;}
+	inline const decDVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half sizes. */
-	inline const decDVector &GetHalfSize() const{return pHalfSize;}
+	inline const decDVector &GetHalfSize() const{ return pHalfSize; }
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/** Determines if this box is axis aligned. */
-	inline bool GetAxisAligned() const{return ! pOriented;}
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/** Determines if this box is oriented. */
-	inline bool GetOriented() const{return pOriented;}
+	inline bool GetOriented() const{ return pOriented; }
 	/** Retrieves the x axis. */
-	inline const decDVector &GetAxisX() const{return pAxisX;}
+	inline const decDVector &GetAxisX() const{ return pAxisX; }
 	/** Retrieves the y axis. */
-	inline const decDVector &GetAxisY() const{return pAxisY;}
+	inline const decDVector &GetAxisY() const{ return pAxisY; }
 	/** Retrieves the z axis. */
-	inline const decDVector &GetAxisZ() const{return pAxisZ;}
+	inline const decDVector &GetAxisZ() const{ return pAxisZ; }
 	/** Sets the center. */
 	void SetCenter(const decDVector &center);
 	/** Sets the half sizes. All components have to be at least 0. */

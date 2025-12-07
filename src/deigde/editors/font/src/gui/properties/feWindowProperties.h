@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline feWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline feWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set font to monitor. */
 	void SetFont(feFont *font);

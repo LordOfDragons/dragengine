@@ -88,7 +88,7 @@ public:
 	void Debug(dePhysicsBullet &module);
 	
 	/** Retrieves the number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	/** Retrieves the point at the given index. */
 	const decVector &GetPointAt(int index) const;
 	/**
@@ -100,7 +100,7 @@ public:
 	void RemoveAllPoints();
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the face at the given index. */
 	debpDecalMeshBuilderFace *GetFaceAt(int index) const;
 	/** Adds a new face. */

@@ -77,10 +77,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{return pDevice;}
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Layout. */
-	inline devkDescriptorSetLayout *GetLayout() const{return pLayout;}
+	inline devkDescriptorSetLayout *GetLayout() const{ return pLayout; }
 	
 	/** Get next free slot. */
 	devkDescriptorPoolSlot *Get();

@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Light. */
-	inline gdeOCLight *GetOCLight() const{return pLight;}
+	inline gdeOCLight *GetOCLight() const{ return pLight; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

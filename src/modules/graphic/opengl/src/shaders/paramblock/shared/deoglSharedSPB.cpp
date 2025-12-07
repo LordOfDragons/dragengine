@@ -88,7 +88,7 @@ deoglSharedSPBElement *deoglSharedSPB::AddElement(){
 }
 
 void deoglSharedSPB::RemoveElement(int index){
-	if(index < 0 || index >= pSize || ! pElements[index]){
+	if(index < 0 || index >= pSize || !pElements[index]){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold(reRigConstraint *constraint, float newBreakingThreshold){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

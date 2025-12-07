@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/** \brief Link at the given index. */
 	int GetLinkAt(int index) const;

@@ -73,7 +73,7 @@ FXWindow *igdeNativeFoxAutoScroller::GetContentWindow() const{
 
 decPoint igdeNativeFoxAutoScroller::GetContentSize() const{
 	FXWindow * const window = GetContentWindow();
-	if(! window){
+	if(!window){
 		return decPoint(1, 1);
 	}
 	
@@ -106,7 +106,7 @@ void igdeNativeFoxAutoScroller::layout(){
 	FXComposite::layout();
 	
 	FXWindow * const window = GetContentWindow();
-	if(! window){
+	if(!window){
 		return;
 	}
 	
@@ -157,7 +157,7 @@ void igdeNativeFoxAutoScroller::MoveContent(int x){
 	}
 	
 	FXWindow * const window = GetContentWindow();
-	if(! window){
+	if(!window){
 		pScrollPosition = x;
 		return;
 	}

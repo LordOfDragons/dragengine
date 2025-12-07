@@ -98,7 +98,7 @@ void deAnimatorRuleSubAnimator::UpdateConnectionCount(){
 		pConnectionCount = 0;
 	}
 	
-	if(! pSubAnimator){
+	if(!pSubAnimator){
 		return;
 	}
 	
@@ -127,7 +127,7 @@ void deAnimatorRuleSubAnimator::SetConnectionAt(int targetController, int localC
 }
 
 void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animator){
-	if(! pSubAnimator){
+	if(!pSubAnimator){
 		ClearConnections();
 		return;
 	}

@@ -43,7 +43,7 @@
 ///////////////
 
 decPoint igdeNativeFoxWidget::WidgetToScreen(const igdeWidget &widget, const decPoint &position){
-	if(! widget.GetNativeWidget()){
+	if(!widget.GetNativeWidget()){
 		return position;
 	}
 	
@@ -68,7 +68,7 @@ decPoint igdeNativeFoxWidget::WidgetToScreen(const igdeWidget &widget, const dec
 }
 
 decPoint igdeNativeFoxWidget::GetCursorPosition(const igdeWidget &widget){
-	if(! widget.GetNativeWidget()){
+	if(!widget.GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -83,7 +83,7 @@ decPoint igdeNativeFoxWidget::GetCursorPosition(const igdeWidget &widget){
 }
 
 decPoint igdeNativeFoxWidget::GetSize(const igdeWidget &widget){
-	if(! widget.GetNativeWidget()){
+	if(!widget.GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -93,7 +93,7 @@ decPoint igdeNativeFoxWidget::GetSize(const igdeWidget &widget){
 
 void igdeNativeFoxWidget::UpdateVisible(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	if(! native){
+	if(!native){
 		return;
 	}
 	
@@ -115,7 +115,7 @@ bool igdeNativeFoxWidget::HasNativeParent(const igdeWidget &widget){
 #ifdef OS_UNIX
 Window igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	if(! native){
+	if(!native){
 		return 0;
 	}
 	return (Window)native->id();
@@ -124,7 +124,7 @@ Window igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 #ifdef OS_W32
 HWND igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	if(! native){
+	if(!native){
 		return NULL;
 	}
 	return (HWND)native->id();
@@ -134,7 +134,7 @@ HWND igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 #ifdef OS_UNIX
 Window igdeNativeFoxWidget::NativeWidgetParentID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	if(! native || ! native->getParent()){
+	if(!native || !native->getParent()){
 		return 0;
 	}
 	return (Window)native->getParent()->id();
@@ -143,7 +143,7 @@ Window igdeNativeFoxWidget::NativeWidgetParentID(const igdeWidget &widget){
 #ifdef OS_W32
 HWND igdeNativeFoxWidget::NativeWidgetParentID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	if(! native || ! native->getParent()){
+	if(!native || !native->getParent()){
 		return NULL;
 	}
 	return (HWND)native->getParent()->id();

@@ -77,7 +77,7 @@ bool debnValueData::LastValueEqualsNetworkValue() const{
 		return pValueData.GetData() && memcmp(pLastValue, pValueData.GetData(), pLastValueLen) == 0;
 		
 	}else{
-		return ! pValueData.GetData();
+		return !pValueData.GetData();
 	}
 }
 
@@ -96,7 +96,7 @@ void debnValueData::SetLastValueFromNetworkValue(){
 }
 
 bool debnValueData::UpdateValue(bool force){
-	if(! force && LastValueEqualsNetworkValue()){
+	if(!force && LastValueEqualsNetworkValue()){
 		return false;
 	}
 	

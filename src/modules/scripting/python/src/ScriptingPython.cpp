@@ -162,13 +162,13 @@ bool ScriptingPython::Init(const char *scriptDirectory, const char *gameObject){
 		
 		// create game object
 		funcConstructor = PyObject_GetAttrString(pModuleGame, SP_GAME_CLASS_SCRIPT);
-		if(! funcConstructor || ! PyCallable_Check(funcConstructor)){
+		if(!funcConstructor || !PyCallable_Check(funcConstructor)){
 			LogErrorFormat("Failed to run function '%s'.\n", SP_GAME_CLASS_SCRIPT);
 			DETHROW(deeInvalidAction);
 		}
 		
 		pObjectGame = PyObject_CallObject(funcConstructor, NULL);
-		if(! pObjectGame){
+		if(!pObjectGame){
 			LogErrorFormat("Failed to construct instance of class '%s'.\n", SP_GAME_CLASS_SCRIPT);
 			DETHROW(deeInvalidAction);
 		}
@@ -301,7 +301,7 @@ bool ScriptingPython::OnFrameUpdate(){
 	PyObject *args = NULL;
 	
 	args = Py_BuildValue("(f)", GetGameEngine()->GetElapsedTime());
-	if(! args){
+	if(!args){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -310,7 +310,7 @@ bool ScriptingPython::OnFrameUpdate(){
 	}
 	
 	function = PyObject_GetAttrString(pObjectGame, functionName);
-	if(! function || ! PyCallable_Check(function)){
+	if(!function || !PyCallable_Check(function)){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -323,7 +323,7 @@ bool ScriptingPython::OnFrameUpdate(){
 	}
 	
 	retval = PyObject_CallObject(function, args);
-	if(! retval){
+	if(!retval){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -377,11 +377,11 @@ bool ScriptingPython::SendEvent(deInputEvent *event){
 		
 	// this should never happen
 	}else{
-		LogErrorFormat("What the... an unknown event code?! (%i)\n", type);
+		LogErrorFormat("What the... an unknown event code?!(%i)\n", type);
 		return false;
 	}
 	
-	if(! args){
+	if(!args){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -391,7 +391,7 @@ bool ScriptingPython::SendEvent(deInputEvent *event){
 	
 	// call the function if possible
 	function = PyObject_GetAttrString(pObjectGame, functionName);
-	if(! function || ! PyCallable_Check(function)){
+	if(!function || !PyCallable_Check(function)){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -404,7 +404,7 @@ bool ScriptingPython::SendEvent(deInputEvent *event){
 	}
 	
 	retval = PyObject_CallObject(function, args);
-	if(! retval){
+	if(!retval){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -472,7 +472,7 @@ void ScriptingPython::PythonCleanUp(){
 
 bool ScriptingPython::CallFunction(const char *functionName){
 	PyObject * const function = PyObject_GetAttrString(pObjectGame, functionName);
-	if(! function || ! PyCallable_Check(function)){
+	if(!function || !PyCallable_Check(function)){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -485,7 +485,7 @@ bool ScriptingPython::CallFunction(const char *functionName){
 	}
 	
 	PyObject * const retval = PyObject_CallObject(function, NULL);
-	if(! retval){
+	if(!retval){
 		LogErrorFormat("Failed to run function '%s'.\n", functionName);
 		if(PyErr_Occurred()){
 			PyErr_Print();
@@ -559,7 +559,7 @@ void ScriptingPython::pLoadGameScript(const char *directory, const char *gameObj
 		"print(Game)\n");
 	
 	pModuleGame = PyImport_ImportModule(gameObject);
-	if(! pModuleGame){
+	if(!pModuleGame){
 		DETHROW(deeInvalidAction);
 	}
 }

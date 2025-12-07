@@ -87,7 +87,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -133,7 +133,7 @@ public:
 	
 	virtual void OnAction(){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -163,7 +163,7 @@ public:
 	
 	virtual igdeUndo * OnChanged(igdeComboBox *comboBox, seSource *source){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			return NULL;
 		}
 		
@@ -270,14 +270,14 @@ public:
 	virtual igdeUndo *OnAction(seSource *source){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		return target && link && ! target->HasLink(link)
+		return target && link && !target->HasLink(link)
 			? new seUSourceTargetAddLink(source, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		SetSelected(target && link && ! target->HasLink(link));
+		SetSelected(target && link && !target->HasLink(link));
 	}
 };
 
@@ -418,7 +418,7 @@ void seWPAPanelSource::OnActivated(){
 	
 	UpdateSource();
 	
-	if(! pCBTarget->GetSelectedItem() && pCBTarget->GetItemCount() > 0){
+	if(!pCBTarget->GetSelectedItem() && pCBTarget->GetItemCount() > 0){
 		pCBTarget->SetSelection(0);
 	}
 }

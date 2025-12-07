@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorAdd *GetActionActorAdd() const{return (ceCAActorAdd*)GetAction();}
+	inline ceCAActorAdd *GetActionActorAdd() const{ return (ceCAActorAdd*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

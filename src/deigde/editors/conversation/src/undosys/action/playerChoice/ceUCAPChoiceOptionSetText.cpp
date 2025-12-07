@@ -43,7 +43,7 @@
 
 ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
 	ceCAPlayerChoiceOption *option, const decUnicodeString &newText){
-	if(! topic || ! playerChoice || ! option){
+	if(!topic || !playerChoice || !option){
 		DETHROW(deeInvalidParam);
 	}
 	

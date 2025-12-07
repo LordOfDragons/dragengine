@@ -43,7 +43,7 @@ seUBodySetColor::seUBodySetColor(seBody *body, const decColor &newColor) :
 pBody(NULL),
 pNewColor(newColor)
 {
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	

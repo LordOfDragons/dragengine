@@ -83,13 +83,13 @@ deoalAComponent *deoalWOVCollectElements::GetComponentAt(int index) const{
 
 
 void deoalWOVCollectElements::VisitComponent(deoalAComponent *component){
-	if(! component->GetAffectsSound()){
+	if(!component->GetAffectsSound()){
 		return;
 	}
 	if(component->GetMaxExtend() < pBoxMin || component->GetMinExtend() > pBoxMax){
 		return;
 	}
-	if(! component->GetModel() || ! component->GetModel()->GetOctree()){
+	if(!component->GetModel() || !component->GetModel()->GetOctree()){
 		return;
 	}
 	

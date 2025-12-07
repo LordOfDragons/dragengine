@@ -142,7 +142,7 @@ bool deCollisionInfo::HasCollision() const{
 }
 
 void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrainSector *sector){
-	if(! heightTerrain || ! sector){
+	if(!heightTerrain || !sector){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -154,7 +154,7 @@ void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrai
 }
 
 void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int face){
-	if(! collider || bone < -1 || shape < -1 || face < -1){
+	if(!collider || bone < -1 || shape < -1 || face < -1){
 		DETHROW(deeInvalidParam);
 	}
 	

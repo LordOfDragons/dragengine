@@ -59,7 +59,7 @@ deoglMOVDecalCollect::~deoglMOVDecalCollect(){
 /////////////
 
 void deoglMOVDecalCollect::CollectFaces(const decMatrix &matrix, const decVector &size){
-	if(! pModelLOD.GetOctree()){
+	if(!pModelLOD.GetOctree()){
 		DETHROW(deeInvalidParam);
 	}
 	

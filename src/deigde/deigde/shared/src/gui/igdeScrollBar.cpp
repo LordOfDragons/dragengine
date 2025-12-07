@@ -159,7 +159,7 @@ void igdeScrollBar::SetEnabled(bool enabled){
 
 
 void igdeScrollBar::AddListener(igdeScrollBarListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -192,7 +192,7 @@ void igdeScrollBar::CreateNativeWidget(){
 }
 
 void igdeScrollBar::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

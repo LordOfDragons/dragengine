@@ -43,7 +43,7 @@
 seUSynthesizerSetChannelCount::seUSynthesizerSetChannelCount(seSynthesizer *synthesizer, int newChannelCount) :
 pSynthesizer(NULL)
 {
-	if(! synthesizer){
+	if(!synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

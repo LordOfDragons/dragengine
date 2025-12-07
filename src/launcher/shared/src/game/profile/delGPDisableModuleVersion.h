@@ -68,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
 	void SetName(const char *name);
 	
 	/** \brief Module version. */
-	inline const decString &GetVersion() const{return pVersion;}
+	inline const decString &GetVersion() const{ return pVersion; }
 	
 	/** \brief Set module version. */
 	void SetVersion(const char *version);

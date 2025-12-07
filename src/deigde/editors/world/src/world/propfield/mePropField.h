@@ -69,15 +69,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	/** Sets the parent world or NULL. */
 	void SetWorld(meWorld *world);
 	
 	/** Retrieves the engine height terrain. */
-	inline dePropField *GetEnginePropField() const{return pEngPF;}
+	inline dePropField *GetEnginePropField() const{ return pEngPF; }
 	
 	/** Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decDVector &position);
 	
@@ -88,7 +88,7 @@ public:
 	/** \name Types */
 	/*@{*/
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves the type at the given index. */
 	mePropFieldType *GetTypeAt(int index) const;
 	/** Retrieves the index of the given type or -1 if not found. */

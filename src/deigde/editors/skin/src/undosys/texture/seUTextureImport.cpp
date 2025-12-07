@@ -42,7 +42,7 @@
 ////////////////////////////
 
 seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTexture){
-	if(! texture || ! importTexture){
+	if(!texture || !importTexture){
 		DETHROW(deeInvalidParam);
 	}
 	

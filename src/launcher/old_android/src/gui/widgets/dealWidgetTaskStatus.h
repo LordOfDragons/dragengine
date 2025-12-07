@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Task name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set task name. */
 	void SetName(const char *name);
 	
 	/** \brief Task status text. */
-	inline const decString &GetStatus() const{return pStatus;}
+	inline const decString &GetStatus() const{ return pStatus; }
 	
 	/** \brief Set task status text. */
 	void SetStatus(const char *text);
@@ -86,7 +86,7 @@ public:
 	
 	
 	/** \brief Finished. */
-	inline bool GetFinished() const{return pFinished;}
+	inline bool GetFinished() const{ return pFinished; }
 	
 	/** \brief Set finished. */
 	void SetFinished(bool finished);

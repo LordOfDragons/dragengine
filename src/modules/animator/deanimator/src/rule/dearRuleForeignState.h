@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Foreign bone index. */
-	inline int GetForeignBone() const{return pForeignBone;}
+	inline int GetForeignBone() const{ return pForeignBone; }
 	
 	
 	

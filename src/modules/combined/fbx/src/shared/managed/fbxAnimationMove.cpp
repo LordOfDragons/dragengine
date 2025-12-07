@@ -72,7 +72,7 @@ pFrameRate(25)
 		break;
 	}
 	
-	if(! pNodeLayer){
+	if(!pNodeLayer){
 		DETHROW_INFO(deeInvalidParam, "AnimationLayer missing for AnimationStack");
 	}
 	
@@ -155,7 +155,7 @@ void fbxAnimationMove::Prepare(){
 void fbxAnimationMove::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
 	module.LogInfoFormat("%sMove '%s': %d curve nodes", prefix.GetString(), pName.GetString(), pCurveNodes.GetCount());
 	
-	if(! verbose){
+	if(!verbose){
 		return;
 	}
 	

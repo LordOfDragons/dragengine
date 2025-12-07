@@ -72,7 +72,7 @@ void peeConfigurationXML::ReadFromFile(decBaseFileReader &reader, peeConfigurati
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "particleEmitterEditor") != 0){
+	if(!root || strcmp(root->GetName(), "particleEmitterEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ void peeConfigurationXML::pReadConfig(const decXmlElementTag &root, peeConfigura
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

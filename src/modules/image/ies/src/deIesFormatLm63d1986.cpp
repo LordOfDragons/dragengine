@@ -108,7 +108,7 @@ deIesFormatLm63d1986::~deIesFormatLm63d1986(){
 bool deIesFormatLm63d1986::LoadHeader(decBaseFileReader &reader){
 	pReadLines(reader);
 	
-	if(! pFindTilt()){
+	if(!pFindTilt()){
 		return false;
 	}
 	pReadTilt();

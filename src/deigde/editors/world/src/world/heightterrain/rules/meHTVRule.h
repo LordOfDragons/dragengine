@@ -118,22 +118,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/** Retrieves the position. */
-	inline const decVector2 &GetPosition() const{return pPosition;}
+	inline const decVector2 &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decVector2 &position);
 	/** Determines if parameters are shown. */
-	inline bool GetShowParameters() const{return pShowParameters;}
+	inline bool GetShowParameters() const{ return pShowParameters; }
 	/** Sets if parameters are shown. */
 	void SetShowParameters(bool showParameters);
 	
 	/** \brief Count of slots. */
-	inline int GetSlotCount() const{return pSlotCount;}
+	inline int GetSlotCount() const{ return pSlotCount; }
 	
 	/** \brief Slot at index. */
 	meHTVRSlot &GetSlotAt(int slot) const;

@@ -68,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Canvas view. */
-	inline deoglRCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view. */
 	void SetCanvasView(deoglRCanvasView *canvasView);
 	
 	/** Pixel buffer or \em NULL if no capture is pending. */
-	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{return pPixelBuffer;}
+	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
 	
 	/** Create pixel buffer. */
 	void StartCapture(int width, int height, int componentCount, int bitCount);
@@ -86,7 +86,7 @@ public:
 	void DropPixelBuffer();
 	
 	/** Capture is pending. */
-	inline bool GetCapturePending() const{return pCapturePending;}
+	inline bool GetCapturePending() const{ return pCapturePending; }
 	
 	/** Set capture is pending. */
 	void SetCapturePending(bool capturePending);

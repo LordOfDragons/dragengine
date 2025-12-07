@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of conditions. */
-	inline const ceConversationConditionList &GetConditions() const{return pConditions;}
+	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

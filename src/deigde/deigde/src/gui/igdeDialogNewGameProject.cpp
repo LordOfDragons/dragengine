@@ -147,7 +147,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeGameDefinition * const sharedGameDef = pDialog.GetSelectedSharedGameDef();
-		if(! sharedGameDef){
+		if(!sharedGameDef){
 			return;
 		}
 		
@@ -159,7 +159,7 @@ public:
 	
 	virtual void Update(){
 		SetEnabled(pDialog.GetSelectedSharedGameDef()
-			&& ! pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
+			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
 	}
 };
 
@@ -180,7 +180,7 @@ public:
 		}
 		
 		pListPathGameDefBase.RemoveItem(selection);
-		if(! pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
+		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
 			pListPathGameDefBase.SetSelection(0);
 		}
 		
@@ -406,7 +406,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 		return false;
 	}
 	
-	if(! pCBTemplate->GetSelectedItem()->GetData()){
+	if(!pCBTemplate->GetSelectedItem()->GetData()){
 		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, mbtitle,
 		"No template selected. Do you really want to create an empty project?")
 		== igdeCommonDialogs::ebNo){
@@ -428,7 +428,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 }
 
 bool igdeDialogNewGameProject::Accept(){
-	if(! CheckValidInput()){
+	if(!CheckValidInput()){
 		return false;
 	}
 	
@@ -519,7 +519,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDefs(){
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);
-	if(! pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
+	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
 		pCBSharedGameDefs->SetSelection(0);
 	}
 }
@@ -536,7 +536,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDef(){
 
 void igdeDialogNewGameProject::UpdateTemplate(){
 	const igdeTemplate * const atemplate = GetSelectedTemplate();
-	if(! atemplate){
+	if(!atemplate){
 		pEditTemplateInfo->SetText("No template selected. Creates an empty project");
 		pCBScriptModule->SetEnabled(true);
 		return;
@@ -585,7 +585,7 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 			continue;
 		}
 		
-		if(! pCBScriptModule->HasItem(module.GetName())){
+		if(!pCBScriptModule->HasItem(module.GetName())){
 			pCBScriptModule->AddItem(module.GetName());
 		}
 	}
@@ -607,7 +607,7 @@ void igdeDialogNewGameProject::pInitTemplates(){
 	
 	for(i=0; i<count; i++){
 		igdeTemplate * const atemplate = templates.GetAt(i);
-		if(! pCBScriptModule->HasItemWithData(atemplate)){
+		if(!pCBScriptModule->HasItemWithData(atemplate)){
 			pCBTemplate->AddItem(atemplate->GetName(), NULL, atemplate);
 		}
 	}

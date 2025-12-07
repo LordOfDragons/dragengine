@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition(aeRuleStateSnapshot *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleSnapToggleEnablePosition::~aeURuleSnapToggleEnablePosition(){
 ///////////////
 
 void aeURuleSnapToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleSnapToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

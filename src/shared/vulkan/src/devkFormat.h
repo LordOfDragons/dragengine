@@ -73,79 +73,79 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Format. */
-	inline VkFormat GetFormat() const{return pFormat;}
+	inline VkFormat GetFormat() const{ return pFormat; }
 	
 	/** Set format. */
 	void SetFormat(VkFormat format);
 	
 	/** Bits per pixel. */
-	inline int GetBitsPerPixel() const{return pBitsPerPixel;}
+	inline int GetBitsPerPixel() const{ return pBitsPerPixel; }
 	
 	/** Set bits per pixel. */
 	void SetBitsPerPixel(int bitsPerPixel);
 	
 	/** Format is a depth/stencil format. */
-	inline bool GetIsDepth() const{return pIsDepth;}
+	inline bool GetIsDepth() const{ return pIsDepth; }
 	
 	/** \brief Set if format is a depth/stencil format */
 	void SetIsDepth(bool isDepth);
 	
 	/** Format is a float depth/stencil format. */
-	inline bool GetIsDepthFloat() const{return pIsDepthFloat;}
+	inline bool GetIsDepthFloat() const{ return pIsDepthFloat; }
 	
 	/** Set if format is a float depth/stencil format. */
 	void SetIsDepthFloat(bool isDepthFloat);
 	
 	/** Format is a stencil format. */
-	inline bool GetIsStencil() const{return pIsStencil;}
+	inline bool GetIsStencil() const{ return pIsStencil; }
 	
 	/** Set if format is a stencil format. */
 	void SetIsStencil(bool isStencil);
 	
 	/** Format is a compressed format. */
-	inline bool GetIsCompressed() const{return pIsCompressed;}
+	inline bool GetIsCompressed() const{ return pIsCompressed; }
 	
 	/** Format is a compressed format. */
 	void SetIsCompressed(bool isCompressed);
 	
 	/** Format can be used to sample from. */
-	inline bool GetCanSample() const{return pCanSample;}
+	inline bool GetCanSample() const{ return pCanSample; }
 	
 	/** Set if format can be used to sample from. */
 	void SetCanSample(bool canSample);
 	
 	/** Format can be used to sample from using filtering. */
-	inline bool GetCanSampleFilter() const{return pCanSampleFilter;}
+	inline bool GetCanSampleFilter() const{ return pCanSampleFilter; }
 	
 	/** Set if format can be used to sample from using filtering. */
 	void SetCanSampleFilter(bool canSampleFilter);
 	
 	/** Format can be used for image store. */
-	inline bool GetCanImageStore() const{return pCanImageStore;}
+	inline bool GetCanImageStore() const{ return pCanImageStore; }
 	
 	/** Set if format can be used for image store. */
 	void SetCanImageStore(bool canImageStore);
 	
 	/** Format can be used for atomic image store. */
-	inline bool GetCanImageStoreAtomic() const{return pCanImageStoreAtomic;}
+	inline bool GetCanImageStoreAtomic() const{ return pCanImageStoreAtomic; }
 	
 	/** Set if format can be used for atomic image store. */
 	void SetCanImageStoreAtomic(bool canImageStoreAtomic);
 	
 	/** Format can be used as framebuffer attachment. */
-	inline bool GetCanAttach() const{return pCanAttach;}
+	inline bool GetCanAttach() const{ return pCanAttach; }
 	
 	/** Set if format can be used as framebuffer attachment. */
 	void SetCanAttach(bool canAttach);
 	
 	/** Format can be used as blending framebuffer attachment. */
-	inline bool GetCanAttachBlend() const{return pCanAttachBlend;}
+	inline bool GetCanAttachBlend() const{ return pCanAttachBlend; }
 	
 	/** Set if format can be used as blending framebuffer attachment. */
 	void SetCanAttachBlend(bool canAttachBlend);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);

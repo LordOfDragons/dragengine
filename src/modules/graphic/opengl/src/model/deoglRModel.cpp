@@ -108,7 +108,7 @@ pSharedSPBListUBO(NULL)
 	
 	// if cache is not present or loading the cache failed go on without
 	try{
-		if(! pIsCached){
+		if(!pIsCached){
 			pInitLODs(model);
 			pSaveCached();
 		}
@@ -159,13 +159,13 @@ deoglModelLOD &deoglRModel::GetLODAt(int index) const{
 }
 
 void deoglRModel::PrepareImposterBillboard(){
-	if(! pImposterBillboard){
+	if(!pImposterBillboard){
 		pCreateImposterBillboard();
 	}
 }
 
 deoglSharedSPBListUBO &deoglRModel::GetSharedSPBListUBO(){
-	if(! pSharedSPBListUBO){
+	if(!pSharedSPBListUBO){
 		pSharedSPBListUBO = new deoglSharedSPBListUBO(pRenderThread,
 			pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO());
 	}

@@ -133,10 +133,10 @@ public:
 	
 	
 	/** Compute shader node count. Valid after UpdateCSCounts() has been called. */
-	inline int GetCSNodeCount() const{return pCSNodeCount;}
+	inline int GetCSNodeCount() const{ return pCSNodeCount; }
 	
 	/** Compute shader element count. Valid after UpdateCSCounts() has been called. */
-	inline int GetCSElementCount() const{return pCSElementCount;}
+	inline int GetCSElementCount() const{ return pCSElementCount; }
 	
 	/** Update compute shader node and element counts. */
 	void UpdateCSCounts();
@@ -219,7 +219,7 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** List of billboards. */
-	inline const deoglBillboardList &GetBillboardList() const{return pBillboards;}
+	inline const deoglBillboardList &GetBillboardList() const{ return pBillboards; }
 	
 	/** Add billboard. */
 	void AddBillboard(deoglRBillboard *billboard);
@@ -236,7 +236,7 @@ public:
 	/** \name EnvMaps */
 	/*@{*/
 	/** List of environment maps. */
-	inline const deoglEnvironmentMapList &GetEnvMapList() const{return pEnvMaps;}
+	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMaps; }
 	
 	/** Add envmap. */
 	void AddEnvMap(deoglEnvironmentMap *envmap);
@@ -253,7 +253,7 @@ public:
 	/** \name ParticleEmitters */
 	/*@{*/
 	/** List of particle emitters. */
-	inline const deoglParticleEmitterInstanceList &GetParticleEmittersList() const{return pParticleEmitters;}
+	inline const deoglParticleEmitterInstanceList &GetParticleEmittersList() const{ return pParticleEmitters; }
 	
 	/** Add emitter. */
 	void AddParticleEmitter(deoglRParticleEmitterInstance *emitter);

@@ -44,7 +44,7 @@
 ////////////////////////////
 
 dedsPropField::dedsPropField(deScriptingDragonScript *ds, dePropField *propField){
-	if(! ds || ! propField){
+	if(!ds || !propField){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -56,7 +56,7 @@ dedsPropField::dedsPropField(deScriptingDragonScript *ds, dePropField *propField
 }
 
 dedsPropField::~dedsPropField(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -85,7 +85,7 @@ dsRealObject *dedsPropField::GetCallback() const{
 }
 
 void dedsPropField::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	

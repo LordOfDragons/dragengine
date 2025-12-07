@@ -63,9 +63,9 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Retrieves the bone or NULL. */
-	inline reRigBone *GetBone() const{return pBone;}
+	inline reRigBone *GetBone() const{ return pBone; }
 	/** Retrieves the shape or NULL. */
-	inline reRigShape *GetShape() const{return pShape;}
+	inline reRigShape *GetShape() const{ return pShape; }
 	/** Determines if a bone is hit. */
 	bool HasBone() const;
 	/** Determines if a shape is hit. */

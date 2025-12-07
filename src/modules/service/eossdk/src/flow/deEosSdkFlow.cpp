@@ -56,7 +56,7 @@ deEosSdk &deEosSdkFlow::GetModule() const{
 
 void deEosSdkFlow::Fail(const deException &e){
 	const deEosSdkPendingRequest::Ref pr(pService.RemoveFirstPendingRequestWithId(pId));
-	if(pr && ! pHasFailed){
+	if(pr && !pHasFailed){
 		Fail(pr, e);
 		
 	}else{
@@ -67,7 +67,7 @@ void deEosSdkFlow::Fail(const deException &e){
 
 void deEosSdkFlow::Fail(EOS_EResult res){
 	const deEosSdkPendingRequest::Ref pr(pService.RemoveFirstPendingRequestWithId(pId));
-	if(pr && ! pHasFailed){
+	if(pr && !pHasFailed){
 		Fail(pr, res);
 		
 	}else{
@@ -109,7 +109,7 @@ void deEosSdkFlow::Fail(const deEosSdkPendingRequest::Ref &request, EOS_EResult 
 
 void deEosSdkFlow::Finish(){
 	const deEosSdkPendingRequest::Ref pr(pService.RemoveFirstPendingRequestWithId(pId));
-	if(pr && ! pHasFailed){
+	if(pr && !pHasFailed){
 		try{
 			GetModule().GetGameEngine()->GetServiceManager()->QueueRequestResponse(
 				pService.GetService(), pr->id, pr->data, true);

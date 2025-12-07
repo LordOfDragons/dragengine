@@ -67,14 +67,14 @@ decrbPanelParameters::decrbPanelParameters(){}
 
 decrbPanelParameters::decrbPanelParameters(decrbWindowMain *windowMain, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
-	if(! windowMain) DETHROW(deeInvalidParam);
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
 	// prepare
 	pWndMain = windowMain;
 	pParameterInfo = new deModuleParameter;
-	if(! pParameterInfo) DETHROW(deeOutOfMemory);
+	if(!pParameterInfo) DETHROW(deeOutOfMemory);
 	
 	// module selection
 	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,

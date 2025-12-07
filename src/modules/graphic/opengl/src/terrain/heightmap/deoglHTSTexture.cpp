@@ -178,7 +178,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType(deoglSkinTexturePipe
 
 
 deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
@@ -217,7 +217,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
@@ -232,7 +232,7 @@ void deoglHTSTexture::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deog
 	deoglRDynamicSkin *useDynamicSkin = NULL;
 	deoglSkinState *useSkinState = NULL;
 	
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -352,12 +352,12 @@ void deoglHTSTexture::pCleanUp(){
 
 
 void deoglHTSTexture::pPrepareParamBlock(){
-	if(! pDirtyParamBlock){
+	if(!pDirtyParamBlock){
 		return;
 	}
 	pDirtyParamBlock = false;
 	
-	if(! pValidParamBlock){
+	if(!pValidParamBlock){
 		pParamBlock = nullptr;
 		
 		if(pUseSkinTexture){
@@ -390,7 +390,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 }
 
 void deoglHTSTexture::pPrepareTUCs(){
-	if(! pDirtyTUCs){
+	if(!pDirtyTUCs){
 		return;
 	}
 	pDirtyTUCs = false;

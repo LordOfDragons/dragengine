@@ -56,7 +56,7 @@ public:
 	/** \name Optimizer Management */
 	/*@{*/
 	/** Retrieves the number of optimizers. */
-	inline int GetOptimizerCount() const{return pOptimizerCount;}
+	inline int GetOptimizerCount() const{ return pOptimizerCount; }
 	/** Retrieves the optimizer at the given index. */
 	deoglOptimizer *GetOptimizerAt(int index) const;
 	/** Determines if the given optimizer exists. */

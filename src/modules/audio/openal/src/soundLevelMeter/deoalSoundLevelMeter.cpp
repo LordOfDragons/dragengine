@@ -244,7 +244,7 @@ const deSoundLevelMeter::cAudibleSpeaker &deoalSoundLevelMeter::GetAudibleSpeake
 //////////////////////
 
 void deoalSoundLevelMeter::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncSoundLevelMeter(this);
 	}
 }
@@ -269,7 +269,7 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 		}
 		
 		deoalSpeaker * const backlink = speaker.GetSpeaker()->GetBackLink();
-		if(! backlink){
+		if(!backlink){
 			continue;
 		}
 		
@@ -288,7 +288,7 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 	
 	// notify scripting module about entering speakers
 	for(i=0; i<pSpeakerCount; i++){
-		if(! pOldSpeakers.Has(pSpeakers[i].GetSpeaker())){
+		if(!pOldSpeakers.Has(pSpeakers[i].GetSpeaker())){
 			pSoundLevelMeter.NotifySpeakerAudible(pSpeakers[i]);
 		}
 	}

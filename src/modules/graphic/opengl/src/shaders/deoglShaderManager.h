@@ -73,7 +73,7 @@ private:
 	public:
 		cCompileProgram(deoglShaderManager &manager, const deoglShaderProgram::Ref &program);
 		
-		inline const deoglShaderProgram::Ref &GetProgram() const{return pProgram;}
+		inline const deoglShaderProgram::Ref &GetProgram() const{ return pProgram; }
 		
 		void AddListener(cGetProgramListener *listener);
 		
@@ -116,13 +116,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the language used to compiled and drive shaders. */
-	inline deoglShaderLanguage *GetLanguage() const{return pLanguage;}
+	inline deoglShaderLanguage *GetLanguage() const{ return pLanguage; }
 	
 	/** Validate caches. */
 	void ValidateCaches();
 	
 	/** Logging mutex. */
-	inline deMutex &GetMutexLogging(){return pMutexLogging;}
+	inline deMutex &GetMutexLogging(){ return pMutexLogging; }
 	
 	/** Update. */
 	void Update();
@@ -150,7 +150,7 @@ public:
 	void LoadUnitSourceCodes();
 	
 	/** Includable sources. */
-	inline const decStringDictionary &GetIncludableSources() const{return pIncludableSources;}
+	inline const decStringDictionary &GetIncludableSources() const{ return pIncludableSources; }
 	/*@}*/
 	
 	

@@ -54,11 +54,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the actor id. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
 	void SetActor(const char *id);
 	/** Determines if the test is for non-existence instead of existence. */
-	inline bool GetNegate() const{return pNegate;}
+	inline bool GetNegate() const{ return pNegate; }
 	/** Sets if the test is for non-existence instead of existence. */
 	void SetNegate(bool negate);
 	

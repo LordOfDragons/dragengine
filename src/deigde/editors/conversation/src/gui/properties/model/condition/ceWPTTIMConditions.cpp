@@ -148,7 +148,7 @@ void ceWPTTIMConditions::OnContextMenu(igdeMenuCascade &contextMenu){
 
 ceWPTTIMCondition *ceWPTTIMConditions::CreateConditionModel(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition){
-	if(! condition){
+	if(!condition){
 		DETHROW(deeInvalidParam);
 	}
 	

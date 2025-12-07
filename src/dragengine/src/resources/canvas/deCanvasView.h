@@ -66,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of child canvas. */
-	inline int GetCanvasCount() const{return pCanvasCount;}
+	inline int GetCanvasCount() const{ return pCanvasCount; }
 	
 	/** \brief Root canvas or NULL if there is none. */
-	inline deCanvas *GetRootCanvas() const{return pCanvasRoot;}
+	inline deCanvas *GetRootCanvas() const{ return pCanvasRoot; }
 	
 	/**
 	 * \brief Add child canvas.

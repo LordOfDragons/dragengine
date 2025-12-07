@@ -77,10 +77,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Scene. */
-	inline fbxScene &GetScene() const{return pScene;}
+	inline fbxScene &GetScene() const{ return pScene; }
 	
 	/** \brief Pose node. */
-	inline fbxNode &GetNodePose() const{return pNodePose;}
+	inline fbxNode &GetNodePose() const{ return pNodePose; }
 	
 	
 	
@@ -99,10 +99,10 @@ public:
 	
 	
 	/** \brief Matrix. */
-	inline const decMatrix &GetMatrix() const{return pMatrix;}
+	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{return pMatrix;}
+	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
 	
 	
 	

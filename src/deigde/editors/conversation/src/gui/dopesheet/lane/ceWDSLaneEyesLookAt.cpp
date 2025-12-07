@@ -67,7 +67,7 @@ public:
 	
 	virtual void OnAction(){
 		ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if(! action){
+		if(!action){
 			return;
 		}
 		

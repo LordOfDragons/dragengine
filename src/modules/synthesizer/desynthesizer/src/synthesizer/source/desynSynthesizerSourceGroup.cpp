@@ -52,7 +52,7 @@ pApplicationType(source.GetApplicationType()),
 pSelectRange(0.0f),
 pTargetSelect(synthesizer, firstLink, source.GetTargetSelect())
 {
-	SetSilent(! source.GetEnabled());
+	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}
@@ -158,7 +158,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				const int selectFirst = decMath::clamp((int)intpart, 0, lastSource);
 				const int selectSecond = decMath::min((selectFirst + 1), lastSource);
 				
-				if(! sdata[selectFirst]){
+				if(!sdata[selectFirst]){
 					sdata[selectFirst] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectFirst]->GetBuffer(), 0, sizeof(float) * samples);
 					pSources[selectFirst]->GenerateSound(instance, stateData,
@@ -166,7 +166,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				}
 				const sGenerateBufferMono &buffer1 = *((const sGenerateBufferMono *)sdata[selectFirst]->GetBuffer() + i);
 				
-				if(! sdata[selectSecond]){
+				if(!sdata[selectSecond]){
 					sdata[selectSecond] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectSecond]->GetBuffer(), 0, sizeof(float) * samples);
 					pSources[selectSecond]->GenerateSound(instance, stateData,
@@ -186,7 +186,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				const int selectFirst = decMath::clamp((int)intpart, 0, lastSource);
 				const int selectSecond = decMath::min((selectFirst + 1), lastSource);
 				
-				if(! sdata[selectFirst]){
+				if(!sdata[selectFirst]){
 					sdata[selectFirst] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectFirst]->GetBuffer(), 0, sizeof(float) * samples * 2);
 					pSources[selectFirst]->GenerateSound(instance, stateData,
@@ -194,7 +194,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				}
 				const sGenerateBufferStereo &buffer1 = *((const sGenerateBufferStereo*)sdata[selectFirst]->GetBuffer() + i);
 				
-				if(! sdata[selectSecond]){
+				if(!sdata[selectSecond]){
 					sdata[selectSecond] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectSecond]->GetBuffer(), 0, sizeof(float) * samples * 2);
 					pSources[selectSecond]->GenerateSound(instance, stateData,
@@ -246,7 +246,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
 				const int selectSolo = decMath::clamp((selectBlend < 0.5f) ? (int)intpart : ((int)intpart + 1), 0, lastSource);
 				
-				if(! sdata[selectSolo]){
+				if(!sdata[selectSolo]){
 					sdata[selectSolo] = sharedBufferList.ClaimBuffer(samples);
 					memset(sdata[selectSolo]->GetBuffer(), 0, sizeof(float) * samples);
 					pSources[selectSolo]->GenerateSound(instance, stateData,
@@ -265,7 +265,7 @@ char *stateData, float *buffer, int samples, float curveOffset, float curveFacto
 				const float selectBlend = modff(GetSelect(instance, curveEvalPos), &intpart);
 				const int selectSolo = decMath::clamp((selectBlend < 0.5f) ? (int)intpart : ((int)intpart + 1), 0, lastSource);
 				
-				if(! sdata[selectSolo]){
+				if(!sdata[selectSolo]){
 					sdata[selectSolo] = sharedBufferList.ClaimBuffer(samples * 2);
 					memset(sdata[selectSolo]->GetBuffer(), 0, sizeof(float) * samples * 2);
 					pSources[selectSolo]->GenerateSound(instance, stateData,
@@ -343,7 +343,7 @@ int firstLink, const deSynthesizerSourceGroup &source){
 }
 
 void desynSynthesizerSourceGroup::pClearSources(){
-	if(! pSources){
+	if(!pSources){
 		return;
 	}
 	

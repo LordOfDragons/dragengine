@@ -64,8 +64,8 @@ protected:
 	}
 	
 public:
-	inline int GetLineHeight() const{return pLineHeight;}
-	inline const deFontSize::Ref &GetSize() const{return pSize;}
+	inline int GetLineHeight() const{ return pLineHeight; }
+	inline const deFontSize::Ref &GetSize() const{ return pSize; }
 };
 
 
@@ -150,7 +150,7 @@ void deFont::UpdateGlyphs(){
 }
 
 bool deFont::Verify(){
-	if(! pImage){
+	if(!pImage){
 		GetEngine()->GetLogger()->LogErrorFormat("Dragengine",
 			"deFont::Verify(%s): Image missing (path %s)",
 			GetFilename().GetString(), pImagePath.GetString());

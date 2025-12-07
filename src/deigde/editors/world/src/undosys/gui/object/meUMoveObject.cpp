@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUMoveObject::meUMoveObject(meWorld *world, const meObjectList &objects){
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

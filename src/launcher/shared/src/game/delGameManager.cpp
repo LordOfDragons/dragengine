@@ -112,7 +112,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 			game->SetTitle(decUnicodeString::NewFromUTF8(game->GetIdentifier().ToHexString(false)));
 		}
 		
-		if(! pGames.HasWithID(game->GetIdentifier())){
+		if(!pGames.HasWithID(game->GetIdentifier())){
 			pGames.Add(game);
 		}
 	}
@@ -149,7 +149,7 @@ void delGameManager::ApplyProfileChanges(){
 	for(i=0; i<count; i++){
 		delGame &game = *pGames.GetAt(i);
 		
-		if(! pProfiles.Has(game.GetActiveProfile())){
+		if(!pProfiles.Has(game.GetActiveProfile())){
 			game.SetActiveProfile(nullptr);
 			game.VerifyRequirements();
 		}
@@ -196,7 +196,7 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 			const delGame::Ref game(delGame::Ref::New(pLauncher.CreateGame()));
 			gameXML.ReadFromFile(decDiskFileReader::Ref::NewWith(path), game);
 			
-			if(! decPath::IsNativePathAbsolute(game->GetGameDirectory())){
+			if(!decPath::IsNativePathAbsolute(game->GetGameDirectory())){
 				decPath baseDir(decPath::CreatePathNative(path));
 				baseDir.RemoveLastComponent();
 				baseDir.AddUnixPath(game->GetGameDirectory());
@@ -251,7 +251,7 @@ void delGameManager::CreateDefaultProfile(){
 	const delEngine &engine = pLauncher.GetEngine();
 	delEngineModule *module;
 	
-	if(! pDefaultProfile){
+	if(!pDefaultProfile){
 		pDefaultProfile.TakeOver(pLauncher.CreateGameProfile());
 	}
 	

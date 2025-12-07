@@ -67,7 +67,7 @@ pOwner(&powner)
 {
 	UpdateRange();
 	UpdateValue();
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 }
@@ -76,12 +76,12 @@ igdeNativeFoxScrollBar::~igdeNativeFoxScrollBar(){
 }
 
 igdeNativeFoxScrollBar *igdeNativeFoxScrollBar::CreateNativeWidget(igdeScrollBar &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -152,7 +152,7 @@ int igdeNativeFoxScrollBar::ScrollBarFlags(const igdeScrollBar &powner){
 ///////////
 
 long igdeNativeFoxScrollBar::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

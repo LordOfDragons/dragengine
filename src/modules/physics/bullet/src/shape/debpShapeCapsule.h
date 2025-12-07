@@ -61,9 +61,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the capsule shape. */
-	inline decShapeCapsule *GetShapeCapsule() const{return pSCapsule;}
+	inline decShapeCapsule *GetShapeCapsule() const{ return pSCapsule; }
 	/** Retrieves the capsule collision volume. */
-	inline const debpDCollisionCapsule &GetCollisionCapsule() const{return pCCapsule;}
+	inline const debpDCollisionCapsule &GetCollisionCapsule() const{ return pCCapsule; }
 	
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);

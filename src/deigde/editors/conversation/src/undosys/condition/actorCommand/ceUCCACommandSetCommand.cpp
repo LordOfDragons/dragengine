@@ -44,7 +44,7 @@
 
 ceUCCACommandSetCommand::ceUCCACommandSetCommand(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionActorCommand *condition, const char *newCommand){
-	if(! topic || ! action || ! condition || ! newCommand){
+	if(!topic || !action || !condition || !newCommand){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

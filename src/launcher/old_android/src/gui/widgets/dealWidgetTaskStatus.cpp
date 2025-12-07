@@ -108,7 +108,7 @@ void dealWidgetTaskStatus::SetFinished(bool finished){
 	pFinished = finished;
 	
 	if(pBgPending){
-		pBgPending->SetVisible(! pFinished);
+		pBgPending->SetVisible(!pFinished);
 	}
 	if(pBgFinished){
 		pBgFinished->SetVisible(pFinished);

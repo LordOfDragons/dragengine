@@ -115,7 +115,7 @@ void deoalAComponentTexture::UpdateUseTexture(){
 void deoalAComponentTexture::UpdateSoundParameters(){
 	pAffectsSound = false;
 	
-	if(! pUseTexture || pUseTexture->GetNoSound()){
+	if(!pUseTexture || pUseTexture->GetNoSound()){
 		return;
 	}
 	

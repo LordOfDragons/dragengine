@@ -66,7 +66,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShape * const shape = pPanel.GetShape();
-		if(! rig || ! shape){
+		if(!rig || !shape){
 			return;
 		}
 		
@@ -95,7 +95,7 @@ pPanel(panel){
 void reWPPanelShape::cEditPosition::OnVectorChanged(igdeEditVector *editVector){
 	reRig * const rig = pPanel.GetRig();
 	reRigShape * const shape = pPanel.GetShape();
-	if(! rig || ! shape){
+	if(!rig || !shape){
 		return;
 	}
 	
@@ -121,7 +121,7 @@ pPanel(panel){
 void reWPPanelShape::cEditRotation::OnVectorChanged(igdeEditVector *editVector){
 	reRig * const rig = pPanel.GetRig();
 	reRigShape * const shape = pPanel.GetShape();
-	if(! rig || ! shape){
+	if(!rig || !shape){
 		return;
 	}
 	

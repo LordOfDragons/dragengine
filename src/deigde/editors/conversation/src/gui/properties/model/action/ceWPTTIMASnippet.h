@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASnippet *GetActionSnippet() const{return (ceCASnippet*)GetAction();}
+	inline ceCASnippet *GetActionSnippet() const{ return (ceCASnippet*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

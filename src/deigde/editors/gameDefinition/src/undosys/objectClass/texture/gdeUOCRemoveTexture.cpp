@@ -46,11 +46,11 @@ gdeUOCRemoveTexture::gdeUOCRemoveTexture(gdeObjectClass *objectClass, gdeOCCompo
 pObjectClass(NULL),
 pTexture(NULL)
 {
-	if(! objectClass || ! texture){
+	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetTextures().Has(texture)){
+	if(!objectClass->GetTextures().Has(texture)){
 		DETHROW(deeInvalidParam);
 	}
 	

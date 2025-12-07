@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of uuids. */
-	inline int GetCount() const{return pUuidCount;}
+	inline int GetCount() const{ return pUuidCount; }
 	
 	/** \brief Uuid at the given index. */
 	const decUuid &GetAt(int index) const;

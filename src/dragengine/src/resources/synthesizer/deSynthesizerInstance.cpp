@@ -147,7 +147,7 @@ void deSynthesizerInstance::Reset(){
 }
 
 void deSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int offset, int samples){
-	if(! pPeerSynthesizer){
+	if(!pPeerSynthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -202,7 +202,7 @@ void deSynthesizerInstance::pCleanUp(){
 void deSynthesizerInstance::pUpdateControllers(){
 	pControllers.RemoveAll();
 	
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		return;
 	}
 	

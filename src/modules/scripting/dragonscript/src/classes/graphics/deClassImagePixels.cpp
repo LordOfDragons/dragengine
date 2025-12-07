@@ -245,7 +245,7 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// check parameters
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(0)->GetRealObject());
-	if(! image){
+	if(!image){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -503,7 +503,7 @@ void deClassImagePixels::nfGetRange::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	
@@ -570,7 +570,7 @@ void deClassImagePixels::nfGetRange2::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	

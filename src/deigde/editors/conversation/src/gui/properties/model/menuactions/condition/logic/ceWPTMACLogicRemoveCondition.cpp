@@ -57,7 +57,7 @@ pAction(&action),
 pLogic(&logic),
 pCondition(condition)
 {
-	if(! condition){
+	if(!condition){
 		DETHROW(deeInvalidParam);
 	}
 }

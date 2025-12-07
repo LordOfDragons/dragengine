@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCBillboardToggleDoNotScale::~gdeUOCBillboardToggleDoNotScale(){
 ///////////////
 
 void gdeUOCBillboardToggleDoNotScale::Undo(){
-	pBillboard->SetDoNotScale(! pBillboard->GetDoNotScale());
+	pBillboard->SetDoNotScale(!pBillboard->GetDoNotScale());
 	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 

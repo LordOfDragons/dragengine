@@ -76,17 +76,17 @@ void dethOggReader::ReadStreamHeaders(dethInfos &infos){
 	ogg_page page;
 	int serial;
 	
-	while(/* ! infos.GetHeaderFinished() && */ ReadPage(page)){
+	while(/* !infos.GetHeaderFinished() && */ ReadPage(page)){
 		serial = ogg_page_serialno(&page);
 		
 		if(ogg_page_bos(&page)){
-			if(! pStream){
+			if(!pStream){
 				pStream = new dethStreamReader(this, serial);
 				//pModule.LogInfoFormat( "Stream %i: Testing for Theora", serial );
 			}
 			
 		}else{
-			if(! pStream) break;
+			if(!pStream) break;
 			//pModule.LogInfoFormat( "Stream %i: additional page", serial );
 		}
 		
@@ -96,10 +96,10 @@ void dethOggReader::ReadStreamHeaders(dethInfos &infos){
 				maxGranulePos = pageGranulePos;
 			}
 			
-			if(! infos.GetHeaderFinished()){
+			if(!infos.GetHeaderFinished()){
 				pStream->AddPage(page);
 				
-				if(! pStream->ReadTheoraHeader(infos)){
+				if(!pStream->ReadTheoraHeader(infos)){
 					//pModule.LogWarnFormat( "Stream %i: Not a Theora stream, ignoring it", serial );
 					delete pStream;
 					pStream = NULL;
@@ -155,7 +155,7 @@ bool dethOggReader::ReadPage(ogg_page &page){
 	try{
 		while(ogg_sync_pageout(&pSyncState, &page) != 1){
 			buffer = ogg_sync_buffer(&pSyncState, bufferSize);
-			if(! buffer){
+			if(!buffer){
 				DETHROW(deeOutOfMemory);
 			}
 			
@@ -250,7 +250,7 @@ void dethOggReader::SeekFrame(int frame){
 				}
 				
 			}else{
-				if(! ReadPage(page, serial)) break;
+				if(!ReadPage(page, serial)) break;
 				pStream->AddPage(page);
 			}
 		}

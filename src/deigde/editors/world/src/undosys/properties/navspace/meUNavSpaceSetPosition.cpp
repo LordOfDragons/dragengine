@@ -42,12 +42,12 @@
 ////////////////////////////
 
 meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld *world = navspace->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

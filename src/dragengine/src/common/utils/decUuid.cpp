@@ -103,7 +103,7 @@ decString decUuid::ToHexString(bool condensed) const{
 	string.Set('0', condensed ? 32 : 36);
 	
 	for(i=0; i<32; i++){
-		if(! condensed && (i == 8 || i == 12 || i == 16 || i == 20)){
+		if(!condensed && (i == 8 || i == 12 || i == 16 || i == 20)){
 			string[position++] = '-';
 		}
 		
@@ -129,12 +129,12 @@ decString decUuid::ToHexString(bool condensed) const{
 }
 
 void decUuid::SetFromHexString(const char *string, bool condensed){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int len = (int)strlen(string);
-	if((condensed && len != 32) || (! condensed && len != 36)){
+	if((condensed && len != 32) || (!condensed && len != 36)){
 		DETHROW(deeInvalidFormat);
 	}
 	
@@ -145,7 +145,7 @@ void decUuid::SetFromHexString(const char *string, bool condensed){
 	memset(pValues, 0, sizeof(pValues));
 	
 	for(i=0; i<len; i++){
-		if(! condensed && (i == 8 || i == 13 || i == 18 || i == 23)){
+		if(!condensed && (i == 8 || i == 13 || i == 18 || i == 23)){
 			if(string[i] != '-'){
 				DETHROW(deeInvalidFormat);
 			}
@@ -200,11 +200,11 @@ bool decUuid::operator==(const decUuid &id) const{
 }
 
 bool decUuid::operator!=(const decUuid &id) const{
-	return ! (*this == id);
+	return !(*this == id);
 }
 
 bool decUuid::operator!() const{
-	return ! operator bool();
+	return !operator bool();
 }
 
 decUuid::operator bool() const{

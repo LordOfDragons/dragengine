@@ -56,13 +56,13 @@ public:
 	/** \name Accessors and Mutators */
 	/*@{*/
 	/** \brief String in use. */
-	inline const char *GetString() const{return pString;}
+	inline const char *GetString() const{ return pString; }
 	
 	/** \brief Position in the string. */
-	inline int GetPosition() const{return pPosition;}
+	inline int GetPosition() const{ return pPosition; }
 	
 	/** \brief Length of the string. */
-	inline int GetLength() const{return pLength;}
+	inline int GetLength() const{ return pLength; }
 	
 	/** \brief End of the string has been reached. */
 	bool HasReachedEnd() const;

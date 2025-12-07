@@ -74,7 +74,7 @@ bool meIDGroup::Has(const char *id) const{
 }
 
 void meIDGroup::Add(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -101,13 +101,13 @@ void meIDGroup::Add(const char *id){
 }
 
 void meIDGroup::Remove(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *object;
 	
-	if(! pIDs.GetAt(id, &object)){
+	if(!pIDs.GetAt(id, &object)){
 		DETHROW(deeInvalidParam);
 	}
 	

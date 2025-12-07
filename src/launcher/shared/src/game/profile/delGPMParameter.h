@@ -64,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parameter name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set parameter name. */
 	void SetName(const char *name);
 	
 	/** \brief Parameter value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set parameter value. */
 	void SetValue(const char *value);

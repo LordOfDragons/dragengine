@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{return pOCNavSpace;}
+	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pOCNavSpace; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
 	void SetTransparency(float transparency);
 	
 	/** Image or nullptr to render nothing. */
-	inline const deoglRImage::Ref &GetImage() const{return pImage;}
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image or nullptr to render nothing. */
 	void SetImage(deoglRImage *image);

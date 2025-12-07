@@ -109,7 +109,7 @@ deBaseSoundDecoder(file){
 		
 		// fetch the file properties
 		fileInfos = ov_info(&pOggFile, -1);
-		if(! fileInfos){
+		if(!fileInfos){
 			module->LogError("Could not get infos from OGG file.");
 			DETHROW(deeInvalidParam);
 		}
@@ -165,7 +165,7 @@ void deoggSoundDecoder::SetPosition(int position){
 }
 
 int deoggSoundDecoder::ReadSamples(void *buffer, int size){
-	if(! buffer || size < 0){
+	if(!buffer || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 	

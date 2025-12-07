@@ -43,10 +43,10 @@ public:
 	meTerrainGroup(const char *name);
 	~meTerrainGroup();
 	// management
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	void SetName(const char *name);
 	// object management
-	inline int GetObjectCount() const{return pObjectCount;}
+	inline int GetObjectCount() const{ return pObjectCount; }
 	meObject *GetObject(int index) const;
 	int FindObject(meObject *object) const;
 	bool HasObject(meObject *object) const;

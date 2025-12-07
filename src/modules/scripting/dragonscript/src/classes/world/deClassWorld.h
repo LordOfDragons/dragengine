@@ -86,24 +86,24 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
-	inline deClassCamera *GetClassCamera() const{return pClsCam;}
-	inline deClassColor *GetClassColor() const{return pClsClr;}
-	inline deClassCollider *GetClassCollider() const{return pClsCol;}
-	inline deClassCollisionInfo *GetClassCollisionInfo() const{return pClsCI;}
-	inline deClassComponent *GetClassComponent() const{return pClsComp;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassHeightTerrain *GetClassHeightTerrain() const{return pClsHT;}
-	inline deClassLight *GetClassLight() const{return pClsLig;}
-	inline deClassMatrix *GetClassMatrix() const{return pClsMat;}
-	inline deClassMicrophone *GetClassMicrophone() const{return pClsMic;}
-	inline deClassNetworkState *GetClassNetworkState() const{return pClsNS;}
-	inline deClassSkyInstance *GetClassSkyInstance() const{return pClsSkyInst;}
-	inline deClassSpeaker *GetClassSpeaker() const{return pClsSpk;}
-	inline deClassTouchSensor *GetClassTouchSensor() const{return pClsTS;}
-	inline deClassVector *GetClassVector() const{return pClsVec;}
+	inline deClassCamera *GetClassCamera() const{ return pClsCam; }
+	inline deClassColor *GetClassColor() const{ return pClsClr; }
+	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
+	inline deClassCollisionInfo *GetClassCollisionInfo() const{ return pClsCI; }
+	inline deClassComponent *GetClassComponent() const{ return pClsComp; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassHeightTerrain *GetClassHeightTerrain() const{ return pClsHT; }
+	inline deClassLight *GetClassLight() const{ return pClsLig; }
+	inline deClassMatrix *GetClassMatrix() const{ return pClsMat; }
+	inline deClassMicrophone *GetClassMicrophone() const{ return pClsMic; }
+	inline deClassNetworkState *GetClassNetworkState() const{ return pClsNS; }
+	inline deClassSkyInstance *GetClassSkyInstance() const{ return pClsSkyInst; }
+	inline deClassSpeaker *GetClassSpeaker() const{ return pClsSpk; }
+	inline deClassTouchSensor *GetClassTouchSensor() const{ return pClsTS; }
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
 	
 	/** Retrieves the world or NULL if myself is NULL. */
 	deWorld *GetWorld(dsRealObject *myself) const;

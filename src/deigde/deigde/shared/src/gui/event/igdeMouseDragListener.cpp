@@ -135,7 +135,7 @@ int button, const decPoint &position, int modifiers){
 	pControlOrigin = (modifiers & deInputEvent::esmControl) == deInputEvent::esmControl;
 	pControlNow = pControlOrigin;
 	
-	if(! OnDragBegin()){
+	if(!OnDragBegin()){
 		pDragState = edsNone;
 	}
 }

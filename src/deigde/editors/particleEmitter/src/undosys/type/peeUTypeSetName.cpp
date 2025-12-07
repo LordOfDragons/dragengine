@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
-	if(! type || ! newName){
+	if(!type || !newName){
 		DETHROW(deeInvalidParam);
 	}
 	

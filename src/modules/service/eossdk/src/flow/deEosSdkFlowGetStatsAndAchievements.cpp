@@ -73,7 +73,7 @@ pResultData(deServiceObject::Ref::NewWith())
 	service.NewPendingRequest(id, "getStatsAndAchievements", pResultData);
 	
 	try{
-		if(! service.productUserId){
+		if(!service.productUserId){
 			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		QueryStats();

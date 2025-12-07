@@ -112,23 +112,23 @@ bool meViewEditor::CheckAxisLocking(deInputEvent::eKeyCodes key){
 	const meConfiguration &config = GetConfiguration();
 	
 	if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockX)){
-		guiparams.SetLockAxisX(! guiparams.GetLockAxisX());
+		guiparams.SetLockAxisX(!guiparams.GetLockAxisX());
 		return true;
 		
 	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockY)){
-		guiparams.SetLockAxisY(! guiparams.GetLockAxisY());
+		guiparams.SetLockAxisY(!guiparams.GetLockAxisY());
 		return true;
 		
 	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockZ)){
-		guiparams.SetLockAxisZ(! guiparams.GetLockAxisZ());
+		guiparams.SetLockAxisZ(!guiparams.GetLockAxisZ());
 		return true;
 		
 	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLocalCFrame)){
-		guiparams.SetUseLocal(! guiparams.GetUseLocal());
+		guiparams.SetUseLocal(!guiparams.GetUseLocal());
 		return true;
 		
 	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditSnapToSnapPoints)){
-		guiparams.SetSnapToSnapPoints(! guiparams.GetSnapToSnapPoints());
+		guiparams.SetSnapToSnapPoints(!guiparams.GetSnapToSnapPoints());
 		return true;
 	}
 	
@@ -232,7 +232,7 @@ bool meViewEditor::OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool co
 }
 
 void meViewEditor::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
-	if(! pDragLMB && ! pDragRMB){
+	if(!pDragLMB && !pDragRMB){
 		pDragOrgin.Set(x, y);
 		pShiftStart = shift;
 		pControlStart = control;
@@ -253,7 +253,7 @@ void meViewEditor::OnLeftMouseButtonRelease(int x, int y, bool shift, bool contr
 }
 
 void meViewEditor::OnRightMouseButtonPress(int x, int y, bool shift, bool control){
-	if(! pDragLMB && ! pDragRMB){
+	if(!pDragLMB && !pDragRMB){
 		pDragOrgin.Set(x, y);
 		pShiftStart = shift;
 		pControlStart = control;

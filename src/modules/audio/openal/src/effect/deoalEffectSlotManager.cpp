@@ -138,7 +138,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestUnbound() const{
 	
 	for(i=0; i<count; i++){
 		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
-		if(slot->IsUnbound() && ! slot->IsKeptAlive()){
+		if(slot->IsUnbound() && !slot->IsKeptAlive()){
 			return slot;
 		}
 	}
@@ -153,7 +153,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestKeptAlive() const{
 	
 	for(i=0; i<count; i++){
 		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
-		if(slot->IsUnbound() && slot->IsKeptAlive() && (! bestSlot
+		if(slot->IsUnbound() && slot->IsKeptAlive() && (!bestSlot
 		|| slot->GetElapsedKeepAliveTime() > bestSlot->GetElapsedKeepAliveTime())){
 			bestSlot = slot;
 		}
@@ -168,7 +168,7 @@ deoalEffectSlot *deoalEffectSlotManager::pBestRebindable() const{
 	
 	for(i=0; i<count; i++){
 		deoalEffectSlot * const slot = (deoalEffectSlot*)pSlots.GetAt(i);
-		if(slot->IsBound() && (! bestSlot || slot->GetImportance() < bestSlot->GetImportance())){
+		if(slot->IsBound() && (!bestSlot || slot->GetImportance() < bestSlot->GetImportance())){
 			bestSlot = slot;
 		}
 	}

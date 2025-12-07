@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Load save sky. */
-	inline seLoadSaveSky &GetLSSky(){return *pLSSky;}
+	inline seLoadSaveSky &GetLSSky(){ return *pLSSky; }
 	
 	/** \brief Load sky from file. */
 	seSky *LoadSky(const char *filename);
@@ -75,7 +75,7 @@ public:
 	void SaveSky(seSky *sky, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList *GetSkyFilePatterns() const{return &pFPSky;}
+	inline const igdeFilePatternList *GetSkyFilePatterns() const{ return &pFPSky; }
 	/*@}*/
 	
 	

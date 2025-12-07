@@ -59,7 +59,7 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetAt(int index) const{
 }
 
 igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath(const char *path) 
 }
 
 igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -103,7 +103,7 @@ int igdeGDParticleEmitterList::IndexOf(igdeGDParticleEmitter *emitter) const{
 }
 
 int igdeGDParticleEmitterList::IndexOfWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -120,7 +120,7 @@ int igdeGDParticleEmitterList::IndexOfWithPath(const char *path) const{
 }
 
 int igdeGDParticleEmitterList::IndexOfWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -137,7 +137,7 @@ int igdeGDParticleEmitterList::IndexOfWithName(const char *name) const{
 }
 
 int igdeGDParticleEmitterList::IndexOfWithPathOrName(const char *path, const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -172,7 +172,7 @@ bool igdeGDParticleEmitterList::HasWithPathOrName(const char *path, const char *
 }
 
 void igdeGDParticleEmitterList::Add(igdeGDParticleEmitter *emitter){
-	if(! emitter || HasWithPathOrName(emitter->GetPath().GetString(), emitter->GetName().GetString())){
+	if(!emitter || HasWithPathOrName(emitter->GetPath().GetString(), emitter->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -180,7 +180,7 @@ void igdeGDParticleEmitterList::Add(igdeGDParticleEmitter *emitter){
 }
 
 void igdeGDParticleEmitterList::InsertAt(igdeGDParticleEmitter *emitter, int index){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	

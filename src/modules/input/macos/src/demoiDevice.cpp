@@ -231,7 +231,7 @@ void demoiDevice::Update(){
 }
 
 void demoiDevice::SendDirtyAxisEvents(){
-    if(! pDirtyAxisValues){
+    if(!pDirtyAxisValues){
         return;
     }
     

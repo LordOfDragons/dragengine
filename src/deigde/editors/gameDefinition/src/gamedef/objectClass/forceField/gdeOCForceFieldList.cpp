@@ -72,7 +72,7 @@ bool gdeOCForceFieldList::Has(gdeOCForceField *field) const{
 }
 
 void gdeOCForceFieldList::Add(gdeOCForceField *field){
-	if(! field || Has(field)){
+	if(!field || Has(field)){
 		DETHROW(deeInvalidParam);
 	}
 	pForceFields.Add(field);

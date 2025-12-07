@@ -52,7 +52,7 @@ gdeWPSTIMOCParticleEmitter::gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree,
 gdeWPSTIMOCSubObject(tree, etObjectClassParticleEmitter, objectClass, index),
 pParticleEmitter(NULL)
 {
-	if(! particleEmitter){
+	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,8 +86,8 @@ void gdeWPSTIMOCParticleEmitter::Validate(){
 bool gdeWPSTIMOCParticleEmitter::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pParticleEmitter->GetPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pParticleEmitter->GetPath()))){
+	if(!pParticleEmitter->GetPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pParticleEmitter->GetPath()))){
 		return false;
 	}
 	

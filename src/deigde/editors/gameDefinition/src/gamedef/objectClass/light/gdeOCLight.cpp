@@ -193,7 +193,7 @@ bool gdeOCLight::IsPropertySet(eProperties property) const{
 	if(property < epType || property > epAttachRotation){
 		DETHROW(deeInvalidParam);
 	}
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCLight::GetPropertyName(eProperties property) const{
@@ -204,7 +204,7 @@ const decString &gdeOCLight::GetPropertyName(eProperties property) const{
 }
 
 void gdeOCLight::SetPropertyName(eProperties property, const char *name){
-	if(property < epType || property > epAttachRotation || ! name){
+	if(property < epType || property > epAttachRotation || !name){
 		DETHROW(deeInvalidParam);
 	}
 	pPropertyNames[property] = name;
@@ -228,7 +228,7 @@ bool gdeOCLight::IsTriggerSet(eTriggers trigger) const{
 	if(trigger < etActivated || trigger > etActivated){
 		DETHROW(deeInvalidParam);
 	}
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &gdeOCLight::GetTriggerName(eTriggers trigger) const{
@@ -239,7 +239,7 @@ const decString &gdeOCLight::GetTriggerName(eTriggers trigger) const{
 }
 
 void gdeOCLight::SetTriggerName(eTriggers trigger, const char *name){
-	if(trigger < etActivated || trigger > etActivated || ! name){
+	if(trigger < etActivated || trigger > etActivated || !name){
 		DETHROW(deeInvalidParam);
 	}
 	pTriggerNames[trigger] = name;

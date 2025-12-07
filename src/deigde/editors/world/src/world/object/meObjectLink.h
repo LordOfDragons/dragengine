@@ -75,23 +75,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the environment. */
-	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the anchor object. */
-	inline meObject *GetAnchor() const{return pAnchor;}
+	inline meObject *GetAnchor() const{ return pAnchor; }
 	/** \brief Retrieves the target object. */
-	inline meObject *GetTarget() const{return pTarget;}
+	inline meObject *GetTarget() const{ return pTarget; }
 	
 	/** \brief Retrieves the anchor property name. */
-	inline const decString &GetAnchorProperty() const{return pAnchorProperty;}
+	inline const decString &GetAnchorProperty() const{ return pAnchorProperty; }
 	/** \brief Sets the anchor property name. */
 	void SetAnchorProperty(const char *property);
 	/** \brief Retrieves the target property name. */
-	inline const decString &GetTargetProperty() const{return pTargetProperty;}
+	inline const decString &GetTargetProperty() const{ return pTargetProperty; }
 	/** \brief Sets the target property name. */
 	void SetTargetProperty(const char *property);
 	
 	/** \brief Retrieves the world this link resides in. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	/** \brief Sets the world this link resides in. */
 	void SetWorld(meWorld *world);
 	

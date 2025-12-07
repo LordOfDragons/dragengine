@@ -180,7 +180,7 @@ void deClassUniqueID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself
 	const deClassFileReader &clsFileReader = *clsUID.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -207,7 +207,7 @@ void deClassUniqueID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deClassFileWriter &clsFileWriter = *clsUID.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -354,7 +354,7 @@ void deClassUniqueID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassUniqueID * const clsUID = (deClassUniqueID*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsUID)){
+	if(!p_IsObjOfType(obj, clsUID)){
 		rt->PushBool(false);
 		
 	}else{
@@ -373,7 +373,7 @@ void deClassUniqueID::nfCompare::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassUniqueID * const clsUID = (deClassUniqueID*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsUID)){
+	if(!p_IsObjOfType(obj, clsUID)){
 		rt->PushInt(0);
 		
 	}else{
@@ -504,7 +504,7 @@ void deClassUniqueID::CreateClassMembers(dsEngine *engine){
 }
 
 decUniqueID &deClassUniqueID::GetUniqueID(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -512,7 +512,7 @@ decUniqueID &deClassUniqueID::GetUniqueID(dsRealObject *myself) const{
 }
 
 void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -530,7 +530,7 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
 }
 
 void deClassUniqueID::PushUniqueID(dsRunTime *rt, int byteCount, unsigned char *bytes){
-	if(! rt || byteCount < 1 || ! bytes){
+	if(!rt || byteCount < 1 || !bytes){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnableRotXMin::aeURuleLimitSetEnableRotXMin(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableRotXMin::Undo(){
 }
 
 void aeURuleLimitSetEnableRotXMin::Redo(){
-	pRule->SetEnableRotationXMin(! pRule->GetEnableRotationXMin());
+	pRule->SetEnableRotationXMin(!pRule->GetEnableRotationXMin());
 }

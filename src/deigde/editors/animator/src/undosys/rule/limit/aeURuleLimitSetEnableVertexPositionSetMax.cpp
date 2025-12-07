@@ -66,5 +66,5 @@ void aeURuleLimitSetEnableVertexPositionSetMax::Undo(){
 }
 
 void aeURuleLimitSetEnableVertexPositionSetMax::Redo(){
-	pRule->SetEnableVertexPositionSetMax(! pRule->GetEnableVertexPositionSetMax());
+	pRule->SetEnableVertexPositionSetMax(!pRule->GetEnableVertexPositionSetMax());
 }

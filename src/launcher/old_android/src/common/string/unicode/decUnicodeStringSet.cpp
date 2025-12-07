@@ -176,7 +176,7 @@ bool decUnicodeStringSet::operator==(const decUnicodeStringSet &set){
 	}
 	
 	for(i=0; i<pStringCount; i++){
-		if(! set.Has(*pStrings[i])){
+		if(!set.Has(*pStrings[i])){
 			return false;
 		}
 	}
@@ -185,7 +185,7 @@ bool decUnicodeStringSet::operator==(const decUnicodeStringSet &set){
 }
 
 bool decUnicodeStringSet::operator!=(const decUnicodeStringSet &set){
-	return ! (*this == set);
+	return !(*this == set);
 }
 
 decUnicodeStringSet decUnicodeStringSet::operator+(const decUnicodeStringSet &set) const{

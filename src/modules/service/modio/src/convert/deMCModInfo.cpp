@@ -65,23 +65,23 @@ deServiceObject::Ref deMCModInfo::ModInfo(const Modio::ModInfo &info, const deMo
 	const decString strModId(deMCCommon::IDToString(info.ModId));
 	so->SetChildAt("modId", deServiceObject::NewString(strModId));
 	
-	if(! info.ProfileName.empty()){
+	if(!info.ProfileName.empty()){
 		so->SetStringChildAt("profileName", info.ProfileName.c_str());
 	}
 	
-	if(! info.ProfileSummary.empty()){
+	if(!info.ProfileSummary.empty()){
 		so->SetStringChildAt("profileSummary", info.ProfileSummary.c_str());
 	}
 	
-	if(! info.ProfileDescription.empty()){
+	if(!info.ProfileDescription.empty()){
 		so->SetStringChildAt("profileDescription", info.ProfileDescription.c_str());
 	}
 	
-	if(! info.ProfileDescriptionPlaintext.empty()){
+	if(!info.ProfileDescriptionPlaintext.empty()){
 		so->SetStringChildAt("profileDescriptionPlaintext", info.ProfileDescriptionPlaintext.c_str());
 	}
 	
-	if(! info.ProfileURL.empty()){
+	if(!info.ProfileURL.empty()){
 		so->SetStringChildAt("profileURL", info.ProfileURL.c_str());
 	}
 	
@@ -101,7 +101,7 @@ deServiceObject::Ref deMCModInfo::ModInfo(const Modio::ModInfo &info, const deMo
 	
 	so->SetChildAt("profileMaturityOption", deMCCommon::ProfileMaturity(info.ProfileMaturityOption));
 	
-	if(! info.MetadataBlob.empty()){
+	if(!info.MetadataBlob.empty()){
 		so->SetStringChildAt("metadataBlob", info.MetadataBlob.c_str());
 	}
 	
@@ -109,11 +109,11 @@ deServiceObject::Ref deMCModInfo::ModInfo(const Modio::ModInfo &info, const deMo
 		so->SetChildAt("fileInfo", deMCCommon::FileMetadata(*info.FileInfo));
 	}
 	
-	if(! info.MetadataKvp.empty()){
+	if(!info.MetadataKvp.empty()){
 		so->SetChildAt("metadataKvp", deMCCommon::MetadataMap(info.MetadataKvp));
 	}
 	
-	if(! info.Tags.empty()){
+	if(!info.Tags.empty()){
 		so->SetChildAt("tags", deMCCommon::ModTagList(info.Tags));
 	}
 	

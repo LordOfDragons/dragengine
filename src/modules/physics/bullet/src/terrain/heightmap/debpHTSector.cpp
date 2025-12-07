@@ -57,7 +57,7 @@
 ////////////////////////////
 
 debpHTSector::debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSector *sector){
-	if(! heightTerrain || ! sector) DETHROW(deeInvalidParam);
+	if(!heightTerrain || !sector) DETHROW(deeInvalidParam);
 	
 	pHeightTerrain = heightTerrain;
 	pSector = sector;
@@ -111,7 +111,7 @@ debpHTSector::debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSect
 		pMaxExtend.z = pMinExtend.z + (double)sectorDim;
 		
 		pClusters = new debpHTSCluster[clusterCount * clusterCount];
-		if(! pClusters) DETHROW(deeOutOfMemory);
+		if(!pClusters) DETHROW(deeOutOfMemory);
 		
 		pClusterCount = clusterCount;
 		
@@ -243,7 +243,7 @@ void debpHTSector::pCreatePoints(){
 	// create arrays
 	if(count > 0){
 		pPoints = new decVector[count];
-		if(! pPoints) DETHROW(deeOutOfMemory);
+		if(!pPoints) DETHROW(deeOutOfMemory);
 	}
 	
 	// store the coordinates remaining the same
@@ -269,7 +269,7 @@ void debpHTSector::pCreatePoints(){
 	
 	// create body
 	pPhyBody = new debpPhysicsBody;
-	if(! pPhyBody) DETHROW(deeOutOfMemory);
+	if(!pPhyBody) DETHROW(deeOutOfMemory);
 	
 	pPhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 	pPhyBody->SetOwnerHTSector(this);
@@ -285,7 +285,7 @@ void debpHTSector::pCreatePoints(){
 
 void debpHTSector::pUpdatePoints(){
 	deImage *heightImage = pSector->GetHeightImage();
-	if(! heightImage) return;
+	if(!heightImage) return;
 	
 	int i, count = pImageDim * pImageDim;
 	float baseHeight = pSector->GetParentHeightTerrain()->GetBaseHeight();

@@ -66,11 +66,11 @@ aeURuleAnimToggleEnableVertexPositionSet::~aeURuleAnimToggleEnableVertexPosition
 ///////////////
 
 void aeURuleAnimToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleAnimToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 

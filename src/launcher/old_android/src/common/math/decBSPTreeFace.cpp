@@ -43,7 +43,7 @@ decBSPTreeFace::decBSPTreeFace(){
 	pUserData = NULL;
 	
 	pVertices = new decVector[3];
-	if(! pVertices) DETHROW(deeOutOfMemory);
+	if(!pVertices) DETHROW(deeOutOfMemory);
 	pVertexSize = 3;
 }
 

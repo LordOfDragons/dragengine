@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{return pRuleCV;}
+	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{ return pRuleCV; }
 	
 	/** \brief Update node. */
 	virtual void Update();

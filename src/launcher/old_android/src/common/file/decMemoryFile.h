@@ -72,19 +72,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File path. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Length of data. */
-	inline int GetLength() const{return pSize;}
+	inline int GetLength() const{ return pSize; }
 	
 	/** \brief Modification time. */
-	inline TIME_SYSTEM GetModificationTime() const{return pModificationTime;}
+	inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
 	
 	/** \brief Set modification time. */
 	void SetModificationTime(TIME_SYSTEM time);
 	
 	/** \brief Pointer to file data. */
-	inline char *GetPointer() const{return pData;}
+	inline char *GetPointer() const{ return pData; }
 	
 	/**
 	 * \brief Resize memory file data buffer.

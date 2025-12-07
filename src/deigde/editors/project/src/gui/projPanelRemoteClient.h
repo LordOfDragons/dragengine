@@ -89,10 +89,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Test run panel. */
-	inline projPanelTestRun &GetPanelTestRun() const{return pPanelTestRun;}
+	inline projPanelTestRun &GetPanelTestRun() const{ return pPanelTestRun; }
 	
 	/** \brief Client. */
-	inline const projRemoteClient::Ref &GetClient() const{return pClient;}
+	inline const projRemoteClient::Ref &GetClient() const{ return pClient; }
 	
 	
 	/** \brief Disconnect. */

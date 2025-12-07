@@ -41,7 +41,7 @@
 seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty *property) :
 pProperty(NULL)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,9 +63,9 @@ seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
 ///////////////
 
 void seUPropertyConstructedToggleTileX::Undo(){
-	pProperty->SetNodeTileX(! pProperty->GetNodeTileX());
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }
 
 void seUPropertyConstructedToggleTileX::Redo(){
-	pProperty->SetNodeTileX(! pProperty->GetNodeTileX());
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }

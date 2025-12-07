@@ -56,7 +56,7 @@ pWindowMain(windowMain),
 pCmdLineGame(NULL),
 pCmdLineQuitNow(false)
 {
-	if(! windowMain){
+	if(!windowMain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -97,14 +97,14 @@ deglLauncher::~deglLauncher(){
 ///////////////
 
 bool deglLauncher::HasCommandLineRunGame() const{
-	return ! pRunGame.IsEmpty();
+	return !pRunGame.IsEmpty();
 }
 
 bool deglLauncher::RunCommandLineGame(){
-	if(! pCmdLineInstallDelga.IsEmpty()){
+	if(!pCmdLineInstallDelga.IsEmpty()){
 		return true;
 	}
-	if(! HasCommandLineRunGame() || pRunGame.IsEmpty()){
+	if(!HasCommandLineRunGame() || pRunGame.IsEmpty()){
 		return true;
 	}
 	
@@ -119,7 +119,7 @@ bool deglLauncher::RunCommandLineGame(){
 	//if( pRunGame.MatchesPattern( "*.delga" ) || pRunGame.MatchesPattern( "*.degame" ) ){
 	if(pRunGame.EndsWith(".delga") || pRunGame.EndsWith(".degame")){
 		// make the path absolute if relative
-		if(! decPath::IsNativePathAbsolute(pRunGame)){
+		if(!decPath::IsNativePathAbsolute(pRunGame)){
 			decPath path(decPath::CreateWorkingDirectory());
 			path.AddNativePath(pRunGame);
 			pRunGame = path.GetPathNative();
@@ -159,7 +159,7 @@ bool deglLauncher::RunCommandLineGame(){
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if(! GetGameManager().GetGames().Has(pCmdLineGame)){
+		if(!GetGameManager().GetGames().Has(pCmdLineGame)){
 			pCmdLineGame->LoadConfig();
 		}
 		
@@ -173,7 +173,7 @@ bool deglLauncher::RunCommandLineGame(){
 			// not an UUID
 		}
 		
-		if(! game){
+		if(!game){
 			const delGameList matching(GetGameManager().GetGames().GetWithAlias(pRunGame));
 			
 			if(matching.GetCount() == 1){
@@ -189,7 +189,7 @@ bool deglLauncher::RunCommandLineGame(){
 		}
 	}
 	
-	if(! game){
+	if(!game){
 		FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Run Game",
 			"Game not found: %s", pRunGame.GetString());
 		return false;
@@ -198,9 +198,9 @@ bool deglLauncher::RunCommandLineGame(){
 	if(game->GetCanRun()){
 		delGameProfile *profile = game->GetProfileToUse();
 		
-		if(! pRunProfileName.IsEmpty()){
+		if(!pRunProfileName.IsEmpty()){
 			profile = GetGameManager().GetProfiles().GetNamed(pRunProfileName);
-			if(! profile){
+			if(!profile){
 				FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Run Game",
 					"No profile found named '%s'", pRunProfileName.GetString());
 				return false;
@@ -212,14 +212,14 @@ bool deglLauncher::RunCommandLineGame(){
 			runParams.SetGameProfile(profile);
 			
 			decString error;
-			if(! runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
 				FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Can not run game", "%s", error.GetString());
 				return false;
 			}
 			
 			decString arguments(profile->GetRunArguments());
 			
-			if(! profile->GetReplaceRunArguments()){
+			if(!profile->GetReplaceRunArguments()){
 				arguments = game->GetRunArguments() + " " + arguments;
 			}
 			
@@ -250,7 +250,7 @@ bool deglLauncher::RunCommandLineGame(){
 			game->StartGame(runParams);
 		}
 		
-	}else if(! game->GetAllFormatsSupported()){
+	}else if(!game->GetAllFormatsSupported()){
 		FXMessageBox::error(pWindowMain->getApp(), MBOX_OK, "Can not run game",
 			"One or more File Formats required by the game are not working.\n\n"
 			"Try updating Drag[en]gine to the latest version");
@@ -267,16 +267,16 @@ bool deglLauncher::RunCommandLineGame(){
 }
 
 void deglLauncher::RunCommandLineGameStopCheck(){
-	if(! HasCommandLineRunGame()){
+	if(!HasCommandLineRunGame()){
 		return;
 	}
 	
-	if(! pCmdLineGame){
+	if(!pCmdLineGame){
 		pWindowMain->close(false);
 		return;
 	}
 	
-	if(! GetGameManager().GetGames().Has(pCmdLineGame)){
+	if(!GetGameManager().GetGames().Has(pCmdLineGame)){
 		pCmdLineGame->PulseChecking();
 	}
 	
@@ -428,7 +428,7 @@ bool deglLauncher::pParseWindowsURIScheme(){
 	}
 	
 	decString urischeme(pArguments.GetArgumentAt(0)->ToUTF8());
-	if(! urischeme.BeginsWith("delauncher:")){
+	if(!urischeme.BeginsWith("delauncher:")){
 		return false;
 	}
 	

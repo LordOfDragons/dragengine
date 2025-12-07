@@ -44,7 +44,7 @@ aeUControllerSetName::aeUControllerSetName(aeController *controller, const char 
 pController(controller),
 pNewValue(newValue)
 {
-	if(! controller || ! controller->GetAnimator()){
+	if(!controller || !controller->GetAnimator()){
 		DETHROW(deeInvalidParam);
 	}
 	

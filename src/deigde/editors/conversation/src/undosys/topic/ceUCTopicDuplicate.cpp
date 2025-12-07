@@ -44,7 +44,7 @@ ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile *file, const ceConvers
 pFile(NULL),
 pTopic(NULL)
 {
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	

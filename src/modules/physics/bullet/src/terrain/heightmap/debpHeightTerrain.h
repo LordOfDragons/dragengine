@@ -67,17 +67,17 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{return pBullet;}
+	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
 	/** Retrieves the height terrain. */
-	inline deHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Retrieves the parent world. */
-	inline debpWorld *GetParentWorld() const{return pParentWorld;}
+	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
 	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the number of sectors. */
-	inline int GetSectorCount() const{return pSectorCount;}
+	inline int GetSectorCount() const{ return pSectorCount; }
 	/** Retrieves the sector at the given index. */
 	debpHTSector *GetSectorAt(int index) const;
 	/** Retrieves the sector with the given coordinates or NULL if not found. */

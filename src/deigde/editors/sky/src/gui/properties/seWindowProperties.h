@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set sky to monitor. */
 	void SetSky(seSky *sky);

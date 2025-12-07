@@ -93,7 +93,7 @@ public:
 		"Add element"), pLane(lane), pIndex(index){}
 	
 	virtual void OnAction(){
-		if(! pLane.GetWindow().GetActionASpeak()){
+		if(!pLane.GetWindow().GetActionASpeak()){
 			return;
 		}
 		
@@ -110,7 +110,7 @@ public:
 		dialog->ResetDuration();
 		dialog->SetAutoResetDuration(true);
 		
-		if(! dialog->Run(&pLane.GetWindow().GetWindowMain())){
+		if(!dialog->Run(&pLane.GetWindow().GetWindowMain())){
 			return;
 		}
 		
@@ -133,7 +133,7 @@ public:
 		"Remove element"), pLane(lane), pStrip(strip){}
 	
 	virtual void OnAction(){
-		if(! pStrip){
+		if(!pStrip){
 			return;
 		}
 		
@@ -155,7 +155,7 @@ public:
 		"Remove all elements"), pLane(lane){}
 	
 	virtual void OnAction(){
-		if(! pLane.GetWindow().GetActionASpeak()){
+		if(!pLane.GetWindow().GetActionASpeak()){
 			return;
 		}
 		
@@ -178,7 +178,7 @@ public:
 		"Switch element with element on the left"), pLane(lane), pIndex(index){}
 	
 	virtual void OnAction(){
-		if(! pLane.GetWindow().GetActionASpeak() || pIndex < 1){
+		if(!pLane.GetWindow().GetActionASpeak() || pIndex < 1){
 			return;
 		}
 		
@@ -202,7 +202,7 @@ public:
 		"Switch element with element on the right"), pLane(lane), pIndex(index){}
 	
 	virtual void OnAction(){
-		if(! pLane.GetWindow().GetActionASpeak() || pIndex > pLane.GetStripList().GetCount() - 2){
+		if(!pLane.GetWindow().GetActionASpeak() || pIndex > pLane.GetStripList().GetCount() - 2){
 			return;
 		}
 		
@@ -261,7 +261,7 @@ public:
 	
 	virtual bool OnDragBegin(){
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if(! action){
+		if(!action){
 			return false;
 		}
 		
@@ -296,7 +296,7 @@ public:
 	
 	virtual void OnDragUpdate(){
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if(! action){
+		if(!action){
 			return;
 		}
 		
@@ -404,7 +404,7 @@ public:
 		}
 		
 		// if undo scaling does not exist yet create it if we had been in a duration drag mode
-		if(! pUndoScale){
+		if(!pUndoScale){
 			if(pDragMode == edmDuration){
 				pUndoScale.TakeOver(pLane.UndoScaleStrips());
 				pDragMode = edmScale;
@@ -705,7 +705,7 @@ void ceWDSLane::CreateCanvas(){
 }
 
 void ceWDSLane::UpdateCanvas(){
-	if(! pCanvas){
+	if(!pCanvas){
 		return;
 	}
 	
@@ -785,7 +785,7 @@ void ceWDSLane::UpdateCanvas(){
 }
 
 void ceWDSLane::RebuildCanvas(){
-	if(! pCanvas){
+	if(!pCanvas){
 		return;
 	}
 	
@@ -858,7 +858,7 @@ void ceWDSLane::RebuildCanvas(){
 
 void ceWDSLane::EditStrip(ceStrip *strip){
 	ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-	if(! action || ! strip){
+	if(!action || !strip){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -877,7 +877,7 @@ void ceWDSLane::EditStrip(ceStrip *strip){
 	
 	dialog.SetFromStrip(*strip);
 	
-	if(! dialog.Run(&pWindow.GetWindowMain())){
+	if(!dialog.Run(&pWindow.GetWindowMain())){
 		return;
 	}
 	
@@ -918,7 +918,7 @@ void ceWDSLane::OnContextMenu(igdeMenuCascade &menu, const decPoint &position){
 
 void ceWDSLane::FillIDListLookAt(decStringList &list){
 	const ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-	if(! action){
+	if(!action){
 		return;
 	}
 	

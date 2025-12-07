@@ -148,7 +148,7 @@ deoglTexture *deoglRVideoPlayer::GetTexture() const{
 
 
 void deoglRVideoPlayer::UpdateTexture(){
-	if(! pDirtyTexture){
+	if(!pDirtyTexture){
 		return;
 	}
 	
@@ -158,9 +158,9 @@ void deoglRVideoPlayer::UpdateTexture(){
 		pUpdateCachedFrameTexture = -1;
 	}
 	
-	if(! pCachedFrameTexture){
+	if(!pCachedFrameTexture){
 		//pRenderThread.GetLogger().LogInfo( "VideoPlayer: update not cached" );
-		if(! pTexture){
+		if(!pTexture){
 			pTexture = new deoglTexture(pRenderThread);
 			pTexture->SetSize(pWidth, pHeight);
 			pTexture->SetMapingFormat(pComponentCount, false, false);

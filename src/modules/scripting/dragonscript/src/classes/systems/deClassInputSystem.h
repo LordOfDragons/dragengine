@@ -65,7 +65,7 @@ public:
 	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/** Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Cached input device count. */
 	int GetCachedDeviceCount();
@@ -79,7 +79,7 @@ public:
 	/** Frame update. */
 	void OnFrameUpdate();
 	
-	inline dsClass *GetClassInputEventKeyLocation() const{return pClsInputEventKeyLocation;}
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	

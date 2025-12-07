@@ -66,7 +66,7 @@ public:
 	/** \name Effect management */
 	/*@{*/
 	/** \brief Number of effects in the chain. */
-	inline int GetEffectCount() const{return pEffectCount;}
+	inline int GetEffectCount() const{ return pEffectCount; }
 	
 	/** \brief Effect at the given index. */
 	deEffect *GetEffectAt(int index) const;

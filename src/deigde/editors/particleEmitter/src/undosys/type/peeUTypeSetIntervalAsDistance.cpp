@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
 ///////////////
 
 void peeUTypeSetIntervalAsDistance::Undo(){
-	pType->SetIntervalAsDistance(! pType->GetIntervalAsDistance());
+	pType->SetIntervalAsDistance(!pType->GetIntervalAsDistance());
 }
 
 void peeUTypeSetIntervalAsDistance::Redo(){
-	pType->SetIntervalAsDistance(! pType->GetIntervalAsDistance());
+	pType->SetIntervalAsDistance(!pType->GetIntervalAsDistance());
 }

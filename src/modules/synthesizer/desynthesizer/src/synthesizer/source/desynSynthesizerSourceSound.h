@@ -74,15 +74,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound or \em NULL if silent. */
-	inline desynSound *GetSound() const{return pSound;}
+	inline desynSound *GetSound() const{ return pSound; }
 	
 	/** \brief Play speed target. */
-	inline desynSynthesizerTarget &GetTargetSpeed(){return pTargetSpeed;}
-	inline const desynSynthesizerTarget &GetTargetSpeed() const{return pTargetSpeed;}
+	inline desynSynthesizerTarget &GetTargetSpeed(){ return pTargetSpeed; }
+	inline const desynSynthesizerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/** \brief Play target. */
-	inline desynSynthesizerTarget &GetTargetPlay(){return pTargetPlay;}
-	inline const desynSynthesizerTarget &GetTargetPlay() const{return pTargetPlay;}
+	inline desynSynthesizerTarget &GetTargetPlay(){ return pTargetPlay; }
+	inline const desynSynthesizerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	
 	

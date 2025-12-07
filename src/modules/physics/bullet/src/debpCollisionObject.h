@@ -61,22 +61,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner collider or \em NULL if not owned by a collider. */
-	inline debpCollider *GetOwnerCollider() const{return pOwnerCollider;}
+	inline debpCollider *GetOwnerCollider() const{ return pOwnerCollider; }
 	
 	/** \brief Owner bone or -1 if not owned by a bone. */
-	inline int GetOwnerBone() const{return pOwnerBone;}
+	inline int GetOwnerBone() const{ return pOwnerBone; }
 	
 	/** \brief Set owner collider. */
 	void SetOwnerCollider(debpCollider *collider, int bone);
 	
 	/** \brief Owner height terrain sector or \em NULL if not owned by a height terrain sector. */
-	inline debpHTSector *GetOwnerHTSector() const{return pOwnerHTSector;}
+	inline debpHTSector *GetOwnerHTSector() const{ return pOwnerHTSector; }
 	
 	/** \brief Set owner height terrain sector or \em NULL if not owned by a height terrain sector. */
 	void SetOwnerHTSector(debpHTSector *htsector);
 	
 	/** \brief Owner touch sensor or \em NULL if not owned by a touch sensor. */
-	inline debpTouchSensor *GetOwnerTouchSensor() const{return pOwnerTouchSensor;}
+	inline debpTouchSensor *GetOwnerTouchSensor() const{ return pOwnerTouchSensor; }
 	
 	/** \brief Set owner touch sensor or \em NULL if not owned by a touch sensor. */
 	void SetOwnerTouchSensor(debpTouchSensor *touchSensorShape);
@@ -98,7 +98,7 @@ public:
 	 * \brief AABB is dirty.
 	 * \details Used by debpCollisionWorld for optimizing inter-frame updates.
 	 */
-	inline bool GetDirtyAABB() const{return pDirtyAABB;}
+	inline bool GetDirtyAABB() const{ return pDirtyAABB; }
 	
 	/**
 	 * \brief Set if AABB is dirty.

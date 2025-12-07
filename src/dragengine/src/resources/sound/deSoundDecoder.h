@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound. */
-	deSound *GetSound() const{return pSound;}
+	deSound *GetSound() const{ return pSound; }
 	
 	
 	
@@ -106,7 +106,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Decoder peer. */
-	inline deBaseSoundDecoder *GetPeerSound() const{return pPeerSound;}
+	inline deBaseSoundDecoder *GetPeerSound() const{ return pPeerSound; }
 	
 	/** \brief Set decoder peer. */
 	void SetPeerSound(deBaseSoundDecoder *peer);
@@ -120,7 +120,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Previous resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerPrev() const{return pLLManagerPrev;}
+	inline deSoundDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
@@ -129,7 +129,7 @@ public:
 	void SetLLManagerPrev(deSoundDecoder *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerNext() const{return pLLManagerNext;}
+	inline deSoundDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.

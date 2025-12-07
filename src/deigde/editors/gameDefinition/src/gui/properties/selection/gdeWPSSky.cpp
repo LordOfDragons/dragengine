@@ -86,7 +86,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky || sky->GetPath() == editPath->GetPath()){
+		if(!sky || sky->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -110,7 +110,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky || sky->GetName() == textField->GetText()){
+		if(!sky || sky->GetName() == textField->GetText()){
 			return;
 		}
 		
@@ -127,7 +127,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky || sky->GetDescription() == textArea->GetDescription()){
+		if(!sky || sky->GetDescription() == textArea->GetDescription()){
 			return;
 		}
 		
@@ -147,7 +147,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky || sky->GetTags().Has(pComboBox.GetText())){
+		if(!sky || sky->GetTags().Has(pComboBox.GetText())){
 			return;
 		}
 		
@@ -182,7 +182,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeSkyController * const controller = pPanel.GetController();
-		if(! controller){
+		if(!controller){
 			return;
 		}
 		
@@ -233,7 +233,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeSkyController * const controller = pPanel.GetController();
-		if(! controller || controller->GetName() == textField->GetText()){
+		if(!controller || controller->GetName() == textField->GetText()){
 			return;
 		}
 		
@@ -258,7 +258,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeSkyController * const controller = pPanel.GetController();
 		const float value = textField->GetFloat();
-		if(! controller || fabsf(value - controller->GetValue()) < FLOAT_SAFE_EPSILON){
+		if(!controller || fabsf(value - controller->GetValue()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -276,7 +276,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky || sky->GetCategory() == comboBox->GetText()){
+		if(!sky || sky->GetCategory() == comboBox->GetText()){
 			return;
 		}
 		
@@ -296,14 +296,14 @@ public:
 	
 	virtual void OnAction(){
 		gdeSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesSky()
 			.GetWithPath(sky->GetCategory());
-		if(! category){
+		if(!category){
 			return;
 		}
 		
@@ -414,7 +414,7 @@ gdeSky *gdeWPSSky::GetSky() const{
 
 gdeSkyController *gdeWPSSky::GetController() const{
 	const gdeSky * const sky = GetSky();
-	if(! sky){
+	if(!sky){
 		return NULL;
 	}
 	
@@ -440,7 +440,7 @@ void gdeWPSSky::UpdateCategoryList(){
 	}
 	
 	pCBCategory->SetText(selection);
-	pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty() && ! pCBCategory->GetSelectedItem());
+	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
 void gdeWPSSky::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
@@ -469,8 +469,8 @@ void gdeWPSSky::UpdateSky(){
 		pEditName->SetText(sky->GetName());
 		pEditDescription->SetText(sky->GetDescription());
 		pCBCategory->SetText(sky->GetCategory());
-		pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty()
-			&& ! pCBCategory->GetSelectedItem());
+		pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty()
+			&& !pCBCategory->GetSelectedItem());
 		
 	}else{
 		pEditPath->ClearPath();
@@ -504,7 +504,7 @@ void gdeWPSSky::UpdateController(){
 		}
 		pCBController->SortItems();
 		
-		if(! selectedController && pCBController->GetItemCount() > 0){
+		if(!selectedController && pCBController->GetItemCount() > 0){
 			selectedController = controllers.GetNamed(pCBController->GetItemAt(0)->GetText());
 		}
 	}

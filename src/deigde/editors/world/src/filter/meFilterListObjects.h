@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if any filter can accept the object or only all together. */
-	inline bool GetAcceptAny() const{return pAcceptAny;}
+	inline bool GetAcceptAny() const{ return pAcceptAny; }
 	/** Sets if any filter can accept the object or only all together. */
 	void SetAcceptAny(bool acceptAny);
 	

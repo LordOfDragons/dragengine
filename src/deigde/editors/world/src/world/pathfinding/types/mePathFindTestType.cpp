@@ -57,7 +57,7 @@ void mePathFindTestType::SetTypeNumber(int typeNumber){
 }
 
 void mePathFindTestType::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

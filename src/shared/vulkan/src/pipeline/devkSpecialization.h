@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of entries. */
-	inline int GetEntryCount() const{return pEntryCount;}
+	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** Set count of entries. */
 	void SetEntryCount(int count);
@@ -88,13 +88,13 @@ public:
 	void SetEntryBoolAt(int index, int constantID, int offset);
 	
 	/** For devkSpecialization use only. */
-	inline const VkSpecializationMapEntry *GetEntries() const{return pEntries;}
+	inline const VkSpecializationMapEntry *GetEntries() const{ return pEntries; }
 	
 	/** Data. */
-	inline const void *GetData() const{return pData;}
+	inline const void *GetData() const{ return pData; }
 	
 	/** Data size. */
-	inline int GetDataSize() const{return pDataSize;}
+	inline int GetDataSize() const{ return pDataSize; }
 	
 	/** Set data. */
 	void SetData(const void *data, int size);

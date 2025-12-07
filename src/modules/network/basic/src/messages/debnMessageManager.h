@@ -53,7 +53,7 @@ public:
 	/** @name Messages */
 	/*@{*/
 	/** Retrieves the number of messages. */
-	inline int GetMessageCount() const{return pMessageCount;}
+	inline int GetMessageCount() const{ return pMessageCount; }
 	/** Retrieves the message at the given index. */
 	debnMessage *GetMessageAt(int index) const;
 	/** Retrieves the index of the message with the given number or -1 if not found. */

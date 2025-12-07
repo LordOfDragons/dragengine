@@ -53,17 +53,17 @@ public:
 	void Clear();
 	
 	/** Determines if the slot is in use. */
-	inline bool GetInUse() const{return pInUse;}
+	inline bool GetInUse() const{ return pInUse; }
 	/** Sets if the slot is in use. */
 	void SetInUse(bool inUse);
 	
 	/** Retrieves the environment map or NULL if the slot is empty. */
-	inline deoglEnvironmentMap *GetEnvMap() const{return pEnvMap;}
+	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }
 	/** Sets the environment map or NULL if the slot is empty. */
 	void SetEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Retrieves the last used. */
-	inline int GetLastUsed() const{return pLastUsed;}
+	inline int GetLastUsed() const{ return pLastUsed; }
 	/** Resets the last used to 0. */
 	void ResetLastUsed();
 	/** Increments the last used by 1. */

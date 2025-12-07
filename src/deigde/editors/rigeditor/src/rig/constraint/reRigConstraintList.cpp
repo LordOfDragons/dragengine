@@ -60,7 +60,7 @@ reRigConstraint *reRigConstraintList::GetConstraintAt(int index) const{
 }
 
 int reRigConstraintList::IndexOfConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -71,7 +71,7 @@ int reRigConstraintList::IndexOfConstraint(reRigConstraint *constraint) const{
 }
 
 bool reRigConstraintList::HasConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){

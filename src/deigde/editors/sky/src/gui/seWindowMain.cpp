@@ -270,7 +270,7 @@ void seWindowMain::OnDeactivate(){
 
 
 void seWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -363,7 +363,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetSky()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Sky",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Sky",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetSkyFilePatterns(), filename ) ){
 			return;
@@ -490,7 +490,7 @@ public:
 	virtual void OnAction(){
 		seSky * const sky = pWindow.GetSky();
 		if(sky){
-			sky->SetDrawSkyCompass(! sky->GetDrawSkyCompass());
+			sky->SetDrawSkyCompass(!sky->GetDrawSkyCompass());
 		}
 	}
 	

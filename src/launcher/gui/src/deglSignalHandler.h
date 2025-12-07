@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline deglLauncher &GetLauncher() const{return pLauncher;}
+	inline deglLauncher &GetLauncher() const{ return pLauncher; }
 	/*@}*/
 	
 	

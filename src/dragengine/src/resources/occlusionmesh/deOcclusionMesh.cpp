@@ -120,7 +120,7 @@ bool deOcclusionMesh::Verify() const{
 					parent = pBones[parent].GetParent();
 				}
 				
-				if(! success){
+				if(!success){
 					break;
 				}
 			}
@@ -162,7 +162,7 @@ void deOcclusionMesh::SetBoneCount(int count){
 		
 		if(count > 0){
 			pBones = new deOcclusionMeshBone[count];
-			if(! pBones){
+			if(!pBones){
 				DETHROW(deeOutOfMemory);
 			}
 			pBoneCount = count;
@@ -288,7 +288,7 @@ void deOcclusionMesh::SetVertexCount(int count){
 		
 		if(count > 0){
 			pVertices = new deOcclusionMeshVertex[count];
-			if(! pVertices){
+			if(!pVertices){
 				DETHROW(deeOutOfMemory);
 			}
 			pVertexCount = count;
@@ -323,7 +323,7 @@ void deOcclusionMesh::SetCornerCount(int count){
 		
 		if(count > 0){
 			pCorners = new unsigned short[count];
-			if(! pCorners){
+			if(!pCorners){
 				DETHROW(deeOutOfMemory);
 			}
 			pCornerCount = count;
@@ -366,7 +366,7 @@ void deOcclusionMesh::SetFaceCount(int count){
 		
 		if(count > 0){
 			pFaces = new unsigned short[count];
-			if(! pFaces){
+			if(!pFaces){
 				DETHROW(deeOutOfMemory);
 			}
 			pFaceCount = count;

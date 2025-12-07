@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSubAnimToggleEnablePosition::aeURuleSubAnimToggleEnablePosition(aeRuleSubAnimator *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleSubAnimToggleEnablePosition::~aeURuleSubAnimToggleEnablePosition(){
 ///////////////
 
 void aeURuleSubAnimToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleSubAnimToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

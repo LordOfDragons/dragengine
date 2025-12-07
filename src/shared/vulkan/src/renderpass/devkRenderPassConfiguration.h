@@ -86,7 +86,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Attachment count. */
-	inline int GetAttachmentCount() const{return pAttachmentCount;}
+	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	
 	/** Set attachment count. */
 	void SetAttachmentCount(int count);
@@ -115,13 +115,13 @@ public:
 	void SetClearValueDepthAt(int index, float depth, int stencil);
 	
 	/** Internal use only. */
-	inline const VkAttachmentDescription *GetAttachments() const{return pAttachments;}
-	inline const VkClearValue *GetClearValues() const{return pClearValues;}
+	inline const VkAttachmentDescription *GetAttachments() const{ return pAttachments; }
+	inline const VkClearValue *GetClearValues() const{ return pClearValues; }
 	
 	
 	
 	/** Sub pass count. */
-	inline int GetSubPassCount() const{return pSubPassCount;}
+	inline int GetSubPassCount() const{ return pSubPassCount; }
 	
 	/** Set sub pass count. */
 	void SetSubPassCount(int count);

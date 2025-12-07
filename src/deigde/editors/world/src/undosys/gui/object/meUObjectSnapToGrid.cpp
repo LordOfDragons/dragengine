@@ -47,7 +47,7 @@ pObjects(NULL),
 pObjectCount(0),
 pGrid((double)grid)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

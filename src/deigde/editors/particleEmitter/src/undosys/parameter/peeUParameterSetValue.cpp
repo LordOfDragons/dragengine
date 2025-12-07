@@ -41,7 +41,7 @@
 ////////////////////////////
 
 peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parameter, float newValue){
-	if(! type || ! parameter){
+	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
 	

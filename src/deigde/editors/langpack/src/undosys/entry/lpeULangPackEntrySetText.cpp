@@ -44,7 +44,7 @@ lpeULangPackEntrySetText::lpeULangPackEntrySetText(
 pEntry(NULL),
 pNewText(newName)
 {
-	if(! entry){
+	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
 	

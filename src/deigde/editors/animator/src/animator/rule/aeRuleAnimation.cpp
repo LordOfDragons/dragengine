@@ -181,7 +181,7 @@ deAnimatorRule *aeRuleAnimation::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleAnimation;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
 		InitEngineRule(engRule);

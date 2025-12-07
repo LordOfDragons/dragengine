@@ -51,7 +51,7 @@ pSize(0),
 pAbort(false),
 pFailed(false)
 {
-	if(! directory[0]){
+	if(!directory[0]){
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void deglCalculateDirectorySize::Run(){
 	}
 	
 	const decPath path(decPath::CreatePathUnix("/"));
-	if(! pVFS->ExistsFile(path)){
+	if(!pVFS->ExistsFile(path)){
 		return;
 	}
 	
@@ -143,12 +143,12 @@ public:
 	
 	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
 		pOwner.IncrementSize((int)vfs.GetFileSize(path));
-		return ! pAbort;
+		return !pAbort;
 	}
 	
 	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
 		vfs.SearchFiles(path, *this);
-		return ! pAbort;
+		return !pAbort;
 	}
 };
 

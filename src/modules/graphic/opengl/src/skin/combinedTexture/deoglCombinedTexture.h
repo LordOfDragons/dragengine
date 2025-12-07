@@ -69,12 +69,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Static color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Image for component or nullptr to use the static color component. */
 	const deoglRImage::Ref &GetImageAt(int component) const;
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Texture or nullptr if not existing. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set texture or nullptr if not existing. */
 	void SetTexture(deoglTexture *texture);
@@ -98,7 +98,7 @@ public:
 	
 	
 	/** Usage count. */
-	inline int GetUsageCount() const{return pUsageCount;}
+	inline int GetUsageCount() const{ return pUsageCount; }
 	
 	/** Increment usage count by one. */
 	void AddUsage();
@@ -113,7 +113,7 @@ public:
 	
 	
 	/** Hash code. */
-	inline unsigned int GetHashCode() const{return pHashCode;}
+	inline unsigned int GetHashCode() const{ return pHashCode; }
 	
 	/** Calculate hash code. */
 	void CalcHashCode();
@@ -124,13 +124,13 @@ public:
 	
 	
 	/** Previous entry in the linked list. */
-	inline deoglCombinedTexture *GetLLPrev() const{return pLLPrev;}
+	inline deoglCombinedTexture *GetLLPrev() const{ return pLLPrev; }
 	
 	/** Set previous entry in the linked list. */
 	void SetLLPrev(deoglCombinedTexture *entry);
 	
 	/** Next entry in the linked list. */
-	inline deoglCombinedTexture *GetLLNext() const{return pLLNext;}
+	inline deoglCombinedTexture *GetLLNext() const{ return pLLNext; }
 	
 	/** Set next entry in the linked list. */
 	void SetLLNext(deoglCombinedTexture *entry);

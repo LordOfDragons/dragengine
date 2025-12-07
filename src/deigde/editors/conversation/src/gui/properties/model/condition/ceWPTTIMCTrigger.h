@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Condition. */
-	inline ceCConditionTrigger *GetConditionTrigger() const{return (ceCConditionTrigger*)GetCondition();}
+	inline ceCConditionTrigger *GetConditionTrigger() const{ return (ceCConditionTrigger*)GetCondition(); }
 	
 	/** \brief Text representation for test mode. */
 	static const char *GetTestModeText(ceCConditionTrigger::eTestModes testMode);

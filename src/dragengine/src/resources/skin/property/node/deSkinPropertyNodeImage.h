@@ -56,19 +56,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image path or empty string if not set. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path or empty path if not set. */
 	void SetPath(const char *path);
 	
 	/** \brief Image or nullptr if not set. */
-	inline const deImage::Ref &GetImage() const{return pImage;}
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or nullptr if not set. */
 	void SetImage(deImage *image);
 	
 	/** \brief Repeat count. */
-	inline const decPoint &GetRepeat() const{return pRepeat;}
+	inline const decPoint &GetRepeat() const{ return pRepeat; }
 	
 	/**
 	 * \brief Set repeat count.

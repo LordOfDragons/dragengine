@@ -67,7 +67,7 @@ deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
 	
 	try{
 		touchSensor = new deTouchSensor(this);
-		if(! touchSensor) DETHROW(deeOutOfMemory);
+		if(!touchSensor) DETHROW(deeOutOfMemory);
 		
 		GetPhysicsSystem()->LoadTouchSensor(touchSensor);
 		GetScriptingSystem()->LoadTouchSensor(touchSensor);
@@ -105,7 +105,7 @@ void deTouchSensorManager::SystemPhysicsLoad(){
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(touchSensor){
-		if(! touchSensor->GetPeerPhysics()){
+		if(!touchSensor->GetPeerPhysics()){
 			phySys.LoadTouchSensor(touchSensor);
 		}
 		
@@ -127,7 +127,7 @@ void deTouchSensorManager::SystemScriptingLoad(){
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(touchSensor){
-		if(! touchSensor->GetPeerScripting()){
+		if(!touchSensor->GetPeerScripting()){
 			scrSys.LoadTouchSensor(touchSensor);
 		}
 		

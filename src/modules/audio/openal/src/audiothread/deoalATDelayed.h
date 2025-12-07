@@ -62,12 +62,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Audio thread. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
 	/** \brief Has free operations (not thread-safe). */
-	inline bool GetHasFreeOperations() const{return pHasFreeOperations;}
+	inline bool GetHasFreeOperations() const{ return pHasFreeOperations; }
 	
 	/**
 	 * \brief Process free operations (thread-safe).

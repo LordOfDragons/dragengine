@@ -48,7 +48,7 @@
 ////////////////////////////
 
 reCreateRigShape::reCreateRigShape(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pRigShape = NULL;
@@ -83,7 +83,7 @@ void reCreateRigShape::VisitShapeSphere(decShapeSphere &sphere){
 	Reset();
 	
 	rigSphere = new reRigShapeSphere(pEngine);
-	if(! rigSphere) DETHROW(deeOutOfMemory);
+	if(!rigSphere) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigSphere;
 	
@@ -97,7 +97,7 @@ void reCreateRigShape::VisitShapeBox(decShapeBox &box){
 	Reset();
 	
 	rigBox = new reRigShapeBox(pEngine);
-	if(! rigBox) DETHROW(deeOutOfMemory);
+	if(!rigBox) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigBox;
 	
@@ -112,7 +112,7 @@ void reCreateRigShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	Reset();
 	
 	rigCylinder = new reRigShapeCylinder(pEngine);
-	if(! rigCylinder) DETHROW(deeOutOfMemory);
+	if(!rigCylinder) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigCylinder;
 	
@@ -129,7 +129,7 @@ void reCreateRigShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	Reset();
 	
 	rigCapsule = new reRigShapeCapsule(pEngine);
-	if(! rigCapsule) DETHROW(deeOutOfMemory);
+	if(!rigCapsule) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigCapsule;
 	

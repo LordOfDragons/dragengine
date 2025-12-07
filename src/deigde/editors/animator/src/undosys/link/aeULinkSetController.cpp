@@ -42,7 +42,7 @@
 ////////////////////////////
 
 aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newController){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	if(link->GetController() == newController) DETHROW(deeInvalidParam);
 	
 	pLink = NULL;

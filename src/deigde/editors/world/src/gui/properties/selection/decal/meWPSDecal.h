@@ -98,10 +98,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Selection panel. */
-	inline meWPSelection &GetWPSelection() const{return pWPSelection;}
+	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -142,9 +142,9 @@ public:
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	inline igdeAction *GetActionPropCopyToSel() const{return pActionPropCopyToSel;}
-	inline igdeAction *GetActionPropRemoveFromSel() const{return pActionPropRemoveFromSel;}
-	inline igdeAction *GetActionPropCloneToSel() const{return pActionPropCloneToSel;}
+	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 };
 

@@ -160,7 +160,7 @@ bool deModel::Verify(){
 					parent = pBones[parent]->GetParent();
 				}
 				
-				if(! success){
+				if(!success){
 					break;
 				}
 			}
@@ -245,7 +245,7 @@ deModelBone *deModel::GetBoneAt(int index) const{
 }
 
 void deModel::AddBone(deModelBone *bone){
-	if(! bone){
+	if(!bone){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -296,7 +296,7 @@ deModelTexture *deModel::GetTextureAt(int index) const{
 }
 
 void deModel::AddTexture(deModelTexture *texture){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -327,7 +327,7 @@ deModelLOD *deModel::GetLODAt(int index) const{
 }
 
 void deModel::AddLOD(deModelLOD *lod){
-	if(! lod){
+	if(!lod){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -480,7 +480,7 @@ void deModel::pCalcBoneMatrices(){
 				
 				// check if the parent if present is calculated
 				const int parent = bone.GetParent();
-				if(parent != -1 && ! calculated[parent]){
+				if(parent != -1 && !calculated[parent]){
 					continue;
 				}
 				

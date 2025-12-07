@@ -52,7 +52,7 @@ gdeWPSTIMOCNavSpace::gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *
 gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index),
 pNavSpace(NULL)
 {
-	if(! navSpace){
+	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,8 +86,8 @@ void gdeWPSTIMOCNavSpace::Validate(){
 bool gdeWPSTIMOCNavSpace::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pNavSpace->GetPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pNavSpace->GetPath()))){
+	if(!pNavSpace->GetPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pNavSpace->GetPath()))){
 		return false;
 	}
 	

@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Size of history. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size of history. */
 	void SetSize(int size);
@@ -83,10 +83,10 @@ public:
 	void Clear();
 	
 	/** \brief History is empty. */
-	inline bool Empty() const{return pCount == 0;}
+	inline bool Empty() const{ return pCount == 0; }
 	
 	/** \brief Cut extreme values count. */
-	inline int GetCutExtremeValues() const{return pCutExtremeValues;}
+	inline int GetCutExtremeValues() const{ return pCutExtremeValues; }
 	
 	/** \brief Set cut extreme values count. */
 	void SetCutExtremeValues(int cutExtremeValues);
@@ -95,25 +95,25 @@ public:
 	 * \brief Metrics are valid.
 	 * \details Metrics are valid if enough entries exist in the history after cutting extreme values.
 	 */
-	inline bool HasMetrics() const{return pHasMetrics;}
+	inline bool HasMetrics() const{ return pHasMetrics; }
 	
 	/**
 	 * \brief Smallest time value in the history.
 	 * \details Valid if history is not empty.
 	 */
-	inline float GetMinimum() const{return pMinimum;}
+	inline float GetMinimum() const{ return pMinimum; }
 	
 	/**
 	 * \brief Largest time value in the history.
 	 * \details Valid if history is not empty.
 	 */
-	inline float GetMaximum() const{return pMaximum;}
+	inline float GetMaximum() const{ return pMaximum; }
 	
 	/**
 	 * \brief Average time value in the history.
 	 * \details Valid if history is not empty.
 	 */
-	inline float GetAverage() const{return pAverage;}
+	inline float GetAverage() const{ return pAverage; }
 	
 	
 	

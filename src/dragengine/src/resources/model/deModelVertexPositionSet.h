@@ -74,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Base set index or -1. */
-	inline int GetBaseSet() const{return pBaseSet;}
+	inline int GetBaseSet() const{ return pBaseSet; }
 	
 	/** \brief Set base set index or -1. */
 	void SetBaseSet(int baseSet);

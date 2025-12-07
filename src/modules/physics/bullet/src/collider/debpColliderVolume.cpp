@@ -196,14 +196,14 @@ void debpColliderVolume::DestroyBody(){
 
 /*
 void debpColliderVolume::ApplyConstantForce(){
-	if(! GetUseInSimulation() || ! pPhyCtrl || ! GetHasConstantForce()) return;
+	if(!GetUseInSimulation() || !pPhyCtrl || !GetHasConstantForce()) return;
 	const decVector &force = pColliderVolume.GetConstantForce();
 	pPhyCtrl->ApplyForce(force.x, force.y, force.z, false);
 }
 */
 
 void debpColliderVolume::UpdateFromBody(){
-	if(! pPhyBody->UpdateFromBody()){
+	if(!pPhyBody->UpdateFromBody()){
 		return;
 	}
 	
@@ -358,7 +358,7 @@ void debpColliderVolume::ApplyFakeDynamicResponse(deCollisionInfo &colinfo){
 #include "debpColliderComponent.h"
 void debpColliderVolume::DetectCustomCollision(float elapsed){
 	DEBUG_RESET_TIMER2;
-	if(! GetUseKinematicSimulation() || ! GetIsMoving()){
+	if(!GetUseKinematicSimulation() || !GetIsMoving()){
 		return;
 	}
 	
@@ -367,7 +367,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 // 		pGhostKinematicMovement->SetEnabled( GetUseKinematicSimulation() && GetIsMoving() );
 // 	}
 	
-	if(! pColliderVolume.GetEnabled() || pColliderVolume.GetCollisionFilter().CanNotCollide()){
+	if(!pColliderVolume.GetEnabled() || pColliderVolume.GetCollisionFilter().CanNotCollide()){
 		// no collision possible so just move the collider
 		pColliderVolume.SetPosition(pPosition + pLinVelo * elapsed);
 		pColliderVolume.SetLinearVelocity(pLinVelo);
@@ -429,7 +429,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 		}
 // 		GetBullet()->LogInfoFormat("DetectCustomCollision: Result %g %d", colliderMoveHits.GetHitDistance(), colliderMoveHits.HasLocalCollision());
 		
-		if(! colliderMoveHits.HasLocalCollision()){
+		if(!colliderMoveHits.HasLocalCollision()){
 			ApplyDisplacement();
 			break;
 		}
@@ -570,7 +570,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			const decVector avelo(pColliderVolume.GetAngularVelocity() / DEG2RAD);
 			int i;
 			
-			bullet.LogWarnFormat("STUCK! collider=%p responseType=%i",
+			bullet.LogWarnFormat("STUCK!collider=%p responseType=%i",
 				&pColliderVolume, pColliderVolume.GetResponseType());
 			bullet.LogWarnFormat("   position=(%f,%f,%f) orientation=(%f,%f,%f)",
 				position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
@@ -683,13 +683,13 @@ void debpColliderVolume::UpdateCollisionObjectAABBs(){
 }
 
 bool debpColliderVolume::GetRigidBodyDeactivated() const{
-	return ! pPhyBody || ! pPhyBody->GetRigidBody() || ! pPhyBody->GetRigidBody()->isActive();
+	return !pPhyBody || !pPhyBody->GetRigidBody() || !pPhyBody->GetRigidBody()->isActive();
 }
 
 
 
 void debpColliderVolume::UpdateShapes(){
-	if(! pDirtyShapes){
+	if(!pDirtyShapes){
 		return;
 	}
 	
@@ -778,7 +778,7 @@ bool debpColliderVolume::PrepareStaticCollisionTest(){
 
 void debpColliderVolume::UpdateDDSShape(){
 	deDebugDrawerShape * const ddshape = GetDDSShape();
-	if(! ddshape){
+	if(!ddshape){
 		return;
 	}
 	
@@ -834,7 +834,7 @@ void debpColliderVolume::PositionChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 		
 		pPhyBody->SetPosition(position);
@@ -862,7 +862,7 @@ void debpColliderVolume::OrientationChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 		
 		pPhyBody->SetOrientation(orientation);
@@ -890,7 +890,7 @@ void debpColliderVolume::ScaleChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 	}
 	
@@ -918,13 +918,13 @@ void debpColliderVolume::GeometryChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! sameScale){
+	if(!sameScale){
 		pDirtySweepTest = true;
 		pDirtyStaticTest = true;
 		DirtyBPShape();
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 		
 		pPhyBody->SetPosition(position);
@@ -942,7 +942,7 @@ void debpColliderVolume::LinearVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 		
 		pPhyBody->SetLinearVelocity(linVelo);
@@ -961,7 +961,7 @@ void debpColliderVolume::AngularVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		RequiresUpdate();
 		
 		pPhyBody->SetAngularVelocity(angVelo);
@@ -1126,7 +1126,7 @@ bool debpColliderVolume::PointInside(const decDVector &point){
 }
 
 void debpColliderVolume::RayHits(const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1237,7 +1237,7 @@ void debpColliderVolume::ColliderHits(deCollider *engCollider, deBaseScriptingCo
 }
 
 void debpColliderVolume::ColliderMoveHits(deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1279,7 +1279,7 @@ void debpColliderVolume::ColliderMoveHits(deCollider *engCollider, const decVect
 }
 
 void debpColliderVolume::ColliderRotateHits(deCollider *engCollider, const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1323,7 +1323,7 @@ void debpColliderVolume::ColliderRotateHits(deCollider *engCollider, const decVe
 
 void debpColliderVolume::ColliderMoveRotateHits(deCollider *engCollider, const decVector &displacement,
 const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1416,7 +1416,7 @@ void debpColliderVolume::pRebuildShapeList(){
 }
 
 void debpColliderVolume::pUpdateSweepCollisionTest(){
-	if(! pSweepCollisionTest){
+	if(!pSweepCollisionTest){
 		pSweepCollisionTest = new debpSweepCollisionTest(GetBullet()->GetCollisionDetection());
 		pDirtySweepTest = true;
 	}
@@ -1438,13 +1438,13 @@ void debpColliderVolume::pUpdateSweepCollisionTest(){
 }
 
 void debpColliderVolume::pUpdateStaticCollisionTest(){
-	if(! pStaticCollisionTest){
+	if(!pStaticCollisionTest){
 		pStaticCollisionTest = new btGhostObject;
 		pStaticCollisionTest->setUserPointer(&pStaticCollisionTestObject);
 		pDirtyStaticTest = true;
 	}
 	
-	if(! pDirtyStaticTest){
+	if(!pDirtyStaticTest){
 		return;
 	}
 	
@@ -1528,7 +1528,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 
 
 void debpColliderVolume::pUpdateBPShape(){
-	if(! pDirtyBPShape){
+	if(!pDirtyBPShape){
 		return;
 	}
 	
@@ -1583,7 +1583,7 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 }
 
 void debpColliderVolume::pUpdateAttachments(bool force){
-	if(! pDirtyAttachments && ! force){
+	if(!pDirtyAttachments && !force){
 		return;
 	}
 	
@@ -1600,7 +1600,7 @@ void debpColliderVolume::pUpdateAttachments(bool force){
 			// TODO similar to component collider
 			
 		}else{
-			bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify);
+			bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 		}
 	}
 	

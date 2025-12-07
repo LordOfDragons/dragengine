@@ -93,28 +93,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet module. */
-	inline dePhysicsBullet &GetBullet() const{return pBullet;}
+	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
 	/** \brief Component resource. */
-	inline deComponent *GetComponent() const{return pComponent;}
+	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Component is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if component is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Minimum extends. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extends. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	void SetIndex(int index);
 	
 	/** \brief Model or NULL. */
-	inline debpModel *GetModel() const{return pModel;}
+	inline debpModel *GetModel() const{ return pModel; }
 	
 	/** \brief Prepare mesh. */
 	void PrepareMesh();
@@ -135,7 +135,7 @@ public:
 	const decVector &GetVertex(int index) const;
 	
 	/** Retrieves the linked collider or NULL if not linked. */
-	inline debpColliderComponent *GetLinkedCollider() const{return pLinkedCollider;}
+	inline debpColliderComponent *GetLinkedCollider() const{ return pLinkedCollider; }
 	
 	/** Sets the linked collider or NULL if not linked. */
 	void SetLinkedCollider(debpColliderComponent *collider);

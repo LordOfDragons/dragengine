@@ -110,7 +110,7 @@ public:
 	void ResetDuration();
 	
 	/** Automatically reset duraation on changing identifier. */
-	inline bool GetAutoResetDuration() const{return pAutoResetDuration;}
+	inline bool GetAutoResetDuration() const{ return pAutoResetDuration; }
 	
 	/** Set automatically reset duraation on changing identifier. */
 	void SetAutoResetDuration(bool autoResetDuration);

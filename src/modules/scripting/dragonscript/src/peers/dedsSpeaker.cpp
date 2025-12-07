@@ -47,7 +47,7 @@ pDS(ds),
 pSpeaker(speaker),
 pValueOwner(NULL)
 {
-	if(! speaker){
+	if(!speaker){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -57,7 +57,7 @@ pValueOwner(NULL)
 }
 
 dedsSpeaker::~dedsSpeaker(){
-	if(! pValueOwner){
+	if(!pValueOwner){
 		return;
 	}
 	
@@ -85,7 +85,7 @@ dsRealObject *dedsSpeaker::GetOwner() const{
 }
 
 void dedsSpeaker::SetOwner(dsRealObject *object){
-	if(! pValueOwner){
+	if(!pValueOwner){
 		return;
 	}
 	

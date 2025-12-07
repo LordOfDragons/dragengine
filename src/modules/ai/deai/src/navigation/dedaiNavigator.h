@@ -80,15 +80,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief AI module. */
-	inline deDEAIModule &GetDEAI() const{return pDEAI;}
+	inline deDEAIModule &GetDEAI() const{ return pDEAI; }
 	
 	/** \brief Engine navigator. */
-	inline deNavigator &GetNavigator() const{return pNavigator;}
+	inline deNavigator &GetNavigator() const{ return pNavigator; }
 	
 	
 	
 	/** \brief Parent world or \em NULL if not set. */
-	inline dedaiWorld *GetParentWorld() const{return pParentWorld;}
+	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL if not set. */
 	void SetParentWorld(dedaiWorld *world);
@@ -96,7 +96,7 @@ public:
 	
 	
 	/** \brief Layer or \em NULL if not in a world. */
-	inline dedaiLayer *GetLayer() const{return pLayer;}
+	inline dedaiLayer *GetLayer() const{ return pLayer; }
 	
 	/**
 	 * \brief Prepare navigation space if not ready yet.
@@ -110,7 +110,7 @@ public:
 	
 	
 	/** \brief Type mappings. */
-	inline deNavigatorType **GetTypeMappings() const{return pTypeMappings;}
+	inline deNavigatorType **GetTypeMappings() const{ return pTypeMappings; }
 	
 	/** \brief Cost parameters for the given cost table entry. */
 	void GetCostParametersFor(int costTableEntry, float &fixCost, float &costPerMeter) const;
@@ -119,12 +119,12 @@ public:
 	float GetFixCostFor(int costTableEntry) const;
 	
 	/** \brief Number of type mappings. */
-	inline int GetTypeMappingCount() const{return pTypeMappingCount;}
+	inline int GetTypeMappingCount() const{ return pTypeMappingCount; }
 	
 	
 	
 	/** \brief Debug drawer shape for the path or NULL if not existing. */
-	inline deDebugDrawerShape *GetDDSPath() const{return pDDSPath;}
+	inline deDebugDrawerShape *GetDDSPath() const{ return pDDSPath; }
 	
 	/**
 	 * \brief Update debug drawer shape for the path.

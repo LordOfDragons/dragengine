@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -88,10 +88,10 @@ public:
 	/** \brief Pushes a rule. */
 	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule);
 	
-	inline dsClass *GetClassARTrackToTarget() const{return pClsARTrackToTarget;}
-	inline dsClass *GetClassARTrackToAxis() const{return pClsARTrackToAxis;}
-	inline dsClass *GetClassARTrackToUp() const{return pClsARTrackToUp;}
-	inline dsClass *GetClassARTrackToLocked() const{return pClsARTrackToLocked;}
+	inline dsClass *GetClassARTrackToTarget() const{ return pClsARTrackToTarget; }
+	inline dsClass *GetClassARTrackToAxis() const{ return pClsARTrackToAxis; }
+	inline dsClass *GetClassARTrackToUp() const{ return pClsARTrackToUp; }
+	inline dsClass *GetClassARTrackToLocked() const{ return pClsARTrackToLocked; }
 	/*@}*/
 	
 private:

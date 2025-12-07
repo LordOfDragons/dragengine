@@ -343,7 +343,7 @@ void aeRuleBoneTransformator::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
-	if(! rule){
+	if(!rule){
 		return;
 	}
 	

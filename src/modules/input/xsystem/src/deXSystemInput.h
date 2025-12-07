@@ -103,21 +103,21 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OS. */
-	inline deOSUnix *GetOSUnix() const{return pOSUnix;}
+	inline deOSUnix *GetOSUnix() const{ return pOSUnix; }
 	
 	/** Device manager. */
-	inline const dexsiDeviceManager::Ref &GetDevices() const{return pDevices;}
+	inline const dexsiDeviceManager::Ref &GetDevices() const{ return pDevices; }
 	
 	/** Log level. */
-	inline LogLevel GetLogLevel() const{return pLogLevel;}
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
 	void SetLogLevel(LogLevel level){pLogLevel = level;}
 	
 	/** Raw mouse input. */
-	inline bool GetEnableRawMouseInput() const{return pEnableRawMouseInput;}
+	inline bool GetEnableRawMouseInput() const{ return pEnableRawMouseInput; }
 	void SetEnableRawMouseInput(bool enable);
 	
 	/** Raw mouse input sensitivity. */
-	inline double GetRawMouseInputSensitivity() const{return pRawMouseInputSensitivity;}
+	inline double GetRawMouseInputSensitivity() const{ return pRawMouseInputSensitivity; }
 	void SetRawMouseInputSensitivity(double sensitivity);
 	
 	

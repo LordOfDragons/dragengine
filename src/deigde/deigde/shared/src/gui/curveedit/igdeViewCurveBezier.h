@@ -186,7 +186,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Default size. */
-	inline const decPoint &GetDefaultSize() const{return pDefaultSize;}
+	inline const decPoint &GetDefaultSize() const{ return pDefaultSize; }
 	
 	/** \brief Set default size. */
 	void SetDefaultSize(const decPoint &size);
@@ -194,7 +194,7 @@ public:
 	
 	
 	/** \brief TextField is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
@@ -202,7 +202,7 @@ public:
 	
 	
 	/** \brief Bezier curve. */
-	inline const decCurveBezier &GetCurve() const{return pCurve;}
+	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set bezier curve. */
 	void SetCurve(const decCurveBezier &curve, bool changing = false);
@@ -244,7 +244,7 @@ public:
 	
 	
 	/** \brief Selected point or -1. */
-	inline int GetSelectedPoint() const{return pSelPoint;}
+	inline int GetSelectedPoint() const{ return pSelPoint; }
 	
 	/** \brief Set selected point or -1. */
 	void SetSelectedPoint(int index);
@@ -252,19 +252,19 @@ public:
 	
 	
 	/** \brief Clamp curve. */
-	inline bool GetClamp() const{return pClamp;}
+	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if curve is clamped. */
 	void SetClamp(bool clamp);
 	
 	/** \brief Clamp minimum coordinates. */
-	inline const decVector2 &GetClampMin() const{return pClampMin;}
+	inline const decVector2 &GetClampMin() const{ return pClampMin; }
 	
 	/** \brief Set clamp minimum coordinates. */
 	void SetClampMin(const decVector2 &clamp);
 	
 	/** \brief Clamp maximum coordinates. */
-	inline const decVector2 &GetClampMax() const{return pClampMax;}
+	inline const decVector2 &GetClampMax() const{ return pClampMax; }
 	
 	/** \brief Set clamp maximum coordinates. */
 	void SetClampMax(const decVector2 &clamp);

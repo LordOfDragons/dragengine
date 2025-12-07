@@ -76,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rows of the filter kernel. */
-	inline int GetKernelRows() const{return pKernelRows;}
+	inline int GetKernelRows() const{ return pKernelRows; }
 	
 	/** \brief Cols of the filter kernel. */
-	inline int GetKernelCols() const{return pKernelCols;}
+	inline int GetKernelCols() const{ return pKernelCols; }
 	
 	/**
 	 * \brief Set the size of the filter kernel.
@@ -97,7 +97,7 @@ public:
 	void SetKernelValueAt(int row, int col, float value);
 	
 	/** \brief Scale of kernel. */
-	inline float GetScale() const{return pScale;}
+	inline float GetScale() const{ return pScale; }
 	
 	/** \brief Set scale of kernel. */
 	void SetScale(float scale);

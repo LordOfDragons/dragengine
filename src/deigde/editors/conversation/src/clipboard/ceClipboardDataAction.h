@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the action. */
-	inline const ceConversationActionList &GetActions() const{return pActions;}
+	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	/*@}*/
 };
 

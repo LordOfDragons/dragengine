@@ -45,7 +45,7 @@ gdeOCSnapPoint *snapPoint, const decVector &newValue) :
 pObjectClass(NULL),
 pSnapPoint(NULL)
 {
-	if(! objectClass || ! snapPoint){
+	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

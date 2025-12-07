@@ -268,7 +268,7 @@ void seLayer::UpdateRelativeResources(){
 ///////////
 
 void seLayer::AddBody(seBody *body){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -279,13 +279,13 @@ void seLayer::AddBody(seBody *body){
 		pSky->NotifyBodyStructureChanged(this);
 	}
 	
-	if(! pActiveBody){
+	if(!pActiveBody){
 		SetActiveBody(body);
 	}
 }
 
 void seLayer::InsertBodyAt(seBody *body, int index){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -296,7 +296,7 @@ void seLayer::InsertBodyAt(seBody *body, int index){
 		pSky->NotifyBodyStructureChanged(this);
 	}
 	
-	if(! pActiveBody){
+	if(!pActiveBody){
 		SetActiveBody(body);
 	}
 }
@@ -310,7 +310,7 @@ void seLayer::MoveBodyTo(seBody *body, int index){
 }
 
 void seLayer::RemoveBody(seBody *body){
-	if(! pBodies.Has(body)){
+	if(!pBodies.Has(body)){
 		DETHROW(deeInvalidParam);
 	}
 	

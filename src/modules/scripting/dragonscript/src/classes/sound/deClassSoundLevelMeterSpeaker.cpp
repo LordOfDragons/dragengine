@@ -154,7 +154,7 @@ void deClassSoundLevelMeterSpeaker::CreateClassMembers(dsEngine *engine){
 
 void deClassSoundLevelMeterSpeaker::PushSoundLevelMeterSpeaker(dsRunTime* rt,
 const deSoundLevelMeter::cAudibleSpeaker &speaker){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

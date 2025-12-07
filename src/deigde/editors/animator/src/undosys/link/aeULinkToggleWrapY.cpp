@@ -43,7 +43,7 @@
 aeULinkToggleWrapY::aeULinkToggleWrapY(aeLink *link) :
 pLink(nullptr)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -65,9 +65,9 @@ aeULinkToggleWrapY::~aeULinkToggleWrapY(){
 ///////////////
 
 void aeULinkToggleWrapY::Undo(){
-	pLink->SetWrapY(! pLink->GetWrapY());
+	pLink->SetWrapY(!pLink->GetWrapY());
 }
 
 void aeULinkToggleWrapY::Redo(){
-	pLink->SetWrapY(! pLink->GetWrapY());
+	pLink->SetWrapY(!pLink->GetWrapY());
 }

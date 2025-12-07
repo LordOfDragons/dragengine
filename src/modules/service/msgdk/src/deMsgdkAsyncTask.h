@@ -53,7 +53,7 @@ public:
 	
 	
 		Invalidator();
-		inline bool IsValid() const{return pValid;}
+		inline bool IsValid() const{ return pValid; }
 		void Invalidate();
 	};
 
@@ -85,9 +85,9 @@ public:
 
 
 protected:
-	inline XAsyncBlock &GetAsyncBlock(){return pAsyncBlock;}
-	inline const XAsyncBlock &GetAsyncBlock() const{return pAsyncBlock;}
-	inline XAsyncBlock *GetAsyncBlockPtr(){return &pAsyncBlock;}
+	inline XAsyncBlock &GetAsyncBlock(){ return pAsyncBlock; }
+	inline const XAsyncBlock &GetAsyncBlock() const{ return pAsyncBlock; }
+	inline XAsyncBlock *GetAsyncBlockPtr(){ return &pAsyncBlock; }
 	void ResetAsyncBlock();
 	virtual void OnFinished() = 0;
 };

@@ -43,7 +43,7 @@ aeURuleAnimSelectToggleEnablePosition::aeURuleAnimSelectToggleEnablePosition(
 aeRuleAnimationSelect *rule) :
 pRule(NULL)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -65,9 +65,9 @@ aeURuleAnimSelectToggleEnablePosition::~aeURuleAnimSelectToggleEnablePosition(){
 ///////////////
 
 void aeURuleAnimSelectToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleAnimSelectToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }

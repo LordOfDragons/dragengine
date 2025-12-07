@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{return pSnapPoint;}
+	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

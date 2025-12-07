@@ -51,7 +51,7 @@ pHandleVP(0),
 pHandleFP(0)
 {
 	pHandleShader = glCreateProgram();
-	if(! pHandleShader){
+	if(!pHandleShader){
 		DETHROW(deeOutOfMemory);
 	}
 }
@@ -66,7 +66,7 @@ dealShader::~dealShader(){
 ///////////////
 
 void dealShader::CompileVertexProgram(const char *source){
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	if(pHandleVP){
@@ -78,7 +78,7 @@ void dealShader::CompileVertexProgram(const char *source){
 	
 	// create handle
 	pHandleVP = glCreateShader(GL_VERTEX_SHADER);
-	if(! pHandleVP){
+	if(!pHandleVP){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -89,7 +89,7 @@ void dealShader::CompileVertexProgram(const char *source){
 	glCompileShader(pHandleVP);
 	glGetShaderiv(pHandleVP, GL_COMPILE_STATUS, &result);
 	
-	if(! result){
+	if(!result){
 		int blen = 0;
 		
 		glGetShaderiv(pHandleVP, GL_INFO_LOG_LENGTH , &blen);
@@ -134,7 +134,7 @@ void dealShader::CompileVertexProgramAsset(const char *filename){
 }
 
 void dealShader::CompileFragmentProgram(const char *source){
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	if(pHandleFP){
@@ -146,7 +146,7 @@ void dealShader::CompileFragmentProgram(const char *source){
 	
 	// create handle
 	pHandleFP = glCreateShader(GL_FRAGMENT_SHADER);
-	if(! pHandleFP){
+	if(!pHandleFP){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -157,7 +157,7 @@ void dealShader::CompileFragmentProgram(const char *source){
 	glCompileShader(pHandleFP);
 	glGetShaderiv(pHandleFP, GL_COMPILE_STATUS, &result);
 	
-	if(! result){
+	if(!result){
 		int blen = 0;
 		
 		glGetShaderiv(pHandleFP, GL_INFO_LOG_LENGTH , &blen);
@@ -202,10 +202,10 @@ void dealShader::CompileFragmentProgramAsset(const char *filename){
 }
 
 void dealShader::BindAttributeLocation(const char *attribute, int location){
-	if(! pHandleVP || ! pHandleFP){
+	if(!pHandleVP || !pHandleFP){
 		DETHROW(deeInvalidAction);
 	}
-	if(! attribute){
+	if(!attribute){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -213,7 +213,7 @@ void dealShader::BindAttributeLocation(const char *attribute, int location){
 }
 
 void dealShader::Link(){
-	if(! pHandleVP || ! pHandleFP){
+	if(!pHandleVP || !pHandleFP){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -222,7 +222,7 @@ void dealShader::Link(){
 	glLinkProgram(pHandleShader);
 	glGetProgramiv(pHandleShader, GL_LINK_STATUS, &result);
 	
-	if(! result){
+	if(!result){
 		int blen = 0;
 		
 		glGetProgramiv(pHandleShader, GL_INFO_LOG_LENGTH , &blen);
@@ -244,10 +244,10 @@ void dealShader::Activate(){
 }
 
 void dealShader::BindTextureUnitLocation(const char *textureUnit, int location){
-	if(! pHandleVP || ! pHandleFP){
+	if(!pHandleVP || !pHandleFP){
 		DETHROW(deeInvalidAction);
 	}
-	if(! textureUnit){
+	if(!textureUnit){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -262,10 +262,10 @@ void dealShader::BindTextureUnitLocation(const char *textureUnit, int location){
 
 
 void dealShader::ResolveParameter(const char *parameter){
-	if(! pHandleVP || ! pHandleFP){
+	if(!pHandleVP || !pHandleFP){
 		DETHROW(deeInvalidAction);
 	}
-	if(! parameter){
+	if(!parameter){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -105,7 +105,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
-		if(! emitter || ! type){
+		if(!emitter || !type){
 			return;
 		}
 		
@@ -130,7 +130,7 @@ public:
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
-		if(! emitter || ! type){
+		if(!emitter || !type){
 			return;
 		}
 		
@@ -153,7 +153,7 @@ public:
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
-		if(! emitter || ! type){
+		if(!emitter || !type){
 			return;
 		}
 		
@@ -176,7 +176,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeType * const type = pPanel.GetType();
-		if(! emitter || ! type){
+		if(!emitter || !type){
 			return;
 		}
 		
@@ -200,7 +200,7 @@ public:
 	
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -215,7 +215,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -237,7 +237,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox * comboBox){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -257,7 +257,7 @@ public:
 	
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -280,7 +280,7 @@ public:
 	
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -389,7 +389,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -408,7 +408,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -464,7 +464,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -483,7 +483,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = pComboBox.GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -501,7 +501,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -546,7 +546,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -565,7 +565,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = pComboBox.GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -584,12 +584,12 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		peeType * const type = pPanel.GetType();
-		if(! type){
+		if(!type){
 			return;
 		}
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
-		if(! selection){
+		if(!selection){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -635,7 +635,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection || pPreventUpdate){
+		if(!selection || pPreventUpdate){
 			return NULL;
 		}
 		
@@ -657,7 +657,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if(! selection || pPreventUpdate){
+		if(!selection || pPreventUpdate){
 			return NULL;
 		}
 		
@@ -1090,7 +1090,7 @@ void peeWPType::UpdateControllerList(){
 		pCBParamCtrlValue->SetEnabled(pEmitter != NULL);
 		pCBParamCtrlSpread->SetEnabled(pEmitter != NULL);
 		
-		if(! pEmitter){
+		if(!pEmitter){
 			return;
 		}
 		

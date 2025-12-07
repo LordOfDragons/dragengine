@@ -320,7 +320,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 	}
 	
 	pCheckStillSourceOwner();
-	if(! pSource){
+	if(!pSource){
 		if(pPlayState == deSpeaker::epsPlaying){
 			// there are two ways to handle this.
 			// 
@@ -353,7 +353,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 	
 	if(pDirtyPlayPosition){
 		pDirtyPlayPosition = false;
-		if(! pStreaming){
+		if(!pStreaming){
 			OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, pPlayPosition));
 		}
 	}
@@ -362,7 +362,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 	bool underrun = false;
 	pPlayFinished = false;
 	
-	if(pPlayState == deSpeaker::epsPlaying && ! pNeedsInitialDecode){
+	if(pPlayState == deSpeaker::epsPlaying && !pNeedsInitialDecode){
 		ALint state;
 		OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SOURCE_STATE, &state));
 		
@@ -477,7 +477,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 			pDirtyLooping = false;
 			
 			OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(), AL_LOOPING,
-				pLooping && ! pStreaming ? AL_TRUE : AL_FALSE));
+				pLooping && !pStreaming ? AL_TRUE : AL_FALSE));
 		}
 		
 		if(pDirtyPlaySpeed){
@@ -511,7 +511,7 @@ void deoalASpeaker::ProcessDeactivate(){
 }
 
 void deoalASpeaker::UpdateEffects(){
-	if(! pSource){
+	if(!pSource){
 		return;
 	}
 	
@@ -645,7 +645,7 @@ void deoalASpeaker::UpdateOctreeNode(){
 	
 // 	pAudioThread.GetLogger().LogInfoFormat( "UpdateOctreeNode: %p %p %d %p %d", this, pParentWorld, pEnabled, pSource, GetPlaying() );
 // 	if( pParentWorld && pEnabled && pSource && ! pPositionless && ! pMuted && GetPlaying() ){
-	if(pParentWorld && ! pPositionless && ! pMuted && GetPlaying()){
+	if(pParentWorld && !pPositionless && !pMuted && GetPlaying()){
 		pParentWorld->GetOctree()->InsertSpeakerIntoTree(this, 8);
 		
 	}else if(pOctreeNode){
@@ -743,7 +743,7 @@ void deoalASpeaker::SetSharedEffectSlot(deoalSharedEffectSlot *effectSlot){
 void deoalASpeaker::DropSharedEffectSlot(){
 	pDelayedDropSharedEffectSlot = false;
 	
-	if(! pSharedEffectSlot){
+	if(!pSharedEffectSlot){
 		return;
 	}
 	
@@ -757,7 +757,7 @@ void deoalASpeaker::DropSharedEffectSlot(){
 
 bool deoalASpeaker::AffectsActiveMicrophone() const{
 	const deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
-	if(! microphone){
+	if(!microphone){
 		return false;
 	}
 	if(microphone == pParentMicrophone){
@@ -865,7 +865,7 @@ void deoalASpeaker::pCleanUp(){
 
 
 void deoalASpeaker::pDecodeInitial(){
-	if(! pSoundDecoder || ! pSound){
+	if(!pSoundDecoder || !pSound){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -896,7 +896,7 @@ void deoalASpeaker::pDecodeInitial(){
 }
 
 void deoalASpeaker::pDecodeNext(bool underrun){
-	if(! pSoundDecoder || ! pSound){
+	if(!pSoundDecoder || !pSound){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -911,7 +911,7 @@ void deoalASpeaker::pDecodeNext(bool underrun){
 	
 	ALint numFinished;
 	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
-	if(numFinished == 0 && ! underrun){
+	if(numFinished == 0 && !underrun){
 		return;
 	}
 	
@@ -958,7 +958,7 @@ void deoalASpeaker::pDecodeNext(bool underrun){
 }
 
 void deoalASpeaker::pSynthInit(){
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -1029,7 +1029,7 @@ void deoalASpeaker::pSynthNext(bool underrun){
 	ALint numFinished = 0;
 	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
 //	deLoggerConsole().GetLogger().LogInfoFormat("Dragengine", "speaker %p: num finished %i", this, numFinished);
-	if(numFinished == 0 && ! underrun){
+	if(numFinished == 0 && !underrun){
 		return;
 	}
 	
@@ -1058,7 +1058,7 @@ void deoalASpeaker::pSynthNext(bool underrun){
 	
 	for(i=0; i<numFinished; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
-		if(remainingSampleCount == 0 && ! pLooping){
+		if(remainingSampleCount == 0 && !pLooping){
 			numFinished = i;
 			break;
 		}
@@ -1108,7 +1108,7 @@ void deoalASpeaker::pSynthNext(bool underrun){
 }
 
 void deoalASpeaker::pVideoPlayerInit(){
-	if(! pVideoPlayer){
+	if(!pVideoPlayer){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -1181,7 +1181,7 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 	ALint numFinished = 0;
 	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
 	//pAudioThread.GetLogger().LogInfoFormat("speaker %p: num finished %i", this, numFinished);
-	if(numFinished == 0 && ! underrun){
+	if(numFinished == 0 && !underrun){
 		return;
 	}
 	
@@ -1210,7 +1210,7 @@ void deoalASpeaker::pVideoPlayerNext(bool underrun){
 	
 	for(i=0; i<numFinished; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
-		if(remainingSampleCount == 0 && ! pLooping){
+		if(remainingSampleCount == 0 && !pLooping){
 			numFinished = i;
 			break;
 		}
@@ -1402,7 +1402,7 @@ void deoalASpeaker::pDoPlayState(){
 void deoalASpeaker::pStartPlaySource(){
 	pCheckStillSourceOwner();
 	
-	if(! pSource){
+	if(!pSource){
 		pSource = pAudioThread.GetSourceManager().BindSource(this);
 		pUpdateSourceImportance();
 		
@@ -1431,7 +1431,7 @@ void deoalASpeaker::pStartPlaySource(){
 
 void deoalASpeaker::pStopPlaySource(){
 	pCheckStillSourceOwner();
-	if(! pSource){
+	if(!pSource){
 		return;
 	}
 	
@@ -1444,7 +1444,7 @@ void deoalASpeaker::pStopPlaySource(){
 
 
 void deoalASpeaker::pCheckStillSourceOwner(){
-	if(! pSource || pSource->GetOwner() == this){
+	if(!pSource || pSource->GetOwner() == this){
 		return;
 	}
 	
@@ -1468,7 +1468,7 @@ void deoalASpeaker::pUpdateSourceImportance(){
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
-	if(pMuted || ! pAudioThread.GetActiveMicrophone()){
+	if(pMuted || !pAudioThread.GetActiveMicrophone()){
 		pAttenuatedGain = 0.0f;
 		pFinalGain = 0.0f;
 		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, 0.0f));
@@ -1501,8 +1501,8 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 	// apply environmental effects. sound transmission and muffling will be applied
 	// using filtering to ensure reverb effect uses the right source gain
 	/*
-	if(pEnvironment && (! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX())){
+	if(pEnvironment && (!pAudioThread.GetExtensions().GetHasEFX()
+	|| !pAudioThread.GetConfiguration().GetEnableEFX())){
 		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, pAttenuatedGain));
 		
 	}else{
@@ -1628,8 +1628,8 @@ void deoalASpeaker::pInitSoundSource(){
 void deoalASpeaker::pEnsureEnvironment(){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(pParentWorld && ! pPositionless){
-		if(! pEnvironment){
+	if(pParentWorld && !pPositionless){
+		if(!pEnvironment){
 			pEnvironment = new deoalEnvironment(pAudioThread);
 			pEnvironment->SetWorld(pParentWorld);
 			pEnvironment->SetPosition(pPosition);
@@ -1647,8 +1647,8 @@ void deoalASpeaker::pEnsureEnvironment(){
 }
 
 void deoalASpeaker::pUpdateEnvironmentEffect(){
-	if(! pEnvironment || ! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX()){
+	if(!pEnvironment || !pAudioThread.GetExtensions().GetHasEFX()
+	|| !pAudioThread.GetConfiguration().GetEnableEFX()){
 		return;
 	}
 	
@@ -1717,7 +1717,7 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max(pAttenuatedGain, 0.001f);
 	
 	deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
-	if(! effectSlot){
+	if(!effectSlot){
 		return;
 	}
 	

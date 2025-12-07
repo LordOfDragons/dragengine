@@ -66,7 +66,7 @@ gdeVAOBillboard::gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCBillboard(ocbillboard)
 {
-	if(! ocbillboard){
+	if(!ocbillboard){
 		DETHROW(deeInvalidParam);
 	}
 	ocbillboard->AddReference();
@@ -101,7 +101,7 @@ void gdeVAOBillboard::SelectedObjectChanged(){
 void gdeVAOBillboard::GetExtends(decVector &minExtend, decVector &maxExtend) const{
 	minExtend.SetZero();
 	maxExtend.SetZero();
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
@@ -153,7 +153,7 @@ void gdeVAOBillboard::pCreateBillboard(){
 	decString path;
 	
 	path = PropertyString(pOCBillboard->GetPropertyName(gdeOCBillboard::epSkin), pOCBillboard->GetSkinPath());
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
 			
@@ -200,7 +200,7 @@ void gdeVAOBillboard::pCreateCollider(){
 }
 
 void gdeVAOBillboard::pAttachBillboard(){
-	if(! pBillboard || ! pCollider){
+	if(!pBillboard || !pCollider){
 		return;
 	}
 	

@@ -112,7 +112,7 @@ void igdeLoadSky::Load(const decString &pathSky, deSky &sky, decBaseFileReader &
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "sky") != 0){
+	if(!root || strcmp(root->GetName(), "sky") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -132,7 +132,7 @@ void igdeLoadSky::pReadSky(const decXmlElementTag &root, const char *basePath, d
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -159,7 +159,7 @@ void igdeLoadSky::pReadSky(const decXmlElementTag &root, const char *basePath, d
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -186,7 +186,7 @@ void igdeLoadSky::pReadController(const decXmlElementTag &root, deSkyController 
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -211,7 +211,7 @@ void igdeLoadSky::pReadLink(const decXmlElementTag &root, deSkyLink &link){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -237,7 +237,7 @@ deSkyLayer &layer, const char *basePath){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -253,7 +253,7 @@ deSkyLayer &layer, const char *basePath){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -291,7 +291,7 @@ deSkyLayer &layer, const char *basePath){
 		}else if(tagName == "skin"){
 			const decString path(GetCDataString(*tag));
 			
-			if(! path.IsEmpty()){
+			if(!path.IsEmpty()){
 				deSkin *skin = NULL;
 				
 				try{
@@ -403,14 +403,14 @@ void igdeLoadSky::pReadTarget(const decXmlElementTag &root, deSkyLayer &layer){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "link"){
 			const int link = GetCDataInt(*tag);
-			if(! target->HasLink(link)){
+			if(!target->HasLink(link)){
 				target->AddLink(link);
 			}
 		}
@@ -424,7 +424,7 @@ deSkyLayerBody &body, const char *basePath){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -447,7 +447,7 @@ deSkyLayerBody &body, const char *basePath){
 		}else if(tagName == "skin"){
 			const decString path(GetCDataString(*tag));
 			
-			if(! path.IsEmpty()){
+			if(!path.IsEmpty()){
 				deSkin *skin = NULL;
 				
 				try{

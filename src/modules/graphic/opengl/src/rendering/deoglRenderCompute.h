@@ -94,25 +94,25 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** SSBO counters. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{return pSSBOCounters;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	
 	/** SSBO update elements. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElements() const{return pSSBOUpdateElements;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElements() const{ return pSSBOUpdateElements; }
 	
 	/** SSBO update element geometries. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElementGeometries() const{return pSSBOUpdateElementGeometries;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElementGeometries() const{ return pSSBOUpdateElementGeometries; }
 	
 	/** SSBO update element geometry index. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateIndices() const{return pSSBOUpdateIndices;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateIndices() const{ return pSSBOUpdateIndices; }
 	
 	/** SSBO clear element geometries. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOClearGeometries() const{return pSSBOClearGeometries;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOClearGeometries() const{ return pSSBOClearGeometries; }
 	
 	/** SSBO element cull result. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElementCullResult() const{return pSSBOElementCullResult;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementCullResult() const{ return pSSBOElementCullResult; }
 	
 	/** SSBO visible geometries. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleGeometries() const{return pSSBOVisibleGeometries;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleGeometries() const{ return pSSBOVisibleGeometries; }
 	
 	/** Counters dispatch offset. */
 	int CounterDispatchOffset(eCounters counter) const;

@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if navigation is in progress. */
-	inline bool GetNavigating() const{return pNavigating;}
+	inline bool GetNavigating() const{ return pNavigating; }
 	/*@}*/
 	
 	/** \name Events */

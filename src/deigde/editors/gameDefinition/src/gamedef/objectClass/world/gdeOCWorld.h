@@ -81,19 +81,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to use. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path to use. */
 	void SetPath(const char *path);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
 	void SetRotation(const decVector &orientation);

@@ -67,7 +67,7 @@ int deoglSharedVideoPlayerList::GetCount() const{
 
 deoglSharedVideoPlayer *deoglSharedVideoPlayerList::GetVideoPlayerFor(
 deVideo *video, int currentFrame, float playbackSpeed){
-	if(! video){
+	if(!video){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -76,49 +76,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Minimum position. */
-	inline const decVector &GetMinimumPosition() const{return pMinPosition;}
+	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	
 	/** Set minimum position. */
 	void SetMinimumPosition(const decVector &position);
 	
 	/** Maximum position. */
-	inline const decVector &GetMaximumPosition() const{return pMaxPosition;}
+	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	
 	/** Set maximum position. */
 	void SetMaximumPosition(const decVector &position);
 	
 	/** Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{return pMinRotation;}
+	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** Set minimum rotation. */
 	void SetMinimumRotation(const decVector &rotation);
 	
 	/** Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{return pMaxRotation;}
+	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** Set maximum rotation. */
 	void SetMaximumRotation(const decVector &rotation);
 	
 	/** Minimum size. */
-	inline const decVector &GetMinimumSize() const{return pMinSize;}
+	inline const decVector &GetMinimumSize() const{ return pMinSize; }
 	
 	/** Set minimum size. */
 	void SetMinimumSize(const decVector &size);
 	
 	/** Maximum size. */
-	inline const decVector &GetMaximumSize() const{return pMaxSize;}
+	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
 	
 	/** Set maximum size. */
 	void SetMaximumSize(const decVector &size);
 	
 	/** Minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{return pMinVertexPositionSet;}
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
 	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{return pMaxVertexPositionSet;}
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
 	void SetMaximumVertexPositionSet(float weight);
@@ -126,25 +126,25 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** Rotation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableRotation;}
+	inline bool GetEnableOrientation() const{ return pEnableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
 	void SetEnableRotation(bool enabled);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
@@ -152,20 +152,20 @@ public:
 	
 	
 	/** Position target. */
-	inline aeControllerTarget &GetTargetPosition(){return pTargetPosition;}
-	inline const aeControllerTarget &GetTargetPosition() const{return pTargetPosition;}
+	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Rotation target. */
-	inline aeControllerTarget &GetTargetRotation(){return pTargetRotation;}
-	inline const aeControllerTarget &GetTargetRotation() const{return pTargetRotation;}
+	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
+	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** Size target. */
-	inline aeControllerTarget &GetTargetSize(){return pTargetSize;}
-	inline const aeControllerTarget &GetTargetSize() const{return pTargetSize;}
+	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
+	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
 	
 	/** Vertex position set target. */
-	inline aeControllerTarget &GetTargetVertexPositionSet(){return pTargetVertexPositionSet;}
-	inline const aeControllerTarget &GetTargetVertexPositionSet() const{return pTargetVertexPositionSet;}
+	inline aeControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
+	inline const aeControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	
 	
 	

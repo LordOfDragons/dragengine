@@ -94,7 +94,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
 	void SetBgColor(const decColor &color);
@@ -105,7 +105,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{return pControllerCount;}
+	inline int GetControllerCount() const{ return pControllerCount; }
 	
 	/**
 	 * \brief Set number of controllers.
@@ -127,7 +127,7 @@ public:
 	
 	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/**
 	 * \brief Set number of links.
@@ -146,7 +146,7 @@ public:
 	
 	
 	/** \brief Number of layers. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/**
 	 * \brief Set number of layers.
@@ -178,7 +178,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer or NULL if not set. */
-	inline deBaseGraphicSky *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicSky *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicSky *peer);

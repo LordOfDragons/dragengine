@@ -143,36 +143,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** Size. */
-	inline const decVector &GetSize() const{return pSize;}
+	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** Set size. */
 	void SetSize(const decVector &size);
 	
 	/** Texture coordinate transformation matrix. */
-	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
 	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Decal is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set decal is visible. */
 	void SetVisible(bool visible);
@@ -188,19 +188,19 @@ public:
 	
 	
 	/** Skin or \em NULL if not set. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{return pSkinState;}
+	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/**
 	 * Set skin state or \em NULL if there is none.
@@ -209,15 +209,15 @@ public:
 	void SetSkinState(deoglSkinState *skinState);
 	
 	/** Retrieves the actual skin to use. */
-	inline deoglRSkin *GetUseSkin() const{return pUseSkin;}
+	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	/** Retrieves the actual skin texture number to use. */
-	inline int GetUseTextureNumber() const{return pUseTextureNumber;}
+	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	/** Retrieves the actual skin texture to use. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
+	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	/** Retrieves the actual dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{return pUseDynamicSkin;}
+	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{return pUseSkinState;}
+	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -226,9 +226,9 @@ public:
 	void UpdateSkinState();
 	
 	/** Retrieves the vbo block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{return pVBOBlock;}
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
 	/** Retrieves the number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	
 	
@@ -239,7 +239,7 @@ public:
 	
 	
 	/** Parent component. */
-	inline deoglRComponent *GetParentComponent() const{return pParentComponent;}
+	inline deoglRComponent *GetParentComponent() const{ return pParentComponent; }
 	deoglRComponent &GetParentComponentRef() const;
 	
 	/**
@@ -254,7 +254,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
-	inline bool GetComponentMarkedRemove() const{return pComponentMarkedRemove;}
+	inline bool GetComponentMarkedRemove() const{ return pComponentMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.
@@ -274,10 +274,10 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{return pSharedSPBElement;}
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Render task shared instance or NULL. */
-	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{return pRTSInstance;}
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const;
@@ -286,10 +286,10 @@ public:
 	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * This texture units configuration works for the shader type estComponentGeometry.
 	 */
-	inline deoglTexUnitsConfig *GetTUCGeometry() const{return pTUCGeometry;}
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
 	
-	inline deoglTexUnitsConfig *GetTUCDepth() const{return pTUCDepth;}
-	inline deoglTexUnitsConfig *GetTUCCounter() const{return pTUCCounter;}
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
+	inline deoglTexUnitsConfig *GetTUCCounter() const{ return pTUCCounter; }
 	
 	/**
 	 * Texture units configuration for shadow type shaders or NULL if empty.
@@ -299,13 +299,13 @@ public:
 	 * - estComponentShadowOrthogonalCascaded
 	 * - estComponentShadowDistance
 	 */
-	inline deoglTexUnitsConfig *GetTUCShadow() const{return pTUCShadow;}
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
 	
 	/**
 	 * Texture units configuration for the environment map shader or NULL if empty.
 	 * This texture units configuration works for the shader type estEnvMap.
 	 */
-	inline deoglTexUnitsConfig *GetTUCEnvMap() const{return pTUCEnvMap;}
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
 	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
@@ -330,7 +330,7 @@ public:
 	
 	
 	/** GI Local BVH or NULL. */
-	inline deoglGIBVHLocal *GetGIBVHLocal() const{return pGIBVHLocal;}
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
 	/** Prepare GI Local BVH if not build yet. */
 	void PrepareGILocalBVH();
@@ -339,7 +339,7 @@ public:
 	void SetDirtyGIBVH();
 	
 	/** Texture is static. */
-	inline bool GetStaticTexture() const{return pStaticTexture;}
+	inline bool GetStaticTexture() const{ return pStaticTexture; }
 	
 	/** Update static texture. */
 	void UpdateStaticTexture();
@@ -347,7 +347,7 @@ public:
 	
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	/*@}*/
 	
 	

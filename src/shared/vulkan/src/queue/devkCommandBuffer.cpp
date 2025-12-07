@@ -300,7 +300,7 @@ void devkCommandBuffer::Submit(){
 
 
 bool devkCommandBuffer::IsFinished(bool reset){
-	if(! pFenceActive){
+	if(!pFenceActive){
 		return true;
 	}
 	
@@ -328,7 +328,7 @@ bool devkCommandBuffer::IsFinished(bool reset){
 }
 
 void devkCommandBuffer::Wait(bool reset){
-	if(! pFenceActive){
+	if(!pFenceActive){
 		return;
 	}
 	

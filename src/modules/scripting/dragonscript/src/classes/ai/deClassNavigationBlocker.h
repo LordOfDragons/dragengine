@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
@@ -62,7 +62,7 @@ public:
 	/** \brief Pushes the navigation blocker which can be NULL. */
 	void PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker);
 	
-	inline dsClass *GetClassNavigationSpaceType() const{return pClsNavigationSpaceType;}
+	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/
 	
 private:

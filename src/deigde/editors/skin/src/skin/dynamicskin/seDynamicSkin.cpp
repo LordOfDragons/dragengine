@@ -54,7 +54,7 @@
 ////////////////////////////
 
 seDynamicSkin::seDynamicSkin(seSkin *parentSkin){
-	if(! parentSkin){
+	if(!parentSkin){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -104,7 +104,7 @@ void seDynamicSkin::Update(float elapsed){
 ////////////////
 
 void seDynamicSkin::AddRenderable(seDynamicSkinRenderable *renderable){
-	if(! renderable || pRenderableList.HasNamed(renderable->GetName().GetString())){
+	if(!renderable || pRenderableList.HasNamed(renderable->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -113,13 +113,13 @@ void seDynamicSkin::AddRenderable(seDynamicSkinRenderable *renderable){
 	
 	pParentSkin->NotifyDynamicSkinRenderableStructureChanged();
 	
-	if(! pActiveRenderable){
+	if(!pActiveRenderable){
 		SetActiveRenderable(renderable);
 	}
 }
 
 void seDynamicSkin::RemoveRenderable(seDynamicSkinRenderable *renderable){
-	if(! pRenderableList.Has(renderable)){
+	if(!pRenderableList.Has(renderable)){
 		DETHROW(deeInvalidParam);
 	}
 	

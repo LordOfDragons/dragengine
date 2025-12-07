@@ -46,7 +46,7 @@ pType(NULL),
 pParameter(NULL),
 pNewCurve(newCurve)
 {
-	if(! type || ! parameter){
+	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
 	

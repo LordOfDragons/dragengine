@@ -73,47 +73,47 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of texture to replace. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of texture to replace. */
 	void SetName(const char *name);
 	
 	/** \brief Path of skin to use. */
-	inline const decString &GetPathSkin() const{return pPathSkin;}
+	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	
 	/** \brief Set path of skin to use. */
 	void SetPathSkin(const char *path);
 	
 	/** \brief Texture coordinate offset. */
-	inline const decVector2 &GetOffset() const{return pOffset;}
+	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set texture coordinate offset. */
 	void SetOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinate scale. */
-	inline const decVector2 &GetScale() const{return pScale;}
+	inline const decVector2 &GetScale() const{ return pScale; }
 	
 	/** \brief Set texture coordinate scale. */
 	void SetScale(const decVector2 &scale);
 	
 	/** \brief Texture coordinate rotation. */
-	inline float GetRotation() const{return pRotation;}
+	inline float GetRotation() const{ return pRotation; }
 	
 	/** \brief Set texture coordinate rotation. */
 	void SetRotation(float rotation);
 	
 	/** \brief Color tint. */
-	inline const decColor &GetColorTint() const{return pColorTint;}
+	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
 	/** \brief Set color tint. */
 	void SetColorTint(const decColor &color);
 	
 	/** \brief Properties. */
-	inline decStringDictionary &GetProperties(){return pProperties;}
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline decStringDictionary &GetProperties(){ return pProperties; }
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Active property. */
-	inline const decString &GetActiveProperty() const{return pActiveProperty;}
+	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** \brief Set active property. */
 	void SetActiveProperty(const char *property);

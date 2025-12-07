@@ -177,7 +177,7 @@ void igdeMenuCommand::CreateNativeWidget(){
 }
 
 void igdeMenuCommand::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -206,7 +206,7 @@ void igdeMenuCommand::OnHotKeyChanged(){
 }
 
 void igdeMenuCommand::OnMnemonicChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 }

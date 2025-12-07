@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintSetOrientation::reUConstraintSetOrientation(reRigConstraint *constraint, const decVector &newOrientation){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

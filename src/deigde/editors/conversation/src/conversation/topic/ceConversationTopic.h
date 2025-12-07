@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent file or \em NULL if not set. */
-	inline ceConversationFile *GetFile() const{return pFile;}
+	inline ceConversationFile *GetFile() const{ return pFile; }
 	
 	/** \brief Set parent file or \em NULL if not set. */
 	void SetFile(ceConversationFile *file);
@@ -81,20 +81,20 @@ public:
 	
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
 	
 	/** \brief Actions. */
-	inline ceConversationActionList &GetActionList(){return pActions;}
-	inline const ceConversationActionList &GetActionList() const{return pActions;}
+	inline ceConversationActionList &GetActionList(){ return pActions; }
+	inline const ceConversationActionList &GetActionList() const{ return pActions; }
 	
 	/** \brief Active action or \em NULL if none is active. */
-	inline ceConversationAction *GetActiveAction() const{return pActiveAction;}
+	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
 	
 	/** \brief Active condition or \em NULL if none is active. */
-	inline ceConversationCondition *GetActiveCondition() const{return pActiveCondition;}
+	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
 	
 	/** \brief Set active element. */
 	void SetActive(ceConversationAction *action, ceConversationCondition *condition);

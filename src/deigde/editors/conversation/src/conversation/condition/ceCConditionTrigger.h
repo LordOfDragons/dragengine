@@ -77,13 +77,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the trigger to test. */
-	inline const decString &GetTrigger() const{return pTrigger;}
+	inline const decString &GetTrigger() const{ return pTrigger; }
 	
 	/** \brief Set name of the trigger to test. */
 	void SetTrigger(const char *name);
 	
 	/** \brief Test mode. */
-	inline eTestModes GetTestMode() const{return pTestMode;}
+	inline eTestModes GetTestMode() const{ return pTestMode; }
 	
 	/** \brief Set test mode. */
 	void SetTestMode(eTestModes testMode);

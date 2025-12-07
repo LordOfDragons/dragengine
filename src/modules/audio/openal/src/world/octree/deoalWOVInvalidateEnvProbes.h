@@ -70,16 +70,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** \brief Set extends. */
 	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);

@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker. */
-	gdeOCSpeaker *GetSpeaker() const{return pSpeaker;}
+	gdeOCSpeaker *GetSpeaker() const{ return pSpeaker; }
 	/*@}*/
 };
 

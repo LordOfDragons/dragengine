@@ -170,28 +170,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{return pWorld;}
+	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or NULL. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Camera to calculate screen related properties or NULL. */
-	inline deCamera *GetCamera() const{return pCamera;}
+	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera to calculate screen related properties or NULL. */
 	void SetCamera(deCamera *camera);
 	
 	/** \brief Trigger table or NULL if not used. */
-	inline igdeTriggerTargetList *GetTriggerTable() const{return pTriggerTable;}
+	inline igdeTriggerTargetList *GetTriggerTable() const{ return pTriggerTable; }
 	
 	/** \brief Set trigger table or NULL if not used. */
 	void SetTriggerTable(igdeTriggerTargetList *triggerTable);
 	
 	/** \brief Game definition object class or NULL. */
-	inline igdeGDClass *GetGDClass() const{return pGDClass;}
+	inline igdeGDClass *GetGDClass() const{ return pGDClass; }
 	
 	/** \brief Set game definition object class or NULL. */
 	void SetGDClass(igdeGDClass *gdClass);
@@ -200,55 +200,55 @@ public:
 	void SetGDClassName(const char *gdClassName);
 	
 	/** \brief Position. */
-	inline decDVector GetPosition() const{return pPosition;}
+	inline decDVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline decQuaternion GetOrientation() const{return pOrientation;}
+	inline decQuaternion GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline decVector GetScaling() const{return pScaling;}
+	inline decVector GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Matrix. */
-	inline const decDMatrix &GetMatrix() const{return pMatrix;}
+	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Inverse matrix. */
-	inline const decDMatrix &GetInverseMatrix() const{return pInvMatrix;}
+	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Determines if the object is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the object is visible. */
 	void SetVisible(bool visible);
 	
 	/** \brief Determines if the object is partially hidden. */
-	inline bool GetPartiallyHidden() const{return pPartiallyHidden;}
+	inline bool GetPartiallyHidden() const{ return pPartiallyHidden; }
 	
 	/** \brief Sets if the object is partially hidden. */
 	void SetPartiallyHidden(bool partiallyHidden);
 	
 	/** \brief Render layer mask. */
-	inline int GetRenderLayerMask() const{return pRenderLayerMask;}
+	inline int GetRenderLayerMask() const{ return pRenderLayerMask; }
 	
 	/** \brief Set render layer mask. */
 	void SetRenderLayerMask(int mask);
 	
 	/** \brief Render environment map group mask. */
-	inline int GetRenderEnvMapMask() const{return pRenderEnvMapMask;}
+	inline int GetRenderEnvMapMask() const{ return pRenderEnvMapMask; }
 	
 	/** \brief Set render environment map group mask. */
 	void SetRenderEnvMapMask(int mask);
 	
 	/** \brief Audio layer mask. */
-	inline int GetAudioLayerMask() const{return pAudioLayerMask;}
+	inline int GetAudioLayerMask() const{ return pAudioLayerMask; }
 	
 	/** \brief Set audio layer mask. */
 	void SetAudioLayerMask(int mask);
@@ -265,31 +265,31 @@ public:
 	
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Collision filter particles. */
-	inline const decCollisionFilter &GetCollisionFilterParticles() const{return pCollisionFilterParticles;}
+	inline const decCollisionFilter &GetCollisionFilterParticles() const{ return pCollisionFilterParticles; }
 	
 	/** \brief Set collision filter particles. */
 	void SetCollisionFilterParticles(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Collision filter force fields. */
-	inline const decCollisionFilter &GetCollisionFilterForceFields() const{return pCollisionFilterForceField;}
+	inline const decCollisionFilter &GetCollisionFilterForceFields() const{ return pCollisionFilterForceField; }
 	
 	/** \brief Set collision filter force fields. */
 	void SetCollisionFilterForceFields(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Collision filter fallback. */
-	inline const decCollisionFilter &GetCollisionFilterFallback() const{return pCollisionFilterFallback;}
+	inline const decCollisionFilter &GetCollisionFilterFallback() const{ return pCollisionFilterFallback; }
 	
 	/** \brief Set collision filter fallback. */
 	void SetCollisionFilterFallback(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Collision filter for interaction. */
-	inline const decCollisionFilter &GetCollisionFilterInteract() const{return pCollisionFilterInteract;}
+	inline const decCollisionFilter &GetCollisionFilterInteract() const{ return pCollisionFilterInteract; }
 	
 	/** \brief Set collision filter for interaction. */
 	void SetCollisionFilterInteract(const decCollisionFilter &collisionFilter);
@@ -297,13 +297,13 @@ public:
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
-	inline bool GetDynamicCollider() const{return pDynamicCollider;}
+	inline bool GetDynamicCollider() const{ return pDynamicCollider; }
 	
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);
 	
 	/** \brief Parent collider or NULL if there is none. */
-	inline deCollider *GetParentCollider() const{return pParentCollider;}
+	inline deCollider *GetParentCollider() const{ return pParentCollider; }
 	
 	/** \brief Determines if the object is attached to a parent collider. */
 	bool IsAttachedCollider() const;
@@ -351,16 +351,16 @@ public:
 	 * the user can not see where it is. This check does not include the visibility state of the
 	 * object. Hence invisible content is still considered visible if it would be visible otherwise.
 	 */
-	inline bool IsAnyContentVisible() const{return pAnyContentVisible;}
+	inline bool IsAnyContentVisible() const{ return pAnyContentVisible; }
 	
 	/** \brief Collider component. */
-	inline const deColliderComponent::Ref &GetColliderComponent() const{return pColliderComponent;}
+	inline const deColliderComponent::Ref &GetColliderComponent() const{ return pColliderComponent; }
 	
 	/** \brief Fallback collider volume. */
-	inline const deColliderVolume::Ref &GetColliderFallback() const{return pColliderFallback;}
+	inline const deColliderVolume::Ref &GetColliderFallback() const{ return pColliderFallback; }
 	
 	/** \brief Collider user pointer. */
-	inline void *GetColliderUserPointer() const{return pColliderUserPointer;}
+	inline void *GetColliderUserPointer() const{ return pColliderUserPointer; }
 	
 	/** \brief Set collider user pointer for all colliders used. */
 	void SetColliderUserPointer(void *userPointer);
@@ -383,7 +383,7 @@ public:
 	
 	
 	/** \brief Outline skin or NULL. */
-	inline deSkin *GetOutlineSkin() const{return pOutlineSkin;}
+	inline deSkin *GetOutlineSkin() const{ return pOutlineSkin; }
 	
 	/** \brief Set outline skin or NULL. */
 	void SetOutlineSkin(deSkin *skin);
@@ -392,7 +392,7 @@ public:
 	void SetOutlineSkinSharedEditing();
 	
 	/** \brief Outline color. */
-	inline const decColor &GetOutlineColor() const{return pOutlineColor;}
+	inline const decColor &GetOutlineColor() const{ return pOutlineColor; }
 	
 	/** \brief Set outline color. */
 	void SetOutlineColor(const decColor &color);
@@ -400,7 +400,7 @@ public:
 	
 	
 	/** \brief Asynchronous load finished listener or NULL. */
-	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{return pAsyncLoadFinished;}
+	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
 	 * \brief Set asynchronous load finished listener or NULL.
@@ -410,7 +410,7 @@ public:
 	void SetAsyncLoadFinished(cAsyncLoadFinished *listener);
 	
 	/** \brief Trigger listener for internal use only. */
-	inline igdeTriggerListener *GetTriggerListener() const{return pTriggerListener;}
+	inline igdeTriggerListener *GetTriggerListener() const{ return pTriggerListener; }
 	
 	/**
 	 * \brief Determine if all sub objects (direct or indirect) finished loading.
@@ -435,7 +435,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Property list. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Sets a property. */
 	void SetProperty(const char *key, const char *value);
@@ -463,7 +463,7 @@ public:
 	void SubObjectFinishedLoading(igdeWOSubObject &subObject, bool success);
 	void SubObjectExtendsDirty();
 	void SetInteractCollider(deColliderComponent *collider);
-	inline deDynamicSkin *GetOutlineDynamicSkin() const{return pOutlineDynamicSkin;}
+	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
 	void AddInteractionCollider(deCollider *collider);
 	void RemoveInteractionCollider(deCollider *collider);
 	void UpdateAnyContentVisibile();

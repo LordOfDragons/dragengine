@@ -44,7 +44,7 @@ gdeUAddSky::gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky) :
 pGameDefinition(NULL),
 pSky(NULL)
 {
-	if(! gameDefinition || ! sky){
+	if(!gameDefinition || !sky){
 		DETHROW(deeInvalidParam);
 	}
 	

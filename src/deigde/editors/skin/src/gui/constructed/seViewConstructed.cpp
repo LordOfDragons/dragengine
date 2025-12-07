@@ -78,7 +78,7 @@ public:
 	cSpinLayer(seViewConstructed &view) : pView(view){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
-		if(! pView.GetSkin()){
+		if(!pView.GetSkin()){
 			return;
 		}
 		
@@ -96,7 +96,7 @@ public:
 	cComboZoom(seViewConstructed &view) : pView(view){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pView.GetSkin() || ! comboBox->GetSelectedItem()){
+		if(!pView.GetSkin() || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

@@ -302,7 +302,7 @@ pFPSRate(1),
 
 pRequestQuit(false)
 {
-	if(! os){
+	if(!os){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -342,7 +342,7 @@ void deEngine::ResetFailureFlags(){
 }
 
 void deEngine::SetLogger(deLogger *logger){
-	if(! logger){
+	if(!logger){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -946,10 +946,10 @@ const char *gameObject){
 		// check if all systems can be started
 		try{
 			for(i=0; i<esSystemCount; i++){
-				if(! pSystems[i]->CanStart()){
+				if(!pSystems[i]->CanStart()){
 					deErrorTracePoint *tracePoint = pErrorTrace->AddAndSetIfEmpty("System is not ready to start",
 						NULL, "deEngine::Run", __LINE__);
-					if(! tracePoint){
+					if(!tracePoint){
 						tracePoint = pErrorTrace->AddPoint(NULL, "deEngine::Run", __LINE__);
 					}
 					tracePoint->AddValue("system", pSystems[i]->GetSystemName());
@@ -968,10 +968,10 @@ const char *gameObject){
 		}
 		
 		// start all systems
-		if(! hasErrors){
+		if(!hasErrors){
 			try{
 				for(i=0; i<esSystemCount; i++){
-					if(! pSystems[i]->GetIsRunning()){
+					if(!pSystems[i]->GetIsRunning()){
 						pSystems[i]->Start();
 					}
 				}
@@ -1054,9 +1054,9 @@ bool deEngine::RecoverFromError(){
 	pParallelProcessing->Pause();
 	
 	// should the crash recovery system be stopped start it
-	if(! crSys->GetIsRunning()){
+	if(!crSys->GetIsRunning()){
 		// test if we can start the crash recovery system can be started
-		if(! crSys->CanStart()){
+		if(!crSys->CanStart()){
 			pLogger->LogErrorFormat(LOGGING_NAME, "Crash Recovery System is not ready to start. Can not recover.");
 			pStopSystems();
 			return false;
@@ -1075,7 +1075,7 @@ bool deEngine::RecoverFromError(){
 	}
 	
 	// run the crash recovery module
-	if(! crSys->RecoverFromError()){
+	if(!crSys->RecoverFromError()){
 		pLogger->LogErrorFormat(LOGGING_NAME, "The Crash Recovery module could not recover from the error. Shutting now down.");
 		pErrorTrace->Clear();
 		pStopSystems();
@@ -1420,7 +1420,7 @@ bool deEngine::pStopSystems(){
 	bool success = true;
 	int i;
 	
-	const bool parallelProcessingResume = ! pParallelProcessing->GetPaused();
+	const bool parallelProcessingResume = !pParallelProcessing->GetPaused();
 	if(parallelProcessingResume){
 		pParallelProcessing->FinishAndRemoveAllTasks();
 		pParallelProcessing->Pause();

@@ -78,15 +78,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the x value to use if there is no x input. */
-	inline float GetX() const{return pX;}
+	inline float GetX() const{ return pX; }
 	/** Sets the x value to use if there is no x input. */
 	void SetX(float x);
 	/** Retrieves the y value to use if there is no y input. */
-	inline float GetY() const{return pY;}
+	inline float GetY() const{ return pY; }
 	/** Sets the y value to use if there is no y input. */
 	void SetY(float y);
 	/** Retrieves the z value to use if there is no z input. */
-	inline float GetZ() const{return pZ;}
+	inline float GetZ() const{ return pZ; }
 	/** Sets the z value to use if there is no z input. */
 	void SetZ(float z);
 	

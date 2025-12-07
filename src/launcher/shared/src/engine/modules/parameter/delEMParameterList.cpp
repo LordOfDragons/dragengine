@@ -59,7 +59,7 @@ delEMParameter *delEMParameterList::GetAt(int index) const{
 }
 
 delEMParameter *delEMParameterList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -89,7 +89,7 @@ int delEMParameterList::IndexOf(delEMParameter *parameter) const{
 }
 
 int delEMParameterList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -106,7 +106,7 @@ int delEMParameterList::IndexOfNamed(const char *name) const{
 }
 
 void delEMParameterList::Add(delEMParameter *parameter){
-	if(! parameter){
+	if(!parameter){
 		DETHROW_INFO(deeNullPointer, "parameter");
 	}
 	if(HasNamed (parameter->GetInfo().GetName())){

@@ -45,7 +45,7 @@ gdeOCNavigationSpace *navSpace, const char *newValue) :
 pObjectClass(NULL),
 pNavSpace(NULL)
 {
-	if(! objectClass || ! navSpace){
+	if(!objectClass || !navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	

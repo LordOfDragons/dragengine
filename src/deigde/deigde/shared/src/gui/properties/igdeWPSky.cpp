@@ -67,7 +67,7 @@ public:
 	cTextPathSky(igdeWPSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
-		if(! pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath()){
+		if(!pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath()){
 			return;
 		}
 		
@@ -87,12 +87,12 @@ public:
 	pPanel(panel), pTextField(textField){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSky()){
+		if(!pPanel.GetSky()){
 			return;
 		}
 		
 		decString sky(pTextField.GetText());
-		if(! igdeDialogBrowserSky::SelectSky(&pPanel, sky)){
+		if(!igdeDialogBrowserSky::SelectSky(&pPanel, sky)){
 			return;
 		}
 		
@@ -116,12 +116,12 @@ public:
 	pPanel(panel), pTextField(textField){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSky()){
+		if(!pPanel.GetSky()){
 			return;
 		}
 		
 		decString filename(pTextField.GetText().IsEmpty() ? decString("/igde/skies") : pTextField.GetText());
-		if(! igdeCommonDialogs::GetFileOpen(&pPanel, "Select Sky",
+		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Select Sky",
 		*pPanel.GetEnvironment().GetFileSystemGame(),
 		*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 			return;
@@ -147,7 +147,7 @@ public:
 	pPanel(panel), pIndex(index){}
 	
 	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
-		if(! pPanel.GetSky()){
+		if(!pPanel.GetSky()){
 			return;
 		}
 		

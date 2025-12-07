@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleClosestProp *GetRuleClosestProp() const{return pRuleCP;}
+	inline meHTVRuleClosestProp *GetRuleClosestProp() const{ return pRuleCP; }
 	
 	
 	

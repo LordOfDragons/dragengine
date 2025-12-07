@@ -89,7 +89,7 @@ pLastFrameData(nullptr),
 pLastFrameRows(nullptr),
 pErrorState(false)
 {
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,12 +100,12 @@ pErrorState(false)
 		// create structs
 		pReadStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)this,
 			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, NULL, NULL, NULL);
-		if(! pReadStruct){
+		if(!pReadStruct){
 			DETHROW(deeOutOfMemory);
 		}
 		
 		pInfoStruct = png_create_info_struct(pReadStruct);
-		if(! pInfoStruct){
+		if(!pInfoStruct){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -171,12 +171,12 @@ void deapngReader::Rewind(){
 		
 		pReadStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)this,
 			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, NULL, NULL, NULL);
-		if(! pReadStruct){
+		if(!pReadStruct){
 			DETHROW(deeOutOfMemory);
 		}
 		
 		pInfoStruct = png_create_info_struct(pReadStruct);
-		if(! pInfoStruct){
+		if(!pInfoStruct){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -229,7 +229,7 @@ void deapngReader::ReadImage(){
 }
 
 void deapngReader::CopyAccumImage(void *buffer, int size) const{
-	if(! buffer){
+	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
 	if(size != pImageSize){
@@ -351,7 +351,7 @@ void deapngReader::pReadHeader(){
 	pImageSize = pRowLength * pHeight;
 	
 	// check for animated png
-	if(! png_get_valid(pReadStruct, pInfoStruct, PNG_INFO_acTL)){
+	if(!png_get_valid(pReadStruct, pInfoStruct, PNG_INFO_acTL)){
 		DETHROW_INFO(deeInvalidFileFormat, pReader->GetFilename());
 	}
 	

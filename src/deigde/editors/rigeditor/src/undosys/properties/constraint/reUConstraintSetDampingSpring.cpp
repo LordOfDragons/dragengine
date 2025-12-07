@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintSetDampingSpring::reUConstraintSetDampingSpring(reRigConstraint *constraint, float newDamping){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

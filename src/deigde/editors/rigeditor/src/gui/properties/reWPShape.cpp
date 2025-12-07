@@ -152,7 +152,7 @@ void reWPShape::SetShape(reRigShape *shape){
 	
 	pShape = shape;
 	
-	if(! shape){
+	if(!shape){
 		pSwitcher->SetCurrent(0);
 		return;
 	}

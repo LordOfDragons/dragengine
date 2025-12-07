@@ -61,7 +61,7 @@ void deClassPropFieldListener::nfCreateInstances::RunFunction(dsRunTime *rt, dsV
 
 deClassPropFieldListener::deClassPropFieldListener(deScriptingDragonScript *ds) :
 dsClass("PropFieldListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	

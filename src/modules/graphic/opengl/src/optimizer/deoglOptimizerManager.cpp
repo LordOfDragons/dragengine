@@ -61,7 +61,7 @@ deoglOptimizer *deoglOptimizerManager::GetOptimizerAt(int index) const{
 }
 
 bool deoglOptimizerManager::HasOptimizer(deoglOptimizer *optimizer) const{
-	if(! optimizer) DETHROW(deeInvalidParam);
+	if(!optimizer) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pOptimizerCount; i++){
@@ -72,7 +72,7 @@ bool deoglOptimizerManager::HasOptimizer(deoglOptimizer *optimizer) const{
 }
 
 int deoglOptimizerManager::IndexOfOptimizer(deoglOptimizer *optimizer) const{
-	if(! optimizer) DETHROW(deeInvalidParam);
+	if(!optimizer) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pOptimizerCount; i++){
@@ -88,7 +88,7 @@ void deoglOptimizerManager::AddOptimizer(deoglOptimizer *optimizer){
 	if(pOptimizerCount == pOptimizerSize){
 		int newSize = pOptimizerSize * 3 / 2 + 1;
 		deoglOptimizer **newArray = new deoglOptimizer*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pOptimizers){
 			memcpy(newArray, pOptimizers, sizeof(deoglOptimizer*) * pOptimizerSize);
 			delete [] pOptimizers;

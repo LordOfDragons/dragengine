@@ -110,7 +110,7 @@ deoglRenderBase(renderThread)
 		if(renderStereoVRLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderStereoVRLayer){
+		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
 		pAsyncGetPipeline(pPipelineShapeXRayStereo, pipconf, sources, defines);
@@ -131,7 +131,7 @@ deoglRenderBase(renderThread)
 		if(renderStereoVRLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderStereoVRLayer){
+		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
 		pAsyncGetPipeline(pPipelineShapeSolidStereo, pipconf, sources, defines);
@@ -148,7 +148,7 @@ deoglRenderBase(renderThread)
 		if(renderStereoVRLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderStereoVRLayer){
+		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
 		pAsyncGetPipeline(pPipelineMeshXRayStereo, pipconf, sources, defines);
@@ -169,7 +169,7 @@ deoglRenderBase(renderThread)
 		if(renderStereoVRLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderStereoVRLayer){
+		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
 		pAsyncGetPipeline(pPipelineMeshSolidStereo, pipconf, sources, defines);
@@ -208,14 +208,14 @@ void deoglRenderDebugDrawer::RenderDebugDrawers(deoglRenderPlan &plan){
 		deoglRDebugDrawer &debugDrawer = *world.GetDebugDrawerAt(i);
 		
 		// if not visible skip the debug drawer
-		if(! debugDrawer.GetVisible()){
+		if(!debugDrawer.GetVisible()){
 			continue;
 		}
 		
 		// if there are no shapes or faces skip the debug drawer
 		const bool hasShapes = debugDrawer.GetHasShapes();
 		const bool hasFaces = debugDrawer.GetHasFaces();
-		if(! hasShapes && ! hasFaces){
+		if(!hasShapes && !hasFaces){
 			continue;
 		}
 		
@@ -291,7 +291,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 		
 		const bool lineVisible = (edgeColor.a > 0.001f);
 		const bool fillVisible = (fillColor.a > 0.001f);
-		if(! lineVisible && ! fillVisible){
+		if(!lineVisible && !fillVisible){
 			continue;
 		}
 		
@@ -326,7 +326,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 void deoglRenderDebugDrawer::pRenderDDSFaces(const deoglRenderPlan &plan,
 const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 	deoglVAO * const vao = debugDrawer.GetVAO();
-	if(! vao){
+	if(!vao){
 		return;
 	}
 	
@@ -365,7 +365,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer){
 		
 		const bool lineVisible = (edgeColor.a > 0.001f);
 		const bool fillVisible = (fillColor.a > 0.001f);
-		if(! lineVisible && ! fillVisible){
+		if(!lineVisible && !fillVisible){
 			continue;
 		}
 		

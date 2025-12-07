@@ -138,7 +138,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -162,7 +162,7 @@ public:
 	
 	virtual void OnAction(){
 		meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -199,7 +199,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -221,7 +221,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -243,7 +243,7 @@ public:
 	
 	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -295,7 +295,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetActiveObject()){
+		if(!pPanel.GetActiveObject()){
 			return;
 		}
 		
@@ -353,7 +353,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetWorld()){
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
@@ -372,12 +372,12 @@ public:
 	
 	virtual void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
 		decString value;
-		if(! igdeCommonDialogs::GetString(&pPanel.GetWPSelection(), "Find ID", "ID:", value)){
+		if(!igdeCommonDialogs::GetString(&pPanel.GetWPSelection(), "Find ID", "ID:", value)){
 			return;
 		}
 		
@@ -415,7 +415,7 @@ public:
 				world->NotifyObjectSelectionChanged();
 				
 				meCamera * const camera = world->GetActiveCamera();
-				if(! camera->HasHostObject()){
+				if(!camera->HasHostObject()){
 					camera->SetPosition(object->GetPosition() + camera->GetViewMatrix()
 						.TransformNormal(decDVector(0.0, 0.0, -5.0)));
 				}
@@ -450,7 +450,7 @@ public:
 	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "Reset Position", NULL, "Reset position to 0"){}
 	
 	virtual igdeUndo *OnAction(meObject *object){
-		return ! object->GetPosition().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
+		return !object->GetPosition().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUSetObjectPosition(object, decVector()) : NULL;
 	}
 };
@@ -464,7 +464,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetActiveObject()){
+		if(!pPanel.GetActiveObject()){
 			return;
 		}
 		
@@ -500,7 +500,7 @@ public:
 	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "Reset Rotation", NULL, "Reset rotation to 0"){}
 	
 	virtual igdeUndo *OnAction(meObject *object){
-		return ! object->GetRotation().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
+		return !object->GetRotation().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUSetObjectRotation(object, decVector()) : NULL;
 	}
 };
@@ -514,7 +514,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetActiveObject()){
+		if(!pPanel.GetActiveObject()){
 			return;
 		}
 		
@@ -589,7 +589,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, meObject *object){
 		const decVector size(uniformScaleVector(object->GetSize(), vector, object->GetScaleMode()));
-		if(! size.IsEqualTo(object->GetSize())){
+		if(!size.IsEqualTo(object->GetSize())){
 			return new meUSetObjectSize(object, size);
 			
 		}else{
@@ -605,7 +605,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, meObject *object){
 		const decVector scaling(uniformScaleVector(object->GetScaling(), vector, object->GetScaleMode()));
-		if(! scaling.IsEqualTo(object->GetScaling())){
+		if(!scaling.IsEqualTo(object->GetScaling())){
 			return new meUObjectSetScaling(object, scaling);
 			
 		}else{
@@ -620,7 +620,7 @@ public:
 	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "Reset Scaling", NULL, "Reset scaling to 1"){}
 	
 	virtual igdeUndo *OnAction(meObject *object){
-		return ! object->GetScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
+		return !object->GetScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUObjectSetScaling(object, decVector(1.0f, 1.0f, 1.0f)) : NULL;
 	}
 };
@@ -634,7 +634,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetActiveObject()){
+		if(!pPanel.GetActiveObject()){
 			return;
 		}
 		
@@ -684,7 +684,7 @@ public:
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		meObjectTexture * const texture = pPanel.GetActiveTexture();
-		if(! texture){
+		if(!texture){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
@@ -729,7 +729,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetActiveObject() && ! pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
+		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
 	}
 };
 
@@ -759,7 +759,7 @@ public:
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		const meObject * const object = pPanel.GetActiveObject();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -862,7 +862,7 @@ public:
 			int i;
 			
 			for(i=0; i<count; i++){
-				if(! object->HasTextureNamed(textureNames.GetAt(i))){
+				if(!object->HasTextureNamed(textureNames.GetAt(i))){
 					enabled = true;
 					break;
 				}
@@ -1090,12 +1090,12 @@ public:
 		meObjectList list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
 		const decString &property = pPanel.GetActiveProperty();
 		list.RemoveIfPresent(object);
-		return ! property.IsEmpty() && list.GetCount() > 0 ? new meUObjectPropertyCopyToSelected(
+		return !property.IsEmpty() && list.GetCount() > 0 ? new meUObjectPropertyCopyToSelected(
 			list, property, object->GetProperties().GetAt(property)) : NULL;
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetActiveObject() && ! pPanel.GetActiveProperty().IsEmpty()
+		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveProperty().IsEmpty()
 			&& pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1);
 	}
 };
@@ -1109,12 +1109,12 @@ public:
 	virtual igdeUndo *OnAction(meObject*){
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
-		return ! property.IsEmpty() && list.GetCount() > 0 ?
+		return !property.IsEmpty() && list.GetCount() > 0 ?
 			new meUObjectPropertyRemoveFromSelected(list, property) : NULL;
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetActiveObject() && ! pPanel.GetActiveProperty().IsEmpty()
+		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveProperty().IsEmpty()
 			&& pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
@@ -1248,7 +1248,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		meObjectTexture * const texture = pPanel.GetActiveTexture();
-		if(! texture || texture->GetSkinPath() == editPath->GetPath()){
+		if(!texture || texture->GetSkinPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -1262,7 +1262,7 @@ public:
 	cEditTextureTCOffset(meWPSObject &panel) : cBaseEditVector2ListenerTexture(panel){}
 	
 	virtual igdeUndo *OnChangedTexture(const decVector2 &vector, meObject*, meObjectTexture *texture){
-		return ! texture->GetTexCoordOffset().IsEqualTo(vector)
+		return !texture->GetTexCoordOffset().IsEqualTo(vector)
 			? new meUObjectTextureTCOffset(texture, vector) : NULL;
 	}
 };
@@ -1272,7 +1272,7 @@ public:
 	cEditTextureTCScaling(meWPSObject &panel) : cBaseEditVector2ListenerTexture(panel){}
 	
 	virtual igdeUndo *OnChangedTexture(const decVector2 &vector, meObject*, meObjectTexture *texture){
-		return ! texture->GetTexCoordScaling().IsEqualTo(vector)
+		return !texture->GetTexCoordScaling().IsEqualTo(vector)
 			? new meUObjectTextureTCScaling(texture, vector) : NULL;
 	}
 };
@@ -1296,7 +1296,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		meObjectTexture * const texture = pPanel.GetActiveTexture();
-		if(! texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
+		if(!texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
 			return;
 		}
 		
@@ -1312,7 +1312,7 @@ public:
 		NULL, "Show mising textures using placeholder texture"){}
 	
 	virtual igdeUndo *OnAction(meObject *object){
-		object->SetShowMissingTextures(! object->GetShowMissingTextures());
+		object->SetShowMissingTextures(!object->GetShowMissingTextures());
 		return NULL;
 	}
 };
@@ -1799,7 +1799,7 @@ void meWPSObject::UpdateLight(){
 		
 		// intensity
 		const decString &pnameIntensity = gdLight->GetPropertyName(igdeGDCLight::epIntensity);
-		if(! pnameIntensity.IsEmpty()){
+		if(!pnameIntensity.IsEmpty()){
 			pSldLigInt->SetEnabled(true);
 			
 			if(pPropertyValue(*object, gdpPrefix, pnameIntensity, value)){
@@ -1816,7 +1816,7 @@ void meWPSObject::UpdateLight(){
 		
 		// color
 		const decString &pnameColor = gdLight->GetPropertyName(igdeGDCLight::epColor);
-		if(! pnameColor.IsEmpty()){
+		if(!pnameColor.IsEmpty()){
 			pClrLight->SetEnabled(true);
 			
 			if(pPropertyValue(*object, gdpPrefix, pnameColor, value)){
@@ -1841,7 +1841,7 @@ void meWPSObject::UpdateLight(){
 		
 		// range
 		const decString &pnameRange = gdLight->GetPropertyName(igdeGDCLight::epRange);
-		if(! pnameRange.IsEmpty()){
+		if(!pnameRange.IsEmpty()){
 			pSldLigRange->SetEnabled(true);
 			
 			if(pPropertyValue(*object, gdpPrefix, pnameRange, value)){
@@ -1858,7 +1858,7 @@ void meWPSObject::UpdateLight(){
 		
 		// half intensity distance
 		const decString &pnameHalfIntDist = gdLight->GetPropertyName(igdeGDCLight::epHalfIntDist);
-		if(! pnameHalfIntDist.IsEmpty()){
+		if(!pnameHalfIntDist.IsEmpty()){
 			pSldLigHID->SetEnabled(true);
 			
 			if(pPropertyValue(*object, gdpPrefix, pnameHalfIntDist, value)){
@@ -1893,7 +1893,7 @@ void meWPSObject::UpdateLight(){
 }
 
 void meWPSObject::SelectActiveProperty(){
-	if(! GetActiveProperty().IsEmpty()){
+	if(!GetActiveProperty().IsEmpty()){
 		((meWPPropertyList&)(igdeWidget&)pEditProperties).SelectProperty(GetActiveProperty());
 	}
 }
@@ -2014,7 +2014,7 @@ void meWPSObject::UpdateTexture(){
 }
 
 void meWPSObject::SelectTexActiveProperty(){
-	if(! GetActiveTexProperty().IsEmpty()){
+	if(!GetActiveTexProperty().IsEmpty()){
 		((meWPPropertyList&)(igdeWidget&)pEditTexProperties).SelectProperty(GetActiveTexProperty());
 	}
 }
@@ -2035,7 +2035,7 @@ void meWPSObject::UpdateIdentifierLists(){
 	meWPPropertyList &editProperties = (meWPPropertyList&)(igdeWidget&)pEditProperties;
 	meWPPropertyList &editTextureProperties = (meWPPropertyList&)(igdeWidget&)pEditTexProperties;
 	
-	if(! pWorld){
+	if(!pWorld){
 		editProperties.SetIdentifiers(decStringSet());
 		editTextureProperties.SetIdentifiers(decStringSet());
 		return;
@@ -2044,7 +2044,7 @@ void meWPSObject::UpdateIdentifierLists(){
 	// object properties
 	decStringSet identifiers;
 	const decString &property = GetActiveProperty();
-	if(! property.IsEmpty()){
+	if(!property.IsEmpty()){
 		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty(property);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
 			const meIDGroup * const idgroup = pWorld->GetIDGroupList().GetNamed(gdProperty->GetIdentifierGroup());
@@ -2064,7 +2064,7 @@ void meWPSObject::UpdateIdentifierLists(){
 	// texture properties
 	identifiers.RemoveAll();
 	const decString &texProperty = GetActiveTexProperty();
-	if(! texProperty.IsEmpty()){
+	if(!texProperty.IsEmpty()){
 		const igdeGDProperty * const gdProperty = editTextureProperties.GetGDProperty(texProperty);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
 			const meIDGroup * const idgroup = pWorld->GetIDGroupList().GetNamed(gdProperty->GetIdentifierGroup());
@@ -2098,7 +2098,7 @@ void meWPSObject::SetDefaultSize(){
 	igdeGDClass *classDef;
 	
 	// if classname matches a class use that size instead of the given one
-	if(! obj) DETHROW(deeInvalidParam);
+	if(!obj) DETHROW(deeInvalidParam);
 	classDef = gameDef->GetClassAt(obj->GetClassName());
 	if(classDef){
 		obj->SetSize(classDef->GetSize());
@@ -2125,7 +2125,7 @@ void meWPSObject::OnGameDefinitionChanged(){
 
 void meWPSObject::SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing){
 	meObject * const object = GetActiveObject();
-	if(! object || ! object->GetGDClass()){
+	if(!object || !object->GetGDClass()){
 		return;
 	}
 	
@@ -2133,7 +2133,7 @@ void meWPSObject::SlideLightProperty(igdeGDCLight::eProperties property, const c
 	decString gdpPrefix;
 	meHelpers::FindFirstLight(*object->GetGDClass(), gdpPrefix, gdLight);
 	
-	if(! gdLight || ! gdLight->IsPropertySet(property)){
+	if(!gdLight || !gdLight->IsPropertySet(property)){
 		return;
 	}
 	
@@ -2160,7 +2160,7 @@ void meWPSObject::SlideLightProperty(igdeGDCLight::eProperties property, const c
 			}
 		}
 		
-		if(! scrubbing){
+		if(!scrubbing){
 			if(pUndoSetProperty){
 				pWorld->GetUndoSystem()->Add(pUndoSetProperty);
 				pUndoSetProperty = NULL;

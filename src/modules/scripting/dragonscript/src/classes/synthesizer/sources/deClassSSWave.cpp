@@ -107,7 +107,7 @@ deClassSSWave::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSSWave::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -149,7 +149,7 @@ deClassSSWave::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &i
 	p_AddParameter(init.clsSSWaveTarget); // target
 }
 void deClassSSWave::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -192,7 +192,7 @@ deClassSSWave::nfSetType::nfSetType(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsSSWaveType); // type
 }
 void deClassSSWave::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -308,7 +308,7 @@ void deClassSSWave::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -316,7 +316,7 @@ deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
 }
 
 void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -340,11 +340,11 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synth
 }
 
 void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! source){
+	if(!source){
 		rt->PushObject(NULL, this);
 		return;
 	}

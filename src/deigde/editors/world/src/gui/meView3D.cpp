@@ -75,7 +75,7 @@ public:
 	
 public:
 	void OnButtonPress(igdeWidget*, int button, const decPoint &position, int modifiers) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -98,7 +98,7 @@ public:
 	}
 	
 	void OnButtonRelease(igdeWidget*, int button, const decPoint &position, int modifiers) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -121,7 +121,7 @@ public:
 	}
 	
 	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -131,7 +131,7 @@ public:
 	}
 	
 	void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int modifiers) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -141,7 +141,7 @@ public:
 	}
 	
 	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -150,7 +150,7 @@ public:
 	}
 	
 	void OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes keyCode, int) override{
-		if(! pView.GetEditor()){
+		if(!pView.GetEditor()){
 			return;
 		}
 		
@@ -291,7 +291,7 @@ void meView3D::CreateCanvas(){
 	
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if(! pCanvasFPS){
+	if(!pCanvasFPS){
 		pCanvasFPS.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasView());
 		pCanvasFPS->SetOrder(10.0f);
 		pCanvasFPS->SetPosition(decPoint(5, 5));
@@ -309,7 +309,7 @@ void meView3D::CreateCanvas(){
 		pCanvasFPS->AddCanvas(canvasBackground);
 	}
 	
-	if(! pCanvasFPSText){
+	if(!pCanvasFPSText){
 		pCanvasFPSText.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasText());
 		pCanvasFPSText->SetColor(decColor(1.0f, 1.0f, 1.0f, 1.0f));
 		pCanvasFPSText->SetFont(pFontStats);
@@ -340,11 +340,11 @@ void meView3D::ModeChanged(){
 		pEditor = NULL;
 	}
 	
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
-	if(! GetRenderWindowCanvas()){
+	if(!GetRenderWindowCanvas()){
 		// check required since ModeChanged() can be called during construction time where
 		// no canvas is yet present
 		return;

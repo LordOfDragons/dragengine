@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pLight(NULL),
 pTrigger(trigger)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	

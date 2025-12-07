@@ -175,7 +175,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight){
 		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			clistComponent.SetLODLevel(0);
 			continue;
 		}
@@ -214,7 +214,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight){
 	const float factor = (factorX > factorY) ? factorX : factorY;
 	const deoglRComponent &component = *clistComponent.GetComponent();
 	
-	if(! component.GetModel()){
+	if(!component.GetModel()){
 		clistComponent.SetLODLevel(0);
 		return;
 	}

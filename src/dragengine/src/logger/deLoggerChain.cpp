@@ -76,7 +76,7 @@ deLogger *deLoggerChain::GetLoggerAt(int index){
 }
 
 void deLoggerChain::AddLogger(deLogger *logger){
-	if(! logger){
+	if(!logger){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -121,7 +121,7 @@ void deLoggerChain::RemoveAllLoggers(){
 
 
 void deLoggerChain::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -143,7 +143,7 @@ void deLoggerChain::LogInfo(const char *source, const char *message){
 }
 
 void deLoggerChain::LogWarn(const char *source, const char *message){
-	if(! source || ! message) DETHROW(deeInvalidParam);
+	if(!source || !message) DETHROW(deeInvalidParam);
 	
 	pMutex.Lock();
 	
@@ -164,7 +164,7 @@ void deLoggerChain::LogWarn(const char *source, const char *message){
 }
 
 void deLoggerChain::LogError(const char *source, const char *message){
-	if(! source || ! message) DETHROW(deeInvalidParam);
+	if(!source || !message) DETHROW(deeInvalidParam);
 	
 	pMutex.Lock();
 	

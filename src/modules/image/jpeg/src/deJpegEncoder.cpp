@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deJpegEncoder::deJpegEncoder(deJpegModule *module){
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -69,13 +69,13 @@ deJpegEncoder::~deJpegEncoder(){
 ////////////////
 
 void deJpegEncoder::InitWrite(decBaseFileWriter *writer){
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pWriter = writer;
 	
-	if(! pDataBuffer){
+	if(!pDataBuffer){
 		pDataBuffer = new JOCTET[1024];
 	}
 	

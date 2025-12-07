@@ -131,7 +131,7 @@ dearRuleLimit::~dearRuleLimit(){
 
 void dearRuleLimit::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled() || ! pEnabledAny){
+	if(!GetEnabled() || !pEnabledAny){
 		return;
 	}
 	
@@ -258,7 +258,7 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// if nothing changed there is no need to apply any calculations
-			if(! hasChangedPosition && ! hasChangedRotation && ! hasChangedScaling){
+			if(!hasChangedPosition && !hasChangedRotation && !hasChangedScaling){
 				continue;
 			}
 			
@@ -401,7 +401,7 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// if nothing changed there is no need to apply any calculations
-			if(! hasChanged){
+			if(!hasChanged){
 				continue;
 			}
 			

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUndoDataDecalProperty::meUndoDataDecalProperty(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	

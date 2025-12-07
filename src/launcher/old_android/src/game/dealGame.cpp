@@ -162,7 +162,7 @@ void dealGame::VerifyRequirements(){
 		
 		format.SetSupported(false);
 		
-		if(! dealEngineModule::IsSingleType(formatType)){
+		if(!dealEngineModule::IsSingleType(formatType)){
 			const decString &formatPattern = format.GetPattern();
 			
 			for(m=0; m<moduleCount; m++){
@@ -176,7 +176,7 @@ void dealGame::VerifyRequirements(){
 			}
 		}
 		
-		if(! format.GetSupported()){
+		if(!format.GetSupported()){
 			pAllFormatsSupported = false;
 		}
 	}
@@ -243,7 +243,7 @@ void dealGame::SetGameProfile(dealGameProfile *profile){
 }
 
 void dealGame::SetRunArguments(const char *arguments){
-	if(! arguments){
+	if(!arguments){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -331,7 +331,7 @@ void dealGame::SaveConfig(){
 }
 
 void dealGame::ApplyProfileChanges(){
-	if(! pProfileList.Has(pGameProfile)){
+	if(!pProfileList.Has(pGameProfile)){
 		SetGlobalProfile(NULL);
 		VerifyRequirements();
 	}

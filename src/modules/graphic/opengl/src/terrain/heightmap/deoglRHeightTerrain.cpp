@@ -148,7 +148,7 @@ void deoglRHeightTerrain::SectorRequirePrepareForRender(){
 //////////////
 
 void deoglRHeightTerrain::AddListener(deoglHeightTerrainListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

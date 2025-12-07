@@ -273,7 +273,7 @@ void deDecal::SetBoneStateCount(int count){
 }
 
 void deDecal::SnapshotBoneStatesFrom(deComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

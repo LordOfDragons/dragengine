@@ -180,7 +180,7 @@ deClassARMirror::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFun
 }
 void deClassARMirror::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -209,7 +209,7 @@ deClassARMirror::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData 
 	p_AddParameter(init.clsARMirrorTarget); // target
 }
 void deClassARMirror::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -241,7 +241,7 @@ dsFunction(init.clsARMirror, "setMirrorAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 }
 void deClassARMirror::nfSetMirrorMirrorAxis::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -283,7 +283,7 @@ void deClassARMirror::nfAddMatchName::RunFunction(dsRunTime *rt, dsValue *myself
 	const char * const first = rt->GetValue(0)->GetString();
 	const char * const second = rt->GetValue(1)->GetString();
 	
-	if(! rt->GetValue(2)->GetRealObject()){
+	if(!rt->GetValue(2)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	const deAnimatorRuleMirror::eMatchNameType type = (deAnimatorRuleMirror::eMatchNameType)
@@ -365,7 +365,7 @@ void deClassARMirror::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleMirror *deClassARMirror::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return nullptr;
 	}
 	
@@ -373,7 +373,7 @@ deAnimatorRuleMirror *deClassARMirror::GetRule(dsRealObject *myself) const{
 }
 
 void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -397,11 +397,11 @@ void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator)
 }
 
 void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(nullptr, this);
 		return;
 	}

@@ -43,7 +43,7 @@ meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *na
 pNavSpace(NULL),
 pNewSnapAngle(newSnapAngle)
 {
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

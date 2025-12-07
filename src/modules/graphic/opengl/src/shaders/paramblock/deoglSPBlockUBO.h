@@ -72,16 +72,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Uniform buffer object or 0 if not created yet. */
-	inline GLuint GetUBO() const{return pUBO;}
+	inline GLuint GetUBO() const{ return pUBO; }
 	
 	/** Binding point. */
-	inline int GetBindingPoint() const{return pBindingPoint;}
+	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
 	/** Set binding point. */
 	void SetBindingPoint(int bindingPoint);
 	
 	/** Compact elements. If true mapping individual elements is prohibited. */
-	inline bool GetCompact() const{return pCompact;}
+	inline bool GetCompact() const{ return pCompact; }
 	
 	/** Set if elements are compact. If true mapping individual elements is prohibited. */
 	void SetCompact(bool compact);
@@ -121,7 +121,7 @@ public:
 	virtual void UnmapBuffer();
 	
 	/** Direct access to write buffer. Use with care. Can be nullptr. */
-	inline char *GetWriteBuffer() const{return pWriteBuffer;}
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
 	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;

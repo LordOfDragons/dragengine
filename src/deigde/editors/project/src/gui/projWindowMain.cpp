@@ -277,7 +277,7 @@ void projWindowMain::LoadProjectLocal(projProject &project){
 }
 
 void projWindowMain::SaveProject(){
-	if(! pProject){
+	if(!pProject){
 		return;
 	}
 	
@@ -287,7 +287,7 @@ void projWindowMain::SaveProject(){
 }
 
 void projWindowMain::SaveProjectLocal(){
-	if(! pProject){
+	if(!pProject){
 		return;
 	}
 	
@@ -484,7 +484,7 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		if(project->GetChanged()){
@@ -555,7 +555,7 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
@@ -563,7 +563,7 @@ public:
 		decString name("Profile");
 		
 		while(true){
-			if(! igdeCommonDialogs::GetString(&pWindow, "Add Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(&pWindow, "Add Profile", "Name:", name)){
 				return;
 			}
 			
@@ -626,12 +626,12 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -652,12 +652,12 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -666,7 +666,7 @@ public:
 		name.Format("%s Copy", profile->GetName().GetString());
 		
 		while(true){
-			if(! igdeCommonDialogs::GetString(&pWindow, "Duplicate Profile", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Profile", "Name:", name)){
 				return;
 			}
 			
@@ -717,7 +717,7 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project || ! project->GetActiveProfile()){
+		if(!project || !project->GetActiveProfile()){
 			return;
 		}
 		
@@ -726,7 +726,7 @@ public:
 		}
 		pWindow.SaveProjectLocal();
 		
-		if(! pWindow.GetEnvironment().RequestSaveDocuments("Distribute",
+		if(!pWindow.GetEnvironment().RequestSaveDocuments("Distribute",
 		"Unsaved changes are present. To projribute it is recommended to save them")){
 			return;
 		}
@@ -747,12 +747,12 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -917,9 +917,9 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 			message.Format("Unknown argument '%s'", arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 			
-		}else if(! profile){
+		}else if(!profile){
 			profile = pProject->GetProfiles().GetNamed(arg);
-			if(! profile){
+			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());
 				DETHROW_INFO(deeInvalidParam, message);
@@ -932,7 +932,7 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 		}
 	}
 	
-	if(! profile){
+	if(!profile){
 		DETHROW_INFO(deeInvalidParam, "Missing argument: profile");
 	}
 	
@@ -944,7 +944,7 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 	dialog->SetPrintToConsole(true);
 	dialog->Run(this);
 	
-	if(! dialog->GetSuccess()){
+	if(!dialog->GetSuccess()){
 		DETHROW_INFO(deeInvalidAction, "Distribute failed");
 	}
 	
@@ -967,9 +967,9 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 			message.Format("Unknown argument '%s'", arg.GetString());
 			DETHROW_INFO(deeInvalidParam, message);
 			
-		}else if(! profile){
+		}else if(!profile){
 			profile = pProject->GetProfiles().GetNamed(arg);
-			if(! profile){
+			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());
 				DETHROW_INFO(deeInvalidParam, message);
@@ -982,7 +982,7 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 		}
 	}
 	
-	if(! profile){
+	if(!profile){
 		DETHROW_INFO(deeInvalidParam, "Missing argument: profile");
 	}
 	

@@ -42,7 +42,7 @@
 seUSetSourceMaxVolume::seUSetSourceMaxVolume(seSource *source, float newValue) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

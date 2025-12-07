@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Load attachment configuration from file. */
 	void LoadAttachmentConfig(aeAnimator &animator, decBaseFileReader &reader);

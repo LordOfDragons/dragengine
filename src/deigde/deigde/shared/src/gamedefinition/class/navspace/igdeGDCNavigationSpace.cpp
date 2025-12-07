@@ -121,7 +121,7 @@ void igdeGDCNavigationSpace::SetSnapAngle(float angle){
 
 
 bool igdeGDCNavigationSpace::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCNavigationSpace::GetPropertyName(eProperties property) const{

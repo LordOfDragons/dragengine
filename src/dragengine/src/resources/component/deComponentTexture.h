@@ -67,25 +67,25 @@ public:
 	/** \name Projection */
 	/*@{*/
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Texture number. */
-	inline int GetTexture() const{return pTexture;}
+	inline int GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture number. */
 	void SetTexture(int texture);
 	
 	/** \brief Texture coordinate transformation matrix. */
-	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set texture coordinate transformation matrix. */
 	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** \brief Dynamic skin or NULL if not set. */
-	inline deDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not set. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);

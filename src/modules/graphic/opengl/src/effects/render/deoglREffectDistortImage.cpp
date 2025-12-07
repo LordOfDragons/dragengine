@@ -92,7 +92,7 @@ void deoglREffectDistortImage::SetImage(deoglRImage *image){
 
 
 const deoglPipeline *deoglREffectDistortImage::GetPipeline(){
-	if(! pPipeline){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -111,7 +111,7 @@ const deoglPipeline *deoglREffectDistortImage::GetPipeline(){
 }
 
 const deoglPipeline *deoglREffectDistortImage::GetPipelineStereo(){
-	if(! pPipelineStereo){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -145,12 +145,12 @@ void deoglREffectDistortImage::PrepareForRender(){
 }
 
 void deoglREffectDistortImage::Render(deoglRenderPlan &plan){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	
 	deoglTexture * const texture = pImage->GetTexture();
-	if(! texture){
+	if(!texture){
 		return;
 	}
 	

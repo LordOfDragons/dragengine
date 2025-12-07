@@ -64,15 +64,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline deoglRenderTaskSharedPool &GetPool() const{return pPool;}
+	inline deoglRenderTaskSharedPool &GetPool() const{ return pPool; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{return pVAO;}
+	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set vao. */
 	void SetVAO(deoglVAO *shader);

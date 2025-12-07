@@ -39,7 +39,7 @@
 ////////////////////////////
 
 dePng3DImageInfo::dePng3DImageInfo(const char *nfilename){
-	if(! nfilename) DETHROW(deeInvalidParam);
+	if(!nfilename) DETHROW(deeInvalidParam);
 	
 	filename = nfilename;
 }

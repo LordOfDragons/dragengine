@@ -46,7 +46,7 @@ ceUCAPChoiceActionPaste::ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceC
 ceCAPlayerChoiceOption *option, const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
-	if(! playerChoice || actions.GetCount() == 0){
+	if(!playerChoice || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

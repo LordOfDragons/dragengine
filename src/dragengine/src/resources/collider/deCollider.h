@@ -160,13 +160,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Central mass point position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set central mass point position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
@@ -186,7 +186,7 @@ public:
 		const decVector &scale);
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/**
 	 * \brief Set scale.
@@ -200,25 +200,25 @@ public:
 	void SetScale(const decVector &scale);
 	
 	/** \brief Linear velocity in m/s. */
-	inline const decVector &GetLinearVelocity() const{return pLinearVelocity;}
+	inline const decVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	/** \brief Set linear velocity in m/s. */
 	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity in degree/s. */
-	inline const decVector &GetAngularVelocity() const{return pAngularVelocity;}
+	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** \brief Set angular velocity in degree/s. */
 	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Mass in kg. */
-	inline float GetMass() const{return pMass;}
+	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass in kg. */
 	void SetMass(float mass);
 	
 	/** \brief Gravity in m/s^2. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set gravity in m/s^2. */
 	void SetGravity(const decVector &gravity);
@@ -230,7 +230,7 @@ public:
 	 * Disabled colliders though still update attachments and can be used
 	 * in manual collision detection.
 	 */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/**
 	 * \brief Set if collider is enabled.
@@ -242,13 +242,13 @@ public:
 	void SetEnabled(bool enabled);
 	
 	/** \brief Collision response type. */
-	inline eResponseType GetResponseType() const{return pResponseType;}
+	inline eResponseType GetResponseType() const{ return pResponseType; }
 	
 	/** \brief Set Collision response type. */
 	void SetResponseType(eResponseType responseType);
 	
 	/** \brief Use local gravity instead of the world gravity. */
-	inline bool GetUseLocalGravity() const{return pUseLocalGravity;}
+	inline bool GetUseLocalGravity() const{ return pUseLocalGravity; }
 	
 	/** \brief Set if local gravity is used instead of the world gravity. */
 	void SetUseLocalGravity(bool useLocalGravity);
@@ -256,25 +256,25 @@ public:
 	
 	
 	/** \brief Factor for direct type force fields. */
-	inline float GetForceFieldDirect() const{return pForceFieldDirect;}
+	inline float GetForceFieldDirect() const{ return pForceFieldDirect; }
 	
 	/** \brief Set factor for direct type force fields. */
 	void SetForceFieldDirect(float factor);
 	
 	/** \brief Factor for surface type force fields. */
-	inline float GetForceFieldSurface() const{return pForceFieldSurface;}
+	inline float GetForceFieldSurface() const{ return pForceFieldSurface; }
 	
 	/** \brief Set factor for surface type force fields. */
 	void SetForceFieldSurface(float factor);
 	
 	/** \brief Factor for mass type force fields. */
-	inline float GetForceFieldMass() const{return pForceFieldMass;}
+	inline float GetForceFieldMass() const{ return pForceFieldMass; }
 	
 	/** \brief Set factor for mass type force fields. */
 	void SetForceFieldMass(float factor);
 	
 	/** \brief Factor for speed type force fields. */
-	inline float GetForceFieldSpeed() const{return pForceFieldSpeed;}
+	inline float GetForceFieldSpeed() const{ return pForceFieldSpeed; }
 	
 	/** \brief Set factor for speed type force fields. */
 	void SetForceFieldSpeed(float factor);
@@ -282,7 +282,7 @@ public:
 	
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &filter);
@@ -343,7 +343,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** \brief Number of attachments. */
-	inline int GetAttachmentCount() const{return pAttachmentCount;}
+	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	
 	/**
 	 * \brief Attachment at index.
@@ -395,7 +395,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	
 	/**
 	 * \brief Constraint at index.
@@ -577,13 +577,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Physics system peer. */
-	inline deBasePhysicsCollider *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsCollider *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
 	void SetPeerPhysics(deBasePhysicsCollider *peer);
 	
 	/** \brief Scripting system peer. */
-	inline deBaseScriptingCollider *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingCollider *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer. */
 	void SetPeerScripting(deBaseScriptingCollider *peer);
@@ -602,19 +602,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous collider in the parent world linked list. */
-	inline deCollider *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deCollider *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next collider in the parent world linked list. */
 	void SetLLWorldPrev(deCollider *collider);
 	
 	/** \brief Next collider in the parent world linked list. */
-	inline deCollider *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deCollider *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next collider in the parent world linked list. */
 	void SetLLWorldNext(deCollider *collider);

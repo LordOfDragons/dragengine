@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Constraint. */
-	inline reRigConstraint *GetConstraint() const{return pConstraint;}
+	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

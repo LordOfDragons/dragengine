@@ -216,7 +216,7 @@ void dealWidgetLabel::RenderContent(const sRenderContext &context){
 	
 	decoder.SetString(pText);
 	
-	while(! decoder.HasReachedEnd()){
+	while(!decoder.HasReachedEnd()){
 		const int lineStart = decoder.GetPosition();
 		int lineEnd = lineStart;
 		
@@ -293,7 +293,7 @@ void dealWidgetLabel::RenderContent(const sRenderContext &context){
 
 
 void dealWidgetLabel::UpdateTextSize(){
-	if(! pDirtyTextSize){
+	if(!pDirtyTextSize){
 		return;
 	}
 	

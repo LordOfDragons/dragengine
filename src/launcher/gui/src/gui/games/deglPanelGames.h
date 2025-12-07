@@ -108,7 +108,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Selected game or nullptr. */
 	delGame *GetSelectedGame() const;

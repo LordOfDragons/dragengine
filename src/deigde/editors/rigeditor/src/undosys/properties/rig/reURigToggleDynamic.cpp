@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Toggle Rig Dynamic");
 	
@@ -58,9 +58,9 @@ reURigToggleDynamic::~reURigToggleDynamic(){
 ///////////////
 
 void reURigToggleDynamic::Undo(){
-	pRig->SetDynamic(! pRig->GetDynamic());
+	pRig->SetDynamic(!pRig->GetDynamic());
 }
 
 void reURigToggleDynamic::Redo(){
-	pRig->SetDynamic(! pRig->GetDynamic());
+	pRig->SetDynamic(!pRig->GetDynamic());
 }

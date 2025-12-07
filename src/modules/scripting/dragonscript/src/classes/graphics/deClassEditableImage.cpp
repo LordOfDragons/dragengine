@@ -594,7 +594,7 @@ void deClassEditableImage::nfGetRange::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	
@@ -661,7 +661,7 @@ void deClassEditableImage::nfGetRange2::RunFunction(dsRunTime *rt, dsValue *myse
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	
@@ -841,7 +841,7 @@ void deClassEditableImage::nfSetRange::RunFunction(dsRunTime *rt, dsValue *mysel
 	const int height = rt->GetValue(3)->GetInt();
 	
 	dsRealObject * const pixels = rt->GetValue(4)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	
@@ -878,7 +878,7 @@ void deClassEditableImage::nfSetRange::RunFunction(dsRunTime *rt, dsValue *mysel
 		
 		for(ix=0; ix<width; ix++){
 			const dsValue &value = *clsArray.GetObjectAt(rt, pixels, poffsetY + ix);
-			if(! value.GetRealObject()){
+			if(!value.GetRealObject()){
 				DSTHROW_INFO(dueNullPointer, "pixels contains null instance");
 			}
 			if(value.GetRealType() != &clsColor){
@@ -916,7 +916,7 @@ void deClassEditableImage::nfSetRange2::RunFunction(dsRunTime *rt, dsValue *myse
 	const int depth = rt->GetValue(5)->GetInt();
 	
 	dsRealObject * const pixels = rt->GetValue(6)->GetRealObject();
-	if(! pixels){
+	if(!pixels){
 		DSTHROW_INFO(dueNullPointer, "pixels");
 	}
 	
@@ -967,7 +967,7 @@ void deClassEditableImage::nfSetRange2::RunFunction(dsRunTime *rt, dsValue *myse
 			
 			for(ix=0; ix<width; ix++){
 				const dsValue &value = *clsArray.GetObjectAt(rt, pixels, poffsetY + ix);
-				if(! value.GetRealObject()){
+				if(!value.GetRealObject()){
 					DSTHROW_INFO(dueNullPointer, "pixels contains null instance");
 				}
 				if(value.GetRealType() != &clsColor){

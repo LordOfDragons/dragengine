@@ -171,12 +171,12 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		oxr.LogInfoFormat("Supports XDev space: %s", pSupportsXDevSpace ? "yes" : "no");
 		
 		// required features check
-		if(oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && ! pSupportsEyeGazeTracking){
+		if(oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && !pSupportsEyeGazeTracking){
 			DETHROW_INFO(deeInvalidParam, "Requires eye gaze tracking but required extension is absent");
 		}
 		
 		if(oxr.GetRequestFeatureFacialTracking() == deBaseVRModule::efslRequired){
-			if(! pSupportsFaceEyeTracking && ! pSupportsFaceLipTracking){
+			if(!pSupportsFaceEyeTracking && !pSupportsFaceLipTracking){
 				DETHROW_INFO(deeInvalidParam, "Requires facial tracking but required extensions are absent");
 			}
 		}
@@ -209,7 +209,7 @@ pSupportsEnvBlendModeAlphaBlend(false)
 					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO:
 						instance.GetOxr().LogInfoFormat("- %d: Primary Stereo", i);
 						
-						if(! viewConfFound){
+						if(!viewConfFound){
 							memcpy(&viewConfProp, &props, sizeof(viewConfFound));
 							viewConfFound = true;
 						}
@@ -240,7 +240,7 @@ pSupportsEnvBlendModeAlphaBlend(false)
 			}
 		}
 		
-		if(! viewConfFound){
+		if(!viewConfFound){
 			DETHROW_INFO(deeInvalidAction, "required view configuration not found");
 		}
 		

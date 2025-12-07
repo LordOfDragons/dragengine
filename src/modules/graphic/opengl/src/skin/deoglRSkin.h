@@ -112,13 +112,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Filename of skin file. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Owner skin. For special use only. */
-	inline deoglSkin *GetOwnerSkin() const{return pOwnerSkin;}
+	inline deoglSkin *GetOwnerSkin() const{ return pOwnerSkin; }
 	void DropOwnerSkin();
 
 	
@@ -135,45 +135,45 @@ public:
 	
 	
 	/** Skin is solid. */
-	inline bool GetIsSolid() const{return pIsSolid;}
+	inline bool GetIsSolid() const{ return pIsSolid; }
 	
 	/** Skin has holes. */
-	inline bool GetHasHoles() const{return pHasHoles;}
+	inline bool GetHasHoles() const{ return pHasHoles; }
 	
 	/** Skin has XRay. */
-	inline bool GetHasXRay() const{return pHasXRay;}
+	inline bool GetHasXRay() const{ return pHasXRay; }
 	
 	/** Skin has mirrors. */
-	inline bool GetHasMirrors() const{return pHasMirrors;}
+	inline bool GetHasMirrors() const{ return pHasMirrors; }
 	
 	/** Skin has textures with dynamic channels. */
-	inline bool GetHasDynamicChannels() const{return pHasDynamicChannels;}
+	inline bool GetHasDynamicChannels() const{ return pHasDynamicChannels; }
 	
 	/** Skin has renderables. */
-	inline bool GetHasRenderables() const{return pHasRenderables;}
+	inline bool GetHasRenderables() const{ return pHasRenderables; }
 	
 	/** Skin is shadeless. */
-	inline bool GetShadeless() const{return pShadeless;}
+	inline bool GetShadeless() const{ return pShadeless; }
 	
 	/** Reflected type. */
-	inline ePropertyStates GetReflected() const{return pReflected;}
+	inline ePropertyStates GetReflected() const{ return pReflected; }
 	
 	/** Shadow casting type. */
-	inline ePropertyStates GetShadowNone() const{return pShadowNone;}
+	inline ePropertyStates GetShadowNone() const{ return pShadowNone; }
 	
 	/** Shadow importance level. */
-	inline int GetShadowImportance() const{return pShadowImportance;}
+	inline int GetShadowImportance() const{ return pShadowImportance; }
 	
 	/** Skin casts solid shadows. */
-	inline bool GetCastSolidShadow() const{return pCastSolidShadow;}
+	inline bool GetCastSolidShadow() const{ return pCastSolidShadow; }
 	
 	/** Skin casts transparent shadows. */
-	inline bool GetCastTransparentShadow() const{return pCastTranspShadow;}
+	inline bool GetCastTransparentShadow() const{ return pCastTranspShadow; }
 	
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
 	deoglSkinTexture &GetTextureAt(int index) const;
@@ -195,7 +195,7 @@ public:
 	
 	
 	/** Number of video players. */
-	inline int GetVideoPlayerCount() const{return pVideoPlayerCount;}
+	inline int GetVideoPlayerCount() const{ return pVideoPlayerCount; }
 	
 	/**
 	 * Add video player.

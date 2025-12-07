@@ -46,7 +46,7 @@ pPeerSound(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
-	if(! sound){
+	if(!sound){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -63,7 +63,7 @@ deSoundDecoder::~deSoundDecoder(){
 ///////////////
 
 int deSoundDecoder::GetPosition(){
-	if(! pPeerSound){
+	if(!pPeerSound){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -71,7 +71,7 @@ int deSoundDecoder::GetPosition(){
 }
 
 void deSoundDecoder::SetPosition(int position){
-	if(! pPeerSound){
+	if(!pPeerSound){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void deSoundDecoder::SetPosition(int position){
 }
 
 int deSoundDecoder::ReadSamples(void *buffer, int size){
-	if(! pPeerSound){
+	if(!pPeerSound){
 		DETHROW(deeInvalidParam);
 	}
 	

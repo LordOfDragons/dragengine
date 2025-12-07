@@ -162,7 +162,7 @@ void igdeWindow::CreateNativeWidget(){
 }
 
 void igdeWindow::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

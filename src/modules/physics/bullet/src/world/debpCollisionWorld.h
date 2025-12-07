@@ -61,11 +61,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the world. */
-	inline debpWorld &GetWorld(){return pWorld;}
-	inline const debpWorld &GetWorld() const{return pWorld;}
+	inline debpWorld &GetWorld(){ return pWorld; }
+	inline const debpWorld &GetWorld() const{ return pWorld; }
 	/** \brief Retrieves the delayed operation object. */
-	inline debpDelayedOperation &GetDelayedOperation(){return *pDelayedOperation;}
-	inline const debpDelayedOperation &GetDelayedOperation() const{return *pDelayedOperation;}
+	inline debpDelayedOperation &GetDelayedOperation(){ return *pDelayedOperation; }
+	inline const debpDelayedOperation &GetDelayedOperation() const{ return *pDelayedOperation; }
 	
 	/** \brief Mark all collision objects AABB valid. */
 	void MarkAllAABBValid();

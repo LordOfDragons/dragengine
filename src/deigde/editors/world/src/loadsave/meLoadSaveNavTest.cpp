@@ -76,7 +76,7 @@ void meLoadSaveNavTest::LoadNavTest(meWorld &world, decBaseFileReader &reader){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "navigationTest") != 0){
+	if(!root || strcmp(root->GetName(), "navigationTest") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

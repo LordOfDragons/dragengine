@@ -58,7 +58,7 @@ pBufferInPosition(0),
 pBufferOut(NULL),
 pBufferOutSize(0)
 {
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 	

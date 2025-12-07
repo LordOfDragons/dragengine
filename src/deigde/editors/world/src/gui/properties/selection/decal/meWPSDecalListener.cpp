@@ -63,7 +63,7 @@ void meWPSDecalListener::DecalSelectionChanged(meWorld*){
 }
 
 void meWPSDecalListener::DecalChanged(meWorld*, meDecal *decal){
-	if(! decal->GetActive()){
+	if(!decal->GetActive()){
 		return;
 	}
 	
@@ -72,7 +72,7 @@ void meWPSDecalListener::DecalChanged(meWorld*, meDecal *decal){
 }
 
 void meWPSDecalListener::DecalGeometryChanged(meWorld*, meDecal *decal){
-	if(! decal->GetActive()){
+	if(!decal->GetActive()){
 		return;
 	}
 	
@@ -80,7 +80,7 @@ void meWPSDecalListener::DecalGeometryChanged(meWorld*, meDecal *decal){
 }
 
 void meWPSDecalListener::DecalPropertiesChanged(meWorld*, meDecal *decal){
-	if(! decal->GetActive()){
+	if(!decal->GetActive()){
 		return;
 	}
 	
@@ -89,7 +89,7 @@ void meWPSDecalListener::DecalPropertiesChanged(meWorld*, meDecal *decal){
 }
 
 void meWPSDecalListener::DecalActivePropertyChanged(meWorld*, meDecal *decal){
-	if(! decal->GetActive()){
+	if(!decal->GetActive()){
 		return;
 	}
 	

@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Input file. */
-	inline const decString &GetInputFile() const{return pInputFile;}
+	inline const decString &GetInputFile() const{ return pInputFile; }
 	
 	/** Input line. */
-	inline int GetInputLine() const{return pInputLine;}
+	inline int GetInputLine() const{ return pInputLine; }
 	
 	/** Output line. */
-	inline int GetOutputLine() const{return pOutputLine;}
+	inline int GetOutputLine() const{ return pOutputLine; }
 	/*@}*/
 };
 

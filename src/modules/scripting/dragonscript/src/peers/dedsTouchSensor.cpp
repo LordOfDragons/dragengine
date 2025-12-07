@@ -50,7 +50,7 @@ pTouchSensor(touchSensor),
 pValCB(NULL),
 pHasCB(false)
 {
-	if(! touchSensor){
+	if(!touchSensor){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -62,7 +62,7 @@ dedsTouchSensor::~dedsTouchSensor(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -87,7 +87,7 @@ dsRealObject *dedsTouchSensor::GetCallback() const{
 }
 
 void dedsTouchSensor::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -110,11 +110,11 @@ void dedsTouchSensor::SetCallback(dsRealObject *object){
 //////////////////
 
 void dedsTouchSensor::ColliderEntered(deCollider *collider){
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	
@@ -134,11 +134,11 @@ void dedsTouchSensor::ColliderEntered(deCollider *collider){
 }
 
 void dedsTouchSensor::ColliderLeft(deCollider *collider){
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	

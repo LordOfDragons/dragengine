@@ -155,7 +155,7 @@ bool deoglSkinStateController::RequiresPrepareRenderables() const{
 }
 
 void deoglSkinStateController::Init(deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world){
-	if(! skin || ! world){
+	if(!skin || !world){
 		skinState.SetVideoPlayerCount(0);
 		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
@@ -186,7 +186,7 @@ void deoglSkinStateController::Init(deoglSkinState &skinState, deoglRSkin *skin,
 
 void deoglSkinStateController::Init(deoglSkinState &skinState, deoglRSkin *skin,
 int textureIndex, deoglWorld *world){
-	if(! skin || ! world){
+	if(!skin || !world){
 		skinState.SetVideoPlayerCount(0);
 		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
@@ -264,7 +264,7 @@ deoglSkinTexture &texture, deoglWorld &world){
 	int i;
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		if(! texture.IsChannelEnabled((deoglSkinChannel::eChannelTypes)i)){
+		if(!texture.IsChannelEnabled((deoglSkinChannel::eChannelTypes)i)){
 			continue;
 		}
 		

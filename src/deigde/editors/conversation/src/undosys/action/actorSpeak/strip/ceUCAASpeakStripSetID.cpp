@@ -44,7 +44,7 @@
 
 ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *strip, const char *newID){
-	if(! topic || ! actorSpeak || ! strip || ! newID){
+	if(!topic || !actorSpeak || !strip || !newID){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -69,13 +69,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or NULL if not set. */
-	inline deFont *GetFont() const{return pFont;}
+	inline deFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font or NULL to unset. */
 	void SetFont(deFont *font);
 	
 	/** \brief Font size in canvas units. */
-	inline float GetFontSize() const{return pFontSize;}
+	inline float GetFontSize() const{ return pFontSize; }
 	
 	/**
 	 * \brief Set font size in canvas units.
@@ -85,13 +85,13 @@ public:
 	void SetFontSize(float size);
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);

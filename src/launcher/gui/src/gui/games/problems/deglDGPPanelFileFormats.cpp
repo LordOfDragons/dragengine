@@ -65,7 +65,7 @@ FXVerticalFrame(container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0
 pParentDialog(parentDialog),
 pStatusWorking(false)
 {
-	if(! parentDialog) DETHROW(deeInvalidParam);
+	if(!parentDialog) DETHROW(deeInvalidParam);
 	
 	FXScrollWindow *scrollWindow;
 	FXVerticalFrame *frameContent;
@@ -166,7 +166,7 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 		// add module supporting this file format
 		matchingModule = nullptr;
 		
-		if(! deModuleSystem::IsSingleType(formatType)){
+		if(!deModuleSystem::IsSingleType(formatType)){
 			for(m=0; m<moduleCount; m++){
 				module = modules.GetAt(m);
 				

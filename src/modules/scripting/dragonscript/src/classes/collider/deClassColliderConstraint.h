@@ -74,16 +74,16 @@ public:
 	void PushConstraint(dsRunTime *rt, deColliderConstraint *constraint);
 	
 	/** Retrieves the game engine. */
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrDS;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrDS; }
 	
 	/** Retrieves the vector script class. */
-	inline deClassVector *GetClassVector() const{return pClsVec;}
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
 	/** Retrieves the quaternion script class. */
-	inline deClassQuaternion *GetClassQuaternion() const{return pClsQuat;}
+	inline deClassQuaternion *GetClassQuaternion() const{ return pClsQuat; }
 	
-	inline dsClass *GetClassColliderConstraintDof() const{return pClsColliderConstraintDof;}
+	inline dsClass *GetClassColliderConstraintDof() const{ return pClsColliderConstraintDof; }
 	/*@}*/
 	
 private:

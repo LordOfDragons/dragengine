@@ -69,43 +69,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Config path. */
-	inline const decString &GetPathConfig() const{return pPathConfig;}
+	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Set config path. */
 	void SetPathConfig(const char *path);
 	
 	/** \brief Share path. */
-	inline const decString &GetPathShare() const{return pPathShare;}
+	inline const decString &GetPathShare() const{ return pPathShare; }
 	
 	/** \brief Set share path. */
 	void SetPathShare(const char *path);
 	
 	/** \brief Lib path. */
-	inline const decString &GetPathLib() const{return pPathLib;}
+	inline const decString &GetPathLib() const{ return pPathLib; }
 	
 	/** \brief Set lib path. */
 	void SetPathLib(const char *path);
 	
 	/** \brief Cache path. */
-	inline const decString &GetPathCache() const{return pPathCache;}
+	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set cache path. */
 	void SetPathCache(const char *path);
 	
 	/** \brief Engine log filename. */
-	inline const decString &GetLogFile() const{return pLogFile;}
+	inline const decString &GetLogFile() const{ return pLogFile; }
 	
 	/** \brief Set engine log filename. */
 	void SetLogFile(const char *path);
 	
 	/** \brief Module list. */
-	inline dealEngineModuleList &GetModuleList(){return pModuleList;}
-	inline const dealEngineModuleList &GetModuleList() const{return pModuleList;}
+	inline dealEngineModuleList &GetModuleList(){ return pModuleList; }
+	inline const dealEngineModuleList &GetModuleList() const{ return pModuleList; }
 	
 	
 	
 	/** \brief Engine instance or \em NULL if not created. */
-	inline dealIEngineInstance *GetEngine() const{return pEngine;}
+	inline dealIEngineInstance *GetEngine() const{ return pEngine; }
 	
 	
 	

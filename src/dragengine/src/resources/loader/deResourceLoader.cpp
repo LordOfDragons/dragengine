@@ -120,7 +120,7 @@ const char *path, eResourceType resourceType){
 		switch(resourceType){
 		case ertAnimation:{
 			deAnimation *animation = pEngine.GetAnimationManager()->GetAnimationWith(vfs, path);
-			if(! animation && ! pLoadAsynchron){
+			if(!animation && !pLoadAsynchron){
 				animation = pEngine.GetAnimationManager()->LoadAnimation(vfs, path, "/");
 				freeResource = animation;
 			}
@@ -129,7 +129,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertFont:{
 			deFont *font = pEngine.GetFontManager()->GetFontWith(vfs, path);
-			if(! font && ! pLoadAsynchron){
+			if(!font && !pLoadAsynchron){
 				font = pEngine.GetFontManager()->LoadFont(vfs, path, "/");
 				freeResource = font;
 			}
@@ -138,7 +138,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertImage:{
 			deImage *image = pEngine.GetImageManager()->GetImageWith(vfs, path);
-			if(! image && ! pLoadAsynchron){
+			if(!image && !pLoadAsynchron){
 				image = pEngine.GetImageManager()->LoadImage(vfs, path, "/");
 				freeResource = image;
 			}
@@ -147,7 +147,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertModel:{
 			deModel *model = pEngine.GetModelManager()->GetModelWith(vfs, path);
-			if(! model && ! pLoadAsynchron){
+			if(!model && !pLoadAsynchron){
 				model = pEngine.GetModelManager()->LoadModel(vfs, path, "/");
 				freeResource = model;
 			}
@@ -157,7 +157,7 @@ const char *path, eResourceType resourceType){
 		case ertOcclusionMesh:{
 			deOcclusionMesh *occlusionMesh = pEngine.GetOcclusionMeshManager()
 				->GetOcclusionMeshWith(vfs, path);
-			if(! occlusionMesh && ! pLoadAsynchron){
+			if(!occlusionMesh && !pLoadAsynchron){
 				occlusionMesh = pEngine.GetOcclusionMeshManager()->LoadOcclusionMesh(
 					vfs, path, "/");
 				freeResource = occlusionMesh;
@@ -167,7 +167,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertRig:{
 			deRig *rig = pEngine.GetRigManager()->GetRigWith(vfs, path);
-			if(! rig && ! pLoadAsynchron){
+			if(!rig && !pLoadAsynchron){
 				rig = pEngine.GetRigManager()->LoadRig(vfs, path, "/");
 				freeResource = rig;
 			}
@@ -176,7 +176,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertSkin:{
 			deSkin *skin = pEngine.GetSkinManager()->GetSkinWith(vfs, path);
-			if(! skin && ! pLoadAsynchron){
+			if(!skin && !pLoadAsynchron){
 				skin = pEngine.GetSkinManager()->LoadSkin(vfs, path, "/");
 				freeResource = skin;
 			}
@@ -185,7 +185,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertSound:{
 			deSound *sound = pEngine.GetSoundManager()->GetSoundWith(vfs, path);
-			if(! sound && ! pLoadAsynchron){
+			if(!sound && !pLoadAsynchron){
 				sound = pEngine.GetSoundManager()->LoadSound(path, "/", false);
 				freeResource = sound;
 			}
@@ -195,7 +195,7 @@ const char *path, eResourceType resourceType){
 		case ertLanguagePack:{
 			deLanguagePack *langPack = pEngine.GetLanguagePackManager()->
 				GetLanguagePackWith(vfs, path);
-			if(! langPack && ! pLoadAsynchron){
+			if(!langPack && !pLoadAsynchron){
 				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack(vfs, path, "/");
 				freeResource = langPack;
 			}
@@ -204,7 +204,7 @@ const char *path, eResourceType resourceType){
 			
 		case ertVideo:{
 			deVideo *video = pEngine.GetVideoManager()->GetVideoWith(vfs, path);
-			if(! video && ! pLoadAsynchron){
+			if(!video && !pLoadAsynchron){
 				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
 				freeResource = video;
 			}
@@ -320,7 +320,7 @@ void deResourceLoader::RemoveAllTasks(){
 		((deResourceLoaderTask*)pFinishedTasks.GetAt(i))->Cancel();
 	}
 	
-	const bool resumeParallel = ! pEngine.GetParallelProcessing().GetPaused();
+	const bool resumeParallel = !pEngine.GetParallelProcessing().GetPaused();
 	
 	if(resumeParallel){
 		pEngine.GetParallelProcessing().Pause();
@@ -340,7 +340,7 @@ void deResourceLoader::RemoveAllTasks(){
 //////////////////////
 
 void deResourceLoader::FinishTask(deResourceLoaderTask *task){
-	if(! task){
+	if(!task){
 		DETHROW(deeInvalidParam);
 	}
 	pFinishedTasks.AddIfAbsent(task);

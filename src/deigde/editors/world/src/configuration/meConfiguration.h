@@ -115,18 +115,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Move step size. */
-	inline float GetMoveStep() const{return pMoveStep;}
+	inline float GetMoveStep() const{ return pMoveStep; }
 	
 	/** \brief Set move step size. */
 	void SetMoveStep(float step);
 	
 	/** \brief Movement has to be snapped to the nearest step distance. */
-	inline bool GetMoveSnap() const{return pMoveSnap;}
+	inline bool GetMoveSnap() const{ return pMoveSnap; }
 	
 	/** \brief Set if movement has to be snapped to the nearest step distance. */
 	void SetMoveSnap(bool snap);
@@ -134,13 +134,13 @@ public:
 	
 	
 	/** \brief Rotate step size. */
-	inline float GetRotateStep() const{return pRotStep;}
+	inline float GetRotateStep() const{ return pRotStep; }
 	
 	/** \brief Set rotate step size. */
 	void SetRotateStep(float step);
 	
 	/** \brief Rotation has to be snapped to the nearest step angle. */
-	inline bool GetRotateSnap() const{return pRotSnap;}
+	inline bool GetRotateSnap() const{ return pRotSnap; }
 	
 	/** \brief Set if rotation has to be snapped to the nearest step angle. */
 	void SetRotateSnap(bool snap);
@@ -148,13 +148,13 @@ public:
 	
 	
 	/** \brief Scale step size. */
-	inline float GetScaleStep() const{return pScaleStep;}
+	inline float GetScaleStep() const{ return pScaleStep; }
 	
 	/** \brief Set scale step size. */
 	void SetScaleStep(float step);
 	
 	/** \brief Scaling has to be snapped to the nearest step factor. */
-	inline bool GetScaleSnap() const{return pScaleSnap;}
+	inline bool GetScaleSnap() const{ return pScaleSnap; }
 	
 	/** \brief Set if scaling has to be snapped to the nearest step factor. */
 	void SetScaleSnap(bool snap);
@@ -162,13 +162,13 @@ public:
 	
 	
 	/** \brief View is updated on a regular basis. */
-	inline bool GetAutoUpdate() const{return pAutoUpdate;}
+	inline bool GetAutoUpdate() const{ return pAutoUpdate; }
 	
 	/** \brief Set if view is updated on a regular basis. */
 	void SetAutoUpdate(bool autoUpdate);
 	
 	/** \brief Mouse sensitivity. */
-	inline float GetSensitivity() const{return pSensitivity;}
+	inline float GetSensitivity() const{ return pSensitivity; }
 	
 	/** \brief Set mouse sensitivity. */
 	void SetSensitivity(float sensitivity);
@@ -176,13 +176,13 @@ public:
 	
 	
 	/** \brief Enable GI in cameras. */
-	inline bool GetEnableGI() const{return pEnableGI;}
+	inline bool GetEnableGI() const{ return pEnableGI; }
 	
 	/** \brief Set enable GI in cameras. */
 	void SetEnableGI(bool enable);
 	
 	/** \brief Enable auralization in microphones. */
-	inline bool GetEnableAuralization() const{return pEnableAuralization;}
+	inline bool GetEnableAuralization() const{ return pEnableAuralization; }
 	
 	/** \brief Set enable auralization in microphones. */
 	void SetEnableAuralization(bool enable);
@@ -198,7 +198,7 @@ public:
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

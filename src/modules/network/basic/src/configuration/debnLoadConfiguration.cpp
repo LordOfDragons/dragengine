@@ -65,7 +65,7 @@ void debnLoadConfiguration::LoadConfig(debnConfiguration &configuration){
 	deVirtualFileSystem& vfs = pNetwork.GetVFS();
 	
 	const decPath path(decPath::CreatePathUnix("/config/config.xml"));
-	if(! vfs.ExistsFile(path)){
+	if(!vfs.ExistsFile(path)){
 		pNetwork.LogInfo("Configuration file 'config.xml' not found. Using defaults.");
 		return;
 	}
@@ -86,7 +86,7 @@ void debnLoadConfiguration::pLoadConfiguration(debnConfiguration &configuration,
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "config"){
+	if(!root || root->GetName() != "config"){
 		DETHROW_INFO(deeInvalidParam, "root tag not named 'config'");
 	}
 	
@@ -95,7 +95,7 @@ void debnLoadConfiguration::pLoadConfiguration(debnConfiguration &configuration,
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = pGetTagAt(root, i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

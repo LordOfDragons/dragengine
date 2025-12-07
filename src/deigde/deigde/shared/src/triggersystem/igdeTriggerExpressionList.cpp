@@ -67,7 +67,7 @@ bool igdeTriggerExpressionList::Has(igdeTriggerExpression *expression) const{
 }
 
 void igdeTriggerExpressionList::Add(igdeTriggerExpression *expression){
-	if(! expression){
+	if(!expression){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -75,7 +75,7 @@ void igdeTriggerExpressionList::Add(igdeTriggerExpression *expression){
 }
 
 void igdeTriggerExpressionList::AddIfAbsent(igdeTriggerExpression *expression){
-	if(! expression){
+	if(!expression){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -83,7 +83,7 @@ void igdeTriggerExpressionList::AddIfAbsent(igdeTriggerExpression *expression){
 }
 
 void igdeTriggerExpressionList::Remove(igdeTriggerExpression *expression){
-	if(! expression){
+	if(!expression){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -91,7 +91,7 @@ void igdeTriggerExpressionList::Remove(igdeTriggerExpression *expression){
 }
 
 void igdeTriggerExpressionList::RemoveIfPresent(igdeTriggerExpression *expression){
-	if(! expression){
+	if(!expression){
 		DETHROW(deeInvalidParam);
 	}
 	

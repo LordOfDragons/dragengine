@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline devkDescriptorPoolPool &GetPool() const{return pPool;}
+	inline devkDescriptorPoolPool &GetPool() const{ return pPool; }
 	
 	/** Vulkan descriptor set. */
-	inline VkDescriptorSet GetSet() const{return pSet;}
+	inline VkDescriptorSet GetSet() const{ return pSet; }
 	
 	/** Return to pool. */
 	void ReturnToPool();

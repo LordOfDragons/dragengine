@@ -92,7 +92,7 @@ void deClassNavigationSpace::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 	// create copy of navigation space
 	const deNavigationSpace * const copy = clsNavSpace.GetNavigationSpace(
 		rt->GetValue(0)->GetRealObject());
-	if(! copy){
+	if(!copy){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -198,7 +198,7 @@ void deClassNavigationSpace::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *
 	
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
 	
-	if(! objPosition){
+	if(!objPosition){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -227,7 +227,7 @@ void deClassNavigationSpace::nfSetOrientation::RunFunction(dsRunTime *rt, dsValu
 	
 	dsRealObject * const objOrientation = rt->GetValue(0)->GetRealObject();
 	
-	if(! objOrientation){
+	if(!objOrientation){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -272,7 +272,7 @@ deClassNavigationSpace::nfSetType::nfSetType(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsNavigationSpaceType); // type
 }
 void deClassNavigationSpace::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -363,7 +363,7 @@ void deClassNavigationSpace::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *
 	const int index = rt->GetValue(0)->GetInt();
 	dsRealObject * const objPosition = rt->GetValue(1)->GetRealObject();
 	
-	if(! objPosition){
+	if(!objPosition){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -824,7 +824,7 @@ void deClassNavigationSpace::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassNavigationSpace * const clsNavSpace = (deClassNavigationSpace*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNavSpace)){
+	if(!p_IsObjOfType(object, clsNavSpace)){
 		rt->PushBool(false);
 		
 	}else{
@@ -843,7 +843,7 @@ void deClassNavigationSpace::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 
 deClassNavigationSpace::deClassNavigationSpace(deScriptingDragonScript *ds) :
 dsClass("NavigationSpace", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -950,7 +950,7 @@ void deClassNavigationSpace::CreateClassMembers(dsEngine *engine){
 }
 
 deNavigationSpace *deClassNavigationSpace::GetNavigationSpace(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -958,11 +958,11 @@ deNavigationSpace *deClassNavigationSpace::GetNavigationSpace(dsRealObject *myse
 }
 
 void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpace *navspace){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! navspace){
+	if(!navspace){
 		rt->PushObject(NULL, this);
 		return;
 	}

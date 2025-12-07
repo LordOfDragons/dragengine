@@ -44,7 +44,7 @@ seUSourceMoveEffectUp::seUSourceMoveEffectUp(seSource *source, seEffect *effect)
 pSource(NULL),
 pEffect(NULL)
 {
-	if(! effect || ! source){
+	if(!effect || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

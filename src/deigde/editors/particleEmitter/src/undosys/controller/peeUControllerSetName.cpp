@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
-	if(! controller || ! newName) DETHROW(deeInvalidParam);
+	if(!controller || !newName) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	

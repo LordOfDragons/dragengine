@@ -130,7 +130,7 @@ void feGenerateFont::pAddGlyphs(feFont &font){
 	int i;
 	
 	for(i=pFirstCode; i<=pLastCode; i++){
-		if(! pSystemFont->HasGlyph(i)){
+		if(!pSystemFont->HasGlyph(i)){
 			continue;
 		}
 		

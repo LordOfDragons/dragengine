@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Monitored game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

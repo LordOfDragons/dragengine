@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Track bone index. */
-	inline int GetTrackBone() const{return pTrackBone;}
+	inline int GetTrackBone() const{ return pTrackBone; }
 	
 	
 	

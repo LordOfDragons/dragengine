@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	const decString &GetName() const{return pName;}
+	const decString &GetName() const{ return pName; }
 	
 	/** Set bone index. */
 	void SetBone(int bone);

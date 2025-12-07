@@ -59,7 +59,7 @@ DUContext *UseBuilder::contextAtOrCurrent(const CursorInRevision &pos){
 
 
 void UseBuilder::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
-	if(! node->nameSequence){
+	if(!node->nameSequence){
 		return;
 	}
 	
@@ -85,7 +85,7 @@ void UseBuilder::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
 				context = nullptr;
 			}
 			
-			if(! decl){
+			if(!decl){
 				reportSemanticError(lock, useRange, i18n("Unknown type: %1", name));
 			}
 			
@@ -190,7 +190,7 @@ void UseBuilder::visitClassFunctionDeclareBegin(ClassFunctionDeclareBeginAst *no
 	// find best matching function
 	ClassFunctionDeclaration *useFunction = Helpers::bestMatchingFunction(top, signature, declarations);
 	
-	if(! useFunction){
+	if(!useFunction){
 		// find functions matching with auto-casting
 		const QVector<ClassFunctionDeclaration*> possibleFunctions(
 			Helpers::autoCastableFunctions(top, signature, declarations));
@@ -369,7 +369,7 @@ void UseBuilder::visitExpressionMember(ExpressionMemberAst *node){
 		if(declarations.isEmpty()){
 			// if the context is not a class context we are at the beginning of an expression
 			// and auto-this has to be used. find the this-context and try again
-			if(context && ! dynamic_cast<ClassDeclaration*>(context->owner())){
+			if(context && !dynamic_cast<ClassDeclaration*>(context->owner())){
 				const ClassDeclaration * const classDecl = Helpers::thisClassDeclFor(
 					DUChainPointer<const DUContext>(context));
 				if(classDecl){
@@ -458,7 +458,7 @@ void UseBuilder::visitExpressionAddition(ExpressionAdditionAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -478,7 +478,7 @@ void UseBuilder::visitExpressionAssign(ExpressionAssignAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -496,7 +496,7 @@ void UseBuilder::visitExpressionAssign(ExpressionAssignAst *node){
 			const KDevelop::AbstractType::Ptr typeLeft(typeOfNode(node->left, context));
 			const KDevelop::AbstractType::Ptr typeRight(typeOfNode(iter->element->right, context));
 			
-			if(! Helpers::castable(top, typeRight, typeLeft)){
+			if(!Helpers::castable(top, typeRight, typeLeft)){
 				RangeInRevision useRange(editor()->findRange(*iter->element->op));
 				reportSemanticError(lock, useRange, i18n("Cannot assign object of type %1 to %2",
 					typeRight ? typeRight->toString() : "??", typeLeft ? typeLeft->toString() : "??"));
@@ -520,7 +520,7 @@ void UseBuilder::visitExpressionBitOperation(ExpressionBitOperationAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -540,7 +540,7 @@ void UseBuilder::visitExpressionCompare(ExpressionCompareAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -560,7 +560,7 @@ void UseBuilder::visitExpressionLogic(ExpressionLogicAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -580,7 +580,7 @@ void UseBuilder::visitExpressionMultiply(ExpressionMultiplyAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -600,7 +600,7 @@ void UseBuilder::visitExpressionPostfix(ExpressionPostfixAst *node){
 	
 	DUChainPointer<const DUContext> contextLeft(functionGetContext(node->left, context));
 	
-	if(! node->opSequence){
+	if(!node->opSequence){
 		return;
 	}
 	
@@ -622,7 +622,7 @@ void UseBuilder::visitExpressionSpecial(ExpressionSpecialAst *node){
 	pCurExprType = nullptr;
 	visitNode(node->left);
 	
-	if(! node->moreSequence){
+	if(!node->moreSequence){
 		return;
 	}
 	
@@ -678,7 +678,7 @@ void UseBuilder::visitExpressionUnary(ExpressionUnaryAst *node){
 	
 	DUChainPointer<const DUContext> contextRight(functionGetContext(node->right, context));
 	
-	if(! node->opSequence){
+	if(!node->opSequence){
 		return;
 	}
 	
@@ -703,7 +703,7 @@ void UseBuilder::visitExpressionInlineIfElse(ExpressionInlineIfElseAst *node){
 	
 	KDevelop::AbstractType::Ptr typeCondition(typeOfNode(node->condition, context));
 	
-	if(! node->more){
+	if(!node->more){
 		return;
 	}
 	
@@ -711,14 +711,14 @@ void UseBuilder::visitExpressionInlineIfElse(ExpressionInlineIfElseAst *node){
 	KDevelop::AbstractType::Ptr typeElse(typeOfNode(node->more->expressionElse, context));
 	const TopDUContext * const top = topContext();
 	
-	if(! Helpers::castable(top, typeCondition, Helpers::getTypeBool())){
+	if(!Helpers::castable(top, typeCondition, Helpers::getTypeBool())){
 		RangeInRevision useRange(editor()->findRange(*node->condition));
 		reportSemanticError(lock, useRange, i18n("Cannot assign object of type %1 to bool",
 			typeCondition ? typeCondition->toString() : "??"));
 	}
 	
 	if(node->more->expressionIf && node->more->expressionElse
-	&& ! Helpers::castable(top, typeElse, typeIf)){
+	&& !Helpers::castable(top, typeElse, typeIf)){
 		RangeInRevision useRange(editor()->findRange(*node->more->expressionElse));
 		reportSemanticError(lock, useRange, i18n("Cannot assign object of type %1 to %2",
 			typeElse ? typeElse->toString() : "??", typeIf ? typeIf->toString() : "??"));
@@ -744,7 +744,7 @@ void UseBuilder::visitStatementFor(StatementForAst *node){
 DUChainPointer<const DUContext> UseBuilder::functionGetContext(AstNode *node,
 DUChainPointer<const DUContext> context){
 	DUChainPointer<const DUContext> contextLeft;
-	if(! node){
+	if(!node){
 		return contextLeft;
 	}
 	
@@ -752,7 +752,7 @@ DUChainPointer<const DUContext> context){
 	pCurExprType = nullptr;
 	visitNode(node);
 	
-	if(! pCurExprContext){
+	if(!pCurExprContext){
 		return contextLeft;
 	}
 	
@@ -773,7 +773,7 @@ DUChainPointer<const DUContext> context){
 	}
 	
 	KDevelop::AbstractType::Ptr type(pCurExprType);
-	if(! type){
+	if(!type){
 		DUChainReadLocker lock;
 		type = Helpers::getTypeInvalid();
 	}
@@ -819,7 +819,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature){
 	}
 	
 	// if the first found declaration is not a function definition something is wrong
-	if(! dynamic_cast<ClassFunctionDeclaration*>(declarations.at(0))){
+	if(!dynamic_cast<ClassFunctionDeclaration*>(declarations.at(0))){
 		const ClassDeclaration * const classDecl = Helpers::classDeclFor(context);
 		
 		if(classDecl){
@@ -838,7 +838,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature){
 	// find best matching function
 	ClassFunctionDeclaration *useFunction = Helpers::bestMatchingFunction(top, signature, declarations);
 	
-	if(! useFunction){
+	if(!useFunction){
 		// find functions matching with auto-casting
 		const QVector<ClassFunctionDeclaration*> possibleFunctions(
 			Helpers::autoCastableFunctions(top, signature, declarations));
@@ -934,7 +934,7 @@ void UseBuilder::reportSemanticError(const RangeInRevision &range, const QString
 
 void UseBuilder::reportSemanticError(const RangeInRevision &range, const QString &hint,
 const QVector<KDevelop::IProblem::Ptr> &diagnostics){
-	if(! pEnableErrorReporting){
+	if(!pEnableErrorReporting){
 		return;
 	}
 	
@@ -956,7 +956,7 @@ const QString &hint){
 
 void UseBuilder::reportSemanticError(DUChainReadLocker &locker, const RangeInRevision &range,
 const QString &hint, const QVector<KDevelop::IProblem::Ptr> &diagnostics){
-	if(! pEnableErrorReporting){
+	if(!pEnableErrorReporting){
 		return;
 	}
 	
@@ -966,7 +966,7 @@ const QString &hint, const QVector<KDevelop::IProblem::Ptr> &diagnostics){
 }
 
 void UseBuilder::reportSemanticHint(const RangeInRevision &range, const QString &hint){
-	if(! pEnableErrorReporting){
+	if(!pEnableErrorReporting){
 		return;
 	}
 	
@@ -984,7 +984,7 @@ void UseBuilder::reportSemanticHint(const RangeInRevision &range, const QString 
 
 void UseBuilder::reportSemanticHint(DUChainReadLocker &locker,
 const RangeInRevision &range, const QString &hint){
-	if(! pEnableErrorReporting){
+	if(!pEnableErrorReporting){
 		return;
 	}
 	

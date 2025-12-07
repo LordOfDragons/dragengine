@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Error. */
-	inline const decString &GetError() const{return pError;}
+	inline const decString &GetError() const{ return pError; }
 	
 	/** \brief Set error. */
 	void SetError(const char *error);
@@ -76,13 +76,13 @@ public:
 	/** \name Trace Point Management */
 	/*@{*/
 	/** \brief Determines if there exist trace points. */
-	inline bool HasPoints() const{return pPointCount > 0;}
+	inline bool HasPoints() const{ return pPointCount > 0; }
 	
 	/** \brief Trace is empty. */
-	inline bool IsEmpty() const{return pPointCount == 0;}
+	inline bool IsEmpty() const{ return pPointCount == 0; }
 	
 	/** \brief Count of trace points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** \brief Indexed trace point. */
 	deErrorTracePoint *GetPoint(int index) const;

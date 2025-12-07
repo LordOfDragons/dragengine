@@ -87,7 +87,7 @@ deoalParameter &deoalParameterList::GetParameterNamed(const char *name) const{
 }
 
 void deoalParameterList::AddParameter(deoalParameter *parameter){
-	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

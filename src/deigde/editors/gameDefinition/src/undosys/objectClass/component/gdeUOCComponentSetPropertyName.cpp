@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pComponent(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	

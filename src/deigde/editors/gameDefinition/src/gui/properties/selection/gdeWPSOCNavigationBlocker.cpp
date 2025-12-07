@@ -88,7 +88,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if(! navblocker){
+		if(!navblocker){
 			return;
 		}
 		
@@ -112,7 +112,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if(! navblocker){
+		if(!navblocker){
 			return;
 		}
 		
@@ -136,7 +136,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if(! navblocker){
+		if(!navblocker){
 			return;
 		}
 		
@@ -161,7 +161,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCNavigationBlocker * const navblocker = pPanel.GetNavigationBlocker();
-		if(! navblocker){
+		if(!navblocker){
 			return;
 		}
 		
@@ -331,7 +331,7 @@ public:
 	cComboPropertyNameTarget(gdeWPSOCNavigationBlocker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetNavigationBlocker()){
+		if(!pPanel.GetNavigationBlocker()){
 			return;
 		}
 		

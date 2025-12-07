@@ -49,7 +49,7 @@ gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdePar
 gdeWPSTreeItemModel(tree, etParticleEmitter),
 pParticleEmitter(NULL)
 {
-	if(! particleEmitter){
+	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

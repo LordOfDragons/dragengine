@@ -44,7 +44,7 @@
 
 ceUCAASpeakBodyLAMove::ceUCAASpeakBodyLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *bodyLookAt, int newIndex){
-	if(! topic || ! actorSpeak || ! bodyLookAt){
+	if(!topic || !actorSpeak || !bodyLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	

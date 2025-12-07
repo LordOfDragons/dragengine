@@ -82,7 +82,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Debug font. */
-	inline deoglDebugFont &GetDebugFont() const{return *pDebugFont;}
+	inline deoglDebugFont &GetDebugFont() const{ return *pDebugFont; }
 	
 	
 	

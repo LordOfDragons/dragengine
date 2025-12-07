@@ -63,7 +63,7 @@ void deClassUTF8Decoder::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	// clear ( important )
 	nd->decoder = NULL;
 	nd->decoder = new decUTF8Decoder;
-	if(! nd->decoder) DSTHROW(dueOutOfMemory);
+	if(!nd->decoder) DSTHROW(dueOutOfMemory);
 	nd->decoder->SetString(rt->GetValue(0)->GetString());
 	nd->decoder->SetPosition(rt->GetValue(1)->GetInt());
 }
@@ -167,7 +167,7 @@ void deClassUTF8Decoder::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassUTF8Decoder *clsU8D = (deClassUTF8Decoder*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsU8D)){
+	if(!p_IsObjOfType(object, clsU8D)){
 		rt->PushBool(false);
 	}else{
 		decUTF8Decoder *otherString = ((sU8DNatDat*)p_GetNativeData(object))->decoder;

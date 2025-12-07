@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer data. */
-	inline uint8_t *GetBuffer() const{return pBuffer;}
+	inline uint8_t *GetBuffer() const{ return pBuffer; }
 	
 	/** \brief Length of the message data. */
-	inline int GetDataLength() const{return pDataLength;}
+	inline int GetDataLength() const{ return pDataLength; }
 	
 	/** \brief Set length of the message data. */
 	void SetDataLength(int dataLength);
@@ -94,7 +94,7 @@ public:
 	void Clear();
 	
 	/** \brief Time stamp. */
-	inline TIME_SYSTEM GetTimeStamp() const{return pTimeStamp;}
+	inline TIME_SYSTEM GetTimeStamp() const{ return pTimeStamp; }
 	
 	/** \brief Set time stamp. */
 	void SetTimeStamp(TIME_SYSTEM timeStamp);

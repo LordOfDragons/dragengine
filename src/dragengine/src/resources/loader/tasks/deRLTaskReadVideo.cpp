@@ -84,7 +84,7 @@ void deRLTaskReadVideo::Run(){
 	
 	deBaseVideoModule * const module = (deBaseVideoModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtVideo, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ void deRLTaskReadVideo::Run(){
 void deRLTaskReadVideo::Finished(){
 	LogFinishedEnter();
 	
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pVideo = NULL;
 		LogFinishedExit();

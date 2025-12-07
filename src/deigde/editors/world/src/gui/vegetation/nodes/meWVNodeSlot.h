@@ -73,13 +73,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent node. */
-	inline meWVNode &GetParentNode() const{return pParentNode;}
+	inline meWVNode &GetParentNode() const{ return pParentNode; }
 	
 	/** \brief Slot type. */
-	inline eSlotTypes GetType() const{return pType;}
+	inline eSlotTypes GetType() const{ return pType; }
 	
 	/** \brief Slot number in the rule the parent node belongs to. */
-	inline int GetRuleSlot() const{return pRuleSlot;}
+	inline int GetRuleSlot() const{ return pRuleSlot; }
 	/*@}*/
 };
 

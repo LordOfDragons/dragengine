@@ -66,7 +66,7 @@
 ////////////////////////////
 
 aeLoadSaveSystem::aeLoadSaveSystem(aeWindowMain *wndMain){
-	if(! wndMain) DETHROW(deeInvalidParam);
+	if(!wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
 	pLSAnimator = NULL;
@@ -112,7 +112,7 @@ aeAnimator *aeLoadSaveSystem::LoadAnimator(const char* filename){
 }
 
 void aeLoadSaveSystem::SaveAnimator(aeAnimator *animator, const char *filename){
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

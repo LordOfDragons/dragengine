@@ -41,10 +41,10 @@
 ////////////////////////////
 
 peeUControllerMoveDown::peeUControllerMoveDown(peeController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	peeEmitter *emitter = controller->GetEmitter();
-	if(! emitter) DETHROW(deeInvalidParam);
+	if(!emitter) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	

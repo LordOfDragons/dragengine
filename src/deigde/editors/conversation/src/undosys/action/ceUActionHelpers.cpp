@@ -39,7 +39,7 @@
 
 ceConversationAction *ceUActionHelpers::ActivateActionAfterRemove(
 const ceConversationActionList& list, ceConversationAction *removedAction){
-	if(! removedAction){
+	if(!removedAction){
 		DETHROW(deeInvalidParam);
 	}
 	

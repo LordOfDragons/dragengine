@@ -64,13 +64,13 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Listener position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set listener position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Last used. */
-	inline unsigned short GetLastUsed() const{return pLastUsed;}
+	inline unsigned short GetLastUsed() const{ return pLastUsed; }
 	
 	/** \brief Set last used. */
 	void SetLastUsed(unsigned short lastUsed);

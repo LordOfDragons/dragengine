@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleTrackToSetLockedAxis::aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

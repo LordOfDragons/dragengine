@@ -48,7 +48,7 @@ pTopic(NULL),
 pAction(NULL),
 pLogic(NULL)
 {
-	if(! topic || ! action || ! logic){
+	if(!topic || !action || !logic){
 		DETHROW(deeInvalidParam);
 	}
 	

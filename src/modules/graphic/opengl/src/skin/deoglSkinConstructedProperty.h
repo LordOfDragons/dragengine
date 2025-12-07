@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Node. */
-	inline const deoglSkinStateCNGroup &GetContent() const{return pContent;}
+	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
 	
 	/** Bit count. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/** Base color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	/*@}*/
 };
 

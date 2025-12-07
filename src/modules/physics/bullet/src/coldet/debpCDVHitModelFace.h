@@ -79,9 +79,9 @@ public:
 	void SetTestCollider(debpCollider *collider);
 	
 	/** Retrieves the result. */
-	inline debpCollisionResult &GetResult(){return pResult;}
+	inline debpCollisionResult &GetResult(){ return pResult; }
 	/** Determines if a collision has been found. */
-	inline bool HasCollision() const{return pHasCollision;}
+	inline bool HasCollision() const{ return pHasCollision; }
 	/*@}*/
 	
 	/** @name Visiting */

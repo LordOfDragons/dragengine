@@ -63,7 +63,7 @@ dedsStyledTextNode* dedsSTNParagraph::GetNodeAt(int index) const{
 }
 
 int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode* node) const{
-	if(! node) DSTHROW(dueInvalidParam);
+	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
 	
@@ -77,7 +77,7 @@ int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode* node) const{
 }
 
 bool dedsSTNParagraph::HasNode(dedsStyledTextNode* node) const{
-	if(! node) DSTHROW(dueInvalidParam);
+	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
 	
@@ -96,7 +96,7 @@ void dedsSTNParagraph::AddNode(dedsStyledTextNode* node){
 	if(pNodeCount == pNodeSize){
 		int newSize = pNodeSize + 10;
 		dedsStyledTextNode **newArray = new dedsStyledTextNode*[newSize];
-		if(! newArray) DSTHROW(dueOutOfMemory);
+		if(!newArray) DSTHROW(dueOutOfMemory);
 		if(pNodes){
 			memcpy(newArray, pNodes, sizeof(dedsStyledTextNode*) * pNodeSize);
 			delete [] pNodes;

@@ -252,7 +252,7 @@ bool changeNotify){
 	case deResourceManager::ertBillboard:{
 		deBillboard &billboard = *((deBillboard*)resource);
 		billboard.SetPosition(matrix * billboard.GetPosition());
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			const decDVector msca(matrix.GetScale());
 			const decVector2 bsca((float)msca.x, (float)msca.y);
 			billboard.SetSize(billboard.GetSize().Multiply(bsca));
@@ -270,7 +270,7 @@ bool changeNotify){
 		deComponent &component = *((deComponent*)resource);
 		component.SetPosition(matrix * component.GetPosition());
 		component.SetOrientation(component.GetOrientation() * matrix.Normalized().ToQuaternion());
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			component.SetScaling(component.GetScaling().Multiply(matrix.GetScale()));
 		}
 		}break;
@@ -279,7 +279,7 @@ bool changeNotify){
 		deDebugDrawer &debugDrawer = *((deDebugDrawer*)resource);
 		debugDrawer.SetPosition(matrix * debugDrawer.GetPosition());
 		debugDrawer.SetOrientation(debugDrawer.GetOrientation() * matrix.Normalized().ToQuaternion());
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			debugDrawer.SetScale(debugDrawer.GetScale().Multiply(matrix.GetScale()));
 		}
 		}break;
@@ -326,7 +326,7 @@ bool changeNotify){
 		deNavigationBlocker &navigationBlocker = *((deNavigationBlocker*)resource);
 		navigationBlocker.SetPosition(matrix * navigationBlocker.GetPosition());
 		navigationBlocker.SetOrientation(navigationBlocker.GetOrientation() * matrix.Normalized().ToQuaternion());
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			navigationBlocker.SetScaling(navigationBlocker.GetScaling().Multiply(matrix.GetScale()));
 		}
 		}break;
@@ -385,7 +385,7 @@ void debpColliderAttachment::pCleanUp(){
 
 
 void debpColliderAttachment::pPrepareLocalMatrix(){
-	if(! pDirtyLocalMatrix){
+	if(!pDirtyLocalMatrix){
 		return;
 	}
 	
@@ -424,7 +424,7 @@ bool changeNotify){
 			}
 		}
 		
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			collider.SetGeometry(position, orientation);
 			
 		}else{
@@ -445,7 +445,7 @@ bool changeNotify){
 	case deResourceManager::ertBillboard:{
 		deBillboard &billboard = *((deBillboard*)resource);
 		billboard.SetPosition(position);
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 // 			const decVector2 oldsca( billboard.GetSize() );
 // 			const decVector2 newsca( ( float )scale.x, ( float )scale.y );
 // 			const decVector2 resca( fabsf( oldsca.x ) != 0.001f ? newsca.x / oldsca.x : 1.0f,
@@ -465,7 +465,7 @@ bool changeNotify){
 		deComponent &component = *((deComponent*)resource);
 		component.SetPosition(position);
 		component.SetOrientation(orientation);
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			component.SetScaling(scale);
 		}
 		}break;
@@ -474,7 +474,7 @@ bool changeNotify){
 		deDebugDrawer &debugDrawer = *((deDebugDrawer*)resource);
 		debugDrawer.SetPosition(position);
 		debugDrawer.SetOrientation(orientation);
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			debugDrawer.SetScale(scale);
 		}
 		}break;
@@ -521,7 +521,7 @@ bool changeNotify){
 		deNavigationBlocker &navigationBlocker = *((deNavigationBlocker*)resource);
 		navigationBlocker.SetPosition(position);
 		navigationBlocker.SetOrientation(orientation);
-		if(! pAttachment->GetNoScaling()){
+		if(!pAttachment->GetNoScaling()){
 			navigationBlocker.SetScaling(scale);
 		}
 		}break;

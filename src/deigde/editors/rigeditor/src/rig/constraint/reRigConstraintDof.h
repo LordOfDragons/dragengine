@@ -61,40 +61,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent rig constraint. */
-	inline reRigConstraint &GetRigConstraint() const{return pRigConstraint;}
+	inline reRigConstraint &GetRigConstraint() const{ return pRigConstraint; }
 	
 	/** Dof index. */
-	inline deColliderConstraint::eDegreesOfFreedom GetDofIndex() const{return pDofIndex;}
+	inline deColliderConstraint::eDegreesOfFreedom GetDofIndex() const{ return pDofIndex; }
 	
 	/** Equality threshold to use for lower and upper limit. */
 	float GetThresholdLimits() const;
 	
 	/** Lower limit. */
-	inline float GetLowerLimit() const{return pLowerLimit;}
+	inline float GetLowerLimit() const{ return pLowerLimit; }
 	
 	/** Set lower limit. */
 	void SetLowerLimit(float lowerLimit);
 	
 	/** Upper limit. */
-	inline float GetUpperLimit() const{return pUpperLimit;}
+	inline float GetUpperLimit() const{ return pUpperLimit; }
 	
 	/** Set upper limit. */
 	void SetUpperLimit(float upperLimit);
 	
 	/** Static friction coefficient. */
-	inline float GetStaticFriction() const{return pStaticFriction;}
+	inline float GetStaticFriction() const{ return pStaticFriction; }
 	
 	/** Set static friction coefficient. */
 	void SetStaticFriction(float friction);
 	
 	/** Kinematic friction coefficient. */
-	inline float GetKinematicFriction() const{return pKinematicFriction;}
+	inline float GetKinematicFriction() const{ return pKinematicFriction; }
 	
 	/** Set kinematic friction coefficient. */
 	void SetKinematicFriction(float friction);
 	
 	/** Spring stiffness. */
-	inline float GetSpringStiffness() const{return pSpringStiffness;}
+	inline float GetSpringStiffness() const{ return pSpringStiffness; }
 	
 	/** Set spring stiffness. */
 	void SetSpringStiffness(float stiffness);

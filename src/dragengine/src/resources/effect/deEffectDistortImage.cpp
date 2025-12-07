@@ -79,7 +79,7 @@ const decVector2 &deEffectDistortImage::GetTextureCoordinatesFor(int corner) con
 void deEffectDistortImage::SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates){
 	if(corner < 0 || corner > 3) DETHROW(deeInvalidParam);
 	
-	if(! textureCoordinates.IsEqualTo(pTexCoords[corner])){
+	if(!textureCoordinates.IsEqualTo(pTexCoords[corner])){
 		pTexCoords[corner] = textureCoordinates;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();

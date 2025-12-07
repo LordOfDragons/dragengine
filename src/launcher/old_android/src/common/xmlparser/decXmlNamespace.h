@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief URL. */
-	inline const decString &GetURL() const{return pURL;}
+	inline const decString &GetURL() const{ return pURL; }
 	
 	/** \brief Set URL. */
 	void SetURL(const char *url);

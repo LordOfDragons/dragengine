@@ -136,7 +136,7 @@ void deoglCanvasView::SyncContentToRender(){
 //////////////
 
 void deoglCanvasView::AddListener(deoglCanvasViewListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

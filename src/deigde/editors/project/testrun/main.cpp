@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	try{
 		// read out-pipe handle
-		if(! ReadFile(pipeIn, &pipeOut, sizeof(pipeOut), &bytesRead, NULL)){
+		if(!ReadFile(pipeIn, &pipeOut, sizeof(pipeOut), &bytesRead, NULL)){
 			DETHROW(deeInvalidParam);
 		}
 		if(bytesRead < sizeof(pipeOut)){

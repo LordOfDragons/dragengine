@@ -93,7 +93,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline eAddressType GetType() const{return pType;}
+	inline eAddressType GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(eAddressType type);
@@ -103,7 +103,7 @@ public:
 	 * 
 	 * Depends on the type of the address.
 	 */
-	inline int GetValueCount() const{return pValueCount;}
+	inline int GetValueCount() const{ return pValueCount; }
 	
 	/**
 	 * \brief Address value at the given location.
@@ -120,7 +120,7 @@ public:
 	void SetValueAt(int location, int value);
 	
 	/** \brief Port. */
-	inline int GetPort() const{return pPort;}
+	inline int GetPort() const{ return pPort; }
 	
 	/** \brief Set port. */
 	void SetPort(int port);

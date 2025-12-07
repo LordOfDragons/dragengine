@@ -46,7 +46,7 @@ public:
 	igdeNativeFoxContainerFlowY(igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags);
 	virtual ~igdeNativeFoxContainerFlowY();
 	
-	inline FXVerticalFrame *GetContainer() const{return pContainer;}
+	inline FXVerticalFrame *GetContainer() const{ return pContainer; }
 	
 	long onResize(FXObject*, FXSelector, void*);
 	long onChildLayoutFlags(FXObject*, FXSelector, void*);
@@ -150,7 +150,7 @@ public:
 	igdeNativeFoxContainerFlowX(igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags);
 	virtual ~igdeNativeFoxContainerFlowX();
 	
-	inline FXHorizontalFrame *GetContainer() const{return pContainer;}
+	inline FXHorizontalFrame *GetContainer() const{ return pContainer; }
 	
 	long onResize(FXObject*, FXSelector, void*);
 	long onChildLayoutFlags(FXObject*, FXSelector, void*);
@@ -246,12 +246,12 @@ long igdeNativeFoxContainerFlowX::onChildLayoutFlags(FXObject*, FXSelector, void
 ////////////////////////////////////
 
 void *igdeNativeFoxContainerFlow::CreateNativeWidget(igdeContainerFlow &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	

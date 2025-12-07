@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Can hit collider callback is enabled. */
-	inline bool GetEnableCanHitCallback() const{return pEnableCanHitCallback;}
+	inline bool GetEnableCanHitCallback() const{ return pEnableCanHitCallback; }
 	
 	/** \brief Owner object or \em NULL. */
 	dsRealObject *GetOwner() const;

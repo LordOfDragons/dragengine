@@ -48,7 +48,7 @@ public:
 	deoglCollideListManager();
 	~deoglCollideListManager();
 	// collide list management
-	inline int GetListCount() const{return pListCount;}
+	inline int GetListCount() const{ return pListCount; }
 	deoglCollideList *GetList();
 	void ReleaseList(deoglCollideList *list);
 private:

@@ -71,14 +71,14 @@ bool igdeGDCForceFieldList::Has(igdeGDCForceField *field) const{
 }
 
 void igdeGDCForceFieldList::Add(igdeGDCForceField *field){
-	if(! field){
+	if(!field){
 		DETHROW(deeInvalidParam);
 	}
 	pFields.Add(field);
 }
 
 void igdeGDCForceFieldList::InsertAt(igdeGDCForceField *field, int index){
-	if(! field){
+	if(!field){
 		DETHROW(deeInvalidParam);
 	}
 	pFields.Insert(field, index);

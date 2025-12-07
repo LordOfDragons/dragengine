@@ -265,7 +265,7 @@ void feWindowMain::OnDeactivate(){
 
 
 void feWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -358,7 +358,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetFont()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Font",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Font",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			return;
@@ -436,14 +436,14 @@ public:
 	
 	virtual void OnAction(){
 		igdeFont::sConfiguration config(pWindow.GetGenFontConfig());
-		if(! igdeCommonDialogs::SelectSystemFont(&pWindow, "Select Font", config)){
+		if(!igdeCommonDialogs::SelectSystemFont(&pWindow, "Select Font", config)){
 			return;
 		}
 		
 		pWindow.SetGenFontConfig(config);
 		
 		int enlargeGlyph = 0;
-		if(! igdeCommonDialogs::GetInteger(&pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph)){
+		if(!igdeCommonDialogs::GetInteger(&pWindow, "Glyph Enlarge", "Enlarge:", enlargeGlyph)){
 			return;
 		}
 		

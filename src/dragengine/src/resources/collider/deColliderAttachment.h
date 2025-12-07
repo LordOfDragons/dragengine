@@ -161,7 +161,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Attach type. */
-	inline eAttachType GetAttachType() const{return pAttachType;}
+	inline eAttachType GetAttachType() const{ return pAttachType; }
 	
 	/**
 	 * \brief Set attach type.
@@ -170,30 +170,30 @@ public:
 	void SetAttachType(eAttachType attachType);
 	
 	/** \brief Attached resource. */
-	inline deResource *GetResource() const{return pResource;}
+	inline deResource *GetResource() const{ return pResource; }
 	
 	
 	
 	/** \brief Position of the attached resource relative to the attachment point. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position of the attached resource relative to the attachment point. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation of the attached resource relative to the attachment point. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation of the attached resource relative to the attachment point. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling of the attached resource relative to the attachment point. */
-	inline const decVector &GetScaling() const{return pScaling;}
+	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling of the attached resource relative to the attachment point. */
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Ignore scaling. */
-	inline bool GetNoScaling() const{return pNoScaling;}
+	inline bool GetNoScaling() const{ return pNoScaling; }
 	
 	/** \brief Set if scaling is ignored. */
 	void SetNoScaling(bool noScaling);
@@ -201,7 +201,7 @@ public:
 	
 	
 	/** \brief Name of the bone to track in the target collider or null if not used. */
-	inline const decString &GetTrackBone() const{return pTrackBone;}
+	inline const decString &GetTrackBone() const{ return pTrackBone; }
 	
 	/**
 	 * \brief Set name of the bone to track in the target collider or an empty string if not used.
@@ -210,10 +210,10 @@ public:
 	void SetTrackBone(const char *bone);
 	
 	/** \brief Count of bone weights. */
-	inline int GetWeightCount() const{return pWeightCount;}
+	inline int GetWeightCount() const{ return pWeightCount; }
 	
 	/** \brief Pointer to array of bone weights. */
-	inline sWeight *GetWeights() const{return pWeights;}
+	inline sWeight *GetWeights() const{ return pWeights; }
 	
 	/**
 	 * \brief Set number of bone weights.

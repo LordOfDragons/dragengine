@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the source rule. */
-	inline meHTVRule *GetSourceRule() const{return pSrcRule;}
+	inline meHTVRule *GetSourceRule() const{ return pSrcRule; }
 	/** Retrieves the source slot. */
-	inline int GetSourceSlot() const{return pSrcSlot;}
+	inline int GetSourceSlot() const{ return pSrcSlot; }
 	/** Retrieves the destination rule. */
-	inline meHTVRule *GetDestinationRule() const{return pDestRule;}
+	inline meHTVRule *GetDestinationRule() const{ return pDestRule; }
 	/** Retrieves the destination slot. */
-	inline int GetDestinationSlot() const{return pDestSlot;}
+	inline int GetDestinationSlot() const{ return pDestSlot; }
 	/*@}*/
 };
 

@@ -79,16 +79,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bytes per sample or 0 if no audio. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Number of samples or 0 if no audio. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Number of channels or 0 if no audio. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Sample rate or 0 if no audio. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	
 	

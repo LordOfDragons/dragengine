@@ -65,7 +65,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
-	if(! camera){
+	if(!camera){
 		return NULL;
 	}
 	

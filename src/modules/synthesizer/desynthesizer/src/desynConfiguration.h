@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer size threshold to stream sound samples. */
-	inline int GetStreamBufSizeThreshold() const{return pStreamBufSizeThreshold;}
+	inline int GetStreamBufSizeThreshold() const{ return pStreamBufSizeThreshold; }
 	
 	/** \brief Set buffer size threshold to stream sound samples. */
 	void SetStreamBufSizeThreshold(int threshold);

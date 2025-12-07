@@ -72,7 +72,7 @@ void aeConfigurationXML::ReadFromFile(decBaseFileReader &reader, aeConfiguration
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "animatorEditor") != 0){
+	if(!root || strcmp(root->GetName(), "animatorEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -124,7 +124,7 @@ void aeConfigurationXML::pReadConfig(const decXmlElementTag &root, aeConfigurati
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -158,7 +158,7 @@ void aeConfigurationXML::pReadConfig(const decXmlElementTag &root, aeConfigurati
 deInputEvent::eKeyCodes aeConfigurationXML::pReadKey(const decXmlElementTag &root,
 deInputEvent::eKeyCodes defaultKey){
 	const char * const code = GetCDataString(root);
-	if(! code || strlen(code) != 1){
+	if(!code || strlen(code) != 1){
 		return defaultKey;
 	}
 	

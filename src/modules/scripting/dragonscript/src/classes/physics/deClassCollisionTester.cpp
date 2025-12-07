@@ -83,7 +83,7 @@ void deClassCollisionTester::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 	nd.collisionTester = NULL;
 	
 	// create layer mask
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	const dedsCollisionTester &other = *(((sCTNatDat*)p_GetNativeData(rt->GetValue(0)))->collisionTester);
@@ -238,7 +238,7 @@ void deClassCollisionTester::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsV
 	deClassCollider &clsCol = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollider());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -255,7 +255,7 @@ void deClassCollisionTester::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, 
 	deClassCollider &clsCol = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollider());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -584,7 +584,7 @@ void deClassCollisionTester::CreateClassMembers(dsEngine *engine){
 ///////////////
 
 dedsCollisionTester *deClassCollisionTester::GetCollisionTester(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -592,11 +592,11 @@ dedsCollisionTester *deClassCollisionTester::GetCollisionTester(dsRealObject *my
 }
 
 void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester *collisionTester){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! collisionTester){
+	if(!collisionTester){
 		rt->PushObject(NULL, this);
 		return;
 	}

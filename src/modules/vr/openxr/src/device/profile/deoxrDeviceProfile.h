@@ -119,16 +119,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline deoxrInstance &GetInstance() const{return pInstance;}
+	inline deoxrInstance &GetInstance() const{ return pInstance; }
 	
 	/** Path. */
-	inline const deoxrPath &GetPath() const{return pPath;}
+	inline const deoxrPath &GetPath() const{ return pPath; }
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Device rotation. */
-	inline const decVector &GetDeviceRotation() const{return pDeviceRotation;}
+	inline const decVector &GetDeviceRotation() const{ return pDeviceRotation; }
 	
 	/** Set device rotation. */
 	void SetDeviceRotation(const decVector &rotation);

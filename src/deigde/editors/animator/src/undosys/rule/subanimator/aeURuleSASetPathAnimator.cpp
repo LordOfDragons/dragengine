@@ -44,7 +44,7 @@ aeURuleSASetPathAnimator::aeURuleSASetPathAnimator(aeRuleSubAnimator *rule, cons
 pRule(NULL),
 pNewPath(newPath)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

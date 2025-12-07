@@ -165,7 +165,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	//      caveats performance wise as switching FBOs has
 	SetViewport(plan);
 // 	defren.ActivateFBOMaterialColor();
-	if(! xray){
+	if(!xray){
 		renderThread.GetRenderers().GetSky().RenderSky(plan, mask);
 		DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true);
 	}
@@ -249,7 +249,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	// outline
-	if(! useComputeRenderTask){
+	if(!useComputeRenderTask){
 		deoglDebugTraceGroup debugTraceOutline(debugTraceOther, "Outline");
 		renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
 		if(renderTask->GetPipelineCount() > 0){
@@ -262,7 +262,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	debugTraceOther.Close();
 	
 	// decals
-	if(! useComputeRenderTask){
+	if(!useComputeRenderTask){
 		RenderDecals(plan, xray);
 		DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true);
 	}
@@ -271,14 +271,14 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// downsample depth into mip-map levels if some later feature requires this. this can be done only after the
 	// geometry pass since this writes to the stencil mask of the depth texture. writing to the stencil part
 	// trashes mip map levels although no depth writing is enabled
-	if(config.GetSSAOEnable() && ! plan.GetNoReflections()){
+	if(config.GetSSAOEnable() && !plan.GetNoReflections()){
 		rendepth.DownsampleDepth(plan);
 		SetViewport(plan);
 		DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoSolidGeometryDownsampleDepth, true);
 	}
 	
 	// screen space ambient occlusion
-	if(! plan.GetNoReflections()){
+	if(!plan.GetNoReflections()){
 		renderThread.GetRenderers().GetLight().RenderAO(plan, true);
 		DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoSolidGeometrySSAO, true);
 	}

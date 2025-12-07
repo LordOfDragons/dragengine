@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Icon. */
-	inline FXIcon *GetIcon() const{return pIcon;}
+	inline FXIcon *GetIcon() const{ return pIcon; }
 	/*@}*/
 };
 

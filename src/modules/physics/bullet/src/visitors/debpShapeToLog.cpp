@@ -70,7 +70,7 @@ void debpShapeToLog::VisitShapeSphere(decShapeSphere &sphere){
 	pLog.AppendFormat("sphere{p=(%f,%f,%f) r=%f", p.x, p.y, p.z, sphere.GetRadius());
 	
 	const decVector2 &as = sphere.GetAxisScaling();
-	if(! as.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!as.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pLog.AppendFormat(" as=(%f,%f)", as.x, as.y);
 	}
 	
@@ -90,12 +90,12 @@ void debpShapeToLog::VisitShapeBox(decShapeBox &box){
 	pLog.AppendFormat("box{p=(%f,%f,%f) he=(%f,%f,%f)", p.x, p.y, p.z, he.x, he.y, he.z);
 	
 	const decVector o(box.GetOrientation().GetEulerAngles() * RAD2DEG);
-	if(! o.IsZero()){
+	if(!o.IsZero()){
 		pLog.AppendFormat(" o=(%f,%f,%f)", o.x, o.y, o.z);
 	}
 	
 	const decVector2 &t = box.GetTapering();
-	if(! t.IsEqualTo(decVector2(1.0f, 1.0f))){
+	if(!t.IsEqualTo(decVector2(1.0f, 1.0f))){
 		pLog.AppendFormat(" t=(%f,%f)", t.x, t.y);
 	}
 	
@@ -115,7 +115,7 @@ void debpShapeToLog::VisitShapeCylinder(decShapeCylinder &cylinder){
 		cylinder.GetHalfHeight(), cylinder.GetTopRadius(), cylinder.GetBottomRadius());
 	
 	const decVector o(cylinder.GetOrientation().GetEulerAngles() * RAD2DEG);
-	if(! o.IsZero()){
+	if(!o.IsZero()){
 		pLog.AppendFormat(" o=(%f,%f,%f)", o.x, o.y, o.z);
 	}
 	
@@ -135,7 +135,7 @@ void debpShapeToLog::VisitShapeCapsule(decShapeCapsule &capsule){
 		capsule.GetHalfHeight(), capsule.GetTopRadius(), capsule.GetBottomRadius());
 	
 	const decVector o(capsule.GetOrientation().GetEulerAngles() * RAD2DEG);
-	if(! o.IsZero()){
+	if(!o.IsZero()){
 		pLog.AppendFormat(" o=(%f,%f,%f)", o.x, o.y, o.z);
 	}
 	
@@ -154,7 +154,7 @@ void debpShapeToLog::VisitShapeHull(decShapeHull &hull) {
 	pLog.AppendFormat("hull{p=(%f,%f,%f)", p.x, p.y, p.z);
 	
 	const decVector o(hull.GetOrientation().GetEulerAngles() * RAD2DEG);
-	if(! o.IsZero()){
+	if(!o.IsZero()){
 		pLog.AppendFormat(" o=(%f,%f,%f)", o.x, o.y, o.z);
 	}
 	

@@ -70,7 +70,7 @@ deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
 	
 	try{
 		dynamicSkin = new deDynamicSkin(this);
-		if(! dynamicSkin) DETHROW(deeOutOfMemory);
+		if(!dynamicSkin) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadDynamicSkin(dynamicSkin);
 		
@@ -107,7 +107,7 @@ void deDynamicSkinManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(dynamicSkin){
-		if(! dynamicSkin->GetPeerGraphic()){
+		if(!dynamicSkin->GetPeerGraphic()){
 			grasys.LoadDynamicSkin(dynamicSkin);
 		}
 		

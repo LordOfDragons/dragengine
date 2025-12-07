@@ -65,7 +65,7 @@ deoglRenderPlan *deoglRenderPlanList::GetAt(int index) const{
 }
 
 int deoglRenderPlanList::IndexOf(deoglRenderPlan *plan) const{
-	if(! plan){
+	if(!plan){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -81,7 +81,7 @@ int deoglRenderPlanList::IndexOf(deoglRenderPlan *plan) const{
 }
 
 bool deoglRenderPlanList::Has(deoglRenderPlan *plan) const{
-	if(! plan){
+	if(!plan){
 		DETHROW(deeInvalidParam);
 	}
 	

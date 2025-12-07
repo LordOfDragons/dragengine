@@ -68,13 +68,13 @@ public:
 	
 	
 	/** Sector. */
-	inline deoglHTViewSector *GetSector() const{return pSector;}
+	inline deoglHTViewSector *GetSector() const{ return pSector; }
 	
 	/** Set sector. */
 	void SetSector(deoglHTViewSector *sector);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{return pClusterCount;}
+	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at index. */
 	deoglCollideListHTSCluster &GetClusterAt(int index) const;

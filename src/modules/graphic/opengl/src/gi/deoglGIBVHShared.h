@@ -88,34 +88,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{return pTBONodeBox;}
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{return pTBOIndex;}
+	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{return pTBOFace;}
+	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{return pTBOVertex;}
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{return pTBOTexCoord;}
+	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** TBO for material parameters. */
-	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{return pTBOMaterial;}
+	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{ return pTBOMaterial; }
 	
 	/** TBO for material float parameters. */
-	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{return pTBOMaterial2;}
+	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
 	
 	/** Shared TBOs. */
-	inline deoglDynamicTBOShared *GetSharedTBONode() const{return pSharedTBONode;}
-	inline deoglDynamicTBOShared *GetSharedTBOFace() const{return pSharedTBOFace;}
-	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{return pSharedTBOVertex;}
-	inline deoglDynamicTBOShared *GetSharedTBOMaterial() const{return pSharedTBOMaterial;}
+	inline deoglDynamicTBOShared *GetSharedTBONode() const{ return pSharedTBONode; }
+	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
+	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
+	inline deoglDynamicTBOShared *GetSharedTBOMaterial() const{ return pSharedTBOMaterial; }
 	/*@}*/
 	
 	

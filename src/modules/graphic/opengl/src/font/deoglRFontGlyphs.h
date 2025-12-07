@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	/** Finalize after asynchronous resource loading. */
@@ -83,19 +83,19 @@ public:
 	
 	
 	/** Undefined glyph. */
-	inline const sGlyph &GetUndefinedGlyph() const{return pUndefinedGlyph;}
+	inline const sGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
 	/** Glyphs. */
-	inline const sGlyph *GetGlyphs() const{return pGlyphs;}
+	inline const sGlyph *GetGlyphs() const{ return pGlyphs; }
 	
 	/** Glyph for unicode. */
 	const sGlyph &GetGlyphFor(int unicode) const;
 	
 	/** Line height. */
-	inline int GetLineHeight() const{return pLineHeight;}
+	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** Render image or nullptr. */
-	inline const deoglRImage::Ref &GetImage() const{return pImage;}
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set render image or nullptr. */
 	void SetImage(const deImage *image);

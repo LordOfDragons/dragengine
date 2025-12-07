@@ -55,10 +55,10 @@ public:
 	
 	// rigs management
 	/** Retrieves the main window. */
-	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the number of load save rigs. */
-	inline int GetLSRigCount() const{return pLSRigCount;}
+	inline int GetLSRigCount() const{ return pLSRigCount; }
 	/** Retrieves the load save rig at the given index. */
 	reLSRig *GetLSRigAt(int index) const;
 	/** Retrieves the index of the load save rig. */

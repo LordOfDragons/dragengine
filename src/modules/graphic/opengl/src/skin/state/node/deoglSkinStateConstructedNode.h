@@ -98,40 +98,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline eType GetType() const{return pType;}
+	inline eType GetType() const{ return pType; }
 	
 	/** Position. */
-	inline const decPoint3 &GetPosition() const{return pPosition;}
+	inline const decPoint3 &GetPosition() const{ return pPosition; }
 	
 	/** Size. */
-	inline const decPoint3 &GetSize() const{return pSize;}
+	inline const decPoint3 &GetSize() const{ return pSize; }
 	
 	/** Rotation. */
-	inline float GetRotation() const{return pRotation;}
+	inline float GetRotation() const{ return pRotation; }
 	
 	/** Shear. */
-	inline float GetShear() const{return pShear;}
+	inline float GetShear() const{ return pShear; }
 	
 	/** Brightness. */
-	inline float GetBrightness() const{return pBrightness;}
+	inline float GetBrightness() const{ return pBrightness; }
 	
 	/** Contrast. */
-	inline float GetContrast() const{return pContrast;}
+	inline float GetContrast() const{ return pContrast; }
 	
 	/** Gamma. */
-	inline float GetGamma() const{return pGamma;}
+	inline float GetGamma() const{ return pGamma; }
 	
 	/** Colorize. */
-	inline const decColor &GetColorize() const{return pColorize;}
+	inline const decColor &GetColorize() const{ return pColorize; }
 	
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Mask. */
-	inline const Ref &GetMask() const{return pMask;}
+	inline const Ref &GetMask() const{ return pMask; }
 	
 	/** Combine mode. */
-	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{return pCombineMode;}
+	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{ return pCombineMode; }
 	
 	/** Mapped for type. */
 	int GetMappedFor(deSkinPropertyNode::eMapped type) const;
@@ -139,15 +139,15 @@ public:
 	
 	
 	/** Transformation matrix. */
-	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Color transformation matrix. */
-	inline const decColorMatrix &GetColorTransform() const{return pColorTransform;}
+	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
 	
 	
 	/** Mask render target or nullptr. */
-	inline const deoglRenderTarget::Ref &GetMaskRenderTarget() const{return pMaskRenderTarget;}
+	inline const deoglRenderTarget::Ref &GetMaskRenderTarget() const{ return pMaskRenderTarget; }
 	
 	
 	

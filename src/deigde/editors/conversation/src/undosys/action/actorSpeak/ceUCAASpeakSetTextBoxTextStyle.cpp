@@ -43,7 +43,7 @@
 
 ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic,
 ceCAActorSpeak *actorSpeak, const char *newText){
-	if(! topic){
+	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
 	

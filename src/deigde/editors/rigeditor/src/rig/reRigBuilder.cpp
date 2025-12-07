@@ -47,7 +47,7 @@
 ////////////////////////////
 
 reRigBuilder::reRigBuilder(reRig *rig){
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	pRig = rig;
@@ -62,7 +62,7 @@ reRigBuilder::~reRigBuilder(){
 ///////////////
 
 void reRigBuilder::BuildRig(deRig *engRig){
-	if(! engRig) DETHROW(deeInvalidParam);
+	if(!engRig) DETHROW(deeInvalidParam);
 	int s, shapeCount = pRig->GetShapeCount();
 	int b, boneCount = pRig->GetBoneCount();
 	decShape *shape = NULL;
@@ -118,7 +118,7 @@ void reRigBuilder::BuildRig(deRig *engRig){
 }
 
 void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
-	if(! engRig || ! rigBone) DETHROW(deeInvalidParam);
+	if(!engRig || !rigBone) DETHROW(deeInvalidParam);
 	
 	int c, constraintCount = rigBone->GetConstraintCount();
 	int s, shapeCount = rigBone->GetShapeCount();
@@ -132,7 +132,7 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 	try{
 		// create engine bone
 		engBone = new deRigBone(rigBone->GetName().GetString());
-		if(! engBone) DETHROW(deeOutOfMemory);
+		if(!engBone) DETHROW(deeOutOfMemory);
 		
 		// set options
 		parentBone = rigBone->GetParentBone();
@@ -170,7 +170,7 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 		// add constraints
 		for(c=0; c<constraintCount; c++){
 			engConstraint = rigBone->GetConstraintAt(c)->BuildEngineRigConstraint();
-			if(! engConstraint) DETHROW(deeOutOfMemory);
+			if(!engConstraint) DETHROW(deeOutOfMemory);
 			
 			engBone->AddConstraint(engConstraint);
 			engConstraint = NULL;

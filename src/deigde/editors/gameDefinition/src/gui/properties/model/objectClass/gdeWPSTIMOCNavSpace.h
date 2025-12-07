@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{return pNavSpace;}
+	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

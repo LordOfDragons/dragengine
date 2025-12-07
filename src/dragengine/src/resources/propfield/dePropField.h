@@ -93,13 +93,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** \brief Type at the given index. */
 	dePropFieldType *GetTypeAt(int index) const;
@@ -143,19 +143,19 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicPropField *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicPropField *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicPropField *peer);
 	
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsPropField *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsPropField *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsPropField *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingPropField *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingPropField *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
 	void SetPeerScripting(deBaseScriptingPropField *peer);
@@ -166,19 +166,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline dePropField *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next prop field in the parent world linked list. */
 	void SetLLWorldPrev(dePropField *propField);
 	
 	/** \brief Next prop field in the parent world linked list. */
-	inline dePropField *GetLLWorldNext() const{return pLLWorldNext;}
+	inline dePropField *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next prop field in the parent world linked list. */
 	void SetLLWorldNext(dePropField *propField);

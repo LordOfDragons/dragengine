@@ -58,7 +58,7 @@ deLight *deLightManager::CreateLight(){
 	// create and add light
 	try{
 		light = new deLight(this);
-		if(! light) DETHROW(deeOutOfMemory);
+		if(!light) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadLight(light);
 		pLights.Add(light);
 	}catch(const deException &){
@@ -89,7 +89,7 @@ void deLightManager::SystemGraphicLoad(){
 	deLight *light = (deLight*)pLights.GetRoot();
 	
 	while(light){
-		if(! light->GetPeerGraphic()){
+		if(!light->GetPeerGraphic()){
 			GetGraphicSystem()->LoadLight(light);
 		}
 		

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, ceCAActorRemove *action, const char *newActorID){
-	if(! topic || ! newActorID){
+	if(!topic || !newActorID){
 		DETHROW(deeInvalidParam);
 	}
 	

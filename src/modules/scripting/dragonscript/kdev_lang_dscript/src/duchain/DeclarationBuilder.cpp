@@ -45,7 +45,7 @@ pParseSession(parseSession)
 
 DeclarationBuilder::~DeclarationBuilder(){
 	/*
-	if (! m_scheduledForDeletion.isEmpty()){
+	if (!m_scheduledForDeletion.isEmpty()){
 		DUChainWriteLocker lock;
 		foreach(DUChainBase *d, m_scheduledForDeletion){
 			delete d;
@@ -67,7 +67,7 @@ void DeclarationBuilder::closeNamespaceContexts(){
 	// for each namespace component add a context
 	DUChainWriteLocker lock;
 	
-	while(! pNamespaceContexts.isEmpty()){
+	while(!pNamespaceContexts.isEmpty()){
 		if(pNamespaceContexts.last()){
 			closeContext();
 			//m_currentClassTypes.removeLast();
@@ -143,7 +143,7 @@ void DeclarationBuilder::visitNamespace(NamespaceAst *node){
 #if 0
 		foreach(Declaration* each, existingDeclarationsForNode(iter->element)){
 			decl = dynamic_cast<ClassDeclaration*>(each);
-			if(! decl){
+			if(!decl){
 				continue;
 			}
 			
@@ -209,7 +209,7 @@ void DeclarationBuilder::visitNamespace(NamespaceAst *node){
 		}
 #endif
 		
-		if(! decl){
+		if(!decl){
 			decl = openDeclaration<ClassDeclaration>(iter->element, iter->element,
 				DeclarationFlags::NoFlags);
 // 			decl->setAlwaysForceDirect( true );
@@ -335,7 +335,7 @@ void DeclarationBuilder::visitClassBodyDeclaration(ClassBodyDeclarationAst *node
 }
 
 void DeclarationBuilder::visitClassVariablesDeclare(ClassVariablesDeclareAst *node){
-	if(! node->variablesSequence){
+	if(!node->variablesSequence){
 		return;
 	}
 	
@@ -848,7 +848,7 @@ void DeclarationBuilder::visitStatementCatch(StatementCatchAst *node){
 }
 
 void DeclarationBuilder::visitStatementVariableDefinitions(StatementVariableDefinitionsAst *node){
-	if(! node->variablesSequence){
+	if(!node->variablesSequence){
 		return;
 	}
 	

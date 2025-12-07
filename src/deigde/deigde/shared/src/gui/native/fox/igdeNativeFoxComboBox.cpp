@@ -76,7 +76,7 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 	setFont((FXFont*)pFont->GetNativeFont());
 	
 	setEditable(powner.GetEditable());
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
@@ -94,12 +94,12 @@ igdeNativeFoxComboBox::~igdeNativeFoxComboBox(){
 }
 
 igdeNativeFoxComboBox *igdeNativeFoxComboBox::CreateNativeWidget(igdeComboBox &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -290,7 +290,7 @@ int igdeNativeFoxComboBox::ComboBoxPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxComboBox::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -314,7 +314,7 @@ long igdeNativeFoxComboBox::onCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxComboBox::onChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

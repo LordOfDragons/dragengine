@@ -51,7 +51,7 @@
 ////////////////////////////
 
 ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newName){
-	if(! facePose || ! newName) DETHROW(deeInvalidParam);
+	if(!facePose || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = facePose->GetConversation()->GetFileList();
 	const int fileCount = fileList.GetCount();

@@ -240,7 +240,7 @@ void deoglRCanvasPaint::pPrepareVBOBlock(){
 		}
 	}
 	
-	if(! pVBOBlock){
+	if(!pVBOBlock){
 		pVBOBlock = GetRenderThread().GetBufferObject().GetSharedVBOListForType(
 			deoglRTBufferObject::esvbolCanvasPaint).AddData(pointCount);
 		pVBOBlockPointCount = pointCount;

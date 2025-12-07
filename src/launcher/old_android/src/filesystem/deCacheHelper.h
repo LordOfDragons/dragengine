@@ -91,7 +91,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Compression method to use for new cached files. */
-	inline eCompressionMethods GetCompressionMethod() const{return pCompressionMethod;}
+	inline eCompressionMethods GetCompressionMethod() const{ return pCompressionMethod; }
 	
 	/** \brief Set compression method to use for new cached files. */
 	void SetCompressionMethod(eCompressionMethods compressionMethod);

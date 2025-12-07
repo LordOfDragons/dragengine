@@ -36,7 +36,7 @@
 aeURuleMirrorSetEnableRotation::aeURuleMirrorSetEnableRotation(aeRuleMirror *rule) :
 pRule(rule)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -52,9 +52,9 @@ aeURuleMirrorSetEnableRotation::~aeURuleMirrorSetEnableRotation(){
 ///////////////
 
 void aeURuleMirrorSetEnableRotation::Undo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleMirrorSetEnableRotation::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }

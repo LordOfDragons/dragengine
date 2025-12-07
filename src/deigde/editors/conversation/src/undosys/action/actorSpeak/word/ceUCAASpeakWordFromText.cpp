@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
-	if(! topic || ! actorSpeak){
+	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -95,7 +95,7 @@ void ceUCAASpeakWordFromText::SetWordsFromText(const decUnicodeString &text, flo
 			}
 			
 			if(padding.Find(character, 0) != -1){
-				if(! word.IsEmpty()){
+				if(!word.IsEmpty()){
 					entry = new ceStrip(word.GetLower().ToUTF8().GetString(), letterDuration * (float)word.GetLength(), 0.0f);
 					pNewWords.Add(entry);
 					entry->FreeReference();

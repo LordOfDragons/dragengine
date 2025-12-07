@@ -87,7 +87,7 @@ pForwardListener(forwardListener),
 pTreeList(NULL),
 pPreventUpdate(false)
 {
-	if(! conversation){
+	if(!conversation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -141,7 +141,7 @@ ceWPTTreeItemModel *ceWPTTreeModel::GetChildAt(int index) const{
 }
 
 void ceWPTTreeModel::AddChild(ceWPTTreeItemModel *child){
-	if(! pTreeList || ! child || child->GetParent() || child->GetTree()){
+	if(!pTreeList || !child || child->GetParent() || child->GetTree()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -154,7 +154,7 @@ void ceWPTTreeModel::AddChild(ceWPTTreeItemModel *child){
 }
 
 void ceWPTTreeModel::InsertChild(ceWPTTreeItemModel *child, int position){
-	if(! pTreeList || ! child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
+	if(!pTreeList || !child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -183,16 +183,16 @@ void ceWPTTreeModel::InsertChild(ceWPTTreeItemModel *child, int position){
 }
 
 void ceWPTTreeModel::RemoveChild(ceWPTTreeItemModel *child){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! child || child->GetTree() != this){
+	if(!child || child->GetTree() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
 	ceWPTTreeItem * const item = child->GetTreeItem();
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -204,7 +204,7 @@ void ceWPTTreeModel::RemoveChild(ceWPTTreeItemModel *child){
 }
 
 void ceWPTTreeModel::RemoveAllChildren(){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -226,7 +226,7 @@ void ceWPTTreeModel::RemoveAllChildren(){
 }
 
 void ceWPTTreeModel::MoveChild(ceWPTTreeItemModel *child, int to){
-	if(! child){
+	if(!child){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -234,7 +234,7 @@ void ceWPTTreeModel::MoveChild(ceWPTTreeItemModel *child, int to){
 }
 
 void ceWPTTreeModel::MoveChild(int from, int to){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -283,20 +283,20 @@ ceWPTTIMAction *ceWPTTreeModel::GetChildWith(ceConversationAction *action) const
 
 
 void ceWPTTreeModel::UpdateActions(){
-	if(! pTreeList){
+	if(!pTreeList){
 		return;
 	}
 	
 	const PreventUpdateGuard preventUpdate(*this);
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
-	if(! file){
+	if(!file){
 		RemoveAllChildren();
 		return;
 	}
 	
 	const ceConversationTopic * const topic = file->GetActiveTopic();
-	if(! topic){
+	if(!topic){
 		RemoveAllChildren();
 		return;
 	}
@@ -355,17 +355,17 @@ void ceWPTTreeModel::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action){
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
 	ceConversationTopic * const topic = file ? file->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -424,13 +424,13 @@ void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversat
 }
 
 void ceWPTTreeModel::ContextMenuTopic(igdeMenuCascade &contextMenu){
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
 	ceConversationTopic * const topic = file ? file->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -490,17 +490,17 @@ ceWPTTIMCondition *ceWPTTreeModel::DeepFindCondition(ceConversationCondition *co
 }
 
 void ceWPTTreeModel::SelectTopicActive(){
-	if(! pTreeList){
+	if(!pTreeList){
 		return;
 	}
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
-	if(! file){
+	if(!file){
 		return;
 	}
 	
 	const ceConversationTopic * const topic = file->GetActiveTopic();
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

@@ -78,10 +78,10 @@ void deoglFindBestEnvMap::VisitList(const deoglEnvironmentMapList &list){
 	for(i=0; i<count; i++){
 		envmap = list.GetAt(i);
 		
-		if(! envmap->GetSkyOnly()){
+		if(!envmap->GetSkyOnly()){
 			distance = (envmap->GetPosition() - pPosition).Length();
 			
-			if(! pEnvMap || distance < pDistance){
+			if(!pEnvMap || distance < pDistance){
 				pEnvMap = envmap;
 				pDistance = distance;
 			}

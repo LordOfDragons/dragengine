@@ -91,7 +91,7 @@ bool dewmVorbisStream::OpenTrack(const webm::TrackEntry &track){
 	
 	// build ogg headers to start decoding. uses codec private data. no idea where one is supposed
 	// to find this information. got this code from https://github.com/zaps166/libsimplewebm
-	if(! track.codec_private.is_present()){
+	if(!track.codec_private.is_present()){
 		pCallback.GetModule().LogErrorFormat("VorbisStream.OpenTrack: missing codec private data");
 		return false;
 	}
@@ -238,7 +238,7 @@ void dewmVorbisStream::Rewind(){
 }
 
 void dewmVorbisStream::FillUpBuffer(){
-	if(! pFillUpSample){
+	if(!pFillUpSample){
 		pFillUpSample = new uint8_t[pBufferSampleSize];
 	}
 	

@@ -109,7 +109,7 @@ bool igdeTexturePropertyList::HasNamed(const char *name) const{
 }
 
 void igdeTexturePropertyList::Add(igdeTextureProperty *texture){
-	if(! texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pProperties.Add(texture);
 }

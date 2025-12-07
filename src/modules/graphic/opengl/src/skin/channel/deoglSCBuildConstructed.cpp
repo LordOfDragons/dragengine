@@ -185,7 +185,7 @@ deoglSCBuildConstructed::~deoglSCBuildConstructed(){
 bool deoglSCBuildConstructed::BuildFromProperty(const deSkinPropertyConstructed &property,
 int targetRed, int targetGreen, int targetBlue, int targetAlpha){
 	sTarget target;
-	if(! pInitPixelBuffer(target)){
+	if(!pInitPixelBuffer(target)){
 		return false; // something went wrong
 	}
 	target.targetRed = targetRed;
@@ -240,7 +240,7 @@ void deoglSCBuildConstructed::VisitGroup(deSkinPropertyNodeGroup &node){
 	const bool tileX = pTarget->tileX;
 	const bool tileY = pTarget->tileY;
 	const decPoint3 &textureSize = pTarget->textureSize;
-	const bool hasTiling = ! context->parent && (tileX || tileY);
+	const bool hasTiling = !context->parent && (tileX || tileY);
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -250,7 +250,7 @@ void deoglSCBuildConstructed::VisitGroup(deSkinPropertyNodeGroup &node){
 		if(childContext.clamp.x == 0 || childContext.clamp.y == 0){
 			continue; // node has zero size
 		}
-		if(! (childContext.clipTo > childContext.clipFrom)){
+		if(!(childContext.clipTo > childContext.clipFrom)){
 			continue; // completely clamped by parent
 		}
 		
@@ -259,7 +259,7 @@ void deoglSCBuildConstructed::VisitGroup(deSkinPropertyNodeGroup &node){
 		childNode.Visit(*this);
 		
 		// tileing
-		if(! hasTiling){
+		if(!hasTiling){
 			continue;
 		}
 		
@@ -295,7 +295,7 @@ void deoglSCBuildConstructed::VisitGroup(deSkinPropertyNodeGroup &node){
 
 void deoglSCBuildConstructed::VisitImage(deSkinPropertyNodeImage &node){
 	const deImage * const image = node.GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	
@@ -357,7 +357,7 @@ void deoglSCBuildConstructed::VisitShape(deSkinPropertyNodeShape &node){
 					position = marchContext->transformInverse * position;
 					const decPoint rounded(position.Round());
 					
-					if(! (rounded >= decPoint() && rounded <= marchContext->clamp)){
+					if(!(rounded >= decPoint() && rounded <= marchContext->clamp)){
 						break;
 					}
 					
@@ -418,7 +418,7 @@ void deoglSCBuildConstructed::VisitShape(deSkinPropertyNodeShape &node){
 					position = marchContext->transformInverse * position;
 					const decPoint rounded(position.Round());
 					
-					if(! (rounded >= decPoint() && rounded <= marchContext->clamp)){
+					if(!(rounded >= decPoint() && rounded <= marchContext->clamp)){
 						break;
 					}
 					
@@ -563,7 +563,7 @@ void deoglSCBuildConstructed::VisitText(deSkinPropertyNodeText &node){
 
 bool deoglSCBuildConstructed::pInitPixelBuffer(sTarget &target){
 	const deoglPixelBufferMipMap * const pixelBufferMipMap = pChannel.GetPixelBufferMipMap();
-	if(! pixelBufferMipMap){
+	if(!pixelBufferMipMap){
 		return false; // if the pixel buffer mip map is missing something went wrong
 	}
 	
@@ -635,7 +635,7 @@ bool deoglSCBuildConstructed::pInitPixelBuffer(sTarget &target){
 }
 
 void deoglSCBuildConstructed::pDrawMaskIfPresent(const deSkinPropertyNode &node, sTarget &target){
-	if(! node.GetMask()){
+	if(!node.GetMask()){
 		return;
 	}
 	
@@ -740,7 +740,7 @@ const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode){
 	pContext->clipTo.x += offset.x;
 	pContext->clipTo.y += offset.y;
 	
-	if(! (pContext->clipTo > decPoint3() && pContext->clipFrom < pTarget->textureSize)){
+	if(!(pContext->clipTo > decPoint3() && pContext->clipFrom < pTarget->textureSize)){
 		return;
 	}
 	
@@ -917,7 +917,7 @@ const decVector2 &tcScale, const decVector2 &tcOffset, int layer){
 				position = marchContext->transformInverse * position;
 				center = position.Round();
 				
-				if(! (center >= decPoint() && center <= marchContext->clamp)){
+				if(!(center >= decPoint() && center <= marchContext->clamp)){
 					break;
 				}
 				

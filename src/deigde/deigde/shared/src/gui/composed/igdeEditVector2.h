@@ -112,28 +112,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Widget is editable. */
-	inline bool GetEditable() const{return pEditable;}
+	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if widget is editable. */
 	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
-	inline int GetPrecision() const{return pPrecision;}
+	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision for floating point values as digits after period. */
 	void SetPrecision(int precision);
@@ -144,7 +144,7 @@ public:
 	
 	
 	/** \brief Vector2. */
-	inline const decVector2 &GetVector2() const{return pVector2;}
+	inline const decVector2 &GetVector2() const{ return pVector2; }
 	
 	/** \brief Set vector. */
 	void SetVector2(const decVector2 &vector);

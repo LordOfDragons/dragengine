@@ -77,56 +77,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine &GetEngine() const{return pEngine;}
+	inline deEngine &GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine font. */
-	inline const deFont::Ref &GetFont() const{return pEngFont;}
+	inline const deFont::Ref &GetFont() const{ return pEngFont; }
 	
 	/** \brief Engine font size. */
-	inline const deFontSize::Ref &GetFontSize() const{return pEngFontSize;}
+	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
-	inline const decString &GetPathFont() const{return pPathFont;}
+	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
 	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
-	inline const decColor &GetBackgroundColor() const{return pBackgroundColor;}
+	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
 	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
-	inline const decColor &GetTextColor() const{return pTextColor;}
+	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
 	void SetTextColor(const decColor &color);
 	
 	/** \brief Text size. */
-	inline int GetTextSize() const{return pTextSize;}
+	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
 	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
-	inline int GetPadding() const{return pPadding;}
+	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
 	void SetPadding(int padding);
 	
 	/** \brief Offset of the text. */
-	inline int GetTextOffset() const{return pTextOffset;}
+	inline int GetTextOffset() const{ return pTextOffset; }
 	
 	/** \brief Set offset of the text. */
 	void SetTextOffset(int offset);
 	
 	/** \brief List of texts. */
-	inline ceTextBoxTextList &GetTextList(){return pTexts;}
-	inline const ceTextBoxTextList &GetTextList() const{return pTexts;}
+	inline ceTextBoxTextList &GetTextList(){ return pTexts; }
+	inline const ceTextBoxTextList &GetTextList() const{ return pTexts; }
 	
 	/**
 	 * \brief Update canvas.

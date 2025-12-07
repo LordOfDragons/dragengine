@@ -61,9 +61,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the sphere shape. */
-	inline decShapeSphere *GetShapeSphere() const{return pSSphere;}
+	inline decShapeSphere *GetShapeSphere() const{ return pSSphere; }
 	/** Retrieves the sphere collision volume. */
-	inline const debpDCollisionSphere &GetCollisionSphere() const{return pCSphere;}
+	inline const debpDCollisionSphere &GetCollisionSphere() const{ return pCSphere; }
 	
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);

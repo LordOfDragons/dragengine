@@ -40,7 +40,7 @@
 ////////////////////////////
 
 igdeTriggerTarget::igdeTriggerTarget(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -67,7 +67,7 @@ void igdeTriggerTarget::SetHasFired(bool hasFired){
 }
 
 void igdeTriggerTarget::Fire(){
-	if(! pFired){
+	if(!pFired){
 		pFired = true;
 		pHasFired = true;
 		NotifyListeners();
@@ -92,7 +92,7 @@ void igdeTriggerTarget::FullReset(){
 
 
 void igdeTriggerTarget::AddListener(igdeTriggerListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	

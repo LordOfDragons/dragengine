@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editable entity. */
-	inline igdeEditableEntity *GetEditableEntity() const{return pEditableEntity;}
+	inline igdeEditableEntity *GetEditableEntity() const{ return pEditableEntity; }
 	
 	
 	
@@ -99,13 +99,13 @@ public:
 	
 	
 	/** \brief Maximum number of undo actions. */
-	inline int GetMaxUndoCount() const{return pMaxUndos;}
+	inline int GetMaxUndoCount() const{ return pMaxUndos; }
 	
 	/** \brief Set maximum number of undo actions. */
 	void SetMaxUndoCount(int maxUndos);
 	
 	/** \brief Maximum memory to consume. */
-	inline int GetMaxMemory() const{return pMaxMemory;}
+	inline int GetMaxMemory() const{ return pMaxMemory; }
 	
 	/** \brief Set maximum memory to consume. */
 	void SetMaxMemory(int maxMemory);
@@ -116,7 +116,7 @@ public:
 	int GetUndoableCount() const;
 	
 	/** \brief Number of undo actions that can be redone. */
-	inline int GetRedoableCount() const{return pRedoCount;}
+	inline int GetRedoableCount() const{ return pRedoCount; }
 	
 	/**
 	 * \brief Undo top undo action if present.

@@ -142,7 +142,7 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskPipeline::GetRootText
 
 deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskPipeline::GetTextureWith(
 const deoglTexUnitsConfig *tuc) const{
-	if(! tuc){
+	if(!tuc){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -152,7 +152,7 @@ const deoglTexUnitsConfig *tuc) const{
 
 deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskPipeline::AddTexture(
 const deoglTexUnitsConfig *tuc){
-	if(! tuc){
+	if(!tuc){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -170,7 +170,7 @@ const deoglTexUnitsConfig *tuc){
 }
 
 void deoglPersistentRenderTaskPipeline::RemoveTexture(deoglPersistentRenderTaskTexture *texture){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	

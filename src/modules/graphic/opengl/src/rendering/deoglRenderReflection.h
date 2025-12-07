@@ -92,17 +92,17 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Determines if equirectangular environment maps are used. */
-	inline bool GetUseEquiEnvMap() const{return pUseEquiEnvMap;}
+	inline bool GetUseEquiEnvMap() const{ return pUseEquiEnvMap; }
 	
 	/** Retrieves the active direct environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetDirectEnvMapActive() const{return pDirectEnvMapActive;}
+	inline deoglEnvironmentMap *GetDirectEnvMapActive() const{ return pDirectEnvMapActive; }
 	/** Retrieves the fading direct environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetDirectEnvMapFading() const{return pDirectEnvMapFading;}
+	inline deoglEnvironmentMap *GetDirectEnvMapFading() const{ return pDirectEnvMapFading; }
 	
 	/** Retrieves the environment cube map. */
-	inline deoglCubeMap *GetEnvMap() const{return pEnvMap;}
+	inline deoglCubeMap *GetEnvMap() const{ return pEnvMap; }
 	/** Retrieves the environment equi map. */
-	inline deoglTexture *GetEnvMapEqui() const{return pEnvMapEqui;}
+	inline deoglTexture *GetEnvMapEqui() const{ return pEnvMapEqui; }
 	/** Update environment map suitable for a render plan. */
 	void UpdateEnvMap(deoglRenderPlan &plan);
 	

@@ -194,7 +194,7 @@ pModule(module)
 	new FXTabItem(pTabPanels, "Properties", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2);
 	
 	frameTab = new FXVerticalFrame(pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3);
-	if(! frameTab) DETHROW(deeOutOfMemory);
+	if(!frameTab) DETHROW(deeOutOfMemory);
 	
 	block = guiBuilder.CreateMatrixPacker(frameTab, 2);
 	*/

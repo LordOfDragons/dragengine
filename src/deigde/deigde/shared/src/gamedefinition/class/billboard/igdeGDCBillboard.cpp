@@ -133,7 +133,7 @@ void igdeGDCBillboard::SetBoneName(const char *boneName){
 
 
 bool igdeGDCBillboard::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCBillboard::GetPropertyName(eProperties property) const{

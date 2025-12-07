@@ -349,11 +349,11 @@ deServiceObject::Ref deMCCommon::FileMetadata(const Modio::FileMetadata &data){
 	so->SetStringChildAt("filename", data.Filename.c_str());
 	so->SetStringChildAt("version", data.Version.c_str());
 	
-	if(! data.Changelog.empty()){
+	if(!data.Changelog.empty()){
 		so->SetStringChildAt("changelog", data.Changelog.c_str());
 	}
 	
-	if(! data.MetadataBlob.empty()){
+	if(!data.MetadataBlob.empty()){
 		so->SetStringChildAt("metadataBlob", data.MetadataBlob.c_str());
 	}
 	

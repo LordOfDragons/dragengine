@@ -77,7 +77,7 @@ const ceStripList &ceWDSLaneFacePose::GetStripList() const{
 
 void ceWDSLaneFacePose::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if(! action){
+	if(!action){
 		return;
 	}
 	

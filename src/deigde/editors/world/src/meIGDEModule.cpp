@@ -51,7 +51,7 @@ meIGDEModule::~meIGDEModule(){
 ///////////////
 
 void meIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new meWindowMain(*this));
 	}
 }

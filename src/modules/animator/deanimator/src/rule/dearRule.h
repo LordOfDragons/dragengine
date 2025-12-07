@@ -80,19 +80,19 @@ public:
 	deDEAnimator &GetModule() const;
 	
 	/** Animator. */
-	inline const dearAnimator &GetAnimator() const{return pAnimator;}
+	inline const dearAnimator &GetAnimator() const{ return pAnimator; }
 	
 	/** Animator instance. */
-	inline dearAnimatorInstance &GetInstance(){return pInstance;} 
-	inline const dearAnimatorInstance &GetInstance() const{return pInstance;} 
+	inline dearAnimatorInstance &GetInstance(){ return pInstance; } 
+	inline const dearAnimatorInstance &GetInstance() const{ return pInstance; } 
 	
 	/** Animator rule. */
-	inline const deAnimatorRule &GetRule() const{return pRule;}
+	inline const deAnimatorRule &GetRule() const{ return pRule; }
 	
 	
 	
 	/** All bones are used or a list of bones. */
-	inline bool GetUseAllBones() const{return pUseAllBones;}
+	inline bool GetUseAllBones() const{ return pUseAllBones; }
 	
 	/** Bone mapping count. */
 	int GetBoneMappingCount() const;
@@ -103,7 +103,7 @@ public:
 	
 	
 	/** All vertex position sets are used or a list of vertex position sets. */
-	inline bool GetUseAllVPS() const{return pUseAllVPS;}
+	inline bool GetUseAllVPS() const{ return pUseAllVPS; }
 	
 	/** Vertex position set mapping count. */
 	int GetVPSMappingCount() const;
@@ -122,10 +122,10 @@ public:
 	
 	
 	/** Thread-safe rule blend mode. */
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{return pBlendMode;}
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** Thread-safe rule enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	
 	

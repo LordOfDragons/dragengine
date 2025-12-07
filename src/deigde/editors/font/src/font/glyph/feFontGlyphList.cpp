@@ -106,13 +106,13 @@ bool feFontGlyphList::HasGlyphWithCode(int code) const{
 }
 
 void feFontGlyphList::AddGlyph(feFontGlyph *glyph){
-	if(! glyph || HasGlyphWithCode(glyph->GetCode())) DETHROW(deeInvalidParam);
+	if(!glyph || HasGlyphWithCode(glyph->GetCode())) DETHROW(deeInvalidParam);
 	
 	pGlyphs.Add(glyph);
 }
 
 void feFontGlyphList::RemoveGlyph(feFontGlyph *glyph){
-	if(! glyph) DETHROW(deeInvalidParam);
+	if(!glyph) DETHROW(deeInvalidParam);
 	
 	pGlyphs.Remove(glyph);
 }

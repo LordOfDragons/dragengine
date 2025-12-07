@@ -91,13 +91,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deDESynthesizer &GetModule() const{return pModule;}
+	inline deDESynthesizer &GetModule() const{ return pModule; }
 	
 	/** \brief SynthesizerInstance engine resource. */
-	inline deSynthesizerInstance &GetSynthesizerInstance() const{return pSynthesizerInstance;}
+	inline deSynthesizerInstance &GetSynthesizerInstance() const{ return pSynthesizerInstance; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline desynSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline desynSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	
 	
@@ -107,28 +107,28 @@ public:
 	
 	
 	/** \brief Channel count. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Number of samples to create. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Synthesizer is silent. */
-	inline bool GetSilent() const{return pSilent;}
+	inline bool GetSilent() const{ return pSilent; }
 	
 	/** \brief Inverse sample rate. */
-	inline float GetInverseSampleRate() const{return pInverseSampleRate;}
+	inline float GetInverseSampleRate() const{ return pInverseSampleRate; }
 	
 	/** \brief Number of samples per streaming buffer. */
-	inline int GetBufferSampleCount() const{return pBufferSampleCount;}
+	inline int GetBufferSampleCount() const{ return pBufferSampleCount; }
 	
 	/** \brief Number of streaming buffers to use. */
-	inline int GetBufferCount() const{return pBufferCount;}
+	inline int GetBufferCount() const{ return pBufferCount; }
 	/*@}*/
 	
 	

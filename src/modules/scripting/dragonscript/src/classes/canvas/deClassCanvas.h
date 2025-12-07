@@ -57,9 +57,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){return pDS;}
-	inline const deScriptingDragonScript &GetDS() const{return pDS;}
-	inline dsClass *GetClassCanvasBlendMode() const{return pClsCanvasBlendMode;}
+	inline deScriptingDragonScript &GetDS(){ return pDS; }
+	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline dsClass *GetClassCanvasBlendMode() const{ return pClsCanvasBlendMode; }
 	
 	/** \brief Create script class members. */
 	virtual void CreateClassMembers(dsEngine *engine);

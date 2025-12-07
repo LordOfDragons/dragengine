@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent view. */
-	inline meView3D &GetView() const{return pView;}
+	inline meView3D &GetView() const{ return pView; }
 	
 	/** \brief Width of the view. */
 	int GetViewWidth() const;
@@ -111,43 +111,43 @@ public:
 	
 	
 	/** \brief View matrix. */
-	inline const decDMatrix &GetMatrixView() const{return pMatrixView;}
+	inline const decDMatrix &GetMatrixView() const{ return pMatrixView; }
 	
 	/** \brief Local view matrix. */
-	inline const decDMatrix &GetMatrixViewLocal() const{return pMatrixViewLocal;}
+	inline const decDMatrix &GetMatrixViewLocal() const{ return pMatrixViewLocal; }
 	
 	/** \brief Inverse local view matrix. */
-	inline const decDMatrix &GetMatrixViewLocalInverse() const{return pMatrixViewLocalInverse;}
+	inline const decDMatrix &GetMatrixViewLocalInverse() const{ return pMatrixViewLocalInverse; }
 	
 	
 	
 	/** \brief Drag origin point. */
-	inline const decPoint &GetDragOrigin() const{return pDragOrgin;}
+	inline const decPoint &GetDragOrigin() const{ return pDragOrgin; }
 	
 	/** \brief Current drag point. */
-	inline const decPoint &GetDragCurrent() const{return pDragCurrent;}
+	inline const decPoint &GetDragCurrent() const{ return pDragCurrent; }
 	
 	/** \brief Drag distance since the last mouse movement. */
-	inline const decPoint &GetDragDistanceLast() const{return pDragDistanceLast;}
+	inline const decPoint &GetDragDistanceLast() const{ return pDragDistanceLast; }
 	
 	/** \brief Drag distance since the start of the dragging. */
-	inline const decPoint &GetDragDistanceStart() const{return pDragDistanceStart;}
+	inline const decPoint &GetDragDistanceStart() const{ return pDragDistanceStart; }
 	
 	
 	
 	/** \brief Shift key has been pressed at the start of dragging. */
-	inline bool GetShiftStart() const{return pShiftStart;}
+	inline bool GetShiftStart() const{ return pShiftStart; }
 	
 	/** \brief Shift key has been pressed at the start of dragging. */
-	inline bool GetControlStart() const{return pControlStart;}
+	inline bool GetControlStart() const{ return pControlStart; }
 	
 	
 	
 	/** \brief Left mouse button started the dragging. */
-	inline bool GetDragLeftMouseButton() const{return pDragLMB;}
+	inline bool GetDragLeftMouseButton() const{ return pDragLMB; }
 	
 	/** \brief Right mouse button started the dragging. */
-	inline bool GetDragRightMouseButton() const{return pDragRMB;}
+	inline bool GetDragRightMouseButton() const{ return pDragRMB; }
 	
 	
 	

@@ -129,12 +129,12 @@ void deEosSdkFlowAuthLogin::Login(){
 	EOS_Auth_Credentials credentials{};
 	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
 	
-	if(! pExchangeCode.IsEmpty()){
+	if(!pExchangeCode.IsEmpty()){
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
 		credentials.Token = pExchangeCode;
 		GetModule().LogInfo("deEosSdkFlowAuthLogin.Login: Logging in user using exchange code");
 		
-	} else if(! pUserId.IsEmpty() && ! pUserPassword.IsEmpty()){
+	} else if(!pUserId.IsEmpty() && !pUserPassword.IsEmpty()){
 		/*
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
 		credentials.Id = pUserId;

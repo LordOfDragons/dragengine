@@ -75,15 +75,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent space. */
-	inline dedaiSpace &GetSpace() const{return pSpace;}
+	inline dedaiSpace &GetSpace() const{ return pSpace; }
 	
 	
 	
 	/** \brief Number of vertex edges. */
-	inline int GetVertexEdgeCount() const{return pVertexEdgeCount;}
+	inline int GetVertexEdgeCount() const{ return pVertexEdgeCount; }
 	
 	/** \brief Array of vertex edges. */
-	inline unsigned short *GetVertexEdges() const{return pVertexEdges;}
+	inline unsigned short *GetVertexEdges() const{ return pVertexEdges; }
 	
 	/** \brief Vertex edge by index. */
 	unsigned short GetVertexEdgeAt(int index) const;
@@ -94,10 +94,10 @@ public:
 	
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Array of vertices. */
-	inline dedaiSpaceGridVertex *GetVertices() const{return pVertices;}
+	inline dedaiSpaceGridVertex *GetVertices() const{ return pVertices; }
 	
 	/** \brief Vertex by index. */
 	dedaiSpaceGridVertex &GetVertexAt(int index) const;
@@ -111,10 +111,10 @@ public:
 	
 	
 	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{return pEdgeCount;}
+	inline int GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Array of edges. */
-	inline dedaiSpaceGridEdge *GetEdges() const{return pEdges;}
+	inline dedaiSpaceGridEdge *GetEdges() const{ return pEdges; }
 	
 	/** \brief Edge by index. */
 	dedaiSpaceGridEdge &GetEdgeAt(int index) const;
@@ -128,10 +128,10 @@ public:
 	
 	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/** \brief Array of links. */
-	inline dedaiSpaceGridVertex **GetLinks() const{return pLinks;}
+	inline dedaiSpaceGridVertex **GetLinks() const{ return pLinks; }
 	
 	/** \brief Link by index. */
 	dedaiSpaceGridVertex *GetLinkAt(int index) const;

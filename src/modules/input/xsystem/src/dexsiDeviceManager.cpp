@@ -181,7 +181,7 @@ void dexsiDeviceManager::LogDevice(const dexsiDevice &device){
 
 
 decString dexsiDeviceManager::NormalizeID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -242,7 +242,7 @@ void dexsiDeviceManager::pCreateXInputDevices(){
 	int extOpcode = -1;
 	int extEvent;
 	int extError;
-	if(! XQueryExtension(display, "XInputExtension", &extOpcode, &extEvent, &extError)){
+	if(!XQueryExtension(display, "XInputExtension", &extOpcode, &extEvent, &extError)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -374,7 +374,7 @@ mode is XIModeRelative, this device sends relative coordinates.
 	
 	try{
 		xdevices = XListInputDevices(display, &countDevices);
-		if(! xdevices){
+		if(!xdevices){
 			return;
 		}
 		
@@ -482,13 +482,13 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 		
 		switch(device->GetType()){
 		case deInputDevice::edtMouse:
-			if(! pPrimaryMouse){
+			if(!pPrimaryMouse){
 				pPrimaryMouse = device;
 			}
 			break;
 			
 		case deInputDevice::edtKeyboard:
-			if(! pPrimaryKeyboard){
+			if(!pPrimaryKeyboard){
 				pPrimaryKeyboard = device;
 			}
 			break;
@@ -498,10 +498,10 @@ void dexsiDeviceManager::pFindPrimaryDevices(){
 		}
 	}
 	
-	if(! pPrimaryMouse){
+	if(!pPrimaryMouse){
 		pModule.LogInfo("No mouse device found");
 	}
-	if(! pPrimaryKeyboard){
+	if(!pPrimaryKeyboard){
 		pModule.LogInfo("No keyboard device found");
 	}
 }
@@ -580,7 +580,7 @@ void dexsiDeviceManager::pUpdateWatchEvdev(){
 void dexsiDeviceManager::pEvdevAppeared(const decString &path){
 	pModule.LogInfoFormat("Event device file appeared: %s", path.GetString());
 	
-	if(! pDelayProbeDevices.Has(path)){
+	if(!pDelayProbeDevices.Has(path)){
 		pDelayProbeDevices.Add(path);
 		pTimeoutDelayProbeDevices = 2.0f;
 		pTimerDelayProbeDevices.Reset();

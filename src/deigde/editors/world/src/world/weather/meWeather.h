@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the world. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Updates the weather. */
 	void Update(float elapsed);

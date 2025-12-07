@@ -43,7 +43,7 @@ meUAddNavSpace::meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNaviga
 pWorld(NULL),
 pNavSpace(NULL)
 {
-	if(! world || ! navspace){
+	if(!world || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

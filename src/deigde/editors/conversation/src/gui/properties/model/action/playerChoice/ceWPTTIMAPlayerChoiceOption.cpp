@@ -59,7 +59,7 @@ pIndex(index),
 pCondition(NULL),
 pActions(NULL)
 {
-	if(! option){
+	if(!option){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ ceWPTTIMAPlayerChoiceOption::~ceWPTTIMAPlayerChoiceOption(){
 
 ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceOption::GetModelPlayerChoice() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -143,12 +143,12 @@ void ceWPTTIMAPlayerChoiceOption::OnExpandedChanged(){
 }
 
 void ceWPTTIMAPlayerChoiceOption::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = GetModelPlayerChoice();
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	
@@ -157,7 +157,7 @@ void ceWPTTIMAPlayerChoiceOption::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

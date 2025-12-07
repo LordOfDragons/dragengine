@@ -96,51 +96,51 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Extends. */
-	inline const sExtends &GetExtends() const{return pExtends;}
+	inline const sExtends &GetExtends() const{ return pExtends; }
 	
 	/** Weightless extends. */
-	inline const sExtends &GetWeightlessExtends() const{return pWeightlessExtends;}
+	inline const sExtends &GetWeightlessExtends() const{ return pWeightlessExtends; }
 	
 	/** Has weightless extends. */
-	inline bool GetHasWeightlessExtends() const{return pHasWeightlessExtends;}
+	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
 	/** Bone extends. */
-	inline const sExtends *GetBoneExtends() const{return pBoneExtends;}
+	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
 	
 	/** Number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** List of bone names. */
-	inline const decStringList &GetBoneNames() const{return pBoneNames;}
+	inline const decStringList &GetBoneNames() const{ return pBoneNames; }
 	
 	/** List of texture names. */
-	inline const decStringList &GetTextureNames() const{return pTextureNames;}
+	inline const decStringList &GetTextureNames() const{ return pTextureNames; }
 	
 	/** List of vertex position set names. */
-	inline const decStringList &GetVPSNames() const{return pVPSNames;}
+	inline const decStringList &GetVPSNames() const{ return pVPSNames; }
 	
 	
 	
 	/** Number of lods. */
-	inline int GetLODCount() const{return pLODCount;}
+	inline int GetLODCount() const{ return pLODCount; }
 	
 	/** Lod at index. */
 	deoglModelLOD &GetLODAt(int index) const;
 	
 	/** Model has double sided textures. */
-	inline bool GetDoubleSided() const{return pDoubleSided;}
+	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
 	/** Prepare imposter billboard. */
 	void PrepareImposterBillboard();
 	
 	/** Imposter billboard or \em NULL if not existing. */
-	inline deoglImposterBillboard *GetImposterBillboard() const{return pImposterBillboard;}
+	inline deoglImposterBillboard *GetImposterBillboard() const{ return pImposterBillboard; }
 	
 	/** Shared shader parameter block list using UBO. */
 	deoglSharedSPBListUBO &GetSharedSPBListUBO();

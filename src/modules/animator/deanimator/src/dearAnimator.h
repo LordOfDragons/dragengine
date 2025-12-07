@@ -60,18 +60,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deDEAnimator &GetModule(){return pModule;}
-	inline const deDEAnimator &GetModule() const{return pModule;}
+	inline deDEAnimator &GetModule(){ return pModule; }
+	inline const deDEAnimator &GetModule() const{ return pModule; }
 	
 	/** Animator. */
-	inline deAnimator &GetAnimator(){return pAnimator;}
-	inline const deAnimator &GetAnimator() const{return pAnimator;}
+	inline deAnimator &GetAnimator(){ return pAnimator; }
+	inline const deAnimator &GetAnimator() const{ return pAnimator; }
 	
 	/** Current update tracker state. */
-	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
+	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	
 	/** Animation or nullptr. */
-	inline dearAnimation *GetAnimation() const{return pAnimation;}
+	inline dearAnimation *GetAnimation() const{ return pAnimation; }
 	/*@}*/
 	
 	/** \name Notifications */

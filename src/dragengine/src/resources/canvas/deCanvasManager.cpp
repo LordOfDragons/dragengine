@@ -210,7 +210,7 @@ void deCanvasManager::SystemGraphicLoad(){
 	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
 	
 	while(canvas){
-		if(! canvas->GetPeerGraphic()){
+		if(!canvas->GetPeerGraphic()){
 			GetGraphicSystem()->LoadCanvas(canvas);
 		}
 		

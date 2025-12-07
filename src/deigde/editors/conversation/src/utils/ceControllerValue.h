@@ -57,19 +57,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controller. */
-	inline int GetControllerIndex() const{return pControllerIndex;}
+	inline int GetControllerIndex() const{ return pControllerIndex; }
 	
 	/** Set controller. */
 	void SetControllerIndex(int controller);
 	
 	/** Controller. */
-	inline const decString &GetController() const{return pController;}
+	inline const decString &GetController() const{ return pController; }
 	
 	/** Set controller. */
 	void SetController(const char *controller);
 	
 	/** Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** Set value. */
 	void SetValue(float value);

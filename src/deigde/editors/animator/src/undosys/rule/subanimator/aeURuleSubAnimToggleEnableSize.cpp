@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSubAnimToggleEnableSize::aeURuleSubAnimToggleEnableSize(aeRuleSubAnimator *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleSubAnimToggleEnableSize::~aeURuleSubAnimToggleEnableSize(){
 ///////////////
 
 void aeURuleSubAnimToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleSubAnimToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

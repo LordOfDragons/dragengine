@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Topic panel. */
 	ceWPTopic &GetPanelTopic() const;

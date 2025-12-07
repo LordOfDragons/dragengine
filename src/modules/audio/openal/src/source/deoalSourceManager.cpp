@@ -85,7 +85,7 @@ deoalSource *deoalSourceManager::GetSourceAt(int index) const{
 
 
 deoalSource *deoalSourceManager::BindSource(void *owner){
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -130,7 +130,7 @@ deoalSource *deoalSourceManager::BindSource(void *owner){
 }
 
 void deoalSourceManager::UnbindSource(deoalSource *source){
-	if(! source || ! source->GetOwner()){
+	if(!source || !source->GetOwner()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,7 +167,7 @@ deoalSource *deoalSourceManager::pNextUnboundSource() const{
 	
 	for(i=0; i<count; i++){
 		source = (deoalSource*)pSources.GetAt(i);
-		if(! source->GetOwner()){
+		if(!source->GetOwner()){
 			return source;
 		}
 	}
@@ -183,10 +183,10 @@ deoalSource *deoalSourceManager::pBestRebindableSource() const{
 	
 	for(i=0; i<count; i++){
 		source = (deoalSource*)pSources.GetAt(i);
-		if(! source->GetOwner()){
+		if(!source->GetOwner()){
 			continue;
 		}
-		if(! bestSource || source->GetImportance() < bestSource->GetImportance()){
+		if(!bestSource || source->GetImportance() < bestSource->GetImportance()){
 			bestSource = source;
 		}
 	}

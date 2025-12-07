@@ -80,12 +80,12 @@ void ceWPCondition::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 			}
 			
 			const decString &id = list.GetAt(i)->GetID();
-			if(! combobox.HasItem(id)){
+			if(!combobox.HasItem(id)){
 				combobox.AddItem(id);
 			}
 			
 			const decString &aliasID = list.GetAt(i)->GetAliasID();
-			if(! aliasID.IsEmpty() && ! combobox.HasItem(aliasID)){
+			if(!aliasID.IsEmpty() && !combobox.HasItem(aliasID)){
 				combobox.AddItem(aliasID);
 			}
 		}

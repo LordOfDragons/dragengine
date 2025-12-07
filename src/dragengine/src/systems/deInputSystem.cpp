@@ -156,7 +156,7 @@ void deInputSystem::ClearPermanents(){
 }
 
 void deInputSystem::PostStart(){
-	if(! pActiveModule->Init()){
+	if(!pActiveModule->Init()){
 		DETHROW(deeInvalidAction);
 	}
 }

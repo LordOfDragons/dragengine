@@ -61,14 +61,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of lines in the buffer. */
-	inline int GetLineCount() const{return pLineCount;}
+	inline int GetLineCount() const{ return pLineCount; }
 	
 	/**
 	 * \brief Size of the line buffer.
 	 * 
 	 * All lines beyond this limit are discarded automatically.
 	 */
-	inline int GetBufferSize() const{return pBufferSize;}
+	inline int GetBufferSize() const{ return pBufferSize; }
 	
 	/**
 	 * \brief Set the size of the line buffer.

@@ -103,19 +103,19 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Renderer for spot lights. */
-	inline deoglRenderLightSpot &GetRenderLightSpot() const{return *pRenderLightSpot;}
+	inline deoglRenderLightSpot &GetRenderLightSpot() const{ return *pRenderLightSpot; }
 	
 	/** Renderer for sky lights. */
-	inline deoglRenderLightSky &GetRenderLightSky() const{return *pRenderLightSky;}
+	inline deoglRenderLightSky &GetRenderLightSky() const{ return *pRenderLightSky; }
 	
 	/** Renderer for point lights. */
-	inline deoglRenderLightPoint &GetRenderLightPoint() const{return *pRenderLightPoint;}
+	inline deoglRenderLightPoint &GetRenderLightPoint() const{ return *pRenderLightPoint; }
 	
 	/** Renderer for particle lights. */
-	inline deoglRenderLightParticles &GetRenderLightParticles() const{return *pRenderLightParticles;}
+	inline deoglRenderLightParticles &GetRenderLightParticles() const{ return *pRenderLightParticles; }
 	
 	/** Renderer for global illumination. */
-	inline deoglRenderGI &GetRenderGI() const{return *pRenderGI;}
+	inline deoglRenderGI &GetRenderGI() const{ return *pRenderGI; }
 	
 	
 	
@@ -123,19 +123,19 @@ public:
 	const deoglSPBlockUBO::Ref &NextShadowPB();
 	
 	/** Shadow render parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{return pShadowPB;}
+	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
 	
 	/** Get a new occmap render parameter block. */
 	const deoglSPBlockUBO::Ref &NextOccMapPB();
 	
 	/** Occmap render parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{return pOccMapPB;}
+	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }
 	
 	/** Render task. */
-	inline deoglRenderTask &GetRenderTask() const{return *pRenderTask;}
+	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
 	
 	/** Add to render task. */
-	inline deoglAddToRenderTask &GetAddToRenderTask() const{return *pAddToRenderTask;}
+	inline deoglAddToRenderTask &GetAddToRenderTask() const{ return *pAddToRenderTask; }
 	
 	
 	

@@ -84,11 +84,11 @@ deErrorTracePoint *deErrorTrace::GetPoint(int index) const{
 }
 
 void deErrorTrace::AddPoint(deErrorTracePoint *point){
-	if(! point) DETHROW(deeInvalidParam);
+	if(!point) DETHROW(deeInvalidParam);
 	if(pPointCount == pPointSize){
 		int i, newSize = pPointSize * 3 / 2 + 1;
 		deErrorTracePoint **newArray = new deErrorTracePoint*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pPoints){
 			for(i=0; i<pPointCount; i++) newArray[i] = pPoints[i];
 			delete [] pPoints;
@@ -114,18 +114,18 @@ void deErrorTrace::RemoveAllPoints(){
 //////////////////////////
 
 deErrorTracePoint *deErrorTrace::AddAndSetIfEmpty(const char *error, deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
-	if(! error || ! sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
+	if(!error || !sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
 	if(pPointCount > 0) return NULL;
 	pError = error;
 	return AddPoint(sourceModule, sourceFunc, sourceLine);
 }
 
 deErrorTracePoint *deErrorTrace::AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
-	if(! sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
+	if(!sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
 	deErrorTracePoint *newPoint = NULL;
 	try{
 		newPoint = new deErrorTracePoint(sourceModule, sourceFunc, sourceLine);
-		if(! newPoint) DETHROW(deeOutOfMemory);
+		if(!newPoint) DETHROW(deeOutOfMemory);
 		AddPoint(newPoint);
 	}catch(const deException &){
 		if(newPoint) delete newPoint;

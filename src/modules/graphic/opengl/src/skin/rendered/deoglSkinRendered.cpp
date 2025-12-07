@@ -130,15 +130,15 @@ void deoglSkinRendered::SetDirty(){
 }
 
 void deoglSkinRendered::Prepare(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	pDirty = false;
 	
 	// non-components are handled in a simple way
-	if(! pOwnerComponent){
+	if(!pOwnerComponent){
 		deoglRSkin * const skin = GetOwnerSkin();
-		if(! skin || skin->GetTextureCount() == 0){
+		if(!skin || skin->GetTextureCount() == 0){
 			return;
 		}
 		
@@ -153,7 +153,7 @@ void deoglSkinRendered::Prepare(){
 		const deoglRComponentTexture &rctexture = pOwnerComponent->GetTextureAt(i);
 		deoglRSkin * const skin = rctexture.GetUseSkin();
 		const int skinTexture = rctexture.GetUseTextureNumber();
-		if(! skin || skinTexture == -1){
+		if(!skin || skinTexture == -1){
 			continue;
 		}
 		

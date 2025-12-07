@@ -74,7 +74,7 @@ deEnvMapProbe::~deEnvMapProbe(){
 ///////////////
 
 void deEnvMapProbe::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pPeerGraphic){
@@ -84,7 +84,7 @@ void deEnvMapProbe::SetPosition(const decDVector &position){
 }
 
 void deEnvMapProbe::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		if(pPeerGraphic){
@@ -94,7 +94,7 @@ void deEnvMapProbe::SetOrientation(const decQuaternion &orientation){
 }
 
 void deEnvMapProbe::SetScaling(const decVector &scaling){
-	if(! scaling.IsEqualTo(pScaling)){
+	if(!scaling.IsEqualTo(pScaling)){
 		pScaling = scaling;
 		
 		if(pPeerGraphic){

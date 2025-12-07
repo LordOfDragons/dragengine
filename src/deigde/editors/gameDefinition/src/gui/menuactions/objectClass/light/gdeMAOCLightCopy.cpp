@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCLightCopy::OnActionSubObject(gdeGameDefinition &gameDefinition,
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if(! light){
+	if(!light){
 		return NULL;
 	}
 	

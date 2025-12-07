@@ -57,7 +57,7 @@ pPlayerChoice(&playerChoice),
 pAction(action),
 pIndex(index)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	

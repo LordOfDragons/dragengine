@@ -43,7 +43,7 @@ seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
 pLink(NULL),
 pNewCurve(newCurve)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

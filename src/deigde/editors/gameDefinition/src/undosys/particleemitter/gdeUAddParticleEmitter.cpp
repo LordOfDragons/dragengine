@@ -44,7 +44,7 @@ gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition *gameDefinition
 pGameDefinition(NULL),
 pParticleEmitter(NULL)
 {
-	if(! gameDefinition || ! particleEmitter){
+	if(!gameDefinition || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

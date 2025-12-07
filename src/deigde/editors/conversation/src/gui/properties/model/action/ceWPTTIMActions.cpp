@@ -167,7 +167,7 @@ void ceWPTTIMActions::BuildPlaybackFromHere() const{
 
 ceWPTTIMAction *ceWPTTIMActions::CreateActionModel(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationAction *action){
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	

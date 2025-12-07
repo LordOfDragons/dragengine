@@ -64,7 +64,7 @@ pLockCount(0),
 
 pErrorCode(eecSuccess)
 {
-	if(! system){
+	if(!system){
 		DETHROW(deeInvalidParam);
 	}
 	

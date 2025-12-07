@@ -44,12 +44,12 @@ seUControllerMoveDown::seUControllerMoveDown(seController *controller) :
 pController(NULL),
 pIndex(0)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const seSky * const sky = controller->GetSky();
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

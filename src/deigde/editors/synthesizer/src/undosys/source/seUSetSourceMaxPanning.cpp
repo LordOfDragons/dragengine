@@ -42,7 +42,7 @@
 seUSetSourceMaxPanning::seUSetSourceMaxPanning(seSource *source, float newValue) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

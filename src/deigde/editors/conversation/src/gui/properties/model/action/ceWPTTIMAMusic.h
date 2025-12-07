@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAMusic *GetActionMusic() const{return (ceCAMusic*)GetAction();}
+	inline ceCAMusic *GetActionMusic() const{ return (ceCAMusic*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

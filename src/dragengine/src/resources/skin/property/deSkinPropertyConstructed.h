@@ -63,22 +63,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Content. */
-	inline deSkinPropertyNodeGroup &GetContent() const{return *pContent;}
+	inline deSkinPropertyNodeGroup &GetContent() const{ return *pContent; }
 	
 	/** \brief Base color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set base color. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Nodes are tiled along x axis. */
-	inline bool GetTileX() const{return pTileX;}
+	inline bool GetTileX() const{ return pTileX; }
 	
 	/** \brief Set if nodes are tiled along x axis. */
 	void SetTileX(bool tileX);
 	
 	/** \brief Nodes are tiled along y axis. */
-	inline bool GetTileY() const{return pTileY;}
+	inline bool GetTileY() const{ return pTileY; }
 	
 	/** \brief Set if nodes are tiled along y axis. */
 	void SetTileY(bool tileY);
@@ -88,7 +88,7 @@ public:
 	 * 
 	 * Can be 8, 16 or 32.
 	 */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/**
 	 * \brief Set bit count.

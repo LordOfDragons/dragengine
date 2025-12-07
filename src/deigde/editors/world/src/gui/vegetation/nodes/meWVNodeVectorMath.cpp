@@ -67,7 +67,7 @@ public:
 	cComboOperator(meWVNodeVectorMath &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pNode.GetRuleVectorMath()){
+		if(!pNode.GetRuleVectorMath()){
 			return;
 		}
 		

@@ -69,13 +69,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend of the boundary box. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend of the boundary box. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	/** Retrieves the node size. */
-	inline const decVector &GetNodeSize() const{return pNodeSize;}
+	inline const decVector &GetNodeSize() const{ return pNodeSize; }
 	/** Retrieves the number of nodes. */
-	inline const decPoint3 &GetNodeCount() const{return pNodeCount;}
+	inline const decPoint3 &GetNodeCount() const{ return pNodeCount; }
 	/** Determines if the index is inside the valid range. */
 	bool IsIndexValid(const decPoint3 &index) const;
 	/**

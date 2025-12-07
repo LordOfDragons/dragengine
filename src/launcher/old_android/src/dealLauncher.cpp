@@ -107,13 +107,13 @@ pFrozen(false)
 		pFileSystem = new deVirtualFileSystem;
 		
 		// sanity checks
-		if(! pAndroidApp.activity){
+		if(!pAndroidApp.activity){
 			DETHROW(deeInvalidAction);
 		}
-		if(! pAndroidApp.config){
+		if(!pAndroidApp.config){
 			DETHROW(deeInvalidAction);
 		}
-		if(! pAndroidApp.looper){
+		if(!pAndroidApp.looper){
 			DETHROW(deeInvalidAction);
 		}
 		
@@ -183,7 +183,7 @@ void dealLauncher::LoadAsset(const char *filename, decMemoryFile &memoryFile){
 	
 	try{
 		asset = AAssetManager_open(pAndroidApp.activity->assetManager, filename, AASSET_MODE_STREAMING);
-		if(! asset){
+		if(!asset){
 			DETHROW(deeOpenFile);
 		}
 		
@@ -348,7 +348,7 @@ bool dealLauncher::CheckInitialInstall(){
 	
 	try{
 		asset = AAssetManager_open(pAndroidApp.activity->assetManager, filename.GetString(), AASSET_MODE_STREAMING);
-		if(! asset){
+		if(!asset){
 			DETHROW(deeOpenFile);
 		}
 		AAsset_read(asset, sha1sumInstall, 256);
@@ -431,7 +431,7 @@ bool dealLauncher::InitialInstallProgress(){
 	
 	pDialogMain->GetTaskCheckEngine().SetProgress((int)(progress * 100.0f));
 	
-	finished = ! unpacking;
+	finished = !unpacking;
 	
 	// if unpacking finished stop the asset unpacker
 	if(finished){
@@ -442,7 +442,7 @@ bool dealLauncher::InitialInstallProgress(){
 	}
 	
 	// if finished copy sha1 checksum to avoid installing again
-	if(! finished){
+	if(!finished){
 		return unpacking;
 	}
 	
@@ -460,7 +460,7 @@ bool dealLauncher::InitialInstallProgress(){
 		writer = new decDiskFileWriter(pathSha1sumInstalled, false);
 		
 		asset = AAssetManager_open(pAndroidApp.activity->assetManager, filename.GetString(), AASSET_MODE_STREAMING);
-		if(! asset){
+		if(!asset){
 			DETHROW(deeOpenFile);
 		}
 		
@@ -486,7 +486,7 @@ bool dealLauncher::InitialInstallProgress(){
 
 
 void dealLauncher::StopAssetUnpacking(){
-	if(! pAssetUnpacker){
+	if(!pAssetUnpacker){
 		return;
 	}
 	
@@ -499,14 +499,14 @@ void dealLauncher::StopAssetUnpacking(){
 
 
 void dealLauncher::StartEngine(){
-	if(! pAndroidApp.inputQueue){
+	if(!pAndroidApp.inputQueue){
 		DETHROW(deeInvalidAction);
 	}
 	
 	pGameManager.LoadGameList();
 	pLocateGame();
 	
-	if(! pGame){
+	if(!pGame){
 		GetLogger().LogError(LOGSOURCE, "Game missing.");
 		pState = esMainMenu;
 		return;
@@ -522,21 +522,21 @@ void dealLauncher::StartEngine(){
 	pGameManager.Verify();
 	
 	// verify game if loaded from file which is the default on android
-	if(! pGameManager.GetGameList().Has(pGame)){
+	if(!pGameManager.GetGameList().Has(pGame)){
 		pGame->VerifyRequirements();
 	}
 }
 
 void dealLauncher::StartGame(){
 	// check if game is present. this should never fail
-	if(! pGame){
+	if(!pGame){
 		GetLogger().LogError(LOGSOURCE, "Game missing.");
 		pState = esMainMenu;
 		return;
 	}
 	
 	// check if the game can run
-	if(! pGame->GetCanRun()){
+	if(!pGame->GetCanRun()){
 		GetLogger().LogInfoFormat(LOGSOURCE, "Game '%s' can not be run using profile '%s'",
 			pGame->GetTitle().ToUTF8().GetString(), pProfile ? pProfile->GetName().GetString() : "<missing>");
 		pPrintGameProblems();
@@ -563,7 +563,7 @@ void dealLauncher::StartGame(){
 	//      script modules. to get a specific version the same trick has to be used as for
 	//      multiple type modules by disabling/enabling specific module versions. this will
 	//      be applied during profile activation above so we get the appropriate version here
-	if(! pEngine.GetEngine()->ActivateModule(pGame->GetScriptModule(), "")){
+	if(!pEngine.GetEngine()->ActivateModule(pGame->GetScriptModule(), "")){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -572,15 +572,15 @@ void dealLauncher::StartGame(){
 	decPath pathDataDir;
 	pathDataDir.SetFromNative(pGame->GetGameDirectory());
 	pathDataDir.AddUnixPath(pGame->GetDataDirectory());
-	if(! pEngine.GetEngine()->SetDataDirectory(pathDataDir.GetPathNative())){
+	if(!pEngine.GetEngine()->SetDataDirectory(pathDataDir.GetPathNative())){
 		DETHROW(deeInvalidAction);
 	}
-	if(! pEngine.GetEngine()->SetCmdLineArgs(pRunArguments + " " + pGame->GetRunArguments())){
+	if(!pEngine.GetEngine()->SetCmdLineArgs(pRunArguments + " " + pGame->GetRunArguments())){
 		DETHROW(deeInvalidAction);
 	}
 	
 	// open delga file to mount directories inside into the virtual file system
-	if(! pEngine.GetEngine()->OpenDelga(pGameData->GetFileDescriptor(),
+	if(!pEngine.GetEngine()->OpenDelga(pGameData->GetFileDescriptor(),
 	pGameData->GetFileOffset(), pGameData->GetFileLength())){
 		DETHROW(deeInvalidAction);
 	}
@@ -589,11 +589,11 @@ void dealLauncher::StartGame(){
 	decPath filePath;
 	filePath.SetFromUnix("/");
 	filePath.AddUnixPath(pGame->GetDataDirectory());
-	if(! pEngine.GetEngine()->VFSAddDelga("/", filePath.GetPathUnix())){
+	if(!pEngine.GetEngine()->VFSAddDelga("/", filePath.GetPathUnix())){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(! pEngine.GetEngine()->VFSAddScriptSharedDataDir()){
+	if(!pEngine.GetEngine()->VFSAddScriptSharedDataDir()){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -605,7 +605,7 @@ void dealLauncher::StartGame(){
 	filePath.AddComponent("games");
 	filePath.AddComponent(pGame->GetIdentifier());
 	filePath.AddComponent("overlay");
-	if(! pEngine.GetEngine()->VFSAddDiskDir("/", filePath.GetPathNative(), false)){
+	if(!pEngine.GetEngine()->VFSAddDiskDir("/", filePath.GetPathNative(), false)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -613,7 +613,7 @@ void dealLauncher::StartGame(){
 	filePath.AddComponent("games");
 	filePath.AddComponent(pGame->GetIdentifier());
 	filePath.AddComponent("config");
-	if(! pEngine.GetEngine()->VFSAddDiskDir(pGame->GetPathConfig(), filePath.GetPathNative(), false)){
+	if(!pEngine.GetEngine()->VFSAddDiskDir(pGame->GetPathConfig(), filePath.GetPathNative(), false)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -621,7 +621,7 @@ void dealLauncher::StartGame(){
 	filePath.AddComponent("games");
 	filePath.AddComponent(pGame->GetIdentifier());
 	filePath.AddComponent("capture");
-	if(! pEngine.GetEngine()->VFSAddDiskDir(pGame->GetPathCapture(), filePath.GetPathNative(), false)){
+	if(!pEngine.GetEngine()->VFSAddDiskDir(pGame->GetPathCapture(), filePath.GetPathNative(), false)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -636,19 +636,19 @@ void dealLauncher::StartGame(){
 		pRunFullScreen = false;
 	}
 	
-	if(! pEngine.GetEngine()->CreateRenderWindow(pRunWidth, pRunHeight, pRunFullScreen, pWindowTitle)){
+	if(!pEngine.GetEngine()->CreateRenderWindow(pRunWidth, pRunHeight, pRunFullScreen, pWindowTitle)){
 		DETHROW(deeInvalidAction);
 	}
 	
 	// start game
-	if(! pEngine.GetEngine()->StartGame(pGame->GetScriptDirectory(), pGame->GetGameObject())){
+	if(!pEngine.GetEngine()->StartGame(pGame->GetScriptDirectory(), pGame->GetGameObject())){
 		DETHROW(deeInvalidAction);
 	}
 }
 
 bool dealLauncher::UpdateFrame(){
 	bool keepRunning = true;
-	if(! pEngine.GetEngine()->FrameUpdate(keepRunning)){
+	if(!pEngine.GetEngine()->FrameUpdate(keepRunning)){
 		DETHROW(deeInvalidAction);
 	}
 	return keepRunning;
@@ -660,7 +660,7 @@ void dealLauncher::LaunchGame(){
 	}
 	
 	// check intent data
-	if(! pObjUriIntentData){
+	if(!pObjUriIntentData){
 		GetLogger().LogInfo(LOGSOURCE, "Intent Data URI is null");
 		pState = esMainMenu;
 		return;
@@ -672,7 +672,7 @@ void dealLauncher::LaunchGame(){
 }
 
 void dealLauncher::StopGame(){
-	if(! pGame){
+	if(!pGame){
 		return;
 	}
 	GetLogger().LogInfoFormat(LOGSOURCE, "Stop game '%s'", pGame->GetTitle().ToUTF8().GetString());
@@ -696,7 +696,7 @@ void dealLauncher::InitWindow(){
 	
 	pDisplay.Init();
 	
-	if(! pDialogMain){
+	if(!pDialogMain){
 		pDialogMain = new dealDialogMain(pDisplay);
 		pDisplay.SetDialog(pDialogMain);
 	}
@@ -719,7 +719,7 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
@@ -731,7 +731,7 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
@@ -743,7 +743,7 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
@@ -774,15 +774,15 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
-		if(! pAssetUnpacker){
+		if(!pAssetUnpacker){
 			pState = esQuit;
 			return true;
 		}
-		if(! InitialInstallProgress()){
+		if(!InitialInstallProgress()){
 			pState = esMainMenu;
 			pDialogMain->SetRunEnabled(true);
 		}
@@ -798,7 +798,7 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
@@ -816,7 +816,7 @@ bool dealLauncher::FrameLoop(){
 			pState = esWaitDestroy;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
@@ -852,12 +852,12 @@ bool dealLauncher::FrameLoop(){
 			pState = esGameStop;
 			return true;
 		}
-		if(! HasAppWindow()){
+		if(!HasAppWindow()){
 			return true;
 		}
 		
 		try{
-			if(! UpdateFrame()){
+			if(!UpdateFrame()){
 				pState = esGameStop;
 			}
 			
@@ -927,7 +927,7 @@ void dealLauncher::ProcessInputEvent(const AInputEvent &event){
 				if(pDisplay.GetDialog()){
 					pDisplay.SetDialog(pDisplay.GetDialog()->BackKeyDialog());
 				}
-				if(! pDisplay.GetDialog()){
+				if(!pDisplay.GetDialog()){
 					ExitApplication();
 				}
 				
@@ -1301,7 +1301,7 @@ void dealLauncher::pInitLogger(){
 }
 
 void dealLauncher::pLocateGame(){
-	if(! pGameData){
+	if(!pGameData){
 		GetLogger().LogError(LOGSOURCE, "Game Data missing.");
 		DETHROW(deeInvalidParam);
 	}
@@ -1335,7 +1335,7 @@ void dealLauncher::pLocateGame(){
 	}
 	
 	// final check
-	if(! pGame){
+	if(!pGame){
 		GetLogger().LogError(LOGSOURCE, "No game found to run");
 		DETHROW(deeInvalidParam);
 	}
@@ -1349,11 +1349,11 @@ void dealLauncher::pLocateProfile(){
 	}else{
 		pProfile = pGame->GetProfileList().GetNamed(pProfileName);
 		
-		if(! pProfile){
+		if(!pProfile){
 			pProfile = pGameManager.GetProfileList().GetNamed(pProfileName);
 		}
 		
-		if(! pProfile){
+		if(!pProfile){
 			GetLogger().LogErrorFormat(LOGSOURCE, "No profile found with name '%s'", pProfileName.GetString());
 			DETHROW(deeInvalidParam);
 		}
@@ -1361,7 +1361,7 @@ void dealLauncher::pLocateProfile(){
 	
 	pProfile->AddReference();
 	
-	if(! pProfile->GetValid()){
+	if(!pProfile->GetValid()){
 //		PrintProfileProblems();
 		DETHROW(deeInvalidAction);
 	}
@@ -1390,7 +1390,7 @@ void dealLauncher::pPrintGameProblems() const{
 	for(i=0; i<fileFormatCount; i++){
 		const dealFileFormat &fileFormat = *fileFormatList.GetFormatAt(i);
 		
-		if(! fileFormat.GetSupported()){
+		if(!fileFormat.GetSupported()){
 			if(dealEngineModule::IsSingleType(fileFormat.GetType())){
 				logger.LogErrorFormat(LOGSOURCE, "- File Format '%s' defines single type %s",
 					fileFormat.GetPattern().GetString(), dealEngineModule::GetStringForType(fileFormat.GetType()));
@@ -1402,7 +1402,7 @@ void dealLauncher::pPrintGameProblems() const{
 		}
 	}
 	
-	if(! pGame->GetScriptModuleFound()){
+	if(!pGame->GetScriptModuleFound()){
 		pPrintModuleProblem(pGame->GetScriptModule(), dealEngineModule::emtScript);
 	}
 }
@@ -1428,7 +1428,7 @@ void dealLauncher::pPrintModuleProblem(const char *moduleName, dealEngineModule:
 	dealEngineModule * const module = pEngine.GetModuleList().GetModuleNamed(moduleName);
 	deLogger &logger = GetLogger();
 	
-	if(! module){
+	if(!module){
 		logger.LogErrorFormat(LOGSOURCE, "- %s module '%s' does not exist",
 			dealEngineModule::GetStringForType(moduleType), moduleName);
 		

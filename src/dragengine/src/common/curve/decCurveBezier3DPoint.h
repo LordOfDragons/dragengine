@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point. */
-	inline const decVector &GetPoint() const{return pPoint;}
+	inline const decVector &GetPoint() const{ return pPoint; }
 	
 	/** \brief First handle. */
-	inline const decVector &GetHandle1() const{return pHandle1;}
+	inline const decVector &GetHandle1() const{ return pHandle1; }
 	
 	/** \brief Second handle. */
-	inline const decVector &GetHandle2() const{return pHandle2;}
+	inline const decVector &GetHandle2() const{ return pHandle2; }
 	
 	/** \brief Set point. */
 	void SetPoint(const decVector &point);

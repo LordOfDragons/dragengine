@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float nz){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

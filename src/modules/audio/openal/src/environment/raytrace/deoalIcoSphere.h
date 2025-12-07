@@ -88,19 +88,19 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Vertices. */
-	inline const decVector *GetVertices() const{return pVertices;}
+	inline const decVector *GetVertices() const{ return pVertices; }
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Edges. */
-	inline const sEdge *GetEdges() const{return pEdges;}
+	inline const sEdge *GetEdges() const{ return pEdges; }
 	
 	/** \brief Edge count. */
-	inline int GetEdgeCount() const{return pEdgeCount;}
+	inline int GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Opening angle. */
-	inline float GetOpeningAngle() const{return pOpeningAngle;}
+	inline float GetOpeningAngle() const{ return pOpeningAngle; }
 	
 	/** \brief Subdivide ico sphere. */
 	deoalIcoSphere Subdivide() const;

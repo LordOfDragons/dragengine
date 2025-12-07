@@ -147,27 +147,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** List of found texture 2d formats. */
-	const deoglCapsTextureFormatList &GetFoundTex2DFormats() const{return pFoundTex2DFormats;}
+	const deoglCapsTextureFormatList &GetFoundTex2DFormats() const{ return pFoundTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundTex2DFormats(){return pFoundTex2DFormats;}
 	
 	/** List of found texture cube formats. */
-	const deoglCapsTextureFormatList &GetFoundTexCubeFormats() const{return pFoundTexCubeFormats;}
+	const deoglCapsTextureFormatList &GetFoundTexCubeFormats() const{ return pFoundTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundTexCubeFormats(){return pFoundTexCubeFormats;}
 	
 	/** List of found array texture formats. */
-	const deoglCapsTextureFormatList &GetFoundArrayTexFormats() const{return pFoundArrTexFormats;}
+	const deoglCapsTextureFormatList &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundArrayTexFormats(){return pFoundArrTexFormats;}
 	
 	/** List of found fbo texture 2d formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOTex2DFormats() const{return pFoundFBOTex2DFormats;}
+	const deoglCapsTextureFormatList &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTex2DFormats(){return pFoundFBOTex2DFormats;}
 	
 	/** List of found fbo texture cube formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats() const{return pFoundFBOTexCubeFormats;}
+	const deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats() const{ return pFoundFBOTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats(){return pFoundFBOTexCubeFormats;}
 	
 	/** List of found fbo array texture formats. */
-	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{return pFoundFBOArrTexFormats;}
+	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats(){return pFoundFBOArrTexFormats;}
 	
 	

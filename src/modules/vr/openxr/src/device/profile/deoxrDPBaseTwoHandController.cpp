@@ -64,7 +64,7 @@ void deoxrDPBaseTwoHandController::CheckAttached(){
 	const bool enabled = pProfileEnabled();
 	
 	if(enabled && pMatchesProfile(pPathHandLeft)){
-		if(! pDeviceLeft){
+		if(!pDeviceLeft){
 			GetInstance().GetOxr().GetDeviceProfiles().RemoveDevice(deInputDevice::edtVRLeftHand);
 		}
 		
@@ -75,7 +75,7 @@ void deoxrDPBaseTwoHandController::CheckAttached(){
 	}
 	
 	if(enabled && pMatchesProfile(pPathHandRight)){
-		if(! pDeviceRight){
+		if(!pDeviceRight){
 			GetInstance().GetOxr().GetDeviceProfiles().RemoveDevice(deInputDevice::edtVRRightHand);
 		}
 		
@@ -117,7 +117,7 @@ bool deoxrDPBaseTwoHandController::pProfileEnabled() const{
 
 void deoxrDPBaseTwoHandController::pRemoveDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if(! device){
+	if(!device){
 		return;
 	}
 	

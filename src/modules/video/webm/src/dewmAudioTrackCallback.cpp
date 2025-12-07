@@ -62,7 +62,7 @@ dewmAudioTrackCallback::~dewmAudioTrackCallback(){
 ///////////////
 
 void dewmAudioTrackCallback::SetResBuffer(void *buffer, int samples){
-	DEASSERT_TRUE(! buffer || IsStreamOpen())
+	DEASSERT_TRUE(!buffer || IsStreamOpen())
 	
 	pResBuffer = (uint8_t*)buffer;
 	pResSize = samples;

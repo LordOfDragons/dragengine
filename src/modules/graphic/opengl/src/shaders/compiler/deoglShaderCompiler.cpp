@@ -150,7 +150,7 @@ static bool psfMatchesDefines(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
 	const char **nextDefine = (const char**)&vPsfDefines;
 	while(*nextDefine){
-		if(! program.GetDefines().HasDefineNamed(*nextDefine)){
+		if(!program.GetDefines().HasDefineNamed(*nextDefine)){
 			return false;
 		}
 		nextDefine++;
@@ -169,7 +169,7 @@ static bool psfMatchesDefines(const deoglShaderProgram &program){
 			nextDefine++;
 		}
 		
-		if(! *nextDefine){
+		if(!*nextDefine){
 			return false;
 		}
 	}
@@ -178,7 +178,7 @@ static bool psfMatchesDefines(const deoglShaderProgram &program){
 }
 
 static bool psfMatchesFragment(const deoglShaderProgram &program){
-	if(! program.GetFragmentSourceCode()){
+	if(!program.GetFragmentSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
@@ -190,7 +190,7 @@ static bool psfMatchesFragment(const deoglShaderProgram &program){
 }
 
 static bool psfMatchesVertex(const deoglShaderProgram &program){
-	if(! program.GetVertexSourceCode()){
+	if(!program.GetVertexSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
@@ -203,10 +203,10 @@ static bool psfMatchesVertex(const deoglShaderProgram &program){
 
 static bool psfMatchesLink(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
-	if(strlen(vPsfFragment) > 0 && ! psfMatchesFragment(program)){
+	if(strlen(vPsfFragment) > 0 && !psfMatchesFragment(program)){
 		return false;
 	}
-	if(strlen(vPsfVertex) > 0 && ! psfMatchesVertex(program)){
+	if(strlen(vPsfVertex) > 0 && !psfMatchesVertex(program)){
 		return false;
 	}
 	#endif
@@ -1146,7 +1146,7 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 		break;
 		
 	case GL_GEOMETRY_SHADER:
-		#if ! defined OS_ANDROID && ! defined WITH_OPENGLES
+		#if !defined OS_ANDROID && !defined WITH_OPENGLES
 		if(ext.SupportsGSInstancing()){
 			pPreprocessor.SourcesAppend("#extension GL_ARB_gpu_shader5 : require\n", false);
 		}
@@ -1162,7 +1162,7 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	// add symbols
 	pPreprocessor.SetSymbolsFromDefines(defines);
 	
-	if(! defines.HasDefineNamed("HIGHP")){
+	if(!defines.HasDefineNamed("HIGHP")){
 		pPreprocessor.SetSymbol("HIGHP", "highp");
 	}
 	

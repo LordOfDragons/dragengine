@@ -87,7 +87,7 @@ void dedaiSpaceMeshFace::SetCornerCount(unsigned short count){
 }
 
 int dedaiSpaceMeshFace::IndexOfCornerWithEdge(unsigned short edge) const{
-	if(! pMesh){
+	if(!pMesh){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -104,7 +104,7 @@ int dedaiSpaceMeshFace::IndexOfCornerWithEdge(unsigned short edge) const{
 }
 
 int dedaiSpaceMeshFace::IndexOfCornerWithVertex(unsigned short vertex) const{
-	if(! pMesh){
+	if(!pMesh){
 		DETHROW(deeInvalidParam);
 	}
 	

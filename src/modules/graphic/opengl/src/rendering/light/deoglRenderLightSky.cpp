@@ -274,7 +274,7 @@ void deoglRenderLightSky::RenderLights(deoglRenderPlan &plan, bool solid, const 
 // 		return;
 // 	}
 	
-	if(solid && ! xray){
+	if(solid && !xray){
 		// this situation is annoying. to build sky shadow render tasks these actions are required:
 		// - find sky light content (parallel task)
 		// - render occlusion tests => requires view occlusion map to be rendered
@@ -345,7 +345,7 @@ void deoglRenderLightSky::RenderAO(deoglRenderPlan &plan){
 	OGL_CHECK(renderThread, glBlendFunc(GL_ONE, GL_ONE));
 	OGL_CHECK(renderThread, glEnable(GL_CULL_FACE));
 	OGL_CHECK(renderThread, glDisable(GL_DEPTH_TEST));
-	SetCullMode(! plan.GetFlipCulling());
+	SetCullMode(!plan.GetFlipCulling());
 	
 	OGL_CHECK(renderThread, glDepthMask(GL_FALSE));
 	
@@ -381,7 +381,7 @@ void deoglRenderLightSky::RenderAO(deoglRenderPlan &plan){
 
 void deoglRenderLightSky::RenderLight(deoglRenderPlanSkyLight &plan, bool solid,
 const deoglRenderPlanMasked *mask, bool xray){
-	if(! plan.GetUseLight()){
+	if(!plan.GetUseLight()){
 		return;
 	}
 	
@@ -399,14 +399,14 @@ const deoglRenderPlanMasked *mask, bool xray){
 	// render shadow map
 	passCount = plan.GetShadowLayerCount();
 	
-	if((useShadow || giState) && solid && ! xray){
+	if((useShadow || giState) && solid && !xray){
 		RenderShadows(plan, solid, mask);
 		RestoreFBO(plan.GetPlan());
 		DebugTimer2SampleCount(plan.GetPlan(), *pDebugInfoSolidShadow, 1, true);
 	}
 	
 	int pipelineModifiers = 0;
-	if(! solid){
+	if(!solid){
 		pipelineModifiers |= deoglLightPipelines::emTransparent;
 	}
 	if(plan.GetPlan().GetRenderStereo()){
@@ -473,7 +473,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	}
 	
 	// GI rays
-	if(! mask && solid && ! xray && giState){
+	if(!mask && solid && !xray && giState){
 		const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade(giState->GetSkyShadowCascade());
 		const deoglSCSolid * const scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : NULL;
 		
@@ -545,7 +545,7 @@ const deoglRenderPlanMasked *mask){
 		plan.FinishReadBackComputeRenderTasks();
 	}
 	
-	if(solid && ! mask){
+	if(solid && !mask){
 		RenderGIShadows(plan, shadowMapper);
 	}
 	
@@ -633,7 +633,7 @@ void deoglRenderLightSky::RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglSh
 		pSolidShadowMap->SetInUse(false);
 		pSolidShadowMap = NULL;
 	}
-	if(! pSolidShadowMap){
+	if(!pSolidShadowMap){
 		pSolidShadowMap = renderThread.GetTexture().GetRenderableDepthArrayTexture()
 			.GetWith(shadowMapSize, shadowMapSize, layerCount, true, false);
 	}
@@ -655,7 +655,7 @@ void deoglRenderLightSky::RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglSh
 		OGL_CHECK(renderThread, pglClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0xff));
 	}
 #else
-	if(! bugClearEntireArrTex){
+	if(!bugClearEntireArrTex){
 		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateSolidArrayTexture(shadowMapSize, layerCount, true);
 		if(clearBackFaceFragments){
@@ -819,7 +819,7 @@ void deoglRenderLightSky::RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglSh
 			#endif
 		
 #ifdef SKY_SHADOW_FILTERED
-		if(! renderThread.GetChoices().GetUseComputeRenderTask()){
+		if(!renderThread.GetChoices().GetUseComputeRenderTask()){
 			if(i == 0){
 				plan.WaitFinishedBuildRT1();
 				
@@ -939,7 +939,7 @@ void deoglRenderLightSky::RenderGIShadows(deoglRenderPlanSkyLight &plan,
 deoglShadowMapper &shadowMapper){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglGIState * const giState = plan.GetPlan().GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
@@ -947,7 +947,7 @@ deoglShadowMapper &shadowMapper){
 	plan.WaitFinishedGIUpdateRT();
 	
 	deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade(giState->GetSkyShadowCascade());
-	if(! slgc){
+	if(!slgc){
 		return;
 	}
 	

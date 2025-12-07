@@ -92,43 +92,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Button style. */
-	inline eButtonStyle GetStyle() const{return pStyle;}
+	inline eButtonStyle GetStyle() const{ return pStyle; }
 	
 	/** \brief Set button style. */
 	void SetStyle(eButtonStyle style);
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Button is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Widget is the default widget if used in dialogs. */
-	inline bool GetDefault() const{return pDefault;}
+	inline bool GetDefault() const{ return pDefault; }
 	
 	/** \brief Set if if widget is the default widget if used in dialogs. */
 	void SetDefault(bool isdefault);
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

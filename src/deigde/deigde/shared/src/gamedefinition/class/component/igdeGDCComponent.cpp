@@ -171,7 +171,7 @@ void igdeGDCComponent::SetBoneName(const char *boneName){
 
 
 bool igdeGDCComponent::IsPropertySet(int property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCComponent::GetPropertyName(int property) const{

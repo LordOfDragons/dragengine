@@ -135,7 +135,7 @@ void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
 }
 
 void aeRuleGroup::RemoveRule(aeRule *rule){
-	if(! pRules.Has(rule)){
+	if(!pRules.Has(rule)){
 		DETHROW(deeInvalidParam);
 	}
 	

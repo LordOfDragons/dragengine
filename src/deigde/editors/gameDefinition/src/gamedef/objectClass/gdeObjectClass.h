@@ -129,7 +129,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** Set parent game definition. */
 	void SetGameDefinition(gdeGameDefinition *gamedef);
@@ -137,13 +137,13 @@ public:
 	
 	
 	/** Class name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set class name. */
 	void SetName(const char *name);
 	
 	/** Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Set description. */
 	void SetDescription(const char *description);
@@ -151,7 +151,7 @@ public:
 	
 	
 	/** Scale mode. */
-	inline eScaleModes GetScaleMode() const{return pScaleMode;}
+	inline eScaleModes GetScaleMode() const{ return pScaleMode; }
 	
 	/** Set scale mode. */
 	void SetScaleMode(eScaleModes mode);
@@ -159,19 +159,19 @@ public:
 	
 	
 	/** Cathegory. */
-	inline const decString &GetCategory() const{return pCategory;}
+	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** Set cathegory. */
 	void SetCategory(const char *category);
 	
 	/** Hide tags. */
-	inline const decStringSet &GetHideTags() const{return pHideTags;}
+	inline const decStringSet &GetHideTags() const{ return pHideTags; }
 	
 	/** Set hide tags. */
 	void SetHideTags(const decStringSet &tags);
 	
 	/** Partial hide tags. */
-	inline const decStringSet &GetPartialHideTags() const{return pPartialHideTags;}
+	inline const decStringSet &GetPartialHideTags() const{ return pPartialHideTags; }
 	
 	/** Set partial hide tags. */
 	void SetPartialHideTags(const decStringSet &tags);
@@ -179,12 +179,12 @@ public:
 	
 	
 	/** Properties. */
-	inline gdePropertyList &GetProperties(){return pProperties;}
-	inline const gdePropertyList &GetProperties() const{return pProperties;}
+	inline gdePropertyList &GetProperties(){ return pProperties; }
+	inline const gdePropertyList &GetProperties() const{ return pProperties; }
 	
 	/** Property values. */
-	inline decStringDictionary &GetPropertyValues(){return pPropertyValues;}
-	inline const decStringDictionary &GetPropertyValues() const{return pPropertyValues;}
+	inline decStringDictionary &GetPropertyValues(){ return pPropertyValues; }
+	inline const decStringDictionary &GetPropertyValues() const{ return pPropertyValues; }
 	
 	/** Notify listeners property changed. */
 	void NotifyPropertyChanged(gdeProperty *property);
@@ -201,8 +201,8 @@ public:
 	
 	
 	/** Texture properties. */
-	inline gdePropertyList &GetTextureProperties(){return pTextureProperties;}
-	inline const gdePropertyList &GetTextureProperties() const{return pTextureProperties;}
+	inline gdePropertyList &GetTextureProperties(){ return pTextureProperties; }
+	inline const gdePropertyList &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** Notify listeners texture property changed. */
 	void NotifyTexturePropertyChanged(gdeProperty *property);
@@ -216,8 +216,8 @@ public:
 	
 	
 	/** Inherit. */
-	inline gdeOCInheritList &GetInherits(){return pInherits;}
-	inline const gdeOCInheritList &GetInherits() const{return pInherits;}
+	inline gdeOCInheritList &GetInherits(){ return pInherits; }
+	inline const gdeOCInheritList &GetInherits() const{ return pInherits; }
 	
 	/** Notify listeners inherit changed. */
 	void NotifyInheritChanged(gdeOCInherit *inherit);
@@ -226,7 +226,7 @@ public:
 	void NotifyInheritsChanged();
 	
 	/** Default property name to propose if this object class is inherited. */
-	inline const decString &GetDefaultInheritPropertyPrefix() const{return pDefaultInheritPropertyPrefix;}
+	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
 	
 	/** Set default property name to propose if this object class is inherited. */
 	void SetDefaultInheritPropertyPrefix(const char *propertyName);
@@ -241,8 +241,8 @@ public:
 	
 	
 	/** Billboards. */
-	inline gdeOCBillboardList &GetBillboards(){return pBillboards;}
-	inline const gdeOCBillboardList &GetBillboards() const{return pBillboards;}
+	inline gdeOCBillboardList &GetBillboards(){ return pBillboards; }
+	inline const gdeOCBillboardList &GetBillboards() const{ return pBillboards; }
 	
 	/** Notify listeners billboards changed. */
 	void NotifyBillboardsChanged();
@@ -253,8 +253,8 @@ public:
 	
 	
 	/** Cameras. */
-	inline gdeOCCameraList &GetCameras(){return pCameras;}
-	inline const gdeOCCameraList &GetCameras() const{return pCameras;}
+	inline gdeOCCameraList &GetCameras(){ return pCameras; }
+	inline const gdeOCCameraList &GetCameras() const{ return pCameras; }
 	
 	/** Notify listeners cameras changed. */
 	void NotifyCamerasChanged();
@@ -265,8 +265,8 @@ public:
 	
 	
 	/** Components. */
-	inline gdeOCComponentList &GetComponents(){return pComponents;}
-	inline const gdeOCComponentList &GetComponents() const{return pComponents;}
+	inline gdeOCComponentList &GetComponents(){ return pComponents; }
+	inline const gdeOCComponentList &GetComponents() const{ return pComponents; }
 	
 	/** Notify listeners components changed. */
 	void NotifyComponentsChanged();
@@ -289,8 +289,8 @@ public:
 	
 	
 	/** Lights. */
-	inline gdeOCLightList &GetLights(){return pLights;}
-	inline const gdeOCLightList &GetLights() const{return pLights;}
+	inline gdeOCLightList &GetLights(){ return pLights; }
+	inline const gdeOCLightList &GetLights() const{ return pLights; }
 	
 	/** Notify listeners lights changed. */
 	void NotifyLightsChanged();
@@ -301,8 +301,8 @@ public:
 	
 	
 	/** Environment map probes. */
-	inline gdeOCEnvMapProbeList &GetEnvMapProbes(){return pEnvMapProbes;}
-	inline const gdeOCEnvMapProbeList &GetEnvMapProbes() const{return pEnvMapProbes;}
+	inline gdeOCEnvMapProbeList &GetEnvMapProbes(){ return pEnvMapProbes; }
+	inline const gdeOCEnvMapProbeList &GetEnvMapProbes() const{ return pEnvMapProbes; }
 	
 	/** Notify listeners environment map probes changed. */
 	void NotifyEnvMapProbesChanged();
@@ -313,8 +313,8 @@ public:
 	
 	
 	/** Navigation blockers. */
-	inline gdeOCNavigationBlockerList &GetNavigationBlockers(){return pNavigationBlockers;}
-	inline const gdeOCNavigationBlockerList &GetNavigationBlockers() const{return pNavigationBlockers;}
+	inline gdeOCNavigationBlockerList &GetNavigationBlockers(){ return pNavigationBlockers; }
+	inline const gdeOCNavigationBlockerList &GetNavigationBlockers() const{ return pNavigationBlockers; }
 	
 	/** Notify listeners navigation blockers changed. */
 	void NotifyNavigationBlockersChanged();
@@ -325,8 +325,8 @@ public:
 	
 	
 	/** Navigation spaces. */
-	inline gdeOCNavigationSpaceList &GetNavigationSpaces(){return pNavigationSpaces;}
-	inline const gdeOCNavigationSpaceList &GetNavigationSpaces() const{return pNavigationSpaces;}
+	inline gdeOCNavigationSpaceList &GetNavigationSpaces(){ return pNavigationSpaces; }
+	inline const gdeOCNavigationSpaceList &GetNavigationSpaces() const{ return pNavigationSpaces; }
 	
 	/** Notify listeners navigation spaces changed. */
 	void NotifyNavigationSpacesChanged();
@@ -337,8 +337,8 @@ public:
 	
 	
 	/** Particle emitters. */
-	inline gdeOCParticleEmitterList &GetParticleEmitters(){return pParticleEmitters;}
-	inline const gdeOCParticleEmitterList &GetParticleEmitters() const{return pParticleEmitters;}
+	inline gdeOCParticleEmitterList &GetParticleEmitters(){ return pParticleEmitters; }
+	inline const gdeOCParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Notify listeners particle emitters changed. */
 	void NotifyParticleEmittersChanged();
@@ -349,8 +349,8 @@ public:
 	
 	
 	/** Force fields. */
-	inline gdeOCForceFieldList &GetForceFields(){return pForceFields;}
-	inline const gdeOCForceFieldList &GetForceFields() const{return pForceFields;}
+	inline gdeOCForceFieldList &GetForceFields(){ return pForceFields; }
+	inline const gdeOCForceFieldList &GetForceFields() const{ return pForceFields; }
 	
 	/** Notify listeners force fields changed. */
 	void NotifyForceFieldsChanged();
@@ -361,8 +361,8 @@ public:
 	
 	
 	/** Snap points. */
-	inline gdeOCSnapPointList &GetSnapPoints(){return pSnapPoints;}
-	inline const gdeOCSnapPointList &GetSnapPoints() const{return pSnapPoints;}
+	inline gdeOCSnapPointList &GetSnapPoints(){ return pSnapPoints; }
+	inline const gdeOCSnapPointList &GetSnapPoints() const{ return pSnapPoints; }
 	
 	/** Notify listeners snap points changed. */
 	void NotifySnapPointsChanged();
@@ -376,8 +376,8 @@ public:
 	
 	
 	/** Speakers. */
-	inline gdeOCSpeakerList &GetSpeakers(){return pSpeakers;}
-	inline const gdeOCSpeakerList &GetSpeakers() const{return pSpeakers;}
+	inline gdeOCSpeakerList &GetSpeakers(){ return pSpeakers; }
+	inline const gdeOCSpeakerList &GetSpeakers() const{ return pSpeakers; }
 	
 	/** Notify listeners speakers changed. */
 	void NotifySpeakersChanged();
@@ -388,8 +388,8 @@ public:
 	
 	
 	/** Worlds. */
-	inline gdeOCWorldList &GetWorlds(){return pWorlds;}
-	inline const gdeOCWorldList &GetWorlds() const{return pWorlds;}
+	inline gdeOCWorldList &GetWorlds(){ return pWorlds; }
+	inline const gdeOCWorldList &GetWorlds() const{ return pWorlds; }
 	
 	/** Notify listeners world changed. */
 	void NotifyWorldsChanged();
@@ -400,11 +400,11 @@ public:
 	
 	
 	/** List of textures. */
-	inline gdeOCComponentTextureList &GetTextures(){return pTextures;}
-	inline const gdeOCComponentTextureList &GetTextures() const{return pTextures;}
+	inline gdeOCComponentTextureList &GetTextures(){ return pTextures; }
+	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
 	
 	/** Active texture or \em NULL if none. */
-	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{return pActiveTexture;}
+	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** Set active texture or \em NULL if none. */
 	void SetActiveTexture(gdeOCComponentTexture *texture);
@@ -418,25 +418,25 @@ public:
 	
 	
 	/** Object is ghost not blocking other objects. */
-	inline bool GetIsGhost() const{return pIsGhost;}
+	inline bool GetIsGhost() const{ return pIsGhost; }
 	
 	/** Set if object is a ghost not blocking other objects. */
 	void SetIsGhost(bool isGhost);
 	
 	/** Object can be instantiated. */
-	inline bool GetCanInstantiate() const{return pCanInstantiate;}
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** Set if object can be instantiated. */
 	void SetCanInstantiate(bool canInstantiate);
 	
 	/** Inherit sub objects. */
-	inline int GetInheritSubObjects() const{return pInheritSubObjects;}
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
 	
 	/** Set inherit sub objects. */
 	void SetInheritSubObjects(int filter);
 	
 	/** Object class is an attachable behavior. */
-	inline bool GetIsAttachableBehavior() const{return pIsAttachableBehavior;}
+	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
 	
 	/** Set if object class is an attachable behavior. */
 	void SetIsAttachableBehavior(bool isAttachableBehavior);

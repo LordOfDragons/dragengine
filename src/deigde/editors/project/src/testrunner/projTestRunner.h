@@ -87,26 +87,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Profile. */
-	inline const projProfile *GetProfile() const{return pProfile;}
+	inline const projProfile *GetProfile() const{ return pProfile; }
 	
 	/** \brief Load engine configuration. */
 	void LoadEngineConfiguration();
 	
 	/** \brief Launcher profiles. */
-	inline projTRProfileList &GetLauncherProfiles(){return pLauncherProfiles;}
-	inline const projTRProfileList &GetLauncherProfiles() const{return pLauncherProfiles;}
+	inline projTRProfileList &GetLauncherProfiles(){ return pLauncherProfiles; }
+	inline const projTRProfileList &GetLauncherProfiles() const{ return pLauncherProfiles; }
 	
 	/** \brief Default launcher profile name. */
-	inline const decString &GetDefaultLauncherProfileName() const{return pDefaultLauncherProfileName;}
+	inline const decString &GetDefaultLauncherProfileName() const{ return pDefaultLauncherProfileName; }
 	
 	/** \brief Set fefault launcher profile name. */
 	void SetDefaultLauncherProfileName(const char *name);
 	
 	/** \brief Launcher profile. */
-	inline const projTRProfile *GetLauncherProfile() const{return pLauncherProfile;}
+	inline const projTRProfile *GetLauncherProfile() const{ return pLauncherProfile; }
 	
 	/** \brief Is running. */
 	bool IsRunning();

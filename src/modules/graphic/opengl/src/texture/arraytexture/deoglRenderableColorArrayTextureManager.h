@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of renderable textures. */
-	inline int GetCount() const{return pArrayTextureCount;}
+	inline int GetCount() const{ return pArrayTextureCount; }
 	
 	/** Renderable texture at index for reading purpose only. */
 	const deoglRenderableColorArrayTexture *GetAt(int index) const;

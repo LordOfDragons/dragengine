@@ -60,7 +60,7 @@ igdeNativeFoxMenuOption::igdeNativeFoxMenuOption(igdeMenuOption &powner, FXCompo
 FXMenuRadio(pparent, BuildConstrText(powner), this, ID_SELF),
 pOwner(&powner)
 {
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
@@ -71,12 +71,12 @@ igdeNativeFoxMenuOption::~igdeNativeFoxMenuOption(){
 }
 
 igdeNativeFoxMenuOption *igdeNativeFoxMenuOption::CreateNativeWidget(igdeMenuOption &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -116,7 +116,7 @@ FXString igdeNativeFoxMenuOption::BuildConstrText(igdeMenuOption &powner){
 ///////////
 
 long igdeNativeFoxMenuOption::onMenuAction(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -137,7 +137,7 @@ long igdeNativeFoxMenuOption::onMenuAction(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxMenuOption::updateMenuAction(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if(! action){
+	if(!action){
 		return 0;
 	}
 	

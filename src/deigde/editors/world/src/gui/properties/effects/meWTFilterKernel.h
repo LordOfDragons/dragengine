@@ -56,18 +56,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
-	inline const char *GetName() const{return (const char *)pName;}
+	inline const char *GetName() const{ return (const char *)pName; }
 	/** Retrieves the rows of the filter kernel. */
-	inline int GetKernelRows() const{return pKernelRows;}
+	inline int GetKernelRows() const{ return pKernelRows; }
 	/** Retrieves the cols of the filter kernel. */
-	inline int GetKernelCols() const{return pKernelCols;}
+	inline int GetKernelCols() const{ return pKernelCols; }
 	/** Retrieves kernel value at the given location. */
 	float GetKernelValueAt(int row, int col) const;
 	/** Sets the kernel value at the given location. */
 	void SetKernelValueAt(int row, int col, float value);
 	
 	/** \brief Kernel scale. */
-	inline float GetScale() const{return pScale;}
+	inline float GetScale() const{ return pScale; }
 	
 	/** \brief Set kernel scale. */
 	void SetScale(float scale);

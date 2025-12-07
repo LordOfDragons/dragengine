@@ -63,16 +63,16 @@ public:
 	void SetResBuffer(void *buffer, int samples);
 	
 	/** Resource buffer. */
-	inline uint8_t *GetResBuffer() const{return pResBuffer;}
+	inline uint8_t *GetResBuffer() const{ return pResBuffer; }
 	
 	/** Resource buffer size in samples. */
-	inline int GetResSize() const{return pResSize;}
+	inline int GetResSize() const{ return pResSize; }
 	
 	/** Resource buffer position in samples. */
-	inline int GetResPosition() const{return pResPosition;}
+	inline int GetResPosition() const{ return pResPosition; }
 	
 	/** Sample size. */
-	inline int GetSampleSize() const{return pSampleSize;}
+	inline int GetSampleSize() const{ return pSampleSize; }
 	
 	/** Stream is open. */
 	bool IsStreamOpen();
@@ -92,7 +92,7 @@ public:
 	void AdvanceResPosition(int bytes);
 	
 	/** Frame buffer. */
-	inline const std::uint8_t *GetFrameBuffer() const{return pGetBuffer();}
+	inline const std::uint8_t *GetFrameBuffer() const{ return pGetBuffer(); }
 	/*@}*/
 	
 	

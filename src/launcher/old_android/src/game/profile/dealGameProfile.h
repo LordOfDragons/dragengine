@@ -97,7 +97,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieve the profile name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set the profile name. */
 	void SetName(const char *name);
@@ -105,55 +105,55 @@ public:
 	
 	
 	/** \brief Retrieve the graphic module or an empty string if not set. */
-	inline const decString &GetModuleGraphic() const{return pModuleGraphic;}
+	inline const decString &GetModuleGraphic() const{ return pModuleGraphic; }
 	
 	/** \brief Set the graphic module or an empty string if not set. */
 	void SetModuleGraphic(const char *moduleName);
 	
 	/** \brief Retrieve the input module or an empty string if not set. */
-	inline const decString &GetModuleInput() const{return pModuleInput;}
+	inline const decString &GetModuleInput() const{ return pModuleInput; }
 	
 	/** \brief Set the input module or an empty string if not set. */
 	void SetModuleInput(const char *moduleName);
 	
 	/** \brief Retrieve the physics module or an empty string if not set. */
-	inline const decString &GetModulePhysics() const{return pModulePhysics;}
+	inline const decString &GetModulePhysics() const{ return pModulePhysics; }
 	
 	/** \brief Set the physics module or an empty string if not set. */
 	void SetModulePhysics(const char *moduleName);
 	
 	/** \brief Retrieve the animator module or an empty string if not set. */
-	inline const decString &GetModuleAnimator() const{return pModuleAnimator;}
+	inline const decString &GetModuleAnimator() const{ return pModuleAnimator; }
 	
 	/** \brief Set the animator module or an empty string if not set. */
 	void SetModuleAnimator(const char *moduleName);
 	
 	/** \brief Retrieve the AI module or an empty string if not set. */
-	inline const decString &GetModuleAI() const{return pModuleAI;}
+	inline const decString &GetModuleAI() const{ return pModuleAI; }
 	
 	/** \brief Set the AI module or an empty string if not set. */
 	void SetModuleAI(const char *moduleName);
 	
 	/** \brief Retrieve the crash recovery module or an empty string if not set. */
-	inline const decString &GetModuleCrashRecovery() const{return pModuleCrashRecovery;}
+	inline const decString &GetModuleCrashRecovery() const{ return pModuleCrashRecovery; }
 	
 	/** \brief Set the crash recovery module or an empty string if not set. */
 	void SetModuleCrashRecovery(const char *moduleName);
 	
 	/** \brief Retrieve the audio module or an empty string if not set. */
-	inline const decString &GetModuleAudio() const{return pModuleAudio;}
+	inline const decString &GetModuleAudio() const{ return pModuleAudio; }
 	
 	/** \brief Set the audio module or an empty string if not set. */
 	void SetModuleAudio(const char *moduleName);
 	
 	/** \brief Synthesizer module or an empty string if not set. */
-	inline const decString &GetModuleSynthesizer() const{return pModuleSynthesizer;}
+	inline const decString &GetModuleSynthesizer() const{ return pModuleSynthesizer; }
 	
 	/** \brief Set synthesizer module or an empty string if not set. */
 	void SetModuleSynthesizer(const char *moduleName);
 	
 	/** \brief Retrieve the network module or an empty string if not set. */
-	inline const decString &GetModuleNetwork() const{return pModuleNetwork;}
+	inline const decString &GetModuleNetwork() const{ return pModuleNetwork; }
 	
 	/** \brief Set the network module or an empty string if not set. */
 	void SetModuleNetwork(const char *moduleName);
@@ -161,55 +161,55 @@ public:
 	
 	
 	/** \brief Graphic module version or an empty string to use the latest. */
-	inline const decString &GetModuleGraphicVersion() const{return pModuleGraphicVersion;}
+	inline const decString &GetModuleGraphicVersion() const{ return pModuleGraphicVersion; }
 	
 	/** \brief Set graphic module version or an empty string to use the latest. */
 	void SetModuleGraphicVersion(const char *moduleVersion);
 	
 	/** \brief Input module version or an empty string to use the latest. */
-	inline const decString &GetModuleInputVersion() const{return pModuleInputVersion;}
+	inline const decString &GetModuleInputVersion() const{ return pModuleInputVersion; }
 	
 	/** \brief Set input module version or an empty string to use the latest. */
 	void SetModuleInputVersion(const char *moduleVersion);
 	
 	/** \brief Physics module version or an empty string to use the latest. */
-	inline const decString &GetModulePhysicsVersion() const{return pModulePhysicsVersion;}
+	inline const decString &GetModulePhysicsVersion() const{ return pModulePhysicsVersion; }
 	
 	/** \brief Set physics module version or an empty string to use the latest. */
 	void SetModulePhysicsVersion(const char *moduleVersion);
 	
 	/** \brief Animator module version or an empty string to use the latest. */
-	inline const decString &GetModuleAnimatorVersion() const{return pModuleAnimatorVersion;}
+	inline const decString &GetModuleAnimatorVersion() const{ return pModuleAnimatorVersion; }
 	
 	/** \brief Set animator module version or an empty string to use the latest. */
 	void SetModuleAnimatorVersion(const char *moduleVersion);
 	
 	/** \brief AI module version or an empty string to use the latest. */
-	inline const decString &GetModuleAIVersion() const{return pModuleAIVersion;}
+	inline const decString &GetModuleAIVersion() const{ return pModuleAIVersion; }
 	
 	/** \brief Set AI module version or an empty string to use the latest. */
 	void SetModuleAIVersion(const char *moduleVersion);
 	
 	/** \brief Crash recovery module version or an empty string to use the latest. */
-	inline const decString &GetModuleCrashRecoveryVersion() const{return pModuleCrashRecoveryVersion;}
+	inline const decString &GetModuleCrashRecoveryVersion() const{ return pModuleCrashRecoveryVersion; }
 	
 	/** \brief Set crash recovery module version or an empty string to use the latest. */
 	void SetModuleCrashRecoveryVersion(const char *moduleVersion);
 	
 	/** \brief Audio module version or an empty string to use the latest. */
-	inline const decString &GetModuleAudioVersion() const{return pModuleAudioVersion;}
+	inline const decString &GetModuleAudioVersion() const{ return pModuleAudioVersion; }
 	
 	/** \brief Set audio module version or an empty string to use the latest. */
 	void SetModuleAudioVersion(const char *moduleVersion);
 	
 	/** \brief Synthesizer module version or an empty string to use the latest. */
-	inline const decString &GetModuleSynthesizerVersion() const{return pModuleSynthesizerVersion;}
+	inline const decString &GetModuleSynthesizerVersion() const{ return pModuleSynthesizerVersion; }
 	
 	/** \brief Set synthesizer module version or an empty string to use the latest. */
 	void SetModuleSynthesizerVersion(const char *moduleVersion);
 	
 	/** \brief Network module version or an empty string to use the latest. */
-	inline const decString &GetModuleNetworkVersion() const{return pModuleNetworkVersion;}
+	inline const decString &GetModuleNetworkVersion() const{ return pModuleNetworkVersion; }
 	
 	/** \brief Set network module version or an empty string to use the latest. */
 	void SetModuleNetworkVersion(const char *moduleVersion);
@@ -217,41 +217,41 @@ public:
 	
 	
 	/** \brief List of module versions to enable or disable. */
-	inline dealGPDisableModuleVersionList &GetDisableModuleVersionList(){return pDisableModuleVersionList;}
-	inline const dealGPDisableModuleVersionList &GetDisableModuleVersionList() const{return pDisableModuleVersionList;}
+	inline dealGPDisableModuleVersionList &GetDisableModuleVersionList(){ return pDisableModuleVersionList; }
+	inline const dealGPDisableModuleVersionList &GetDisableModuleVersionList() const{ return pDisableModuleVersionList; }
 	
 	/** \brief Module list. */
-	inline dealGPModuleList &GetModuleList(){return pModuleList;}
-	inline const dealGPModuleList &GetModuleList() const{return pModuleList;}
+	inline dealGPModuleList &GetModuleList(){ return pModuleList; }
+	inline const dealGPModuleList &GetModuleList() const{ return pModuleList; }
 	
 	
 	
 	/** \brief Run arguments. */
-	inline const decString &GetRunArguments() const{return pRunArgs;}
+	inline const decString &GetRunArguments() const{ return pRunArgs; }
 	
 	/** \brief Set run arguments. */
 	void SetRunArguments(const char *arguments);
 	
 	/** \brief Run arguments replace the game specific run arguments or add to them. */
-	inline bool GetReplaceRunArguments() const{return pReplaceRunArgs;}
+	inline bool GetReplaceRunArguments() const{ return pReplaceRunArgs; }
 	
 	/** \brief Set if run arguments replace the game specific run arguments or add to them. */
 	void SetReplaceRunArguments(bool replaceRunArguments);
 	
 	/** \brief Window width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set window width. */
 	void SetWidth(int width);
 	
 	/** \brief Window height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set window height. */
 	void SetHeight(int height);
 	
 	/** \brief Window is full screen. */
-	inline bool GetFullScreen() const{return pFullScreen;}
+	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** \brief Set if window is full screen. */
 	void SetFullScreen(bool fullScreen);
@@ -259,7 +259,7 @@ public:
 	
 	
 	/** \brief Profile is valid. */
-	inline bool GetValid() const{return pValid;}
+	inline bool GetValid() const{ return pValid; }
 	
 	
 	

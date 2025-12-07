@@ -88,7 +88,7 @@ reRigShape *reRigShapeCylinder::Duplicate() const{
 	
 	try{
 		shape = new reRigShapeCylinder(GetEngine());
-		if(! shape) DETHROW(deeOutOfMemory);
+		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());
 		shape->SetOrientation(GetOrientation());

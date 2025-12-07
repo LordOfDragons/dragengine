@@ -123,7 +123,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World or nullptr. */
-	inline const deWorld::Ref &GetWorld() const{return pWorld;}
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or nullptr. */
 	void SetWorld(deWorld *world);
@@ -137,7 +137,7 @@ public:
 	void SetShapeColor(const char *name, const decColor &color);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/**
 	 * \brief Set transparency.
@@ -147,7 +147,7 @@ public:
 	void SetTransparency(float transparency);
 	
 	/** \brief Hover transparency. */
-	inline float GetHoverTransparency() const{return pHoverTransparency;}
+	inline float GetHoverTransparency() const{ return pHoverTransparency; }
 	
 	/**
 	 * \brief Set hover transparency.
@@ -157,7 +157,7 @@ public:
 	void SetHoverTransparency(float transparency);
 	
 	/** \brief Hover color multiply factor. */
-	inline const decColor &GetHoverColorMultiply() const{return pHoverColorMultiply;}
+	inline const decColor &GetHoverColorMultiply() const{ return pHoverColorMultiply; }
 	
 	/**
 	 * \brief Set hover color multiply factor.
@@ -271,10 +271,10 @@ public:
 	 * 
 	 * Returns true between StartHovering() and StopHovering() otherwise false.
 	 */
-	inline bool IsHovering() const{return pIsHovering;}
+	inline bool IsHovering() const{ return pIsHovering; }
 	
 	/** \brief Name of hover shape or empty string. */
-	inline const decString &GetHoverShapeName() const{return pHoverShapeName;}
+	inline const decString &GetHoverShapeName() const{ return pHoverShapeName; }
 	
 	
 	
@@ -336,7 +336,7 @@ public:
 	 * 
 	 * Returns true between StartEditing() returning true and StopEditing() otherwise false.
 	 */
-	inline bool IsEditing() const{return pIsEditing;}
+	inline bool IsEditing() const{ return pIsEditing; }
 	
 	
 	

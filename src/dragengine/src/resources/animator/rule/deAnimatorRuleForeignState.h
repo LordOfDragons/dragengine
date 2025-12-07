@@ -91,49 +91,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the foreign bone. */
-	inline const decString &GetForeignBone() const{return pForeignBone;}
+	inline const decString &GetForeignBone() const{ return pForeignBone; }
 	
 	/** \brief Set name of the foreign bone. */
 	void SetForeignBone(const char *boneName);
 	
 	/** \brief Name of the foreign vertex position set. */
-	inline const decString &GetForeignVertexPositionSet() const{return pForeignVertexPositionSet;}
+	inline const decString &GetForeignVertexPositionSet() const{ return pForeignVertexPositionSet; }
 	
 	/** \brief Set name of the foreign vertex position set. */
 	void SetForeignVertexPositionSet(const char *vertexPositionSet);
 	
 	/** \brief Position scale factor. */
-	inline float GetScalePosition() const{return pScalePosition;}
+	inline float GetScalePosition() const{ return pScalePosition; }
 	
 	/** \brief Set position scale factor. */
 	void SetScalePosition(float scalePosition);
 	
 	/** \brief Orientation scale factor. */
-	inline float GetScaleOrientation() const{return pScaleOrientation;}
+	inline float GetScaleOrientation() const{ return pScaleOrientation; }
 	
 	/** \brief Set orientation scale factor. */
 	void SetScaleOrientation(float scaleOrientation);
 	
 	/** \brief Size scale factor. */
-	inline float GetScaleSize() const{return pScaleSize;}
+	inline float GetScaleSize() const{ return pScaleSize; }
 	
 	/** \brief Set size scale factor. */
 	void SetScaleSize(float scaleSize);
 	
 	/** \brief Vertex position set scale factor. */
-	inline float GetScaleVertexPositionSet() const{return pScaleVertexPositionSet;}
+	inline float GetScaleVertexPositionSet() const{ return pScaleVertexPositionSet; }
 	
 	/** \brief Set vertex position set scale factor. */
 	void SetScaleVertexPositionSet(float scale);
 	
 	/** \brief Source coordinate frame. */
-	inline eCoordinateFrames GetSourceCoordinateFrame() const{return pSourceCoordinateFrame;}
+	inline eCoordinateFrames GetSourceCoordinateFrame() const{ return pSourceCoordinateFrame; }
 	
 	/** \brief Set source coordinate frame. */
 	void SetSourceCoordinateFrame(eCoordinateFrames coordinateFrame);
 	
 	/** \brief Destination coordinate frame. */
-	inline eCoordinateFrames GetDestCoordinateFrame() const{return pDestCoordinateFrame;}
+	inline eCoordinateFrames GetDestCoordinateFrame() const{ return pDestCoordinateFrame; }
 	
 	/** \brief Set destination coordinate frame. */
 	void SetDestCoordinateFrame(eCoordinateFrames coordinateFrame);
@@ -142,7 +142,7 @@ public:
 	 * \brief Determines if X component is modified.
 	 * \version 1.6
 	 */
-	inline bool GetModifyX() const{return pModifyX;}
+	inline bool GetModifyX() const{ return pModifyX; }
 	
 	/**
 	 * \brief Set if X component is modified.
@@ -154,7 +154,7 @@ public:
 	 * \brief Determines if Y component is modified.
 	 * \version 1.6
 	 */
-	inline bool GetModifyY() const{return pModifyY;}
+	inline bool GetModifyY() const{ return pModifyY; }
 	
 	/**
 	 * \brief Set if Y component is modified.
@@ -166,7 +166,7 @@ public:
 	 * \brief Determines if Z component is modified.
 	 * \version 1.6
 	 */
-	inline bool GetModifyZ() const{return pModifyZ;}
+	inline bool GetModifyZ() const{ return pModifyZ; }
 	
 	/**
 	 * \brief Set if Z component is modified.
@@ -175,44 +175,44 @@ public:
 	void SetModifyZ(bool modify);
 	
 	/** \brief Determines if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Scale position target. */
-	inline deAnimatorControllerTarget &GetTargetPosition(){return pTargetPosition;}
-	inline const deAnimatorControllerTarget &GetTargetPosition() const{return pTargetPosition;}
+	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const deAnimatorControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** \brief Scale orientation target. */
-	inline deAnimatorControllerTarget &GetTargetOrientation(){return pTargetOrientation;}
-	inline const deAnimatorControllerTarget &GetTargetOrientation() const{return pTargetOrientation;}
+	inline deAnimatorControllerTarget &GetTargetOrientation(){ return pTargetOrientation; }
+	inline const deAnimatorControllerTarget &GetTargetOrientation() const{ return pTargetOrientation; }
 	
 	/** \brief Scale size target. */
-	inline deAnimatorControllerTarget &GetTargetSize(){return pTargetSize;}
-	inline const deAnimatorControllerTarget &GetTargetSize() const{return pTargetSize;}
+	inline deAnimatorControllerTarget &GetTargetSize(){ return pTargetSize; }
+	inline const deAnimatorControllerTarget &GetTargetSize() const{ return pTargetSize; }
 	
 	/** \brief Scale vertex position set target. */
-	inline deAnimatorControllerTarget &GetTargetVertexPositionSet(){return pTargetVertexPositionSets;}
-	inline const deAnimatorControllerTarget &GetTargetVertexPositionSet() const{return pTargetVertexPositionSets;}
+	inline deAnimatorControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSets; }
+	inline const deAnimatorControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSets; }
 	/*@}*/
 	
 	

@@ -69,7 +69,7 @@ igdeActionSelectFile::~igdeActionSelectFile(){
 
 void igdeActionSelectFile::OnAction(){
 	igdeContainer * const parent = pTextField.GetParent();
-	if(! parent){
+	if(!parent){
 		return;
 	}
 	
@@ -82,18 +82,18 @@ void igdeActionSelectFile::OnAction(){
 	const decString oldPath(path);
 	
 	if(pUseGameVFS){
-		if(! igdeCommonDialogs::GetFileOpen(&pTextField, GetText(),
+		if(!igdeCommonDialogs::GetFileOpen(&pTextField, GetText(),
 		*pEnvironment.GetFileSystemGame(), pFilePatterns, path ) ){
 			return;
 		}
 		
 	}else{
-		if(! igdeCommonDialogs::GetFileOpen(&pTextField, GetText(), pFilePatterns, path)){
+		if(!igdeCommonDialogs::GetFileOpen(&pTextField, GetText(), pFilePatterns, path)){
 			return;
 		}
 	}
 	
-	if(path == oldPath || ! AcceptFile(path)){
+	if(path == oldPath || !AcceptFile(path)){
 		return;
 	}
 	

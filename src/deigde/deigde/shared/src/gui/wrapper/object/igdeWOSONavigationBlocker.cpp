@@ -96,7 +96,7 @@ void igdeWOSONavigationBlocker::Visit(igdeWOSOVisitor &visitor){
 //////////////////////
 
 void igdeWOSONavigationBlocker::pUpdateNavigationBlocker(){
-	if(! pNavigationBlocker){
+	if(!pNavigationBlocker){
 		pNavigationBlocker.TakeOver(GetEngine().GetNavigationBlockerManager()->CreateNavigationBlocker());
 		pNavigationBlocker->SetSpaceType(pGDNavigationBlocker.GetType());
 	}
@@ -124,17 +124,17 @@ void igdeWOSONavigationBlocker::pUpdateNavigationBlocker(){
 	}
 	pNavigationBlocker->NotifyShapeListChanged();
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddNavigationBlocker(pNavigationBlocker);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSONavigationBlocker::pDestroyNavigationBlocker(){
-	if(! pNavigationBlocker){
+	if(!pNavigationBlocker){
 		return;
 	}
 	
@@ -151,7 +151,7 @@ void igdeWOSONavigationBlocker::pDestroyNavigationBlocker(){
 void igdeWOSONavigationBlocker::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pNavigationBlocker){
+	if(!pNavigationBlocker){
 		return;
 	}
 	
@@ -170,7 +170,7 @@ void igdeWOSONavigationBlocker::AttachToCollider(){
 			pGDNavigationBlocker.GetOrientation()));
 		
 		if(colliderComponent){
-			if(! pGDNavigationBlocker.GetBoneName().IsEmpty()){
+			if(!pGDNavigationBlocker.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDNavigationBlocker.GetBoneName());
 			}
@@ -193,7 +193,7 @@ void igdeWOSONavigationBlocker::AttachToCollider(){
 }
 
 void igdeWOSONavigationBlocker::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	

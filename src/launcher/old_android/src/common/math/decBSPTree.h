@@ -79,19 +79,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the bsp tree or NULL if a root bsp tree. */
-	inline decBSPTree *GetParent() const{return pParent;}
+	inline decBSPTree *GetParent() const{ return pParent; }
 	/** Sets the parent of the bsp tree or NULL if a root bsp tree. */
 	void SetParent(decBSPTree *parent);
 	/** Retrieves the normal. */
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetNormal() const{ return pNormal; }
 	/** Retrieves the distance. */
-	inline float GetDistance() const{return pDistance;}
+	inline float GetDistance() const{ return pDistance; }
 	/** Retrieves the front node or NULL if not existing. */
-	inline decBSPTree *GetFrontNode() const{return pNodeFront;}
+	inline decBSPTree *GetFrontNode() const{ return pNodeFront; }
 	/** Sets the front node or NULL if not existing. */
 	void SetFrontNode(decBSPTree *bsptree);
 	/** Retrieves the back node or NULL if not existing. */
-	inline decBSPTree *GetBackNode() const{return pNodeBack;}
+	inline decBSPTree *GetBackNode() const{ return pNodeBack; }
 	/** Sets the back node or NULL if not existing. */
 	void SetBackNode(decBSPTree *bsptree);
 	/**

@@ -72,37 +72,37 @@ public:
 	void Reset();
 	
 	/** Retrieves the animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	/** Retrieves the component. */
-	inline deComponent *GetComponent() const{return pEngComponent;}
+	inline deComponent *GetComponent() const{ return pEngComponent; }
 	/** Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{return pEngCollider;}
+	inline deColliderVolume *GetCollider() const{ return pEngCollider; }
 	
 	/** Determines if the wakeboard is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	/** Sets if the wakeboard is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decDVector &position);
 	
 	/** Retrieves the up-down tilt in degrees. */
-	inline float GetTiltUpDown() const{return pTiltUpDown;}
+	inline float GetTiltUpDown() const{ return pTiltUpDown; }
 	/** Sets the up-down tilt in degrees. */
 	void SetTiltUpDown(float tilt);
 	/** Retrieves the maximum up-down tilt in degrees. */
-	inline float GetMaximumTiltUpDown() const{return pMaxTiltUpDown;}
+	inline float GetMaximumTiltUpDown() const{ return pMaxTiltUpDown; }
 	/** Sets the matimum up-down tilt in degrees. */
 	void SetMaximumTiltUpDown(float tilt);
 	
 	/** Retrieves the left-right tilt in degrees. */
-	inline float GetTiltLeftRight() const{return pTiltLeftRight;}
+	inline float GetTiltLeftRight() const{ return pTiltLeftRight; }
 	/** Sets the left-right tilt in degrees. */
 	void SetTiltLeftRight(float tilt);
 	/** Retrieves the maximum left-right tilt in degrees. */
-	inline float GetMaximumTiltLeftRight() const{return pMaxTiltLeftRight;}
+	inline float GetMaximumTiltLeftRight() const{ return pMaxTiltLeftRight; }
 	/** Sets the matimum left-right tilt in degrees. */
 	void SetMaximumTiltLeftRight(float tilt);
 	

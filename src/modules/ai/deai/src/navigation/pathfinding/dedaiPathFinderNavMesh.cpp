@@ -117,7 +117,7 @@ void dedaiPathFinderNavMesh::SetEndPoint(const decDVector &point){
 
 
 void dedaiPathFinderNavMesh::FindPath(){
-	if(! pNavigator || ! pWorld){
+	if(!pNavigator || !pWorld){
 		return;
 	}
 	
@@ -648,7 +648,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				vertexIndex = curCorner->GetVertex();
 				testResult = (vertexIndex == curEdge->GetVertex1());
 				if(inverseOrder){
-					testResult = ! testResult;
+					testResult = !testResult;
 				}
 				if(testResult){
 					vertexLeft = curNavMesh->GetVertices()[curEdge->GetVertex1()];
@@ -744,7 +744,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				}
 				
 				// if the left vertex is the same as the left funnel vertex nothing is going to change
-				if(! vertexLeft.IsEqualTo(funnel.GetLeftCorner(), threshold)){
+				if(!vertexLeft.IsEqualTo(funnel.GetLeftCorner(), threshold)){
 					// if the left vertex is on the front side of the left funnel plane the funnel has to be updated
 					if(funnel.GetLeftNormal() * vertexLeft > funnel.GetLeftDistance()){
 						// clear the left point list as no point in there can be better than the left vertex
@@ -769,7 +769,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							module.LogInfo("   AddNextCorner: right funnel corner");
 #endif
 							pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(funnel.GetRightCorner());
-							if(pPathPointCount == 0 || ! pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
+							if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
 								AddPathPoint(pathPoint);
 							}
 							
@@ -777,7 +777,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							funnel.SetLeftCorner(vertexLeft);
 							funnel.UpdateLeftPlane(curFace->GetNormal());
 							
-							if(! withFixing){
+							if(!withFixing){
 								funnel.SetRightCorner(vertexRight);
 								funnel.UpdateRightPlane(curFace->GetNormal());
 								
@@ -856,7 +856,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 									module.LogInfo("         AddNextCorner: found point");
 #endif
 									pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(testVertex);
-									if(pPathPointCount == 0 || ! pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
+									if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
 										AddPathPoint(pathPoint);
 									}
 									funnel.SetOrigin(testVertex);
@@ -886,7 +886,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 				}
 				
 				// if the right vertex is the same as the right funnel vertex nothing is going to change
-				if(! vertexRight.IsEqualTo(funnel.GetRightCorner(), threshold)){
+				if(!vertexRight.IsEqualTo(funnel.GetRightCorner(), threshold)){
 					// if the right vertex is on the front side of the right funnel plane the funnel has to be updated
 					if(funnel.GetRightNormal() * vertexRight > funnel.GetRightDistance()){
 						// clear the right point list as no point in there can be better than the right vertex
@@ -912,7 +912,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							module.LogInfo("   AddNextCorner: left funnel corner");
 #endif
 							pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(funnel.GetLeftCorner());
-							if(pPathPointCount == 0 || ! pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
+							if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
 								AddPathPoint(pathPoint);
 							}
 							
@@ -920,7 +920,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 							funnel.SetRightCorner(vertexRight);
 							funnel.UpdateRightPlane(curFace->GetNormal());
 							
-							if(! withFixing){
+							if(!withFixing){
 								funnel.SetLeftCorner(vertexLeft);
 								funnel.UpdateLeftPlane(curFace->GetNormal());
 								
@@ -999,7 +999,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 									pWorld->GetDEAI().LogInfo("         AddNextCorner: found point");
 #endif
 									pathPoint = curFace->GetMesh()->GetSpace().GetMatrix() * decDVector(testVertex);
-									if(pPathPointCount == 0 || ! pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
+									if(pPathPointCount == 0 || !pathPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
 										AddPathPoint(pathPoint);
 									}
 									funnel.SetOrigin(testVertex);
@@ -1036,7 +1036,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 	
 	// if we have a valid path add the goal point if not present in the path. if we have no
 	// valid path we have to keep the path empty to signal the invalidity of the path
-	if(! pStartFace || ! pEndFace){
+	if(!pStartFace || !pEndFace){
 		return;
 	}
 	if(pStartFace != pEndFace){
@@ -1048,7 +1048,7 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 		}
 	}
 	
-	if(pPathPointCount == 0 || ! pEndPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
+	if(pPathPointCount == 0 || !pEndPoint.IsEqualTo(pPathPoints[pPathPointCount - 1], threshold)){
 		AddPathPoint(pEndPoint);
 	}
 }
@@ -1091,7 +1091,7 @@ int dedaiPathFinderNavMesh::pFindEdgeLeadingToFace(const dedaiSpaceMeshFace &fac
 }
 
 void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
-	if(! pDDSListOpen){
+	if(!pDDSListOpen){
 		return;
 	}
 	
@@ -1139,7 +1139,7 @@ void dedaiPathFinderNavMesh::pUpdateDDSListOpen(){
 }
 
 void dedaiPathFinderNavMesh::pUpdateDDSListClosed(){
-	if(! pDDSListClosed){
+	if(!pDDSListClosed){
 		return;
 	}
 	

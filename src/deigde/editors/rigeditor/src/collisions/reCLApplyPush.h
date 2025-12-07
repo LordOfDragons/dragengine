@@ -67,9 +67,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the ray position. */
-	inline const decDVector &GetRayPosition() const{return pRayPosition;}
+	inline const decDVector &GetRayPosition() const{ return pRayPosition; }
 	/** \brief Retrieves the ray direction. */
-	inline const decDVector &GetRayDirection() const{return pRayDirection;}
+	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** Sets the ray. */
 	void SetRay(const decDVector &position, const decVector &direction);

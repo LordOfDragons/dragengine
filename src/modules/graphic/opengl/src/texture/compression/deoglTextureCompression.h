@@ -56,25 +56,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the pixel buffer containing the decompressed data or NULL if not set. */
-	inline deoglPixelBuffer *GetDecompressedData() const{return pDecompressedData;}
+	inline deoglPixelBuffer *GetDecompressedData() const{ return pDecompressedData; }
 	/** Sets the pixel buffer containing the decompressed data or NULL if not set. */
 	void SetDecompressedData(deoglPixelBuffer *pixelBuffer);
 	/** Retrieves the pixel buffer containing the compressed data or NULL if not set. */
-	inline deoglPixelBuffer *GetCompressedData() const{return pCompressedData;}
+	inline deoglPixelBuffer *GetCompressedData() const{ return pCompressedData; }
 	/** Sets the pixel buffer containing the compressed data or NULL if not set. */
 	void SetCompressedData(deoglPixelBuffer *pixelBuffer);
 	
 	/** Retrieves the pixel buffer mip map containing the decompressed data or NULL if not set. */
-	inline deoglPixelBufferMipMap *GetDecompressedDataMipMap() const{return pDecompressedDataMipMap;}
+	inline deoglPixelBufferMipMap *GetDecompressedDataMipMap() const{ return pDecompressedDataMipMap; }
 	/** Sets the pixel buffer mip map containing the decompressed data or NULL if not set. */
 	void SetDecompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap);
 	/** Retrieves the pixel buffer mip map containing the compressed data or NULL if not set. */
-	inline deoglPixelBufferMipMap *GetCompressedDataMipMap() const{return pCompressedDataMipMap;}
+	inline deoglPixelBufferMipMap *GetCompressedDataMipMap() const{ return pCompressedDataMipMap; }
 	/** Sets the pixel buffer mip map containing the compressed data or NULL if not set. */
 	void SetCompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap);
 	
 	/** Determines if fast compression with lower quality is used. */
-	inline bool GetFastCompression() const{return pFastCompression;}
+	inline bool GetFastCompression() const{ return pFastCompression; }
 	/** Sets if fast compression with lower quality is used. */
 	void SetFastCompression(bool fastCompression);
 	

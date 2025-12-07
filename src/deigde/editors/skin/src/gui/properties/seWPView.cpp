@@ -208,7 +208,7 @@ public:
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
 	virtual void OnChanged(igdeComboBox &comboBox, seSkin &skin){
-		if(! pPreventUpdate){
+		if(!pPreventUpdate){
 			skin.SetMoveName(comboBox.GetText());
 		}
 	}
@@ -220,7 +220,7 @@ public:
 		NULL, "Animation is played back"){}
 	
 	virtual void OnAction(seSkin &skin){
-		skin.SetPlayback(! skin.GetPlayback());
+		skin.SetPlayback(!skin.GetPlayback());
 	}
 	
 	virtual void Update(const seSkin &skin){

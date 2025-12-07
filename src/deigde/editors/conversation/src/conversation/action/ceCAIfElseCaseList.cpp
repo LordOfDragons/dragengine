@@ -68,7 +68,7 @@ bool ceCAIfElseCaseList::Has(ceCAIfElseCase *ifcase) const{
 }
 
 void ceCAIfElseCaseList::Add(ceCAIfElseCase *ifcase){
-	if(! ifcase){
+	if(!ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -76,7 +76,7 @@ void ceCAIfElseCaseList::Add(ceCAIfElseCase *ifcase){
 }
 
 void ceCAIfElseCaseList::InsertAt(ceCAIfElseCase *ifcase, int index){
-	if(! ifcase){
+	if(!ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	

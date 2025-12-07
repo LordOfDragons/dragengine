@@ -157,25 +157,25 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexDistance.SetSize(width, height, pLayerCount);
 		pTexDistance.CreateTexture();
 		
-		if(! pTexNormal.GetTexture()){
+		if(!pTexNormal.GetTexture()){
 			pTexNormal.SetFBOFormatSNorm(4, 8); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexNormal.SetSize(width, height, pLayerCount);
 		pTexNormal.CreateTexture();
 		
-		if(! pTexDiffuse.GetTexture()){
+		if(!pTexDiffuse.GetTexture()){
 			pTexDiffuse.SetFBOFormat(4, false); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexDiffuse.SetSize(width, height, pLayerCount);
 		pTexDiffuse.CreateTexture();
 		
-		if(! pTexReflectivity.GetTexture()){
+		if(!pTexReflectivity.GetTexture()){
 			pTexReflectivity.SetFBOFormat(4, false);
 		}
 		pTexReflectivity.SetSize(width, height, pLayerCount);
 		pTexReflectivity.CreateTexture();
 		
-		if(! pTexLight.GetTexture()){
+		if(!pTexLight.GetTexture()){
 			pTexLight.SetFBOFormat(4, true); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexLight.SetSize(width, height, pLayerCount);

@@ -114,7 +114,7 @@ void deWebp3DTarball::Get3DImageInfos(deWebp3DImageInfo &info, decBaseFileReader
 		
 		// we detect the 0-blocks just by checking the file names are 0 length.
 		// since 0 length file names do not exist this should be accurate enough
-		if(! header.name[0] && ! header.linkname[0]){
+		if(!header.name[0] && !header.linkname[0]){
 			break;
 		}
 		
@@ -214,7 +214,7 @@ void deWebp3DTarball::Load3DImage(deWebp3DImageInfo &infos, decBaseFileReader &f
 		
 		// we detect the 0-blocks just by checking the file names are 0 length.
 		// since 0 length file names do not exist this should be accurate enough
-		if(! header.name[0] && ! header.linkname[0]){
+		if(!header.name[0] && !header.linkname[0]){
 			break;
 		}
 		
@@ -480,7 +480,7 @@ decBaseFileReader &file, int size, void *imagedata){
 				readTarget, pixelCount * 3, info3D.width * 3);
 		}
 		
-		if(! result){
+		if(!result){
 			DETHROW(deeInvalidFileFormat);
 		}
 		
@@ -537,7 +537,7 @@ decBaseFileWriter &file, const void *imagedata){
 				height, width * 3, quality, &output);
 		}
 		
-		if(size == 0 || ! output){
+		if(size == 0 || !output){
 			DETHROW(deeWriteFile);
 		}
 		

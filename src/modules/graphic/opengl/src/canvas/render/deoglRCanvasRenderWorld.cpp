@@ -86,7 +86,7 @@ void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
 
 
 void deoglRCanvasRenderWorld::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pCamera || ! pCamera->GetParentWorld()){
+	if(!pCamera || !pCamera->GetParentWorld()){
 		return;
 	}
 	

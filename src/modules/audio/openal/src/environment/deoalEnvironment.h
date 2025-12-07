@@ -130,49 +130,49 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** Audio thread. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** World or NULL. */
-	inline deoalAWorld *GetWorld() const{return pWorld;}
+	inline deoalAWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world or NULL. */
 	void SetWorld(deoalAWorld *world);
 	
 	/** Position of speaker. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position of speaker. */
 	void SetPosition(const decDVector &position);
 	
 	/** Range of speaker. */
-	inline float GetRange() const{return pRange;}
+	inline float GetRange() const{ return pRange; }
 	
 	/** Range squared of speaker. */
-	inline float GetRangeSquared() const{return pRangeSquared;}
+	inline float GetRangeSquared() const{ return pRangeSquared; }
 	
 	/** Set range of speaker. */
 	void SetRange(float range);
 	
 	/** Attenuation reference distance. */
-	inline float GetAttenuationRefDist() const{return pAttenuationRefDist;}
+	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
 	
 	/** Attenuation rolloff. */
-	inline float GetAttenuationRolloff() const{return pAttenuationRolloff;}
+	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
 	/** Attenuation distance offset. */
-	inline float GetAttenuationDistanceOffset() const{return pAttenuationDistanceOffset;}
+	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
 	/** Set attenuation parameters. */
 	void SetAttenuation(float refDist, float rolloff, float distanceOffset);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Environment data are valid. */
-	inline bool GetValid() const{return pValid;}
+	inline bool GetValid() const{ return pValid; }
 	
 	/** Prepare quick dispose. */
 	void PrepareQuickDispose();
@@ -180,70 +180,70 @@ public:
 	
 	
 	/** Low frequency gain. */
-	inline float GetGainLow() const{return pGainLow;}
+	inline float GetGainLow() const{ return pGainLow; }
 	
 	/** Medium frequency gain. */
-	inline float GetGainMedium() const{return pGainMedium;}
+	inline float GetGainMedium() const{ return pGainMedium; }
 	
 	/** High frequency gain. */
-	inline float GetGainHigh() const{return pGainHigh;}
+	inline float GetGainHigh() const{ return pGainHigh; }
 	
 	
 	
 	/** Band pass gain value. */
-	inline float GetBandPassGain() const{return pBandPassGain;}
+	inline float GetBandPassGain() const{ return pBandPassGain; }
 	
 	/** Band pass low frequency gain value. */
-	inline float GetBandPassGainLF() const{return pBandPassGainLF;}
+	inline float GetBandPassGainLF() const{ return pBandPassGainLF; }
 	
 	/** Band pass high frequency gain value. */
-	inline float GetBandPassGainHF() const{return pBandPassGainHF;}
+	inline float GetBandPassGainHF() const{ return pBandPassGainHF; }
 	
 	
 	
 	/** Reverb effect gain value. */
-	inline float GetReverbGain() const{return pReverbGain;}
+	inline float GetReverbGain() const{ return pReverbGain; }
 	
 	/** Reverb effect low frequency gain value. */
-	inline float GetReverbGainLF() const{return pReverbGainLF;}
+	inline float GetReverbGainLF() const{ return pReverbGainLF; }
 	
 	/** Reverb effect high frequency gain value. */
-	inline float GetReverbGainHF() const{return pReverbGainHF;}
+	inline float GetReverbGainHF() const{ return pReverbGainHF; }
 	
 	/** Reverb effect decay time value. */
-	inline float GetReverbDecayTime() const{return pReverbDecayTime;}
+	inline float GetReverbDecayTime() const{ return pReverbDecayTime; }
 	
 	/** Reverb effect decay lf ratio value. */
-	inline float GetReverbDecayLFRatio() const{return pReverbDecayLFRatio;}
+	inline float GetReverbDecayLFRatio() const{ return pReverbDecayLFRatio; }
 	
 	/** Reverb effect decay hf ratio value. */
-	inline float GetReverbDecayHFRatio() const{return pReverbDecayHFRatio;}
+	inline float GetReverbDecayHFRatio() const{ return pReverbDecayHFRatio; }
 	
 	/** Reverb effect reflection gain value. */
-	inline float GetReverbReflectionGain() const{return pReverbReflectionGain;}
+	inline float GetReverbReflectionGain() const{ return pReverbReflectionGain; }
 	
 	/** Reverb effect reflection delay value. */
-	inline float GetReverbReflectionDelay() const{return pReverbReflectionDelay;}
+	inline float GetReverbReflectionDelay() const{ return pReverbReflectionDelay; }
 	
 	/** Reverb effect reflection pan direction. */
-	inline const decVector &GetReverbReflectionPan() const{return pReverbReflectionPan;}
+	inline const decVector &GetReverbReflectionPan() const{ return pReverbReflectionPan; }
 	
 	/** Reverb effect late reverb gain value. */
-	inline float GetReverbLateReverbGain() const{return pReverbLateReverbGain;}
+	inline float GetReverbLateReverbGain() const{ return pReverbLateReverbGain; }
 	
 	/** Reverb effect late reverb delay value. */
-	inline float GetReverbLateReverbDelay() const{return pReverbLateReverbDelay;}
+	inline float GetReverbLateReverbDelay() const{ return pReverbLateReverbDelay; }
 	
 	/** Reverb effect late reverb pan direction. */
-	inline const decVector &GetReverbLateReverbPan() const{return pReverbLateReverbPan;}
+	inline const decVector &GetReverbLateReverbPan() const{ return pReverbLateReverbPan; }
 	
 	/** Reverbe effect Echo time. */
-	inline float GetReverbEchoTime() const{return pReverbEchoTime;}
+	inline float GetReverbEchoTime() const{ return pReverbEchoTime; }
 	
 	
 	
 	/** Effect keep-alive timeout. */
-	inline float GetEffectKeepAliveTimeout() const{return pEffectKeepAliveTimeout;}
+	inline float GetEffectKeepAliveTimeout() const{ return pEffectKeepAliveTimeout; }
 	
 	
 	

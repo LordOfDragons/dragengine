@@ -42,7 +42,7 @@
 ////////////////////////////
 
 reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
-	if(! shape || (! rig && ! bone)) DETHROW(deeInvalidParam);
+	if(!shape || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	if(rig) rig->AddReference();
@@ -124,7 +124,7 @@ reRig *reUAddShape::pGetRig(){
 	if(pRig) return pRig;
 	
 	reRig *rig = pBone->GetRig();
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	return rig;
 }

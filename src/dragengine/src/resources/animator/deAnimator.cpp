@@ -114,7 +114,7 @@ deAnimatorController *deAnimator::GetControllerAt(int index) const{
 }
 
 int deAnimator::IndexOfController(deAnimatorController *controller) const{
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -140,7 +140,7 @@ int deAnimator::IndexOfControllerNamed(const char *name) const{
 }
 
 bool deAnimator::HasController(deAnimatorController *controller) const{
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	int i;
 	
@@ -154,12 +154,12 @@ bool deAnimator::HasController(deAnimatorController *controller) const{
 }
 
 void deAnimator::AddController(deAnimatorController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
 		deAnimatorController **newArray = new deAnimatorController*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pControllers){
 			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;
@@ -222,7 +222,7 @@ deAnimatorLink *deAnimator::GetLinkAt(int index) const{
 }
 
 int deAnimator::IndexOfLink(deAnimatorLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	int i;
 	
@@ -234,7 +234,7 @@ int deAnimator::IndexOfLink(deAnimatorLink *link) const{
 }
 
 bool deAnimator::HasLink(deAnimatorLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	int i;
 	
@@ -246,12 +246,12 @@ bool deAnimator::HasLink(deAnimatorLink *link) const{
 }
 
 void deAnimator::AddLink(deAnimatorLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	if(pLinkCount == pLinkSize){
 		int i, newSize = pLinkSize * 3 / 2 + 1;
 		deAnimatorLink **newArray = new deAnimatorLink*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLinks){
 			for(i=0; i<pLinkSize; i++) newArray[i] = pLinks[i];
 			delete [] pLinks;
@@ -318,7 +318,7 @@ bool deAnimator::HasRule(deAnimatorRule *rule) const{
 }
 
 void deAnimator::AddRule(deAnimatorRule *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

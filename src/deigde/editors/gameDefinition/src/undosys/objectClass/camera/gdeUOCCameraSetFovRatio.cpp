@@ -44,7 +44,7 @@ gdeUOCCameraSetFovRatio::gdeUOCCameraSetFovRatio(gdeObjectClass *objectClass, gd
 pObjectClass(NULL),
 pCamera(NULL)
 {
-	if(! objectClass || ! camera){
+	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
 	}
 	

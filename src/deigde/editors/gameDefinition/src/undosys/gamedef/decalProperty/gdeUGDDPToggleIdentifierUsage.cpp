@@ -45,7 +45,7 @@ gdeGameDefinition *gamedef, gdeProperty *property) :
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,11 +73,11 @@ gdeUGDDPToggleIdentifierUsage::~gdeUGDDPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUGDDPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

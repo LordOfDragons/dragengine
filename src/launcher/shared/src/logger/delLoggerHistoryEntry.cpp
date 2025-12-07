@@ -86,7 +86,7 @@ void delLoggerHistoryEntry::CleanUpMessage(){
 	
 	for(found=len; found>0; found--){
 		const int character = pMessage.GetAt(found - 1);
-		if(! isspace(character) && character != '\n' && character != '\r'){
+		if(!isspace(character) && character != '\n' && character != '\r'){
 			break;
 		}
 	}

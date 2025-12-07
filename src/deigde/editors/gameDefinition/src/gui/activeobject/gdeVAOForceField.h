@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{return pOCForceField;}
+	inline gdeOCForceField *GetOCForceField() const{ return pOCForceField; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

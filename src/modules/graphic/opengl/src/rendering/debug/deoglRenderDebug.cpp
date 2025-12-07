@@ -175,7 +175,7 @@ void deoglRenderDebug::DisplayTexture(deoglRenderPlan &plan, deoglTexture *textu
 }
 
 void deoglRenderDebug::DisplayTextureLevel(deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -245,7 +245,7 @@ deoglArrayTexture *texture, int layer, bool gammaCorrect){
 
 void deoglRenderDebug::DisplayArrayTextureLayerLevel(deoglRenderPlan &plan,
 deoglArrayTexture *texture, int layer, int level, bool gammaCorrect){
-	if(! texture || layer < 0 || layer >= texture->GetLayerCount()) DETHROW(deeInvalidParam);
+	if(!texture || layer < 0 || layer >= texture->GetLayerCount()) DETHROW(deeInvalidParam);
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -364,7 +364,7 @@ void deoglRenderDebug::BeginRenderText(){
 }
 
 void deoglRenderDebug::AddRenderText(const decPoint &viewport, const char *text, int x, int y, const decColor &color){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	

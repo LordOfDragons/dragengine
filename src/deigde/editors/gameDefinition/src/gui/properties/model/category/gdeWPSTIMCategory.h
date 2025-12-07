@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Category. */
-	inline gdeCategory *GetCategory() const{return pCategory;}
+	inline gdeCategory *GetCategory() const{ return pCategory; }
 	
 	
 	

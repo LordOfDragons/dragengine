@@ -60,7 +60,7 @@ void deClassCurve2D::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create curve
 	nd->curve = new decCurve2D;
-	if(! nd->curve) DSTHROW(dueOutOfMemory);
+	if(!nd->curve) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -141,7 +141,7 @@ void deClassCurve2D::nfAddPoint::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScriptingDragonScript *ds = ((deClassCurve2D*)GetOwnerClass())->GetDS();
 	
 	dsRealObject *objPoint = rt->GetValue(0)->GetRealObject();
-	if(! objPoint) DSTHROW(dueNullPointer);
+	if(!objPoint) DSTHROW(dueNullPointer);
 	
 	rt->PushInt(curve.AddPoint(ds->GetClassVector2()->GetVector2(objPoint)));
 }
@@ -263,7 +263,7 @@ void deClassCurve2D::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCurve2D *clsCurve2D = (deClassCurve2D*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCurve2D)){
+	if(!p_IsObjOfType(obj, clsCurve2D)){
 		rt->PushBool(false);
 		
 	}else{
@@ -274,7 +274,7 @@ void deClassCurve2D::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 			bool equal = true;
 			
 			for(p=0; p<count; p++){
-				if(! curve.GetPointAt(p).IsEqualTo(other.GetPointAt(p))){
+				if(!curve.GetPointAt(p).IsEqualTo(other.GetPointAt(p))){
 					equal = false;
 					break;
 				}
@@ -299,7 +299,7 @@ void deClassCurve2D::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassCurve2D::deClassCurve2D(deScriptingDragonScript *ds) :
 dsClass("Curve2D", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -360,7 +360,7 @@ void deClassCurve2D::CreateClassMembers(dsEngine *engine){
 }
 
 const decCurve2D &deClassCurve2D::GetCurve(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -368,7 +368,7 @@ const decCurve2D &deClassCurve2D::GetCurve(dsRealObject *myself) const{
 }
 
 void deClassCurve2D::PushCurve(dsRunTime *rt, const decCurve2D &curve){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

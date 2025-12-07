@@ -323,16 +323,16 @@ void deoglWorld::SyncToRender(){
 
 
 void deoglWorld::AddSyncComponent(deoglComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
-	if(! component->GetLLSyncWorld().GetList()){
+	if(!component->GetLLSyncWorld().GetList()){
 		pListSyncComponents.Add(&component->GetLLSyncWorld());
 	}
 }
 
 void deoglWorld::RemoveSyncComponent(deoglComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	if(component->GetLLSyncWorld().GetList()){
@@ -341,16 +341,16 @@ void deoglWorld::RemoveSyncComponent(deoglComponent *component){
 }
 
 void deoglWorld::AddSyncBillboard(deoglBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
-	if(! billboard->GetLLSyncWorld().GetList()){
+	if(!billboard->GetLLSyncWorld().GetList()){
 		pListSyncBillboards.Add(&billboard->GetLLSyncWorld());
 	}
 }
 
 void deoglWorld::RemoveSyncBillboard(deoglBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	if(billboard->GetLLSyncWorld().GetList()){

@@ -148,7 +148,7 @@ void dearVPSStateList::MarkDirty(){
 
 void dearVPSStateList::UpdateMappings(const deAnimator &animator, const deComponent *component){
 	deModel * const model = component ? component->GetModel() : nullptr;
-	if(! model){
+	if(!model){
 		SetStateCount(0);
 		return;
 	}

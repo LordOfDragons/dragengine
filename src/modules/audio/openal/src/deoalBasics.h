@@ -125,7 +125,7 @@ struct sSampleStereo16{
 #define SAMPLE8_RANGE_F		127.0f
 
 /** \brief 8-bit sample to floating point value. */
-inline float sample8ToFloat(const Sample8 sample){return (1.0f / SAMPLE8_RANGE_F) * (float)sample;}
+inline float sample8ToFloat(const Sample8 sample){ return (1.0f / SAMPLE8_RANGE_F) * (float)sample; }
 
 
 
@@ -151,7 +151,7 @@ inline float sample8ToFloat(const Sample8 sample){return (1.0f / SAMPLE8_RANGE_F
 #define SAMPLE16_RANGE_F	32767.0f
 
 /** \brief 16-bit sample to floating point value. */
-inline float sample16ToFloat(const Sample16 sample){return (1.0f / SAMPLE16_RANGE_F) * (float)sample;}
+inline float sample16ToFloat(const Sample16 sample){ return (1.0f / SAMPLE16_RANGE_F) * (float)sample; }
 
 
 

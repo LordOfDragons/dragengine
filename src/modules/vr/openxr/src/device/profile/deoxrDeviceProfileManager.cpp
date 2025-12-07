@@ -55,7 +55,7 @@ deoxrDeviceProfile *deoxrDeviceProfileManager::GetAt(int index) const{
 }
 
 void deoxrDeviceProfileManager::Add(deoxrDeviceProfile *profile){
-	if(! profile){
+	if(!profile){
 		DETHROW_INFO(deeNullPointer, "profile");
 	}
 	pProfiles.Add(profile);

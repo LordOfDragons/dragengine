@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
-	if(! world || ! decal) DETHROW(deeInvalidParam);
+	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	pWorld = NULL;
 	pDecal = NULL;

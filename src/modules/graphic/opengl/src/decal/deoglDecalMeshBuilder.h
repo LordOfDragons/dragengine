@@ -99,7 +99,7 @@ public:
 	
 	
 	/** Number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** Point at index. */
 	const decVector &GetPointAt(int index) const;
@@ -117,7 +117,7 @@ public:
 	
 	
 	/** Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** Face at index. */
 	deoglDecalMeshBuilderFace *GetFaceAt(int index) const;

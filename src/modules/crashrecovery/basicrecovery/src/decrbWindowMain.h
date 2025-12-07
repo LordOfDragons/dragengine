@@ -81,7 +81,7 @@ public:
 	// management
 	void CleanUp();
 	
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	static const char *GetTextForError(const char *error);
 	
 	// callbacks

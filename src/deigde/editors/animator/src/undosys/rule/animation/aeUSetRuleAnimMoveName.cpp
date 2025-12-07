@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char *newName){
-	if(! rule || ! newName) DETHROW(deeInvalidParam);
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pOldName = rule->GetMoveName();

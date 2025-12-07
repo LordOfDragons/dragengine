@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meCDNSNavigationSpace::meCDNSNavigationSpace(meNavigationSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -42,7 +42,7 @@
 gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,7 +64,7 @@ gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
 ///////////////
 
 void gdeUOCToggleCanInstantiate::Undo(){
-	pObjectClass->SetCanInstantiate(! pObjectClass->GetCanInstantiate());
+	pObjectClass->SetCanInstantiate(!pObjectClass->GetCanInstantiate());
 }
 
 void gdeUOCToggleCanInstantiate::Redo(){

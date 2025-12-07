@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File writer. */
-	inline decBaseFileWriter *GetWriter() const{return pWriter;}
+	inline decBaseFileWriter *GetWriter() const{ return pWriter; }
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	
 	
 protected:
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 };
 
 #endif

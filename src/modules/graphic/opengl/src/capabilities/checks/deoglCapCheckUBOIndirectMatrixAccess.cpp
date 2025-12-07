@@ -130,7 +130,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check(GLuint fbo){
 	//    in the X coordinate. The bug is detected if the result of the test returns a value
 	//    of 255 in the red color component (X coordinate) instead of the blue one (Z coordinate).
 	
-	if(! pglUniformBlockBinding){
+	if(!pglUniformBlockBinding){
 		return;
 	}
 	
@@ -173,7 +173,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check(GLuint fbo){
 	try{
 		// load shader
 		sources = shaderManager.GetSourcesNamed("Test UBO Indirect Matrix Access Bug");
-		if(! sources){
+		if(!sources){
 			DETHROW(deeInvalidParam);
 		}
 		const deoglShaderProgram * const shader = shaderManager.GetProgramWith(sources, defines);

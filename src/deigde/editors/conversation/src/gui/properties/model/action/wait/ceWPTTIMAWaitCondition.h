@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAWait *GetAction() const{return pAction;}
+	inline ceCAWait *GetAction() const{ return pAction; }
 	
 	/** \brief Parent wait model. */
 	ceWPTTIMAWait *GetModelWait() const;

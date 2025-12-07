@@ -119,9 +119,9 @@ void deoglSPBlockUBO::MapBuffer(){
 	DEASSERT_TRUE(GetBufferSize() > 0)
 	
 	if(false){ // use mapped
-		if(! pUBO){
+		if(!pUBO){
 			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
-			if(! pUBO){
+			if(!pUBO){
 				DETHROW(deeOutOfMemory);
 			}
 		}
@@ -147,7 +147,7 @@ void deoglSPBlockUBO::MapBuffer(){
 					0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
 			}
 			
-			if(! data){
+			if(!data){
 				DETHROW(deeInvalidParam);
 			}
 			pSetMapped(data);
@@ -176,9 +176,9 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 	DEASSERT_TRUE(element + count <= GetElementCount())
 	
 	if(false){ // use mapped
-		if(! pUBO){
+		if(!pUBO){
 			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
-			if(! pUBO){
+			if(!pUBO){
 				DETHROW(deeOutOfMemory);
 			}
 			pAllocateBuffer = true;
@@ -199,7 +199,7 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 				GetElementStride() * element, GetElementStride() * count,
 				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT));
 			
-			if(! data){
+			if(!data){
 				DETHROW(deeInvalidParam);
 			}
 			pSetMapped(data, element, count);
@@ -222,9 +222,9 @@ void deoglSPBlockUBO::UnmapBuffer(){
 	if(pWriteBufferUsed){
 		OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread();)
 		
-		if(! pUBO){
+		if(!pUBO){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pUBO));
-			if(! pUBO){
+			if(!pUBO){
 				DETHROW(deeOutOfMemory);
 			}
 			pAllocateBuffer = true;

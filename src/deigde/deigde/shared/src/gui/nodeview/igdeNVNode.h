@@ -92,25 +92,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Title. */
-	inline const decString &GetTitle() const{return pTitle;}
+	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Node is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Node is active. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if button is active. */
 	void SetActive(bool active);
@@ -118,25 +118,25 @@ public:
 	
 	
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
 	void SetBgColor(const decColor &color);
 	
 	/** \brief Border color. */
-	inline const decColor &GetBorderColor() const{return pBorderColor;}
+	inline const decColor &GetBorderColor() const{ return pBorderColor; }
 	
 	/** \brief Set border color. */
 	void SetBorderColor(const decColor &color);
 	
 	/** \brief Active title background color. */
-	inline const decColor &GetActiveTitleBgColor() const{return pActiveTitleBgColor;}
+	inline const decColor &GetActiveTitleBgColor() const{ return pActiveTitleBgColor; }
 	
 	/** \brief Set active title background color. */
 	void SetActiveTitleBgColor(const decColor &color);
 	
 	/** \brief Inactive title background color. */
-	inline const decColor &GetInactiveTitleBgColor() const{return pInactiveTitleBgColor;}
+	inline const decColor &GetInactiveTitleBgColor() const{ return pInactiveTitleBgColor; }
 	
 	/** \brief Set inactive title background color. */
 	void SetInactiveTitleBgColor(const decColor &color);
@@ -144,7 +144,7 @@ public:
 	
 	
 	/** \brief Position. */
-	inline const decPoint &GetPosition() const{return pPosition;}
+	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decPoint &position);
@@ -153,7 +153,7 @@ public:
 	decPoint GetSize() const;
 	
 	/** \brief Owner board or NULL. */
-	inline igdeNVBoard *GetOwnerBoard() const{return pOwnerBoard;}
+	inline igdeNVBoard *GetOwnerBoard() const{ return pOwnerBoard; }
 	
 	/**
 	 * \brief Set owner board or NULL.

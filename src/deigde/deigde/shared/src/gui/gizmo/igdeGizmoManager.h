@@ -101,10 +101,10 @@ public:
 	void ClearHover();
 	
 	/** \brief Hover gizmo or nullptr. */
-	inline const igdeGizmo::Ref &GetHoverGizmo() const{return pHoverGizmo;}
+	inline const igdeGizmo::Ref &GetHoverGizmo() const{ return pHoverGizmo; }
 	
 	/** \brief Hover gizmo is present. */
-	inline bool HasHoverGizmo() const{return pHoverGizmo;}
+	inline bool HasHoverGizmo() const{ return pHoverGizmo; }
 	
 	
 	
@@ -129,10 +129,10 @@ public:
 		double distance, int bone, int shape, int modifiers);
 	
 	/** \brief Editing gizmo or nullptr. */
-	inline const igdeGizmo::Ref &GetEditingGizmo() const{return pEditingGizmo;}
+	inline const igdeGizmo::Ref &GetEditingGizmo() const{ return pEditingGizmo; }
 	
 	/** \brief Editing gizmo is present. */
-	inline bool HasEditingGizmo() const{return pEditingGizmo;}
+	inline bool HasEditingGizmo() const{ return pEditingGizmo; }
 	
 	/**
 	 * \brief Update editing.
@@ -249,7 +249,7 @@ public:
 	void OnKeyRelease(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Length of ray to use for simplified mouse event handling ray casting. */
-	inline float GetRayLength() const{return pRayLength;}
+	inline float GetRayLength() const{ return pRayLength; }
 	
 	/**
 	 * \brief Set length of ray to use for simplified mouse event handling.
@@ -259,7 +259,7 @@ public:
 	void SetRayLength(float length);
 	
 	/** \brief Collision filter to use for simplified mouse event handling ray casting. */
-	inline const decCollisionFilter &GetRayCollisionFilter() const{return pRayCollisionFilter;}
+	inline const decCollisionFilter &GetRayCollisionFilter() const{ return pRayCollisionFilter; }
 	
 	/**
 	 * \brief Set collision filter to use for simplified mouse event handling ray casting.

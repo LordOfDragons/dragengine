@@ -80,7 +80,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline eOrientation GetOrientation() const{return pOrientation;}
+	inline eOrientation GetOrientation() const{ return pOrientation; }
 	/*@}*/
 	
 	

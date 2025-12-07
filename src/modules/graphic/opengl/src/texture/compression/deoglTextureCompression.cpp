@@ -85,7 +85,7 @@ void deoglTextureCompression::SetFastCompression(bool fastCompression){
 
 
 void deoglTextureCompression::Compress(){
-	if(! pCompressedData){
+	if(!pCompressedData){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -101,7 +101,7 @@ void deoglTextureCompression::Compress(){
 }
 
 void deoglTextureCompression::CompressDXT1(){
-	if(! pDecompressedData || ! pCompressedData){
+	if(!pDecompressedData || !pCompressedData){
 		DETHROW(deeInvalidParam);
 	}
 	if(pDecompressedData->GetWidth() != pCompressedData->GetWidth()
@@ -117,7 +117,7 @@ void deoglTextureCompression::CompressDXT1(){
 }
 
 void deoglTextureCompression::CompressDXT3(){
-	if(! pDecompressedData || ! pCompressedData){
+	if(!pDecompressedData || !pCompressedData){
 		DETHROW(deeInvalidParam);
 	}
 	if(pDecompressedData->GetWidth() != pCompressedData->GetWidth()
@@ -135,7 +135,7 @@ void deoglTextureCompression::CompressDXT3(){
 
 
 void deoglTextureCompression::CompressMipMap(){
-	if(! pCompressedDataMipMap){
+	if(!pCompressedDataMipMap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -153,7 +153,7 @@ void deoglTextureCompression::CompressMipMap(){
 }
 
 void deoglTextureCompression::CompressMipMapDXT1(){
-	if(! pDecompressedDataMipMap || ! pCompressedDataMipMap){
+	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
 		DETHROW(deeInvalidParam);
 	}
 	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){
@@ -183,7 +183,7 @@ void deoglTextureCompression::CompressMipMapDXT1(){
 }
 
 void deoglTextureCompression::CompressMipMapDXT3(){
-	if(! pDecompressedDataMipMap || ! pCompressedDataMipMap){
+	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
 		DETHROW(deeInvalidParam);
 	}
 	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){

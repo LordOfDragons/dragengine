@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Usage count. */
-	inline int GetUsageCount() const{return pUsageCount;}
+	inline int GetUsageCount() const{ return pUsageCount; }
 	
 	/** \brief Increment usage count by one. */
 	void Increment();

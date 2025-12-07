@@ -128,7 +128,7 @@ bool debpColliderBone::HasConstraint(debpColliderConstraint *constraint) const{
 }
 
 void debpColliderBone::AddConstraint(debpColliderConstraint *constraint){
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	pConstraints.Add(constraint);
@@ -269,13 +269,13 @@ void debpColliderBone::pCleanUp(){
 }
 
 void debpColliderBone::pUpdateStaticCollisionTest(){
-	if(! pStaticCollisionTest){
+	if(!pStaticCollisionTest){
 		pStaticCollisionTest = new btGhostObject;
 		pStaticCollisionTest->setUserPointer(&pStaticCollisionTestObject);
 		pDirtyStaticTest = true;
 	}
 	
-	if(! pDirtyStaticTest){
+	if(!pDirtyStaticTest){
 		return;
 	}
 	

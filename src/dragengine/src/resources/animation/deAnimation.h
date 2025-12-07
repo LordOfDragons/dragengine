@@ -104,7 +104,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Bone at the given index. */
 	deAnimationBone *GetBone(int index) const;
@@ -122,8 +122,8 @@ public:
 	 * \brief Vertex position sets.
 	 * \version 1.17
 	 */
-	inline decStringList &GetVertexPositionSets(){return pVertexPositionSets;}
-	inline const decStringList &GetVertexPositionSets() const{return pVertexPositionSets;}
+	inline decStringList &GetVertexPositionSets(){ return pVertexPositionSets; }
+	inline const decStringList &GetVertexPositionSets() const{ return pVertexPositionSets; }
 	/*@}*/
 	
 	
@@ -131,7 +131,7 @@ public:
 	/** \name Move Management */
 	/*@{*/
 	/** \brief Count of moves. */
-	inline int GetMoveCount() const{return pMoveCount;}
+	inline int GetMoveCount() const{ return pMoveCount; }
 	
 	/** \brief Move at the given index. */
 	deAnimationMove *GetMove(int index) const;
@@ -148,7 +148,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Animator system peer object. */
-	inline deBaseAnimatorAnimation *GetPeerAnimator() const{return pPeerAnimator;}
+	inline deBaseAnimatorAnimation *GetPeerAnimator() const{ return pPeerAnimator; }
 	
 	/** \brief Set animator system peer object. */
 	void SetPeerAnimator(deBaseAnimatorAnimation *peer);

@@ -56,19 +56,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the type number. */
-	inline int GetTypeNumber() const{return pTypeNumber;}
+	inline int GetTypeNumber() const{ return pTypeNumber; }
 	/** Sets the type number. */
 	void SetTypeNumber(int typeNumber);
 	/** Retrieves the name of the type. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name of the type. */
 	void SetName(const char *name);
 	/** Retrieves the fix cost. */
-	inline float GetFixCost() const{return pFixCost;}
+	inline float GetFixCost() const{ return pFixCost; }
 	/** Sets the fix cost. */
 	void SetFixCost(float fixCost);
 	/** Retrieves the cost per meter. */
-	inline float GetCostPerMeter() const{return pCostPerMeter;}
+	inline float GetCostPerMeter() const{ return pCostPerMeter; }
 	/** Sets the cost per meter. */
 	void SetCostPerMeter(float costPerMeter);
 	/*@}*/

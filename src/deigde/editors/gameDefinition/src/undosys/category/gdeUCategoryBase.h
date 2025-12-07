@@ -74,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Type. */
-	inline eCategoryType GetType() const{return pType;}
+	inline eCategoryType GetType() const{ return pType; }
 	
 	/** \brief Notify game definition. */
 	void Notify();

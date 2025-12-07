@@ -61,11 +61,11 @@ aeUSetRuleSModEnableVertexPositionSet::~aeUSetRuleSModEnableVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleSModEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeUSetRuleSModEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 

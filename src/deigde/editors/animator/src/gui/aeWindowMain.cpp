@@ -230,7 +230,7 @@ void aeWindowMain::CreateNewAnimator(){
 }
 
 void aeWindowMain::SaveAnimator(const char *filename){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
@@ -251,7 +251,7 @@ void aeWindowMain::SaveAnimator(const char *filename){
 
 
 void aeWindowMain::CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup){
-	if(! pAnimator || (intoGroup && insert)){
+	if(!pAnimator || (intoGroup && insert)){
 		return;
 	}
 	
@@ -330,7 +330,7 @@ void aeWindowMain::OnDeactivate(){
 }
 
 void aeWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -464,7 +464,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetAnimator()){
+		if(!pWindow.GetAnimator()){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetAnimator())));
@@ -529,7 +529,7 @@ public:
 		
 		decString filename(pWindow.GetAnimator() ? pWindow.GetAnimator()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Animator",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			return;
@@ -677,7 +677,7 @@ public:
 		"Show Bones", NULL, "Show bones", deInputEvent::ekcB){}
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
-		animator->SetShowBones(! animator->GetShowBones());
+		animator->SetShowBones(!animator->GetShowBones());
 		return NULL;
 	}
 	
@@ -744,7 +744,7 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		decString name("Controller");
-		if(! igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
 			return NULL;
 		}
 		if(animator->GetControllers().HasNamed(name)){
@@ -765,7 +765,7 @@ public:
 	
 	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller){
 		decString name(controller->GetName() + " Copy");
-		if(! igdeCommonDialogs::GetString(&pWindow, "Duplicate Controller", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Controller", "Name:", name)){
 			return nullptr;
 		}
 		
@@ -892,7 +892,7 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		decString name("Link");
-		if(! igdeCommonDialogs::GetString(&pWindow, "Add Link", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pWindow, "Add Link", "Name:", name)){
 			return NULL;
 		}
 		
@@ -909,7 +909,7 @@ public:
 	
 	virtual igdeUndo *OnActionLink(aeAnimator *animator, aeLink *link){
 		decString name(link->GetName() + " Copy");
-		if(! igdeCommonDialogs::GetString(&pWindow, "Duplicate Link", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Link", "Name:", name)){
 			return NULL;
 		}
 		

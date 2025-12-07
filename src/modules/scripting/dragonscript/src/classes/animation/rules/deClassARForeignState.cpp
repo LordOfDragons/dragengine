@@ -226,7 +226,7 @@ deClassARForeignState::nfTargetAddLink::nfTargetAddLink(const sInitData &init) :
 }
 void deClassARForeignState::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -271,7 +271,7 @@ deClassARForeignState::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sIni
 	p_AddParameter(init.clsARForeignStateTarget); // target
 }
 void deClassARForeignState::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -410,7 +410,7 @@ deClassARForeignState::nfSetSourceCoordinateFrame::nfSetSourceCoordinateFrame(co
 }
 void deClassARForeignState::nfSetSourceCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -430,7 +430,7 @@ deClassARForeignState::nfSetDestinationCoordinateFrame::nfSetDestinationCoordina
 }
 void deClassARForeignState::nfSetDestinationCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -517,7 +517,7 @@ void deClassARForeignState::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleForeignState *deClassARForeignState::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -525,7 +525,7 @@ deAnimatorRuleForeignState *deClassARForeignState::GetRule(dsRealObject *myself)
 }
 
 void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -549,11 +549,11 @@ void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator *ani
 }
 
 void deClassARForeignState::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleForeignState *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

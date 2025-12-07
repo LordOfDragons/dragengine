@@ -74,7 +74,7 @@ struct sModuleData{
 spScriptFile::spScriptFile(ScriptingPython &sp, const char *fullname, const char *path) :
 pSP(sp)
 {
-	if(! fullname || ! path){
+	if(!fullname || !path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -103,7 +103,7 @@ spScriptFile::~spScriptFile(){
 
 
 spScriptFile *spScriptFile::GetOwnerClass(PyObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -164,7 +164,7 @@ void spScriptFile::pCreateModule(){
 	pSP.LogInfoFormat("Script-File %s create module", pFullModuleName.GetString());
 	
 	pPyModule = PyModule_Create(pPyModuleDefinition);
-	if(! pPyModule){
+	if(!pPyModule){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -247,7 +247,7 @@ void spScriptFile::pLoadFile(){
 	
 	//PyDict_SetItemString( moduleDict, "__loader__", myself );
 	
-	if(! PyRun_StringFlags(content.GetString(), Py_file_input, moduleDict, moduleDict, NULL)){
+	if(!PyRun_StringFlags(content.GetString(), Py_file_input, moduleDict, moduleDict, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 }

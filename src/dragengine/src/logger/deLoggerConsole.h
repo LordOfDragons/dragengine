@@ -79,7 +79,7 @@ public:
 	
 	
 protected:
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 	void LogPrefix(const char *source, const char *message, const char *prefix);
 };
 

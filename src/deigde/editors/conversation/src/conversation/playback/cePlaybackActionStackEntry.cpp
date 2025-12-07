@@ -111,7 +111,7 @@ void cePlaybackActionStackEntry::SetLooping(bool looping){
 
 
 void cePlaybackActionStackEntry::SetNextIndex(int index){
-	if(! pParentList){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
@@ -132,7 +132,7 @@ void cePlaybackActionStackEntry::SetNextIndex(int index){
 }
 
 void cePlaybackActionStackEntry::AdvanceIndex(){
-	if(! pParentList){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
@@ -168,7 +168,7 @@ void cePlaybackActionStackEntry::Clear(){
 }
 
 void cePlaybackActionStackEntry::ForwardLast(){
-	if(! pParentList){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
@@ -183,7 +183,7 @@ void cePlaybackActionStackEntry::ForwardLast(){
 }
 
 void cePlaybackActionStackEntry::ForwardEnd(){
-	if(! pParentList){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;

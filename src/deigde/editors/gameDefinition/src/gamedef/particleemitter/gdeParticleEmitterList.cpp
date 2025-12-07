@@ -113,7 +113,7 @@ bool gdeParticleEmitterList::HasWithPath(const char *path) const{
 }
 
 void gdeParticleEmitterList::Add(gdeParticleEmitter *emitter){
-	if(! emitter || HasWithPath(emitter->GetPath())){
+	if(!emitter || HasWithPath(emitter->GetPath())){
 		DETHROW(deeInvalidParam);
 	}
 	

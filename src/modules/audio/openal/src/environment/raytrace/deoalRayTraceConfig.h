@@ -64,29 +64,29 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{return pRayCount;}
+	inline int GetRayCount() const{ return pRayCount; }
 	
 	/** \brief Ray directions. */
-	inline const decVector *GetRayDirections() const{return pRayDirections;}
+	inline const decVector *GetRayDirections() const{ return pRayDirections; }
 	
 	/**
 	 * \brief Ray unit volume.
 	 * 
 	 * Multiply by distance raised to the power of 3.
 	 */
-	inline float GetRayUnitVolume() const{return pRayUnitVolume;}
+	inline float GetRayUnitVolume() const{ return pRayUnitVolume; }
 	
 	/**
 	 * \brief Ray unit surface.
 	 * 
 	 * Multiply by distance raised to the power of 2.
 	 */
-	inline float GetRayUnitSurface() const{return pRayUnitSurface;}
+	inline float GetRayUnitSurface() const{ return pRayUnitSurface; }
 	
 	/**
 	 * \brief Ray beam opening angle.
 	 */
-	inline float GetOpeningAngle() const{return pOpeningAngle;}
+	inline float GetOpeningAngle() const{ return pOpeningAngle; }
 	
 	
 	

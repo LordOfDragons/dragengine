@@ -59,9 +59,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	/** Retrieves the height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	/**
 	 * Retrieves the height at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.

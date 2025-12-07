@@ -109,7 +109,7 @@ void meCLSnapPoint::CalcBoundingBoxShape(decShapeList &shape){
 
 
 void meCLSnapPoint::AddIgnoreObject(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -126,7 +126,7 @@ void meCLSnapPoint::Reset(){
 
 
 decDMatrix meCLSnapPoint::CalcCorrectionMatrix() const{
-	if(! pTargetSnapPoint || ! pTargetObject){
+	if(!pTargetSnapPoint || !pTargetObject){
 		return decDMatrix();
 	}
 	
@@ -164,18 +164,18 @@ decDMatrix meCLSnapPoint::CalcCorrectionMatrix() const{
 //////////////////
 
 void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! info->IsCollider()){
+	if(!info->IsCollider()){
 		return;
 	}
 	
 	const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 		*pWorld.GetEnvironment(), info->GetCollider() );
-	if(! colliderOwner){
+	if(!colliderOwner){
 		return;
 	}
 	
 	meObjectSnapPoint * const snapPoint = colliderOwner->GetSnapPoint();
-	if(! snapPoint){
+	if(!snapPoint){
 		return;
 	}
 	
@@ -223,7 +223,7 @@ void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	const float distance = (float)(targetPosition - pObject->GetPosition()).Length();
 	
 	if(distance <= snapDistance){
-		if(! pTargetSnapPoint || distance < pDistance){
+		if(!pTargetSnapPoint || distance < pDistance){
 			pSourceSnapPoint = NULL;
 			pTargetObject = object;
 			pTargetSnapPoint = gdcSnapPoint;

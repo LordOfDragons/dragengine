@@ -82,7 +82,7 @@ void deRLTaskReadSound::Run(){
 	LogRunEnter();
 	deBaseSoundModule * const module = (deBaseSoundModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtSound, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ void deRLTaskReadSound::Run(){
 
 void deRLTaskReadSound::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pSound = NULL;
 		LogFinishedExit();

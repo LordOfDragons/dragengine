@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rule, const decVector &newMax){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	

@@ -41,7 +41,7 @@
 
 meWTColorMatrix::meWTColorMatrix(const char *name, const decColorMatrix &colorMatrix){
 	pName = new char[strlen(name) + 1];
-	if(! pName) DETHROW(deeOutOfMemory);
+	if(!pName) DETHROW(deeOutOfMemory);
 	strcpy(pName, name);
 	
 	pColorMatrix = colorMatrix;

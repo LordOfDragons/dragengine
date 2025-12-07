@@ -323,7 +323,7 @@ bool deServiceObject::operator==(const deServiceObject &other) const{
 			return other.pData && pData->GetLength() == other.pData->GetLength()
 				&& memcmp(pData->GetPointer(), other.pData->GetPointer(), pData->GetLength()) == 0;
 		}else{
-			return ! other.pData;
+			return !other.pData;
 		}
 		
 	case evtDictionary:{
@@ -352,5 +352,5 @@ bool deServiceObject::operator==(const deServiceObject &other) const{
 }
 
 bool deServiceObject::operator!=(const deServiceObject &other) const{
-	return ! (*this == other);
+	return !(*this == other);
 }

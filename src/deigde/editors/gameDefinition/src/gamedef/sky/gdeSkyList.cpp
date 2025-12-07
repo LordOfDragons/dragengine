@@ -113,7 +113,7 @@ bool gdeSkyList::HasWithPath(const char *path) const{
 }
 
 void gdeSkyList::Add(gdeSky *sky){
-	if(! sky || HasWithPath(sky->GetPath())){
+	if(!sky || HasWithPath(sky->GetPath())){
 		DETHROW(deeInvalidParam);
 	}
 	

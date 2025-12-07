@@ -42,7 +42,7 @@
 seUSetSourceChainMaxSpeed::seUSetSourceChainMaxSpeed(seSourceChain *source, float newSpeed) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

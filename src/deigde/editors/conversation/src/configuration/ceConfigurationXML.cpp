@@ -72,7 +72,7 @@ void ceConfigurationXML::ReadFromFile(decBaseFileReader &reader, ceConfiguration
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "conversationEditor") != 0){
+	if(!root || strcmp(root->GetName(), "conversationEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ void ceConfigurationXML::pReadConfig(const decXmlElementTag &root, ceConfigurati
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

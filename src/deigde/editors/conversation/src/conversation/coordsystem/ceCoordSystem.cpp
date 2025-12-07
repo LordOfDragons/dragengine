@@ -66,36 +66,36 @@ void ceCoordSystem::SetConversation(ceConversation *conversation){
 
 
 void ceCoordSystem::SetID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pID.Equals(id)){
+	if(!pID.Equals(id)){
 		pID = id;
 		NotifyCoordSystemChanged();
 	}
 }
 
 void ceCoordSystem::SetAliasID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pAliasID.Equals(id)){
+	if(!pAliasID.Equals(id)){
 		pAliasID = id;
 		NotifyCoordSystemChanged();
 	}
 }
 
 void ceCoordSystem::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		NotifyCoordSystemChanged();
 	}
 }
 
 void ceCoordSystem::SetOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		NotifyCoordSystemChanged();
 	}

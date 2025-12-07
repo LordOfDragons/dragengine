@@ -102,25 +102,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	/** \brief Clipboard or NULL. */
-	inline igdeClipboard *GetClipboard() const{return pClipboard;}
+	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Set clipboard or NULL. */
 	void SetClipboard(igdeClipboard *clipboard);
 	
 	/** \brief Property list to edit. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property list to edit. */
 	void SetProperties(const decStringDictionary &properties);
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Widget is enabled. */
 	void SetEnabled(bool enabled);
@@ -194,17 +194,17 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPropertyAdd() const{return pActionPropertyAdd;}
-	inline igdeAction *GetActionPropertyRemove() const{return pActionPropertyRemove;}
-	inline igdeAction *GetActionPropertyClear() const{return pActionPropertyClear;}
-	inline igdeAction *GetActionPropertyCopy() const{return pActionPropertyCopy;}
-	inline igdeAction *GetActionPropertyCopyAll() const{return pActionPropertyCopyAll;}
-	inline igdeAction *GetActionPropertyCut() const{return pActionPropertyCut;}
-	inline igdeAction *GetActionPropertyCutAll() const{return pActionPropertyCutAll;}
-	inline igdeAction *GetActionPropertyPaste() const{return pActionPropertyPaste;}
-	inline igdeAction *GetActionPropertyRename() const{return pActionPropertyRename;}
-	inline igdeAction *GetActionPropertyExport() const{return pActionPropertyExport;}
-	inline igdeAction *GetActionPropertyImport() const{return pActionPropertyImport;}
+	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
+	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
+	inline igdeAction *GetActionPropertyClear() const{ return pActionPropertyClear; }
+	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline igdeAction *GetActionPropertyCopyAll() const{ return pActionPropertyCopyAll; }
+	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline igdeAction *GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
+	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
+	inline igdeAction *GetActionPropertyRename() const{ return pActionPropertyRename; }
+	inline igdeAction *GetActionPropertyExport() const{ return pActionPropertyExport; }
+	inline igdeAction *GetActionPropertyImport() const{ return pActionPropertyImport; }
 	/*@}*/
 	
 	

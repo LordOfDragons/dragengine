@@ -69,7 +69,7 @@ public:
 	void Clear();
 	
 	/** Light. */
-	inline deoglRLight *GetLight() const{return pLight;}
+	inline deoglRLight *GetLight() const{ return pLight; }
 	
 	/** Set light. */
 	void SetLight(deoglRLight *light);
@@ -77,16 +77,16 @@ public:
 	
 	
 	/** Light is culled. */
-	inline bool GetCulled() const{return pCulled;}
+	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set light is culled. */
 	void SetCulled(bool visible);
 	
 	/** Camera is inside light volume. */
-	inline bool GetCameraInside() const{return pCameraInside;}
+	inline bool GetCameraInside() const{ return pCameraInside; }
 	
 	/** Camera is inside ccclusion query box. */
-	inline bool GetCameraInsideOccQueryBox() const{return pCameraInsideOccQueryBox;}
+	inline bool GetCameraInsideOccQueryBox() const{ return pCameraInsideOccQueryBox; }
 	
 	/** Test if camera is inside light volume and occlusion query box. */
 	void TestInside(const deoglRenderPlan &plan);
@@ -98,7 +98,7 @@ public:
 	virtual void OcclusionTestInvisible();
 	
 	/** Has occlusion query. */
-	inline bool HasOcclusionQuery() const{return pOcclusionQuery != nullptr;}
+	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }
 	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();

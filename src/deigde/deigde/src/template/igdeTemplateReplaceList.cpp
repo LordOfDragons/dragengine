@@ -71,7 +71,7 @@ bool igdeTemplateReplaceList::Has(igdeTemplateReplace *replace) const{
 }
 
 void igdeTemplateReplaceList::Add(igdeTemplateReplace *replace){
-	if(! replace){
+	if(!replace){
 		DETHROW(deeInvalidParam);
 	}
 	pReplaces.Add(replace);

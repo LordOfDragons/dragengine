@@ -105,7 +105,7 @@ deClassCanvas::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction(
 }
 void deClassCanvas::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -121,7 +121,7 @@ deClassCanvas::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunction(
 }
 void deClassCanvas::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -137,7 +137,7 @@ deClassCanvas::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.cls
 }
 void deClassCanvas::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -153,7 +153,7 @@ deClassCanvas::nfSetSize::nfSetSize(const sInitData &init) : dsFunction(init.cls
 }
 void deClassCanvas::nfSetSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -169,7 +169,7 @@ deClassCanvas::nfGetTransform::nfGetTransform(const sInitData &init) : dsFunctio
 }
 void deClassCanvas::nfGetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -185,7 +185,7 @@ deClassCanvas::nfSetTransform::nfSetTransform(const sInitData &init) : dsFunctio
 }
 void deClassCanvas::nfSetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -201,7 +201,7 @@ deClassCanvas::nfGetColorTransform::nfGetColorTransform(const sInitData &init) :
 }
 void deClassCanvas::nfGetColorTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -217,7 +217,7 @@ deClassCanvas::nfSetColorTransform::nfSetColorTransform(const sInitData &init) :
 }
 void deClassCanvas::nfSetColorTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -233,7 +233,7 @@ deClassCanvas::nfGetVisible::nfGetVisible(const sInitData &init) : dsFunction(in
 }
 void deClassCanvas::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -247,7 +247,7 @@ deClassCanvas::nfSetVisible::nfSetVisible(const sInitData &init) : dsFunction(in
 }
 void deClassCanvas::nfSetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -260,7 +260,7 @@ deClassCanvas::nfGetOrder::nfGetOrder(const sInitData &init) : dsFunction(init.c
 }
 void deClassCanvas::nfGetOrder::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -274,7 +274,7 @@ deClassCanvas::nfSetOrder::nfSetOrder(const sInitData &init) : dsFunction(init.c
 }
 void deClassCanvas::nfSetOrder::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -287,7 +287,7 @@ deClassCanvas::nfGetTransparency::nfGetTransparency(const sInitData &init) : dsF
 }
 void deClassCanvas::nfGetTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -301,7 +301,7 @@ deClassCanvas::nfSetTransparency::nfSetTransparency(const sInitData &init) : dsF
 }
 void deClassCanvas::nfSetTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -314,7 +314,7 @@ deClassCanvas::nfGetBlendMode::nfGetBlendMode(const sInitData &init) : dsFunctio
 }
 void deClassCanvas::nfGetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -329,7 +329,7 @@ deClassCanvas::nfSetBlendMode::nfSetBlendMode(const sInitData &init) : dsFunctio
 }
 void deClassCanvas::nfSetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas || ! rt->GetValue(0)->GetRealObject()){
+	if(!nd.canvas || !rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -344,7 +344,7 @@ deClassCanvas::nfGetMask::nfGetMask(const sInitData &init) : dsFunction(init.cls
 }
 void deClassCanvas::nfGetMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -359,7 +359,7 @@ deClassCanvas::nfSetMask::nfSetMask(const sInitData &init) : dsFunction(init.cls
 }
 void deClassCanvas::nfSetMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas || ! rt->GetValue(0)->GetRealObject()){
+	if(!nd.canvas || !rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -374,7 +374,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvasView){
 }
 void deClassCanvas::nfGetParentView::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -389,7 +389,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvas){
 }
 void deClassCanvas::nfGetParentMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCanvasNatDat &nd = *((sCanvasNatDat*)p_GetNativeData(myself));
-	if(! nd.canvas){
+	if(!nd.canvas){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -419,7 +419,7 @@ void deClassCanvas::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCanvas * const clsCanvas = (deClassCanvas*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCanvas)){
+	if(!p_IsObjOfType(obj, clsCanvas)){
 		rt->PushBool(false);
 		
 	}else{
@@ -505,7 +505,7 @@ void deClassCanvas::CreateClassMembers(dsEngine *engine){
 
 
 void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -529,7 +529,7 @@ void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 
 
 deCanvas *deClassCanvas::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -537,11 +537,11 @@ deCanvas *deClassCanvas::GetCanvas(dsRealObject *myself) const {
 }
 
 void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

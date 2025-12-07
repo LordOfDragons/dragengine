@@ -88,19 +88,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Linked game engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Active loadable module. */
-	inline deLoadableModule *GetActiveLoadableModule() const{return pActiveLoadableModule;}
+	inline deLoadableModule *GetActiveLoadableModule() const{ return pActiveLoadableModule; }
 	
 	/** \brief System is running. */
-	inline bool GetIsRunning() const{return pRunning;}
+	inline bool GetIsRunning() const{ return pRunning; }
 	
 	/** \brief System has failed during runtime. */
-	inline bool GetHasFailed() const{return pFailed;}
+	inline bool GetHasFailed() const{ return pFailed; }
 	
 	/** \brief System name. */
-	inline const decString &GetSystemName() const{return pSystemName;}
+	inline const decString &GetSystemName() const{ return pSystemName; }
 	
 	/**
 	 * Determines if the system can be started up or not. A system is considered

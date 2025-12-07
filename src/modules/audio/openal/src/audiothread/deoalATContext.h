@@ -57,10 +57,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL device. */
-	inline ALCdevice *GetDevice() const{return pDevice;}
+	inline ALCdevice *GetDevice() const{ return pDevice; }
 	
 	/** \brief OpenAL context. */
-	inline ALCcontext *GetContext() const{return pContext;}
+	inline ALCcontext *GetContext() const{ return pContext; }
 	
 	
 	

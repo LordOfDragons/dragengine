@@ -45,7 +45,7 @@ gdeOCParticleEmitter *particleEmitter, const char *newValue) :
 pObjectClass(NULL),
 pParticleEmitter(NULL)
 {
-	if(! objectClass || ! particleEmitter){
+	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

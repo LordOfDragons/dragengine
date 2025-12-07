@@ -38,7 +38,7 @@
 deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader *file) :
 pFile(NULL)
 {
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	pFile = file;

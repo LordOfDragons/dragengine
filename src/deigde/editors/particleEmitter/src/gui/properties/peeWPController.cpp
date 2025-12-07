@@ -86,7 +86,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeController * const controller = pPanel.GetController();
-		if(! emitter || ! controller){
+		if(!emitter || !controller){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeController * const controller = pPanel.GetController();
-		if(! emitter || ! controller){
+		if(!emitter || !controller){
 			return;
 		}
 		
@@ -142,7 +142,7 @@ public:
 	
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		
@@ -188,7 +188,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if(! emitter){
+		if(!emitter){
 			return;
 		}
 		

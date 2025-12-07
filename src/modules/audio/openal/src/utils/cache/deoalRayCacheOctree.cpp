@@ -101,7 +101,7 @@ void deoalRayCacheOctree::ClearRays(){
 }
 
 void deoalRayCacheOctree::InsertRayIntoTree(deoalRayCacheRay *ray, int maxDepth){
-	if(! ray || maxDepth < 0){
+	if(!ray || maxDepth < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -126,7 +126,7 @@ int deoalRayCacheOctree::IndexOfRay(deoalRayCacheRay *ray) const{
 }
 
 void deoalRayCacheOctree::AddRay(deoalRayCacheRay *ray){
-	if(! ray || ray->GetOctreeNode()){
+	if(!ray || ray->GetOctreeNode()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -135,7 +135,7 @@ void deoalRayCacheOctree::AddRay(deoalRayCacheRay *ray){
 }
 
 void deoalRayCacheOctree::RemoveRay(deoalRayCacheRay *ray){
-	if(! ray || ray->GetOctreeNode() != this){
+	if(!ray || ray->GetOctreeNode() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -170,7 +170,7 @@ deoalRayCacheOctree *deoalRayCacheOctree::pGetNodeFor(const decVector &position,
 		}
 		
 		deoalOctree *nextNode = curNode->GetNodeAt(octant);
-		if(! nextNode){
+		if(!nextNode){
 			nextNode = curNode->CreateOctree(octant);
 			curNode->SetNodeAt(octant, nextNode);
 		}

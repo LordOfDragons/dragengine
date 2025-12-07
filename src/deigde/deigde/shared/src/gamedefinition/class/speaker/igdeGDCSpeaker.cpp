@@ -125,7 +125,7 @@ void igdeGDCSpeaker::SetPlaySpeed(float playSpeed){
 
 
 bool igdeGDCSpeaker::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCSpeaker::GetPropertyName(eProperties property) const{
@@ -139,7 +139,7 @@ void igdeGDCSpeaker::SetPropertyName(eProperties property, const char *name){
 
 
 bool igdeGDCSpeaker::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &igdeGDCSpeaker::GetTriggerName(eTriggers trigger) const{

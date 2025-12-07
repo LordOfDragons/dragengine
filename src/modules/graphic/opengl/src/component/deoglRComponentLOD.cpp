@@ -144,7 +144,7 @@ int deoglRComponentLOD::GetPointOffset() const{
 	if(pVAO){
 		return 0;
 	}
-	if(! pVBOBlock){
+	if(!pVBOBlock){
 		return 0;
 	}
 	return pVBOBlock->GetOffset();
@@ -153,7 +153,7 @@ int deoglRComponentLOD::GetPointOffset() const{
 int deoglRComponentLOD::GetIndexOffset() const{
 	if(pVAO){
 		if(pComponent.GetRenderThread().GetChoices().GetSharedVBOUseBaseVertex()){
-			if(! pVBOBlock){
+			if(!pVBOBlock){
 				return 0;
 			}
 			return pVBOBlock->GetIndexOffset();
@@ -163,7 +163,7 @@ int deoglRComponentLOD::GetIndexOffset() const{
 		}
 		
 	}else{
-		if(! pVBOBlock){
+		if(!pVBOBlock){
 			return 0;
 		}
 		return pVBOBlock->GetIndexOffset();
@@ -286,7 +286,7 @@ void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	
 	PrepareWeights();
 	
-	if(! pSSBOWeightMatrices){
+	if(!pSSBOWeightMatrices){
 		pSSBOWeightMatrices.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
 		deoglSPBlockSSBO &ssbo = pSSBOWeightMatrices;
 		ssbo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
@@ -322,7 +322,7 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt(pLODIndex);
 	const int pointCount = modelLOD.GetVertexCount();
 	
-	if(pointCount == 0 || ! modelLOD.GetVBOBlockWithWeight()){
+	if(pointCount == 0 || !modelLOD.GetVBOBlockWithWeight()){
 		return;
 	}
 	
@@ -386,7 +386,7 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 
 
 void deoglRComponentLOD::PrepareGIDynamicBVH(){
-	if(! pGIBVHDynamic){
+	if(!pGIBVHDynamic){
 		deoglModelLOD &modelLOD = GetModelLODRef();
 		modelLOD.PrepareGILocalBVH();
 		pGIBVHDynamic = new deoglGIBVHDynamic(*modelLOD.GetGIBVHLocal());
@@ -450,12 +450,12 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		pRenderTaskConfigs[i].RemoveAllTextures();
 	}
 	
-	if(! pComponent.GetModel()){
+	if(!pComponent.GetModel()){
 		return;
 	}
 	
 	const deoglVAO * const vao = GetUseVAO();
-	if(! vao){
+	if(!vao){
 		return;
 	}
 	
@@ -476,7 +476,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		}
 		
 		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-		if(! skinTexture){
+		if(!skinTexture){
 			continue; // actually covered by filter above but better safe than sorry
 		}
 		
@@ -510,7 +510,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 			rct.SetRenderTaskFilter(texture.GetRenderTaskFilters() & filterMask);
 			rct.SetPipeline(skinTexture->GetPipelines().GetAt(pipelinesType).GetWithRef(typesShadow[j]).GetPipeline());
 			const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType(typesShadow[j]);
-			if(! tuc){
+			if(!tuc){
 				tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 			}
 			rct.SetTexture(tuc->GetRTSTexture());
@@ -813,7 +813,7 @@ void deoglRComponentLOD::pWriteVBOData(const deoglModelLOD &modelLOD){
 }
 
 void deoglRComponentLOD::pUpdateVAO(deoglModelLOD &modelLOD){
-	if(pVAO || ! pVBO || ! modelLOD.GetVBOBlock()){
+	if(pVAO || !pVBO || !modelLOD.GetVBOBlock()){
 		return;
 	}
 	
@@ -949,20 +949,20 @@ void deoglRComponentLOD::pCalculateWeights(const deoglModelLOD &modelLOD){
 	if(weightsCount > 0){
 		deGraphicOpenGl &ogl = *pComponent.GetOgl();
 		
-		if(! pVBOWeightMatrices){
+		if(!pVBOWeightMatrices){
 			OGL_CHECK(ogl, pglGenBuffers(1, &pVBOWeightMatrices));
-			if(! pVBOWeightMatrices){
+			if(!pVBOWeightMatrices){
 				DETHROW(deeOutOfMemory);
 			}
 			OGL_CHECK(ogl, pglBindBuffer(GL_ARRAY_BUFFER, pVBOWeightMatrices));
 			OGL_CHECK(ogl, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglMatrix3x4) * weightsCount, pWeights, GL_STATIC_DRAW));
 		}
 		
-		if(! pTBOWeightMatrices){
+		if(!pTBOWeightMatrices){
 			deoglTextureStageManager &tsmgr = ogl.GetRenderThread().GetTexture().GetStages();
 			
 			OGL_CHECK(ogl, glGenTextures(1, &pTBOWeightMatrices));
-			if(! pTBOWeightMatrices){
+			if(!pTBOWeightMatrices){
 				DETHROW(deeInvalidParam);
 			}
 			tsmgr.EnableBareTBO(0, pTBOWeightMatrices);
@@ -978,7 +978,7 @@ void deoglRComponentLOD::pTransformVertices(const deoglModelLOD &modelLOD){
 	const int positionCount = modelLOD.GetPositionCount();
 	int i;
 	
-	if(! pWeights){
+	if(!pWeights){
 		// happens if higher LOD has only weightless vertices while lower LOD has weighted
 		// vertices. this extra check avoids potential bugs if pWeights is incorrectly NULL
 		for(i=0; i<positionCount; i++){
@@ -1228,12 +1228,12 @@ void deoglRComponentLOD::pUpdateRenderTaskConfig(deoglRenderTaskConfig &config,
 deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow){
 	config.RemoveAllTextures();
 	
-	if(! pComponent.GetModel()){
+	if(!pComponent.GetModel()){
 		return;
 	}
 	
 	const deoglVAO * const vao = GetUseVAO();
-	if(! vao){
+	if(!vao){
 		return;
 	}
 	
@@ -1253,7 +1253,7 @@ deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagM
 		}
 		
 		deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-		if(! skinTexture){
+		if(!skinTexture){
 			continue; // actually covered by filter above but better safe than sorry
 		}
 		
@@ -1284,7 +1284,7 @@ deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagM
 		rct.SetRenderTaskFilter(texture.GetRenderTaskFilters() & filterMask);
 		rct.SetPipeline(skinTexture->GetPipelines().GetAt(pipelinesType).GetWithRef(type).GetPipeline());
 		const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType(type);
-		if(! tuc){
+		if(!tuc){
 			tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 		}
 		rct.SetTexture(tuc->GetRTSTexture());

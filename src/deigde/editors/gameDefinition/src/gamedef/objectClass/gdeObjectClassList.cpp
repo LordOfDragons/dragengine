@@ -113,7 +113,7 @@ bool gdeObjectClassList::HasNamed(const char *name) const{
 }
 
 void gdeObjectClassList::Add(gdeObjectClass *objectClass){
-	if(! objectClass || HasNamed(objectClass->GetName())){
+	if(!objectClass || HasNamed(objectClass->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -136,7 +136,7 @@ FXVerticalFrame(container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0
 	
 	// create content
 	pListGames = new ExtIconList(this, this, ID_LIST_GAMES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y);
-	if(! pListGames) DETHROW(deeOutOfMemory);
+	if(!pListGames) DETHROW(deeOutOfMemory);
 	
 	pListGames->appendHeader("Game", nullptr, 350);
 	pListGames->appendHeader("Status", nullptr, 150);
@@ -386,7 +386,7 @@ long deglPanelGames::onListGamesHeaderClicked(FXObject*, FXSelector, void *pdata
 
 long deglPanelGames::onPUGameProps(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if(! game){
+	if(!game){
 		return 1;
 	}
 	
@@ -404,7 +404,7 @@ long deglPanelGames::updatePUGameProps(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
 	if(game){
-		enable = ! game->IsRunning();
+		enable = !game->IsRunning();
 	}
 	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
@@ -412,7 +412,7 @@ long deglPanelGames::updatePUGameProps(FXObject *sender, FXSelector, void*){
 
 long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if(! game){
+	if(!game){
 		return 1;
 	}
 	
@@ -430,7 +430,7 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 			runParams.SetGameProfile(profile);
 			
 			decString error;
-			if(! runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
 				FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 				return false;
 			}
@@ -457,7 +457,7 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 			
 			break;
 			
-		}else if(! profile->GetValid()){
+		}else if(!profile->GetValid()){
 			if(FXMessageBox::question(this, MBOX_YES_NO, "Can not run game",
 			"The Game Profile is not working. Open the Game Properties to fix the problem?") == MBOX_CLICKED_YES){
 				deglDialogGameProperties dialog(pWindowMain, game, pWindowMain);
@@ -472,7 +472,7 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 				pWindowMain->GetLauncher()->GetGameManager().Verify();
 				UpdateGameList();
 				
-				if(! result){
+				if(!result){
 					break;
 				}
 				
@@ -480,7 +480,7 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 				break;
 			}
 			
-		}else if(! game->GetAllFormatsSupported()){
+		}else if(!game->GetAllFormatsSupported()){
 			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
 			break;
 			
@@ -497,7 +497,7 @@ long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 
 long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if(! game){
+	if(!game){
 		return 1;
 	}
 	
@@ -514,20 +514,20 @@ long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 			const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 			delGameRunParams runParams;
 			while(true){
-				if(! dialog.execute(PLACEMENT_OWNER)){
+				if(!dialog.execute(PLACEMENT_OWNER)){
 					break;
 				}
 				
 				runParams.SetGameProfile(dialog.GetProfile());
-				if(! runParams.GetGameProfile()){
+				if(!runParams.GetGameProfile()){
 					runParams.SetGameProfile(gameManager.GetActiveProfile());
-					if(! runParams.GetGameProfile()){
+					if(!runParams.GetGameProfile()){
 						runParams.SetGameProfile(gameManager.GetDefaultProfile());
 					}
 				}
 				
 				decString error;
-				if(! runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
 					FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 					return false;
 				}
@@ -562,7 +562,7 @@ long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 			
 			break;
 			
-		}else if(! game->GetAllFormatsSupported()){
+		}else if(!game->GetAllFormatsSupported()){
 			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
 			break;
 			
@@ -581,7 +581,7 @@ long deglPanelGames::updatePUGameRun(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
 	if(game){
-		enable = ! game->IsRunning();
+		enable = !game->IsRunning();
 	}
 	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
@@ -591,7 +591,7 @@ long deglPanelGames::onPUGameKill(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
 	
 	if(game){
-		if(! game->IsRunning()){
+		if(!game->IsRunning()){
 			FXMessageBox::information(this, MBOX_OK, "Kill Game", "This game is not running. Nothing to kill there.");
 			
 		}else{
@@ -619,7 +619,7 @@ long deglPanelGames::updatePUGameKill(FXObject *sender, FXSelector, void*){
 
 long deglPanelGames::onPUGameUninstall(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if(! game){
+	if(!game){
 		return 1;
 	}
 	
@@ -644,7 +644,7 @@ long deglPanelGames::updatePUGameUninstall(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
 	if(game){
-		enable = ! game->IsRunning();
+		enable = !game->IsRunning();
 	}
 	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
@@ -652,7 +652,7 @@ long deglPanelGames::updatePUGameUninstall(FXObject *sender, FXSelector, void*){
 
 long deglPanelGames::onPUGameShowLogs(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if(! game){
+	if(!game){
 		return 1;
 	}
 	
@@ -662,7 +662,7 @@ long deglPanelGames::onPUGameShowLogs(FXObject*, FXSelector, void*){
 	path.AddComponent(game->GetIdentifier().ToHexString(false));
 	
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(path));
-	if(! container->ExistsFile(decPath::CreatePathUnix("/logs"))){
+	if(!container->ExistsFile(decPath::CreatePathUnix("/logs"))){
 		FXMessageBox::information(this, MBOX_OK, "Show Logs",
 			"There are no logs for this game. Logs will be present after running the game");
 		return 1;

@@ -67,19 +67,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File type. */
-	inline deModuleSystem::eModuleTypes GetType() const{return pType;}
+	inline deModuleSystem::eModuleTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(deModuleSystem::eModuleTypes type);
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set pattern. */
 	void SetPattern(const char *pattern);
 	
 	/** \brief File format is supported. */
-	inline bool GetSupported() const{return pSupported;}
+	inline bool GetSupported() const{ return pSupported; }
 	
 	/** \brief Set if file format is supported. */
 	void SetSupported(bool supported);

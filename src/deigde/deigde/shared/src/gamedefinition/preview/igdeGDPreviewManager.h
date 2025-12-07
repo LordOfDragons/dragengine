@@ -90,25 +90,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to cache directory. */
-	inline const decString &GetPathCache() const{return pPathCache;}
+	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set path to cache directory. */
 	void SetPathCache(const char *path);
 	
 	/** \brief Directory name for object classes. */
-	inline const decString &GetDirectoryObjectClass() const{return pDirObjectClass;}
+	inline const decString &GetDirectoryObjectClass() const{ return pDirObjectClass; }
 	
 	/** \brief Set directory name for object classes. */
 	void SetDirectoryObjectClass(const char *directory);
 	
 	/** \brief Directory name for skins. */
-	inline const decString &GetDirectorySkin() const{return pDirSkin;}
+	inline const decString &GetDirectorySkin() const{ return pDirSkin; }
 	
 	/** \brief Set directory name for skins. */
 	void SetDirectorySkin(const char *directory);
 	
 	/** \brief Directory name for skies. */
-	inline const decString &GetDirectorySky() const{return pDirSky;}
+	inline const decString &GetDirectorySky() const{ return pDirSky; }
 	
 	/** \brief Set directory name for skies. */
 	void SetDirectorySky(const char *directory);
@@ -116,7 +116,7 @@ public:
 	
 	
 	/** \brief Image for creating preview in progress. */
-	inline deImage *GetImageCreating() const{return pImageCreating;}
+	inline deImage *GetImageCreating() const{ return pImageCreating; }
 	
 	
 	

@@ -83,7 +83,7 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 ///////////////
 
 seSky *seLoadSaveSystem::LoadSky(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ seSky *seLoadSaveSystem::LoadSky(const char *filename){
 }
 
 void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
-	if(! sky || ! filename){
+	if(!sky || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	

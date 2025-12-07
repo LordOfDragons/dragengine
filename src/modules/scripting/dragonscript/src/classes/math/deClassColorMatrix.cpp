@@ -628,7 +628,7 @@ void deClassColorMatrix::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *mys
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decColorMatrix matrix;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -652,7 +652,7 @@ void deClassColorMatrix::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myse
 	const deClassFileWriter &clsFileWriter = *clsColorMatrix.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -767,7 +767,7 @@ void deClassColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsClrMatrix)){
+	if(!p_IsObjOfType(obj, clsClrMatrix)){
 		rt->PushBool(false);
 		
 	}else{
@@ -962,7 +962,7 @@ void deClassColorMatrix::CreateClassMembers(dsEngine *engine){
 }
 
 const decColorMatrix &deClassColorMatrix::GetColorMatrix(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -970,7 +970,7 @@ const decColorMatrix &deClassColorMatrix::GetColorMatrix(dsRealObject *myself) c
 }
 
 void deClassColorMatrix::PushColorMatrix(dsRunTime *rt, const decColorMatrix &matrix){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

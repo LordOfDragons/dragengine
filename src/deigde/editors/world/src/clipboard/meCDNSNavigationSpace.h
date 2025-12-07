@@ -54,10 +54,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Orientation. */
-	inline const decVector &GetOrientation() const{return pOrientation;}
+	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Update navigation space with stored data. */
 	void UpdateNavSpace(meNavigationSpace &navspace) const;

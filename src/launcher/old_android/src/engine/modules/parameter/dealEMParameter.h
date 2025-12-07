@@ -56,19 +56,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parameter index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	/** Sets the parameter index. */
 	void SetIndex(int index);
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the description. */
-	inline const decString &GetDescription () const{return pDescription;}
+	inline const decString &GetDescription () const{ return pDescription; }
 	/** Sets the description. */
 	void SetDescription(const char *description);
 	/** Retrieves the value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	/** Sets the value. */
 	void SetValue(const char *value);
 	/*@}*/

@@ -236,7 +236,7 @@ void deClassFont::nfGetTextSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	float lineWidth = 0.0f;
 	float textWidth = 0.0f;
 	
-	while(! utf8Decoder.HasReachedEnd()){
+	while(!utf8Decoder.HasReachedEnd()){
 		const int character = utf8Decoder.DecodeNextCharacter();
 		
 		if(character == '\n'){
@@ -357,7 +357,7 @@ void deClassFont::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	dsValue * const object = rt->GetValue(0);
 	
-	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! object->GetRealObject()
+	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || !object->GetRealObject()
 	|| object->GetRealObject()->GetType() != clsFont){
 		rt->PushBool(false);
 		
@@ -435,7 +435,7 @@ void deClassFont::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
-	if(! rt || size < 1){
+	if(!rt || size < 1){
 		DSTHROW(dueInvalidParam);
 	}
 	

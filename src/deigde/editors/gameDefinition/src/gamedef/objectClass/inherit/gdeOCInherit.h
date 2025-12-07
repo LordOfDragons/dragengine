@@ -64,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of class to inherit if present. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of class to inherit if present. */
 	void SetName(const char *name);
 	
 	/** \brief Prefix to add to properties defined in inherited class. */
-	inline const decString &GetPropertyPrefix() const{return pPropertyPrefix;}
+	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
 	void SetPropertyPrefix(const char *prefix);

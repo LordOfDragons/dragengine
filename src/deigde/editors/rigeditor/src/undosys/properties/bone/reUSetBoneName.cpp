@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reUSetBoneName::reUSetBoneName(reRigBone *bone, const char *newName){
-	if(! bone || ! newName) DETHROW(deeInvalidParam);
+	if(!bone || !newName) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();

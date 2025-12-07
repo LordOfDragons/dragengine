@@ -121,7 +121,7 @@ void deParticleEmitterInstance::SetEmitter(deParticleEmitter *emitter){
 
 
 void deParticleEmitterInstance::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pPeerGraphic){
@@ -134,7 +134,7 @@ void deParticleEmitterInstance::SetPosition(const decDVector &position){
 }
 
 void deParticleEmitterInstance::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		if(pPeerGraphic){
@@ -147,7 +147,7 @@ void deParticleEmitterInstance::SetOrientation(const decQuaternion &orientation)
 }
 
 void deParticleEmitterInstance::SetReferencePosition(const decDVector &position){
-	if(! position.IsEqualTo(pReferencePosition)){
+	if(!position.IsEqualTo(pReferencePosition)){
 		pReferencePosition = position;
 		
 		if(pPeerGraphic){
@@ -458,7 +458,7 @@ void deParticleEmitterInstance::SetLLWorldNext(deParticleEmitterInstance *instan
 /////////////////////
 
 void deParticleEmitterInstance::pUpdateControllers(){
-	if(! pEmitter){
+	if(!pEmitter){
 		pControllerCount = 0;
 		return;
 	}

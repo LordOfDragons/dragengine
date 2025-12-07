@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture){
-	if(! topic || ! actorSpeak || ! gesture){
+	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}
 	

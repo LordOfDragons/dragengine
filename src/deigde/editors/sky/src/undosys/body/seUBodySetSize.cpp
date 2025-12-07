@@ -43,7 +43,7 @@ seUBodySetSize::seUBodySetSize(seBody *body, const decVector2 &newSize) :
 pBody(NULL),
 pNewSize(newSize)
 {
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	

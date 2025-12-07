@@ -143,7 +143,7 @@ void dedaiShapeToConvexVolume::VisitShape(decShape &shape){
 }
 
 void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
-	if(! pList){
+	if(!pList){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -208,7 +208,7 @@ void dedaiShapeToConvexVolume::VisitShapeSphere(decShapeSphere &sphere){
 }
 
 void dedaiShapeToConvexVolume::VisitShapeBox(decShapeBox &box){
-	if(! pList){
+	if(!pList){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -158,7 +158,7 @@ void debiDeviceManager::LogDevices(){
 
 
 decString debiDeviceManager::NormalizeID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	

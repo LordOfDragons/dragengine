@@ -105,7 +105,7 @@ void igdeDEConsole::UpdateModulesList(){
 	
 	for(i=0; i<count; i++){
 		deLoadableModule * const module = moduleSystem.GetModuleAt(i);
-		if(! pCBModule->HasItem(module->GetName())){
+		if(!pCBModule->HasItem(module->GetName())){
 			pCBModule->AddItem(module->GetName());
 		}
 	}
@@ -132,7 +132,7 @@ void igdeDEConsole::ClearConsole(){
 }
 
 void igdeDEConsole::SendCommand(){
-	if(! pCBModule->GetSelectedItem()){
+	if(!pCBModule->GetSelectedItem()){
 		return;
 	}
 	
@@ -145,12 +145,12 @@ void igdeDEConsole::SendCommand(){
 	// determine which module to send the command to
 	deLoadableModule * const loadableModule = GetEngine()->GetModuleSystem()->
 		GetModuleNamed(pCBModule->GetSelectedItem()->GetText());
-	if(! loadableModule){
+	if(!loadableModule){
 		return;
 	}
 	
 	deBaseModule * const module = loadableModule->GetModule();
-	if(! module){
+	if(!module){
 		return;
 	}
 	

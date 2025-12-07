@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintSetPosition::reUConstraintSetPosition(reRigConstraint *constraint, const decVector &newPosition){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

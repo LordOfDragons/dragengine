@@ -38,10 +38,10 @@ public:
 	UseBuilder(EditorIntegrator &editor);
 	
 	/** \brief Parser session. */
-	inline ParseSession &parseSession() const{return pParseSession;}
+	inline ParseSession &parseSession() const{ return pParseSession; }
 	
 	/** \brief Enable error reporting. */
-	inline bool getEnableErrorReporting() const{return pEnableErrorReporting;}
+	inline bool getEnableErrorReporting() const{ return pEnableErrorReporting; }
 	
 	/** \brief Set if error reporting is enabled. */
 	void setEnableErrorReporting(bool enable);

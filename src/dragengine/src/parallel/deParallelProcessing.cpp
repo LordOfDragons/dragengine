@@ -81,7 +81,7 @@ deParallelProcessing::~deParallelProcessing(){
 void deParallelProcessing::Update(){
 	deMutexGuard lock(pMutexTasks);
 	
-	while(! pPaused){
+	while(!pPaused){
 		// we have to remove the finished task from the system before unlocking the mutex
 		// otherwise Finished() call can potentially trigger actions on the system causing
 		// invariants to be violated. since removing a task from the system drops the strong
@@ -124,7 +124,7 @@ void deParallelProcessing::Update(){
 		
 		lock.Lock();
 		
-		if(! task->GetMarkFinishedAfterRun()){
+		if(!task->GetMarkFinishedAfterRun()){
 			task->SetFinished();
 			pSemaphoreNewTasks.Signal();
 		}
@@ -147,7 +147,7 @@ void deParallelProcessing::Pause(){
 	while(i < pThreadCount){
 		// check if all threads finished
 		for(i=0; i<pThreadCount; i++){
-			if(! pThreads[i]->IsWaiting()){
+			if(!pThreads[i]->IsWaiting()){
 				break;
 			}
 		}
@@ -175,7 +175,7 @@ void deParallelProcessing::Pause(){
 void deParallelProcessing::Resume(){
 	deMutexGuard lock(pMutexTasks);
 	
-	if(! pPaused){
+	if(!pPaused){
 		return;
 	}
 	
@@ -193,7 +193,7 @@ void deParallelProcessing::WaitForTask(deParallelTask *task){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(! task){
+	if(!task){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -204,7 +204,7 @@ void deParallelProcessing::WaitForTask(deParallelTask *task){
 					debugName.GetString(), debugDetails.GetString());
 	}
 	
-	while(! pPaused){
+	while(!pPaused){
 		// check if task is finished
 		bool finished = false;
 		deMutexGuard lock(pMutexTasks);
@@ -246,7 +246,7 @@ void deParallelProcessing::WaitForTasks(deParallelTask **tasks, int count){
 	if(count == 0){
 		return;
 	}
-	if(! tasks || count < 0){
+	if(!tasks || count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -262,7 +262,7 @@ void deParallelProcessing::WaitForTasks(deParallelTask **tasks, int count){
 	
 	int next = 0;
 	
-	while(! pPaused){
+	while(!pPaused){
 		// check if tasks are finished
 		int lastNext = next;
 		
@@ -307,7 +307,7 @@ void deParallelProcessing::AddTask(deParallelTask *task){
 }
 
 void deParallelProcessing::AddTaskAsync(deParallelTask *task){
-	if(! task){
+	if(!task){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -328,7 +328,7 @@ void deParallelProcessing::AddTaskAsync(deParallelTask *task){
 		pLogTask("AddTask ", "  ", *task);
 	}
 	
-	if(! pPaused){
+	if(!pPaused){
 		pSemaphoreNewTasks.Signal();
 		
 	}else{
@@ -339,7 +339,7 @@ void deParallelProcessing::AddTaskAsync(deParallelTask *task){
 }
 
 void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -424,7 +424,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 			
 			lock.Lock();
 			
-			if(! task->GetMarkFinishedAfterRun()){
+			if(!task->GetMarkFinishedAfterRun()){
 				task->SetFinished();
 			}
 		}
@@ -565,7 +565,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 			
 			lock.Lock();
 			
-			if(! task->GetMarkFinishedAfterRun()){
+			if(!task->GetMarkFinishedAfterRun()){
 				task->SetFinished();
 			}
 		}
@@ -574,7 +574,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 	}else{
 		for(i=0; i<pThreadCount; i++){
 			deParallelTask * const task = pThreads[i]->GetTask();
-			if(! task){
+			if(!task){
 				continue;
 			}
 			
@@ -652,7 +652,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 	}
 	
 	// low priority task only if the tasks accepts
-	if(! takeLowPriorityTasks){
+	if(!takeLowPriorityTasks){
 		// NOTE if only one thread is called and this thread happens to not take low priority
 		//      tasks but there are some then we can end up dead-locking since this thread
 		//      goes to sleep and the others able to take it are not woken up. to avoid this
@@ -718,7 +718,7 @@ void deParallelProcessing::WaitOnNewTasksSemaphore(){
 }
 
 void deParallelProcessing::AddFinishedTask(deParallelTask *task){
-	if(! task){
+	if(!task){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -850,7 +850,7 @@ void deParallelProcessing::pCreateThreads(int count){
 }
 
 void deParallelProcessing::pDestroyThreads(){
-	if(! pThreads){
+	if(!pThreads){
 		return;
 	}
 	
@@ -893,7 +893,7 @@ void deParallelProcessing::pStopAllThreads(){
 
 bool deParallelProcessing::pProcessOneTaskDirect(bool takeLowPriorityTasks){
 	deParallelTask * const task = NextPendingTask(takeLowPriorityTasks);
-	if(! task){
+	if(!task){
 		return false;
 	}
 	
@@ -931,7 +931,7 @@ bool deParallelProcessing::pProcessOneTaskDirect(bool takeLowPriorityTasks){
 void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 	bool deadLoopCheck = false;
 	
-	while(! task->GetFinished()){
+	while(!task->GetFinished()){
 		if(task->IsCancelled()){
 			if(task->GetLowPriority()){
 				pListPendingTasksLowPriority.RemoveFrom(pListPendingTasksLowPriority.IndexOf(task));
@@ -996,7 +996,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 		
 		for(i=0; i<count; i++){
 			deptask = task->GetDependsOnAt(i);
-			if(! deptask->GetFinished() && ! deptask->IsCancelled()){
+			if(!deptask->GetFinished() && !deptask->IsCancelled()){
 				break;
 			}
 			deptask = NULL;
@@ -1054,12 +1054,12 @@ void deParallelProcessing::WaitForAllTasks(){
 		DETHROW(deeInvalidAction);
 	}
 	
-	while(! pPaused){
+	while(!pPaused){
 		// check if all threads are sleeping
 		bool finished = true;
 		int i;
 		for(i=0; i<pThreadCount; i++){
-			if(! pThreads[i]->IsWaiting()){
+			if(!pThreads[i]->IsWaiting()){
 				finished = false;
 				break;
 			}

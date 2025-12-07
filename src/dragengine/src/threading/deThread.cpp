@@ -71,11 +71,11 @@ bool deThread::IsRunning(){
 void deThread::Start(){
 	bool running = IsRunning();
 	
-	if(pCreated && ! running) Stop();
+	if(pCreated && !running) Stop();
 	
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if(! pCreated){
+	if(!pCreated){
 		pCreated = true;
 		pRunning = true;
 		if(pthread_create(&pThread, NULL, deThread::pThreadRunner, this) != 0){
@@ -88,11 +88,11 @@ void deThread::Start(){
 	
 	// window
 	#ifdef OS_W32
-	if(! pCreated){
+	if(!pCreated){
 		pCreated = true;
 		pRunning = true;
 		pThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)deThread::pThreadRunner, this, 0, NULL);
-		if(! pThread){
+		if(!pThread){
 			pCreated = false;
 			pRunning = false;
 			DETHROW(deeOutOfMemory);
@@ -104,7 +104,7 @@ void deThread::Start(){
 #ifdef OS_WEBWASM
 void deThread::Start(pthread_attr_t &attributes){
 	bool running = IsRunning();
-	if(pCreated && ! running){
+	if(pCreated && !running){
 		Stop();
 	}
 	if(!pCreated){

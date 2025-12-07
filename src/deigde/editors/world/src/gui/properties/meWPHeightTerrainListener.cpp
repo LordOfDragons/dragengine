@@ -164,7 +164,7 @@ void meWPHeightTerrainListener::HTActiveNavSpaceChanged(meWorld *world) {
 }
 
 void meWPHeightTerrainListener::HTNavSpaceChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
-	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
+	if(world != pPanel.GetWorld() || !navspace->GetActive()){
 		return;
 	}
 	
@@ -172,7 +172,7 @@ void meWPHeightTerrainListener::HTNavSpaceChanged(meWorld *world, meHeightTerrai
 }
 
 void meWPHeightTerrainListener::HTNavSpaceTypeCountChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
-	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
+	if(world != pPanel.GetWorld() || !navspace->GetActive()){
 		return;
 	}
 	
@@ -180,7 +180,7 @@ void meWPHeightTerrainListener::HTNavSpaceTypeCountChanged(meWorld *world, meHei
 }
 
 void meWPHeightTerrainListener::HTNavSpaceActiveTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
-	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
+	if(world != pPanel.GetWorld() || !navspace->GetActive()){
 		return;
 	}
 	
@@ -189,7 +189,7 @@ void meWPHeightTerrainListener::HTNavSpaceActiveTypeChanged(meWorld *world, meHe
 
 void meWPHeightTerrainListener::HTNavSpaceTypeChanged(meWorld *world,
 meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type){
-	if(world != pPanel.GetWorld() || ! navspace->GetActive() || navspace->GetActiveType() != type){
+	if(world != pPanel.GetWorld() || !navspace->GetActive() || navspace->GetActiveType() != type){
 		return;
 	}
 	
@@ -198,7 +198,7 @@ meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type){
 }
 
 void meWPHeightTerrainListener::HTNavSpaceFacesChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
-	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
+	if(world != pPanel.GetWorld() || !navspace->GetActive()){
 		return;
 	}
 	

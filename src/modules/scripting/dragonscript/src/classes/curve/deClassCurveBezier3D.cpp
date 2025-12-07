@@ -451,7 +451,7 @@ void deClassCurveBezier3D::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassCurveBezier3D *clsCBezier3D = (deClassCurveBezier3D*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCBezier3D)){
+	if(!p_IsObjOfType(obj, clsCBezier3D)){
 		rt->PushBool(false);
 		
 	}else{
@@ -540,7 +540,7 @@ void deClassCurveBezier3D::CreateClassMembers(dsEngine *engine){
 }
 
 decCurveBezier3D &deClassCurveBezier3D::GetCurve(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -548,7 +548,7 @@ decCurveBezier3D &deClassCurveBezier3D::GetCurve(dsRealObject *myself) const{
 }
 
 decCurveBezier3DEvaluator &deClassCurveBezier3D::GetEvaluator(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -556,7 +556,7 @@ decCurveBezier3DEvaluator &deClassCurveBezier3D::GetEvaluator(dsRealObject *myse
 }
 
 void deClassCurveBezier3D::PushCurve(dsRunTime *rt, const decCurveBezier3D &curve){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

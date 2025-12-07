@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Throws exception on error otherwise returns partially parsed tree. */
-	inline bool GetExceptionOnErrors() const{return pExceptionOnErrors;}
+	inline bool GetExceptionOnErrors() const{ return pExceptionOnErrors; }
 	
 	/** \brief Set to throws exception on error otherwise returns partially parsed tree. */
 	void SetExceptionOnErrors(bool exceptionsOnErrors);

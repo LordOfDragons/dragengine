@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject(gdeGameDefinition &gameD
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
-	if(! particleEmitter){
+	if(!particleEmitter){
 		return NULL;
 	}
 	

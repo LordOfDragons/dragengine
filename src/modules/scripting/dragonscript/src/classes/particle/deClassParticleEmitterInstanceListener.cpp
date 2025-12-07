@@ -70,7 +70,7 @@ void deClassParticleEmitterInstanceListener::nfCollisionResponse::RunFunction(ds
 
 deClassParticleEmitterInstanceListener::deClassParticleEmitterInstanceListener(deScriptingDragonScript *ds) :
 dsClass("ParticleEmitterInstanceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -119,7 +119,7 @@ dearRuleStateSnapshot::~dearRuleStateSnapshot(){
 
 void dearRuleStateSnapshot::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	
@@ -309,7 +309,7 @@ void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName,
 			const dearAnimationKeyframe * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if(! keyframe){
+			if(!keyframe){
 				pAnimStates[i].Reset();
 				continue;
 			}
@@ -340,7 +340,7 @@ void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName,
 			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if(! keyframe){
+			if(!keyframe){
 				pAnimVPSStates[i].Reset();
 				continue;
 			}
@@ -364,7 +364,7 @@ void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName,
 void dearRuleStateSnapshot::RuleChanged(){
 	dearRule::RuleChanged();
 	
-	if(! pUseLastState){
+	if(!pUseLastState){
 		pUpdateStates();
 		pUpdateVPSStates();
 	}

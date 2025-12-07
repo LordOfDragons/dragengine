@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the VBO block. */
 	deoglSharedVBOBlock *GetVBOBlock();
@@ -84,19 +84,19 @@ public:
 	virtual void AddVBOFaces(sVBOData *data) = 0;
 	
 	/** Retrieves the faces point offset. */
-	inline int GetPointOffsetFaces() const{return pPointOffsetFaces;}
+	inline int GetPointOffsetFaces() const{ return pPointOffsetFaces; }
 	/** Sets the faces point offset. */
 	void SetPointOffsetFaces(int pointOffset);
 	/** Retrieves the faces point count. */
-	inline int GetPointCountFaces() const{return pPointCountFaces;}
+	inline int GetPointCountFaces() const{ return pPointCountFaces; }
 	/** Sets the faces point count. */
 	void SetPointCountFaces(int pointCount);
 	/** Retrieves the lines point offset. */
-	inline int GetPointOffsetLines() const{return pPointOffsetLines;}
+	inline int GetPointOffsetLines() const{ return pPointOffsetLines; }
 	/** Sets the lines point offset. */
 	void SetPointOffsetLines(int pointLines);
 	/** Retrieves the lines point count. */
-	inline int GetPointCountLines() const{return pPointCountLines;}
+	inline int GetPointCountLines() const{ return pPointCountLines; }
 	/** Sets the lines point count. */
 	void SetPointCountLines(int pointCount);
 	

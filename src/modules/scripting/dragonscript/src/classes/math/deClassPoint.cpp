@@ -280,7 +280,7 @@ void deClassPoint::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decPoint point;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -298,7 +298,7 @@ void deClassPoint::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassFileWriter &clsFileWriter = *clsPoint.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -442,7 +442,7 @@ void deClassPoint::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = ((sPtNatDat*)p_GetNativeData(This))->point;
 	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
 	dsValue *obj = RT->GetValue(0);
-	if(! p_IsObjOfType(obj, clsPoint)){
+	if(!p_IsObjOfType(obj, clsPoint)){
 		RT->PushBool(false);
 	}else{
 		const decPoint &otherPoint = ((sPtNatDat*)p_GetNativeData(obj))->point;
@@ -481,7 +481,7 @@ void deClassPoint::nfToString::RunFunction(dsRunTime *RT, dsValue *This){
 
 deClassPoint::deClassPoint(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("Point", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scriptManager){
+	if(!gameEngine || !scriptManager){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -557,14 +557,14 @@ void deClassPoint::CreateClassMembers(dsEngine *engine){
 }
 
 const decPoint &deClassPoint::GetPoint(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	return ((sPtNatDat*)p_GetNativeData(myself->GetBuffer()))->point;
 }
 
 void deClassPoint::PushPoint(dsRunTime *rt, const decPoint &point){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

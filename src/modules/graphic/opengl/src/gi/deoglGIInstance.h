@@ -169,16 +169,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner instances. */
-	inline deoglGIInstances &GetInstances() const{return pInstances;}
+	inline deoglGIInstances &GetInstances() const{ return pInstances; }
 	
 	/** Component or NULL. */
-	inline deoglRComponent *GetComponent() const{return pComponent;}
+	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set component or NULL. */
 	void SetComponent(deoglRComponent *component, bool dynamic);
 	
 	/** Decal or NULL. */
-	inline deoglRDecal *GetDecal() const{return pDecal;}
+	inline deoglRDecal *GetDecal() const{ return pDecal; }
 	
 	/** Set decal or NULL. */
 	void SetDecal(deoglRDecal *decal, bool dynamic);
@@ -186,10 +186,10 @@ public:
 	
 	
 	/** Tracked instance minimum extend in world space. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Tracked instance maximum extend in world space. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Set tracked instance extends in world space. */
 	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
@@ -200,28 +200,28 @@ public:
 	
 	
 	/** Local GI BVH or NULL. */
-	inline deoglGIBVHLocal *GetGIBVHLocal() const{return pGIBVHLocal;}
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
 	/** Dynamic GI BVH or NULL. */
-	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{return pGIBVHDynamic;}
+	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
 	
 	/** Local minimum extend for BVH. */
-	inline const decVector &GetBVHMinimumExtend() const{return pBVHMinExtend;}
+	inline const decVector &GetBVHMinimumExtend() const{ return pBVHMinExtend; }
 	
 	/** Local maximum extend for BVH. */
-	inline const decVector &GetBVHMaximumExtend() const{return pBVHMaxExtend;}
+	inline const decVector &GetBVHMaximumExtend() const{ return pBVHMaxExtend; }
 	
 	/** First BVH node index. */
-	inline int GetIndexNodes() const{return pIndexNodes;}
+	inline int GetIndexNodes() const{ return pIndexNodes; }
 	
 	/** First face index. */
-	inline int GetIndexFaces() const{return pIndexFaces;}
+	inline int GetIndexFaces() const{ return pIndexFaces; }
 	
 	/** First vertex index. */
-	inline int GetIndexVertices() const{return pIndexVertices;}
+	inline int GetIndexVertices() const{ return pIndexVertices; }
 	
 	/** BVH has nodes. */
-	inline bool GetHasBVHNodes() const{return pHasBVHNodes;}
+	inline bool GetHasBVHNodes() const{ return pHasBVHNodes; }
 	
 	/** Update BVH local extends. */
 	void UpdateBVHExtends();
@@ -229,19 +229,19 @@ public:
 	
 	
 	/** Slot is dynamic. */
-	inline bool GetDynamic() const{return pDynamic;}
+	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** Set if slot is dynamic. */
 	void SetDynamic(bool dynamic);
 	
 	/** Instance changed in a way ray cast results are invalidated. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	
 	/** Set instance changed in a way ray cast results are invalidated. */
 	void SetChanged(bool changed);
 	
 	/** Instance changed in a way disabled probes have to be updated too. */
-	inline bool GetHardChanged() const{return pHardChanged;}
+	inline bool GetHardChanged() const{ return pHardChanged; }
 	
 	/** Set instance changed in a way disabled probes have to be updated too. */
 	void SetHardChanged(bool changed);
@@ -250,13 +250,13 @@ public:
 	void ClearChanged();
 	
 	/** Instance moved. */
-	inline bool GetMoved() const{return pMoved;}
+	inline bool GetMoved() const{ return pMoved; }
 	
 	/** Set instance moved. */
 	void SetMoved(bool moved);
 	
 	/** Slot dynamic state potentially changed. */
-	inline bool GetRecheckDynamic() const{return pRecheckDynamic;}
+	inline bool GetRecheckDynamic() const{ return pRecheckDynamic; }
 	
 	/** Set if slot dynamic state potentially changed. */
 	void SetRecheckDynamic(bool recheckDynamic);
@@ -265,7 +265,7 @@ public:
 	bool Empty() const;
 	
 	/** Slot is not empty. */
-	inline bool NotEmpty() const{return ! Empty();}
+	inline bool NotEmpty() const{ return !Empty(); }
 	
 	/** Clear instance. */
 	void Clear();
@@ -285,14 +285,14 @@ public:
 	void AddTUC(deoglTexUnitsConfig *tuc);
 	
 	/** TUCs are dirty. */
-	inline bool GetDirtyTUCs() const{return pDirtyTUCs;}
+	inline bool GetDirtyTUCs() const{ return pDirtyTUCs; }
 	
 	/** Set TUCs dirty. */
 	void SetDirtyTUCs(bool dirty);
 	
 	/** Material TBOs. */
-	inline deoglDynamicTBOUInt32 *GetTBOMaterial(){return pTBOMaterial;}
-	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){return pTBOMaterial2;}
+	inline deoglDynamicTBOUInt32 *GetTBOMaterial(){ return pTBOMaterial; }
+	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){ return pTBOMaterial2; }
 	
 	/** Get TBO block for materials. */
 	const deoglDynamicTBOBlock::Ref &GetBlockMaterial();

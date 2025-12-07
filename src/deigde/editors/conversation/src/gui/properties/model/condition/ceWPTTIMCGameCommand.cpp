@@ -61,7 +61,7 @@ void ceWPTTIMCGameCommand::Update(){
 	const ceCConditionGameCommand &condition = *GetConditionGameCommand();
 	decString text;
 	
-	if(! condition.GetCommand().IsEmpty()){
+	if(!condition.GetCommand().IsEmpty()){
 		const decString lineCommand(condition.GetCommand().Split('\n').GetAt(0));
 		
 		if(condition.GetNegate()){

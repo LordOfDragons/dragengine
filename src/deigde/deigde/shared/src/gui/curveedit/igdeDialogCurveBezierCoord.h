@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point. */
-	inline const decCurveBezierPoint &GetPoint() const{return pPoint;}
+	inline const decCurveBezierPoint &GetPoint() const{ return pPoint; }
 	
 	/** \brief Set point. */
 	void SetPoint(const decCurveBezierPoint &point);

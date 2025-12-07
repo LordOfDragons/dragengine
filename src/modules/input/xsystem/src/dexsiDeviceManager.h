@@ -105,16 +105,16 @@ public:
 	
 	
 	/** Core mouse device. */
-	inline const dexsiDeviceCoreMouse::Ref &GetX11CoreMouse() const{return pX11CoreMouse;}
+	inline const dexsiDeviceCoreMouse::Ref &GetX11CoreMouse() const{ return pX11CoreMouse; }
 	
 	/** Core keyboard device. */
-	inline const dexsiDeviceCoreKeyboard::Ref &GetX11CoreKeyboard() const{return pX11CoreKeyboard;}
+	inline const dexsiDeviceCoreKeyboard::Ref &GetX11CoreKeyboard() const{ return pX11CoreKeyboard; }
 	
 	/** Primary mouse device. */
-	inline const dexsiDevice::Ref &GetPrimaryMouse() const{return pPrimaryMouse;}
+	inline const dexsiDevice::Ref &GetPrimaryMouse() const{ return pPrimaryMouse; }
 	
 	/** Primary keyboard device. */
-	inline const dexsiDevice::Ref &GetPrimaryKeyboard() const{return pPrimaryKeyboard;}
+	inline const dexsiDevice::Ref &GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
 	
 	
 	

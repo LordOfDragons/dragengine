@@ -71,7 +71,7 @@ meWindowEffects::meWindowEffects(){}
 
 meWindowEffects::meWindowEffects(FXApp *app, meWindowMain *wndMain) :
 FXTopWindow(app, "Effects Manager", NULL, NULL, DECOR_ALL, 0, 0, 300, 400, 0, 0, 0, 0, 0, 0){
-	if(! wndMain) DETHROW(deeInvalidParam);
+	if(!wndMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
@@ -199,19 +199,19 @@ void meWindowEffects::DisplayPanelFor(deEffect *engEffect){
 		engEffect->Visit(&identify);
 		if(identify.IsFilterKernel()){
 			pPanel = new meWEFFilterKernel(identify.CastToFilterKernel(), this, pFrameContent);
-			if(! pPanel) DETHROW(deeOutOfMemory);
+			if(!pPanel) DETHROW(deeOutOfMemory);
 			
 		}else if(identify.IsOverlayImage()){
 			pPanel = new meWEFOverlayImage(identify.CastToOverlayImage(), this, pFrameContent);
-			if(! pPanel) DETHROW(deeOutOfMemory);
+			if(!pPanel) DETHROW(deeOutOfMemory);
 			
 		}else if(identify.IsColorMatrix()){
 			pPanel = new meWEFColorMatrix(identify.CastToColorMatrix(), this, pFrameContent);
-			if(! pPanel) DETHROW(deeOutOfMemory);
+			if(!pPanel) DETHROW(deeOutOfMemory);
 			
 		}else if(identify.IsDistortImage()){
 			pPanel = new meWEFDistortImage(identify.CastToDistortImage(), this, pFrameContent);
-			if(! pPanel) DETHROW(deeOutOfMemory);
+			if(!pPanel) DETHROW(deeOutOfMemory);
 		}
 	}
 }
@@ -250,7 +250,7 @@ long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selecto
 		if(camera) engCamera = camera->GetEngineCamera();
 	}
 	
-	if(! engCamera) return 1;
+	if(!engCamera) return 1;
 	engEffectManager = engine->GetEffectManager();
 	
 	try{

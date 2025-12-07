@@ -46,7 +46,7 @@
 aeURuleMirrorBones::aeURuleMirrorBones(aeRule *rule) :
 pRule(NULL)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

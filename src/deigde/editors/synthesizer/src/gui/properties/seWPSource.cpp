@@ -92,12 +92,12 @@ public:
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
 		const igdeTreeItem * const selection = treeList->GetSelection();
-		if(selection && ! selection->GetData()){
+		if(selection && !selection->GetData()){
 			// while updating the tree items do have NULL data until they a source is properly
 			// assigned to them. ignore update in this situation
 			return;
@@ -108,7 +108,7 @@ public:
 	
 	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem *item){
 		seSource * const source = (seSource*)item->GetData();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -119,7 +119,7 @@ public:
 	
 	virtual void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item){
 		seSource * const source = (seSource*)item->GetData();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -179,7 +179,7 @@ public:
 	
 	virtual void OnAction(){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -202,7 +202,7 @@ public:
 	
 	virtual void OnAction(){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -234,13 +234,13 @@ public:
 		"Paste source from clipboard"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSynthesizer()){
+		if(!pPanel.GetSynthesizer()){
 			return;
 		}
 		
 		seClipboardDataSource * const cdata = (seClipboardDataSource*)pPanel.GetViewSynthesizer()
 			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataSource::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -276,13 +276,13 @@ public:
 	
 	virtual void OnAction(){
 		seSource * const source = pPanel.GetSource();
-		if(! source || source->GetType() != deSynthesizerSourceVisitorIdentify::estGroup){
+		if(!source || source->GetType() != deSynthesizerSourceVisitorIdentify::estGroup){
 			return;
 		}
 		
 		seClipboardDataSource * const cdata = (seClipboardDataSource*)pPanel.GetViewSynthesizer()
 			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataSource::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -457,7 +457,7 @@ void seWPSource::UpdateSourceTree(){
 		for(i=0; i<sourceCount; i++){
 			seSource * const source = pSynthesizer->GetSources().GetAt(i);
 			
-			if(! nextItem){
+			if(!nextItem){
 				igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(""));
 				pTreeSource->AppendItem(NULL, item);
 				nextItem = item;
@@ -479,13 +479,13 @@ void seWPSource::UpdateSourceTree(){
 	}
 	
 	SelectActiveSource();
-	if(! pTreeSource->GetSelection() && pTreeSource->GetFirstChild()){
+	if(!pTreeSource->GetSelection() && pTreeSource->GetFirstChild()){
 		pTreeSource->SetSelection(pTreeSource->GetFirstChild());
 	}
 }
 
 void seWPSource::UpdateSourceTreeItem(igdeTreeItem *item, seSource *source){
-	if(! item || ! source){
+	if(!item || !source){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -518,7 +518,7 @@ void seWPSource::UpdateSourceTreeItem(igdeTreeItem *item, seSource *source){
 		for(i=0; i<sourceCount; i++){
 			seSource * const source2 = sourceGroup.GetSources().GetAt(i);
 			
-			if(! nextItem){
+			if(!nextItem){
 				igdeTreeItem::Ref child(igdeTreeItem::Ref::NewWith(""));
 				pTreeSource->AppendItem(item, child);
 				nextItem = child;
@@ -546,7 +546,7 @@ void seWPSource::SelectActiveSource(){
 
 void seWPSource::ShowActiveSourcePanel(){
 	const seSource * const source = GetSource();
-	if(! source){
+	if(!source){
 		pSwitcher->SetCurrent(epEmpty);
 		return;
 	}
@@ -590,7 +590,7 @@ void seWPSource::ShowActiveSourcePanel(){
 }
 
 void seWPSource::UpdateSource(){
-	if(! pActivePanel){
+	if(!pActivePanel){
 		return;
 	}
 	

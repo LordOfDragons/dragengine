@@ -60,7 +60,7 @@
 ////////////////////////////
 
 meCLVisibilityPaint::meCLVisibilityPaint(meWorld *world){
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	
@@ -141,7 +141,7 @@ void meCLVisibilityPaint::Paint(){
 		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old visibility
-		if(! pOldVis){
+		if(!pOldVis){
 			pSessionSector = pPaintSector;
 			
 			pSessionGrid.x = (int)pPaintGrid.x;
@@ -232,7 +232,7 @@ void meCLVisibilityPaint::CollisionResponse(deCollider *owner, deCollisionInfo *
 	if(info->IsHTSector()){
 		const float distance = info->GetDistance();
 		
-		if(! pHasHit || distance < pHitDistance){
+		if(!pHasHit || distance < pHitDistance){
 			pHasHit = true;
 			pHitPoint = pRayOrigin + pRayDirection * distance;
 			pHitDistance = distance;
@@ -357,7 +357,7 @@ pWorld->GetLogger()->LogInfoFormat(LOGSOURCE, "[meCLVisibilityPaint::pGrowHeight
 		
 		try{
 			oldvis = new meBitArray(newWidth, newHeight);
-			if(! oldvis) DETHROW(deeOutOfMemory);
+			if(!oldvis) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

@@ -47,7 +47,7 @@ pObjectClass(NULL),
 pProperty(NULL),
 pFilePattern(NULL)
 {
-	if(! objectClass || ! property || ! filePattern){
+	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
 	}
 	

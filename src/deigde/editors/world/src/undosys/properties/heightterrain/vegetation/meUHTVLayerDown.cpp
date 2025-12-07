@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUHTVLayerDown::meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
-	if(! world || ! heightTerrain || ! vlayer) DETHROW(deeInvalidParam);
+	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pHeightTerrain = heightTerrain;

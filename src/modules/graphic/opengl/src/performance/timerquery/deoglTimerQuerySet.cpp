@@ -85,7 +85,7 @@ void deoglTimerQuerySet::SetQueryCount(int count){
 			OGL_CHECK(pRenderThread, pglGenQueries(count, pQueries));
 			
 			for(pQueryCount=0; pQueryCount<count; pQueryCount++){
-				if(! pQueries[pQueryCount]){
+				if(!pQueries[pQueryCount]){
 					DETHROW(deeOutOfMemory);
 				}
 			}

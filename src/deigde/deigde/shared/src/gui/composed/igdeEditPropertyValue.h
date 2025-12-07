@@ -124,10 +124,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Game definition property. */
-	inline const igdeGDProperty *GetGDProperty() const{return pGDProperty;}
+	inline const igdeGDProperty *GetGDProperty() const{ return pGDProperty; }
 	
 	/** \brief Set value. */
 	void SetValue(const char *value, const igdeGDProperty *gdProperty);
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
 	void SetEnabled(bool enabled);
@@ -149,21 +149,21 @@ public:
 	
 	
 	/** \brief Codec. */
-	inline igdeCodecPropertyString &GetCodec(){return pCodec;}
-	inline const igdeCodecPropertyString &GetCodec() const{return pCodec;}
+	inline igdeCodecPropertyString &GetCodec(){ return pCodec; }
+	inline const igdeCodecPropertyString &GetCodec() const{ return pCodec; }
 	
 	/** \brief Trigger expression parser. */
-	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){return pTriggerExpressionParser;}
-	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{return pTriggerExpressionParser;}
+	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){ return pTriggerExpressionParser; }
+	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
 	
 	/** \brief Identifiers. */
-	inline const decStringSet &GetIdentifiers() const{return pIdentifiers;}
+	inline const decStringSet &GetIdentifiers() const{ return pIdentifiers; }
 	
 	/** \brief Set identifiers. */
 	void SetIdentifiers(const decStringSet &identifiers);
 	
 	/** \brief Trigger targets. */
-	inline igdeTriggerTargetList *GetTriggerTargets() const{return pTriggerTargets;}
+	inline igdeTriggerTargetList *GetTriggerTargets() const{ return pTriggerTargets; }
 	
 	/** \brief Set trigger targets. */
 	void SetTriggerTargets(igdeTriggerTargetList *triggerTargets);
@@ -171,12 +171,12 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEditRawValue() const{return pActionEditRawValue;}
-	inline igdeAction *GetActionBooleanValue() const{return pActionBooleanValue;}
-	inline igdeAction *GetActionEditList() const{return pActionEditList;}
-	inline igdeAction *GetActionEditTriggerExpression() const{return pActionEditTriggerExpression;}
-	inline igdeAction *GetActionEditShape() const{return pActionEditShape;}
-	inline igdeAction *GetActionEditShapeList() const{return pActionEditShapeList;}
+	inline igdeAction *GetActionEditRawValue() const{ return pActionEditRawValue; }
+	inline igdeAction *GetActionBooleanValue() const{ return pActionBooleanValue; }
+	inline igdeAction *GetActionEditList() const{ return pActionEditList; }
+	inline igdeAction *GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
+	inline igdeAction *GetActionEditShape() const{ return pActionEditShape; }
+	inline igdeAction *GetActionEditShapeList() const{ return pActionEditShapeList; }
 	
 	
 	

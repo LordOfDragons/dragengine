@@ -42,7 +42,7 @@ gdeClipboardDataProperty::gdeClipboardDataProperty(gdeProperty *property) :
 igdeClipboardData(TYPE_NAME),
 pProperty(NULL)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -55,7 +55,7 @@ deAnimatorRuleTrackTo::~deAnimatorRuleTrackTo(){
 ///////////////
 
 void deAnimatorRuleTrackTo::SetTrackBone(const char *boneName){
-	if(! boneName){
+	if(!boneName){
 		DETHROW(deeInvalidParam);
 	}
 	pTrackBone = boneName;

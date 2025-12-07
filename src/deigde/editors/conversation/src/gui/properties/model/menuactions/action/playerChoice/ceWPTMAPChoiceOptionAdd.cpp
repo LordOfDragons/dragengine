@@ -86,18 +86,18 @@ void ceWPTMAPChoiceOptionAdd::OnAction(){
 	}
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if(! wptopic.GetActionTreeModel()){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = (ceWPTTIMAPlayerChoice*)model.DeepFindAction(pPlayerChoice);
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoiceOption * const modelOption = modelPlayerChoice->GetOptionChild(selectOption);
-	if(! modelOption){
+	if(!modelOption){
 		return;
 	}
 	

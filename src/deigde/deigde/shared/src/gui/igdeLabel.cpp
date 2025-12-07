@@ -135,7 +135,7 @@ void igdeLabel::CreateNativeWidget(){
 }
 
 void igdeLabel::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

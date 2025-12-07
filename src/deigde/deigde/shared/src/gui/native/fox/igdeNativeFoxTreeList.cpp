@@ -97,13 +97,13 @@ pResizer(NULL)
 	(void)TreeListPadBottom;
 	#endif
 	
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	pTreeList->setFont((FXFont*)pFont->GetNativeFont());
 	
 	pTreeList->setNumVisible(powner.GetRows());
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		pTreeList->disable();
 	}
 	
@@ -126,12 +126,12 @@ igdeNativeFoxTreeList::~igdeNativeFoxTreeList(){
 }
 
 igdeNativeFoxTreeList *igdeNativeFoxTreeList::CreateNativeWidget(igdeTreeList &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,7 +167,7 @@ void igdeNativeFoxTreeList::BuildTree(){
 
 void igdeNativeFoxTreeList::UpdateItem(igdeTreeItem *item){
 	igdeNativeFoxTreeItem * const native = (igdeNativeFoxTreeItem*)item->GetNativeWidget();
-	if(! native){
+	if(!native){
 		return;
 	}
 	
@@ -188,7 +188,7 @@ void igdeNativeFoxTreeList::UpdateItem(igdeTreeItem *item){
 
 void igdeNativeFoxTreeList::MakeItemVisible(igdeTreeItem *item){
 	igdeNativeFoxTreeItem * const native = (igdeNativeFoxTreeItem*)item->GetNativeWidget();
-	if(! native){
+	if(!native){
 		return;
 	}
 	
@@ -230,7 +230,7 @@ void igdeNativeFoxTreeList::CreateAndInsertItem(igdeTreeItem *item){
 	igdeNativeFoxTreeItem *nativeParent = NULL;
 	if(item->GetParent()){
 		nativeParent = (igdeNativeFoxTreeItem*)item->GetParent()->GetNativeWidget();
-		if(! nativeParent){
+		if(!nativeParent){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -238,7 +238,7 @@ void igdeNativeFoxTreeList::CreateAndInsertItem(igdeTreeItem *item){
 	igdeNativeFoxTreeItem *nativeNext = NULL;
 	if(item->GetNext()){
 		nativeNext = (igdeNativeFoxTreeItem*)item->GetNext()->GetNativeWidget();
-		if(! nativeNext){
+		if(!nativeNext){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -270,7 +270,7 @@ void igdeNativeFoxTreeList::CreateAndAppendItem(igdeTreeItem *item){
 	igdeNativeFoxTreeItem *nativeParent = NULL;
 	if(item->GetParent()){
 		nativeParent = (igdeNativeFoxTreeItem*)item->GetParent()->GetNativeWidget();
-		if(! nativeParent){
+		if(!nativeParent){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -324,14 +324,14 @@ void igdeNativeFoxTreeList::RemoveAllItems(igdeTreeItem *pparent){
 
 void igdeNativeFoxTreeList::ItemMoved(igdeTreeItem *item){
 	igdeNativeFoxTreeItem * const native = (igdeNativeFoxTreeItem*)item->GetNativeWidget();
-	if(! native){
+	if(!native){
 		DETHROW(deeInvalidParam);
 	}
 	
 	igdeNativeFoxTreeItem *nativeParent = NULL;
 	if(item->GetParent()){
 		nativeParent = (igdeNativeFoxTreeItem*)item->GetParent()->GetNativeWidget();
-		if(! nativeParent){
+		if(!nativeParent){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -339,7 +339,7 @@ void igdeNativeFoxTreeList::ItemMoved(igdeTreeItem *item){
 	igdeNativeFoxTreeItem *nativeBefore = NULL;
 	if(item->GetNext()){
 		nativeBefore = (igdeNativeFoxTreeItem*)item->GetNext()->GetNativeWidget();
-		if(! nativeBefore){
+		if(!nativeBefore){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -366,7 +366,7 @@ void igdeNativeFoxTreeList::SelectItem(igdeTreeItem *item){
 
 void igdeNativeFoxTreeList::ItemsSortedIn(igdeTreeItem *item){
 	igdeNativeFoxTreeItem * const nativeParent = item ? (igdeNativeFoxTreeItem *)item->GetNativeWidget() : NULL;
-	if(item && ! nativeParent){
+	if(item && !nativeParent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -375,7 +375,7 @@ void igdeNativeFoxTreeList::ItemsSortedIn(igdeTreeItem *item){
 	
 	while(child){
 		igdeNativeFoxTreeItem * const nativeChild = (igdeNativeFoxTreeItem*)child->GetNativeWidget();
-		if(! nativeChild){
+		if(!nativeChild){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -498,7 +498,7 @@ long igdeNativeFoxTreeList::onListCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxTreeList::onListChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -518,7 +518,7 @@ long igdeNativeFoxTreeList::onListChanged(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxTreeList::onListRightMouseDown(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 1;
 	}
 	
@@ -539,7 +539,7 @@ long igdeNativeFoxTreeList::onListRightMouseUp(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxTreeList::onListDoubleClicked(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Attachment count. */
-	inline int GetAttachmentCount() const{return pAttachmentCount;}
+	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	
 	/** Set attachment count. */
 	void SetAttachmentCount(int count);
@@ -73,13 +73,13 @@ public:
 	void SetAttachmentAt(int index, devkImageView *attachment);
 	
 	/** Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** Set size. */
 	void SetSize(const decPoint &size);
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Set layer count. */
 	void SetLayerCount(int count);

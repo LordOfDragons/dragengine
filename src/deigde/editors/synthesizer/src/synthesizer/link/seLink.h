@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**  \brief Synthesizer. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -84,12 +84,12 @@ public:
 	
 	
 	/** \brief Engine controller link or \em NULL if not managed. */
-	inline deSynthesizerLink *GetEngineLink() const{return pEngLink;}
+	inline deSynthesizerLink *GetEngineLink() const{ return pEngLink; }
 	
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
@@ -97,13 +97,13 @@ public:
 	
 	
 	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{return pController;}
+	inline seController *GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
 	void SetController(seController *controller);
 	
 	/** \brief Repeat count of input value. */
-	inline int GetRepeat() const{return pRepeat;}
+	inline int GetRepeat() const{ return pRepeat; }
 	
 	/**
 	 * \brief Set repeat count of input value.
@@ -112,8 +112,8 @@ public:
 	void SetRepeat(int repeat);
 	
 	/** \brief Curve. */
-	inline decCurveBezier &GetCurve(){return pCurve;}
-	inline const decCurveBezier &GetCurve() const{return pCurve;}
+	inline decCurveBezier &GetCurve(){ return pCurve; }
+	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	
 	

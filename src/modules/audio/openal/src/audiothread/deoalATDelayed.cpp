@@ -86,7 +86,7 @@ void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
 }
 
 void deoalATDelayed::AddDeletion(deoalDelayedDeletion *deletion){
-	if(! deletion){
+	if(!deletion){
 		DETHROW(deeInvalidParam);
 	}
 	

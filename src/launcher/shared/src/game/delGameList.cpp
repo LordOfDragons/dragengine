@@ -60,7 +60,7 @@ delGame *delGameList::GetAt(int index) const{
 }
 
 delGame *delGameList::GetWithID(const decUuid &id) const{
-	if(! id){
+	if(!id){
 		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
@@ -97,7 +97,7 @@ bool delGameList::Has(delGame *game) const{
 }
 
 bool delGameList::HasWithID(const decUuid &id) const{
-	if(! id){
+	if(!id){
 		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
@@ -119,7 +119,7 @@ int delGameList::IndexOf(delGame *game) const{
 }
 
 int delGameList::IndexOfWithID(const decUuid &id) const{
-	if(! id){
+	if(!id){
 		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
@@ -137,7 +137,7 @@ int delGameList::IndexOfWithID(const decUuid &id) const{
 }
 
 void delGameList::Add(delGame *game){
-	if(! game){
+	if(!game){
 		DETHROW_INFO(deeNullPointer, "game");
 	}
 	if(HasWithID(game->GetIdentifier())){

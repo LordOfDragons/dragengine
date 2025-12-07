@@ -67,10 +67,10 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{return pLogger;}
+	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	/** \brief Logger source. */
-	inline const decString &GetLoggerSource() const{return pLoggerSource;}
+	inline const decString &GetLoggerSource() const{ return pLoggerSource; }
 	
 	
 	

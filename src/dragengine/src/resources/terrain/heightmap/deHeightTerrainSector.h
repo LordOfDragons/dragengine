@@ -83,16 +83,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sector coordinates. */
-	inline const decPoint &GetSector() const{return pSector;}
+	inline const decPoint &GetSector() const{ return pSector; }
 	
 	/** \brief Parent height terrain. */
-	inline deHeightTerrain *GetParentHeightTerrain() const{return pParentHeightTerrain;}
+	inline deHeightTerrain *GetParentHeightTerrain() const{ return pParentHeightTerrain; }
 	
 	/** \brief Set parent height terrain. */
 	void SetParentHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** \brief Sector index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set sector index. */
 	void SetIndex(int index);
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** \brief Height image or NULL if not set. */
-	inline deImage *GetHeightImage() const{return pHeightImage;}
+	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
 	void SetHeightImage(deImage *heightImage);
@@ -158,10 +158,10 @@ public:
 	/** \name Decals Management */
 	/*@{*/
 	/** \brief Number of decals. */
-	inline int GetDecalCount() const{return pDecalCount;}
+	inline int GetDecalCount() const{ return pDecalCount; }
 	
 	/** \brief Root decal or NULL if there are none. */
-	inline deDecal *GetRootDecal() const{return pDecalRoot;}
+	inline deDecal *GetRootDecal() const{ return pDecalRoot; }
 	
 	/**
 	 * \brief Add decal.

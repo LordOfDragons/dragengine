@@ -105,7 +105,7 @@ void deNavigationBlockerManager::SystemAILoad(){
 	deAISystem &aisys = *GetAISystem();
 	
 	while(blocker){
-		if(! blocker->GetPeerAI()){
+		if(!blocker->GetPeerAI()){
 			aisys.LoadNavigationBlocker(blocker);
 		}
 		blocker = (deNavigationBlocker*)blocker->GetLLManagerNext();

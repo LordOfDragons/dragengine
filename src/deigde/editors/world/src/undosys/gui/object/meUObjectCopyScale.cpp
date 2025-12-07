@@ -43,7 +43,7 @@ pCopyX(copyX),
 pCopyY(copyY),
 pCopyZ(copyZ)
 {
-	if(! world || ! world->GetSelectionObject().GetActive()){
+	if(!world || !world->GetSelectionObject().GetActive()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -79,12 +79,12 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{return pBullet;}
+	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
 	/** Retrieves the particle emitter instance. */
-	inline deParticleEmitterInstance *GetInstance() const{return pInstance;}
+	inline deParticleEmitterInstance *GetInstance() const{ return pInstance; }
 	
 	/** Retrieves the parent world. */
-	inline debpWorld *GetParentWorld() const{return pParentWorld;}
+	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
 	void SetParentWorld(debpWorld *parentWorld);
 	
@@ -92,13 +92,13 @@ public:
     debpParticleEmitter *GetParticleEmitter() const;
 	
 	/** \brief Force field simulation. */
-	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{return pForceFieldSimulation;}
+	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{ return pForceFieldSimulation; }
 	
 	/** Retrieves the last position. */
-	inline const decDVector &GetLastPosition() const{return pLastPosition;}
+	inline const decDVector &GetLastPosition() const{ return pLastPosition; }
 	
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves a type by index. */
 	debpParticleEmitterInstanceType &GetTypeAt(int index);
 	const debpParticleEmitterInstanceType &GetTypeAt(int index) const;
@@ -109,7 +109,7 @@ public:
 	decDMatrix GetEmitterMatrixByDistance(float distance) const;
 	
 	/** Determines if the particles can collide at all. */
-	inline bool GetCanCollide() const{return pCanCollide;}
+	inline bool GetCanCollide() const{ return pCanCollide; }
 	
 	/** \brief Prepare particles for simulation. */
 	void PrepareParticles(float elapsed);

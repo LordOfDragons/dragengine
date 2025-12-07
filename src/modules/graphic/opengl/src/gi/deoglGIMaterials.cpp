@@ -81,7 +81,7 @@ deoglGIMaterials::~deoglGIMaterials(){
 ///////////////
 
 void deoglGIMaterials::AddTUC(deoglTexUnitsConfig *tuc){
-	if(! tuc || tuc->GetMaterialIndex() != -1 || tuc->GetUsageCount() == 0){
+	if(!tuc || tuc->GetMaterialIndex() != -1 || tuc->GetUsageCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,21 +160,21 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	// - reflectivity: 16M
 	// - emissivity: 32M
 	// total: 67M
-	if(! pTexDiffuse){
+	if(!pTexDiffuse){
 		pTexDiffuse = new deoglTexture(pRenderThread);
 	}
 	pTexDiffuse->SetFBOFormat(4, false);
 	pTexDiffuse->SetSize(size, size);
 	pTexDiffuse->CreateTexture();
 	
-	if(! pTexReflectivity){
+	if(!pTexReflectivity){
 		pTexReflectivity = new deoglTexture(pRenderThread);
 	}
 	pTexReflectivity->SetFBOFormat(4, false);
 	pTexReflectivity->SetSize(size, size);
 	pTexReflectivity->CreateTexture();
 	
-	if(! pTexEmissivity){
+	if(!pTexEmissivity){
 		pTexEmissivity = new deoglTexture(pRenderThread);
 	}
 	pTexEmissivity->SetFBOFormat(4, true);

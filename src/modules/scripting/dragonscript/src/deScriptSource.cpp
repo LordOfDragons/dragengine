@@ -63,9 +63,9 @@ const char *deScriptSource::GetName(){
 }
 
 void deScriptSource::Open(){
-	if(! pFileReader){
+	if(!pFileReader){
 		pFileReader = pVFS.OpenFileForReading(pPath);
-		if(! pFileReader) DSTHROW(dueOutOfMemory);
+		if(!pFileReader) DSTHROW(dueOutOfMemory);
 		
 	}else{
 		pFileReader->SetPosition(0);
@@ -76,7 +76,7 @@ void deScriptSource::Open(){
 }
 
 int deScriptSource::ReadData(char *buffer, int size){
-	if(! buffer || ! pFileReader) DSTHROW(dueInvalidParam);
+	if(!buffer || !pFileReader) DSTHROW(dueInvalidParam);
 	
 	if(pPosition + size > pLength){
 		size = pLength - pPosition;

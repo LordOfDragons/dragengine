@@ -72,14 +72,14 @@ bool seEffectList::Has(seEffect *effect) const{
 }
 
 void seEffectList::Add(seEffect *effect){
-	if(! effect || Has(effect)){
+	if(!effect || Has(effect)){
 		DETHROW(deeInvalidParam);
 	}
 	pEffects.Add(effect);
 }
 
 void seEffectList::Insert(seEffect *effect, int index){
-	if(! effect || Has(effect)){
+	if(!effect || Has(effect)){
 		DETHROW(deeInvalidParam);
 	}
 	pEffects.Insert(effect, index);

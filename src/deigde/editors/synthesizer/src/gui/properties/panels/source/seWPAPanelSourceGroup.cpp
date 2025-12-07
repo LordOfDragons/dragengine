@@ -61,7 +61,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSourceGroup * const source = (seSourceGroup*)pPanel.GetSource();
-		if(! source || ! comboBox->GetSelectedItem()){
+		if(!source || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

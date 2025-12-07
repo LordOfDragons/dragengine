@@ -42,7 +42,7 @@ gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard(gdeOCBillboard *billboa
 igdeClipboardData(TYPE_NAME),
 pBillboard(NULL)
 {
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	

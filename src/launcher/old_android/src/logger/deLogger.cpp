@@ -54,7 +54,7 @@ void deLogger::LogInfo(const char *source, const char *message){
 }
 
 void deLogger::LogInfoFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -69,7 +69,7 @@ void deLogger::LogInfoFormat(const char *source, const char *message, ...){
 }
 
 void deLogger::LogInfoFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -85,7 +85,7 @@ void deLogger::LogWarn(const char *source, const char *message){
 }
 
 void deLogger::LogWarnFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,7 +100,7 @@ void deLogger::LogWarnFormat(const char *source, const char *message, ...){
 }
 
 void deLogger::LogWarnFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -116,7 +116,7 @@ void deLogger::LogError(const char *source, const char *message){
 }
 
 void deLogger::LogErrorFormat(const char *source, const char *message, ...){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -131,7 +131,7 @@ void deLogger::LogErrorFormat(const char *source, const char *message, ...){
 }
 
 void deLogger::LogErrorFormatUsing(const char *source, const char *message, va_list args){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

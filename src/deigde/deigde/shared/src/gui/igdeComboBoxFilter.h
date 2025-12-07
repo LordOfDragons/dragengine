@@ -94,13 +94,13 @@ public:
 	void FilterItems();
 	
 	/** \brief Filter case insensitive. */
-	inline bool GetFilterCaseInsensitive() const{return pFilterCaseInsensitive;}
+	inline bool GetFilterCaseInsensitive() const{ return pFilterCaseInsensitive; }
 	
 	/** \brief Set if filtering is case insensitive. */
 	void SetFilterCaseInsentive(bool caseInsensitive);
 	
 	/** \brief Filter string. */
-	inline const decString &GetFilterString() const{return pFilterString;}
+	inline const decString &GetFilterString() const{ return pFilterString; }
 	
 	/**
 	 * \brief Set filter string.

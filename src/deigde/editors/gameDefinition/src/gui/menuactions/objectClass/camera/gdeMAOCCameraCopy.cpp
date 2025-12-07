@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCCameraCopy::OnActionSubObject(gdeGameDefinition &gameDefinition
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
-	if(! camera){
+	if(!camera){
 		return NULL;
 	}
 	

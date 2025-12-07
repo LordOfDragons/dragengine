@@ -66,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline deWorld *GetWorld() const{return pWorld;}
+	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief User is allowed to create states. */
-	inline bool GetCanCreateStates() const{return pCanCreateStates;}
+	inline bool GetCanCreateStates() const{ return pCanCreateStates; }
 	
 	/** \brief Set if user is allowed to create states. */
 	void SetCanCreateStates(bool canCreateStates);
@@ -78,7 +78,7 @@ public:
 	void InitStates();
 	
 	/** \brief Parent network or NULL. */
-	inline debnNetwork *GetParentNetwork() const{return pParentNetwork;}
+	inline debnNetwork *GetParentNetwork() const{ return pParentNetwork; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentNetwork(debnNetwork *network);

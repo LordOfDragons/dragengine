@@ -158,7 +158,7 @@ double deoalDCollisionTriangle::PointMoveHitsVolume(const decDVector &point, con
 //////////////////////
 
 void deoalDCollisionTriangle::GetEnclosingSphere(deoalDCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	decDVector center = (pCorners[0] + pCorners[1] + pCorners[2]) / 3.0;
 	decDVector distVector = pCorners[0] - center;
 	double radiusSquared = distVector * distVector;
@@ -172,7 +172,7 @@ void deoalDCollisionTriangle::GetEnclosingSphere(deoalDCollisionSphere *sphere){
 }
 
 void deoalDCollisionTriangle::GetEnclosingBox(deoalDCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	decDVector minExtend = pCorners[0];
 	decDVector maxExtend = minExtend;
 	if(pCorners[1].x < minExtend.x){
@@ -232,7 +232,7 @@ decDVector deoalDCollisionTriangle::ClosestPointTo(const decDVector &point){
 /////////////
 
 void deoalDCollisionTriangle::Visit(deoalDCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitTriangle(this);
 }
 
@@ -250,7 +250,7 @@ bool deoalDCollisionTriangle::SphereHitsTriangle(deoalDCollisionSphere *sphere){
 	hitPoint = sc + pNormal * lambda;
 	// if the point is not inside the triangle calculate the point on the
 	// triangle closest to the hitpoint
-	if(! deoalDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!deoalDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = deoalDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	// we need to compare the distance of the hitpoint to the sphere center
@@ -382,7 +382,7 @@ double deoalDCollisionTriangle::SphereMoveHitsTriangle(deoalDCollisionSphere *sp
 	}
 	
 	// if the point is not inside the triangle calculate the point on the triangle closest to the hitpoint
-	if(! deoalDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!deoalDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = deoalDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	

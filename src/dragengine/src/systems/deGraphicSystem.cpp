@@ -113,14 +113,14 @@ void deGraphicSystem::PostStart(){
 	int i;
 	
 	// there has to be a render window to start
-	if(! pRenderWindow){
+	if(!pRenderWindow){
 		pRenderWindow.TakeOver(engine.GetRenderWindowManager()->CreateRenderWindow());
 		pRenderWindow->SetSize(800, 600);
 		pRenderWindow->SetTitle("Drag[en]gine Game");
 	}
 	
 	// init module
-	if(! pActiveModule->Init(pRenderWindow)){
+	if(!pActiveModule->Init(pRenderWindow)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -224,14 +224,14 @@ void deGraphicSystem::SetInputOverlayCanvas(deCanvasView *view){
 
 #ifdef OS_ANDROID
 void deGraphicSystem::InitAppWindow(){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	pActiveModule->InitAppWindow();
 }
 
 void deGraphicSystem::TerminateAppWindow(){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	pActiveModule->TerminateAppWindow();
@@ -250,7 +250,7 @@ void deGraphicSystem::RenderWindows(){
 }
 
 void deGraphicSystem::CreateGlobalResources(){
-	if(! pDebugOverlayCanvas){
+	if(!pDebugOverlayCanvas){
 		pDebugOverlayCanvas.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasView());
 	}
 }
@@ -259,196 +259,196 @@ void deGraphicSystem::CreateGlobalResources(){
 
 void deGraphicSystem::LoadBillboard(deBillboard *billboard){
 	DEASSERT_NOTNULL(billboard)
-	if(GetIsRunning() && ! billboard->GetPeerGraphic()){
+	if(GetIsRunning() && !billboard->GetPeerGraphic()){
 		billboard->SetPeerGraphic(pActiveModule->CreateBillboard(billboard));
 	}
 }
 
 void deGraphicSystem::LoadCanvas(deCanvas *canvas){
 	DEASSERT_NOTNULL(canvas)
-	if(GetIsRunning() && ! canvas->GetPeerGraphic()){
+	if(GetIsRunning() && !canvas->GetPeerGraphic()){
 		canvas->SetPeerGraphic(pActiveModule->CreateCanvas(canvas));
 	}
 }
 
 void deGraphicSystem::LoadCamera(deCamera *camera){
 	DEASSERT_NOTNULL(camera)
-	if(GetIsRunning() && ! camera->GetPeerGraphic()){
+	if(GetIsRunning() && !camera->GetPeerGraphic()){
 		camera->SetPeerGraphic(pActiveModule->CreateCamera(camera));
 	}
 }
 
 void deGraphicSystem::LoadCaptureCanvas(deCaptureCanvas *captureCanvas){
 	DEASSERT_NOTNULL(captureCanvas)
-	if(GetIsRunning() && ! captureCanvas->GetPeerGraphic()){
+	if(GetIsRunning() && !captureCanvas->GetPeerGraphic()){
 		captureCanvas->SetPeerGraphic(pActiveModule->CreateCaptureCanvas(captureCanvas));
 	}
 }
 
 void deGraphicSystem::LoadComponent(deComponent *component){
 	DEASSERT_NOTNULL(component)
-	if(GetIsRunning() && ! component->GetPeerGraphic()){
+	if(GetIsRunning() && !component->GetPeerGraphic()){
 		component->SetPeerGraphic(pActiveModule->CreateComponent(component));
 	}
 }
 
 void deGraphicSystem::LoadDebugDrawer(deDebugDrawer *debugDrawer){
 	DEASSERT_NOTNULL(debugDrawer)
-	if(GetIsRunning() && ! debugDrawer->GetPeerGraphic()){
+	if(GetIsRunning() && !debugDrawer->GetPeerGraphic()){
 		debugDrawer->SetPeerGraphic(pActiveModule->CreateDebugDrawer(debugDrawer));
 	}
 }
 
 void deGraphicSystem::LoadDecal(deDecal *decal){
 	DEASSERT_NOTNULL(decal)
-	if(GetIsRunning() && ! decal->GetPeerGraphic()){
+	if(GetIsRunning() && !decal->GetPeerGraphic()){
 		decal->SetPeerGraphic(pActiveModule->CreateDecal(decal));
 	}
 }
 
 void deGraphicSystem::LoadDynamicSkin(deDynamicSkin *dynamicSkin){
 	DEASSERT_NOTNULL(dynamicSkin)
-	if(GetIsRunning() && ! dynamicSkin->GetPeerGraphic()){
+	if(GetIsRunning() && !dynamicSkin->GetPeerGraphic()){
 		dynamicSkin->SetPeerGraphic(pActiveModule->CreateDynamicSkin(dynamicSkin));
 	}
 }
 
 void deGraphicSystem::LoadEffect(deEffect *effect){
 	DEASSERT_NOTNULL(effect)
-	if(GetIsRunning() && ! effect->GetPeerGraphic()){
+	if(GetIsRunning() && !effect->GetPeerGraphic()){
 		effect->SetPeerGraphic(pActiveModule->CreateEffect(effect));
 	}
 }
 
 void deGraphicSystem::LoadEnvMapProbe(deEnvMapProbe *envMapProbe){
 	DEASSERT_NOTNULL(envMapProbe)
-	if(GetIsRunning() && ! envMapProbe->GetPeerGraphic()){
+	if(GetIsRunning() && !envMapProbe->GetPeerGraphic()){
 		envMapProbe->SetPeerGraphic(pActiveModule->CreateEnvMapProbe(envMapProbe));
 	}
 }
 
 void deGraphicSystem::LoadFont(deFont *font){
 	DEASSERT_NOTNULL(font)
-	if(GetIsRunning() && ! font->GetPeerGraphic()){
+	if(GetIsRunning() && !font->GetPeerGraphic()){
 		font->SetPeerGraphic(pActiveModule->CreateFont(font));
 	}
 }
 
 void deGraphicSystem::LoadHeightTerrain(deHeightTerrain *heightTerrain){
 	DEASSERT_NOTNULL(heightTerrain)
-	if(GetIsRunning() && ! heightTerrain->GetPeerGraphic()){
+	if(GetIsRunning() && !heightTerrain->GetPeerGraphic()){
 		heightTerrain->SetPeerGraphic(pActiveModule->CreateHeightTerrain(heightTerrain));
 	}
 }
 
 void deGraphicSystem::LoadImage(deImage *image){
 	DEASSERT_NOTNULL(image)
-	if(GetIsRunning() && ! image->GetPeerGraphic()){
+	if(GetIsRunning() && !image->GetPeerGraphic()){
 		image->SetPeerGraphic(pActiveModule->CreateImage(image));
 	}
 }
 
 void deGraphicSystem::LoadLight(deLight *light){
 	DEASSERT_NOTNULL(light)
-	if(GetIsRunning() && ! light->GetPeerGraphic()){
+	if(GetIsRunning() && !light->GetPeerGraphic()){
 		light->SetPeerGraphic(pActiveModule->CreateLight(light));
 	}
 }
 
 void deGraphicSystem::LoadLumimeter(deLumimeter *lumimeter){
 	DEASSERT_NOTNULL(lumimeter)
-	if(GetIsRunning() && ! lumimeter->GetPeerGraphic()){
+	if(GetIsRunning() && !lumimeter->GetPeerGraphic()){
 		lumimeter->SetPeerGraphic(pActiveModule->CreateLumimeter(lumimeter));
 	}
 }
 
 void deGraphicSystem::LoadModel(deModel *model){
 	DEASSERT_NOTNULL(model)
-	if(GetIsRunning() && ! model->GetPeerGraphic()){
+	if(GetIsRunning() && !model->GetPeerGraphic()){
 		model->SetPeerGraphic(pActiveModule->CreateModel(model));
 	}
 }
 
 void deGraphicSystem::LoadOcclusionMesh(deOcclusionMesh *occlusionMesh){
 	DEASSERT_NOTNULL(occlusionMesh)
-	if(GetIsRunning() && ! occlusionMesh->GetPeerGraphic()){
+	if(GetIsRunning() && !occlusionMesh->GetPeerGraphic()){
 		occlusionMesh->SetPeerGraphic(pActiveModule->CreateOcclusionMesh(occlusionMesh));
 	}
 }
 
 void deGraphicSystem::LoadParticleEmitter(deParticleEmitter *emitter){
 	DEASSERT_NOTNULL(emitter)
-	if(GetIsRunning() && ! emitter->GetPeerGraphic()){
+	if(GetIsRunning() && !emitter->GetPeerGraphic()){
 		emitter->SetPeerGraphic(pActiveModule->CreateParticleEmitter(emitter));
 	}
 }
 
 void deGraphicSystem::LoadParticleEmitterInstance(deParticleEmitterInstance *instance){
 	DEASSERT_NOTNULL(instance)
-	if(GetIsRunning() && ! instance->GetPeerGraphic()){
+	if(GetIsRunning() && !instance->GetPeerGraphic()){
 		instance->SetPeerGraphic(pActiveModule->CreateParticleEmitterInstance(instance));
 	}
 }
 
 void deGraphicSystem::LoadPropField(dePropField *propField){
 	DEASSERT_NOTNULL(propField)
-	if(GetIsRunning() && ! propField->GetPeerGraphic()){
+	if(GetIsRunning() && !propField->GetPeerGraphic()){
 		propField->SetPeerGraphic(pActiveModule->CreatePropField(propField));
 	}
 }
 
 void deGraphicSystem::LoadRenderWindow(deRenderWindow *renderWindow){
 	DEASSERT_NOTNULL(renderWindow)
-	if(GetIsRunning() && ! renderWindow->GetPeerGraphic()){
+	if(GetIsRunning() && !renderWindow->GetPeerGraphic()){
 		renderWindow->SetPeerGraphic(pActiveModule->CreateRenderWindow(renderWindow));
 	}
 }
 
 void deGraphicSystem::LoadSkin(deSkin *skin){
 	DEASSERT_NOTNULL(skin)
-	if(GetIsRunning() && ! skin->GetPeerGraphic()){
+	if(GetIsRunning() && !skin->GetPeerGraphic()){
 		skin->SetPeerGraphic(pActiveModule->CreateSkin(skin));
 	}
 }
 
 void deGraphicSystem::LoadSky(deSky *sky){
 	DEASSERT_NOTNULL(sky)
-	if(GetIsRunning() && ! sky->GetPeerGraphic()){
+	if(GetIsRunning() && !sky->GetPeerGraphic()){
 		sky->SetPeerGraphic(pActiveModule->CreateSky(sky));
 	}
 }
 
 void deGraphicSystem::LoadSkyInstance(deSkyInstance *instance){
 	DEASSERT_NOTNULL(instance)
-	if(GetIsRunning() && ! instance->GetPeerGraphic()){
+	if(GetIsRunning() && !instance->GetPeerGraphic()){
 		instance->SetPeerGraphic(pActiveModule->CreateSkyInstance(instance));
 	}
 }
 
 void deGraphicSystem::LoadSmokeEmitter(deSmokeEmitter *smokeEmitter){
 	DEASSERT_NOTNULL(smokeEmitter)
-	if(GetIsRunning() && ! smokeEmitter->GetPeerGraphic()){
+	if(GetIsRunning() && !smokeEmitter->GetPeerGraphic()){
 		smokeEmitter->SetPeerGraphic(pActiveModule->CreateSmokeEmitter(smokeEmitter));
 	}
 }
 
 void deGraphicSystem::LoadVideo(deVideo *video){
 	DEASSERT_NOTNULL(video)
-	if(GetIsRunning() && ! video->GetPeerGraphic()){
+	if(GetIsRunning() && !video->GetPeerGraphic()){
 		video->SetPeerGraphic(pActiveModule->CreateVideo(video));
 	}
 }
 
 void deGraphicSystem::LoadVideoPlayer(deVideoPlayer *videoPlayer){
 	DEASSERT_NOTNULL(videoPlayer)
-	if(GetIsRunning() && ! videoPlayer->GetPeerGraphic()){
+	if(GetIsRunning() && !videoPlayer->GetPeerGraphic()){
 		videoPlayer->SetPeerGraphic(pActiveModule->CreateVideoPlayer(videoPlayer));
 	}
 }
 
 void deGraphicSystem::LoadWorld(deWorld *world){
 	DEASSERT_NOTNULL(world)
-	if(GetIsRunning() && ! world->GetPeerGraphic()){
+	if(GetIsRunning() && !world->GetPeerGraphic()){
 		world->SetPeerGraphic(pActiveModule->CreateWorld(world));
 	}
 }

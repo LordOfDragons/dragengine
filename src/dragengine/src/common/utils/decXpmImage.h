@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width of the image. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Height of the image. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Pointer to the RGB aligned data. */
-	inline const char *GetData() const{return pData;}
+	inline const char *GetData() const{ return pData; }
 	/*@}*/
 	
 	

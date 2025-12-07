@@ -99,31 +99,31 @@ public:
 		pOwner->GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetModel() const{return pModel;}
+	inline deModel *GetModel() const{ return pModel; }
 	
 	void LoadModelLightBox(const char *path){
 		pPathModelLightBox = path;
 		pOwner->GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetModelLightBox() const{return pModelLightBox;}
+	inline deModel *GetModelLightBox() const{ return pModelLightBox; }
 	
 	void LoadSkin(const char *path){
 		pPathSkin = path;
 		pOwner->GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	void LoadSkinLightBox(const char *path){
 		pPathSkinLightBox = path;
 		pOwner->GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
-	inline deSkin *GetSkinLightBox() const{return pSkinLightBox;}
+	inline deSkin *GetSkinLightBox() const{ return pSkinLightBox; }
 	
 	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -157,7 +157,7 @@ public:
 	}
 	
 	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -211,7 +211,7 @@ pGDSkin(gdskin),
 pSky(NULL),
 pResLoadFinished(false)
 {
-	if(! gdskin){
+	if(!gdskin){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -294,7 +294,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	igdeGDPCSkinResLoader &rl = (igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader;
 	
 	rl.LoadModel("/igde/models/previewBuilder/skin.demodel");
-	if(! pGDSkin->GetPath().IsEmpty()){
+	if(!pGDSkin->GetPath().IsEmpty()){
 		rl.LoadSkin(pGDSkin->GetPath());
 	}
 	rl.LoadModelLightBox("/igde/models/lightBox/lightBox.demodel");
@@ -309,7 +309,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 }
 
 bool igdeGDPCSkin::IsCanvasReadyForRender(){
-	if(! pResLoadFinished){
+	if(!pResLoadFinished){
 		return false;
 	}
 	
@@ -336,7 +336,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 				|| texture.HasPropertyWithType("color.omnidir.equirect");
 		}
 		
-		if(! hasSingleTexPropColor && hasSingleTexPropColorOmni){
+		if(!hasSingleTexPropColor && hasSingleTexPropColorOmni){
 			// create light preview
 			if(pLightBoxModel && pLightBoxSkin){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();

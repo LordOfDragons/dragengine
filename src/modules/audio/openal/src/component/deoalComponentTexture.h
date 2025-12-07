@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline deoalComponent &GetComponent() const{return pComponent;}
+	inline deoalComponent &GetComponent() const{ return pComponent; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Audio component texture. */
-	inline deoalAComponentTexture *GetATexture() const{return pATexture;}
+	inline deoalAComponentTexture *GetATexture() const{ return pATexture; }
 	
 	/** \brief Synchronize. */
 	void Synchronize();

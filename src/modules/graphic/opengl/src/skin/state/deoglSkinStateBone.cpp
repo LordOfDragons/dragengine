@@ -58,7 +58,7 @@ void deoglSkinStateBone::SetSkinBone(const deoglSkinBone *skinBone){
 void deoglSkinStateBone::MapBone(const deComponent &component){
 	pBoneIndex = -1;
 	
-	if(! pSkinBone || ! component.GetRig()){
+	if(!pSkinBone || !component.GetRig()){
 		return;
 	}
 	

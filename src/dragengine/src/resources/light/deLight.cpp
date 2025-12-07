@@ -296,7 +296,7 @@ void deLight::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 }
 
 void deLight::SetTransform(const decTexMatrix2 &matrix){
-	if(! matrix.IsEqualTo(pTransform)){
+	if(!matrix.IsEqualTo(pTransform)){
 		return;
 	}
 	
@@ -447,7 +447,7 @@ bool deLight::HasShadowIgnoreComponent(deComponent *component) const{
 }
 
 void deLight::AddShadowIgnoreComponent(deComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

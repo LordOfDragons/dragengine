@@ -125,19 +125,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief ColorBox is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if color box is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color. */
 	void SetColor(const decColor &color);

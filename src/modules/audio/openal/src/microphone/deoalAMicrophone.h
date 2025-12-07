@@ -112,51 +112,51 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Set geometry. */
 	void SetGeometry(const decDVector &position, const decQuaternion &orientation);
 	
 	/** Velocity. */
-	inline const decVector &GetVelocity() const{return pVelocity;}
+	inline const decVector &GetVelocity() const{ return pVelocity; }
 	
 	/** Set velocity. */
 	void SetVelocity(const decVector &velocity);
 	
 	/** Volume. */
-	inline float GetVolume() const{return pVolume;}
+	inline float GetVolume() const{ return pVolume; }
 	
 	/** Set volume. */
 	void SetVolume(float volume);
 	
 	/** Muted. */
-	inline bool GetMuted() const{return pMuted;}
+	inline bool GetMuted() const{ return pMuted; }
 	
 	/** Set muted. */
 	void SetMuted(bool mnuted);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Gain to multiply all speakers with. */
-	inline float GetSpeakerGain() const{return pSpeakerGain;}
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
 	
 	/** Set gain to multiply all speakers with. */
 	void SetSpeakerGain(float gain);
 	
 	/** Enable auralization. */
-	inline bool GetEnableAuralization() const{return pEnableAuralization;}
+	inline bool GetEnableAuralization() const{ return pEnableAuralization; }
 	
 	/** Set enable auralization. */
 	void SetEnableAuralization(bool enable);
@@ -164,7 +164,7 @@ public:
 	
 	
 	/** Microphone is active. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/**
 	 * Set if mocrophone is active.
@@ -207,8 +207,8 @@ public:
 	
 	
 	/** Active speaker list. */
-	inline deoalSpeakerList &GetActiveSpeakers(){return pActiveSpeakers;}
-	inline const deoalSpeakerList &GetActiveSpeakers() const{return pActiveSpeakers;}
+	inline deoalSpeakerList &GetActiveSpeakers(){ return pActiveSpeakers; }
+	inline const deoalSpeakerList &GetActiveSpeakers() const{ return pActiveSpeakers; }
 	
 	/**
 	 * Find active speakers.
@@ -223,7 +223,7 @@ public:
 	
 	
 	/** Parent world or NULL. */
-	inline deoalAWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoalAWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
 	 * Set parent world or NULL.
@@ -232,7 +232,7 @@ public:
 	void SetParentWorld(deoalAWorld *world);
 	
 	/** World octree node or NULL. */
-	inline deoalWorldOctree *GetOctreeNode() const{return pOctreeNode;}
+	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** Set world octree node or NULL. */
 	void SetOctreeNode(deoalWorldOctree *node);
@@ -249,7 +249,7 @@ public:
 	deoalEnvProbe *GetEnvProbe();
 	
 	/** Ray-trace world bvh. */
-	inline deoalRTWorldBVH &GetRTWorldBVH(){return pRTWorldBVH;}
+	inline deoalRTWorldBVH &GetRTWorldBVH(){ return pRTWorldBVH; }
 	
 	
 	
@@ -281,7 +281,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.
@@ -290,13 +290,13 @@ public:
 	void SetWorldMarkedRemove(bool marked);
 		
 	/** Linked list world previous. */
-	inline deoalAMicrophone *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deoalAMicrophone *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** Set linked list world previous. */
 	void SetLLWorldPrev(deoalAMicrophone *microphone);
 	
 	/** Linked list world next. */
-	inline deoalAMicrophone *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deoalAMicrophone *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** Set linked list world next. */
 	void SetLLWorldNext(deoalAMicrophone *microphone);

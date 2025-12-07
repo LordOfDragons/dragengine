@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -86,9 +86,9 @@ public:
 	/** Pushes a rule. */
 	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule);
 	
-	inline dsClass *GetClassARMirrorTarget() const{return pClsARMirrorTarget;}
-	inline dsClass *GetClassARMirrorMirrorAxis() const{return pClsARMirrorMirrorAxis;}
-	inline dsClass *GetClassARMirrorMatchNameType() const{return pClsARMirrorMatchNameType;}
+	inline dsClass *GetClassARMirrorTarget() const{ return pClsARMirrorTarget; }
+	inline dsClass *GetClassARMirrorMirrorAxis() const{ return pClsARMirrorMirrorAxis; }
+	inline dsClass *GetClassARMirrorMatchNameType() const{ return pClsARMirrorMatchNameType; }
 	/*@}*/
 	
 private:

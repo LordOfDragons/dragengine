@@ -72,7 +72,7 @@ deoglDebugSaveTexture::~deoglDebugSaveTexture(){
 ///////////////
 
 void deoglDebugSaveTexture::SetBasePath(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
 	pBasePath = path;
 }
@@ -90,7 +90,7 @@ void deoglDebugSaveTexture::SaveTextureLevel(deoglTexture &texture, int level, c
 }
 
 void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, int level, const char *name, eConvertions conversion){
-	if(level < 0 || ! name){
+	if(level < 0 || !name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -151,7 +151,7 @@ void deoglDebugSaveTexture::SaveDepthTexture(deoglTexture &texture, const char *
 }
 
 void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int level, const char *name, eDepthTypes type){
-	if(level < 0 || ! name){
+	if(level < 0 || !name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -266,7 +266,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 }
 
 void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -355,7 +355,7 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 }
 
 void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -461,7 +461,7 @@ void deoglDebugSaveTexture::SaveCubeMapConversion(deoglCubeMap &cubemap, const c
 }
 
 void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, int level, const char *name, bool upsideDown, eConvertions conversion){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -515,7 +515,7 @@ void deoglDebugSaveTexture::SaveDepthCubeMap(deoglCubeMap &cubemap, const char *
 }
 
 void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int level, const char *name, bool linearDepth){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -598,7 +598,7 @@ const char *name, eConvertions conversion){
 
 void deoglDebugSaveTexture::SaveArrayTextureLevelConversion(deoglArrayTexture &texture,
 int level, const char *name, eConvertions conversion){
-	if(level < 0 || ! name){
+	if(level < 0 || !name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -654,7 +654,7 @@ void deoglDebugSaveTexture::SaveDepthArrayTexture(deoglArrayTexture &arrayTextur
 }
 
 void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayTexture, int level, const char *name, bool linearDepth){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

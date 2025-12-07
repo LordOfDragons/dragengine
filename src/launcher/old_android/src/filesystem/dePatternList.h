@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of patterns. */
-	inline int GetPatternCount() const{return pPatternCount;}
+	inline int GetPatternCount() const{ return pPatternCount; }
 	
 	/** \brief Pattern at the given position. */
 	const char *GetPatternAt(int index) const;

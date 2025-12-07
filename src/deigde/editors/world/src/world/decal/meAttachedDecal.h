@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine decal or NULL. */
-	inline deDecal *GetEngineDecal() const{return pEngDecal;}
+	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
 	
 	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{return pParentObject;}
+	inline meObject *GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
 	void SetParentObject(meObject *object);

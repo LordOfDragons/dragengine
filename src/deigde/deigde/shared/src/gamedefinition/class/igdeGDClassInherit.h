@@ -74,35 +74,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of class to inherit if present. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Class if resolved. */
-	inline igdeGDClass *GetClass() const{return pClass;}
+	inline igdeGDClass *GetClass() const{ return pClass; }
 	
 	/** \brief Resolv class if possible. */
 	void ResolveClass(const igdeGDClassManager &classManager);
 	
 	/** \brief Prefix to add to properties defined in inherited class. */
-	inline const decString &GetPropertyPrefix() const{return pPropertyPrefix;}
+	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
 	void SetPropertyPrefix(const char *prefix);
 	
 	/** \brief Auto property prefix ID used only during resolving. */
-	inline const decString &GetAutoPropertyPrefixId() const{return pAutoPropertyPrefixId;}
+	inline const decString &GetAutoPropertyPrefixId() const{ return pAutoPropertyPrefixId; }
 	
 	/** \brief Set auto property prefix ID used only during resolving. */
 	void SetAutoPropertyPrefixId(const char *id);
 	
 	/** \brief Use auto property prefix ID. */
-	inline bool GetUseAutoPropertyPrefixId() const{return pUseAutoPropertyPrefixId;}
+	inline bool GetUseAutoPropertyPrefixId() const{ return pUseAutoPropertyPrefixId; }
 	
 	/** \brief Set use auto property prefix ID. */
 	void SetUseAutoPropertyPrefixId(bool use);
 	
 	/** \brief Auto prefix propertiues. */
 	decStringDictionary &GetAutoPrefixProperties(){return pAutoPrefixProperties;}
-	inline const decStringDictionary &GetAutoPrefixProperties() const{return pAutoPrefixProperties;}
+	inline const decStringDictionary &GetAutoPrefixProperties() const{ return pAutoPrefixProperties; }
 	
 	/** \brief Add auto prefixed properties to class if possible. */
 	void AddAutoPrefixedPropertiesTo(igdeGDClass &gdclass);

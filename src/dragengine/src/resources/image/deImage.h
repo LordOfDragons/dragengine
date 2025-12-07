@@ -211,19 +211,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Depth in pixels. */
-	inline int GetDepth() const{return pDepth;}
+	inline int GetDepth() const{ return pDepth; }
 	
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Bit count of each component. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	
 	
@@ -321,7 +321,7 @@ public:
 	 * 
 	 * \warning This is a dangerous function. Use it only if you know what you are doing.
 	 */
-	inline void *GetData() const{return pData;}
+	inline void *GetData() const{ return pData; }
 	
 	/** \brief Notify peers image data changed. */
 	void NotifyImageDataChanged();
@@ -333,7 +333,7 @@ public:
 	 * 
 	 * For debug use.
 	 */
-	inline int GetRetainImageDataCount() const{return pRetainImageData;}
+	inline int GetRetainImageDataCount() const{ return pRetainImageData; }
 	
 	/**
 	 * \brief Retain image data.
@@ -371,7 +371,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicImage *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicImage *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicImage *peer);

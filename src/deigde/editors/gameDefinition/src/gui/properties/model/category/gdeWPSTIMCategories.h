@@ -62,16 +62,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Type object class. */
-	inline gdeWPSTIMCategoriesObjectClass &GetObjectClass() const{return *pObjectClass;}
+	inline gdeWPSTIMCategoriesObjectClass &GetObjectClass() const{ return *pObjectClass; }
 	
 	/** \brief Type skin. */
-	inline gdeWPSTIMCategoriesSkin &GetSkin() const{return *pSkin;}
+	inline gdeWPSTIMCategoriesSkin &GetSkin() const{ return *pSkin; }
 	
 	/** \brief Type sky. */
-	inline gdeWPSTIMCategoriesSky &GetSky() const{return *pSky;}
+	inline gdeWPSTIMCategoriesSky &GetSky() const{ return *pSky; }
 	
 	/** \brief Type particle emitter. */
-	inline gdeWPSTIMCategoriesParticleEmitter &GetParticleEmitter() const{return *pParticleEmitter;}
+	inline gdeWPSTIMCategoriesParticleEmitter &GetParticleEmitter() const{ return *pParticleEmitter; }
 	
 	
 	

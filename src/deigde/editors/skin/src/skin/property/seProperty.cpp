@@ -78,7 +78,7 @@ pNodeBitCount(8),
 pSelected(false),
 pActive(false)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -216,7 +216,7 @@ void seProperty::SetImagePath(const char *imagePath){
 void seProperty::UpdateImage(){
 	deImage::Ref image;
 	
-	if(! pPathImage.IsEmpty() && pTexture && pTexture->GetSkin()){
+	if(!pPathImage.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
 			image.TakeOver(pEngine->GetImageManager()->LoadImage(
 				pPathImage, pTexture->GetSkin()->GetDirectoryPath()));
@@ -242,7 +242,7 @@ void seProperty::SetVideoPath(const char *videoPath){
 void seProperty::UpdateVideo(){
 	deVideo::Ref video;
 	
-	if(! pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin()){
+	if(!pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
 			video.TakeOver(pEngine->GetVideoManager()->LoadVideo(
 				pPathVideo, pTexture->GetSkin()->GetDirectoryPath(), false));
@@ -284,7 +284,7 @@ void seProperty::SetMappedComponent(int index, seMapped *mapped){
 
 
 void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
-	if(! nodeGroup || nodeGroup->GetProperty()){
+	if(!nodeGroup || nodeGroup->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -411,7 +411,7 @@ void seProperty::SetActive(bool active){
 }
 
 void seProperty::NotifyChanged(){
-	if(! pTexture){
+	if(!pTexture){
 		return;
 	}
 	
@@ -430,7 +430,7 @@ void seProperty::UpdateResources(){
 
 void seProperty::InitDefaults(const igdeTexturePropertyList &knownPropertyList){
 	const igdeTextureProperty * const knownProperty = knownPropertyList.GetNamed(pName);
-	if(! knownProperty){
+	if(!knownProperty){
 		return;
 	}
 	

@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Platform independent key code or ekcUndefined if not set. */
-	inline deInputEvent::eKeyCodes GetKeyCode() const{return pKeyCode;}
+	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/** \brief Set platform independent key code or ekcUndefined if not set. */
 	void SetKeyCode(deInputEvent::eKeyCodes keyCode);
 	
 	/** \brief Platform dependent key or 0 if not set. */
-	inline int GetKey() const{return pKey;}
+	inline int GetKey() const{ return pKey; }
 	
 	/** \brief Set platform dependent key or 0 if not set. */
 	void SetKey(int key);
@@ -81,7 +81,7 @@ public:
 	 * - esmControl
 	 * - esmAlt
 	 */
-	inline int GetModifiers() const{return pModifiers;}
+	inline int GetModifiers() const{ return pModifiers; }
 	
 	/**
 	 * \brief Set modifiers using flags from deInputEvent::eStateModifiers.

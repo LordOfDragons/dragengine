@@ -134,7 +134,7 @@ deClassNavigator::nfSetSpaceType::nfSetSpaceType(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsNavigationSpaceType); // spaceType
 }
 void deClassNavigator::nfSetSpaceType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -375,7 +375,7 @@ void deClassNavigator::nfNearestPoint::RunFunction(dsRunTime *rt, dsValue *mysel
 	decDVector nearestPoint;
 	int nearestType;
 	
-	if(! navigator.NearestPoint(point, radius, nearestPoint, nearestType)){
+	if(!navigator.NearestPoint(point, radius, nearestPoint, nearestType)){
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
 		return;
 	}
@@ -414,7 +414,7 @@ void deClassNavigator::nfLineCollide::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	float distance;
 	
-	if(! navigator.LineCollide(origin, direction, distance)){
+	if(!navigator.LineCollide(origin, direction, distance)){
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
 		return;
 	}
@@ -452,7 +452,7 @@ void deClassNavigator::nfPathCollideRay::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	const deNavigatorPath &path = ds.GetClassNavigatorPath()->GetNavigatorPath(rt->GetValue(0)->GetRealObject());
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(1)->GetRealObject());
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -500,7 +500,7 @@ void deClassNavigator::nfPathCollideRay2::RunFunction(dsRunTime *rt, dsValue *my
 	const decDVector &startPosition = ds.GetClassDVector()->GetDVector(rt->GetValue(2)->GetRealObject());
 	const int nextPoint = rt->GetValue(3)->GetInt();
 	const float maxDistance = rt->GetValue(4)->GetFloat();
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -543,7 +543,7 @@ void deClassNavigator::nfPathCollideShape::RunFunction(dsRunTime *rt, dsValue *m
 	const deNavigatorPath &path = ds.GetClassNavigatorPath()->GetNavigatorPath(rt->GetValue(0)->GetRealObject());
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(1)->GetRealObject());
 	deCollider * const agent = ds.GetClassCollider()->GetCollider(rt->GetValue(2)->GetRealObject());
-	if(! collider || ! agent){
+	if(!collider || !agent){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -593,7 +593,7 @@ void deClassNavigator::nfPathCollideShape2::RunFunction(dsRunTime *rt, dsValue *
 	const decDVector &startPosition = ds.GetClassDVector()->GetDVector(rt->GetValue(3)->GetRealObject());
 	const int nextPoint = rt->GetValue(4)->GetInt();
 	const float maxDistance = rt->GetValue(5)->GetFloat();
-	if(! collider || ! agent){
+	if(!collider || !agent){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -646,7 +646,7 @@ void deClassNavigator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassNavigator * const clsNavigator = (deClassNavigator*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNavigator)){
+	if(!p_IsObjOfType(object, clsNavigator)){
 		rt->PushBool(false);
 		
 	}else{
@@ -665,7 +665,7 @@ void deClassNavigator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassNavigator::deClassNavigator(deScriptingDragonScript *ds) :
 dsClass("Navigator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -745,7 +745,7 @@ void deClassNavigator::CreateClassMembers(dsEngine *engine){
 }
 
 deNavigator *deClassNavigator::GetNavigator(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -753,11 +753,11 @@ deNavigator *deClassNavigator::GetNavigator(dsRealObject *myself) const{
 }
 
 void deClassNavigator::PushNavigator(dsRunTime *rt, deNavigator *navigator){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! navigator){
+	if(!navigator){
 		rt->PushObject(NULL, this);
 		return;
 	}

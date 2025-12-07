@@ -271,7 +271,7 @@ void debpWorld::Update(float elapsed){
 }
 
 void debpWorld::UpdateOctrees(){
-	if(! pDirtyOctree){
+	if(!pDirtyOctree){
 		return;
 	}
 	
@@ -307,7 +307,7 @@ timer.Reset();
 	}
 	for(i=0; i<count; i++){
 		debpCollider * const collider = pUpdateOctreeColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -325,7 +325,7 @@ timer.Reset();
 	int next = 0;
 	for(i=count; i<pUpdateOctreeColliderCount; i++){
 		debpCollider * const collider = pUpdateOctreeColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -619,7 +619,7 @@ DEBUG_PRINT_TIMER_TOTAL();
 		#if 0
 		const btCollisionObjectArray &cobjs = pDynWorld->getCollisionObjectArray();
 		for(int i=0; i<cobjs.size(); i++){
-			if(! cobjs.at(i)->isActive()) continue;
+			if(!cobjs.at(i)->isActive()) continue;
 			const debpCollisionObject &co0 = *(debpCollisionObject*)(cobjs.at(i)->getUserPointer());
 			decString text;
 			text.Format("- Active Collision Object %d: ", i);
@@ -724,7 +724,7 @@ void debpWorld::SizeChanged(){
 void debpWorld::PhysicsChanged(){
 	// check if gravity changed
 	const decVector &gravity = pWorld.GetGravity();
-	if(! gravity.IsEqualTo(pGravity)){
+	if(!gravity.IsEqualTo(pGravity)){
 		pGravity = gravity;
 		
 		// notify colliders the gravity potentially changed
@@ -888,7 +888,7 @@ void debpWorld::AllParticleEmittersRemoved(){
 
 void debpWorld::PointHits(const decDVector &point, deBaseScriptingCollider *listener,
 const decCollisionFilter &collisionFilter){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pBullet.GetCollisionDetection().PointHits(point, *this, collisionFilter, *listener);
@@ -899,7 +899,7 @@ deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -915,7 +915,7 @@ void debpWorld::ColliderHits(deCollider *collider, deBaseScriptingCollider *list
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if(! collider || ! listener){
+	if(!collider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -934,7 +934,7 @@ void debpWorld::ColliderMoveHits(deCollider *collider, const decVector &displace
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if(! collider || ! listener){
+	if(!collider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -952,7 +952,7 @@ void debpWorld::ColliderRotateHits(deCollider *collider, const decVector &rotati
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if(! collider || ! listener){
+	if(!collider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -971,7 +971,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if(! collider || ! listener){
+	if(!collider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1088,7 +1088,7 @@ DEBUG_PRINT_TIMER("Prepare Detection");
 		
 		int i;
 		for(i=0; i<pColDetPrepareColliderProcessCount; i++){
-			if(! pColDetPrepareColliders[i]){
+			if(!pColDetPrepareColliders[i]){
 				continue;
 			}
 			pColDetPrepareColliders[i]->DetectCustomCollision(elapsed);
@@ -1193,7 +1193,7 @@ void debpWorld::pPrepareDetection(float elapsed){
 	int i;
 	pColDetPrepareColliderProcessCount = pColDetPrepareColliderCount;
 	for(i=0; i<pColDetPrepareColliderProcessCount; i++){
-		if(! pColDetPrepareColliders[i]){
+		if(!pColDetPrepareColliders[i]){
 			continue;
 		}
 		
@@ -1285,7 +1285,7 @@ pBullet.LogInfoFormat("World Timer: pStepPhysics: Update = %iys", (int)(elapsedU
 #endif
 
 void debpWorld::pStepForceFields(float elapsed){
-	if(! pBullet.GetConfiguration()->GetSimulatePropFields()){
+	if(!pBullet.GetConfiguration()->GetSimulatePropFields()){
 		return;
 	}
 	
@@ -1536,7 +1536,7 @@ void debpWorld::pUpdateFromBody(){
 	
 	int i;
 	for(i=0; i<pColDetPrepareColliderProcessCount; i++){
-		if(! pColDetPrepareColliders[i]){
+		if(!pColDetPrepareColliders[i]){
 			continue;
 		}
 		
@@ -1555,7 +1555,7 @@ void debpWorld::pFinishDetection(){
 	// clear registered prepare
 	for(next=0, i=0; i<pColDetPrepareColliderProcessCount; i++){
 		debpCollider * const collider = pColDetPrepareColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -1575,7 +1575,7 @@ void debpWorld::pFinishDetection(){
 	
 	for(i=pColDetPrepareColliderProcessCount; i<pColDetPrepareColliderCount; i++){
 		debpCollider * const collider = pColDetPrepareColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -1602,7 +1602,7 @@ void debpWorld::pFinishDetection(){
 	
 	for(next=0, i=0; i<finishCount; i++){
 		debpCollider *collider = pColDetFinishColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -1639,7 +1639,7 @@ void debpWorld::pFinishDetection(){
 	
 	for(i=finishCount; i<pColDetFinishColliderCount; i++){
 		debpCollider * const collider = pColDetFinishColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -1667,7 +1667,7 @@ void debpWorld::pUpdatePostPhysicsCollisionTests(){
 	
 	for(next=0, i=0; i<count; i++){
 		debpCollider * const collider = pPPCTColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		
@@ -1688,7 +1688,7 @@ void debpWorld::pUpdatePostPhysicsCollisionTests(){
 	
 	for(i=count; i<pPPCTColliderCount; i++){
 		debpCollider * const collider = pPPCTColliders[i];
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		

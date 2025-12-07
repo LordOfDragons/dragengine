@@ -67,7 +67,7 @@ pOCLight(oclight),
 pDDSCenter(NULL),
 pDDSCoordSystem(NULL)
 {
-	if(! oclight){
+	if(!oclight){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,12 +111,12 @@ void gdeVAOLight::RebuildResources(){
 }
 
 void gdeVAOLight::AttachResources(){
-	if(! pLight){
+	if(!pLight){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	
@@ -167,12 +167,12 @@ void gdeVAOLight::AttachResources(){
 }
 
 void gdeVAOLight::DetachResources(){
-	if(! pLight){
+	if(!pLight){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	
@@ -193,7 +193,7 @@ void gdeVAOLight::SelectedObjectChanged(){
 }
 
 void gdeVAOLight::ShadowIgnoreComponent(deComponent *component){
-	if(pLight && ! pLight->HasShadowIgnoreComponent(component)){
+	if(pLight && !pLight->HasShadowIgnoreComponent(component)){
 		pLight->AddShadowIgnoreComponent(component);
 	}
 }
@@ -298,7 +298,7 @@ void gdeVAOLight::pCreateLight(){
 	// light skin
 	decString path(PropertyString(pOCLight->GetPropertyName(gdeOCLight::epLightSkin), pOCLight->GetLightSkinPath()));
 	deSkin::Ref skin;
-	if(! path.IsEmpty()){
+	if(!path.IsEmpty()){
 		try{
 			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
 			

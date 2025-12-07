@@ -44,7 +44,7 @@ sePropertyNodeGroup *node, sePropertyNode *child) :
 pNode(NULL),
 pChild(NULL)
 {
-	if(! node || ! node->GetProperty() || ! child || child->GetProperty()){
+	if(!node || !node->GetProperty() || !child || child->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

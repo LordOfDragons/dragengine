@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *facePose){
-	if(! conversation || ! facePose) DETHROW(deeInvalidParam);
+	if(!conversation || !facePose) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pFacePose = NULL;

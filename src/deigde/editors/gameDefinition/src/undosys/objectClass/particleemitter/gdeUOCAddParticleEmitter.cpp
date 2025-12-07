@@ -45,7 +45,7 @@ gdeUOCAddParticleEmitter::gdeUOCAddParticleEmitter(gdeObjectClass *objectClass, 
 pObjectClass(NULL),
 pParticleEmitter(NULL)
 {
-	if(! objectClass || ! particleEmitter){
+	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

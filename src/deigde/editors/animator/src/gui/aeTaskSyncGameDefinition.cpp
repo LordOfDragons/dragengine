@@ -61,7 +61,7 @@ aeTaskSyncGameDefinition::~aeTaskSyncGameDefinition(){
 ///////////////
 
 bool aeTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetAnimator()){
+	if(!pWindowMain.GetAnimator()){
 		return false;
 	}
 	

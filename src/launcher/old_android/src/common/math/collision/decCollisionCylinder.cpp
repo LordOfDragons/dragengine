@@ -156,7 +156,7 @@ float decCollisionCylinder::PointMoveHitsVolume(const decVector &point, const de
 //////////////////////
 
 void decCollisionCylinder::GetEnclosingSphere(decCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	
 	// the sphere is not fully optial. the real sphere is slightly smaller and has a
 	// different center along the y-axis. the difference is though rather small.
@@ -169,7 +169,7 @@ void decCollisionCylinder::GetEnclosingSphere(decCollisionSphere *sphere){
 }
 
 void decCollisionCylinder::GetEnclosingBox(decCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	float size;
 	
 	// TODO: better approximation
@@ -247,7 +247,7 @@ bool decCollisionCylinder::RayHitsVolume(const decVector &rayOrigin, const decVe
 /////////////
 
 void decCollisionCylinder::Visit(decCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitCylinder(this);
 }
 
@@ -292,7 +292,7 @@ void decCollisionCylinder::SetOrientation(const decQuaternion &orientation){
 	pAxisY.Set(matrix.TransformUp());
 	pAxisZ.Set(matrix.TransformView());
 	
-	pOriented = ! pOrientation.IsEqualTo(decQuaternion());
+	pOriented = !pOrientation.IsEqualTo(decQuaternion());
 }
 
 void decCollisionCylinder::ClearOrientation(){

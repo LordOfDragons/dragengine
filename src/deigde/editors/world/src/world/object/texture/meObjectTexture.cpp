@@ -67,7 +67,7 @@ pColorTint(1.0f, 1.0f, 1.0f),
 
 pDynamicSkin(NULL)
 {
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -133,7 +133,7 @@ void meObjectTexture::SetSkinPath(const char *skinPath){
 void meObjectTexture::LoadSkin(){
 	deSkin *engSkin = NULL;
 	
-	if(! pSkinPath.IsEmpty()){
+	if(!pSkinPath.IsEmpty()){
 		try{
 			engSkin = pEnvironment->GetEngineController()->GetEngine()->
 				GetSkinManager()->LoadSkin(pSkinPath.GetString(), "/");
@@ -217,7 +217,7 @@ void meObjectTexture::SetColorTint(const decColor &color){
 
 
 void meObjectTexture::UpdateDynamicSkin(){
-	const bool hasTint = ! decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
+	const bool hasTint = !decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
 	bool requiresDynamicSkin = false;
 	
 	if(hasTint){
@@ -225,13 +225,13 @@ void meObjectTexture::UpdateDynamicSkin(){
 	}
 	
 	if(requiresDynamicSkin){
-		if(! pDynamicSkin){
+		if(!pDynamicSkin){
 			pDynamicSkin = pEnvironment->GetEngineController()->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();
 		
-		if(! hasTint){
+		if(!hasTint){
 			return;
 		}
 		
@@ -250,12 +250,12 @@ void meObjectTexture::UpdateDynamicSkin(){
 
 
 void meObjectTexture::NotifyChanged(){
-	if(! pObject){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if(! world){
+	if(!world){
 		return;
 	}
 	
@@ -264,12 +264,12 @@ void meObjectTexture::NotifyChanged(){
 }
 
 void meObjectTexture::NotifyPropertiesChanged(){
-	if(! pObject){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if(! world){
+	if(!world){
 		return;
 	}
 	
@@ -278,12 +278,12 @@ void meObjectTexture::NotifyPropertiesChanged(){
 }
 
 void meObjectTexture::NotifyActivePropertyChanged(){
-	if(! pObject){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if(! world){
+	if(!world){
 		return;
 	}
 	
@@ -331,7 +331,7 @@ void meObjectTexture::SetProperties(const decStringDictionary &properties){
 }
 
 void meObjectTexture::RemoveProperty(const char *key){
-	if(! pProperties.Has(key)){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	

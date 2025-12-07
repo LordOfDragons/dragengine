@@ -105,7 +105,7 @@ void gdeWPSTIMCategorySkin::CategoriesChanged(){
 		gdeWPSTIMCategorySkin * const modelCategory = (gdeWPSTIMCategorySkin*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelCategory->GetCategory())){
+		if(!list.Has(modelCategory->GetCategory())){
 			RemoveModel(modelCategory);
 		}
 	}
@@ -140,7 +140,7 @@ void gdeWPSTIMCategorySkin::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMCategorySkin::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

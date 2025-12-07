@@ -91,32 +91,32 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the bullet height terrain. */
-	inline debpHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline debpHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	/** Retrieves the height terrain sector. */
-	inline deHeightTerrainSector *GetSector() const{return pSector;}
+	inline deHeightTerrainSector *GetSector() const{ return pSector; }
 	
 	/** Retrieves the image dimension. */
-	inline int GetImageDimension() const{return pImageDim;}
+	inline int GetImageDimension() const{ return pImageDim; }
 	
 	/** Retrieves the number of clusters in the both direction. */
-	inline int GetClusterCount() const{return pClusterCount;}
+	inline int GetClusterCount() const{ return pClusterCount; }
 	/** Retrieves the cluster at the given location. */
 	debpHTSCluster &GetClusterAt(int x, int z) const;
 	/** Retrieves the list of clusters. */
-	inline debpHTSCluster *GetClusters() const{return pClusters;}
+	inline debpHTSCluster *GetClusters() const{ return pClusters; }
 	
 	/** Retrieves the minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Retrieves the marked flag. */
-	inline bool GetMarked() const{return pMarked;}
+	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
 	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	/** Retrieves the points for a height map with or without modifications. */
-	inline decVector *GetPoints() const{return pPoints;}
+	inline decVector *GetPoints() const{ return pPoints; }
 	
 	/** Update heights. */
 	void UpdateHeights(int fromX, int fromY, int toX, int toY);

@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reference count. */
-	inline int GetRefCount() const{return pRefCount;}
+	inline int GetRefCount() const{ return pRefCount; }
 	
 	/** \brief Add reference increasing reference count by 1. */
 	void AddReference();

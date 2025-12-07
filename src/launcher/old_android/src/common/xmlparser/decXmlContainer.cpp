@@ -62,7 +62,7 @@ decXmlElement *decXmlContainer::GetElementAt(int index) const{
 }
 
 void decXmlContainer::AddElement(decXmlElement *element){
-	if(! element){
+	if(!element){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -71,7 +71,7 @@ void decXmlContainer::AddElement(decXmlElement *element){
 }
 
 void decXmlContainer::RemoveElement(decXmlElement *element){
-	if(! pElements.Has(element)){
+	if(!pElements.Has(element)){
 		DETHROW(deeInvalidParam);
 	}
 	

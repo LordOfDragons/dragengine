@@ -71,25 +71,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner object or NULL. */
-	inline void *GetOwner() const{return pOwner;}
+	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Hash. */
-	inline unsigned int GetHash() const{return pHash;}
+	inline unsigned int GetHash() const{ return pHash; }
 	
 	/** Set owner object or NULL. */
 	void SetOwner(void *owner, unsigned int hash);
 	
 	/** Update marker. */
-	inline bool GetUpdateMarker() const{return pUpdateMarker;}
+	inline bool GetUpdateMarker() const{ return pUpdateMarker; }
 	
 	/** Set update marker. */
 	inline void SetUpdateMarker(bool marker){pUpdateMarker = marker;}
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
 	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
@@ -97,7 +97,7 @@ public:
 	
 	
 	/** Owner component or NULL. */
-	inline deoglRComponent *GetComponent() const{return pComponent;}
+	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set owner component or NULL. */
 	void SetComponent(deoglRComponent *component);
@@ -138,8 +138,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){return pLLTask;}
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{return pLLTask;}
+	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
+	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

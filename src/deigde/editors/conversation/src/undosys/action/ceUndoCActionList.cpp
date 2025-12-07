@@ -68,7 +68,7 @@ bool ceUndoCActionList::Has(ceUndoCAction *action) const{
 }
 
 void ceUndoCActionList::Add(ceUndoCAction *action){
-	if(! action) DETHROW(deeInvalidParam);
+	if(!action) DETHROW(deeInvalidParam);
 	
 	pActions.Add(action);
 }

@@ -127,16 +127,16 @@ public:
 	
 	
 	/** \brief Window main. */
-	inline gdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Monitored game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
+	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
@@ -152,7 +152,7 @@ public:
 	
 	
 	/** \brief Selected object class or \em NULL. */
-	inline gdeObjectClass *GetObjectClass() const{return pObjectClass;}
+	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Set camera position to show active object properly. */
 	void ResetCameraPosition();
@@ -251,13 +251,13 @@ public:
 	
 	
 	/** \brief Show all environment map probes. */
-	inline bool GetShowEnvMapProbes() const{return pShowEnvMapProbes;}
+	inline bool GetShowEnvMapProbes() const{ return pShowEnvMapProbes; }
 	
 	/** \brief Set show all environment map probes. */
 	void SetShowEnvMapProbes(bool show);
 	
 	/** \brief Show all navigation blockers. */
-	inline bool GetShowNavBlockers() const{return pShowNavBlockers;}
+	inline bool GetShowNavBlockers() const{ return pShowNavBlockers; }
 	
 	/** \brief Set show all navigation blockers. */
 	void SetShowNavBlockers(bool show);

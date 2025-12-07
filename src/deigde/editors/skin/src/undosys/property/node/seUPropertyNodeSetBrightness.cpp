@@ -42,7 +42,7 @@ seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node,
 pNode(NULL),
 pNewValue(newValue)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

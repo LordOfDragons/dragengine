@@ -82,7 +82,7 @@ deImage * deImageManager::GetImageWith(const char *filename) const{
 
 deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deImage * const image = (deImage*)pImages.GetWithFilename(vfs, filename);
-	return image && ! image->GetOutdated() ? image : NULL;
+	return image && !image->GetOutdated() ? image : NULL;
 }
 
 deImage *deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
@@ -118,7 +118,7 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 //	LogInfoFormat( "Loading '%s'", filename );
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -146,7 +146,7 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			
 			imageInfos = module->InitLoadImage(*fileReader);
-			if(! imageInfos) DETHROW(deeInvalidParam);
+			if(!imageInfos) DETHROW(deeInvalidParam);
 			
 			image = new deImage(this, vfs, path.GetPathUnix(), modificationTime,
 				imageInfos->GetWidth(), imageInfos->GetHeight(), imageInfos->GetDepth(),
@@ -194,7 +194,7 @@ deImage *deImageManager::LoadDefault(){
 		findImage = (deImage*)pImages.GetWithFilename(
 			GetEngine()->GetVirtualFileSystem(), IMAGE_NO_TEXTURE);
 		if(findImage){
-			if(! findImage->GetPeerGraphic()){
+			if(!findImage->GetPeerGraphic()){
 				GetGraphicSystem()->LoadImage(findImage);
 			}
 			findImage->AddReference();
@@ -283,7 +283,7 @@ void deImageManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(image){
-		if(! image->GetPeerGraphic()){
+		if(!image->GetPeerGraphic()){
 			image->RetainImageData();
 			try{
 				graSys.LoadImage(image);

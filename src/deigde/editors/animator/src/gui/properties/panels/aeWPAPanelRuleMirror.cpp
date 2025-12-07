@@ -87,7 +87,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -127,7 +127,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -146,7 +146,7 @@ public:
 	cComboMirrorAxis(aeWPAPanelRuleMirror &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -192,7 +192,7 @@ public:
 	pFirst(first), pSecond(second), pType(type){}
 	
 	static decString CreateText(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type){
-		if(! first || ! second){
+		if(!first || !second){
 			DETHROW(deeNullPointer);
 		}
 		
@@ -235,14 +235,14 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
 		aeRuleMirror::cMatchName * const matchName = pPanel.GetSelectedMatchBone();
-		if(! matchName){
+		if(!matchName){
 			return nullptr;
 		}
 		
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::NewWith(
 			pPanel.GetEnvironment(), "Edit match name"));
 		((aeDialogMirrorMatchName&)(igdeDialog&)dialog).Set(*matchName);
-		if(! dialog->Run(&pPanel)){
+		if(!dialog->Run(&pPanel)){
 			return nullptr;
 		}
 		
@@ -298,7 +298,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetRule()){
+		if(!pPanel.GetRule()){
 			return;
 		}
 		

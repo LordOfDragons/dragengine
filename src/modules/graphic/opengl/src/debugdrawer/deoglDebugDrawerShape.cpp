@@ -301,7 +301,7 @@ public:
 };
 
 void deoglDebugDrawerShape::pPrepareHulls(){
-	if(! pDirtyHulls){
+	if(!pDirtyHulls){
 		return;
 	}
 	

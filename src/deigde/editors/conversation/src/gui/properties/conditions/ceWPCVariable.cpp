@@ -75,7 +75,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || ! comboBox->GetSelectedItem()){
+		if(!topic || !action || !condition || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -100,7 +100,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || condition->GetVariable() == textField->GetText()){
+		if(!topic || !action || !condition || condition->GetVariable() == textField->GetText()){
 			return;
 		}
 		
@@ -119,7 +119,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || condition->GetTestVariable() == textField->GetText()){
+		if(!topic || !action || !condition || condition->GetTestVariable() == textField->GetText()){
 			return;
 		}
 		

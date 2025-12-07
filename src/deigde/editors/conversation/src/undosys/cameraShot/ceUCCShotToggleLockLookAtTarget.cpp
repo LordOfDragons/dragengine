@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotToggleLockLookAtTarget::ceUCCShotToggleLockLookAtTarget(ceCameraShot *cameraShot){
-	if(! cameraShot){
+	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void ceUCCShotToggleLockLookAtTarget::Undo(){
 }
 
 void ceUCCShotToggleLockLookAtTarget::Redo(){
-	pCameraShot->SetLockLookAtTarget(! pCameraShot->GetLockLookAtTarget());
+	pCameraShot->SetLockLookAtTarget(!pCameraShot->GetLockLookAtTarget());
 }

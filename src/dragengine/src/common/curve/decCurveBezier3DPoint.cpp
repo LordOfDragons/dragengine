@@ -87,7 +87,7 @@ bool decCurveBezier3DPoint::operator==(const decCurveBezier3DPoint &point) const
 }
 
 bool decCurveBezier3DPoint::operator!=(const decCurveBezier3DPoint &point) const{
-	return ! pPoint.IsEqualTo(point.pPoint)
-		|| ! pHandle1.IsEqualTo(point.pHandle1)
-		|| ! pHandle2.IsEqualTo(point.pHandle2);
+	return !pPoint.IsEqualTo(point.pPoint)
+		|| !pHandle1.IsEqualTo(point.pHandle1)
+		|| !pHandle2.IsEqualTo(point.pHandle2);
 }

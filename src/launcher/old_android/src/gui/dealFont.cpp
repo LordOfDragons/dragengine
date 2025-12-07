@@ -126,7 +126,7 @@ void dealFont::pLoadXML(const char *filename){
 		xmldoc->CleanCharData();
 		
 		decXmlElementTag * const root = xmldoc->GetRoot();
-		if(! root || decString(root->GetName()) != "font"){
+		if(!root || decString(root->GetName()) != "font"){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -154,13 +154,13 @@ void dealFont::pReadFont(const decXmlElementTag &root){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
 		if(strcmp(tag->GetName(), "image") == 0){
 			decXmlCharacterData * const cdata = tag->GetFirstData();
-			if(! cdata){
+			if(!cdata){
 				DETHROW(deeInvalidParam);
 			}
 			if(pImage){
@@ -170,7 +170,7 @@ void dealFont::pReadFont(const decXmlElementTag &root){
 			
 		}else if(strcmp(tag->GetName(), "lineHeight") == 0){
 			decXmlCharacterData * const cdata = tag->GetFirstData();
-			if(! cdata){
+			if(!cdata){
 				DETHROW(deeInvalidParam);
 			}
 			pLineHeight = decMath::max(decString(cdata->GetData()).ToFloat(), 0.0f);
@@ -193,7 +193,7 @@ void dealFont::pReadFont(const decXmlElementTag &root){
 			
 		}else if(strcmp(tag->GetName(), "glyph") == 0){
 			const decXmlAttValue *attribute = tag->FindAttribute("code");
-			if(! attribute){
+			if(!attribute){
 				DETHROW(deeInvalidParam);
 			}
 			

@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of links to cut. */
-	inline int GetCutLinkCount() const{return pLinkCount;}
+	inline int GetCutLinkCount() const{ return pLinkCount; }
 	/** Adds a link to cut. */
 	void AddLinkToCut(meHTVRLink *link);
 	

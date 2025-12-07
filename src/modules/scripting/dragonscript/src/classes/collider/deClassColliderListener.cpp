@@ -77,7 +77,7 @@ void deClassColliderListener::nfColliderChanged::RunFunction(dsRunTime *RT, dsVa
 // constructor
 deClassColliderListener::deClassColliderListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("ColliderListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;

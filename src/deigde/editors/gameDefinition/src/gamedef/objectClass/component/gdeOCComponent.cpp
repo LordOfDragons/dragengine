@@ -192,7 +192,7 @@ void gdeOCComponent::SetBoneName(const char *boneName){
 
 
 bool gdeOCComponent::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCComponent::GetPropertyName(eProperties property) const{

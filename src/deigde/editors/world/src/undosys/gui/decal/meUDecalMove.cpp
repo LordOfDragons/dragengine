@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUDecalMove::meUDecalMove(meWorld *world){
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
 	int count = selection.GetCount();
@@ -58,11 +58,11 @@ meUDecalMove::meUDecalMove(meWorld *world){
 	try{
 		if(count > 0){
 			pDecals = new meUndoDataDecal*[count];
-			if(! pDecals) DETHROW(deeOutOfMemory);
+			if(!pDecals) DETHROW(deeOutOfMemory);
 			
 			while(pDecalCount < count){
 				pDecals[pDecalCount] = new meUndoDataDecal(selection.GetAt(pDecalCount));
-				if(! pDecals[pDecalCount]) DETHROW(deeOutOfMemory);
+				if(!pDecals[pDecalCount]) DETHROW(deeOutOfMemory);
 				pDecalCount++;
 			}
 		}

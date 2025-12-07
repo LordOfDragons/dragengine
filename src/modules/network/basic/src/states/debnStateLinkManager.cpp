@@ -76,7 +76,7 @@ debnStateLink *debnStateLinkManager::GetLinkWithNetworkState(debnState *networkS
 }
 
 void debnStateLinkManager::AddLink(debnStateLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	if(pTailLink){
 		pTailLink->SetNextLink(link);
@@ -90,12 +90,12 @@ void debnStateLinkManager::AddLink(debnStateLink *link){
 }
 
 void debnStateLinkManager::RemoveLink(debnStateLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	debnStateLink *previous = link->GetPreviousLink();
 	debnStateLink *next = link->GetNextLink();
 	
-	if(! previous && link != pHeadLink) DETHROW(deeInvalidParam);
-	if(! next && link != pTailLink) DETHROW(deeInvalidParam);
+	if(!previous && link != pHeadLink) DETHROW(deeInvalidParam);
+	if(!next && link != pTailLink) DETHROW(deeInvalidParam);
 	
 	if(previous){
 		previous->SetNextLink(next);

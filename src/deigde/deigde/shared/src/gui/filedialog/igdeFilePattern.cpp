@@ -38,7 +38,7 @@
 ////////////////////////////
 
 igdeFilePattern::igdeFilePattern(const char *name, const char *pattern, const char *defaultExtension){
-	if(! name || ! pattern || ! defaultExtension){
+	if(!name || !pattern || !defaultExtension){
 		DETHROW(deeInvalidParam);
 	}
 	

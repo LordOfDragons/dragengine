@@ -84,10 +84,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world or NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or NULL if not set. */
 	void SetParentWorld(deoglRWorld *parentWorld);
@@ -95,7 +95,7 @@ public:
 	
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decDVector &position);
@@ -103,10 +103,10 @@ public:
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Update extends. */
 	void UpdateExtends(const dePropField &propField);
@@ -155,14 +155,14 @@ public:
 	
 	
 	/** Marked for removal. For use by deoglRWorld only. Non-thread safe. */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/** Set marked for removal. */
 	void SetWorldMarkedRemove(bool marked);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){return pLLPrepareForRenderWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{return pLLPrepareForRenderWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

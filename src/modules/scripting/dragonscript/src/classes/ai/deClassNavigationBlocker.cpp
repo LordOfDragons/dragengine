@@ -113,7 +113,7 @@ void deClassNavigationBlocker::nfSetPosition::RunFunction(dsRunTime *rt, dsValue
 	
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
 	
-	if(! objPosition){
+	if(!objPosition){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -142,7 +142,7 @@ void deClassNavigationBlocker::nfSetOrientation::RunFunction(dsRunTime *rt, dsVa
 	
 	dsRealObject * const objOrientation = rt->GetValue(0)->GetRealObject();
 	
-	if(! objOrientation){
+	if(!objOrientation){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -187,7 +187,7 @@ deClassNavigationBlocker::nfSetSpaceType::nfSetSpaceType(const sInitData &init) 
 	p_AddParameter(init.clsNavigationSpaceType); // spaceType
 }
 void deClassNavigationBlocker::nfSetSpaceType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -300,7 +300,7 @@ void deClassNavigationBlocker::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassNavigationBlocker * const clsNavBlocker = (deClassNavigationBlocker*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNavBlocker)){
+	if(!p_IsObjOfType(object, clsNavBlocker)){
 		rt->PushBool(false);
 		
 	}else{
@@ -319,7 +319,7 @@ void deClassNavigationBlocker::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 
 deClassNavigationBlocker::deClassNavigationBlocker(deScriptingDragonScript *ds) :
 dsClass("NavigationBlocker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -382,7 +382,7 @@ void deClassNavigationBlocker::CreateClassMembers(dsEngine *engine){
 }
 
 deNavigationBlocker *deClassNavigationBlocker::GetNavigationBlocker(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -390,11 +390,11 @@ deNavigationBlocker *deClassNavigationBlocker::GetNavigationBlocker(dsRealObject
 }
 
 void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! blocker){
+	if(!blocker){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -83,7 +83,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -123,7 +123,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -145,7 +145,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
-		if(! rule || rule->GetPathSubAnimator() == editPath->GetPath()){
+		if(!rule || rule->GetPathSubAnimator() == editPath->GetPath()){
 			return;
 		}
 		

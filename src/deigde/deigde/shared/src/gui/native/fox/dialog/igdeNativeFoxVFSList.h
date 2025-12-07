@@ -97,23 +97,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the virtual file system. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{return pVFS;}
+	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** \brief Update listing. */
 	void UpdateListing();
 	
 	/** \brief Retrieves the current directory. */
-	inline const decPath &GetPath(){return pCurPath;}
+	inline const decPath &GetPath(){ return pCurPath; }
 	/** \brief Sets the current directory. */
 	void SetPath(const decPath &path);
 	
 	/** \brief Retrieves the pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	/** \brief Sets the pattern. */
 	void SetPattern(const char *pattern);
 	
 	/** \brief Retrieves the sorting. */
-	inline eSorting GetSorting() const{return pSorting;}
+	inline eSorting GetSorting() const{ return pSorting; }
 	/** \brief Sets the sorting. */
 	void SetSorting(eSorting sorting);
 	
@@ -128,12 +128,12 @@ public:
 	virtual void destroy();
 	
 	/** \brief Icons. */
-	inline FXIcon *GetIconFolderBig() const{return pIconFolderBig;}
-	inline FXIcon *GetIconFolderSmall() const{return pIconFolderSmall;}
-	inline FXIcon *GetIconFileBig() const{return pIconFileBig;}
-	inline FXIcon *GetIconFileSmall() const{return pIconFileSmall;}
-	inline FXIcon *GetIconSortAsc() const{return pIconSortAsc;}
-	inline FXIcon *GetIconSortDesc() const{return pIconSortDesc;}
+	inline FXIcon *GetIconFolderBig() const{ return pIconFolderBig; }
+	inline FXIcon *GetIconFolderSmall() const{ return pIconFolderSmall; }
+	inline FXIcon *GetIconFileBig() const{ return pIconFileBig; }
+	inline FXIcon *GetIconFileSmall() const{ return pIconFileSmall; }
+	inline FXIcon *GetIconSortAsc() const{ return pIconSortAsc; }
+	inline FXIcon *GetIconSortDesc() const{ return pIconSortDesc; }
 	/*@}*/
 	
 	/** \name Events */

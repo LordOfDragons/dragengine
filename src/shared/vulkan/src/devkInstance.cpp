@@ -205,7 +205,7 @@ void devkInstance::pDetectExtensions(){
 		// report support extensions
 		baseModule.LogInfo("Not upported Extensions:");
 		for(i=0; i<ExtensionCount; i++){
-			if(! pSupportsExtension[i].version){
+			if(!pSupportsExtension[i].version){
 				baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
 			}
 		}
@@ -271,7 +271,7 @@ void devkInstance::pDetectLayers(){
 		
 		baseModule.LogInfo("Not Supported Layers:");
 		for(i=0; i<LayerCount; i++){
-			if(! pSupportsLayer[i].implementationVersion){
+			if(!pSupportsLayer[i].implementationVersion){
 				baseModule.LogInfoFormat("- %s", pSupportsLayer[i].name);
 			}
 		}
@@ -345,7 +345,7 @@ void devkInstance::pCreateInstance(bool enableValidationLayers){
 void devkInstance::pLoadFunctions(){
 	#define INSTANCE_LEVEL_VULKAN_FUNCTION(name) \
 		name = (PFN_##name)pvkGetInstanceProcAddr(pInstance, #name); \
-		if(! name){ \
+		if(!name){ \
 			DETHROW_INFO(deeInvalidAction, "Instance function " #name " not found"); \
 		}
 	

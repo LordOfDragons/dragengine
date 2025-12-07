@@ -60,7 +60,7 @@ projTRPParameter *projTRPParameterList::GetAt(int index) const{
 }
 
 projTRPParameter *projTRPParameterList::GetWith(const char *module, const char *name) const{
-	if(! module || ! name){
+	if(!module || !name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ int projTRPParameterList::IndexOf(projTRPParameter *parameter) const{
 }
 
 int projTRPParameterList::IndexOfWith(const char *module, const char *name) const{
-	if(! module || ! name){
+	if(!module || !name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ int projTRPParameterList::IndexOfWith(const char *module, const char *name) cons
 }
 
 void projTRPParameterList::Add(projTRPParameter *parameter){
-	if(! parameter || HasWith(parameter->GetModule(), parameter->GetName())){
+	if(!parameter || HasWith(parameter->GetModule(), parameter->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

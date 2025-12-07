@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float scale){
-	if(! name || ! name[0] || rows < 1 || cols < 1) DETHROW(deeInvalidParam);
+	if(!name || !name[0] || rows < 1 || cols < 1) DETHROW(deeInvalidParam);
 	if((rows % 2) == 0 || (cols % 2) == 0) DETHROW(deeInvalidParam);
 	int i, size;
 	
@@ -53,11 +53,11 @@ meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float s
 	
 	try{
 		pName = new char[strlen(name) + 1];
-		if(! pName) DETHROW(deeOutOfMemory);
+		if(!pName) DETHROW(deeOutOfMemory);
 		strcpy(pName, name);
 		
 		pKernel = new float[rows * cols];
-		if(! pKernel) DETHROW(deeOutOfMemory);
+		if(!pKernel) DETHROW(deeOutOfMemory);
 		
 		size = rows * cols;
 		for(i=0; i<size; i++) pKernel[i] = 0.0f;

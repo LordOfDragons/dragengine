@@ -46,7 +46,7 @@ meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectL
 	meObject *object;
 	int i;
 	
-	if(! key || ! value || count < 1){
+	if(!key || !value || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -57,7 +57,7 @@ meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectL
 		
 		for(i=0; i<count; i++){
 			object = list.GetAt(i);
-			if(! object->GetWorld()){
+			if(!object->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

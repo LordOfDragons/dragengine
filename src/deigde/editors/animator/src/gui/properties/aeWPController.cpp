@@ -98,7 +98,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
-		if(! animator || ! controller){
+		if(!animator || !controller){
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
-		if(! animator || ! controller){
+		if(!animator || !controller){
 			return;
 		}
 		
@@ -189,13 +189,13 @@ public:
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator){
+		if(!animator){
 			return;
 		}
 		
 		aeClipboardDataController * const cdata = (aeClipboardDataController*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataController::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -301,7 +301,7 @@ public:
 		}
 		
 		names.SortAscending();
-		if(names.GetCount() == 0 || ! igdeCommonDialogs::SelectString(&pPanel, "Set range from move playtime",
+		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(&pPanel, "Set range from move playtime",
 		"Range limits are set to the playtime of the selected move.", names, selection)){
 			return nullptr;
 		}
@@ -448,12 +448,12 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
-		if(! animator || ! controller){
+		if(!animator || !controller){
 			return;
 		}
 		
 		const decVector &vector = editVector->GetVector();
-		if(! controller->GetDefaultVector().IsEqualTo(vector)){
+		if(!controller->GetDefaultVector().IsEqualTo(vector)){
 			animator->GetUndoSystem()->Add(
 				aeUControllerSetDefaultVector::Ref::NewWith(controller, vector));
 		}
@@ -613,7 +613,7 @@ void aeWPController::UpdateControllerList(){
 	}
 	
 	pListController->SetSelectionWithData(selection);
-	if(! pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
+	if(!pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
 		pListController->SetSelection(0);
 	}
 	

@@ -96,7 +96,7 @@ void deVideoApng::SaveVideo(decBaseFileWriter &reader, const deVideo &video){
 }
 
 deBaseVideoDecoder *deVideoApng::CreateDecoder(decBaseFileReader *reader){
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 	return new deapngDecoder(*this, reader);

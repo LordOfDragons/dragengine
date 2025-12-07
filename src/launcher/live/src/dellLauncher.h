@@ -98,16 +98,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Command line arguments. */
-	inline const decUnicodeArgumentList &GetArguments() const{return pArguments;}
+	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
 	/** Add argument to the command line argument list. */
 	void AddArgument(const decUnicodeString &argument);
 	
 	/** Working directory. */
-	inline const decPath GetWorkingDirectory() const{return pWorkingDir;}
+	inline const decPath GetWorkingDirectory() const{ return pWorkingDir; }
 	
 	/** Launcher. */
-	inline Launcher &GetLauncher() const{return *pLauncher;}
+	inline Launcher &GetLauncher() const{ return *pLauncher; }
 	
 	/** Run. */
 	void Run();

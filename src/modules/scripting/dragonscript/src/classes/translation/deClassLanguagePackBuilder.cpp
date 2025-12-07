@@ -71,7 +71,7 @@ public:
 		pLanguagePack = NULL;
 	}
 	
-	inline deLanguagePack *GetLanguagePack() const{return pLanguagePack;}
+	inline deLanguagePack *GetLanguagePack() const{ return pLanguagePack; }
 };
 
 
@@ -154,7 +154,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePackBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetLanguagePack()){
+	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -171,7 +171,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfSetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePackBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetLanguagePack()){
+	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -188,7 +188,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfSetMissingText::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePackBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetLanguagePack()){
+	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -205,7 +205,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfSetEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePackBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetLanguagePack()){
+	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
@@ -222,7 +222,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfSetEntryAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePackBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
-	if(! builder || ! builder->GetLanguagePack()){
+	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	

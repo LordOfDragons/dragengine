@@ -93,7 +93,7 @@ deVideo *deVideoManager::GetVideoWith(const char *filename) const{
 
 deVideo *deVideoManager::GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deVideo * const video = (deVideo*)pVideos.GetWithFilename(vfs, filename);
-	return video && ! video->GetOutdated() ? video : NULL;
+	return video && !video->GetOutdated() ? video : NULL;
 }
 
 deVideo *deVideoManager::LoadVideo(const char *filename, const char *basePath, bool asynchron){
@@ -102,7 +102,7 @@ deVideo *deVideoManager::LoadVideo(const char *filename, const char *basePath, b
 
 deVideo *deVideoManager::LoadVideo(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath, bool asynchron){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ const char *basePath, bool asynchron){
 	decPath path;
 	
 	try{
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -167,7 +167,7 @@ void deVideoManager::SaveVideo(deVideo *video, const char *filename){
 }
 
 void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename){
-	if(! video || ! vfs || ! filename){
+	if(!video || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,7 +191,7 @@ void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const c
 }
 
 void deVideoManager::AddLoadedVideo(deVideo *video){
-	if(! video){
+	if(!video){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -201,7 +201,7 @@ void deVideoManager::AddLoadedVideo(deVideo *video){
 
 
 deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
-	if(! video || ! video->GetVirtualFileSystem()){
+	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -266,7 +266,7 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 }
 
 deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
-	if(! video || ! video->GetVirtualFileSystem()){
+	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -281,7 +281,7 @@ deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
 		
 		reader.TakeOver(OpenFileForReading(*video->GetVirtualFileSystem(), video->GetFilename()));
 		peer = module->CreateAudioDecoder(reader);
-		if(! peer){
+		if(!peer){
 			return NULL;  // no audio or not supported
 		}
 		
@@ -396,7 +396,7 @@ void deVideoManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(video){
-		if(! video->GetPeerGraphic()){
+		if(!video->GetPeerGraphic()){
 			grasys.LoadVideo(video);
 		}
 		
@@ -420,14 +420,14 @@ void deVideoManager::RemoveResource(deResource *resource){
 }
 
 void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
-	if(! decoder){
+	if(!decoder){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deMutexGuard guard(pMutexDecoder);
 	
-	if(decoder != pDecoderRoot && ! decoder->GetLLManagerNext()
-	&& ! decoder->GetLLManagerPrev()){
+	if(decoder != pDecoderRoot && !decoder->GetLLManagerNext()
+	&& !decoder->GetLLManagerPrev()){
 		return;
 	}
 	
@@ -446,7 +446,7 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 		}
 		
 	}else{
-		if(! decoder->GetLLManagerNext()){
+		if(!decoder->GetLLManagerNext()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -464,7 +464,7 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 		}
 		
 	}else{
-		if(! decoder->GetLLManagerPrev()){
+		if(!decoder->GetLLManagerPrev()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -479,14 +479,14 @@ void deVideoManager::RemoveDecoder(deVideoDecoder *decoder){
 }
 
 void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
-	if(! decoder){
+	if(!decoder){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deMutexGuard guard(pMutexDecoder);
 	
-	if(decoder != pAudioDecoderRoot && ! decoder->GetLLManagerNext()
-	&& ! decoder->GetLLManagerPrev()){
+	if(decoder != pAudioDecoderRoot && !decoder->GetLLManagerNext()
+	&& !decoder->GetLLManagerPrev()){
 		return;
 	}
 	
@@ -505,7 +505,7 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 		}
 		
 	}else{
-		if(! decoder->GetLLManagerNext()){
+		if(!decoder->GetLLManagerNext()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -523,7 +523,7 @@ void deVideoManager::RemoveAudioDecoder(deVideoAudioDecoder *decoder){
 		}
 		
 	}else{
-		if(! decoder->GetLLManagerPrev()){
+		if(!decoder->GetLLManagerPrev()){
 			DETHROW(deeInvalidParam);
 		}
 		

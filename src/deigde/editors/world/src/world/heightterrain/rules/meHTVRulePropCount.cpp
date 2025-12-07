@@ -68,7 +68,7 @@ meHTVRulePropCount::~meHTVRulePropCount(){
 ///////////////
 
 void meHTVRulePropCount::SetPropClass(const char *propClass){
-	if(! propClass) DETHROW(deeInvalidParam);
+	if(!propClass) DETHROW(deeInvalidParam);
 	
 	pPropClass = propClass;
 	

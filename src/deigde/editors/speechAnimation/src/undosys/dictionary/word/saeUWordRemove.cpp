@@ -41,10 +41,10 @@
 ////////////////////////////
 
 saeUWordRemove::saeUWordRemove(saeWord *word){
-	if(! word) DETHROW(deeInvalidParam);
+	if(!word) DETHROW(deeInvalidParam);
 	
 	saeSAnimation *sanimation = word->GetSAnimation();
-	if(! sanimation) DETHROW(deeInvalidParam);
+	if(!sanimation) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	pWord = NULL;

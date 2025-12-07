@@ -94,7 +94,7 @@ bool devkShaderModuleManager::HasWithPath(const char *path) const{
 }
 
 void devkShaderModuleManager::Add(devkShaderModule *module){
-	if(! module){
+	if(!module){
 		DETHROW_INFO(deeNullPointer, "module");
 	}
 	if(HasWithPath(module->GetPath())){

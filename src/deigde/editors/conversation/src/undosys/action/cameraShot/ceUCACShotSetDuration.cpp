@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration){
-	if(! topic) DETHROW(deeInvalidParam);
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pCameraShot = NULL;

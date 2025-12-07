@@ -97,25 +97,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Goal position. */
-	inline const decVector &GetGoalPosition() const{return pGoalPosition;}
+	inline const decVector &GetGoalPosition() const{ return pGoalPosition; }
 	
 	/** \brief Set goal position. */
 	void SetGoalPosition(const decVector &position);
 	
 	/** \brief Goal orientation. */
-	inline const decQuaternion &GetGoalOrientation() const{return pGoalOrientation;}
+	inline const decQuaternion &GetGoalOrientation() const{ return pGoalOrientation; }
 	
 	/** \brief Set goal orientation. */
 	void SetGoalOrientation(const decQuaternion &orientation);
 	
 	/** \brief Local position. */
-	inline const decVector &GetLocalPosition() const{return pLocalPosition;}
+	inline const decVector &GetLocalPosition() const{ return pLocalPosition; }
 	
 	/** \brief Set local position. */
 	void SetLocalPosition(const decVector &position);
 	
 	/** \brief Local orientation. */
-	inline const decQuaternion &GetLocalOrientation() const{return pLocalOrientation;}
+	inline const decQuaternion &GetLocalOrientation() const{ return pLocalOrientation; }
 	
 	/** \brief Set local orientation. */
 	void SetLocalOrientation(const decQuaternion &orientation);
@@ -124,7 +124,7 @@ public:
 	 * \brief Adjust position.
 	 * \version 1.6
 	 */
-	inline bool GetAdjustPosition() const{return pAdjustPosition;}
+	inline bool GetAdjustPosition() const{ return pAdjustPosition; }
 	
 	/**
 	 * \brief Set if the position is adjusted.
@@ -133,7 +133,7 @@ public:
 	void SetAdjustPosition(bool adjust);
 	
 	/** \brief Adjust orientation. */
-	inline bool GetAdjustOrientation() const{return pAdjustOrientation;}
+	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** \brief Set if the orientation is adjusted. */
 	void SetAdjustOrientation(bool adjust);
@@ -141,13 +141,13 @@ public:
 	
 	
 	/** \brief Use solver bone to obtain target position and orientation. */
-	inline bool GetUseSolverBone() const{return pUseSolverBone;}
+	inline bool GetUseSolverBone() const{ return pUseSolverBone; }
 	
 	/** \brief Set if the solver bone is used to obtain target position and orientation. */
 	void SetUseSolverBone(bool useSolverBone);
 	
 	/** \brief Name of the solver bone or empty string if not used. */
-	inline const decString &GetSolverBone() const{return pSolverBone;}
+	inline const decString &GetSolverBone() const{ return pSolverBone; }
 	
 	/** \brief Set name of the solver bone or empty string if not used. */
 	void SetSolverBone(const char *boneName);
@@ -155,13 +155,13 @@ public:
 	
 	
 	/** \brief Limit reach in meters. 0 disables reach limit. */
-	inline float GetReachRange() const{return pReachRange;}
+	inline float GetReachRange() const{ return pReachRange; }
 	
 	/** \brief Set limit reach in meters. 0 disables reach limit. */
 	void SetReachRange(float range);
 	
 	/** \brief Bone to use as reach origin or an empty string to use a constant position. */
-	inline const decString &GetReachBone() const{return pReachBone;}
+	inline const decString &GetReachBone() const{ return pReachBone; }
 	
 	/**
 	 * \brief Set bone to use as reach origin or an empty string to use a constant position.
@@ -170,7 +170,7 @@ public:
 	void SetReachBone(const char *bone);
 	
 	/** \brief Reach center if no bone is used. */
-	inline const decVector &GetReachCenter() const{return pReachCenter;}
+	inline const decVector &GetReachCenter() const{ return pReachCenter; }
 	
 	/** \brief Set reach center if no bone is used. */
 	void SetReachCenter(const decVector &center);
@@ -178,28 +178,28 @@ public:
 	
 	
 	/** \brief Goal position target. */
-	inline deAnimatorControllerTarget &GetTargetGoalPosition(){return pTargetGoalPosition;}
-	inline const deAnimatorControllerTarget &GetTargetGoalPosition() const{return pTargetGoalPosition;}
+	inline deAnimatorControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
+	inline const deAnimatorControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
 	
 	/** \brief Goal orientation target. */
-	inline deAnimatorControllerTarget &GetTargetGoalOrientation(){return pTargetGoalOrientation;}
-	inline const deAnimatorControllerTarget &GetTargetGoalOrientation() const{return pTargetGoalOrientation;}
+	inline deAnimatorControllerTarget &GetTargetGoalOrientation(){ return pTargetGoalOrientation; }
+	inline const deAnimatorControllerTarget &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
 	
 	/** \brief Local position target. */
-	inline deAnimatorControllerTarget &GetTargetLocalPosition(){return pTargetLocalPosition;}
-	inline const deAnimatorControllerTarget &GetTargetLocalPosition() const{return pTargetLocalPosition;}
+	inline deAnimatorControllerTarget &GetTargetLocalPosition(){ return pTargetLocalPosition; }
+	inline const deAnimatorControllerTarget &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
 	
 	/** \brief Local orientation target. */
-	inline deAnimatorControllerTarget &GetTargetLocalOrientation(){return pTargetLocalOrientation;}
-	inline const deAnimatorControllerTarget &GetTargetLocalOrientation() const{return pTargetLocalOrientation;}
+	inline deAnimatorControllerTarget &GetTargetLocalOrientation(){ return pTargetLocalOrientation; }
+	inline const deAnimatorControllerTarget &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
 	
 	/** \brief Reach range target. */
-	inline deAnimatorControllerTarget &GetTargetReachRange(){return pTargetReachRange;}
-	inline const deAnimatorControllerTarget &GetTargetReachRange() const{return pTargetReachRange;}
+	inline deAnimatorControllerTarget &GetTargetReachRange(){ return pTargetReachRange; }
+	inline const deAnimatorControllerTarget &GetTargetReachRange() const{ return pTargetReachRange; }
 	
 	/** \brief Reach center target. */
-	inline deAnimatorControllerTarget &GetTargetReachCenter(){return pTargetReachCenter;}
-	inline const deAnimatorControllerTarget &GetTargetReachCenter() const{return pTargetReachCenter;}
+	inline deAnimatorControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
+	inline const deAnimatorControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
 	/*@}*/
 	
 	

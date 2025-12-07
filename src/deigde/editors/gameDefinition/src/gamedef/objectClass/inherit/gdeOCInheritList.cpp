@@ -72,7 +72,7 @@ bool gdeOCInheritList::Has(gdeOCInherit *inherit) const{
 }
 
 void gdeOCInheritList::Add(gdeOCInherit *inherit){
-	if(! inherit){
+	if(!inherit){
 		DETHROW(deeInvalidParam);
 	}
 	

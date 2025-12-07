@@ -41,10 +41,10 @@
 ////////////////////////////
 
 ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
-	if(! target) DETHROW(deeInvalidParam);
+	if(!target) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = target->GetConversation();
-	if(! conversation) DETHROW(deeInvalidParam);
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pTarget = NULL;

@@ -43,7 +43,7 @@ meUObjectSetProperties::meUObjectSetProperties(meObject *object, const decString
 pObject(NULL),
 pNewValues(newValues)
 {
-	if(! object || ! object->GetWorld()){
+	if(!object || !object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

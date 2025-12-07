@@ -45,7 +45,7 @@ ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic *to
 ceConversationAction *action, const char *newID) :
 pNewID(newID)
 {
-	if(! topic){
+	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
 	

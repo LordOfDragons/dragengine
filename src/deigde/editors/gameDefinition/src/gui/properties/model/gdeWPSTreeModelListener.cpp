@@ -138,7 +138,7 @@ void gdeWPSTreeModelListener::OCComponentsChanged(gdeGameDefinition*, gdeObjectC
 void gdeWPSTreeModelListener::OCComponentChanged(gdeGameDefinition*,
 gdeObjectClass *objectClass, gdeOCComponent *component){
 	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
-	if(! model){
+	if(!model){
 		return;
 	}
 	
@@ -220,7 +220,7 @@ void gdeWPSTreeModelListener::OCSnapPointsChanged(gdeGameDefinition*, gdeObjectC
 void gdeWPSTreeModelListener::OCSnapPointNameChanged(gdeGameDefinition*,
 gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint){
 	gdeWPSTIMObjectClass * const modelObjectClass = pModel.GetObjectClasses().GetChildWith(objectClass);
-	if(! modelObjectClass){
+	if(!modelObjectClass){
 		return;
 	}
 	

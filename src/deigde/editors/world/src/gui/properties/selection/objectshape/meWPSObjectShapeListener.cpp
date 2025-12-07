@@ -60,7 +60,7 @@ void meWPSObjectShapeListener::ObjectSelectionChanged(meWorld*){
 }
 
 void meWPSObjectShapeListener::ObjectClassChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -70,7 +70,7 @@ void meWPSObjectShapeListener::ObjectClassChanged(meWorld*, meObject *object){
 }
 
 void meWPSObjectShapeListener::ObjectGeometryChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -78,7 +78,7 @@ void meWPSObjectShapeListener::ObjectGeometryChanged(meWorld*, meObject *object)
 }
 
 void meWPSObjectShapeListener::ObjectPropertiesChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -88,7 +88,7 @@ void meWPSObjectShapeListener::ObjectPropertiesChanged(meWorld*, meObject *objec
 }
 
 void meWPSObjectShapeListener::ObjectActivePropertyChanged(meWorld*, meObject *object){
-	if(! object->GetActive()){
+	if(!object->GetActive()){
 		return;
 	}
 	

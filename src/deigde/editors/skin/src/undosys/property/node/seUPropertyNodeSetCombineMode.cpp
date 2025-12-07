@@ -43,7 +43,7 @@ seUPropertyNodeSetCombineMode::seUPropertyNodeSetCombineMode(
 pNode(NULL),
 pNewValue(newValue)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

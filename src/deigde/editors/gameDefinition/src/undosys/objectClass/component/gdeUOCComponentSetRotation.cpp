@@ -45,7 +45,7 @@ gdeOCComponent *component, const decVector &newValue) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	

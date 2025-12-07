@@ -51,7 +51,7 @@ projIGDEModule::~projIGDEModule(){
 ///////////////
 
 void projIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new projWindowMain(*this));
 	}
 }

@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Root expression component or null if not set. */
-	inline igdeTriggerExpressionComponent *GetRootComponent() const{return pRootComponent;}
+	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** \brief Set root expression component or null if not set. */
 	void SetRootComponent(igdeTriggerExpressionComponent *component);
@@ -77,13 +77,13 @@ public:
 	bool IsNotEmpty() const;
 	
 	/** \brief Result of the expression. */
-	inline bool GetResult() const{return pResult;}
+	inline bool GetResult() const{ return pResult; }
 	
 	/** \brief Set result of the expression. */
 	void SetResult(bool result);
 	
 	/** \brief Determines if the expression is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set expression is enabled. */
 	void SetEnabled(bool enabled);

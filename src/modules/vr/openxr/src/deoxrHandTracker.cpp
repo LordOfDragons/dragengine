@@ -275,8 +275,8 @@ void deoxrHandTracker::Locate(){
 	
 	pLocateInfo.time = pSession.GetPredictedDisplayTime();
 	
-	if(! XR_SUCCEEDED(instance.xrLocateHandJointsEXT(pHandTracker, &pLocateInfo, &pLocations))
-	|| ! pLocations.isActive){
+	if(!XR_SUCCEEDED(instance.xrLocateHandJointsEXT(pHandTracker, &pLocateInfo, &pLocations))
+	|| !pLocations.isActive){
 		return;
 	}
 	

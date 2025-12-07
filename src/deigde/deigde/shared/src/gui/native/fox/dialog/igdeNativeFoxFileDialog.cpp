@@ -105,7 +105,7 @@ pOwner(&powner),
 pVFS(vfs),
 pFilePatternList(NULL)
 {
-	if(! vfs){
+	if(!vfs){
 		DETHROW(deeInvalidParam);
 	}
 	pCreateDialog();
@@ -155,7 +155,7 @@ void igdeNativeFoxFileDialog::SetFilename(const char *filename){
 }
 
 void igdeNativeFoxFileDialog::SetFilename(const char *filename, const char *basePath){
-	if(! filename || ! basePath){
+	if(!filename || !basePath){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -283,7 +283,7 @@ long igdeNativeFoxFileDialog::onCmdAccept(FXObject *sender, FXSelector selector,
 
 long igdeNativeFoxFileDialog::onBtnUpDir(FXObject*, FXSelector, void*){
 	decPath path(pList->GetPath());
-	if(! path.HasComponents()){
+	if(!path.HasComponents()){
 		return 0;
 	}
 	
@@ -304,7 +304,7 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 	FXString dirname("Directory");
 	
 	while(true){
-		if(! FXInputDialog::getString(dirname, this, "Create directory", "Name:", NULL)){
+		if(!FXInputDialog::getString(dirname, this, "Create directory", "Name:", NULL)){
 			return 0;
 		}
 		
@@ -316,7 +316,7 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 				FXMessageBox::information(this, MBOX_OK, "Create directory",
 					"There exists already file with this name.");
 				
-			}else if(! pVFS->CanWriteFile(path)){
+			}else if(!pVFS->CanWriteFile(path)){
 				FXMessageBox::information(this, MBOX_OK, "Create directory",
 					"Can not create directory here: Read-only VFS container.");
 				
@@ -434,7 +434,7 @@ long igdeNativeFoxFileDialog::onCBFilterChanged(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxFileDialog::onFLItemDoubleClicked(FXObject*, FXSelector, void*){
 	igdeNativeFoxVFSListItem * const item = pList->GetSelectedItem();
-	if(! item){
+	if(!item){
 		return 0;
 	}
 	
@@ -457,7 +457,7 @@ long igdeNativeFoxFileDialog::onFLRightMouseUp(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxFileDialog::onFLItemSelected(FXObject*, FXSelector, void*){
 	const igdeNativeFoxVFSListItem * const item = pList->GetSelectedItem();
-	if(! item){
+	if(!item){
 		return 0;
 	}
 	
@@ -606,7 +606,7 @@ void igdeNativeFoxFileDialog::pSetFilenameAndAppendExtension(const char *filenam
 		testPath.AddComponent(tempPath.GetLastComponent());
 		patternPath.AddComponent(pattern->GetPattern().GetString());
 		
-		if(! testPath.MatchesPattern(patternPath)){
+		if(!testPath.MatchesPattern(patternPath)){
 			finalFilename.append(pattern->GetDefaultExtension().GetString());
 		}
 	}

@@ -69,7 +69,7 @@ void declConfigXML::ReadFromFile(decBaseFileReader &reader, declConfiguration &c
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "delauncherconsole") != 0){
+	if(!root || strcmp(root->GetName(), "delauncherconsole") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

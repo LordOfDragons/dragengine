@@ -96,7 +96,7 @@ void deoglMOVClosestFace::Reset(){
 }
 
 int deoglMOVClosestFace::FindClosestFace(const decVector &testPoint, float maxRadius){
-	if(! pModelLOD.GetOctree()){
+	if(!pModelLOD.GetOctree()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -56,11 +56,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the text color. */
-	inline FXColor GetTextColor() const{return pTextColor;}
+	inline FXColor GetTextColor() const{ return pTextColor; }
 	/** Sets the text color. */
 	void SetTextColor(FXColor color);
 	/** Retrieves the text font or nullptr to use the table font. */
-	inline FXFont *GetFont() const{return pFont;}
+	inline FXFont *GetFont() const{ return pFont; }
 	/** Sets the text font or nullptr to use the table font. */
 	void SetFont(FXFont *font);
 	

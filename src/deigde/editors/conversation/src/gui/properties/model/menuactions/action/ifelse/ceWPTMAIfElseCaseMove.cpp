@@ -60,7 +60,7 @@ pIfElse(&ifElse),
 pIfCase(ifCase),
 pIndex(index)
 {
-	if(! ifCase){
+	if(!ifCase){
 		DETHROW(deeInvalidParam);
 	}
 	

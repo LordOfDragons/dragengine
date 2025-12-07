@@ -37,7 +37,7 @@ devkDescriptorPoolSlot::devkDescriptorPoolSlot(devkDescriptorPoolPool &pool, VkD
 pPool(pool),
 pSet(set)
 {
-	if(! set){
+	if(!set){
 		DETHROW_INFO(deeNullPointer, "set");
 	}
 }

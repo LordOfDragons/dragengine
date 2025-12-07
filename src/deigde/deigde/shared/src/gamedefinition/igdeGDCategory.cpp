@@ -119,7 +119,7 @@ int igdeGDCategory::IndexOfCategory(igdeGDCategory *category) const{
 }
 
 int igdeGDCategory::IndexOfCategoryNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pCategories.GetCount();
@@ -139,7 +139,7 @@ igdeGDCategory *igdeGDCategory::GetCategoryAt(int index) const{
 }
 
 igdeGDCategory *igdeGDCategory::GetCategoryNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	const int count = pCategories.GetCount();
@@ -168,7 +168,7 @@ igdeGDCategory *igdeGDCategory::GetCategoryWithPath(const decPath &path) const{
 			category = GetCategoryNamed(path.GetComponentAt(i));
 		}
 		
-		if(! category){
+		if(!category){
 			break;
 		}
 	}
@@ -177,7 +177,7 @@ igdeGDCategory *igdeGDCategory::GetCategoryWithPath(const decPath &path) const{
 }
 
 void igdeGDCategory::AddCategory(igdeGDCategory *category){
-	if(! category || HasCategoryNamed(category->GetName())){
+	if(!category || HasCategoryNamed(category->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pCategories.Add(category);
@@ -215,7 +215,7 @@ void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
 		const igdeGDCategory &childCategory = *category.GetCategoryAt(i);
 		igdeGDCategory *matchingCategory = GetCategoryNamed(childCategory.GetName());
 		
-		if(! matchingCategory){
+		if(!matchingCategory){
 			const igdeGDCategory::Ref newCategory(igdeGDCategory::Ref::NewWith(
 				childCategory.GetName()));
 			pCategories.Add(newCategory);

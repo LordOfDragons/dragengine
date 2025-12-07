@@ -130,7 +130,7 @@ void igdeTextField::SetInvalidValue(bool invalidValue){
 
 
 void igdeTextField::SetText(const char *text, bool changing, bool forceNotify){
-	if(pText == text && ! forceNotify){
+	if(pText == text && !forceNotify){
 		return;
 	}
 	
@@ -189,14 +189,14 @@ void igdeTextField::SetDouble(double value, bool changing){
 
 
 int igdeTextField::GetCursorPosition() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return 0;
 	}
 	return ((igdeNativeTextField*)GetNativeWidget())->GetCursorPosition();
 }
 
 void igdeTextField::SetCursorPosition(int position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -208,7 +208,7 @@ void igdeTextField::SetCursorPosition(int position){
 }
 
 void igdeTextField::Focus(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -218,7 +218,7 @@ void igdeTextField::Focus(){
 
 
 void igdeTextField::AddListener(igdeTextFieldListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -271,7 +271,7 @@ void igdeTextField::CreateNativeWidget(){
 }
 
 void igdeTextField::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

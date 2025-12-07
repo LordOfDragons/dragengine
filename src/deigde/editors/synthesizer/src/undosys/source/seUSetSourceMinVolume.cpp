@@ -42,7 +42,7 @@
 seUSetSourceMinVolume::seUSetSourceMinVolume(seSource *source, float newValue) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

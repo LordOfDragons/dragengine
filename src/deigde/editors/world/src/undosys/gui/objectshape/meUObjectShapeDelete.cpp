@@ -44,10 +44,10 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object || ! property){
+	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -67,7 +67,7 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 	}
 	
 	for(i=0; i<count; i++){
-		if(! list.Has(shapeList1.GetAt(i))){
+		if(!list.Has(shapeList1.GetAt(i))){
 			shapeList2.Add(shapeList1.GetAt(i));
 		}
 	}

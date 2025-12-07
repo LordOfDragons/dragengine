@@ -59,7 +59,7 @@ pResultData(deServiceObject::Ref::NewWith())
 	service.NewPendingRequest(id, "setStatsAndAchievements", pResultData);
 	
 	try{
-		if(! service.productUserId){
+		if(!service.productUserId){
 			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		IngestStat(request);
@@ -90,7 +90,7 @@ void deEosSdkFlowSetStatsAndAchievements::IngestStat(const deServiceObject &requ
 	pResultData->SetChildAt("stats", soResp);
 	
 	const deServiceObject::Ref soIn(request.GetChildAt("stats"));
-	if(! soIn){
+	if(!soIn){
 		pStatsCompleted = true;
 		return;
 	}
@@ -149,7 +149,7 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements(const deServiceObje
 	pResultData->SetChildAt("achievements", soResp);
 	
 	const deServiceObject::Ref soIn(request.GetChildAt("achievements"));
-	if(! soIn){
+	if(!soIn){
 		pAchievementsCompleted = true;
 		return;
 	}

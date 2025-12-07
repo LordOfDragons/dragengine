@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleCombine *GetRuleCombine() const{return pRuleCombine;}
+	inline meHTVRuleCombine *GetRuleCombine() const{ return pRuleCombine; }
 	
 	/** \brief Update node. */
 	virtual void Update();

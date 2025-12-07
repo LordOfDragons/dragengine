@@ -147,7 +147,7 @@ deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading &){
 void deoglSTPipelinesParticle::pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
 	deoglSkinTexturePipelines::pSetTypeGeometry(config, cinfo);
 	
-	if(! pTexture.GetRenderThread().GetChoices().GetRealTransparentParticles()){
+	if(!pTexture.GetRenderThread().GetChoices().GetRealTransparentParticles()){
 		config.SetAmbientLightProbe(true);
 	}
 }
@@ -155,7 +155,7 @@ void deoglSTPipelinesParticle::pSetTypeGeometry(deoglSkinShaderConfig &config, c
 void deoglSTPipelinesParticle::pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
 	deoglSkinTexturePipelines::pSetTexturesGeometry(config, cinfo);
 	
-	if(! pTexture.GetRenderThread().GetChoices().GetRealTransparentParticles()){
+	if(!pTexture.GetRenderThread().GetChoices().GetRealTransparentParticles()){
 		config.SetSkinReflections(true);
 		config.SetTextureEnvMap(true);
 		config.SetTextureRenderColor(false);

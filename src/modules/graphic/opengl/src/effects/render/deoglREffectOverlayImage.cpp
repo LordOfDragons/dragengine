@@ -93,7 +93,7 @@ void deoglREffectOverlayImage::SetImage(deoglRImage *image){
 
 
 const deoglPipeline *deoglREffectOverlayImage::GetPipeline(){
-	if(! pPipeline){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -113,7 +113,7 @@ const deoglPipeline *deoglREffectOverlayImage::GetPipeline(){
 }
 
 const deoglPipeline *deoglREffectOverlayImage::GetPipelineStereo(){
-	if(! pPipelineStereo){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -148,12 +148,12 @@ void deoglREffectOverlayImage::PrepareForRender(){
 }
 
 void deoglREffectOverlayImage::Render(deoglRenderPlan &plan){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	
 	deoglTexture * const texture = pImage->GetTexture();
-	if(! texture){
+	if(!texture){
 		return;
 	}
 	

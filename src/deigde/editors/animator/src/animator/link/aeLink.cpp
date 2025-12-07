@@ -356,7 +356,7 @@ void aeLink::NotifyLinkChanged(){
 
 
 void aeLink::UpdateController(){
-	if(! pEngLink){
+	if(!pEngLink){
 		return;
 	}
 	
@@ -394,7 +394,7 @@ aeLink &aeLink::operator=(const aeLink &copy){
 }
 
 void aeLink::pUpdateCurve(){
-	if(! pEngLink){
+	if(!pEngLink){
 		return;
 	}
 	
@@ -404,7 +404,7 @@ void aeLink::pUpdateCurve(){
 }
 
 void aeLink::pUpdateBoneLimits(){
-	if(! pEngLink){
+	if(!pEngLink){
 		return;
 	}
 	

@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the prop field. */
-	inline meHeightTerrainPropField *GetPropField() const{return pPropField;}
+	inline meHeightTerrainPropField *GetPropField() const{ return pPropField; }
 	/*@}*/
 	
 	/** \name Notifications */

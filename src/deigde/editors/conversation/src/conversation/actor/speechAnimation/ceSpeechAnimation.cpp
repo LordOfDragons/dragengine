@@ -57,7 +57,7 @@
 ////////////////////////////
 
 ceSpeechAnimation::ceSpeechAnimation(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
@@ -191,7 +191,7 @@ void ceSpeechAnimation::CreateAnimator(){
 			engLink = nullptr;
 			
 			// add an animation rule for the new viseme
-			if(! phoneme.GetVertexPositionSet().IsEmpty()){
+			if(!phoneme.GetVertexPositionSet().IsEmpty()){
 				const deAnimatorRuleStateManipulator::Ref rule(
 					deAnimatorRuleStateManipulator::Ref::NewWith());
 				rule->GetListVertexPositionSets().Add(phoneme.GetVertexPositionSet());
@@ -200,7 +200,7 @@ void ceSpeechAnimation::CreateAnimator(){
 				rule->GetTargetVertexPositionSet().AddLink(linkIndex);
 				pEngAnimator->AddRule(rule);
 				
-			}else if(! phoneme.GetMoveName().IsEmpty()){
+			}else if(!phoneme.GetMoveName().IsEmpty()){
 				const deAnimatorRuleAnimation::Ref rule(
 					deAnimatorRuleAnimation::Ref::NewWith());
 				rule->SetMoveName(phoneme.GetMoveName());

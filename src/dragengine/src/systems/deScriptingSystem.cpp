@@ -94,17 +94,17 @@ void deScriptingSystem::SetGameObject(const char *gameObject){
 }
 
 void deScriptingSystem::AddVFSSharedDataDir(deVirtualFileSystem &vfs) const{
-	if(! pActiveModule){
+	if(!pActiveModule){
 		return;
 	}
 	
 	const char * const dataDir = pActiveModule->GetSharedDataDir();
-	if(! dataDir){
+	if(!dataDir){
 		return;
 	}
 	
 	const char * const vfsPath = pActiveModule->GetVFSSharedDataDir();
-	if(! vfsPath){
+	if(!vfsPath){
 		return;
 	}
 	
@@ -188,7 +188,7 @@ void deScriptingSystem::PostStart(){
 	deEngine &engine = *GetEngine();
 	int i;
 	
-	if(! pActiveModule->Init(pScriptDirectory, pGameObject)){
+	if(!pActiveModule->Init(pScriptDirectory, pGameObject)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -216,29 +216,29 @@ void deScriptingSystem::PreStop(){
 
 
 void deScriptingSystem::InitGame(){
-	if(! GetIsRunning() || pGameRunning){
+	if(!GetIsRunning() || pGameRunning){
 		return;
 	}
 	
-	if(! pActiveModule->InitGame()){
+	if(!pActiveModule->InitGame()){
 		GetEngine()->SignalScriptFailed();
 	}
 	pGameRunning = true;
 }
 
 void deScriptingSystem::ExitGame(){
-	if(! GetIsRunning() || ! pGameRunning){
+	if(!GetIsRunning() || !pGameRunning){
 		return;
 	}
 	
-	if(! pActiveModule->ExitGame()){
+	if(!pActiveModule->ExitGame()){
 		GetEngine()->SignalScriptFailed();
 	}
 	pGameRunning = false;
 }
 
 void deScriptingSystem::UserRequestQuit(){
-	if(! GetIsRunning() && ! pGameRunning){
+	if(!GetIsRunning() && !pGameRunning){
 		return;
 	}
 	pActiveModule->UserRequestQuit();
@@ -247,75 +247,75 @@ void deScriptingSystem::UserRequestQuit(){
 
 
 void deScriptingSystem::LoadCollider(deCollider *collider){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	if(collider->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	collider->SetPeerScripting(pActiveModule->CreateCollider(collider));
-	if(! collider->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!collider->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadServer(deServer *server){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	if(server->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	server->SetPeerScripting(pActiveModule->CreateServer(server));
-	if(! server->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!server->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadConnection(deConnection *connection){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	if(connection->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	connection->SetPeerScripting(pActiveModule->CreateConnection(connection));
-	if(! connection->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!connection->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadNetworkState(deNetworkState *state){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	if(state->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	state->SetPeerScripting(pActiveModule->CreateNetworkState(state));
-	if(! state->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!state->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadTouchSensor(deTouchSensor *touchSensor){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	if(touchSensor->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	touchSensor->SetPeerScripting(pActiveModule->CreateTouchSensor(touchSensor));
-	if(! touchSensor->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!touchSensor->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadPropField(dePropField *propField){
-	if(! GetIsRunning()) return;
+	if(!GetIsRunning()) return;
 	
 	if(propField->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	propField->SetPeerScripting(pActiveModule->CreatePropField(propField));
-	if(! propField->GetPeerScripting()) DETHROW(deeOutOfMemory);
+	if(!propField->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadParticleEmitterInstance(deParticleEmitterInstance *instance){
-	if(GetIsRunning() && ! instance->GetPeerScripting()){
+	if(GetIsRunning() && !instance->GetPeerScripting()){
 		instance->SetPeerScripting(pActiveModule->CreateParticleEmitterInstance(instance));
 	}
 }
 
 void deScriptingSystem::LoadSoundLevelMeter(deSoundLevelMeter *meter){
-	if(GetIsRunning() && ! meter->GetPeerScripting()){
+	if(GetIsRunning() && !meter->GetPeerScripting()){
 		meter->SetPeerScripting(pActiveModule->CreateSoundLevelMeter(meter));
 	}
 }
 
 void deScriptingSystem::LoadSpeaker(deSpeaker *speaker){
-	if(GetIsRunning() && ! speaker->GetPeerScripting()){
+	if(GetIsRunning() && !speaker->GetPeerScripting()){
 		speaker->SetPeerScripting(pActiveModule->CreateSpeaker(speaker));
 	}
 }
 
 void deScriptingSystem::CreateService(deService *service){
-	if(! GetIsRunning() || service->GetPeerScripting()){
+	if(!GetIsRunning() || service->GetPeerScripting()){
 		return;
 	}
 	
@@ -325,14 +325,14 @@ void deScriptingSystem::CreateService(deService *service){
 
 
 void deScriptingSystem::OnFrameUpdate(){
-	if(! pActiveModule->OnFrameUpdate()){
+	if(!pActiveModule->OnFrameUpdate()){
 		GetEngine()->SignalScriptFailed();
 	}
 }
 
 void deScriptingSystem::OnResizeRenderWindow(){
 	if(GetIsRunning()){
-		if(! pActiveModule->OnResizeRenderWindow()){
+		if(!pActiveModule->OnResizeRenderWindow()){
 			GetEngine()->SignalScriptFailed();
 		}
 	}
@@ -340,14 +340,14 @@ void deScriptingSystem::OnResizeRenderWindow(){
 
 void deScriptingSystem::OnAppActivate(){
 	if(GetIsRunning()){
-		if(! pActiveModule->OnAppActivate()){
+		if(!pActiveModule->OnAppActivate()){
 			GetEngine()->SignalScriptFailed();
 		}
 	}
 }
 
 void deScriptingSystem::SendEvent(deInputEvent *event){
-	if(! pActiveModule->SendEvent(event)){
+	if(!pActiveModule->SendEvent(event)){
 		GetEngine()->SignalScriptFailed();
 	}
 }

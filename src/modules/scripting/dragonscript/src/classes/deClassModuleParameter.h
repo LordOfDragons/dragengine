@@ -47,12 +47,12 @@ public:
 	deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
 	~deClassModuleParameter();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{return p_scrMgr;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return p_scrMgr; }
 	void CreateClassMembers(dsEngine *engine);
 	void PushParameter(dsRunTime *RT, deBaseModule *module, int index);
-	inline deEngine *GetGameEngine() const{return p_gameEngine;}
-	inline dsClass *GetClassModuleParameterType() const{return pClsModuleParameterType;}
-	inline dsClass *GetClassModuleParameterCategory() const{return pClsModuleParameterCategory;}
+	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
+	inline dsClass *GetClassModuleParameterType() const{ return pClsModuleParameterType; }
+	inline dsClass *GetClassModuleParameterCategory() const{ return pClsModuleParameterCategory; }
 
 private:
 	struct sInitData{

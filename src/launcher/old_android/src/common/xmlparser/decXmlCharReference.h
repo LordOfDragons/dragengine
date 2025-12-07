@@ -73,16 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data. */
-	inline const decString &GetData() const{return pData;}
+	inline const decString &GetData() const{ return pData; }
 	
 	/** \brief Radix. */
-	inline eRadices GetRadix() const{return pRadix;}
+	inline eRadices GetRadix() const{ return pRadix; }
 	
 	/** \brief Is decimal. */
-	inline bool IsDecimal() const{return pRadix == erDecimal;}
+	inline bool IsDecimal() const{ return pRadix == erDecimal; }
 	
 	/** \brief Is hexadecimal. */
-	inline bool IsHexadecimal() const{return pRadix == erHexadecimal;}
+	inline bool IsHexadecimal() const{ return pRadix == erHexadecimal; }
 	
 	/** \brief Set data. */
 	void SetData(const char *data);

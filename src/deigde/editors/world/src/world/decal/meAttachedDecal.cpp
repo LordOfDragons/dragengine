@@ -50,7 +50,7 @@ pEngine(engine),
 pDecal(decal),
 pParentObject(NULL)
 {
-	if(! engine || ! decal){
+	if(!engine || !decal){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -95,12 +95,12 @@ void meAttachedDecal::SetParentObject(meObject *object){
 void meAttachedDecal::AttachToParent(){
 	RemoveFromParent(); // just to make sure
 	
-	if(! pParentObject){
+	if(!pParentObject){
 		return;
 	}
 	
 	deComponent * const engComponent = pParentObject->GetObjectWrapper()->GetComponent();
-	if(! engComponent){
+	if(!engComponent){
 		return;
 	}
 	

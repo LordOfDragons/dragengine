@@ -93,7 +93,7 @@ debnValuePoint3::~debnValuePoint3(){
 ///////////////
 
 bool debnValuePoint3::UpdateValue(bool force){
-	if(! force && pValuePoint3.GetPoint() == pLastValue){
+	if(!force && pValuePoint3.GetPoint() == pLastValue){
 		return false;
 	}
 	

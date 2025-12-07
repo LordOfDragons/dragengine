@@ -63,7 +63,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seEffectStretch * const effect = (seEffectStretch*)pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		

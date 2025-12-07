@@ -149,8 +149,8 @@ const deoglRenderTaskSharedInstance *instance, int spbInstance) const {
 	data.element = (uint32_t)pIndex;
 	data.lod = (uint32_t)lod;
 	
-	if(! skinTexture || skinTexture->GetRTSIndex() == -1 || ! vao || ! vao->GetRTSVAO()
-	|| ! instance || spbInstance < -1){
+	if(!skinTexture || skinTexture->GetRTSIndex() == -1 || !vao || !vao->GetRTSVAO()
+	|| !instance || spbInstance < -1){
 		return;
 	}
 	
@@ -167,12 +167,12 @@ void deoglWorldComputeElement::SetDataGeometryTUCs(sDataElementGeometry &data, c
 	int i;
 	
 	for(i=0; i<8; i++){
-		if(! tucs[i]){
+		if(!tucs[i]){
 			continue;
 		}
 		
 		const deoglRenderTaskSharedTexture * const rtsTexture = tucs[i]->GetRTSTexture();
-		if(! rtsTexture){
+		if(!rtsTexture){
 			continue;
 		}
 		
@@ -187,7 +187,7 @@ const deoglVAO *vao, const deoglRenderTaskSharedInstance *instance, int spbInsta
 	data.skinTexture = 0;
 	data.tucs[0] = data.tucs[1] = data.tucs[2] = data.tucs[3] = 0;
 	
-	if(! vao || ! vao->GetRTSVAO() || ! instance || spbInstance < -1){
+	if(!vao || !vao->GetRTSVAO() || !instance || spbInstance < -1){
 		return;
 	}
 	

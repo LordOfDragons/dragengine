@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger or \em null if not existing. */
-	inline deLogger *GetLogger() const{return pLogger;}
+	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	
 	

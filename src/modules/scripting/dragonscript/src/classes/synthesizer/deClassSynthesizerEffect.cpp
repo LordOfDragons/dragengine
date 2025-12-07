@@ -98,7 +98,7 @@ void deClassSynthesizerEffect::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue 
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	const bool enabled = rt->GetValue(0)->GetBool();
 	
-	if(! nd.effect){
+	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -121,7 +121,7 @@ deClassSynthesizerEffect::nfSetStrength::nfSetStrength(const sInitData &init) : 
 void deClassSynthesizerEffect::nfSetStrength::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.effect){
+	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -184,7 +184,7 @@ void deClassSynthesizerEffect::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerEffect *deClassSynthesizerEffect::GetEffect(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -192,7 +192,7 @@ deSynthesizerEffect *deClassSynthesizerEffect::GetEffect(dsRealObject *myself) c
 }
 
 void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerEffect *effect){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -214,7 +214,7 @@ void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerE
 }
 
 void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -236,11 +236,11 @@ void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerS
 }
 
 void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

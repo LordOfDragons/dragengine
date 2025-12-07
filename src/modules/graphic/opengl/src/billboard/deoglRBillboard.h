@@ -154,18 +154,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Parent world or NULL if not part of a world. */
-	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
 	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Octree node or NULL if not inserted into the parent world octree. */
-	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
+	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
 	 * Set octree node or NULL if not inserted into the parent world octree.
@@ -179,16 +179,16 @@ public:
 	
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL if not present. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
+	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if not set. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -197,15 +197,15 @@ public:
 	void UpdateSkin(float elapsed);
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{return pSkinState;}
+	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/** Init skin state states. */
 	void InitSkinStateStates();
 	void UpdateSkinStateStates();
 	
 	/** Skin rendered. */
-	inline deoglSkinRendered &GetSkinRendered(){return pSkinRendered;}
-	inline const deoglSkinRendered &GetSkinRendered() const{return pSkinRendered;}
+	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
+	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
@@ -222,10 +222,10 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{return pSharedSPBElement;}
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
-	inline deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup() const{return *pSharedSPBRTIGroup;}
+	inline deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup() const{ return *pSharedSPBRTIGroup; }
 	
 	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const;
@@ -237,7 +237,7 @@ public:
 	 * - deoglSkinTexture::estBillboardDepth
 	 * - deoglSkinTexture::estBillboardDepthClipPlane
 	 */
-	inline deoglTexUnitsConfig *GetTUCDepth() const{return pTUCDepth;}
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
@@ -245,7 +245,7 @@ public:
 	 * This texture units configuration works for the shader types:
 	 * - deoglSkinTexture::estBillboardGeometry
 	 */
-	inline deoglTexUnitsConfig *GetTUCGeometry() const{return pTUCGeometry;}
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
 	
 	/**
 	 * Texture units configuration for counter type shaders or NULL if empty.
@@ -254,7 +254,7 @@ public:
 	 * - deoglSkinTexture::estBillboardCounter
 	 * - deoglSkinTexture::estBillboardCounterClipPlane
 	 */
-	inline deoglTexUnitsConfig *GetTUCCounter() const{return pTUCCounter;}
+	inline deoglTexUnitsConfig *GetTUCCounter() const{ return pTUCCounter; }
 	
 	/**
 	 * Texture units configuration for the environment map shader or NULL if empty.
@@ -262,7 +262,7 @@ public:
 	 * This texture units configuration works for the shader types:
 	 * - deoglSkinTexture::estEnvMap
 	 */
-	inline deoglTexUnitsConfig *GetTUCEnvMap() const{return pTUCEnvMap;}
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/**
 	 * Obtain texture units configuration for a shader type.
@@ -311,7 +311,7 @@ public:
 	 * 
 	 * Call appropriate flags update method to update the special flags before use.
 	 */
-	inline int GetSpecialFlags() const{return pSpecialFlags;}
+	inline int GetSpecialFlags() const{ return pSpecialFlags; }
 	
 	/** Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
@@ -319,55 +319,55 @@ public:
 	
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** Axis. */
-	inline const decVector &GetAxis() const{return pAxis;}
+	inline const decVector &GetAxis() const{ return pAxis; }
 	
 	/** Set axis. */
 	void SetAxis(const decVector &axis);
 	
 	/** Size. */
-	inline const decVector2 &GetSize() const{return pSize;}
+	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** Set size. */
 	void SetSize(const decVector2 &size);
 	
 	/** Offset. */
-	inline const decVector2 &GetOffset() const{return pOffset;}
+	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** Sets the offset. */
 	void SetOffset(const decVector2 &offset);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set visible. */
 	void SetVisible(bool visible);
 	
 	/** Billboard is locked. */
-	inline bool GetLocked() const{return pLocked;}
+	inline bool GetLocked() const{ return pLocked; }
 	
 	/** Set billboard is locked. */
 	void SetLocked(bool locked);
 	
 	/** Billboard is spherical. */
-	inline bool GetSpherical() const{return pSpherical;}
+	inline bool GetSpherical() const{ return pSpherical; }
 	
 	/** Set if billboard is spherical. */
 	void SetSpherical(bool spherical);
 	
 	/** Billboard size is fixed to the screen size. */
-	inline bool GetSizeFixedToScreen() const{return pSizeFixedToScreen;}
+	inline bool GetSizeFixedToScreen() const{ return pSizeFixedToScreen; }
 	
 	/** Set if billboard size is fixed to the screen size. */
 	void SetSizeFixedToScreen(bool sizeFixedToScreen);
@@ -375,10 +375,10 @@ public:
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Update extends. */
 	void UpdateExtends(const deBillboard &billboard);
@@ -401,37 +401,37 @@ public:
 	virtual void OcclusionTestInvisible();
 	
 	/** Render visible. */
-	inline bool GetRenderVisible() const{return pRenderVisible;}
+	inline bool GetRenderVisible() const{ return pRenderVisible; }
 	
 	/** Set if render visible. */
 	void SetRenderVisible(bool visible);
 	
 	/** Marked flag. */
-	inline bool GetMarked() const{return pMarked;}
+	inline bool GetMarked() const{ return pMarked; }
 	
 	/** Set marked flag. */
 	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	/** Sort distance. */
-	inline float GetSortDistance() const{return pSortDistance;}
+	inline float GetSortDistance() const{ return pSortDistance; }
 	
 	/** Set sort distance. */
 	void SetSortDistance(float distance);
 	
 	/** Occluded. */
-	inline bool GetOccluded() const{return pOccluded;}
+	inline bool GetOccluded() const{ return pOccluded; }
 	
 	/** Set occluded. */
 	void SetOccluded(bool occluded);
 	
 	/** Sky shadow split mask. */
-	inline int GetSkyShadowSplitMask() const{return pSkyShadowSplitMask;}
+	inline int GetSkyShadowSplitMask() const{ return pSkyShadowSplitMask; }
 	
 	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask(int mask);
 	
 	/** Compute shader octree index. */
-	inline uint32_t GetCSOctreeIndex() const{return pCSOctreeIndex;}
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
 	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	/*@}*/
 	
@@ -443,7 +443,7 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
+	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
 	 * Set marked for removal.
@@ -452,25 +452,25 @@ public:
 	void SetWorldMarkedRemove(bool marked);
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{return pRenderEnvMap;}
+	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{return pRenderEnvMapFade;}
+	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);
 	
 	/** Render environment map fade per time. */
-	inline float GetRenderEnvMapFadePerTime() const{return pRenderEnvMapFadePerTime;}
+	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
 	
 	/** Set render environment map fade per time. */
 	void SetRenderEnvMapFadePerTime(float fadePerTime);
 	
 	/** Render environment map fade factor. */
-	inline float GetRenderEnvMapFadeFactor() const{return pRenderEnvMapFadeFactor;}
+	inline float GetRenderEnvMapFadeFactor() const{ return pRenderEnvMapFadeFactor; }
 	
 	/** Set render environment map fade factor. */
 	void SetRenderEnvMapFadeFactor(float factor);
@@ -504,20 +504,20 @@ public:
 	
 	
 	/** Linked list world previous. */
-	inline deoglRBillboard *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deoglRBillboard *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** Set linked list world previous. */
 	void SetLLWorldPrev(deoglRBillboard *billboard);
 	
 	/** Linked list world next. */
-	inline deoglRBillboard *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deoglRBillboard *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** Set linked list world next. */
 	void SetLLWorldNext(deoglRBillboard *billboard);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){return pLLPrepareForRenderWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{return pLLPrepareForRenderWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

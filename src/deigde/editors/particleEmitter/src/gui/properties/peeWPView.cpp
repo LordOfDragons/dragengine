@@ -157,7 +157,7 @@ public:
 	cBaseAction(panel, "Enable Casting", "Determines if casting is enabled"){ }
 	
 	virtual void OnAction(peeEmitter &emitter){
-		emitter.SetEnableCasting(! emitter.GetEnableCasting());
+		emitter.SetEnableCasting(!emitter.GetEnableCasting());
 	}
 };
 

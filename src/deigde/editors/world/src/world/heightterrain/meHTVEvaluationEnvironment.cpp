@@ -171,12 +171,12 @@ meObject *meHTVEvaluationEnvironment::GetObjectAt(int index) const{
 }
 
 void meHTVEvaluationEnvironment::AddObject(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	if(pObjectCount == pObjectSize){
 		int newSize = pObjectSize * 3 / 2 + 1;
 		meObject **newArray = new meObject*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pObjects){
 			memcpy(newArray, pObjects, sizeof(meObject*) * pObjectSize);
 			delete [] pObjects;

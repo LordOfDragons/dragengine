@@ -105,7 +105,7 @@ cePlaybackActionStackEntry &cePlaybackActionStack::GetAt(int position) const{
 
 void cePlaybackActionStack::Push(ceConversationTopic *topic,
 ceConversationAction *action, const ceConversationActionList *list, int index){
-	if((! topic && ! action) || ! list || index < 0){
+	if((!topic && !action) || !list || index < 0){
 		DETHROW(deeInvalidParam);
 	}
 	if(pEntryCount == pEntrySize){

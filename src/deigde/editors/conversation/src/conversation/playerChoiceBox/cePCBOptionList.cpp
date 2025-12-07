@@ -68,13 +68,13 @@ bool cePCBOptionList::Has(cePCBOption *option) const{
 }
 
 void cePCBOptionList::Add(cePCBOption *option){
-	if(! option) DETHROW(deeInvalidParam);
+	if(!option) DETHROW(deeInvalidParam);
 	
 	pOptions.Add(option);
 }
 
 void cePCBOptionList::InsertAt(cePCBOption *option, int index){
-	if(! option) DETHROW(deeInvalidParam);
+	if(!option) DETHROW(deeInvalidParam);
 	
 	pOptions.Insert(option, index);
 }

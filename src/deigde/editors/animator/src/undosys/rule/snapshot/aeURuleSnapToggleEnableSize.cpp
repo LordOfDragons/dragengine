@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleSnapToggleEnableSize::~aeURuleSnapToggleEnableSize(){
 ///////////////
 
 void aeURuleSnapToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleSnapToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

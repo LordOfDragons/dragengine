@@ -45,7 +45,7 @@
 aeUAnimatorAddBone::aeUAnimatorAddBone(aeAnimator *animator, const char *pattern) :
 pAnimator(animator)
 {
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -59,13 +59,13 @@ pAnimator(animator)
 		for(i=0; i<boneCount; i++){
 			const decString bone(engRig->GetBoneAt(i).GetName());
 			
-			if(bone.MatchesPattern(pattern) && ! ruleBoneList.Has(bone)){
+			if(bone.MatchesPattern(pattern) && !ruleBoneList.Has(bone)){
 				pBones.Add(bone);
 			}
 		}
 		
 	}else{
-		if(! ruleBoneList.Has(pattern)){
+		if(!ruleBoneList.Has(pattern)){
 			pBones.Add(pattern);
 		}
 	}

@@ -76,7 +76,7 @@ void delEngineConfigXML::ReadFromFile(decBaseFileReader &reader, delLauncher &la
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "launcherConfig"){
+	if(!root || root->GetName() != "launcherConfig"){
 		DETHROW_INFO(deeInvalidParam, "missing root tag 'launcherConfig'");
 	}
 	
@@ -132,7 +132,7 @@ void delEngineConfigXML::pReadConfig(const decXmlElementTag &root, delLauncher &
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -147,7 +147,7 @@ void delEngineConfigXML::pReadConfig(const decXmlElementTag &root, delLauncher &
 				
 			}else{
 				gameManager.SetActiveProfile(gameManager.GetProfiles().GetNamed(profileName));
-				if(! gameManager.GetActiveProfile()){
+				if(!gameManager.GetActiveProfile()){
 					GetLogger()->LogWarnFormat(GetLoggerSource().GetString(),
 						"%s(%i:%i): Profile '%s' does not exist", tag->GetName().GetString(),
 						tag->GetLineNumber(), tag->GetPositionNumber(), profileName.GetString());
@@ -167,7 +167,7 @@ void delEngineConfigXML::pReadProfiles(const decXmlElementTag &root, delLauncher
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -175,8 +175,8 @@ void delEngineConfigXML::pReadProfiles(const decXmlElementTag &root, delLauncher
 			delGameProfile::Ref profile(delGameProfile::Ref::New(launcher.CreateGameProfile()));
 			ReadProfile(*tag, profile);
 			
-			if(! profile->GetName().IsEmpty()
-			&& ! gameManager.GetProfiles().HasNamed (profile->GetName())){
+			if(!profile->GetName().IsEmpty()
+			&& !gameManager.GetProfiles().HasNamed (profile->GetName())){
 				gameManager.GetProfiles().Add (profile);
 			}
 			

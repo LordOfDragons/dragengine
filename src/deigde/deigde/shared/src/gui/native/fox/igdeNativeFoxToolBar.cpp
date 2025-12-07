@@ -65,12 +65,12 @@ igdeNativeFoxToolBar::~igdeNativeFoxToolBar(){
 }
 
 igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget(igdeToolBar &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -80,7 +80,7 @@ igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget(igdeToolBar &pown
 
 void igdeNativeFoxToolBar::PostCreateNativeWidget(){
 	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
-	if(! pparent.id()){
+	if(!pparent.id()){
 		return;
 	}
 	

@@ -163,7 +163,7 @@ void deBarrier::Wait(){
 		
 	}else{
 		DBGBARRIER("Wait() wait");
-		while(! pOpen){
+		while(!pOpen){
 			if(pthread_cond_wait(&pCondition, &pMutex) != 0){
 				pthread_mutex_unlock(&pMutex);
 				DETHROW(deeInvalidAction);
@@ -199,8 +199,8 @@ void deBarrier::Wait(){
 		WakeAllConditionVariable(&pConditionVariable);
 		
 	}else{
-		while(! pOpen){
-			if(! SleepConditionVariableCS(&pConditionVariable, &pCriticalSection, INFINITE)){
+		while(!pOpen){
+			if(!SleepConditionVariableCS(&pConditionVariable, &pCriticalSection, INFINITE)){
 				DETHROW(deeInvalidAction);
 			}
 		}
@@ -254,7 +254,7 @@ bool deBarrier::TryWait(int timeout){
 			ts.tv_nsec %= 1000000000L;
 		}
 		
-		while(! pOpen){
+		while(!pOpen){
 			switch(pthread_cond_timedwait(&pCondition, &pMutex, &ts)){
 			case 0:
 				break;
@@ -318,9 +318,9 @@ bool deBarrier::TryWait(int timeout){
 		const ULONGLONG timeStart = GetTickCount64();
 		int elapsed = 0;
 		
-		while(! pOpen){
+		while(!pOpen){
 			const int sleepTimeout = decMath::max(timeout - elapsed, 0);
-			if(! SleepConditionVariableCS(&pConditionVariable, &pCriticalSection, sleepTimeout)){
+			if(!SleepConditionVariableCS(&pConditionVariable, &pCriticalSection, sleepTimeout)){
 				if(pOpen){
 					break; // prevent return false even though barrier opened
 				}
@@ -341,7 +341,7 @@ bool deBarrier::TryWait(int timeout){
 				}
 			}
 			
-			if(! pOpen){
+			if(!pOpen){
 				elapsed = (int)(GetTickCount64() - timeStart);
 				if(elapsed >= timeout){
 					pCounter--;

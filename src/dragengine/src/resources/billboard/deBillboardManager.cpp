@@ -66,7 +66,7 @@ deBillboard *deBillboardManager::CreateBillboard(){
 	
 	try{
 		billboard = new deBillboard(this);
-		if(! billboard) DETHROW(deeOutOfMemory);
+		if(!billboard) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadBillboard(billboard);
 		
@@ -100,7 +100,7 @@ void deBillboardManager::SystemGraphicLoad(){
 	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
 	
 	while(billboard){
-		if(! billboard->GetPeerGraphic()){
+		if(!billboard->GetPeerGraphic()){
 			GetGraphicSystem()->LoadBillboard(billboard);
 		}
 		

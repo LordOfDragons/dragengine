@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker resource. */
-	inline deSpeaker *GetSpeaker() const{return pSpeaker;}
+	inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

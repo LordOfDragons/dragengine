@@ -89,7 +89,7 @@ void deVideoTheora::InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &in
 	dethInfos oggInfo;
 	
 	oggReader.ReadStreamHeaders(oggInfo);
-	if(! oggInfo.GetHeaderFinished()){
+	if(!oggInfo.GetHeaderFinished()){
 		DETHROW_INFO(deeReadFile, reader.GetFilename());
 	}
 	

@@ -122,7 +122,7 @@ PyObject *spTypeWorld::cfUpdate(PyObject *myself, PyObject *args){
 	deWorld &world = *(((sObjectData*)GetObjectData(myself))->world);
 	float elapsed;
 	
-	if(! PyArg_ParseTuple(args, "f", &elapsed)){
+	if(!PyArg_ParseTuple(args, "f", &elapsed)){
 		return NULL;
 	}
 	

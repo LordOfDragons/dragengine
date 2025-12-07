@@ -42,7 +42,7 @@
 ////////////////////////////
 
 peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, peeParameter *parameter, peeController *newController){
-	if(! type || ! parameter){
+	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
 	

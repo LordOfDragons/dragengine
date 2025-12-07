@@ -81,31 +81,31 @@ public:
 	int GetTotalSubInstanceCount() const;
 	
 	/** Parent task. */
-	inline deoglPersistentRenderTask *GetParentTask() const{return pParentTask;}
+	inline deoglPersistentRenderTask *GetParentTask() const{ return pParentTask; }
 	
 	/** Set parent task. */
 	void SetParentTask(deoglPersistentRenderTask *task);
 	
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
 	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Pipeline parameter block or \em NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{return pParamBlock;}
+	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set pipeline parameter block or \em NULL if not used. */
 	void SetParameterBlock(deoglSPBlockUBO *block);
 	
 	/** Pipeline parameter index of pSPBInstanceIndexBase or -1. */
-	inline int GetSPBInstanceIndexBase() const{return pSPBInstanceIndexBase;}
+	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
 	
 	/** Set pipeline parameter index of pSPBInstanceIndexBase or -1. */
 	void SetSPBInstanceIndexBase(int parameter);
 	
 	/** Pipeline parameter index of pDrawIDOffset or -1. */
-	inline int GetDrawIDOffset() const{return pDrawIDOffset;}
+	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
 	
 	/** Set pipeline parameter index of pDrawIDOffset or -1. */
 	void SetDrawIDOffset(int parameter);
@@ -141,8 +141,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){return pLLTask;}
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{return pLLTask;}
+	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
+	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

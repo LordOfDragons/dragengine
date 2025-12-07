@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Sender matches label. */
 	bool SenderMatchesLabel(FXObject *sender) const;

@@ -85,10 +85,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Render window or NULL if absent. */
-	inline deRenderWindow *GetRenderWindow() const{return pRenderWindow;}
+	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** \brief Rendering is enabled. */
-	inline bool GetEnableRendering() const{return pEnableRendering;}
+	inline bool GetEnableRendering() const{ return pEnableRendering; }
 	
 	/** \brief Set if rendering is enabled. */
 	void SetEnableRendering(bool enable);

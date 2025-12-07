@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the load save emitter. */
-	inline peeLoadSaveEmitter &GetLSEmitter(){return *pLSEmitter;}
+	inline peeLoadSaveEmitter &GetLSEmitter(){ return *pLSEmitter; }
 	/** Loads the emitter from file if possible. */
 	peeEmitter *LoadEmitter(const char *filename);
 	/** Saves the emitter to file if possible. */
 	void SaveEmitter(peeEmitter *emitter, const char *filename);
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList *GetEmitterFilePatterns() const{return &pFPEmitter;}
+	inline const igdeFilePatternList *GetEmitterFilePatterns() const{ return &pFPEmitter; }
 	/*@}*/
 	
 private:

@@ -67,13 +67,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
+	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Set video player or NULL to unset. */
 	void SetVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** \brief Repeat count along X axis. */
-	inline int GetRepeatX() const{return pRepeatX;}
+	inline int GetRepeatX() const{ return pRepeatX; }
 	
 	/**
 	 * \brief Set repeat count along X axis.
@@ -82,7 +82,7 @@ public:
 	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
-	inline int GetRepeatY() const{return pRepeatY;}
+	inline int GetRepeatY() const{ return pRepeatY; }
 	
 	/**
 	 * \brief Set repeat count along Y axis.

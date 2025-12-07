@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Number of queries in the set. */
-	inline int GetQueryCount() const{return pQueryCount;}
+	inline int GetQueryCount() const{ return pQueryCount; }
 	
 	/** Set number of queries in the set. */
 	void SetQueryCount(int count);

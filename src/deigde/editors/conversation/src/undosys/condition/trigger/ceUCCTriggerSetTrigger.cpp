@@ -44,7 +44,7 @@
 
 ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionTrigger *condition, const char *newTrigger){
-	if(! topic || ! action || ! condition){
+	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
 	

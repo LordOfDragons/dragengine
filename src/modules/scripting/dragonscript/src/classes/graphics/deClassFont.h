@@ -57,7 +57,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Font or \em NULL if object is \em NULL. */
 	deFont *GetFont(dsRealObject *object) const;

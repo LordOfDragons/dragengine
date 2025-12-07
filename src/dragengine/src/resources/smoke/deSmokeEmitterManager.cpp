@@ -72,7 +72,7 @@ deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
 	
 	try{
 		smokeEmitter = new deSmokeEmitter(this);
-		if(! smokeEmitter) DETHROW(deeOutOfMemory);
+		if(!smokeEmitter) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
 		GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
@@ -107,7 +107,7 @@ void deSmokeEmitterManager::SystemGraphicLoad(){
 	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
-		if(! smokeEmitter->GetPeerGraphic()){
+		if(!smokeEmitter->GetPeerGraphic()){
 			GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
 		}
 		
@@ -128,7 +128,7 @@ void deSmokeEmitterManager::SystemPhysicsLoad(){
 	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
-		if(! smokeEmitter->GetPeerPhysics()){
+		if(!smokeEmitter->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
 		}
 		

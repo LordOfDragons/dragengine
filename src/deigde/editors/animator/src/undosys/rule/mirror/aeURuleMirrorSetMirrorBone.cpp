@@ -37,7 +37,7 @@ aeURuleMirrorSetMirrorBone::aeURuleMirrorSetMirrorBone(aeRuleMirror *rule, const
 pRule(rule),
 pNewValue(newValue)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

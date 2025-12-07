@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent synthesizer. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set parent synthesizer. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -84,7 +84,7 @@ public:
 	
 	
 	/** \brief Index of engine synthesizer instance controller. */
-	inline int GetEngineControllerIndex() const{return pEngControllerIndex;}
+	inline int GetEngineControllerIndex() const{ return pEngControllerIndex; }
 	
 	/** \brief Set index of engine synthesizer instance controller. */
 	void SetEngineControllerIndex(int index);
@@ -92,31 +92,31 @@ public:
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Minimum value. */
-	inline float GetMinimumValue() const{return pMinValue;}
+	inline float GetMinimumValue() const{ return pMinValue; }
 	
 	/** \brief Set minimum value. */
 	void SetMinimumValue(float value);
 	
 	/** \brief Maximum value. */
-	inline float GetMaximumValue() const{return pMaxValue;}
+	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set maximum value. */
 	void SetMaximumValue(float value);
 	
 	/** \brief Value is clamped instead of wraped around. */
-	inline bool GetClamp() const{return pClamp;}
+	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if value is clamped instead of wraped around. */
 	void SetClamp(bool clamp);
 	
 	/** \brief Value curve. */
-	inline const decCurveBezier &GetCurve() const{return pCurve;}
+	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set value curve. */
 	void SetCurve(const decCurveBezier &curve);
@@ -124,7 +124,7 @@ public:
 	
 	
 	/** \brief Edit constant value. */
-	inline float GetEditConstantValue() const{return pEditConstantValue;}
+	inline float GetEditConstantValue() const{ return pEditConstantValue; }
 	
 	/** \brief Set edit constant value. */
 	void SetEditConstantValue(float value);

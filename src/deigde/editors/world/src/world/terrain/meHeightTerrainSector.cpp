@@ -91,7 +91,7 @@ meHeightTerrainSector::meHeightTerrainSector(deEngine *engine, const decPoint &c
 pActiveNavSpace(NULL),
 pDDSelNavPoints(NULL)
 {
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pHeightTerrain = NULL;
 	
@@ -219,7 +219,7 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 }
 
 void meHeightTerrainSector::CreateEngineSector(){
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		return;
 	}
 	
@@ -273,7 +273,7 @@ void meHeightTerrainSector::CreateEngineSector(){
 }
 
 void meHeightTerrainSector::DestroyEngineSector(){
-	if(! pEngSector){
+	if(!pEngSector){
 		return;
 	}
 	
@@ -364,7 +364,7 @@ void meHeightTerrainSector::InitDelegates(igdeEnvironment *environment){
 
 
 decVector2 meHeightTerrainSector::GetGridPointAt(const decDVector &position) const{
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -379,7 +379,7 @@ decVector2 meHeightTerrainSector::GetGridPointAt(const decDVector &position) con
 }
 
 float meHeightTerrainSector::GetHeightAtPoint(int x, int z) const{
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -393,7 +393,7 @@ float meHeightTerrainSector::GetHeightAtPoint(int x, int z) const{
 
 void meHeightTerrainSector::GetHeightLocalAt(float x, float z, int &imgX, int &imgZ,
 float &imgFacX, float &imgFacZ) const{
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -411,7 +411,7 @@ float &imgFacX, float &imgFacZ) const{
 }
 
 bool meHeightTerrainSector::GetHeightAt(float x, float z, float &height) const{
-	if(! pHeightTerrain || ! pVisFaces){
+	if(!pHeightTerrain || !pVisFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -464,7 +464,7 @@ bool meHeightTerrainSector::GetHeightAt(float x, float z, float &height) const{
 }
 
 bool meHeightTerrainSector::GetHeightNormalAt(float x, float z, float &height, decVector &normal) const{
-	if(! pHeightTerrain || ! pVisFaces){
+	if(!pHeightTerrain || !pVisFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -543,7 +543,7 @@ bool meHeightTerrainSector::GetHeightNormalAt(float x, float z, float &height, d
 }
 
 decDVector meHeightTerrainSector::GetWorldPosition() const{
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		return decDVector();
 	}
 	
@@ -568,7 +568,7 @@ void meHeightTerrainSector::UpdateVInstances(){
 }
 
 void meHeightTerrainSector::ClearVegetation(){
-	if(! pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
+	if(!pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
 		return;
 	}
 	
@@ -628,7 +628,7 @@ bool meHeightTerrainSector::DoClampValues() const{
 }
 
 void meHeightTerrainSector::SetPathHeightImage(const char *path, bool loadFile){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -718,7 +718,7 @@ void meHeightTerrainSector::SetVisibilitySaved(bool saved){
 
 
 void meHeightTerrainSector::InitVisibilityFromSector(deHeightTerrainSector *sector) const{
-	if(! sector || ! pHeightTerrain || ! pVisFaces){
+	if(!sector || !pHeightTerrain || !pVisFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -732,7 +732,7 @@ void meHeightTerrainSector::InitVisibilityFromSector(deHeightTerrainSector *sect
 }
 
 void meHeightTerrainSector::UpdateVisibilitySector(deHeightTerrainSector *sector) const{
-	if(! sector || ! pHeightTerrain || ! pVisFaces){
+	if(!sector || !pHeightTerrain || !pVisFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -746,7 +746,7 @@ void meHeightTerrainSector::UpdateVisibilitySector(deHeightTerrainSector *sector
 }
 
 void meHeightTerrainSector::LoadVisibilityFromImage(){
-	if(! pHeightTerrain || ! pVisFaces){
+	if(!pHeightTerrain || !pVisFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -754,7 +754,7 @@ void meHeightTerrainSector::LoadVisibilityFromImage(){
 	deImage::Ref image;
 	decPath path;
 	
-	if(! pPathVisImage.IsEmpty()){
+	if(!pPathVisImage.IsEmpty()){
 		const decString baseDir(pHeightTerrain->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathVisImage, baseDir))){
 			try{
@@ -885,14 +885,14 @@ bool meHeightTerrainSector::HasTexture(meHeightTerrainTexture *texture) const{
 }
 
 void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
-	if(! texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
+	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	deHeightTerrainTexture *engTexture = NULL;
 	
 	if(pTextureCount == pTextureSize){
 		int newSize = pTextureCount * 3 / 2 + 1;
 		meHeightTerrainTexture **newArray = new meHeightTerrainTexture*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTextures){
 			memcpy(newArray, pTextures, sizeof(meHeightTerrainTexture*) * pTextureSize);
 			delete [] pTextures;
@@ -926,7 +926,7 @@ void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 		pHeightTerrain->GetWorld().NotifyHTSTextureCountChanged(this);
 	}
 	
-	if(! pActiveTexture) SetActiveTexture(texture);
+	if(!pActiveTexture) SetActiveTexture(texture);
 }
 
 void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
@@ -998,7 +998,7 @@ void meHeightTerrainSector::SetActiveTexture(meHeightTerrainTexture *texture){
 }
 
 meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y) const{
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1074,7 +1074,7 @@ meHeightTerrainPFLayer *meHeightTerrainSector::GetPFLayerAt(int index) const{
 }
 
 int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const{
-	if(! pflayer) DETHROW(deeInvalidParam);
+	if(!pflayer) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPFLayerCount; i++){
@@ -1085,7 +1085,7 @@ int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const
 }
 
 bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer *pflayer) const{
-	if(! pflayer) DETHROW(deeInvalidParam);
+	if(!pflayer) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPFLayerCount; i++){
@@ -1096,12 +1096,12 @@ bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer *pflayer) const{
 }
 
 void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
-	if(! pflayer) DETHROW(deeInvalidParam);
+	if(!pflayer) DETHROW(deeInvalidParam);
 	
 	if(pPFLayerCount == pPFLayerSize){
 		int newSize = pPFLayerCount * 3 / 2 + 1;
 		meHeightTerrainPFLayer **newArray = new meHeightTerrainPFLayer*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pPFLayers){
 			memcpy(newArray, pPFLayers, sizeof(meHeightTerrainPFLayer*) * pPFLayerSize);
 			delete [] pPFLayers;
@@ -1121,7 +1121,7 @@ void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 //		pHeightTerrain->GetWorld().NotifyHTSPFLayerCountChanged( this );
 	}
 	
-	if(! pActivePFLayer) SetActivePFLayer(pflayer);
+	if(!pActivePFLayer) SetActivePFLayer(pflayer);
 }
 
 void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
@@ -1192,7 +1192,7 @@ void meHeightTerrainSector::InvalidateHeights(const decPoint &fromGrid, const de
 }
 
 void meHeightTerrainSector::InvalidatePropFields(const decPoint &fromGrid, const decPoint &toGrid){
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1228,7 +1228,7 @@ void meHeightTerrainSector::InvalidatePropFields(const decPoint &fromGrid, const
 }
 
 void meHeightTerrainSector::InvalidateAllPropFields(){
-	if(! pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
+	if(!pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
 		return;
 	}
 	
@@ -1306,7 +1306,7 @@ meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceAt(int index) const{
 }
 
 meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1324,7 +1324,7 @@ meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceNamed(const char *nam
 }
 
 bool meHeightTerrainSector::HasNavSpaceNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1345,7 +1345,7 @@ int meHeightTerrainSector::IndexOfNavSpace(meHeightTerrainNavSpace *navspace) co
 }
 
 int meHeightTerrainSector::IndexOfNavSpaceNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1366,7 +1366,7 @@ bool meHeightTerrainSector::HasNavSpace(meHeightTerrainNavSpace *navspace) const
 }
 
 void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
-	if(! navspace || HasNavSpaceNamed(navspace->GetName())){
+	if(!navspace || HasNavSpaceNamed(navspace->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1393,7 +1393,7 @@ void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
 		pHeightTerrain->GetWorld().NotifyHTNavSpaceCountChanged();
 	}
 	
-	if(! pActiveNavSpace){
+	if(!pActiveNavSpace){
 		SetActiveNavSpace(navspace);
 	}
 }
@@ -1514,14 +1514,14 @@ void meHeightTerrainSector::pCleanUp(){
 }
 
 void meHeightTerrainSector::pLoadHeightImage(){
-	if(! pHeightTerrain || ! pHeightImage){
+	if(!pHeightTerrain || !pHeightImage){
 		return;
 	}
 	
 	const int resolution = pHeightTerrain->GetSectorResolution();
 	
 	// load image if the path is a valid file path
-	if(! pPathHeightImage.IsEmpty()){
+	if(!pPathHeightImage.IsEmpty()){
 		const decString baseDir(pHeightTerrain->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathHeightImage, baseDir))){
 			// load the image
@@ -1607,7 +1607,7 @@ void meHeightTerrainSector::pCreateVisibility(){
 		pVisFaces = NULL;
 	}
 	
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		return;
 	}
 	
@@ -1642,13 +1642,13 @@ void meHeightTerrainSector::pSetPropFieldCount(int cellCount){
 		
 		try{
 			pPropFields = new meHeightTerrainPropField*[pfcount];
-			if(! pPropFields) DETHROW(deeOutOfMemory);
+			if(!pPropFields) DETHROW(deeOutOfMemory);
 			
 			for(p=0; p<pfcount; p++) pPropFields[p] = NULL;
 			
 			while(pPropFieldCount < pfcount){
 				propField = new meHeightTerrainPropField(pEngine);
-				if(! propField) DETHROW(deeOutOfMemory);
+				if(!propField) DETHROW(deeOutOfMemory);
 				
 				propField->SetHTSector(this);
 				
@@ -1668,7 +1668,7 @@ void meHeightTerrainSector::pSetPropFieldCount(int cellCount){
 }
 
 void meHeightTerrainSector::pUpdatePropFieldPositions(){
-	if(pPropFieldCellCount == 0 || ! pHeightTerrain){
+	if(pPropFieldCellCount == 0 || !pHeightTerrain){
 		return;
 	}
 	
@@ -1712,7 +1712,7 @@ void meHeightTerrainSector::pUpdatePropFieldPositions(){
 
 
 void meHeightTerrainSector::pRepositionDebugDrawers(){
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		return;
 	}
 	
@@ -1743,7 +1743,7 @@ void meHeightTerrainSector::pCreateDDEdges(){
 // 	decTimer timer; timer.Reset();
 	pFreeDDEdges();
 	
-	if(! pHeightTerrain){
+	if(!pHeightTerrain){
 		return;
 	}
 	
@@ -1918,7 +1918,7 @@ void meHeightTerrainSector::pUpdateDDEdgesColors(){
 void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, const decPoint &toGrid){
 // 	printf( "pUpdateDDSEdgesHeights BEGIN\n" );
 // 	decTimer timer; timer.Reset();
-	if(! pHeightTerrain || ! pDDClusters){
+	if(!pHeightTerrain || !pDDClusters){
 		return;
 	}
 	
@@ -2047,7 +2047,7 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 
 void meHeightTerrainSector::pUpdateDDSelNavPointHeights(){
 	const int count = pSelectedNavPoints.GetCount();
-	if(count == 0 || ! pHeightTerrain || ! pHeightImage){
+	if(count == 0 || !pHeightTerrain || !pHeightImage){
 		return;
 	}
 	

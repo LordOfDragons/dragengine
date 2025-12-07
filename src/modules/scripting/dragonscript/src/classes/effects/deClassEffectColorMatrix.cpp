@@ -141,7 +141,7 @@ void deClassEffectColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassEffectColorMatrix * const clsEffClrMat = (deClassEffectColorMatrix*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsEffClrMat)){
+	if(!p_IsObjOfType(obj, clsEffClrMat)){
 		rt->PushBool(false);
 		
 	}else{
@@ -205,7 +205,7 @@ void deClassEffectColorMatrix::CreateClassMembers(dsEngine *engine){
 
 
 deEffectColorMatrix *deClassEffectColorMatrix::GetEffect(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -213,11 +213,11 @@ deEffectColorMatrix *deClassEffectColorMatrix::GetEffect(dsRealObject *myself) c
 }
 
 void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

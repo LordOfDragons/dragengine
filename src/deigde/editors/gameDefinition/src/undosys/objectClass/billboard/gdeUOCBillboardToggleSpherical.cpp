@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCBillboardToggleSpherical::~gdeUOCBillboardToggleSpherical(){
 ///////////////
 
 void gdeUOCBillboardToggleSpherical::Undo(){
-	pBillboard->SetSpherical(! pBillboard->GetSpherical());
+	pBillboard->SetSpherical(!pBillboard->GetSpherical());
 	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 

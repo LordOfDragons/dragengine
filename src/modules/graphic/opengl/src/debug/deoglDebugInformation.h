@@ -88,19 +88,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Text color. */
-	inline const decColor &GetColorText() const{return pColorText;}
+	inline const decColor &GetColorText() const{ return pColorText; }
 	
 	/** Set text color. */
 	void SetColorText(const decColor &color);
 	
 	/** Background color. */
-	inline const decColor &GetColorBackground() const{return pColorBackground;}
+	inline const decColor &GetColorBackground() const{ return pColorBackground; }
 	
 	/** Set background color. */
 	void SetColorBackground(const decColor &color);
@@ -109,22 +109,22 @@ public:
 	void Clear();
 	
 	/** Visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set if visible. */
 	void SetVisible(bool visible);
 	
 	/** Children. */
-	inline deoglDebugInformationList &GetChildren(){return pChildren;}
-	inline const deoglDebugInformationList &GetChildren() const{return pChildren;}
+	inline deoglDebugInformationList &GetChildren(){ return pChildren; }
+	inline const deoglDebugInformationList &GetChildren() const{ return pChildren; }
 	
 	
 	
 	/** Elapsed time. */
-	inline float GetElapsedTime() const{return pElapsedTime;}
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** Accumulated elapsed time. */
-	inline float GetElapsedTimeAccum() const{return pElapsedTimeAccum;}
+	inline float GetElapsedTimeAccum() const{ return pElapsedTimeAccum; }
 	
 	/** Set elapsed time. */
 	void SetElapsedTime(float time);
@@ -136,10 +136,10 @@ public:
 	void ClearElapsedTime();
 	
 	/** Has elapsed time. */
-	inline bool HasElapsedTime() const{return pHasElapsedTime;}
+	inline bool HasElapsedTime() const{ return pHasElapsedTime; }
 	
 	/** Sliding elapsed time factor. */
-	inline float GetSlidingElapsedTimeFactor() const{return pSlidingElapsedTimeFactor;}
+	inline float GetSlidingElapsedTimeFactor() const{ return pSlidingElapsedTimeFactor; }
 	
 	/** Set sliding elapsed time factor. */
 	void SetSlidingElapsedTimeFactor(float factor);
@@ -147,7 +147,7 @@ public:
 	
 	
 	/** Counter. */
-	inline int GetCounter() const{return pCounter;}
+	inline int GetCounter() const{ return pCounter; }
 	
 	/** Set counter. */
 	void SetCounter(int counter);
@@ -162,7 +162,7 @@ public:
 	void ClearCounter();
 	
 	/** Has counter. */
-	inline bool HasCounter() const{return pHasCounter;}
+	inline bool HasCounter() const{ return pHasCounter; }
 	
 	/** Copy results from another debug information. */
 	void CopyResults(const deoglDebugInformation &info);
@@ -173,19 +173,19 @@ public:
 	/** \name Rendering for use by deoglRenderDevMode only. */
 	/*@{*/
 	/** Render text. */
-	inline const decString &GetRenderText() const{return pRenderText;}
+	inline const decString &GetRenderText() const{ return pRenderText; }
 	
 	/** Set render text. */
 	void SetRenderText(const char *text);
 	
 	/** Render size. */
-	inline const decPoint &GetRenderSize() const{return pRenderSize;}
+	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
 	
 	/** Set render size. */
 	void SetRenderSize(const decPoint &size);
 	
 	/** Render position. */
-	inline const decPoint &GetRenderPosition() const{return pRenderPosition;}
+	inline const decPoint &GetRenderPosition() const{ return pRenderPosition; }
 	
 	/** Set render position. */
 	void SetRenderPosition(const decPoint &position);

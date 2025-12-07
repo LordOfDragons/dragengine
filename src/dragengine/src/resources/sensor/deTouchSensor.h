@@ -112,37 +112,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Touch sensor tracks objects entering and leaving shapes. */
-	inline bool GetTrackEnterLeave() const{return pTrackEnterLeave;}
+	inline bool GetTrackEnterLeave() const{ return pTrackEnterLeave; }
 	
 	/** \brief Set if touch sensor tracks objects entering and leaving shapes. */
 	void SetTrackEnterLeave(bool trackEnterLeave);
 	
 	/** \brief Touch sensor is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if touch sensor is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Shape. */
-	inline const decShapeList &GetShape() const{return pShape;}
+	inline const decShapeList &GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
 	void SetShape(const decShapeList &shape);
@@ -277,13 +277,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Physics system peer. */
-	inline deBasePhysicsTouchSensor *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsTouchSensor *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
 	void SetPeerPhysics(deBasePhysicsTouchSensor *peer);
 	
 	/** \brief Scripting system peer. */
-	inline deBaseScriptingTouchSensor *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingTouchSensor *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer. */
 	void SetPeerScripting(deBaseScriptingTouchSensor *peer);
@@ -294,19 +294,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deTouchSensor *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next touch sensor in the parent world linked list. */
 	void SetLLWorldPrev(deTouchSensor *touchSensor);
 	
 	/** \brief Next touch sensor in the parent world linked list. */
-	inline deTouchSensor *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deTouchSensor *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next touch sensor in the parent world linked list. */
 	void SetLLWorldNext(deTouchSensor *touchSensor);

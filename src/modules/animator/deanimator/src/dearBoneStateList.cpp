@@ -104,7 +104,7 @@ dearBoneState *dearBoneStateList::GetStateAt(int index) const{
 }
 
 int dearBoneStateList::IndexOfStateNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -205,7 +205,7 @@ void dearBoneStateList::MarkDirty(){
 
 void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 	deRig * const rig = animator.GetRig();
-	if(! rig){
+	if(!rig){
 		SetStateCount(0);
 		return;
 	}
@@ -293,7 +293,7 @@ void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 
 
 void dearBoneStateList::ApplyToComponent(deComponent *component) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -336,7 +336,7 @@ void dearBoneStateList::ApplyToComponent(deComponent *component) const{
 }
 
 void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -41,7 +41,7 @@
 
 aeURuleBTransSetCFrame::aeURuleBTransSetCFrame(aeRuleBoneTransformator *rule,
 deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

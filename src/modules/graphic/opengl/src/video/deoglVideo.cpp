@@ -70,14 +70,14 @@ bool deoglVideo::AllFramesAreCached() const{
 }
 
 bool deoglVideo::IsFrameReady(int frame) const{
-	if(! pCacheFrames){
+	if(!pCacheFrames){
 		return false;
 	}
 	return pRVideo->GetTexture(frame) != NULL;
 }
 
 bool deoglVideo::CanCacheFrame(int frame) const{
-	if(! pCacheFrames){
+	if(!pCacheFrames){
 		return false;
 	}
 	if(pRVideo->GetUpdateFrame() != -1){

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetBoneMaximum::aeULinkSetBoneMaximum(aeLink *link, float newBoneMaximum){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

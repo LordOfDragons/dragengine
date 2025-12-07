@@ -77,10 +77,10 @@ public:
 		return Vec3(u.c[0], u.c[1], u.c[2]);
 	}
 	
-	Vec4 SplatX() const {return Vec4(vec_splat(m_v, 0));}
-	Vec4 SplatY() const {return Vec4(vec_splat(m_v, 1));}
-	Vec4 SplatZ() const {return Vec4(vec_splat(m_v, 2));}
-	Vec4 SplatW() const {return Vec4(vec_splat(m_v, 3));}
+	Vec4 SplatX() const { return Vec4(vec_splat(m_v, 0)); }
+	Vec4 SplatY() const { return Vec4(vec_splat(m_v, 1)); }
+	Vec4 SplatZ() const { return Vec4(vec_splat(m_v, 2)); }
+	Vec4 SplatW() const { return Vec4(vec_splat(m_v, 3)); }
 
 	Vec4& operator+=(Arg v)
 	{

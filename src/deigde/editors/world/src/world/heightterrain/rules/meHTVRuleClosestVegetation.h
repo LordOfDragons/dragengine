@@ -82,11 +82,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation type to search for. */
-	inline const decString &GetVegetationType() const{return pVegetationType;}
+	inline const decString &GetVegetationType() const{ return pVegetationType; }
 	/** Sets the vegetation type to search for. */
 	void SetVegetationType(const char *vegetationType);
 	/** Retrieves the search radius. */
-	inline float GetSearchRadius() const{return pSearchRadius;}
+	inline float GetSearchRadius() const{ return pSearchRadius; }
 	/** Sets the search radius. */
 	void SetSearchRadius(float searchRadius);
 	

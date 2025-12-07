@@ -101,7 +101,7 @@ decPoint dealWidgetImage::GetMinimumSize(){
 		return GetExplicitMinimumSize();
 	}
 	
-	if(! pImage){
+	if(!pImage){
 		return decPoint();
 	}
 	
@@ -112,7 +112,7 @@ decPoint dealWidgetImage::GetMinimumSize(){
 
 
 void dealWidgetImage::RenderContent(const sRenderContext &context){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	

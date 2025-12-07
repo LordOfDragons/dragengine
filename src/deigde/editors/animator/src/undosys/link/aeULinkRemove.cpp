@@ -56,12 +56,12 @@ pLink(link),
 pTargets(nullptr),
 pTargetCount(0)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pAnimator = link->GetAnimator();
-	if(! pAnimator){
+	if(!pAnimator){
 		DETHROW(deeInvalidParam);
 	}
 	

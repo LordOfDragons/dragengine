@@ -220,7 +220,7 @@ void igdeAction::SetDefault(bool isdefault){
 
 
 void igdeAction::AddListener(igdeActionListener *listener){
-	if(! listener || pListeners.Has(listener)){
+	if(!listener || pListeners.Has(listener)){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

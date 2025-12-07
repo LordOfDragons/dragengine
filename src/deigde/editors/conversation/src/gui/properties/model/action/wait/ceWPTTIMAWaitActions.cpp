@@ -74,7 +74,7 @@ ceWPTTIMAWaitActions::~ceWPTTIMAWaitActions(){
 
 ceWPTTIMAWait *ceWPTTIMAWaitActions::GetModelWait() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -89,12 +89,12 @@ ceWPTTIMAWait *ceWPTTIMAWaitActions::GetModelWait() const{
 
 
 void ceWPTTIMAWaitActions::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAWait * const modelWait = GetModelWait();
-	if(! modelWait){
+	if(!modelWait){
 		return;
 	}
 	
@@ -102,7 +102,7 @@ void ceWPTTIMAWaitActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -136,12 +136,12 @@ void ceWPTTIMAWaitActions::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void ceWPTTIMAWaitActions::ContextMenuAction(
 igdeMenuCascade &contextMenu, ceConversationAction *action){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAWait * const modelWait = GetModelWait();
-	if(! modelWait){
+	if(!modelWait){
 		return;
 	}
 	
@@ -149,7 +149,7 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -219,7 +219,7 @@ void ceWPTTIMAWaitActions::BuildPlaybackFromHere() const{
 	ceWPTTreeItemModel::BuildPlaybackFromHere(); // super.super call on purpose
 	
 	ceWPTTIMAWait * const modelWait = GetModelWait();
-	if(! modelWait){
+	if(!modelWait){
 		DETHROW(deeInvalidParam);
 	}
 	ceCAWait &wait = *modelWait->GetActionWait();

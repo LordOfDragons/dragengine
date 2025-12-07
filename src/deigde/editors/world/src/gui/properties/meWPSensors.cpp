@@ -65,7 +65,7 @@ public:
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
 		if(lumimeter){
-			lumimeter->SetTrackCamera(! lumimeter->GetTrackCamera());
+			lumimeter->SetTrackCamera(!lumimeter->GetTrackCamera());
 		}
 	}
 };

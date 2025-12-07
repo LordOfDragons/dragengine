@@ -62,7 +62,7 @@ pSelected(false),
 pActive(false),
 pDirtySkin(true)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -119,9 +119,9 @@ void seTexture::SetSkin(seSkin *skin){
 
 
 void seTexture::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		pName = name;
 		NotifyNameChanged();
 	}
@@ -158,7 +158,7 @@ void seTexture::InvalidateEngineSkin(){
 }
 
 void seTexture::UpdateEngineSkin(){
-	if(! pDirtySkin || ! pSkin->GetEnableSkinUpdate()){
+	if(!pDirtySkin || !pSkin->GetEnableSkinUpdate()){
 		return;
 	}
 	
@@ -183,12 +183,12 @@ void seTexture::UpdateEngineSkin(){
 }
 
 void seTexture::AssignSkinToComponentTexture(){
-	if(! pSkin || ! pSkin->GetEngineComponent()){
+	if(!pSkin || !pSkin->GetEngineComponent()){
 		return;
 	}
 	
 	deComponent &engComponent = *pSkin->GetEngineComponent();
-	if(! engComponent.GetModel()){
+	if(!engComponent.GetModel()){
 		return;
 	}
 	
@@ -208,7 +208,7 @@ void seTexture::AssignSkinToComponentTexture(){
 }
 
 void seTexture::AssignSkinToLight(){
-	if(! pSkin || ! pSkin->GetEngineComponent()){
+	if(!pSkin || !pSkin->GetEngineComponent()){
 		return;
 	}
 	if(pSkin->GetTextureList().GetAt(0) != this){
@@ -243,13 +243,13 @@ void seTexture::AddProperty(seProperty *property){
 		pSkin->NotifyPropertyStructureChanged(this);
 	}
 	
-	if(! pActiveProperty){
+	if(!pActiveProperty){
 		SetActiveProperty(property);
 	}
 }
 
 void seTexture::RemoveProperty(seProperty *property){
-	if(! property || property->GetTexture() != this){
+	if(!property || property->GetTexture() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -366,15 +366,15 @@ void seTexture::pCleanUp(){
 }
 
 void seTexture::pUpdateTexCoordTransform(){
-	if(! pSkin){
+	if(!pSkin){
 		return;
 	}
-	if(! pSkin->GetEngineComponent()){
+	if(!pSkin->GetEngineComponent()){
 		return;
 	}
 	
 	deComponent &engComponent = *pSkin->GetEngineComponent();
-	if(! engComponent.GetModel()){
+	if(!engComponent.GetModel()){
 		return;
 	}
 	

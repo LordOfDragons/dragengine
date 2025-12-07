@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bit count. */
-	inline int GetBitCount() const{return pByteCount << 3;}
+	inline int GetBitCount() const{ return pByteCount << 3; }
 	
 	/**
 	 * \brief Set bit count.

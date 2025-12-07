@@ -327,7 +327,7 @@ void deClassQuaternion::nfIsEqualTo::RunFunction(dsRunTime *rt, dsValue *myself)
 	const decQuaternion &quaternion = ((sQuatNatDat*)p_GetNativeData(myself))->quaternion;
 	deClassQuaternion *clsQuaternion = (deClassQuaternion*)GetOwnerClass();
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
-	if(! objQuat) DSTHROW(dueNullPointer);
+	if(!objQuat) DSTHROW(dueNullPointer);
 	float delta = rt->GetValue(1)->GetFloat();
 	rt->PushBool(quaternion.IsEqualTo(clsQuaternion->GetQuaternion(objQuat), delta));
 }
@@ -348,7 +348,7 @@ void deClassQuaternion::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myse
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decQuaternion quaternion;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -366,7 +366,7 @@ void deClassQuaternion::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deClassFileWriter &clsFileWriter = *clsQuaternion.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -397,7 +397,7 @@ void deClassQuaternion::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decQuaternion &quaternion = ((sQuatNatDat*)p_GetNativeData(myself))->quaternion;
 	deClassQuaternion *clsQuaternion = (deClassQuaternion*)GetOwnerClass();
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
-	if(! objQuat) DSTHROW(dueNullPointer);
+	if(!objQuat) DSTHROW(dueNullPointer);
 	clsQuaternion->PushQuaternion(rt, quaternion + clsQuaternion->GetQuaternion(objQuat));
 }
 
@@ -410,7 +410,7 @@ void deClassQuaternion::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself
 	const decQuaternion &quaternion = ((sQuatNatDat*)p_GetNativeData(myself))->quaternion;
 	deClassQuaternion *clsQuaternion = (deClassQuaternion*)GetOwnerClass();
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
-	if(! objQuat) DSTHROW(dueNullPointer);
+	if(!objQuat) DSTHROW(dueNullPointer);
 	clsQuaternion->PushQuaternion(rt, quaternion - clsQuaternion->GetQuaternion(objQuat));
 }
 
@@ -492,7 +492,7 @@ void deClassQuaternion::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decQuaternion &quaternion = ((sQuatNatDat*)p_GetNativeData(myself))->quaternion;
 	deClassQuaternion *clsQuaternion = (deClassQuaternion*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
-	if(! p_IsObjOfType(obj, clsQuaternion)){
+	if(!p_IsObjOfType(obj, clsQuaternion)){
 		rt->PushBool(false);
 	}else{
 		const decQuaternion &otherQuaternion = ((sQuatNatDat*)p_GetNativeData(obj))->quaternion;
@@ -555,7 +555,7 @@ void deClassQuaternion::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue 
 // constructor
 deClassQuaternion::deClassQuaternion(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("Quaternion", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scriptManager) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scriptManager;
@@ -632,7 +632,7 @@ void deClassQuaternion::CreateClassMembers(dsEngine *engine){
 }
 
 const decQuaternion &deClassQuaternion::GetQuaternion(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -640,7 +640,7 @@ const decQuaternion &deClassQuaternion::GetQuaternion(dsRealObject *myself) cons
 }
 
 void deClassQuaternion::PushQuaternion(dsRunTime *rt, const decQuaternion &quaternion){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

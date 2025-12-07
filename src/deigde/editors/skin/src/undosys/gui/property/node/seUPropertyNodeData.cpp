@@ -42,7 +42,7 @@
 seUPropertyNodeData::seUPropertyNodeData(sePropertyNode *node) :
 pNode(NULL)
 {
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	

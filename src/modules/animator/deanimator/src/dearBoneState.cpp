@@ -154,7 +154,7 @@ void dearBoneState::SetDirty(bool dirty){
 }
 
 void dearBoneState::UpdateMatrices(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -195,7 +195,7 @@ decMatrix dearBoneState::CalcLocalFromGlobal(const decMatrix &globalMatrix) cons
 }
 
 void dearBoneState::UpdateMatricesKeepGlobal(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -371,7 +371,7 @@ dearBoneState *dearBoneState::GetChildStateAt(int index) const{
 }
 
 void dearBoneState::AddChildState(dearBoneState *boneState){
-	if(! boneState){
+	if(!boneState){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -90,7 +90,7 @@ void deoglRCanvasVideoPlayer::SetTCClampMaximum(const decVector2 &clamp){
 
 
 void deoglRCanvasVideoPlayer::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pVideoPlayer){
+	if(!pVideoPlayer){
 		return;
 	}
 	
@@ -99,7 +99,7 @@ void deoglRCanvasVideoPlayer::PrepareForRender(const deoglRenderPlanMasked *rend
 }
 
 void deoglRCanvasVideoPlayer::Render(const deoglRenderCanvasContext &context){
-	if(! pVideoPlayer){
+	if(!pVideoPlayer){
 		return;
 	}
 	

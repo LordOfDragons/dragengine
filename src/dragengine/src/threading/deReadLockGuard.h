@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the read-lock. */
-	inline bool GetLocked() const{return pLocked;}
+	inline bool GetLocked() const{ return pLocked; }
 	
 	/** \brief Read-lock guarded read-write lock. */
 	void ReadLock();

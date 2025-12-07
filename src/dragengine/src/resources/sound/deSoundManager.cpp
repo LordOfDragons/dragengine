@@ -89,7 +89,7 @@ deSound *deSoundManager::GetSoundWith(const char *filename) const{
 
 deSound *deSoundManager::GetSoundWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deSound * const sound = (deSound*)pSounds.GetWithFilename(vfs, filename);
-	return sound && ! sound->GetOutdated() ? sound : NULL;
+	return sound && !sound->GetOutdated() ? sound : NULL;
 }
 
 deSound *deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
@@ -98,7 +98,7 @@ deSound *deSoundManager::LoadSound(const char *filename, const char *basePath, b
 
 deSound *deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath, bool asynchron){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	decBaseFileReader *fileReader = NULL;
@@ -110,7 +110,7 @@ const char *basePath, bool asynchron){
 	
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -179,7 +179,7 @@ void deSoundManager::SaveSound(deSound *sound, const char *filename){
 }
 
 void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const char *filename){
-	if(! sound || ! vfs || ! filename){
+	if(!sound || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	decBaseFileWriter *fileWriter = NULL;
@@ -204,7 +204,7 @@ void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const c
 }
 
 void deSoundManager::AddLoadedSound(deSound *sound){
-	if(! sound){
+	if(!sound){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -214,7 +214,7 @@ void deSoundManager::AddLoadedSound(deSound *sound){
 
 
 deSoundDecoder *deSoundManager::CreateDecoder(deSound *sound){
-	if(! sound || ! sound->GetVirtualFileSystem()){
+	if(!sound || !sound->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -352,7 +352,7 @@ void deSoundManager::SystemAudioLoad(){
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(sound){
-		if(! sound->GetPeerAudio()){
+		if(!sound->GetPeerAudio()){
 			audSys.LoadSound(sound);
 		}
 		
@@ -376,7 +376,7 @@ void deSoundManager::SystemSynthesizerLoad(){
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
 	while(sound){
-		if(! sound->GetPeerSynthesizer()){
+		if(!sound->GetPeerSynthesizer()){
 			synthSys.LoadSound(sound);
 		}
 		
@@ -400,15 +400,15 @@ void deSoundManager::RemoveResource(deResource *resource){
 }
 
 void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
-	if(! decoder){
+	if(!decoder){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pMutexDecoder.Lock();
 	
 	try{
-		if(decoder != pDecoderRoot && ! decoder->GetLLManagerNext()
-		&& ! decoder->GetLLManagerPrev()){
+		if(decoder != pDecoderRoot && !decoder->GetLLManagerNext()
+		&& !decoder->GetLLManagerPrev()){
 			return;
 		}
 		
@@ -427,7 +427,7 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 			}
 			
 		}else{
-			if(! decoder->GetLLManagerNext()){
+			if(!decoder->GetLLManagerNext()){
 				DETHROW(deeInvalidParam);
 			}
 			
@@ -445,7 +445,7 @@ void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
 			}
 			
 		}else{
-			if(! decoder->GetLLManagerPrev()){
+			if(!decoder->GetLLManagerPrev()){
 				DETHROW(deeInvalidParam);
 			}
 			

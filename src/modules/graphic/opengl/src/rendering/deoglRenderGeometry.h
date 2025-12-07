@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the ambient. */
-	inline const decColor &GetAmbient() const{return pAmbient;}
+	inline const decColor &GetAmbient() const{ return pAmbient; }
 	/** Sets the ambient light color. */
 	void SetAmbient(const decColor &color);
 	/*@}*/

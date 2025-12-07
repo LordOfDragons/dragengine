@@ -86,16 +86,16 @@ public:
 	void OrientateLine();
 	
 	/** \brief Returns the point formed by adding the given point to the top left corner point. */
-	inline decPoint MapPoint(const decPoint &pt) const{return decPoint(x1 + pt.x, y1 + pt.y);}
+	inline decPoint MapPoint(const decPoint &pt) const{ return decPoint(x1 + pt.x, y1 + pt.y); }
 	
 	/** \brief Top left boundary. */
-	inline decPoint GetTopLeft() const{return decPoint(x1, y1);}
+	inline decPoint GetTopLeft() const{ return decPoint(x1, y1); }
 	
 	/** \brief Top left boundary. */
-	inline decPoint GetBottomRight() const{return decPoint(x2, y2);}
+	inline decPoint GetBottomRight() const{ return decPoint(x2, y2); }
 	
 	/** \brief Boundary size. */
-	inline decPoint GetSize() const{return decPoint(x1 + x2, y1 + y2);}
+	inline decPoint GetSize() const{ return decPoint(x1 + x2, y1 + y2); }
 	/*@}*/
 	
 	

@@ -142,7 +142,7 @@ void deVROpenXR::InputEventSetTimestamp(deInputEvent &event) const{
 }
 
 void deVROpenXR::WaitUntilReadyExit(){
-	if(! pInstance || pSessionState == XR_SESSION_STATE_EXITING){
+	if(!pInstance || pSessionState == XR_SESSION_STATE_EXITING){
 		return;
 	}
 	
@@ -224,7 +224,7 @@ void deVROpenXR::WaitUntilReadyExit(){
 }
 
 deoxrSwapchain *deVROpenXR::GetEyeSwapchain(eEye eye) const{
-	if(! pSession){
+	if(!pSession){
 		return nullptr;
 	}
 	
@@ -349,7 +349,7 @@ void deVROpenXR::StartRuntime(){
 		pSystem.TakeOver(new deoxrSystem(pInstance));
 		pLastDetectedSystem = pSystem->GetSystem();
 		
-		if(! pThreadSync){
+		if(!pThreadSync){
 			// pThreadSync = new deoxrThreadSync( *this );
 			// pThreadSync->Start();
 			// for some strange reason this async version can cause XR_ERROR_CALL_ORDER_INVALID.
@@ -511,7 +511,7 @@ float deVROpenXR::GetDeviceFaceExpression(int device, int expression){
 ///////////
 
 void deVROpenXR::ProcessEvents(){
-	if(! pInstance){
+	if(!pInstance){
 		return;
 	}
 	
@@ -709,7 +709,7 @@ void deVROpenXR::ProcessEvents(){
 
 decPoint deVROpenXR::GetRenderSize(){
 	const deMutexGuard lock(pMutexOpenXR);
-	if(! pSystem){
+	if(!pSystem){
 		return decPoint(1024, 1024);
 	}
 	
@@ -806,7 +806,7 @@ decMatrix deVROpenXR::GetMatrixViewEye(eEye eye){
 
 deModel *deVROpenXR::GetHiddenArea(eEye eye){
 	const deMutexGuard lock(pMutexOpenXR);
-	if(! pSession){
+	if(!pSession){
 		return nullptr;
 	}
 	
@@ -831,7 +831,7 @@ deImage *deVROpenXR::GetDistortionMap(eEye){
 
 int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
 	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
-	if(! swapchain){
+	if(!swapchain){
 		return 0;
 	}
 	
@@ -840,7 +840,7 @@ int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
 		return imageCount;
 	}
 	
-	if(! views){
+	if(!views){
 		DETHROW_INFO(deeNullPointer, "images");
 	}
 	if(count < imageCount){
@@ -869,7 +869,7 @@ void deVROpenXR::GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVect
 
 void deVROpenXR::StartBeginFrame(){
 	const deMutexGuard guard(pMutexOpenXR);
-	if(! pBeginFrame()){
+	if(!pBeginFrame()){
 		return;
 	}
 	if(pThreadSync){
@@ -879,11 +879,11 @@ void deVROpenXR::StartBeginFrame(){
 
 void deVROpenXR::WaitBeginFrameFinished(){
 	const deMutexGuard guard(pMutexOpenXR);
-	if(! pSystem){
+	if(!pSystem){
 		return;
 	}
 	
-	if(! pSession){
+	if(!pSession){
 		return;
 	}
 	if(pThreadSync){
@@ -904,7 +904,7 @@ void deVROpenXR::WaitBeginFrameFinished(){
 int deVROpenXR::AcquireEyeViewImage(eEye eye){
 	const deMutexGuard lock(pMutexOpenXR);
 	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
-	if(! swapchain || ! pSession->GetFrameRunning()){
+	if(!swapchain || !pSession->GetFrameRunning()){
 		return -1;
 	}
 	
@@ -915,7 +915,7 @@ int deVROpenXR::AcquireEyeViewImage(eEye eye){
 void deVROpenXR::ReleaseEyeViewImage(eEye eye){
 	const deMutexGuard lock(pMutexOpenXR);
 	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
-	if(swapchain || ! pSession->GetFrameRunning()){
+	if(swapchain || !pSession->GetFrameRunning()){
 		swapchain->ReleaseImage();
 	}
 }
@@ -925,7 +925,7 @@ void deVROpenXR::SubmitOpenGLTexture2D(eEye, void*, const decVector2&, const dec
 
 void deVROpenXR::EndFrame(){
 	const deMutexGuard lock(pMutexOpenXR);
-	if(! pSession){
+	if(!pSession){
 		return;
 	}
 	
@@ -1115,7 +1115,7 @@ void deVROpenXR::pSuggestBindings(){
 }
 
 bool deVROpenXR::pBeginFrame(){
-	if(! pSystem){
+	if(!pSystem){
 		return false;
 	}
 	

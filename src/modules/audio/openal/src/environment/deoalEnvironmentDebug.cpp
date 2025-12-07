@@ -366,7 +366,7 @@ void deoalEnvironmentDebug::pShowImpulseResponse(deDebugBlockInfo &debugInfo){
 		}
 		canvas = canvas->GetLLViewNext();
 	}
-	if(! canvas){
+	if(!canvas){
 		return;
 	}
 	
@@ -459,7 +459,7 @@ void deoalEnvironmentDebug::pShowEnergyHistogram(deDebugBlockInfo &debugInfo){
 		}
 		canvas = canvas->GetLLViewNext();
 	}
-	if(! canvas){
+	if(!canvas){
 		return;
 	}
 	

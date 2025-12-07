@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pEnvMapProbe(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! envMapProbe){
+	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

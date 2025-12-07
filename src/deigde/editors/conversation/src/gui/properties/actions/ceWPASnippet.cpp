@@ -70,7 +70,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetFile()){
+		if(!topic || !action  || comboBox->GetText() == action->GetFile()){
 			return;
 		}
 		
@@ -88,7 +88,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetTopic()){
+		if(!topic || !action  || comboBox->GetText() == action->GetTopic()){
 			return;
 		}
 		
@@ -127,18 +127,18 @@ public:
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		
 		ceConversationFile * const jumpFile = pPanel.GetParentPanel().GetConversation()
 			->GetFileList().GetWithID(action->GetFile());
-		if(! jumpFile){
+		if(!jumpFile){
 			return;
 		}
 		
 		ceConversationTopic * const jumpTopic = jumpFile->GetTopicList().GetWithID(action->GetTopic());
-		if(! jumpTopic){
+		if(!jumpTopic){
 			return;
 		}
 		

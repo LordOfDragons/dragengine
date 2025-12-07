@@ -79,7 +79,7 @@
 seLoadSaveSkin::seLoadSaveSkin(deBaseSkinModule *module) :
 pModule(module)
 {
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void seLoadSaveSkin::SetPattern(const char *pattern){
 
 void seLoadSaveSkin::LoadSkin(seSkin *skin, decBaseFileReader *file,
 const igdeTexturePropertyList &knownPropertyList){
-	if(! skin || ! file){
+	if(!skin || !file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -466,7 +466,7 @@ const deSkinPropertyNode &engNode){
 }
 
 void seLoadSaveSkin::SaveSkin(seSkin *skin, decBaseFileWriter *file){
-	if(! skin || ! file){
+	if(!skin || !file){
 		DETHROW(deeInvalidParam);
 	}
 	

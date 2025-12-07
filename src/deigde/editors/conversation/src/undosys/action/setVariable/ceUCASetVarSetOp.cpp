@@ -42,7 +42,7 @@
 
 ceUCASetVarSetOp::ceUCASetVarSetOp(ceConversationTopic *topic,
 ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
-	if(! topic || ! action) DETHROW(deeInvalidParam);
+	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

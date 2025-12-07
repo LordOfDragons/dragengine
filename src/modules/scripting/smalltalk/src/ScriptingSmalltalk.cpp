@@ -188,7 +188,7 @@ bool ScriptingSmalltalk::Init(const char *scriptDirectory, const char *gameObjec
 		pCreateClasses();
 		
 		// load the game script
-		if(! pLoadGameScripts(scriptDirectory, gameObject)){
+		if(!pLoadGameScripts(scriptDirectory, gameObject)){
 			return false;
 		}
 		
@@ -357,7 +357,7 @@ bool ScriptingSmalltalk::SendEvent(deInputEvent *event){
 			argumentCount = 4;
 			
 		}else{
-			LogErrorFormat("What the... an unknown event code?! (%i)", type);
+			LogErrorFormat("What the... an unknown event code?!(%i)", type);
 			return false;
 		}
 		
@@ -437,7 +437,7 @@ OOP ScriptingSmalltalk::CreateNewObjectWithInit(OOP stclass, int instVarBytes){
 
 
 bool ScriptingSmalltalk::LoadScripts(deVirtualFileSystem &vfs, const char *directory){
-	if(! directory){
+	if(!directory){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -467,7 +467,7 @@ bool ScriptingSmalltalk::LoadScripts(deVirtualFileSystem &vfs, const char *direc
 OOP ScriptingSmalltalk::pGetSystemClassByName(const char *name){
 	OOP oop = gst_class_name_to_oop(name);
 	
-	if(! oop){
+	if(!oop){
 		LogErrorFormat("Failed to obtain system class '%s'. Please reinstall Smalltalk.", name);
 		DETHROW(deeInvalidParam);
 	}
@@ -478,7 +478,7 @@ OOP ScriptingSmalltalk::pGetSystemClassByName(const char *name){
 OOP ScriptingSmalltalk::pGetSystemSymbolByName(const char *name){
 	OOP oop = gst_symbol_to_oop(name);
 	
-	if(! oop){
+	if(!oop){
 		LogErrorFormat("Failed to obtain system symbol '%s'. Please reinstall Smalltalk.", name);
 		DETHROW(deeInvalidParam);
 	}
@@ -491,7 +491,7 @@ OOP ScriptingSmalltalk::pGetSystemSymbolByName(const char *name){
 void ScriptingSmalltalk::pObtainSTStuff(){
 	// get nil
 	pObjNil = gst_eval_expr("nil");
-	if(! pObjNil){
+	if(!pObjNil){
 		LogError("Failed to obtain 'nil'. Please reinstall Smalltalk.");
 		DETHROW(deeInvalidParam);
 	}
@@ -552,7 +552,7 @@ bool ScriptingSmalltalk::pLoadGameScripts(const char *directory, const char *gam
 	bool result;
 	try{
 		result = LoadScripts(*GetGameEngine()->GetVirtualFileSystem(), directory);
-		if(! result){
+		if(!result){
 			return false;
 		}
 		
@@ -569,13 +569,13 @@ bool ScriptingSmalltalk::pLoadGameScripts(const char *directory, const char *gam
 	
 	// examine vm to find class to start
 	OOP clsGame = gst_class_name_to_oop("DEGame");
-	if(! clsGame){
+	if(!clsGame){
 		LogError("Class #DEGame not found. Please reinstall the Smalltalk Scripting Module.");
 		return false;
 	}
 	
 	pClsGame = gst_class_name_to_oop(gameClass);
-	if(! pClsGame){
+	if(!pClsGame){
 		LogErrorFormat("Game class #%s not found.", gameClass);
 		return false;
 	}
@@ -615,7 +615,7 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 					//LogInfoFormat( "parsing script file %s.", path.GetPathUnix() );
 					
 					filereader = vfs.OpenFileForReading(path);
-					if(! filereader){
+					if(!filereader){
 						DETHROW(deeOutOfMemory);
 					}
 					
@@ -655,7 +655,7 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 
 bool ScriptingSmalltalk::pIsFileType(const char *filename, const char *extension){
 	const char *ext = strrchr(filename, '.');
-	if(! ext){
+	if(!ext){
 		return false;
 	}
 	return strcmp(ext + 1, extension) == 0;

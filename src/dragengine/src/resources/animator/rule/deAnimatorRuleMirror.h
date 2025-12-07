@@ -118,19 +118,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Mirror axis. */
-	inline eMirrorAxis GetMirrorAxis() const{return pMirrorAxis;}
+	inline eMirrorAxis GetMirrorAxis() const{ return pMirrorAxis; }
 	
 	/** \brief Set mirror axis. */
 	void SetMirrorAxis(eMirrorAxis axis);
 	
 	/** \brief Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{return pMirrorBone;}
+	inline const decString &GetMirrorBone() const{ return pMirrorBone; }
 	
 	/** \brief Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
 	
 	/** \brief Count of match names. */
-	inline int GetMatchNameCount() const{return pMatchNameCount;}
+	inline int GetMatchNameCount() const{ return pMatchNameCount; }
 	
 	/** \brief Match name at index. */
 	const sMatchName &GetMatchNameAt(int index) const;
@@ -142,25 +142,25 @@ public:
 	void RemoveAllMatchNames();
 	
 	/** \brief Determines if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
 	void SetEnableVertexPositionSet(bool enabled);

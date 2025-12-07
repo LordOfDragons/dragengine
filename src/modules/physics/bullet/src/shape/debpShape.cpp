@@ -42,7 +42,7 @@ pType(type),
 pShape(shape),
 pCollisionVolume(NULL)
 {
-	if(type < estSphere || type > estCapsule || ! shape){
+	if(type < estSphere || type > estCapsule || !shape){
 		DETHROW(deeInvalidParam);
 	}
 }

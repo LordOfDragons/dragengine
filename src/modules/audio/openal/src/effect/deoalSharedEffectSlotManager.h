@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** Maximum shared effect slot count. */
-	inline int GetMaxCount() const{return pMaxCount;}
+	inline int GetMaxCount() const{ return pMaxCount; }
 	
 	/** Set maximum shared effect slot count. */
 	void SetMaxCount(int count);

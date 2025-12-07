@@ -368,7 +368,7 @@ void deClassMutableID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deClassFileReader &clsFileReader = *clsMUID.GetDS().GetClassFileReader();
 	
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -392,7 +392,7 @@ void deClassMutableID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself
 	const deClassFileWriter &clsFileWriter = *clsMUID.GetDS().GetClassFileWriter();
 	
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -477,7 +477,7 @@ void deClassMutableID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassUniqueID * const clsMUID = (deClassUniqueID*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsMUID)){
+	if(!p_IsObjOfType(obj, clsMUID)){
 		rt->PushBool(false);
 		
 	}else{
@@ -612,7 +612,7 @@ void deClassMutableID::CreateClassMembers(dsEngine *engine){
 }
 
 decUniqueID &deClassMutableID::GetMutableID(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -620,7 +620,7 @@ decUniqueID &deClassMutableID::GetMutableID(dsRealObject *myself) const{
 }
 
 void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

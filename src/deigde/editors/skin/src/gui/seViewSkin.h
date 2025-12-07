@@ -66,7 +66,7 @@ public:
 	void ResetView();
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{return pSkin;}
+	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

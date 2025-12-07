@@ -113,7 +113,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSoundLevelMeterType); // type
 }
 void deClassSoundLevelMeter::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -350,7 +350,7 @@ void deClassSoundLevelMeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassSoundLevelMeter * const clsSoundLevelMeter = (deClassSoundLevelMeter*)GetOwnerClass();
 	
 	dsValue * const object = rt->GetValue(0);
-	if(! p_IsObjOfType(object, clsSoundLevelMeter)){
+	if(!p_IsObjOfType(object, clsSoundLevelMeter)){
 		rt->PushBool(false);
 		
 	}else{
@@ -435,18 +435,18 @@ void deClassSoundLevelMeter::CreateClassMembers(dsEngine *engine){
 }
 
 deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((sSLMNatDat*)p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
 }
 
 void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! soundLevelMeter){
+	if(!soundLevelMeter){
 		rt->PushObject(NULL, this);
 		return;
 	}

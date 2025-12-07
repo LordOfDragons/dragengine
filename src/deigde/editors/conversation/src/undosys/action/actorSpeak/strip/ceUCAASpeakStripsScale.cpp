@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
-	if(! topic || ! actorSpeak){
+	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	

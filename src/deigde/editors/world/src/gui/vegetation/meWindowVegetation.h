@@ -71,22 +71,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
 	
 	/** \brief Sector coordinates. */
-	inline const decPoint &GetSector() const{return pSector;}
+	inline const decPoint &GetSector() const{ return pSector; }
 	
 	/** \brief Set sector coordinates. */
 	void SetSector(const decPoint &sector);
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{return pVLayer;}
+	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
 	void SetVLayer(meHTVegetationLayer *vlayer);
@@ -106,10 +106,10 @@ public:
 	void SelectNodeOfActiveRule();
 	
 	/** \brief Units to pixel factor. */
-	inline float GetUnitsToPixel() const{return pUnitsToPixel;}
+	inline float GetUnitsToPixel() const{ return pUnitsToPixel; }
 	
 	/** \brief Pixel to units factor. */
-	inline float GetPixelToUnits() const{return pPixelToUnits;}
+	inline float GetPixelToUnits() const{ return pPixelToUnits; }
 	
 	/** \brief Node with rule. */
 	meWVNode *GetNodeWithRule(meHTVRule *rule);

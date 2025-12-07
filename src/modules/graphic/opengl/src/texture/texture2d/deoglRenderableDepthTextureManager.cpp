@@ -75,14 +75,14 @@ int width, int height, bool withStencil, bool useFloat){
 	
 	// find the texture with the matching format
 	for(i=0; i<pTextureCount; i++){
-		if(! pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, withStencil, useFloat)){
+		if(!pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, withStencil, useFloat)){
 			texture = pTextures[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if(! texture){
+	if(!texture){
 		if(pTextureCount == pTextureSize){
 			int newSize = pTextureSize * 3 / 2 + 1;
 			deoglRenderableDepthTexture **newArray = new deoglRenderableDepthTexture*[newSize];

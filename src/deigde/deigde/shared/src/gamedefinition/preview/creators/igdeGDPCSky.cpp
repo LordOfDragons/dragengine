@@ -59,7 +59,7 @@ igdeGDPreviewCreator(environment, size),
 pGDSky(gdsky),
 pSky(NULL)
 {
-	if(! gdsky){
+	if(!gdsky){
 		DETHROW(deeInvalidParam);
 	}
 }

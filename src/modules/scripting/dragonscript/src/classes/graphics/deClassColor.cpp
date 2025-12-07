@@ -264,7 +264,7 @@ void deClassColor::nfIsEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
-	if(! objClr) DSTHROW(dueNullPointer);
+	if(!objClr) DSTHROW(dueNullPointer);
 	RT->PushBool(color.IsEqualTo(clsColor->GetColor(objClr)));
 }
 
@@ -298,7 +298,7 @@ void deClassColor::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decColor color;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -316,7 +316,7 @@ void deClassColor::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassFileWriter &clsFileWriter = *clsColor.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -337,7 +337,7 @@ void deClassColor::nfOpAdd::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
-	if(! objClr) DSTHROW(dueNullPointer);
+	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color + clsColor->GetColor(objClr));
 }
 	
@@ -350,7 +350,7 @@ void deClassColor::nfOpSubtract::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
-	if(! objClr) DSTHROW(dueNullPointer);
+	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color - clsColor->GetColor(objClr));
 }
 	
@@ -385,7 +385,7 @@ void deClassColor::nfOpMultiply::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
-	if(! objClr) DSTHROW(dueNullPointer);
+	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color * clsColor->GetColor(objClr));
 }
 
@@ -403,7 +403,7 @@ void deClassColor::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsValue *obj = RT->GetValue(0);
-	if(! p_IsObjOfType(obj, clsColor)){
+	if(!p_IsObjOfType(obj, clsColor)){
 		RT->PushBool(false);
 	}else{
 		const decColor &otherColor = ((sClrNatDat*)p_GetNativeData(obj))->color;
@@ -574,7 +574,7 @@ void deClassColor::nfToCMYK::RunFunction(dsRunTime *rt, dsValue *myself){
 // constructor
 deClassColor::deClassColor(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("Color", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scriptManager) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scriptManager;
@@ -671,14 +671,14 @@ void deClassColor::InitStatics(dsRunTime *RT){
 	AddColorConstant(RT, "transparent", decColor(0, 0, 0, 0));
 }
 const decColor &deClassColor::GetColor(dsRealObject *This) const{
-	if(! This){
+	if(!This){
 		DSTHROW(dueNullPointer);
 	}
 	
 	return (const decColor &)((sClrNatDat*)p_GetNativeData(This->GetBuffer()))->color;
 }
 void deClassColor::PushColor(dsRunTime *rt, const decColor &color){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -687,7 +687,7 @@ void deClassColor::PushColor(dsRunTime *rt, const decColor &color){
 }
 void deClassColor::AddColorConstant(dsRunTime *rt, const char *name, const decColor &color){
 	dsVariable * const variable = FindVariable(name);
-	if(! variable){
+	if(!variable){
 		DSTHROW(dueInvalidParam);
 	}
 	

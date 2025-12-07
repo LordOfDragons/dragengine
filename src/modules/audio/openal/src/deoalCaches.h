@@ -65,7 +65,7 @@ public:
 	void Unlock();
 	
 	/** \brief Sound cache. */
-	inline deCacheHelper &GetSound() const{return *pSound;}
+	inline deCacheHelper &GetSound() const{ return *pSound; }
 	
 	
 	

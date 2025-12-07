@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the virtual file system. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{return pVFS;}
+	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Retrieves the current directory. */
 	void GetPath(decPath &path);

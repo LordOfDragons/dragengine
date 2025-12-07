@@ -75,13 +75,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine &GetEngine() const{return pEngine;}
+	inline deEngine &GetEngine() const{ return pEngine; }
 	
 	/** \brief Count of detected CPU cores. */
-	inline int GetCoreCount() const{return pCoreCount;}
+	inline int GetCoreCount() const{ return pCoreCount; }
 	
 	/** \brief Count of threads. */
-	inline int GetThreadCount() const{return pThreadCount;}
+	inline int GetThreadCount() const{ return pThreadCount; }
 	
 	/**
 	 * \brief Update task processing.
@@ -97,7 +97,7 @@ public:
 	 * 
 	 * All threads are waiting. It is safe to modify the game engine.
 	 */
-	inline bool GetPaused() const{return pPaused;}
+	inline bool GetPaused() const{ return pPaused; }
 	
 	/**
 	 * \brief Pause parallel processing.
@@ -218,7 +218,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Debug messages are output to the engine logger. */
-	inline bool GetOutputDebugMessages() const{return pOutputDebugMessages;}
+	inline bool GetOutputDebugMessages() const{ return pOutputDebugMessages; }
 	
 	/** \brief Log thread and task overview. */
 	void LogThreadAndTasks();

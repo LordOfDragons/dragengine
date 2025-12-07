@@ -67,7 +67,7 @@ public:
 	void PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	/*@}*/
 	
 	

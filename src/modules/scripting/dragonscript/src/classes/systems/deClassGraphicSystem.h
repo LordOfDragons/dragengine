@@ -47,7 +47,7 @@ public:
 	~deClassGraphicSystem() override;
 	// internal functions
 	void CreateClassMembers(dsEngine *engine) override;
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 
 	/** Convert canvas coordinates to window coordinates (dpi awareness, if disabled). */
 	int CoordCanvas2Window(int coordinates) const;

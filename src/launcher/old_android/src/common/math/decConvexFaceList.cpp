@@ -206,7 +206,7 @@ int decConvexFaceList::IndexOfFace(decConvexFace *face) const{
 
 void decConvexFaceList::AddFace(decConvexFace *face){
 	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if(! face){
+	if(!face){
 		DETHROW(deeInvalidParam);
 	}
 	pFaces.Add(face);
@@ -315,11 +315,11 @@ void decConvexFaceList::SplitByFace(const decConvexFaceList &splitterFaceList, i
 			if(dist >= 0.0f && dist <= 1.0f){
 				const decVector hitPoint = edgeVertex1 + edgeDirection * dist;
 				
-				if(! hasEdgeFrom){
+				if(!hasEdgeFrom){
 					edgeFrom = hitPoint;
 					hasEdgeFrom = true;
 					
-				}else if(! hasEdgeTo){
+				}else if(!hasEdgeTo){
 					edgeTo = hitPoint;
 					hasEdgeTo = true;
 					
@@ -562,7 +562,7 @@ void decConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEdge
 	// split up the face if at least one edge vertex is inside. it doesn't matter which
 	// edge vertex is used for the splitting as long as it is inside. the chosen vertex
 	// acts as pivot point and the edge as pivot axis. 
-	if(! (hasSplitEdge || (insideEdgeFrom && insideEdgeTo))){
+	if(!(hasSplitEdge || (insideEdgeFrom && insideEdgeTo))){
 		return;
 	}
 	
@@ -611,7 +611,7 @@ void decConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEdge
 				// if the end point has been added to the face list add it also to the front and back face
 				if(indexCutEdgeTo != -1){
 					// add cutEdgeTo to the back face
-					if(! newFaceBack){
+					if(!newFaceBack){
 						DBG(printf("crossTo: create back face\n"));
 						newFaceBack = CreateFace(&face);
 						newFaceBack->SetNormal(faceNormal);
@@ -647,7 +647,7 @@ void decConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEdge
 				// if the from point has been added to the face list add it also to the front and back face
 				if(indexCutEdgeFrom != -1){
 					// add cutEdgeFrom to the back face
-					if(! newFaceBack){
+					if(!newFaceBack){
 						DBG(printf("crossFrom: create back face\n"));
 						newFaceBack = CreateFace(&face);
 						newFaceBack->SetNormal(faceNormal);
@@ -666,7 +666,7 @@ void decConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEdge
 			// if the side is <= 0 add the vertex to the back face. this has to come after the
 			// crossing checks above to keep the ordering correct
 			if(curSide <= 0){
-				if(! newFaceBack){
+				if(!newFaceBack){
 					DBG(printf("curSide<=0: create back face\n"));
 					newFaceBack = CreateFace(&face);
 					newFaceBack->SetNormal(faceNormal);

@@ -233,7 +233,7 @@ void deImage::RetainImageData(){
 	}
 	
 	// load image data
-	if(! pData){
+	if(!pData){
 		deImageManager &manager = *((deImageManager*)GetResourceManager());
 // 		manager.LogInfoFormat( "Retain image '%s'", GetFilename().GetString() );
 		decBaseFileReader::Ref fileReader;
@@ -246,7 +246,7 @@ void deImage::RetainImageData(){
 			fileReader.TakeOver(manager.OpenFileForReading(*GetVirtualFileSystem(), GetFilename()));
 			
 			info = module->InitLoadImage(fileReader);
-			if(! info){
+			if(!info){
 				DETHROW(deeInvalidParam);
 			}
 			
@@ -316,7 +316,7 @@ void deImage::SetPeerGraphic(deBaseGraphicImage *peer){
 	}
 	
 	if(pPeerGraphic){
-		if(! GetAsynchron() && pPeerGraphic->RetainImageData()){
+		if(!GetAsynchron() && pPeerGraphic->RetainImageData()){
 			ReleaseImageData();
 		}
 		delete pPeerGraphic;
@@ -325,7 +325,7 @@ void deImage::SetPeerGraphic(deBaseGraphicImage *peer){
 	pPeerGraphic = peer;
 	
 	if(peer){
-		if(! GetAsynchron() && peer->RetainImageData()){
+		if(!GetAsynchron() && peer->RetainImageData()){
 			RetainImageData();
 		}
 	}

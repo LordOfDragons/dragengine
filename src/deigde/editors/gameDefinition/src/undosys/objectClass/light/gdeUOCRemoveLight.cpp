@@ -45,11 +45,11 @@ gdeUOCRemoveLight::gdeUOCRemoveLight(gdeObjectClass *objectClass, gdeOCLight *li
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetLights().Has(light)){
+	if(!objectClass->GetLights().Has(light)){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -44,7 +44,7 @@ gdeUOCSpeakerTogglePlaying::gdeUOCSpeakerTogglePlaying(gdeObjectClass *objectCla
 pObjectClass(NULL),
 pSpeaker(NULL)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -72,7 +72,7 @@ gdeUOCSpeakerTogglePlaying::~gdeUOCSpeakerTogglePlaying(){
 ///////////////
 
 void gdeUOCSpeakerTogglePlaying::Undo(){
-	pSpeaker->SetPlaying(! pSpeaker->GetPlaying());
+	pSpeaker->SetPlaying(!pSpeaker->GetPlaying());
 	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 

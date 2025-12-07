@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakBodyLAAdd::ceUCAASpeakBodyLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, int index){
-	if(! topic || ! actorSpeak || ! bodyLookAt){
+	if(!topic || !actorSpeak || !bodyLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetBodyLookAtList().GetCount()){

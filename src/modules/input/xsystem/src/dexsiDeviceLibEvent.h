@@ -65,10 +65,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Libevdev event file path or empty string if not using libevdev. */
-	inline const decString &GetEvdevPath() const{return pEvdevPath;}
+	inline const decString &GetEvdevPath() const{ return pEvdevPath; }
 	
 	/** \brief Libevdev device or \em NULL if not using libevdev. */
-	inline libevdev *GetEvdevDevice() const{return pEvdevDevice;}
+	inline libevdev *GetEvdevDevice() const{ return pEvdevDevice; }
 	
 	
 	

@@ -64,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Module path. */
-	inline const decString &GetPathModules() const{return pPathModules;}
+	inline const decString &GetPathModules() const{ return pPathModules; }
 	
 	/** \brief Activate module or NULL if none is active. */
-	inline igdeEditorModuleDefinition *GetActiveModule() const{return pActiveModule;}
+	inline igdeEditorModuleDefinition *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Set active module. */
 	void SetActiveModule(igdeEditorModuleDefinition *module);

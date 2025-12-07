@@ -67,25 +67,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief System config path. */
-	inline const decString &GetPathConfigSystem() const{return pPathConfigSystem;}
+	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	
 	/** \brief Set system config path. */
 	void SetPathConfigSystem(const char *path);
 	
 	/** \brief User config path. */
-	inline const decString &GetPathConfigUser() const{return pPathConfigUser;}
+	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
 	
 	/** \brief Set user config path. */
 	void SetPathConfigUser(const char *path);
 	
 	/** \brief Shares path. */
-	inline const decString &GetPathShares() const{return pPathShares;}
+	inline const decString &GetPathShares() const{ return pPathShares; }
 	
 	/** \brief Set shares path. */
 	void SetPathShares(const char *path);
 	
 	/** \brief Logs path. */
-	inline const decString &GetPathLogs() const{return pPathLogs;}
+	inline const decString &GetPathLogs() const{ return pPathLogs; }
 	
 	/** \brief Set logs path. */
 	void SetPathLogs(const char *path);
@@ -116,20 +116,20 @@ public:
 	void SaveConfiguration();
 	
 	/** \brief Main window configuration. */
-	inline dealConfigWindow &GetWindowMain(){return pWindowMain;}
-	inline const dealConfigWindow &GetWindowMain() const{return pWindowMain;}
+	inline dealConfigWindow &GetWindowMain(){ return pWindowMain; }
+	inline const dealConfigWindow &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Background color for valid elements. */
-	inline int GetBackColorValid() const{return pClrValidBack;}
+	inline int GetBackColorValid() const{ return pClrValidBack; }
 	
 	/** \brief Background color for problem elements. */
-	inline int GetBackColorProblem() const{return pClrProblemBack;}
+	inline int GetBackColorProblem() const{ return pClrProblemBack; }
 	
 	/** \brief Text color for valid elements. */
-	inline int GetTextColorValid() const{return pClrValidText;}
+	inline int GetTextColorValid() const{ return pClrValidText; }
 	
 	/** \brief Text color for problem elements. */
-	inline int GetTextColorProblem() const{return pClrProblemText;}
+	inline int GetTextColorProblem() const{ return pClrProblemText; }
 	/*@}*/
 	
 private:

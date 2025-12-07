@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius){
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	

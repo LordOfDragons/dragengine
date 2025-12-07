@@ -45,7 +45,7 @@ int layer, const seClipboardDataPropertyNode &clipboardData) :
 pGroup(NULL),
 pLayer(layer)
 {
-	if(! group || ! group->GetProperty()){
+	if(!group || !group->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

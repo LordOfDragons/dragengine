@@ -61,7 +61,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeSphere * const sphere = (reRigShapeSphere*)pPanel.GetShape();
-		if(! rig || ! sphere){
+		if(!rig || !sphere){
 			return;
 		}
 		

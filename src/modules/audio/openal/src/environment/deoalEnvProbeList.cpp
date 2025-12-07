@@ -123,7 +123,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom(const decDVector &positio
 	int i;
 	for(i=0; i<count; i++){
 		deoalEnvProbe &probe = *((deoalEnvProbe*)pProbes.GetAt(i));
-		if(! probe.GetOctreeNode()){
+		if(!probe.GetOctreeNode()){
 			continue; // invalidated
 		}
 		const double distanceSquared = (probe.GetPosition() - position).LengthSquared();
@@ -225,7 +225,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays(const decDVector &posit
 	int i;
 	for(i=0; i<count; i++){
 		deoalEnvProbe &probe = *((deoalEnvProbe*)pProbes.GetAt(i));
-		if(! probe.GetOctreeNode()){
+		if(!probe.GetOctreeNode()){
 			continue; // invalidated
 		}
 		if(probe.GetEstimated()){

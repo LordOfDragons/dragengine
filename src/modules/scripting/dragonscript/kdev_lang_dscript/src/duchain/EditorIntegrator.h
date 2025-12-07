@@ -16,7 +16,7 @@ class KDEVDSDUCHAIN_EXPORT EditorIntegrator{
 public:
 	EditorIntegrator(ParseSession &session);
 	
-	inline ParseSession *parseSession() const{return &pSession;}
+	inline ParseSession *parseSession() const{ return &pSession; }
 	
 	enum Edge {
 		FrontEdge,
@@ -28,7 +28,7 @@ public:
 		OuterEdge
 	};
 	
-	inline ParseSession &session() const{return pSession;}
+	inline ParseSession &session() const{ return pSession; }
 	
 	QString tokenText(qint64 token) const;
 	QString tokenText(const AstNode &node) const;

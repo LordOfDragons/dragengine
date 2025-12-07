@@ -107,22 +107,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
-	inline deoglRHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
+	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
 	
 	/** Sector coordinates. */
-	inline const decPoint &GetCoordinates() const{return pCoordinates;}
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
 	/** Base height. */
-	inline float GetBaseHeight() const{return pBaseHeight;}
+	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
 	/** Scaling. */
-	inline float GetScaling() const{return pScaling;}
+	inline float GetScaling() const{ return pScaling; }
 	
 	/** Calculate world matrix. */
 	decDMatrix CalcWorldMatrix() const;
@@ -147,19 +147,19 @@ public:
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
 	deoglHTSTexture &GetTextureAt(int index) const;
 	
 	/** Terrain height map mask textures. */
-	inline deoglTexture **GetMaskTextures(){return pMasks;}
+	inline deoglTexture **GetMaskTextures(){ return pMasks; }
 	
 	/** Sector is valid. */
-	inline bool GetValid() const{return pValid;}
+	inline bool GetValid() const{ return pValid; }
 	
 	/** Textures are valid. */
-	inline bool GetValidTextures() const{return pValidTextures;}
+	inline bool GetValidTextures() const{ return pValidTextures; }
 	
 	/** Texture requires prepare for render. */
 	void TextureRequirePrepareForRender();
@@ -167,13 +167,13 @@ public:
 	
 	
 	/** Heights. */
-	inline float *GetHeights() const{return pHeights;}
+	inline float *GetHeights() const{ return pHeights; }
 	
 	/** Minimum height. */
-	inline float GetMinHeight() const{return pMinHeight;}
+	inline float GetMinHeight() const{ return pMinHeight; }
 	
 	/** Maximum height. */
-	inline float GetMaxHeight() const{return pMaxHeight;}
+	inline float GetMaxHeight() const{ return pMaxHeight; }
 	
 	/** Height changed. */
 	void HeightChanged(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to);
@@ -184,14 +184,14 @@ public:
 	
 	
 	/** Number of clusters. */
-	inline int GetClusterCount() const{return pClusterCount;}
+	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at location. */
 	deoglHTSCluster &GetClusterAt(int x, int z) const;
 	deoglHTSCluster &GetClusterAt(const decPoint &coordinate) const;
 	
 	/** List of clusters. */
-	inline deoglHTSCluster *GetClusters() const{return pClusters;}
+	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
 	
 	/** Clusters update world compute element textures. */
 	void ClustersUpdateWorldComputeElementTextures();

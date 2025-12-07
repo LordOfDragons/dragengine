@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -84,7 +84,7 @@ public:
 	 */
 	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule);
 	
-	inline dsClass *GetClassAnimatorRuleBlendMode() const{return pClsAnimatorRuleBlendMode;}
+	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
 	/*@}*/
 	
 private:

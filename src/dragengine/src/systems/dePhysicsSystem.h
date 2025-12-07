@@ -70,7 +70,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deBasePhysicsModule *GetActiveModule() const{return pActiveModule;}
+	inline deBasePhysicsModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create peer object for the given component using the active module and assigns it. */
 	void LoadComponent(deComponent *component);

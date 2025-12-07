@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent window. */
-	inline seWPEffect &GetWPEffect() const{return pWPEffect;}
+	inline seWPEffect &GetWPEffect() const{ return pWPEffect; }
 	
 	/** \brief Required effect type. */
-	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetRequiredType() const{return pRequiredType;}
+	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetRequiredType() const{ return pRequiredType; }
 	
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
@@ -135,8 +135,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{return pActionLinkAdd;}
-	inline igdeAction *GetActionLinkRemove() const{return pActionLinkRemove;}
+	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

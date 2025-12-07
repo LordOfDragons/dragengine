@@ -37,10 +37,10 @@ class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
 public:
 	/** \brief Mapped. */
 	enum eTextMapped{
-		etmFontSize, //<! Font size
-		etmColorRed, //<! Color red component
-		etmColorGreen, //<! Color green component
-		etmColorBlue //<! Color blue component
+		etmFontSize, //<!Font size
+		etmColorRed, //<!Color red component
+		etmColorGreen, //<!Color green component
+		etmColorBlue //<!Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;
@@ -73,19 +73,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font path or empty string if not set. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set font path or empty path if not set. */
 	void SetPath(const char *path);
 	
 	/** \brief Font or nullptr if not set. */
-	inline const deFont::Ref &GetFont() const{return pFont;}
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font or nullptr to unset. */
 	void SetFont(deFont *font);
 	
 	/** \brief Font size in canvas units. */
-	inline float GetFontSize() const{return pFontSize;}
+	inline float GetFontSize() const{ return pFontSize; }
 	
 	/**
 	 * \brief Set font size in canvas units.
@@ -95,13 +95,13 @@ public:
 	void SetFontSize(float size);
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);

@@ -45,7 +45,7 @@
 
 ceUCAPChoiceActionRemoveAll::ceUCAPChoiceActionRemoveAll(ceConversationTopic *topic,
 ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
-	if(! topic || ! playerChoice){
+	if(!topic || !playerChoice){
 		DETHROW(deeInvalidParam);
 	}
 	

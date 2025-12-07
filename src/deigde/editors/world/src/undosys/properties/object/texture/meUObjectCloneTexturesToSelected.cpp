@@ -63,7 +63,7 @@ const meObjectList &list, const meObjectTextureList &textureList){
 		for(i=0; i<objectCount; i++){
 			object = list.GetAt(i);
 			
-			if(! object->GetWorld()){
+			if(!object->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

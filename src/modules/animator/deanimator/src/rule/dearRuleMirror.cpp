@@ -101,7 +101,7 @@ dearRuleMirror::~dearRuleMirror(){
 
 void dearRuleMirror::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled() || pBonePairCount == 0){
+	if(!GetEnabled() || pBonePairCount == 0){
 		return;
 	}
 	

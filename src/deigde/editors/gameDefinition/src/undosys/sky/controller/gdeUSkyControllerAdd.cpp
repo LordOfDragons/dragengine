@@ -44,7 +44,7 @@ gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *contro
 pSky(NULL),
 pController(NULL)
 {
-	if(! sky || ! controller){
+	if(!sky || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

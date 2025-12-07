@@ -71,7 +71,7 @@ bool gdeFilePatternList::Has(gdeFilePattern *pattern) const{
 }
 
 void gdeFilePatternList::Add(gdeFilePattern *pattern){
-	if(! pattern || Has(pattern)){
+	if(!pattern || Has(pattern)){
 		DETHROW(deeInvalidParam);
 	}
 	

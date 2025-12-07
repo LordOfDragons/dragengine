@@ -68,14 +68,14 @@ bool seControllerList::Has(seController *controller) const{
 }
 
 void seControllerList::Add(seController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Add(controller);
 }
 
 void seControllerList::InsertAt(seController *controller, int index){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Insert(controller, index);

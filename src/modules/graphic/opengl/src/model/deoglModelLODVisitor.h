@@ -59,18 +59,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the box minimum extend. */
-	inline const decVector &GetBoxMinExtend() const{return pBoxMinExtend;}
+	inline const decVector &GetBoxMinExtend() const{ return pBoxMinExtend; }
 	/** Retrieves the box maximum extend. */
-	inline const decVector &GetBoxMaxExtend() const{return pBoxMaxExtend;}
+	inline const decVector &GetBoxMaxExtend() const{ return pBoxMaxExtend; }
 	/** Sets the box extends. */
 	void SetBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Retrieves the lod point. */
-	inline const decVector &GetLODPoint() const{return pLODPoint;}
+	inline const decVector &GetLODPoint() const{ return pLODPoint; }
 	/** Sets the lod point. */
 	void SetLODPoint(const decVector &lodPoint);
 	
 	/** Retrieves the minimum lod distance. */
-	inline float GetMinLODDistance() const{return pMinLODDistance;}
+	inline float GetMinLODDistance() const{ return pMinLODDistance; }
 	/** Sets the minimum lod distance. */
 	void SetMinLODDistance(float distance);
 	/*@}*/

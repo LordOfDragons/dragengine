@@ -86,7 +86,7 @@ void debiDevice::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -158,7 +158,7 @@ int debiDevice::IndexOfButtonWithBICode(int code) const{
 }
 
 void debiDevice::AddButton(debiDeviceButton *button){
-	if(! button){
+	if(!button){
 		DETHROW(deeNullPointer);
 	}
 	pButtons.Add(button);
@@ -209,7 +209,7 @@ int debiDevice::IndexOfAxisWithBICode(int code) const{
 }
 
 void debiDevice::AddAxis(debiDeviceAxis *axis){
-	if(! axis){
+	if(!axis){
 		DETHROW(deeNullPointer);
 	}
 	pAxes.Add(axis);
@@ -255,7 +255,7 @@ void debiDevice::Update(){
 }
 
 void debiDevice::SendDirtyAxisEvents(){
-	if(! pDirtyAxesValues){
+	if(!pDirtyAxesValues){
 		return;
 	}
 	

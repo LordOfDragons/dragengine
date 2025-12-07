@@ -102,7 +102,7 @@ public:
 	
 	virtual void OnAction(){
 		projProject * const project = pPanel.GetProject();
-		if(! project || ! project->GetActiveProfile()){
+		if(!project || !project->GetActiveProfile()){
 			return;
 		}
 		
@@ -129,12 +129,12 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		projProject * const project = pPanel.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -157,12 +157,12 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		projProject * const project = pPanel.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -185,12 +185,12 @@ public:
 	
 	virtual void OnPointChanged(igdeEditPoint *editPoint){
 		projProject * const project = pPanel.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if(! profile){
+		if(!profile){
 			return;
 		}
 		
@@ -215,7 +215,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		projProject * const project = pPanel.GetProject();
-		if(! project){
+		if(!project){
 			return;
 		}
 		
@@ -368,7 +368,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
-		if(! pPanel.GetActiveProfile()){
+		if(!pPanel.GetActiveProfile()){
 			return;
 		}
 		
@@ -499,7 +499,7 @@ public:
 	
 	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
 		const igdeListItem * const selection = pListIcons.GetSelectedItem();
-		if(! selection || ! profile->GetIcons().Has(selection->GetText())){
+		if(!selection || !profile->GetIcons().Has(selection->GetText())){
 			return NULL;
 		}
 		
@@ -547,7 +547,7 @@ public:
 	
 	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
 		const igdeListItem * const selection = pListPatterns.GetSelectedItem();
-		if(! selection || ! profile->GetExcludePatterns().Has(selection->GetText())){
+		if(!selection || !profile->GetExcludePatterns().Has(selection->GetText())){
 			return NULL;
 		}
 		
@@ -595,7 +595,7 @@ public:
 	
 	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
 		const igdeListItem * const selection = pListPatterns.GetSelectedItem();
-		if(! selection || ! profile->GetRequiredExtensions().Has(selection->GetText())){
+		if(!selection || !profile->GetRequiredExtensions().Has(selection->GetText())){
 			return NULL;
 		}
 		
@@ -886,7 +886,7 @@ void projPanelProfiles::UpdateProject(){
 }
 
 projProfile *projPanelProfiles::GetActiveProfile() const{
-	if(! pProject){
+	if(!pProject){
 		return NULL;
 	}
 	return pProject->GetActiveProfile();
@@ -1003,7 +1003,7 @@ void projPanelProfiles::UpdateIcons(){
 		pListIcons->SortItems();
 	}
 	
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		pListIcons->SetSelection(pListIcons->IndexOfItem(selection));
 	}
 	
@@ -1039,7 +1039,7 @@ void projPanelProfiles::UpdateExcludePatterns(){
 		pListExcludePatterns->SortItems();
 	}
 	
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		pListExcludePatterns->SetSelection(pListExcludePatterns->IndexOfItem(selection));
 	}
 	
@@ -1075,7 +1075,7 @@ void projPanelProfiles::UpdateRequiredExtensions(){
 		pListRequiredExtensions->SortItems();
 	}
 	
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		pListRequiredExtensions->SetSelection(pListRequiredExtensions->IndexOfItem(selection));
 	}
 	

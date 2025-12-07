@@ -72,13 +72,13 @@ public:
 	
 	
 	/** Type. */
-	inline deoglRPropFieldType *GetType() const{return pType;}
+	inline deoglRPropFieldType *GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deoglRPropFieldType *type);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{return pClusterCount;}
+	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at index. */
 	deoglCollideListPropFieldCluster &GetClusterAt(int index) const;
@@ -95,10 +95,10 @@ public:
 	
 	
 	/** Prop field type is empty. */
-	inline bool GetIsEmpty() const{return pClusterCount == 0;}
+	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
 	
 	/** Prop field type is not empty. */
-	inline bool GetIsNotEmpty() const{return pClusterCount > 0;}
+	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
 	/*@}*/
 };
 

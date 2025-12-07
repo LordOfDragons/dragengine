@@ -203,7 +203,7 @@ void lpeWindowMain::CreateNewLangPack(){
 }
 
 void lpeWindowMain::SaveLangPack(const char *filename){
-	if(! pLangPack){
+	if(!pLangPack){
 		return;
 	}
 	
@@ -314,7 +314,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetLangPack()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
 			return;
@@ -344,7 +344,7 @@ public:
 		"Saves the font under a differen file", deInputEvent::ekcA){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetLangPack()){
+		if(!pWindow.GetLangPack()){
 			return;
 		}
 		
@@ -373,7 +373,7 @@ public:
 	}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetLangPack()){
+		if(!pWindow.GetLangPack()){
 			return;
 		}
 		
@@ -403,7 +403,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetLangPack()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Reference Language Pack",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Reference Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
 			return;
@@ -475,7 +475,7 @@ public:
 	
 	virtual void OnAction(){
 		lpeLangPack * const langpack = pWindow.GetLangPack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		
@@ -520,7 +520,7 @@ public:
 	
 	virtual void OnAction(){
 		lpeLangPack * const langpack = pWindow.GetLangPack();
-		if(! langpack){
+		if(!langpack){
 			return;
 		}
 		

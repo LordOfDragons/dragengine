@@ -101,7 +101,7 @@ void seSourceSound::UpdateSound(){
 		pSound = NULL;
 	}
 	
-	if(! pPathSound.IsEmpty() && GetSynthesizer()){
+	if(!pPathSound.IsEmpty() && GetSynthesizer()){
 		const decString &basePath = GetSynthesizer()->GetDirectoryPath();
 		
 		try{

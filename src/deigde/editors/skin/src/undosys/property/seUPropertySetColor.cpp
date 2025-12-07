@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &newColor){
-	if(! property) DETHROW(deeInvalidParam);
+	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	

@@ -45,11 +45,11 @@ gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCC
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetComponents().Has(component)){
+	if(!objectClass->GetComponents().Has(component)){
 		DETHROW(deeInvalidParam);
 	}
 	

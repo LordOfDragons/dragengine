@@ -81,7 +81,7 @@ deBaseImageInfo *deIesModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		info = new deIesFormatLm63d1986;
 		
-		if(! info->LoadHeader(file)){
+		if(!info->LoadHeader(file)){
 			delete info;
 			return NULL;
 		}

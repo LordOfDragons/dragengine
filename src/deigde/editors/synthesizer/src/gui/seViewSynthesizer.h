@@ -69,13 +69,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Reset view. */
 	void ResetView();
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);

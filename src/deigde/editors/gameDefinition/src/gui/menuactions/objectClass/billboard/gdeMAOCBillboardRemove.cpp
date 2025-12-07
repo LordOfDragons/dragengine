@@ -65,7 +65,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
-	if(! billboard){
+	if(!billboard){
 		return NULL;
 	}
 	

@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{return pDevice;}
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Count of pipelines. */
 	int GetCount() const;

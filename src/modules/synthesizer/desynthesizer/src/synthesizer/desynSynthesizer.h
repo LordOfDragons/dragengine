@@ -83,40 +83,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDESynthesizer &GetModule() const{return pModule;}
+	inline deDESynthesizer &GetModule() const{ return pModule; }
 	
 	/** \brief Synthesizer engine resource. */
-	inline deSynthesizer &GetSynthesizer() const{return pSynthesizer;}
+	inline deSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Synthesizer is silent. */
-	inline bool GetSilent() const{return pSilent;}
+	inline bool GetSilent() const{ return pSilent; }
 	
 	/** \brief Set if synthesizer is silent. */
 	void SetSilent(bool silent);
 	
 	/** \brief Size of state data in bytes. */
-	inline int GetStateDataSize() const{return pStateDataSize;}
+	inline int GetStateDataSize() const{ return pStateDataSize; }
 	
 	/** \brief Set size of state data in bytes. */
 	void SetStateDataSize(int size);
 	
 	/** \brief Current update tracker value. */
-	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
+	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	
 	/** \brief Channel count. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Sample count. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Mutex. */
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 	
 	
 	
@@ -132,7 +132,7 @@ public:
 	
 	
 	/** \brief Number of sources. */
-	inline int GetSourceCount() const{return pSourceCount;}
+	inline int GetSourceCount() const{ return pSourceCount; }
 	
 	/** \brief Source at index. */
 	const desynSynthesizerSource &GetSourceAt(int index) const;

@@ -66,7 +66,7 @@ public:
 	void SetProperty(seProperty *property);
 	
 	/** \brief Node group is the active one. */
-	inline bool GetActiveGroup() const{return pActiveGroup;}
+	inline bool GetActiveGroup() const{ return pActiveGroup; }
 	
 	/** \brief Set if node group is the active one. */
 	void SetActiveGroup(bool active);

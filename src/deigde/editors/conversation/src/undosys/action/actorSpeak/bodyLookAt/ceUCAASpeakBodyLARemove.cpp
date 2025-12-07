@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakBodyLARemove::ceUCAASpeakBodyLARemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt){
-	if(! topic || ! actorSpeak || ! bodyLookAt){
+	if(!topic || !actorSpeak || !bodyLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	

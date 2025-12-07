@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline ScriptingSmalltalk &GetST() const{return pST;}
+	inline ScriptingSmalltalk &GetST() const{ return pST; }
 	
 	/** \brief Set up links. */
 	void SetUpLinks();

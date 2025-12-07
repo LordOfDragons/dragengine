@@ -64,10 +64,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction &GetAction() const{return *pAction;}
+	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
 	/** \brief Condition. */
-	inline ceConversationCondition *GetCondition() const{return pCondition;}
+	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Deep find condition. */
 	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);

@@ -59,15 +59,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	/** \brief Sets the identifier. */
 	void SetID(const char *id);
 	/** \brief Retrieves the pause in seconds. */
-	inline float GetPause() const{return pPause;}
+	inline float GetPause() const{ return pPause; }
 	/** \brief Sets the pause in seconds. */
 	void SetPause(float pause);
 	/** \brief Retrieves the duration in seconds. */
-	inline float GetDuration() const{return pDuration;}
+	inline float GetDuration() const{ return pDuration; }
 	/** \brief Sets the duration in seconds. */
 	void SetDuration(float duration);
 	/*@}*/

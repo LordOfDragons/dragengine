@@ -51,7 +51,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the half extends. */
-	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
+	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	/** Sets the half extends. */
 	void SetHalfExtends(const decVector &halfExtends);
 	

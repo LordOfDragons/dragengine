@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
-	if(! world || ! sector || ! newPath) DETHROW(deeInvalidParam);
+	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;

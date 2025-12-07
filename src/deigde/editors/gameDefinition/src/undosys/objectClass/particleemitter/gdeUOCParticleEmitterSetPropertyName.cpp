@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pParticleEmitter(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! particleEmitter){
+	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

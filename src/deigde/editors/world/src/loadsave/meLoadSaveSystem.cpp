@@ -70,7 +70,7 @@
 ////////////////////////////
 
 meLoadSaveSystem::meLoadSaveSystem(meWindowMain *wndMain){
-	if(! wndMain) DETHROW(deeInvalidParam);
+	if(!wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
 	
@@ -117,18 +117,18 @@ meLSWorld *meLoadSaveSystem::GetLSWorldAt(int index) const{
 }
 
 meLSWorld *meLoadSaveSystem::FindLSWorldMatching(const char *filename) const{
-	if(! filename) DETHROW(deeInvalidParam);
+	if(!filename) DETHROW(deeInvalidParam);
 	// hack!
 	return pLSWorlds[0];
 }
 
 void meLoadSaveSystem::AddLSWorld(meLSWorld *lsWorld){
-	if(! lsWorld) DETHROW(deeInvalidParam);
+	if(!lsWorld) DETHROW(deeInvalidParam);
 	
 	if(pLSWorldCount == pLSWorldSize){
 		int i, newSize = pLSWorldSize * 3 / 2 + 1;
 		meLSWorld **newArray = new meLSWorld*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSWorlds){
 			for(i=0; i<pLSWorldSize; i++) newArray[i] = pLSWorlds[i];
 			delete [] pLSWorlds;
@@ -143,12 +143,12 @@ void meLoadSaveSystem::AddLSWorld(meLSWorld *lsWorld){
 
 meWorld *meLoadSaveSystem::LoadWorld(const char *filename,
 igdeGameDefinition *gameDefinition, igdeStepableTask **task){
-	if(! filename || ! gameDefinition || ! task){
+	if(!filename || !gameDefinition || !task){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meLSWorld * const lsWorld = FindLSWorldMatching(filename);
-	if(! lsWorld){
+	if(!lsWorld){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,10 +167,10 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task){
 }
 
 void meLoadSaveSystem::SaveWorld(meWorld *world, const char *filename){
-	if(! world || ! filename) DETHROW(deeInvalidParam);
+	if(!world || !filename) DETHROW(deeInvalidParam);
 	
 	meLSWorld * const lsWorld = FindLSWorldMatching(filename);
-	if(! lsWorld) DETHROW(deeInvalidParam); // hack
+	if(!lsWorld) DETHROW(deeInvalidParam); // hack
 	
 	lsWorld->SaveWorld(*this, *world, decBaseFileWriter::Ref::New(
 		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
@@ -189,19 +189,19 @@ meLSHeightTerrain *meLoadSaveSystem::GetLSHeightTerrainAt(int index) const{
 }
 
 meLSHeightTerrain *meLoadSaveSystem::FindLSHeightTerrainMatching(const char *filename) const{
-	if(! filename) DETHROW(deeInvalidParam);
+	if(!filename) DETHROW(deeInvalidParam);
 	
 	// hack!
 	return pLSHTs[0];
 }
 
 void meLoadSaveSystem::AddLSHeightTerrain(meLSHeightTerrain *loader){
-	if(! loader) DETHROW(deeInvalidParam);
+	if(!loader) DETHROW(deeInvalidParam);
 	
 	if(pLSHTCount == pLSHTSize){
 		int i, newSize = pLSHTSize * 3 / 2 + 1;
 		meLSHeightTerrain **newArray = new meLSHeightTerrain*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSHTs){
 			for(i=0; i<pLSHTSize; i++) newArray[i] = pLSHTs[i];
 			delete [] pLSHTs;
@@ -216,7 +216,7 @@ void meLoadSaveSystem::AddLSHeightTerrain(meLSHeightTerrain *loader){
 
 void meLoadSaveSystem::LoadHeightTerrain(meHeightTerrain &heightTerrain, const char *filename){
 	meLSHeightTerrain * const loader = FindLSHeightTerrainMatching(filename);
-	if(! loader){
+	if(!loader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -227,7 +227,7 @@ void meLoadSaveSystem::LoadHeightTerrain(meHeightTerrain &heightTerrain, const c
 
 void meLoadSaveSystem::SaveHeightTerrain(meHeightTerrain &heightTerrain, const char *filename){
 	meLSHeightTerrain * const loader = FindLSHeightTerrainMatching(filename);
-	if(! loader){
+	if(!loader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -256,7 +256,7 @@ void meLoadSaveSystem::SavePFCache(meHeightTerrainSector &sector, const char *fi
 
 
 void meLoadSaveSystem::LoadNavTest(const char *filename, meWorld &world){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -266,7 +266,7 @@ void meLoadSaveSystem::LoadNavTest(const char *filename, meWorld &world){
 }
 
 void meLoadSaveSystem::SaveNavTest(const char *filename, meWorld &world){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -336,7 +336,7 @@ void meLoadSaveSystem::pRebuildFilePatternLists(){
 	
 	/*
 	newPattern = new char[1];
-	if(! newPattern) DETHROW(deeOutOfMemory);
+	if(!newPattern) DETHROW(deeOutOfMemory);
 	newPattern[0] = '\0';
 	
 	if(pFDPattern) delete [] pFDPattern;
@@ -352,7 +352,7 @@ void meLoadSaveSystem::pRebuildFilePatternLists(){
 		if(i > 0) newLen++;
 		
 		newPattern = new char[newLen + 1];
-		if(! newPattern) DETHROW(deeOutOfMemory);
+		if(!newPattern) DETHROW(deeOutOfMemory);
 		
 		if(i > 0){
 			sprintf(newPattern, "\n%s (*%s)", lsName, lsPattern);

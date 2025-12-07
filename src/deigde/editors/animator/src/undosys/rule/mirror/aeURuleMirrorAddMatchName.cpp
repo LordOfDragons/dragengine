@@ -37,7 +37,7 @@ aeURuleMirrorAddMatchName::aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleM
 pRule(rule),
 pMatchName(matchName)
 {
-	if(! rule || ! matchName || rule->HasMatchName(matchName)){
+	if(!rule || !matchName || rule->HasMatchName(matchName)){
 		DETHROW(deeInvalidParam);
 	}
 	

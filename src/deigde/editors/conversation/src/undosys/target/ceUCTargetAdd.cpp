@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
-	if(! conversation || ! target) DETHROW(deeInvalidParam);
+	if(!conversation || !target) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pTarget = NULL;

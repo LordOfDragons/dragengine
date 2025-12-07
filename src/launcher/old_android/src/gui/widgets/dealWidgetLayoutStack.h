@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resize widgets to content area size. */
-	inline bool GetFullSize() const{return pFullSize;}
+	inline bool GetFullSize() const{ return pFullSize; }
 	
 	/** \brief Set if widgets are resized to content area size. */
 	void SetFullSize(bool fullSize);

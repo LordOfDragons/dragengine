@@ -58,7 +58,7 @@ pHasCollision(false)
 }
 
 dedsColliderListenerClosest::~dedsColliderListenerClosest(){
-	if(! pListener){
+	if(!pListener){
 		return;
 	}
 	
@@ -92,7 +92,7 @@ void dedsColliderListenerClosest::Reset(){
 }
 
 void dedsColliderListenerClosest::NotifyListener(){
-	if(! pHasCollision || ! pHasListener){
+	if(!pHasCollision || !pHasListener){
 		return;
 	}
 	
@@ -139,7 +139,7 @@ void dedsColliderListenerClosest::CollisionResponse(deCollider *owner, deCollisi
 }
 
 bool dedsColliderListenerClosest::CanHitCollider(deCollider *owner, deCollider *collider){
-	if(! pHasListener){
+	if(!pHasListener){
 		return false;
 	}
 	

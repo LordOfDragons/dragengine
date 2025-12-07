@@ -71,15 +71,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** User id. */
-	inline const decString &GetId() const{return pId;}
+	inline const decString &GetId() const{ return pId; }
 	
 	
 	
 	/** Disabled modifications. */
-	inline const decStringSet &GetDisabledMods() const{return pDisabledMods;}
+	inline const decStringSet &GetDisabledMods() const{ return pDisabledMods; }
 	
 	/** Disabled modifications. Saving on changing has to be done manually. */
-	inline decStringSet &GetDisabledMods(){return pDisabledMods;}
+	inline decStringSet &GetDisabledMods(){ return pDisabledMods; }
 	
 	/** Set disabled modifications. */
 	void SetDisabledMods(const decStringSet &mods);
@@ -93,7 +93,7 @@ public:
 	
 	
 	/** User ratings. */
-	inline const decIntDictionary &GetUserRatings() const{return pUserRatings;}
+	inline const decIntDictionary &GetUserRatings() const{ return pUserRatings; }
 	
 	/** User rating for mod. */
 	Modio::Rating GetUserRating(const decString &id) const;

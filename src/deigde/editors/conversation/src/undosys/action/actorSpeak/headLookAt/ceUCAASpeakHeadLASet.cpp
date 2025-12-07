@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, ceStrip *newStrip){
-	if(! topic || ! actorSpeak || ! headLookAt || ! newStrip){
+	if(!topic || !actorSpeak || !headLookAt || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -289,7 +289,7 @@ pIsGACOpenGL(false),
 			#endif
 		}
 		
-		if(! graphicBinding){
+		if(!graphicBinding){
 			DETHROW_INFO(deeInvalidAction, "no supported graphic api");
 		}
 		
@@ -369,7 +369,7 @@ void deoxrSession::Begin(){
 }
 
 void deoxrSession::End(){
-	if(! pRunning){
+	if(!pRunning){
 		return;
 	}
 	
@@ -379,7 +379,7 @@ void deoxrSession::End(){
 	EndFrame();
 	pAttachedActionSet = nullptr;
 	
-	if(! instance.GetOxr().GetPreventDeletion()){
+	if(!instance.GetOxr().GetPreventDeletion()){
 		// prevent deletion of graphic api resources that are typically linked to another
 		// thread. this will cause memory leaks but better leak than crash if the runtime
 		// is buggy or not very resiliant (like SteamVR for example)
@@ -393,7 +393,7 @@ void deoxrSession::End(){
 }
 
 void deoxrSession::ForceEnd(){
-	if(! pRunning){
+	if(!pRunning){
 		return;
 	}
 	
@@ -401,7 +401,7 @@ void deoxrSession::ForceEnd(){
 	instance.GetOxr().LogInfoFormat("Force End Session");
 	ForceEndFrame();
 	pAttachedActionSet = nullptr;
-	if(! instance.GetOxr().GetPreventDeletion()){
+	if(!instance.GetOxr().GetPreventDeletion()){
 		instance.xrEndSession(pSession);
 	}
 	pRunning = false;
@@ -411,7 +411,7 @@ void deoxrSession::ForceEnd(){
 }
 
 void deoxrSession::AttachActionSet(deoxrActionSet *actionSet){
-	if(! actionSet){
+	if(!actionSet){
 		DETHROW_INFO(deeNullPointer, "actionSet");
 	}
 	
@@ -432,7 +432,7 @@ void deoxrSession::AttachActionSet(deoxrActionSet *actionSet){
 }
 
 void deoxrSession::WaitFrame(){
-	if(! pRunning || pFrameRunning){
+	if(!pRunning || pFrameRunning){
 		return;
 	}
 	
@@ -456,7 +456,7 @@ void deoxrSession::WaitFrame(){
 }
 
 void deoxrSession::BeginFrame(){
-	if(! pRunning || pFrameRunning){
+	if(!pRunning || pFrameRunning){
 		return;
 	}
 	
@@ -496,13 +496,13 @@ void deoxrSession::BeginFrame(){
 	// only once unless an event is received the images changed. theoretically if the fov
 	// changes the mask could change too but this is nigh impossible to ever happen
 	if(instance.SupportsExtension(deoxrInstance::extKHRVisibilityMask)){
-		if(! pLeftEyeHiddenMesh){
+		if(!pLeftEyeHiddenMesh){
 			pLeftEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
 				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0));
 			UpdateLeftEyeHiddenMesh();
 		}
 		
-		if(! pRightEyeHiddenMesh){
+		if(!pRightEyeHiddenMesh){
 			pRightEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
 				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1));
 			UpdateRightEyeHiddenMesh();
@@ -548,7 +548,7 @@ void deoxrSession::BeginFrame(){
 }
 
 void deoxrSession::EndFrame(){
-	if(! pRunning || ! pFrameRunning){
+	if(!pRunning || !pFrameRunning){
 		return;
 	}
 	
@@ -657,7 +657,7 @@ void deoxrSession::EndFrame(){
 }
 
 void deoxrSession::ForceEndFrame(){
-	if(! pRunning || ! pFrameRunning){
+	if(!pRunning || !pFrameRunning){
 		return;
 	}
 	
@@ -672,7 +672,7 @@ void deoxrSession::ForceEndFrame(){
 }
 
 void deoxrSession::SyncActions(){
-	if(! pRunning || ! pAttachedActionSet){
+	if(!pRunning || !pAttachedActionSet){
 		return;
 	}
 	

@@ -47,7 +47,7 @@
 
 meUHTPaintVisibility::meUHTPaintVisibility(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
 const decPoint &size, meBitArray *oldVis){
-	if(! world || ! oldVis) DETHROW(deeInvalidParam);
+	if(!world || !oldVis) DETHROW(deeInvalidParam);
 	
 	meHeightTerrain *hterrain = world->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
@@ -86,10 +86,10 @@ const decPoint &size, meBitArray *oldVis){
 	
 	try{
 		pOldVis = new meBitArray(size.x, size.y);
-		if(! pOldVis) DETHROW(deeOutOfMemory);
+		if(!pOldVis) DETHROW(deeOutOfMemory);
 		
 		pNewVis = new meBitArray(size.x, size.y);
-		if(! pNewVis) DETHROW(deeOutOfMemory);
+		if(!pNewVis) DETHROW(deeOutOfMemory);
 		
 		pSaveVisibility();
 		

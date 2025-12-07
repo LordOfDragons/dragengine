@@ -55,7 +55,7 @@
 ////////////////////////////
 
 reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -280,7 +280,7 @@ void reRigShape::pUpdateDDSColor(){
 }
 
 void reRigShape::pUpdateShapes(){
-	if(! pDirtyShape){
+	if(!pDirtyShape){
 		return;
 	}
 	

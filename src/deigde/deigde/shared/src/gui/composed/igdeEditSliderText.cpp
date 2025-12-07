@@ -185,7 +185,7 @@ void igdeEditSliderText::Focus(){
 
 
 void igdeEditSliderText::AddListener(igdeEditSliderTextListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

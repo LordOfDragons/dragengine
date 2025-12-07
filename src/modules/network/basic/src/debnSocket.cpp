@@ -318,7 +318,7 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 				char ip[INET6_ADDRSTRLEN];
 				memset(ip, 0, sizeof(ip));
 				
-				if(! inet_ntop(AF_INET6, &si->sin6_addr, ip, sizeof(ip))){
+				if(!inet_ntop(AF_INET6, &si->sin6_addr, ip, sizeof(ip))){
 					ua = ua->Next;
 					continue;
 				}
@@ -349,7 +349,7 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 				char ip[INET_ADDRSTRLEN];
 				memset(ip, 0, sizeof(ip));
 				
-				if(! inet_ntop(AF_INET, &si->sin_addr, ip, sizeof(ip))){
+				if(!inet_ntop(AF_INET, &si->sin_addr, ip, sizeof(ip))){
 					ua = ua->Next;
 					continue;
 				}
@@ -385,12 +385,12 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 	try{
 		// find first IPv6 address
 		for(ifiter=ifaddr; ifiter; ifiter=ifiter->ifa_next){
-			if(! ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET6){
+			if(!ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET6){
 				continue;
 			}
 			
 			const in6_addr &saddr = ((sockaddr_in6*)ifiter->ifa_addr)->sin6_addr;
-			if(! inet_ntop(AF_INET6, &saddr, bufferIPv6, INET6_ADDRSTRLEN)){
+			if(!inet_ntop(AF_INET6, &saddr, bufferIPv6, INET6_ADDRSTRLEN)){
 				continue;
 			}
 			
@@ -403,12 +403,12 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 		
 		// then find IPv4 address
 		for(ifiter=ifaddr; ifiter; ifiter=ifiter->ifa_next){
-			if(! ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET){
+			if(!ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET){
 				continue;
 			}
 			
 			const in_addr &saddr = ((sockaddr_in*)ifiter->ifa_addr)->sin_addr;
-			if(! inet_ntop(AF_INET, &saddr, bufferIPv4, INET_ADDRSTRLEN)){
+			if(!inet_ntop(AF_INET, &saddr, bufferIPv4, INET_ADDRSTRLEN)){
 				continue;
 			}
 			
@@ -503,9 +503,9 @@ uint32_t debnSocket::pScopeIdFor(const sockaddr_in6 &address){
 	
 	try{
 		PIP_ADAPTER_ADDRESSES curAddress = addresses;
-		while(curAddress && ! found){
+		while(curAddress && !found){
 			PIP_ADAPTER_UNICAST_ADDRESS ua = curAddress->FirstUnicastAddress;
-			while(ua && ! found){
+			while(ua && !found){
 				if(ua->Address.lpSockaddr->sa_family == AF_INET6){
 					const sockaddr_in6 * const si = (sockaddr_in6*)(ua->Address.lpSockaddr);
 					
@@ -541,7 +541,7 @@ uint32_t debnSocket::pScopeIdFor(const sockaddr_in6 &address){
 	
 	try{
 		for(ifiter=ifaddr; ifiter; ifiter=ifiter->ifa_next){
-			if(! ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET6){
+			if(!ifiter->ifa_addr || ifiter->ifa_addr->sa_family != AF_INET6){
 				continue;
 			}
 			

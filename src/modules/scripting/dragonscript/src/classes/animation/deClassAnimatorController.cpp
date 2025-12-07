@@ -570,7 +570,7 @@ void deClassAnimatorController::nfSetValueFrom::RunFunction(dsRunTime *rt, dsVal
 		: nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
-	if(! valFrom->GetRealObject()){
+	if(!valFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -600,7 +600,7 @@ void deClassAnimatorController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsValue
 		: nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
-	if(! valFrom->GetRealObject()){
+	if(!valFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -661,7 +661,7 @@ void deClassAnimatorController::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 	const sAnimatorCtrlNatDat &nd = *((const sAnimatorCtrlNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsAnimatorCtrl)){
+	if(!p_IsObjOfType(obj, clsAnimatorCtrl)){
 		rt->PushBool(false);
 		
 	}else{
@@ -758,7 +758,7 @@ void deClassAnimatorController::CreateClassMembers(dsEngine *engine){
 
 void deClassAnimatorController::GetController(dsRealObject *myself, deAnimator *&animator,
 deAnimatorInstance *&instance, int &index) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -769,7 +769,7 @@ deAnimatorInstance *&instance, int &index) const{
 }
 
 void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animator, int index){
-	if(! rt || ! animator || index < 0 || index >= animator->GetControllerCount()){
+	if(!rt || !animator || index < 0 || index >= animator->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -783,7 +783,7 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animat
 }
 
 void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance *instance, int index){
-	if(! rt || ! instance || index < 0 || index >= instance->GetControllerCount()){
+	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

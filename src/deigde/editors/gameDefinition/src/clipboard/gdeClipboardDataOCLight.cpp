@@ -42,7 +42,7 @@ gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight *light) :
 igdeClipboardData(TYPE_NAME),
 pLight(NULL)
 {
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	

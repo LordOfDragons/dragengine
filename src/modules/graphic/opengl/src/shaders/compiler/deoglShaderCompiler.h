@@ -63,9 +63,9 @@ private:
 		cCacheShader(deoglRenderThread &renderThread, deMutex &mutexLogging, int contextIndex,
 			const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
 		
-		inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
-		inline int GetContextIndex() const{return pContextIndex;}
-		inline const decString &GetCacheId() const{return pCacheId;}
+		inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+		inline int GetContextIndex() const{ return pContextIndex; }
+		inline const decString &GetCacheId() const{ return pCacheId; }
 		
 		void Run();
 	};
@@ -134,7 +134,7 @@ public:
 	
 	void PreparePreprocessor(const deoglShaderProgramUnit &unit);
 	void AppendPreprocessSourcesBuffer(const char *inputFile, const char *data);
-	inline deoglShaderPreprocessor &GetPreprocessor(){return pPreprocessor;}
+	inline deoglShaderPreprocessor &GetPreprocessor(){ return pPreprocessor; }
 	/*@}*/
 	
 	

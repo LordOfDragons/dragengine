@@ -67,7 +67,7 @@ pNodePose(nodePose)
 		const fbxRigBone::Ref bone(fbxRigBone::Ref::NewWith(*this, nodePoseBone, nodePoseBone));
 		bone->SetIndex(pBones.GetCount());
 		
-		if(! GetBoneNamed(bone->GetName())){
+		if(!GetBoneNamed(bone->GetName())){
 			pBones.Add(bone);
 		}
 	}
@@ -89,7 +89,7 @@ pNodePose(nodePose)
 				const fbxRigBone::Ref bone(fbxRigBone::Ref::NewWith(*this, nodePoseBone, nodeModel));
 				bone->SetIndex(pBones.GetCount());
 				
-				if(! GetBoneNamed(bone->GetName())){
+				if(!GetBoneNamed(bone->GetName())){
 					pBones.Add(bone);
 				}
 				
@@ -97,7 +97,7 @@ pNodePose(nodePose)
 				const fbxRigBone::Ref bone(fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel));
 				bone->SetIndex(pBones.GetCount());
 				
-				if(! GetBoneNamed(bone->GetName())){
+				if(!GetBoneNamed(bone->GetName())){
 					pBones.Add(bone);
 				}
 				
@@ -121,7 +121,7 @@ pNodePose(nodePose)
 			const fbxRigBone::Ref bone(fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel));
 			bone->SetIndex(pBones.GetCount());
 			
-			if(! GetBoneNamed(bone->GetName())){
+			if(!GetBoneNamed(bone->GetName())){
 				pBones.Add(bone);
 			}
 			
@@ -221,7 +221,7 @@ void fbxRig::pAddRootBone(fbxScene &scene, fbxNode &nodeRoot){
 		const fbxRigBone::Ref bone(fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel));
 		bone->SetIndex(pBones.GetCount());
 		
-		if(! GetBoneNamed(bone->GetName())){
+		if(!GetBoneNamed(bone->GetName())){
 			pBones.Add(bone);
 		}
 		

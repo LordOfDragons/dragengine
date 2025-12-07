@@ -68,13 +68,13 @@ bool ceTextBoxTextList::Has(ceTextBoxText *text) const{
 }
 
 void ceTextBoxTextList::Add(ceTextBoxText *text){
-	if(! text) DETHROW(deeInvalidParam);
+	if(!text) DETHROW(deeInvalidParam);
 	
 	pTexts.Add(text);
 }
 
 void ceTextBoxTextList::InsertAt(ceTextBoxText *text, int index){
-	if(! text) DETHROW(deeInvalidParam);
+	if(!text) DETHROW(deeInvalidParam);
 	
 	pTexts.Insert(text, index);
 }

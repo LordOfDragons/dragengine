@@ -67,22 +67,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Lower value. */
-	inline float GetLower() const{return pLower;}
+	inline float GetLower() const{ return pLower; }
 	
 	/** \brief Upper value. */
-	inline float GetUpper() const{return pUpper;}
+	inline float GetUpper() const{ return pUpper; }
 	
 	/** \brief Set value range. */
 	void SetRange(float lower, float upper);
 	
 	/** \brief Current value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
 	void SetValue(float value);
@@ -91,13 +91,13 @@ public:
 	void Increment(float amount);
 	
 	/** \brief Che controller is frozen. */
-	inline bool GetFrozen() const{return pFrozen;}
+	inline bool GetFrozen() const{ return pFrozen; }
 	
 	/** \brief Set if controller is frozen. */
 	void SetFrozen(bool frozen);
 	
 	/** \brief Values passed the range are clamped or wrapped around. */
-	inline bool GetClamp() const{return pClamp;}
+	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if values passed the range are clamped or wrapped around. */
 	void SetClamp(bool clamp);

@@ -71,7 +71,7 @@ void igdeGDAddToListVisitor::AddItemToList(const char *caption, deImage &image, 
 
 void igdeGDAddToListVisitor::AddItemToList(igdeListItem::Ref &item,
 const char *caption, deImage &image, void *userPointer){
-	if(! caption){
+	if(!caption){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -87,7 +87,7 @@ const char *caption, deImage &image, void *userPointer){
 		}
 		
 		if((int)(caption - line) >= maxCharPerLine){
-			if(! text.IsEmpty()){
+			if(!text.IsEmpty()){
 				text.AppendCharacter('\n');
 			}
 			
@@ -117,7 +117,7 @@ const char *caption, deImage &image, void *userPointer){
 	}
 	
 	if(*line){
-		if(! text.IsEmpty()){
+		if(!text.IsEmpty()){
 			text.AppendCharacter('\n');
 		}
 		text.Append(line);
@@ -143,7 +143,7 @@ const char *caption, deImage &image, void *userPointer){
 /////////////
 
 void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
-	if(! gdclass->GetCanInstantiate()){
+	if(!gdclass->GetCanInstantiate()){
 		return;
 	}
 	

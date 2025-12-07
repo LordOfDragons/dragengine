@@ -75,11 +75,11 @@ deoglImage::~deoglImage(){
 ///////////////
 
 void deoglImage::SyncToRender(){
-	if(! pDirtyTexture){
+	if(!pDirtyTexture){
 		return;
 	}
 	
-	if(! pPixelBufferRImageTexture){
+	if(!pPixelBufferRImageTexture){
 		if(pPixelBuffer){
 			// if there is a pixel buffer held already copy this one which is faster
 			pPixelBufferRImageTexture.TakeOver(new deoglPixelBuffer(pPixelBuffer));
@@ -114,7 +114,7 @@ void deoglImage::CreatePixelBuffer(){
 	}
 	
 	// first use of pixel buffer. create pixel buffer retaining image data if required
-	if(! pPixelBuffer){
+	if(!pPixelBuffer){
 		pPixelBuffer = pCreatePixelBuffer();
 	}
 }
@@ -145,14 +145,14 @@ void deoglImage::ImageDataChanged(){
 }
 
 void deoglImage::ImageDataRestored(){
-	if(! pPixelBufferRImageTexture){
+	if(!pPixelBufferRImageTexture){
 		pDirtyTexture = true;
 		pRequiresSync();
 	}
 }
 
 bool deoglImage::RetainImageData(){
-	return ! pOgl.GetConfiguration().GetEnableRetainImageOptimization();
+	return !pOgl.GetConfiguration().GetEnableRetainImageOptimization();
 }
 
 

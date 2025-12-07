@@ -133,7 +133,7 @@ pCount(0)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Transparency Max Count Stereo");
 	}
 	pAsyncGetPipeline(pPipelineTraCountMaxCountStereo, pipconf, sources, defines);
@@ -150,7 +150,7 @@ pCount(0)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Transparency Get Count Stereo");
 	}
 	pAsyncGetPipeline(pPipelineTraCountGetCountStereo, pipconf, sources, defines);
@@ -334,7 +334,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			RenderFullScreenQuad(plan);
 			
-			useTexture1 = ! useTexture1;
+			useTexture1 = !useTexture1;
 			curWidth = nextSize;
 		}
 		
@@ -362,7 +362,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			RenderFullScreenQuad(plan);
 			
-			useTexture1 = ! useTexture1;
+			useTexture1 = !useTexture1;
 			curHeight = nextSize;
 		}
 	}
@@ -412,7 +412,7 @@ DBG_EXIT("deoglRenderTranspCounting::CountTransparency")
 
 
 int deoglRenderTranspCounting::GetCount(){
-	if(! pHasCount){
+	if(!pHasCount){
 		pCount = pOccQuery->GetResult();
 		pHasCount = true;
 	}

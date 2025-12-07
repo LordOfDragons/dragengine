@@ -109,7 +109,7 @@ deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt(int index) const{
 }
 
 deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSharedInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	

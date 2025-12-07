@@ -120,19 +120,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator instance to update or NULL if not used. */
-	inline deAnimatorInstance *GetAnimatorInstance() const{return pAnimatorInstance;}
+	inline deAnimatorInstance *GetAnimatorInstance() const{ return pAnimatorInstance; }
 	
 	/** \brief Set animator instance to update or NULL if not used. */
 	void SetAnimatorInstance(deAnimatorInstance *instance);
 	
 	/** \brief Controller. */
-	inline int GetController() const{return pController;}
+	inline int GetController() const{ return pController; }
 	
 	/** \brief Set controller. */
 	void SetController(int controller);
 	
 	/** \brief Attribute. */
-	inline eAttributes GetAttribute() const{return pAttribute;}
+	inline eAttributes GetAttribute() const{ return pAttribute; }
 	
 	/** \brief Set attribute. */
 	void SetAttribute(eAttributes attribute);

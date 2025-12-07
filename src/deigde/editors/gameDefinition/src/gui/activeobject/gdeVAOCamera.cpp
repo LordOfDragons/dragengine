@@ -61,7 +61,7 @@ pOCCamera(occamera),
 pDDSCenter(NULL),
 pDDSCoordSystem(NULL)
 {
-	if(! occamera){
+	if(!occamera){
 		DETHROW(deeInvalidParam);
 	}
 	

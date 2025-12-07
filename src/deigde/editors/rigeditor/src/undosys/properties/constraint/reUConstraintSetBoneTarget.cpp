@@ -42,7 +42,7 @@
 ////////////////////////////
 
 reUConstraintSetBoneTarget::reUConstraintSetBoneTarget(reRigConstraint *constraint, reRigBone *newBone){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

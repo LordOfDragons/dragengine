@@ -78,7 +78,7 @@ deoglArrayTexture::~deoglArrayTexture(){
 ///////////////
 
 void deoglArrayTexture::SetSize(const decPoint3 &size){
-	if(! (size >= decPoint3(1, 1, 1))){
+	if(!(size >= decPoint3(1, 1, 1))){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -95,7 +95,7 @@ void deoglArrayTexture::SetSize(int width, int height, int layerCount){
 }
 
 void deoglArrayTexture::SetFormat(const deoglCapsTextureFormat *format){
-	if(! format){
+	if(!format){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -145,10 +145,10 @@ void deoglArrayTexture::CreateTexture(){
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 	
-	if(! pTexture){
+	if(!pTexture){
 		OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 		
-		if(! pTexture){
+		if(!pTexture){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -300,7 +300,7 @@ void deoglArrayTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer)
 	if(pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pSize.z){
 		DETHROW(deeInvalidParam);
 	}
-	if(! pTexture){
+	if(!pTexture){
 		return;
 	}
 	
@@ -672,7 +672,7 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 void deoglArrayTexture::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
-	if(! pTexture || ! pFormat){
+	if(!pTexture || !pFormat){
 		return;
 	}
 	

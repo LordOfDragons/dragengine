@@ -79,13 +79,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Language pack or nullptr. */
-	inline const lpeLangPack::Ref &GetLangPack() const{return pLangPack;}
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack or nullptr. */
 	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Reference language pack or nullptr. */
-	inline const lpeLangPack::Ref &GetReferenceLangPack() const{return pRefLangPack;}
+	inline const lpeLangPack::Ref &GetReferenceLangPack() const{ return pRefLangPack; }
 	
 	/** Set reference language pack or nullptr. */
 	void SetReferenceLangPack(lpeLangPack *langpack);

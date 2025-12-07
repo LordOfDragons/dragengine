@@ -38,7 +38,7 @@
 deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader *reader) :
 pReader(NULL)
 {
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 	

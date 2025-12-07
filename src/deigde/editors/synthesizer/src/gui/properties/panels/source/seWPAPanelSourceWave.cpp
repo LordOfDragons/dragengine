@@ -65,7 +65,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSourceWave * const source = (seSourceWave*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -87,7 +87,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSourceWave * const source = (seSourceWave*)pPanel.GetSource();
-		if(! source || ! comboBox->GetSelectedItem()){
+		if(!source || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

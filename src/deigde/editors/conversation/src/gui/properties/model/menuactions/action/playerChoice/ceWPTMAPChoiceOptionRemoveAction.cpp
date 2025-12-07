@@ -58,7 +58,7 @@ pPlayerChoice(&playerChoice),
 pOption(&option),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

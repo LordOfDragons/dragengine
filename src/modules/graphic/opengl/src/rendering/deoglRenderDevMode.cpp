@@ -416,7 +416,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan
 	for(c=0; c<componentCount; c++){
 		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		if(component.GetSkin() && ! component.GetSkin()->GetIsSolid()){
+		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
 			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 			shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
@@ -429,7 +429,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan
 	for(c=0; c<componentCount; c++){
 		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		if(component.GetSkin() && ! component.GetSkin()->GetIsSolid()){
+		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
 			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 			shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
@@ -442,7 +442,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan
 
 void deoglRenderDevMode::RenderHeightTerrainBoxes(deoglRenderPlan &plan){
 	deoglRHeightTerrain *heightTerrain = plan.GetWorld()->GetHeightTerrain();
-	if(! heightTerrain) return;
+	if(!heightTerrain) return;
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderHeightTerrainBoxes");
@@ -712,7 +712,7 @@ void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 			for(i=0; i<count; i++){
 				deoglRComponent &component = *listStatic.GetAt(i);
 				
-				if(! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
+				if(!component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
 					box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 					
 					shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
@@ -967,7 +967,7 @@ void deoglRenderDevMode::RenderOverlayInfos(deoglRenderPlan &plan){
 	}
 	
 	// if there are no overlay information leave now
-	if(! hasOverlay){
+	if(!hasOverlay){
 		return;
 	}
 	
@@ -980,7 +980,7 @@ void deoglRenderDevMode::RenderOverlayInfos(deoglRenderPlan &plan){
 	
 	if(plan.GetRenderVR() != deoglRenderPlan::ervrNone){
 		vr = renderThread.GetVRCamera()->GetVR();
-		if(! vr){
+		if(!vr){
 			return;
 		}
 		
@@ -1119,7 +1119,7 @@ void deoglRenderDevMode::RenderOccMapLevel(deoglRenderPlan &plan){
 
 void deoglRenderDevMode::RenderHeightTerrainLODLevels(deoglRenderPlan &plan, const decPoint &position, decPoint &size){
 	deoglHTView *htview = plan.GetHeightTerrainView();
-	if(! htview) return;
+	if(!htview) return;
 	
 	OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread());
 	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderHeightTerrainLODLevels");
@@ -1717,7 +1717,7 @@ void deoglRenderDevMode::LogDebugInformation(const deoglDebugInformationList &li
 	const decString childPrefix(prefix + "  ");
 	for(i=0; i<count; i++){
 		const deoglDebugInformation &di = *list.GetAt(i);
-		if(! di.GetVisible()){
+		if(!di.GetVisible()){
 			continue;
 		}
 		
@@ -1748,7 +1748,7 @@ int minWidth, int maxWidth, bool alignSidewards) {
 	int maxNameWidth = 0;
 	int i;
 	
-	if(! alignSidewards){
+	if(!alignSidewards){
 		ChildMaxNameLen(list, maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter);
 	}
 	
@@ -1760,7 +1760,7 @@ int minWidth, int maxWidth, bool alignSidewards) {
 	
 	for(i=0; i<count; i++){
 		deoglDebugInformation &child = *list.GetAt(i);
-		if(! child.GetVisible()){
+		if(!child.GetVisible()){
 			continue;
 		}
 		
@@ -1813,7 +1813,7 @@ int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter) con
 	
 	for(i=0; i<count; i++){
 		const deoglDebugInformation &child = *list.GetAt(i);
-		if(! child.GetVisible()){
+		if(!child.GetVisible()){
 			continue;
 		}
 		
@@ -1975,11 +1975,11 @@ void deoglRenderDevMode::pCreateShapesVAO(){
 	
 	// create vbo and vao
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOShapes));
-	if(! pVAOShapes) DETHROW(deeOutOfMemory);
+	if(!pVAOShapes) DETHROW(deeOutOfMemory);
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOShapes));
-	if(! pVBOShapes) DETHROW(deeOutOfMemory);
+	if(!pVBOShapes) DETHROW(deeOutOfMemory);
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));
 	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(vbodata), (const GLvoid *)&vbodata, GL_STATIC_DRAW));
 	

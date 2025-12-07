@@ -161,7 +161,7 @@ long igdeNativeFoxResizer::onLeave(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxResizer::onLeftMouseDown(FXObject*, FXSelector, void*){
-	if(pIsDragging || ! isEnabled()){
+	if(pIsDragging || !isEnabled()){
 		return 0 ;
 	}
 	
@@ -172,7 +172,7 @@ long igdeNativeFoxResizer::onLeftMouseDown(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxResizer::onLeftMouseUp(FXObject*, FXSelector, void*){
-	if(! pIsDragging){
+	if(!pIsDragging){
 		return 0;
 	}
 	
@@ -183,7 +183,7 @@ long igdeNativeFoxResizer::onLeftMouseUp(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxResizer::onMouseMoved(FXObject*, FXSelector, void *pdata){
-	if(! pIsDragging){
+	if(!pIsDragging){
 		return 0;
 	}
 	

@@ -54,7 +54,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the reference count. */
-	inline int GetRefCount() const{return pRefCount;}
+	inline int GetRefCount() const{ return pRefCount; }
 	/** Adds a reference and increases the reference count by 1. */
 	void AddReference();
 	/** Decreases the reference count by one and deletes the object if the count reaches 0. */

@@ -188,7 +188,7 @@ void igdeEditorModuleManager::StartModules(){
 	
 	for(i=0; i<count; i++){
 		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(! module->CanLoad() || module->IsModuleRunning()){
+		if(!module->CanLoad() || module->IsModuleRunning()){
 			continue;
 		}
 		
@@ -244,7 +244,7 @@ void igdeEditorModuleManager::StopModules(){
 	
 	for(i=0; i<count; i++){
 		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(! module->IsModuleRunning()){
+		if(!module->IsModuleRunning()){
 			continue;
 		}
 		
@@ -318,7 +318,7 @@ void igdeEditorModuleManager::pScanForModules(){
 			modulePath.AddUnixPath("module.xml");
 			
 			// test if module file exists and is a regular file
-			if(! vfs->ExistsFile(modulePath)
+			if(!vfs->ExistsFile(modulePath)
 			|| vfs->GetFileType(modulePath) != deVFSContainer::eftRegularFile){
 				continue;
 			}

@@ -141,7 +141,7 @@ void igdeGDCForceField::SetEnabled(bool enabled){
 
 
 bool igdeGDCForceField::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCForceField::GetPropertyName(eProperties property) const{
@@ -165,7 +165,7 @@ bool igdeGDCForceField::HasPropertyWithName(const char *name) const{
 
 
 bool igdeGDCForceField::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &igdeGDCForceField::GetTriggerName(eTriggers trigger) const{

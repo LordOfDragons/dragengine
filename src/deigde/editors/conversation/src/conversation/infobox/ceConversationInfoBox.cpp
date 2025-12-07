@@ -147,7 +147,7 @@ void ceConversationInfoBox::SetPadding(int padding){
 
 
 void ceConversationInfoBox::SetText(const char *text){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -170,7 +170,7 @@ void ceConversationInfoBox::Clear(){
 void ceConversationInfoBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if(! parentView){
+	if(!parentView){
 		return;
 	}
 	

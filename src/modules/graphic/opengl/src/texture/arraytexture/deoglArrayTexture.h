@@ -78,22 +78,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
-	inline GLuint GetTexture() const{return pTexture;}
+	inline GLuint GetTexture() const{ return pTexture; }
 	
 	/** Size. */
-	inline const decPoint3 &GetSize() const{return pSize;}
+	inline const decPoint3 &GetSize() const{ return pSize; }
 	
 	/** Retrieves the width in pixels. */
-	inline int GetWidth() const{return pSize.x;}
+	inline int GetWidth() const{ return pSize.x; }
 	/** Retrieves the height in pixels. */
-	inline int GetHeight() const{return pSize.y;}
+	inline int GetHeight() const{ return pSize.y; }
 	/** Retrieves the number of layers. */
-	inline int GetLayerCount() const{return pSize.z;}
+	inline int GetLayerCount() const{ return pSize.z; }
 	/** Sets the size of the texture destroying the old texture if present. */
 	void SetSize(const decPoint3 &size);
 	void SetSize(int width, int height, int layerCount);
 	/** Retrieves the texture format. */
-	inline const deoglCapsTextureFormat *GetFormat() const{return pFormat;}
+	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	
 	/** Set texture format. */
 	void SetFormat(const deoglCapsTextureFormat *format);
@@ -123,15 +123,15 @@ public:
 	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	
 	/** Determines if mip mapping has to be used on this texture. */
-	inline bool GetMipMapped() const{return pMipMapped;}
+	inline bool GetMipMapped() const{ return pMipMapped; }
 	/** Sets if mip mapping has to be used on this texture. */
 	void SetMipMapped(bool mipmapped);
 	/** Retrieves the mip map level count or 0 to let the hardware auto-generate them. */
-	inline int GetMipMapLevelCount() const{return pMipMapLevelCount;}
+	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	/** Sets the mip map level count or 0 to let the hardware auto-generate them. */
 	void SetMipMapLevelCount(int count);
 	/** Retrieves the real mip map level count which is either mipMapLevelCount or the real texture mip map level count. */
-	inline int GetRealMipMapLevelCount() const{return pRealMipMapLevelCount;}
+	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
 	/** Creates the texture if not created yet. */
 	void CreateTexture();
@@ -172,7 +172,7 @@ public:
 		int width, int height, int srcX, int srcY, int destX, int destY);
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{return pMemUse;}
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();

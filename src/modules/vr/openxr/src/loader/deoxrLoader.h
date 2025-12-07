@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Runtime configuration file or empty string if not found. */
-	inline const decString &GetRuntimeConfigFile() const{return pRuntimeConfigFile;}
+	inline const decString &GetRuntimeConfigFile() const{ return pRuntimeConfigFile; }
 	
 	/** Runtime library path or empty string if not found. */
-	inline const decString &GetRuntimeLibraryPath() const{return pRuntimeLibraryPath;}
+	inline const decString &GetRuntimeLibraryPath() const{ return pRuntimeLibraryPath; }
 	
 	/** Count of api layers. */
 	int GetApiLayerCount() const;

@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent view. */
-	inline deoglHTView &GetView() const{return pView;}
+	inline deoglHTView &GetView() const{ return pView; }
 	
 	/** Sector. */
-	inline deoglRHTSector &GetSector() const{return pSector;}
+	inline deoglRHTSector &GetSector() const{ return pSector; }
 	
 	/** Count of clusters. */
-	const int GetClusterCount() const{return pClusterCount;}
+	const int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at index. */
 	deoglHTViewSectorCluster &GetClusterAt(int index) const;

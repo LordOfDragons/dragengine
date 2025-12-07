@@ -43,7 +43,7 @@
 
 ceUCCTriggerSetTestMode::ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
-	if(! topic || ! action || ! condition){
+	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter){
-	if(! cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT){
+	if(!cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT){
 		DETHROW(deeInvalidParam);
 	}
 	

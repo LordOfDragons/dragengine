@@ -68,7 +68,7 @@ pNodeImage(NULL),
 pNodeText(NULL),
 pTask(task)
 {
-	if(! task || ! propertyImage){
+	if(!task || !propertyImage){
 		DETHROW(deeInvalidParam);
 	}
 	task->AddReference();
@@ -81,7 +81,7 @@ pNodeImage(nodeImage),
 pNodeText(NULL),
 pTask(task)
 {
-	if(! task || ! nodeImage){
+	if(!task || !nodeImage){
 		DETHROW(deeInvalidParam);
 	}
 	task->AddReference();
@@ -94,7 +94,7 @@ pNodeImage(NULL),
 pNodeText(nodeText),
 pTask(task)
 {
-	if(! task || ! nodeText){
+	if(!task || !nodeText){
 		DETHROW(deeInvalidParam);
 	}
 	task->AddReference();
@@ -176,7 +176,7 @@ void deRLTaskReadSkinInternal::Run(){
 
 void deRLTaskReadSkinInternal::Finished(){
 	LogFinishedEnter();
-	if(IsCancelled() || ! pApplyInternal()){
+	if(IsCancelled() || !pApplyInternal()){
 		SetState(esFailed);
 		pSkin = NULL;
 		LogFinishedExit();
@@ -194,7 +194,7 @@ void deRLTaskReadSkinInternal::Finished(){
 //////////////////////
 
 void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
-	if(! task){
+	if(!task){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -210,7 +210,7 @@ void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
 	
 	switch(task->GetTask()->GetState()){
 	case esPending:
-		if(! DoesDependOn(task->GetTask())){
+		if(!DoesDependOn(task->GetTask())){
 			AddDependsOn(task->GetTask());
 		}
 		break;
@@ -247,7 +247,7 @@ void deRLTaskReadSkinInternal::pCleanUp(){
 void deRLTaskReadSkinInternal::pPrepare(){
 	deBaseSkinModule * const module = (deBaseSkinModule*)GetEngine().GetModuleSystem()->
 		GetModuleAbleToLoad(deModuleSystem::emtSkin, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

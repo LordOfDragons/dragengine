@@ -60,28 +60,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Grid size. */
-	inline float GetGridSize() const{return pGridSize;}
+	inline float GetGridSize() const{ return pGridSize; }
 	
 	/** \brief Set grid size. */
 	void SetGridSize(float size);
 	
 	/** \brief Snap elements to grid. */
-	inline bool GetSnapToGrid() const{return pSnapToGrid;}
+	inline bool GetSnapToGrid() const{ return pSnapToGrid; }
 	
 	/** \brief Set snap elements to grid. */
 	void SetSnapToGrid(bool snap);
 	
 	/** \brief Rotation snap angle. */
-	inline float GetRotSnapAngle() const{return pRotSnap;}
+	inline float GetRotSnapAngle() const{ return pRotSnap; }
 	
 	/** \brief Set rotation snap angle. */
 	void SetRotSnapAngle(float angle);
 	
 	/** \brief Mouse sensitivity. */
-	inline float GetSensitivity() const{return pSensitivity;}
+	inline float GetSensitivity() const{ return pSensitivity; }
 	
 	/** \brief Set mouse sensitivity. */
 	void SetSensitivity(float sensitivity);
@@ -89,7 +89,7 @@ public:
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

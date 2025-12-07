@@ -83,13 +83,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	
 	/** \brief Engine shape. */
-	inline decShape *GetShape() const{return pShape;}
+	inline decShape *GetShape() const{ return pShape; }
 	
 	/** \brief Collision volume. */
-	inline debpDCollisionVolume *GetCollisionVolume() const{return pCollisionVolume;}
+	inline debpDCollisionVolume *GetCollisionVolume() const{ return pCollisionVolume; }
 	
 	/** \brief Update collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale) = 0;

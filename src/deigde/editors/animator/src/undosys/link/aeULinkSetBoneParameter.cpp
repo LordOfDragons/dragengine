@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetBoneParameter::aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::eBoneParameter newBoneParameter){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

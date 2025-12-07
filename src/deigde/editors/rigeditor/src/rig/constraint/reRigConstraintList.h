@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	/** Retrieves the constraint at the given index. */
 	reRigConstraint *GetConstraintAt(int index) const;
 	/** Retrieves the index of the constraint or -1 if not found. */

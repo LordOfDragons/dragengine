@@ -73,16 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
-	inline ScriptingPython &GetSP() const{return pSP;}
+	inline ScriptingPython &GetSP() const{ return pSP; }
 	
 	/** \brief Retrieves the module name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** \brief Retrieves the module documentation. */
-	inline const decString &GetDocumentation() const{return pDocumentation;}
+	inline const decString &GetDocumentation() const{ return pDocumentation; }
 	/** \brief Sets the module documentation. */
 	void SetDocumentation(const char *documentation);
 	/** \brief Retrieves the parent or NULL if located in globals. */
-	inline spBaseModule *GetParent() const{return pParent;}
+	inline spBaseModule *GetParent() const{ return pParent; }
 	/** \brief Sets the parent or NULL if located in globals. */
 	void SetParent(spBaseModule *parent);
 	
@@ -90,13 +90,13 @@ public:
 	void AddMethod(const char *name, PyCFunction pyFunction, int argumentType, const char *documentation);
 	
 	/** \brief Retrieves the full module name. */
-	inline const decString &GetFullModuleName() const{return pFullModuleName;}
+	inline const decString &GetFullModuleName() const{ return pFullModuleName; }
 	
 	/** \brief Retrieve owner class of a python object. */
 	static spBaseModule *GetOwnerClass(PyObject *object);
 	
 	/** \brief Retrieves the python module. */
-	inline PyObject *GetPyModule() const{return pPyModule;}
+	inline PyObject *GetPyModule() const{ return pPyModule; }
 	
 	/** \brief Python create module. */
 	virtual void PythonCreate();

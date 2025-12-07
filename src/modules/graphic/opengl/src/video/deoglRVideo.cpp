@@ -114,7 +114,7 @@ void deoglRVideo::UpdateTexture(){
 		return;
 	}
 	
-	if(! pFrames[pUpdateFrame]){
+	if(!pFrames[pUpdateFrame]){
 		pFrames[pUpdateFrame] = new deoglTexture(pRenderThread);
 		pFrames[pUpdateFrame]->SetSize(pWidth, pHeight);
 		pFrames[pUpdateFrame]->SetMapingFormat(pComponentCount, false, false);

@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Cost type at position if position is not \em null. */
-	inline int GetCostType() const{return pCostType;}
+	inline int GetCostType() const{ return pCostType; }
 	
 	/** \brief Set cost type at position. */
 	void SetCostType(int costType);
@@ -87,7 +87,7 @@ public:
 	 * \brief Index along navigation path.
 	 * \details -1 indicates navigation start position towards first path point.
 	 */
-	inline int GetPathIndex() const{return pPathIndex;}
+	inline int GetPathIndex() const{ return pPathIndex; }
 	
 	/**
 	 * \brief Set index along navigation path.
@@ -97,7 +97,7 @@ public:
 	void SetPathIndex(int index);
 	
 	/** \brief Factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
-	inline float GetPathFactor() const{return pPathFactor;}
+	inline float GetPathFactor() const{ return pPathFactor; }
 	
 	/** \brief Set factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
 	void SetPathFactor(float factor);

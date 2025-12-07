@@ -61,7 +61,7 @@ reRigShapeBox::~reRigShapeBox(){
 ///////////////
 
 void reRigShapeBox::SetHalfExtends(const decVector &halfExtends){
-	if(! halfExtends.IsEqualTo(pHalfExtends)){
+	if(!halfExtends.IsEqualTo(pHalfExtends)){
 		pHalfExtends = halfExtends;
 		NotifyShapeChanged();
 	}
@@ -72,7 +72,7 @@ reRigShape *reRigShapeBox::Duplicate() const{
 	
 	try{
 		shape = new reRigShapeBox(GetEngine());
-		if(! shape) DETHROW(deeOutOfMemory);
+		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());
 		shape->SetOrientation(GetOrientation());

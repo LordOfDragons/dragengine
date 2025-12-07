@@ -60,7 +60,7 @@ pPlayerChoice(&playerChoice),
 pOption(option),
 pIndex(index)
 {
-	if(! option){
+	if(!option){
 		DETHROW(deeInvalidParam);
 	}
 	

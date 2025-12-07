@@ -413,7 +413,7 @@ void deClassBillboard::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassBillboard * const clsBillboard = (deClassBillboard*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsBillboard)){
+	if(!p_IsObjOfType(obj, clsBillboard)){
 		rt->PushBool(false);
 		
 	}else{
@@ -504,7 +504,7 @@ void deClassBillboard::CreateClassMembers(dsEngine *engine){
 }
 
 deBillboard *deClassBillboard::GetBillboard(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -512,11 +512,11 @@ deBillboard *deClassBillboard::GetBillboard(dsRealObject *myself) const{
 }
 
 void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! billboard){
+	if(!billboard){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -82,54 +82,54 @@ void deoglShaderCompiled::Activate() const{
 }
 
 void deoglShaderCompiled::CreateComputeProgram(){
-	if(! pHandleC){
+	if(!pHandleC){
 		pHandleC = pglCreateShader(GL_COMPUTE_SHADER);
-		if(! pHandleC){
+		if(!pHandleC){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deoglShaderCompiled::CreateTessellationControlProgram(){
-	if(! pHandleTCP){
+	if(!pHandleTCP){
 		pHandleTCP = pglCreateShader(GL_TESS_CONTROL_SHADER);
-		if(! pHandleTCP){
+		if(!pHandleTCP){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deoglShaderCompiled::CreateTessellationEvaluationProgram(){
-	if(! pHandleTEP){
+	if(!pHandleTEP){
 		pHandleTEP = pglCreateShader(GL_TESS_EVALUATION_SHADER);
-		if(! pHandleTEP){
+		if(!pHandleTEP){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deoglShaderCompiled::CreateGeometryProgram(){
-	if(! pHandleGP){
+	if(!pHandleGP){
 		pHandleGP = pglCreateShader(GL_GEOMETRY_SHADER);
-		if(! pHandleGP){
+		if(!pHandleGP){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deoglShaderCompiled::CreateVertexProgram(){
-	if(! pHandleVP){
+	if(!pHandleVP){
 		pHandleVP = pglCreateShader(GL_VERTEX_SHADER);
-		if(! pHandleVP){
+		if(!pHandleVP){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deoglShaderCompiled::CreateFragmentProgram(){
-	if(! pHandleFP){
+	if(!pHandleFP){
 		pHandleFP = pglCreateShader(GL_FRAGMENT_SHADER);
-		if(! pHandleFP){
+		if(!pHandleFP){
 			DETHROW(deeOutOfMemory);
 		}
 	}

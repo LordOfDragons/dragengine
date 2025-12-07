@@ -38,7 +38,7 @@
 #include <strsafe.h>
 #endif
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if defined OS_UNIX && !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 #include <execinfo.h>
 #include <unistd.h>
 #endif
@@ -298,7 +298,7 @@ static LONG WINAPI unhandledException(_EXCEPTION_POINTERS *ei){
 	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
 	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
 
-	if(! SymSetOptions(symOptions)){
+	if(!SymSetOptions(symOptions)){
 		if(module){
 			module->LogError("Failed calling SymSetOptions\n");
 		}else{
@@ -307,7 +307,7 @@ static LONG WINAPI unhandledException(_EXCEPTION_POINTERS *ei){
 	}
 	
 	const HANDLE process = GetCurrentProcess();
-	if(! SymInitialize(process, NULL, true)){
+	if(!SymInitialize(process, NULL, true)){
 		if(module){
 			module->LogError("Failed calling SymInitialize\n");
 		}else{
@@ -373,26 +373,26 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	// some infos
 	if(infos->si_code == SEGV_MAPERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Tried to access not allocated memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Tried to access not allocated memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Tried to access not allocated memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Tried to access not allocated memory at %p.\n", infos->si_addr);
 		}
 		
 	}else if(infos->si_code == SEGV_ACCERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Permission denied accessing memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Permission denied accessing memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Permission denied accessing memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Permission denied accessing memory at %p.\n", infos->si_addr);
 		}
 		
 	}else{
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Unknown memory error at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Unknown memory error at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Unknown memory error at %p.\n", infos->si_addr);
 		}
 	}
 	
@@ -401,7 +401,7 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 		module->LogError("Backtrace:");
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 	void *btentries[50]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -530,7 +530,7 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 		module->LogError("Backtrace:");
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 	void *btentries[50]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -628,10 +628,10 @@ static void signalBusError(int number, siginfo_t *infos, void *ptrContext){
 	
 	// some infos
 	if(module){
-		module->LogErrorFormat("Bus Error! Code %d at %p.", infos->si_code, infos->si_addr);
+		module->LogErrorFormat("Bus Error!Code %d at %p.", infos->si_code, infos->si_addr);
 		
 	}else{
-		printf("Bus Error! Code %d at %p.\n", infos->si_code, infos->si_addr);
+		printf("Bus Error!Code %d at %p.\n", infos->si_code, infos->si_addr);
 	}
 	
 	// stack trace
@@ -639,7 +639,7 @@ static void signalBusError(int number, siginfo_t *infos, void *ptrContext){
 		module->LogError("Backtrace:");
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 	void *btentries[50]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	

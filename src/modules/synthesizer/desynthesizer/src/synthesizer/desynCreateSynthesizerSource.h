@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created source or \em NULL if not present. */
-	inline desynSynthesizerSource *GetSource() const{return pSource;}
+	inline desynSynthesizerSource *GetSource() const{ return pSource; }
 	
 	/** \brief Reset. */
 	void Reset();

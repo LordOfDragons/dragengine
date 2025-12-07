@@ -104,32 +104,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Particle emitter. */
-	inline deoglRParticleEmitter &GetEmitter() const{return pEmitter;}
+	inline deoglRParticleEmitter &GetEmitter() const{ return pEmitter; }
 	
 	
 	
 	/** Linear velocity parameter factor. */
-	inline float GetParamFactorLinVelo() const{return pParamFactorLinVelo;}
+	inline float GetParamFactorLinVelo() const{ return pParamFactorLinVelo; }
 	
 	/** Angular velocity parameter factor. */
-	inline float GetParamFactorAngVelo() const{return pParamFactorAngVelo;}
+	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	
 	/** Parameter multiply factor. */
-	inline const float *GetParamFactorMultiply() const{return &pParamFactorMultiply[0];}
+	inline const float *GetParamFactorMultiply() const{ return &pParamFactorMultiply[0]; }
 	
 	/** Parameter add factor. */
-	inline const float *GetParamFactorAdd() const{return &pParamFactorAdd[0];}
+	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[0]; }
 	
 	/** Parameter samples. */
-	inline const float *GetParameterSamples() const{return pParameterSamples;}
+	inline const float *GetParameterSamples() const{ return pParameterSamples; }
 	
 	/** Texture with the samples. */
-	inline deoglTexture *GetTextureSamples() const{return pTextureSamples;}
+	inline deoglTexture *GetTextureSamples() const{ return pTextureSamples; }
 	
 	
 	
 	/** Simulation type. */
-	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{return pSimulationType;}
+	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** Set simulation type. */
 	void SetSimulationType(deParticleEmitterType::eSimulationTypes simulationType);
@@ -151,13 +151,13 @@ public:
 	
 	
 	/** Skin. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Particles emit light. */
-	inline bool GetEmitLight() const{return pEmitLight;}
+	inline bool GetEmitLight() const{ return pEmitLight; }
 	
 	/** Check if particles emit light. */
 	void CheckEmitLight(const deParticleEmitterType &type);
@@ -170,7 +170,7 @@ public:
 	 * - Transparency cast value is not 1.
 	 * - Transparency spread value is not 0.
 	 */
-	inline bool GetHasTransparency() const{return pHasTransparency;}
+	inline bool GetHasTransparency() const{ return pHasTransparency; }
 	
 	
 	

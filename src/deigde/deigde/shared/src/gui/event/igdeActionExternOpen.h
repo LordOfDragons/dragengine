@@ -74,16 +74,16 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Path to open or empty string if not set. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path to open or empty string if not set. */
 	void SetPath(const char *path);
 	
 	/** \brief Ensure path exists before opening it. */
-	inline bool GetEnsureExists() const{return pEnsureExists;}
+	inline bool GetEnsureExists() const{ return pEnsureExists; }
 	
 	/** \brief Set to ensure path exists before opening it. */
 	void SetEnsureExists(bool ensureExists);

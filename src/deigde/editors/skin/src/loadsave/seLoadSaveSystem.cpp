@@ -81,7 +81,7 @@ seLoadSaveSkin *seLoadSaveSystem::GetLSSkinAt(int index) const{
 }
 
 int seLoadSaveSystem::IndexOfLSSkin(seLoadSaveSkin *lsSkin) const{
-	if(! lsSkin) DETHROW(deeInvalidParam);
+	if(!lsSkin) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSSkinCount; i++){
@@ -94,7 +94,7 @@ int seLoadSaveSystem::IndexOfLSSkin(seLoadSaveSkin *lsSkin) const{
 }
 
 bool seLoadSaveSystem::HasLSSkin(seLoadSaveSkin *lsSkin) const{
-	if(! lsSkin) DETHROW(deeInvalidParam);
+	if(!lsSkin) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSSkinCount; i++){
@@ -125,7 +125,7 @@ void seLoadSaveSystem::AddLSSkin(seLoadSaveSkin *lsSkin){
 	if(pLSSkinCount == pLSSkinSize){
 		int newSize = pLSSkinSize * 3 / 2 + 1;
 		seLoadSaveSkin **newArray = new seLoadSaveSkin*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSSkins){
 			memcpy(newArray, pLSSkins, sizeof(seLoadSaveSkin*) * pLSSkinSize);
 			delete [] pLSSkins;
@@ -174,10 +174,10 @@ void seLoadSaveSystem::UpdateLSSkins(){
 			loadableModule = modSys->GetModuleAt(m);
 			
 			if(loadableModule->GetType() != deModuleSystem::emtSkin) continue;
-			if(! loadableModule->IsLoaded()) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
 			lsSkin = new seLoadSaveSkin((deBaseSkinModule*)loadableModule->GetModule());
-			if(! lsSkin) DETHROW(deeOutOfMemory);
+			if(!lsSkin) DETHROW(deeOutOfMemory);
 			
 			AddLSSkin(lsSkin);
 			lsSkin = NULL;
@@ -192,7 +192,7 @@ void seLoadSaveSystem::UpdateLSSkins(){
 
 
 seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
-	if(! filename || ! gameDefinition) DETHROW(deeInvalidParam);
+	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileReader *fileReader = NULL;
 	seSkin *skin = NULL;
@@ -228,7 +228,7 @@ seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gam
 }
 
 void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
-	if(! skin || ! filename) DETHROW(deeInvalidParam);
+	if(!skin || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;

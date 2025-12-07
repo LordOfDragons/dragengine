@@ -167,7 +167,7 @@ bool deSynthesizer::HasController(deSynthesizerController *controller) const{
 }
 
 void deSynthesizer::AddController(deSynthesizerController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -222,7 +222,7 @@ bool deSynthesizer::HasLink(deSynthesizerLink *link) const{
 }
 
 void deSynthesizer::AddLink(deSynthesizerLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -277,7 +277,7 @@ bool deSynthesizer::HasSource(deSynthesizerSource *source) const{
 }
 
 void deSynthesizer::AddSource(deSynthesizerSource *source){
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	

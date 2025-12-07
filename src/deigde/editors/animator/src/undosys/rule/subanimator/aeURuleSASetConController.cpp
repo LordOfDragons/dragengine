@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeURuleSASetConController::aeURuleSASetConController(aeRuleSubAnimator *rule, int target, aeController *newController){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	

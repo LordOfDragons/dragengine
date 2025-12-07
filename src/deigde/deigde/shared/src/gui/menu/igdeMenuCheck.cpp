@@ -100,7 +100,7 @@ void igdeMenuCheck::CreateNativeWidget(){
 }
 
 void igdeMenuCheck::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

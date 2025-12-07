@@ -217,7 +217,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
@@ -227,13 +227,13 @@ public:
 	
 	
 	/** Full quality size. */
-	inline const decPoint3 &GetSize() const{return pSize;}
+	inline const decPoint3 &GetSize() const{ return pSize; }
 	
 	/** Set full quality size. */
 	void SetSize(const decPoint3 &size);
 	
 	/** Retrieves the component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Sets the component count. */
 	void SetComponentCount(int componentCount);
@@ -241,68 +241,68 @@ public:
 	
 	
 	/** Texture scaling factor in u direction. */
-	inline float GetFactorU() const{return pFactorU;}
+	inline float GetFactorU() const{ return pFactorU; }
 	
 	/** Set texture scaling factor in u direction. */
 	void SetFactorU(float factor);
 	
 	/** Texture scaling factor in v direction. */
-	inline float GetFactorV() const{return pFactorV;}
+	inline float GetFactorV() const{ return pFactorV; }
 	
 	/** Set texture scaling factor in v direction. */
 	void SetFactorV(float factor);
 	
 	/** Texture or nullptr if this is not used. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Cube map or nullptr if this is not used. */
-	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
+	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
 	/** Array texture or nullptr if this is not used. */
-	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/** Combined texture or nullptr if not used. */
-	inline deoglCombinedTexture *GetCombinedTexture() const{return pCombinedTexture;}
+	inline deoglCombinedTexture *GetCombinedTexture() const{ return pCombinedTexture; }
 	
 	/** Set combined texture or nullptr if not used. */
 	void SetCombinedTexture(deoglCombinedTexture *combinedTexture);
 	
 	/** Texture type. */
-	inline deoglSkinChannel::eTextureType GetTextureType() const{return pTextureType;}
+	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
 	
 	
 	
 	/** Pixel buffer mip map or nullptr if not existing. */
-	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{return pPixelBufferMipMap;}
+	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
 	
 	/** Set pixel buffer mip map or nullptr if not existing. */
 	void SetPixelBufferMipMap(deoglPixelBufferMipMap *pbmipmap);
 	
 	/** Texture data is cached. */
-	inline bool GetIsCached() const{return pIsCached;}
+	inline bool GetIsCached() const{ return pIsCached; }
 	
 	/** Set if texture data is cached. */
 	void SetIsCached(bool isCached);
 	
 	/** Texture can be cached. */
-	inline bool GetCanBeCached() const{return pCanBeCached;}
+	inline bool GetCanBeCached() const{ return pCanBeCached; }
 	
 	/** Set if texture can be cached. */
 	void SetCanBeCached(bool canBeCached);
 	
 	/** Cache identifier. */
-	inline const decString &GetCacheID() const{return pCacheID;}
+	inline const decString &GetCacheID() const{ return pCacheID; }
 	
 	/** Set cache identifier. */
 	void SetCacheID(const char *cacheID);
 	
 	/** Cache verify data or nullptr if absent. */
-	inline const decMemoryFile *GetCacheVerify() const{return pCacheVerify;}
+	inline const decMemoryFile *GetCacheVerify() const{ return pCacheVerify; }
 	
 	
 	
 	/** Uniform color. */
-	inline const decColor &GetUniformColor() const{return pUniformColor;}
+	inline const decColor &GetUniformColor() const{ return pUniformColor; }
 	
 	/** Set uniform color. */
 	void SetUniformColor(const decColor &color);
@@ -320,27 +320,27 @@ public:
 	bool AllComponentsNotStatic() const;
 	
 	/** First combined image or nullptr if not existing. */
-	inline const deoglRImage::Ref &GetCombinedImage1() const{return pCombinedImage1;}
+	inline const deoglRImage::Ref &GetCombinedImage1() const{ return pCombinedImage1; }
 	
 	/** Second combined image or nullptr if not existing. */
-	inline const deoglRImage::Ref &GetCombinedImage2() const{return pCombinedImage2;}
+	inline const deoglRImage::Ref &GetCombinedImage2() const{ return pCombinedImage2; }
 	
 	/** First delayed combined image or nullptr if not existing. */
-	inline deoglImage *GetDelayedCombinedImage1() const{return pDelayedCombineImage1;}
+	inline deoglImage *GetDelayedCombinedImage1() const{ return pDelayedCombineImage1; }
 	
 	/** Second delayed combined image or nullptr if not existing. */
-	inline deoglImage *GetDelayedCombinedImage2() const{return pDelayedCombineImage2;}
+	inline deoglImage *GetDelayedCombinedImage2() const{ return pDelayedCombineImage2; }
 	
 	
 	
 	/** Channel is purely a uniform color. */
-	inline bool GetUniform() const{return pUniform;}
+	inline bool GetUniform() const{ return pUniform; }
 	
 	/** Set if channel is purely a uniform color. */
 	void SetUniform(bool uniform);
 	
 	/** Channel has dynamic content. */
-	inline bool GetDynamic() const{return pDynamic;}
+	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** Set channel has dynamic content. */
 	void SetDynamic(bool dynamic);
@@ -348,14 +348,14 @@ public:
 	
 	
 	/** Image or nullptr to use the texture stored locally. */
-	inline deoglRImage *GetImage() const{return pImage;}
+	inline deoglRImage *GetImage() const{ return pImage; }
 	
 	/**
 	 * Video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
-	inline deVideo *GetVideo() const{return pVideo;}
+	inline deVideo *GetVideo() const{ return pVideo; }
 	
 	/**
 	 * Set video or nullptr to use the texture stored locally.
@@ -365,25 +365,25 @@ public:
 	void SetVideo(deVideo *video);
 	
 	/** Video player index or -1 if not used. */
-	inline int GetVideoPlayer() const{return pVideoPlayer;}
+	inline int GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player index or -1 if not used. */
 	void SetVideoPlayer(int index);
 	
 	/** Video player is shared. */
-	inline bool GetSharedVideoPlayer() const{return pSharedVideoPlayer;}
+	inline bool GetSharedVideoPlayer() const{ return pSharedVideoPlayer; }
 	
 	/** Set if video player is shared. */
 	void SetSharedVideoPlayer(bool shared);
 	
 	/** Index of the renderable or -1 if not dynamic. */
-	inline int GetRenderable() const{return pRenderable;}
+	inline int GetRenderable() const{ return pRenderable; }
 	
 	/** Set index of the renderable or -1 if not dynamic. */
 	void SetRenderable(int index);
 	
 	/** Index of the dynamic constructed or -1. */
-	inline int GetDynamicConstructed() const{return pDynamicConstructed;}
+	inline int GetDynamicConstructed() const{ return pDynamicConstructed; }
 	
 	/** Set index of the dynamic constructed or -1. */
 	void SetDynamicConstructed(int index);

@@ -107,7 +107,7 @@ igdeGDClass *igdeGDClassManager::GetNamed(const char *name) const{
 }
 
 void igdeGDClassManager::Add(igdeGDClass *gdClass){
-	if(! gdClass || HasNamed(gdClass->GetName())){
+	if(!gdClass || HasNamed(gdClass->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pClasses.Add(gdClass);
@@ -208,7 +208,7 @@ void igdeGDClassManager::UpdateWith(const igdeGDClassManager &classManager){
 	pCategories->UpdateWith(classManager.pCategories);
 	pAutoFindPath = classManager.pAutoFindPath;
 	
-	if(! classManager.pDefaultClassName.IsEmpty()){
+	if(!classManager.pDefaultClassName.IsEmpty()){
 		pDefaultClassName = classManager.pDefaultClassName;
 	}
 }
@@ -338,7 +338,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				const igdeGDProperty * const gdproperty = gdclass->GetPropertyNamed(key);
 				if(gdproperty && gdproperty->GetType() == igdeGDProperty::eptPath){
 					const decString &value = propertyValues.GetAt(key);
-					if(! value.IsEmpty()){
+					if(!value.IsEmpty()){
 						propertyValues.SetAt(key, decPath::AbsolutePathUnix(value, basePathStr).GetPathUnix());
 					}
 				}
@@ -365,10 +365,10 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 			gdclass->SetPropertyValues(propertyValues);
 			
 			// now we can work with the updated property values
-			if(! reused){
+			if(!reused){
 				for(h=0; h<inheritClassCount; h++){
 					const igdeGDClass * const inheritClass = gdclass->GetInheritClassAt(h)->GetClass();
-					if(! inheritClass){
+					if(!inheritClass){
 						continue;
 					}
 					
@@ -398,62 +398,62 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 						}
 						
 						const decString &nameModel = component.GetPropertyName(igdeGDCComponent::epModel);
-						if(! nameModel.IsEmpty() && gdclass->GetDefaultPropertyValue(nameModel, propertyValue)){
+						if(!nameModel.IsEmpty() && gdclass->GetDefaultPropertyValue(nameModel, propertyValue)){
 							component.SetModelPath(propertyValue);
 						}
 						
 						const decString &nameSkin = component.GetPropertyName(igdeGDCComponent::epSkin);
-						if(! nameSkin.IsEmpty() && gdclass->GetDefaultPropertyValue(nameSkin, propertyValue)){
+						if(!nameSkin.IsEmpty() && gdclass->GetDefaultPropertyValue(nameSkin, propertyValue)){
 							component.SetSkinPath(propertyValue);
 						}
 						
 						const decString &nameRig = component.GetPropertyName(igdeGDCComponent::epRig);
-						if(! nameRig.IsEmpty() && gdclass->GetDefaultPropertyValue(nameRig, propertyValue)){
+						if(!nameRig.IsEmpty() && gdclass->GetDefaultPropertyValue(nameRig, propertyValue)){
 							component.SetRigPath(propertyValue);
 						}
 						
 						const decString &nameAnimator = component.GetPropertyName(igdeGDCComponent::epAnimator);
-						if(! nameAnimator.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAnimator, propertyValue)){
+						if(!nameAnimator.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAnimator, propertyValue)){
 							component.SetAnimatorPath(propertyValue);
 						}
 						
 						const decString &namePlaybackController = component.GetPropertyName(igdeGDCComponent::epPlaybackController);
-						if(! namePlaybackController.IsEmpty() && gdclass->GetDefaultPropertyValue(namePlaybackController, propertyValue)){
+						if(!namePlaybackController.IsEmpty() && gdclass->GetDefaultPropertyValue(namePlaybackController, propertyValue)){
 							component.SetPlaybackController(propertyValue);
 						}
 						
 						const decString &nameOccMesh = component.GetPropertyName(igdeGDCComponent::epOcclusionMesh);
-						if(! nameOccMesh.IsEmpty() && gdclass->GetDefaultPropertyValue(nameOccMesh, propertyValue)){
+						if(!nameOccMesh.IsEmpty() && gdclass->GetDefaultPropertyValue(nameOccMesh, propertyValue)){
 							component.SetOcclusionMeshPath(propertyValue);
 						}
 						
 						const decString &nameAudioModel = component.GetPropertyName(igdeGDCComponent::epAudioModel);
-						if(! nameAudioModel.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAudioModel, propertyValue)){
+						if(!nameAudioModel.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAudioModel, propertyValue)){
 							component.SetAudioModelPath(propertyValue);
 						}
 						
 						const decString &nameRenderEnvMap = component.GetPropertyName(igdeGDCComponent::epRenderEnvMap);
-						if(! nameRenderEnvMap.IsEmpty() && gdclass->GetDefaultPropertyValue(nameRenderEnvMap, propertyValue)){
+						if(!nameRenderEnvMap.IsEmpty() && gdclass->GetDefaultPropertyValue(nameRenderEnvMap, propertyValue)){
 							component.SetRenderEnvMap(propertyValue == "1");
 						}
 						
 						const decString &nameAffectsAudio = component.GetPropertyName(igdeGDCComponent::epAffectsAudio);
-						if(! nameAffectsAudio.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAffectsAudio, propertyValue)){
+						if(!nameAffectsAudio.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAffectsAudio, propertyValue)){
 							component.SetAffectsAudio(propertyValue == "1");
 						}
 						
 						const decString &nameLightShadowIgnore = component.GetPropertyName(igdeGDCComponent::epLightShadowIgnore);
-						if(! nameLightShadowIgnore.IsEmpty() && gdclass->GetDefaultPropertyValue(nameLightShadowIgnore, propertyValue)){
+						if(!nameLightShadowIgnore.IsEmpty() && gdclass->GetDefaultPropertyValue(nameLightShadowIgnore, propertyValue)){
 							component.SetLightShadowIgnore(propertyValue == "1");
 						}
 						
 						const decString &nameAnimation = component.GetPropertyName(igdeGDCComponent::epAnimation);
-						if(! nameAnimation.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAnimation, propertyValue)){
+						if(!nameAnimation.IsEmpty() && gdclass->GetDefaultPropertyValue(nameAnimation, propertyValue)){
 							component.SetAnimationPath(propertyValue);
 						}
 						
 						const decString &nameMove = component.GetPropertyName(igdeGDCComponent::epMove);
-						if(! nameMove.IsEmpty() && gdclass->GetDefaultPropertyValue(nameMove, propertyValue)){
+						if(!nameMove.IsEmpty() && gdclass->GetDefaultPropertyValue(nameMove, propertyValue)){
 							component.SetMove(propertyValue);
 						}
 					}

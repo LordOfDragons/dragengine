@@ -47,7 +47,7 @@ aeUSetRuleBones::aeUSetRuleBones(aeRule *rule, const decStringSet &newValue) :
 pRule(NULL),
 pNewValue(newValue)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

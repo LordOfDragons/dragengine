@@ -42,7 +42,7 @@ meUWorldSetGravity::meUWorldSetGravity(meWorld *world, const decVector &newValue
 pWorld(NULL),
 pNewValue(newValue)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

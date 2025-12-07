@@ -128,7 +128,7 @@ const deoglRParticleEmitterInstance::sParticle *particle){
 	const deoglSkinTexture * const skinTexture = itype.GetUseSkinTexture();
 	
 	// if there is no texture we can skip the geometry attached to it
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	
@@ -143,7 +143,7 @@ const deoglRParticleEmitterInstance::sParticle *particle){
 		GetWithRef(pSkinPipelineType, pSkinPipelineModifier);
 	
 	const deoglTexUnitsConfig *tuc = itype.GetTUCForPipelineType (pSkinPipelineType);
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
@@ -163,7 +163,7 @@ const deoglRParticleEmitterInstance::sParticle *particle){
 	}
 	
 	// if there exists no matching step create a new one
-	if(! rtps){
+	if(!rtps){
 		rtps = pRenderTask->AddStep();
 		rtps->SetPipeline(pipeline.GetPipeline());
 		rtps->SetTUC(tuc);

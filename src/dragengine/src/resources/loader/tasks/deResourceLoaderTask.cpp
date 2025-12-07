@@ -61,7 +61,7 @@ pResourceType(resourceType),
 pState(esPending),
 pType(etRead)
 {
-	if(! vfs){
+	if(!vfs){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -78,7 +78,7 @@ deResourceLoaderTask::~deResourceLoaderTask(){
 
 bool deResourceLoaderTask::Matches(deVirtualFileSystem *vfs, const char *path,
 deResourceLoader::eResourceType resourceType) const{
-	if(! vfs || ! path){
+	if(!vfs || !path){
 		DETHROW(deeInvalidParam);
 	}
 	return pVFS == vfs && pPath == path && resourceType == pResourceType;
@@ -115,7 +115,7 @@ void deResourceLoaderTask::SetType(eTypes type){
 }
 
 void deResourceLoaderTask::LogCreateEnter(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
@@ -126,7 +126,7 @@ void deResourceLoaderTask::LogCreateEnter(){
 }
 
 void deResourceLoaderTask::LogCreateExit(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
@@ -137,7 +137,7 @@ void deResourceLoaderTask::LogCreateExit(){
 }
 
 void deResourceLoaderTask::LogRunEnter(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
@@ -148,7 +148,7 @@ void deResourceLoaderTask::LogRunEnter(){
 }
 
 void deResourceLoaderTask::LogRunExit(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
@@ -159,7 +159,7 @@ void deResourceLoaderTask::LogRunExit(){
 }
 
 void deResourceLoaderTask::LogFinishedEnter(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
@@ -170,7 +170,7 @@ void deResourceLoaderTask::LogFinishedEnter(){
 }
 
 void deResourceLoaderTask::LogFinishedExit(){
-	if(! pResourceLoader.GetOutputDebugMessages()){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		LogFinished();
 		return;
 	}
@@ -184,7 +184,7 @@ void deResourceLoaderTask::LogFinishedExit(){
 }
 
 void deResourceLoaderTask::LogFinished(){
-	if(! pResourceLoader.GetOutputDebugMessages() && pState != esFailed && ! IsCancelled()){
+	if(!pResourceLoader.GetOutputDebugMessages() && pState != esFailed && !IsCancelled()){
 		return;
 	}
 	

@@ -36,7 +36,7 @@
 ////////////////////////////
 
 reUSetBoneIKLimitsLower::reUSetBoneIKLimitsLower(reRigBone *bone, const decVector &ikLimitsLower){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();

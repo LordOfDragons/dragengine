@@ -71,7 +71,7 @@ void igdeContainerBox::CreateNativeWidget(){
 }
 
 void igdeContainerBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

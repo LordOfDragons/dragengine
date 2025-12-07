@@ -57,7 +57,7 @@ const meObjectList &list, const decStringDictionary &properties){
 		
 		for(i=0; i<count; i++){
 			object = list.GetAt(i);
-			if(! object->GetWorld()){
+			if(!object->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

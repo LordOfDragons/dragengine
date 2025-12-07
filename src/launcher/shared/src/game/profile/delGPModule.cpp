@@ -67,7 +67,7 @@ void delGPModule::SetName(const char *name){
 void delGPModule::ApplyParameters(const char *version, delLauncher &launcher,
 delEngineInstance &engineInstance) const{
 	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed(pName, version);
-	if(! module){
+	if(!module){
 		return;
 	}
 	

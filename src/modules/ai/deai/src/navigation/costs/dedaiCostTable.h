@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cost table definition changed since the last time. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	
 	/** \brief Clear changed state. */
 	void ClearChanged();

@@ -45,7 +45,7 @@ gdeGameDefinition *gamedef, gdeProperty *property) :
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,11 +73,11 @@ gdeUGDWPToggleIdentifierUsage::~gdeUGDWPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUGDWPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

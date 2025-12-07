@@ -50,7 +50,7 @@ public:
 public:
 	ContextBuilder() = default;
 	
-	EditorIntegrator *editor() const{return pEditor;}
+	EditorIntegrator *editor() const{ return pEditor; }
 	void setEditor(EditorIntegrator *editor);
 	
 	/** \brief Entry function called by KDevPlatform API. */
@@ -65,7 +65,7 @@ public:
 	 * Set after build() is called to signal some information is missing and a reparsing
 	 * should be done to obtain correct results.
 	 */
-	inline bool requiresReparsing() const{return pRequiresReparsing;}
+	inline bool requiresReparsing() const{ return pRequiresReparsing; }
 	
 	/** \brief Close namespace contexts. */
 	void closeNamespaceContexts();

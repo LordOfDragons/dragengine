@@ -50,7 +50,7 @@ reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
 	if(constraintCount == 0) DETHROW(deeInvalidParam);
 	
 	pRig = list.GetConstraintAt(0)->GetRig();
-	if(! pRig) DETHROW(deeInvalidParam);
+	if(!pRig) DETHROW(deeInvalidParam);
 	pRig->AddReference();
 	
 	pEntries = NULL;
@@ -58,7 +58,7 @@ reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
 	
 	try{
 		pEntries = new sEntry[constraintCount];
-		if(! pEntries) DETHROW(deeOutOfMemory);
+		if(!pEntries) DETHROW(deeOutOfMemory);
 		
 		while(pEntryCount < constraintCount){
 			constraint = list.GetConstraintAt(pEntryCount);

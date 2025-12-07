@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Determine if the queue contains any events. */
-	inline bool GetHasEvents() const{return pEventCount > 0;}
+	inline bool GetHasEvents() const{ return pEventCount > 0; }
 	
 	/** \brief Number of events in the queue. */
-	inline int GetEventCount() const{return pEventCount;}
+	inline int GetEventCount() const{ return pEventCount; }
 	
 	/**
 	 * \brief Event by index.

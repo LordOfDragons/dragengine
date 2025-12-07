@@ -134,7 +134,7 @@ void igdeGDCEnvMapProbe::SetInfluencePriority(int priority){
 
 
 bool igdeGDCEnvMapProbe::IsPropertySet(int property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString& igdeGDCEnvMapProbe::GetPropertyName(int property) const{
@@ -142,7 +142,7 @@ const decString& igdeGDCEnvMapProbe::GetPropertyName(int property) const{
 }
 
 void igdeGDCEnvMapProbe::SetPropertyName(int property, const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

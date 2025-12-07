@@ -63,7 +63,7 @@
 ////////////////////////////
 
 meHeightTerrainTexture::meHeightTerrainTexture(deEngine *engine, const char *name){
-	if(! engine || ! name) DETHROW(deeInvalidParam);
+	if(!engine || !name) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pEngTexture = NULL;
@@ -223,9 +223,9 @@ void meHeightTerrainTexture::SetProjectionRotation(float rotation){
 
 
 void meHeightTerrainTexture::SetPathMask(const char *path, bool load){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathMask.Equals(path)){
+	if(!pPathMask.Equals(path)){
 		pPathMask = path;
 		
 		if(load){
@@ -245,7 +245,7 @@ deImage *meHeightTerrainTexture::GetOrAddMaskImage(){
 		return pMaskImage;
 	}
 	
-	if(! pSector || ! pSector->GetHeightTerrain()){
+	if(!pSector || !pSector->GetHeightTerrain()){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -288,7 +288,7 @@ void meHeightTerrainTexture::LoadMaskImage(){
 	}
 	pMaskImage = NULL;
 	
-	if(pSector && pSector->GetHeightTerrain() && ! pPathMask.IsEmpty()){
+	if(pSector && pSector->GetHeightTerrain() && !pPathMask.IsEmpty()){
 		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathMask, baseDir))){
 			try{
@@ -380,7 +380,7 @@ void meHeightTerrainTexture::pCleanUp(){
 void meHeightTerrainTexture::pLoadSkin(){
 	pSkin = NULL;
 	
-	if(pSector && pSector->GetHeightTerrain() && ! pPathSkin.IsEmpty()){
+	if(pSector && pSector->GetHeightTerrain() && !pPathSkin.IsEmpty()){
 		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathSkin, baseDir))){
 			try{

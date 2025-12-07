@@ -116,7 +116,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Tags. */
-	inline const decStringSet &GetTags() const{return pTags;}
+	inline const decStringSet &GetTags() const{ return pTags; }
 	
 	/** \brief Set tags. */
 	void SetTags(const decStringSet &tags);
@@ -141,7 +141,7 @@ public:
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);
@@ -162,9 +162,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{return pActionAdd;}
-	inline igdeAction *GetActionRemove() const{return pActionRemove;}
-	inline igdeAction *GetActionClear() const{return pActionClear;}
+	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
+	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
+	inline igdeAction *GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
@@ -172,10 +172,10 @@ public:
 	/** \name Widgets for use by actions. */
 	/*@{*/
 	/** \brief Combo box. */
-	inline igdeComboBoxFilter &GetComboBox() const{return pComboBox;}
+	inline igdeComboBoxFilter &GetComboBox() const{ return pComboBox; }
 	
 	/** \brief List box. */
-	inline igdeListBox &GetListBox() const{return pListBox;}
+	inline igdeListBox &GetListBox() const{ return pListBox; }
 	/*@}*/
 	
 	

@@ -496,7 +496,7 @@ void deoglSkinTexturePipelines::pPipelineConfigDepthReversed(deoglPipelineConfig
 	
 	pPipelineConfigDepth(config);
 	
-	if(! pTexture.GetSolid()){
+	if(!pTexture.GetSolid()){
 		config.EnableDepthTest(choices.GetDepthCompareFuncRegular());
 	}
 }
@@ -805,10 +805,10 @@ void deoglSkinTexturePipelines::pSetTypeMask(deoglSkinShaderConfig &config, cons
 
 void deoglSkinTexturePipelines::pSetTypeShadow(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
 	config.SetEncodeOutDepth(false);
-	config.SetOutputColor(! pTexture.GetSolid());
+	config.SetOutputColor(!pTexture.GetSolid());
 	
 	config.SetTextureColor(HASCHANTEX(ectColor)
-		&& ((pTexture.GetSolid() && pTexture.GetHasHoles()) || ! pTexture.GetSolid()));
+		&& ((pTexture.GetSolid() && pTexture.GetHasHoles()) || !pTexture.GetSolid()));
 	
 	config.SetTextureSolidity(pTexture.GetSolid()
 		&& pTexture.GetHasHoles() && HASCHANTEX(ectSolidity));
@@ -845,7 +845,7 @@ void deoglSkinTexturePipelines::pSetTexturesGeometry(deoglSkinShaderConfig &conf
 		
 	case deoglSkinShader::ertmOwnPassReflection:
 		// !pTexture.GetSolid() only until transparency works properly with the separate environment map pass
-		config.SetTextureEnvMap(HASCHANTEX(ectEnvironmentMap) || ! pTexture.GetSolid());
+		config.SetTextureEnvMap(HASCHANTEX(ectEnvironmentMap) || !pTexture.GetSolid());
 		break;
 		
 	case deoglSkinShader::ertmSingleBlenderEnvMap:
@@ -854,9 +854,9 @@ void deoglSkinTexturePipelines::pSetTexturesGeometry(deoglSkinShaderConfig &conf
 		break;
 	}
 	
-	config.SetTextureEnvMapEqui(! HASCHANTEX(ectEnvironmentMap)
+	config.SetTextureEnvMapEqui(!HASCHANTEX(ectEnvironmentMap)
 		&& pTexture.GetRenderThread().GetRenderers().GetReflection().GetUseEquiEnvMap());
-	config.SetTextureRenderColor(! pTexture.GetSolid());
+	config.SetTextureRenderColor(!pTexture.GetSolid());
 		//&& ! pTexture.GetHasHoles()  // problems with transparent
 	//config.SetTextureRenderColor( ! pTexture.GetSolid() && ! isDecal ); // problems with emssivity-only
 	config.SetTextureRefractionDistort(config.GetTextureRenderColor() && HASCHANTEX(ectRefractDistort));

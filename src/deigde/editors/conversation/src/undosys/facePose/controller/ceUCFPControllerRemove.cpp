@@ -42,10 +42,10 @@
 ////////////////////////////
 
 ceUCFPControllerRemove::ceUCFPControllerRemove(ceFacePose *facePose, ceControllerValue *controller){
-	if(! facePose || ! controller){
+	if(!facePose || !controller){
 		DETHROW(deeInvalidParam);
 	}
-	if(! facePose->GetControllerList().Has(controller)){
+	if(!facePose->GetControllerList().Has(controller)){
 		DETHROW(deeInvalidParam);
 	}
 	

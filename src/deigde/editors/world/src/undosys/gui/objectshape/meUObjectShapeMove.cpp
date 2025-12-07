@@ -47,10 +47,10 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object || ! property){
+	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -97,7 +97,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if(! sanimation){
+		if(!sanimation){
 			return;
 		}
 		
@@ -126,7 +126,7 @@ public:
 	
 	virtual void OnAction(){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if(! sanimation){
+		if(!sanimation){
 			return;
 		}
 		
@@ -148,7 +148,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if(! sanimation){
+		if(!sanimation){
 			return;
 		}
 		
@@ -170,7 +170,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if(! sanimation){
+		if(!sanimation){
 			return;
 		}
 		
@@ -242,7 +242,7 @@ public:
 	virtual void Update(){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
-		SetEnabled(sanimation && ! name.IsEmpty() && ! sanimation->GetNeutralVertexPositionSets().Has(name));
+		SetEnabled(sanimation && !name.IsEmpty() && !sanimation->GetNeutralVertexPositionSets().Has(name));
 	}
 };
 
@@ -253,7 +253,7 @@ public:
 	
 	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
-		if(name.IsEmpty() || ! sanimation->GetNeutralVertexPositionSets().Has(name)){
+		if(name.IsEmpty() || !sanimation->GetNeutralVertexPositionSets().Has(name)){
 			return nullptr;
 		}
 		
@@ -265,7 +265,7 @@ public:
 	virtual void Update(){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
-		SetEnabled(sanimation && ! name.IsEmpty() && sanimation->GetNeutralVertexPositionSets().Has(name));
+		SetEnabled(sanimation && !name.IsEmpty() && sanimation->GetNeutralVertexPositionSets().Has(name));
 	}
 };
 
@@ -299,7 +299,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetSAnimation()){
+		if(!pPanel.GetSAnimation()){
 			return;
 		}
 		
@@ -335,7 +335,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation *sanimation){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
-		if(! phoneme){
+		if(!phoneme){
 			return nullptr;
 		}
 		return OnChanged(textField, sanimation, phoneme);
@@ -416,7 +416,7 @@ public:
 	
 	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation*){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
-		if(! phoneme){
+		if(!phoneme){
 			return nullptr;
 		}
 		
@@ -434,7 +434,7 @@ public:
 	
 	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation*){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
-		if(! phoneme){
+		if(!phoneme){
 			return nullptr;
 		}
 		
@@ -470,7 +470,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation *sanimation){
 		saeWord * const word = pPanel.GetActiveWord();
-		if(! word){
+		if(!word){
 			return nullptr;
 		}
 		return OnChanged(textField, sanimation, word);
@@ -547,7 +547,7 @@ public:
 	virtual igdeUndo *OnAction(saeSAnimation*){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
 		saeWord * const word = pPanel.GetActiveWord();
-		if(! phoneme || ! word){
+		if(!phoneme || !word){
 			return nullptr;
 		}
 		
@@ -727,7 +727,7 @@ void saeWPSAnim::UpdateSAnimation(){
 		}
 		pListNeutralVertexPositionSets->SortItems();
 		pListNeutralVertexPositionSets->SetSelection(pListNeutralVertexPositionSets->IndexOfItem(vpsSelection));
-		if(! pListNeutralVertexPositionSets->GetSelectedItem() && pListNeutralVertexPositionSets->GetItemCount() > 0){
+		if(!pListNeutralVertexPositionSets->GetSelectedItem() && pListNeutralVertexPositionSets->GetItemCount() > 0){
 			pListNeutralVertexPositionSets->SetSelection(0);
 		}
 		

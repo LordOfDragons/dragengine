@@ -172,21 +172,21 @@ public:
 	void ResetViews();
 	
 	/** \brief Configuration. */
-	inline reConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline reConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline reClipboard &GetClipboard() const{return *pClipboard;}
+	inline reClipboard &GetClipboard() const{ return *pClipboard; }
 	
 	/** \brief Load save system. */
-	inline reLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline reLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief 3D View. */
-	inline reView3D &GetView3D() const{return *pView3D;}
+	inline reView3D &GetView3D() const{ return *pView3D; }
 	
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
@@ -200,19 +200,19 @@ public:
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconEditBone() const{return pIconEditBone;}
-	inline igdeIcon *GetIconEditShape() const{return pIconEditShape;}
-	inline igdeIcon *GetIconEditConstraint() const{return pIconEditConstraint;}
-	inline igdeIcon *GetIconEditPush() const{return pIconEditPush;}
-	inline igdeIcon *GetIconEditSelect() const{return pIconEditSelect;}
-	inline igdeIcon *GetIconEditMove() const{return pIconEditMove;}
-	inline igdeIcon *GetIconEditScale() const{return pIconEditScale;}
-	inline igdeIcon *GetIconEditRotate() const{return pIconEditRotate;}
+	inline igdeIcon *GetIconEditBone() const{ return pIconEditBone; }
+	inline igdeIcon *GetIconEditShape() const{ return pIconEditShape; }
+	inline igdeIcon *GetIconEditConstraint() const{ return pIconEditConstraint; }
+	inline igdeIcon *GetIconEditPush() const{ return pIconEditPush; }
+	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
+	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
+	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
+	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
 // 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditLockAxisX() const{return pIconEditLockAxisX;}
-	inline igdeIcon *GetIconEditLockAxisY() const{return pIconEditLockAxisY;}
-	inline igdeIcon *GetIconEditLockAxisZ() const{return pIconEditLockAxisZ;}
-	inline igdeIcon *GetIconEditLockLocal() const{return pIconEditLockLocal;}
+	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
+	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
+	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline igdeIcon *GetIconEditLockLocal() const{ return pIconEditLockLocal; }
 	
 	
 	

@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{return pRenderableVideoFrame;}
+	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{ return pRenderableVideoFrame; }
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

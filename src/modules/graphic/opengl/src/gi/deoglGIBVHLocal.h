@@ -78,27 +78,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread(){return pRenderThread;}
-	inline const deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread(){ return pRenderThread; }
+	inline const deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{return pTBONodeBox;}
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{return pTBOIndex;}
+	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{return pTBOFace;}
+	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{return pTBOVertex;}
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{return pTBOTexCoord;}
+	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** BVH. */
-	inline deoglBVH &GetBVH(){return pBVH;}
-	inline const deoglBVH &GetBVH() const{return pBVH;}
+	inline deoglBVH &GetBVH(){ return pBVH; }
+	inline const deoglBVH &GetBVH() const{ return pBVH; }
 	
 	/** Clear. */
 	void Clear();

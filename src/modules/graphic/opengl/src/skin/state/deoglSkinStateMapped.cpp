@@ -73,7 +73,7 @@ void deoglSkinStateMapped::MapBone(const deComponent &component){
 	if(pMapped && component.GetRig()){
 		const deRig &rig = *component.GetRig();
 		const decString &name = pMapped->GetMapped().GetBone();
-		if(! name.IsEmpty()){
+		if(!name.IsEmpty()){
 			pBone = rig.IndexOfBoneNamed(name);
 		}
 	}

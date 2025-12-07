@@ -109,7 +109,7 @@ const debpCollider &collider0, const debpCollisionObject &colObj1) const{
 		const deHeightTerrainSector &htsector = *colObj1.GetOwnerHTSector()->GetSector();
 		
 		// no collision with height terrains without height image or textures
-		if(! htsector.GetHeightImage() || htsector.GetTextureCount() == 0){
+		if(!htsector.GetHeightImage() || htsector.GetTextureCount() == 0){
 			return false;
 		}
 		
@@ -131,7 +131,7 @@ const debpCollisionObject &colObj1) const{
 	const deHeightTerrainSector &engHTSector = *htsector.GetSector();
 	
 	// no collision with height terrains without height image or textures
-	if(! engHTSector.GetHeightImage() || engHTSector.GetTextureCount() == 0){
+	if(!engHTSector.GetHeightImage() || engHTSector.GetTextureCount() == 0){
 		return false;
 	}
 	
@@ -166,7 +166,7 @@ const debpCollisionObject &colObj1) const{
 	}else if(colObj1.IsOwnerHTSector()){
 		// no collision with height terrains without height image or textures
 		const deHeightTerrainSector &htsector = *colObj1.GetOwnerHTSector()->GetSector();
-		if(! htsector.GetHeightImage() || htsector.GetTextureCount() == 0){
+		if(!htsector.GetHeightImage() || htsector.GetTextureCount() == 0){
 			return false;
 		}
 		

@@ -75,7 +75,7 @@ void deClassNavigationInfo::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	// create navigation information
 	const dedsNavigationInfo * const copy = clsNavInfo.GetNavigationInfo(rt->GetValue(0)->GetRealObject());
-	if(! copy){
+	if(!copy){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -216,7 +216,7 @@ void deClassNavigationInfo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassNavigationInfo * const clsNavInfo = (deClassNavigationInfo*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNavInfo)){
+	if(!p_IsObjOfType(object, clsNavInfo)){
 		rt->PushBool(false);
 		
 	}else{
@@ -293,11 +293,11 @@ dedsNavigationInfo *deClassNavigationInfo::GetNavigationInfo(dsRealObject *mysel
 }
 
 void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo *info){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! info){
+	if(!info){
 		rt->PushObject(NULL, this);
 		return;
 	}

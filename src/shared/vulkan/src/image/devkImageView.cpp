@@ -42,7 +42,7 @@ devkImageView::devkImageView(devkImage *image) :
 pImage(image),
 pImageView(VK_NULL_HANDLE)
 {
-	if(! image){
+	if(!image){
 		DETHROW_INFO(deeNullPointer, "image");
 	}
 	
@@ -122,7 +122,7 @@ devkImageView::devkImageView(devkImage *image, int layer) :
 pImage(image),
 pImageView(VK_NULL_HANDLE)
 {
-	if(! image){
+	if(!image){
 		DETHROW_INFO(deeNullPointer, "image");
 	}
 	
@@ -203,7 +203,7 @@ devkImageView::devkImageView(devkImage *image, int layer, int level) :
 pImage(image),
 pImageView(VK_NULL_HANDLE)
 {
-	if(! image){
+	if(!image){
 		DETHROW_INFO(deeNullPointer, "image");
 	}
 	

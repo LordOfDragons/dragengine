@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAIfElseCaseAdd::ceUCAIfElseCaseAdd(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int index){
-	if(! topic || ! ifelse || ! ifcase){
+	if(!topic || !ifelse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > ifelse->GetCases().GetCount()){

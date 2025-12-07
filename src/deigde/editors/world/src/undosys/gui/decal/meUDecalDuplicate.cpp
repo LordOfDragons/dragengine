@@ -47,7 +47,7 @@ pWorld(NULL),
 pDecals(NULL),
 pDecalCount(0)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

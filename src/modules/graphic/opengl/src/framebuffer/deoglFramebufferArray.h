@@ -60,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Layer count. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Framebuffer or nullptr if layered. */
-	inline const deoglFramebuffer::Ref &GetFBO() const{return pFBO;}
+	inline const deoglFramebuffer::Ref &GetFBO() const{ return pFBO; }
 	
 	/** Layer framebuffer or nullptr if not layered. */
 	deoglFramebuffer *GetLayerFBO(int layer) const;

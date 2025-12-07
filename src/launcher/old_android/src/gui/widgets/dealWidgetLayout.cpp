@@ -68,7 +68,7 @@ dealWidget *dealWidgetLayout::GetWidgetAt(int index) const{
 }
 
 void dealWidgetLayout::AddWidget(dealWidget *widget){
-	if(! widget){
+	if(!widget){
 		DETHROW(deeInvalidParam);
 	}
 	if(widget->GetParent()){
@@ -82,7 +82,7 @@ void dealWidgetLayout::AddWidget(dealWidget *widget){
 }
 
 void dealWidgetLayout::RemoveWidget(dealWidget *widget){
-	if(! pWidgets.Has(widget)){
+	if(!pWidgets.Has(widget)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -120,7 +120,7 @@ decPoint dealWidgetLayout::GetDialogPosition() const{
 }
 
 dealWidget *dealWidgetLayout::WidgetAtPosition(const decPoint &point) const{
-	if(! IsPointInside(point)){
+	if(!IsPointInside(point)){
 		return NULL;
 	}
 	
@@ -150,7 +150,7 @@ void dealWidgetLayout::DirtyLayout(){
 }
 
 void dealWidgetLayout::Layout(){
-	if(! pDirtyLayout){
+	if(!pDirtyLayout){
 		return;
 	}
 	
@@ -179,14 +179,14 @@ void dealWidgetLayout::RenderContent(const sRenderContext &context){
 	for(i=0; i<count; i++){
 		dealWidget &child = *((dealWidget*)pWidgets.GetAt(i));
 		
-		if(! child.GetVisible()){
+		if(!child.GetVisible()){
 			continue;
 		}
 		
 		const decPoint &childPosition = child.GetPosition();
 		const decPoint &childSize = child.GetSize();
 		
-		if(! (childSize > decPoint())){
+		if(!(childSize > decPoint())){
 			continue;
 		}
 		
@@ -194,11 +194,11 @@ void dealWidgetLayout::RenderContent(const sRenderContext &context){
 		childContext.viewFrom = childContext.screenPosition.Largest(context.viewFrom);
 		childContext.viewTo = (childContext.screenPosition + childSize).Smallest(context.viewTo);
 		
-		if(! ((childContext.viewTo - childContext.viewFrom) > decPoint())){
+		if(!((childContext.viewTo - childContext.viewFrom) > decPoint())){
 			continue;
 		}
 		
-		if(! (childContext.viewFrom <= context.viewTo && childContext.viewTo >= context.viewFrom)){
+		if(!(childContext.viewFrom <= context.viewTo && childContext.viewTo >= context.viewFrom)){
 			continue;
 		}
 		

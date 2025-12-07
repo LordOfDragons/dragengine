@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Light",
 igdeUndo *gdeMAOCLightPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCLight::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

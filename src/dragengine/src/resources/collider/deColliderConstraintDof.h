@@ -97,13 +97,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Lower limit. */
-	inline float GetLowerLimit() const{return pLowerLimit;}
+	inline float GetLowerLimit() const{ return pLowerLimit; }
 	
 	/** \brief Set lower limit. */
 	void SetLowerLimit(float lowerLimit);
 	
 	/** \brief Upper limit. */
-	inline float GetUpperLimit() const{return pUpperLimit;}
+	inline float GetUpperLimit() const{ return pUpperLimit; }
 	
 	/** \brief Set upper limit. */
 	void SetUpperLimit(float upperLimit);
@@ -118,19 +118,19 @@ public:
 	void SetFree();
 	
 	/** \brief Static friction force. */
-	inline float GetStaticFriction() const{return pStaticFriction;}
+	inline float GetStaticFriction() const{ return pStaticFriction; }
 	
 	/** \brief Set static friction force. */
 	void SetStaticFriction(float friction);
 	
 	/** \brief Kinematic friction factor. */
-	inline float GetKinematicFriction() const{return pKinematicFriction;}
+	inline float GetKinematicFriction() const{ return pKinematicFriction; }
 	
 	/** \brief Set kinematic friction factor. */
 	void SetKinematicFriction(float friction);
 	
 	/** \brief Spring stiffness. */
-	inline float GetSpringStiffness() const{return pSpringStiffness;}
+	inline float GetSpringStiffness() const{ return pSpringStiffness; }
 	
 	/** \brief Set spring stiffness. */
 	void SetSpringStiffness(float stiffness);

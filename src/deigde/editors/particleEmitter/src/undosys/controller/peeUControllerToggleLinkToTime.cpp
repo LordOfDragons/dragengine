@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ peeUControllerToggleLinkToTime::~peeUControllerToggleLinkToTime(){
 ///////////////
 
 void peeUControllerToggleLinkToTime::Undo(){
-	pController->SetLinkToTime(! pController->GetLinkToTime());
+	pController->SetLinkToTime(!pController->GetLinkToTime());
 }
 
 void peeUControllerToggleLinkToTime::Redo(){
-	pController->SetLinkToTime(! pController->GetLinkToTime());
+	pController->SetLinkToTime(!pController->GetLinkToTime());
 }

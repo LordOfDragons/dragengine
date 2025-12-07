@@ -68,7 +68,7 @@ igdeFilePattern *igdeFilePatternList::GetFilePatternAt(int index) const{
 }
 
 int igdeFilePatternList::IndexOfFilePattern(igdeFilePattern *filePattern) const{
-	if(! filePattern) DETHROW(deeInvalidParam);
+	if(!filePattern) DETHROW(deeInvalidParam);
 	int f;
 	
 	for(f=0; f<pFilePatternCount; f++){
@@ -81,7 +81,7 @@ int igdeFilePatternList::IndexOfFilePattern(igdeFilePattern *filePattern) const{
 }
 
 bool igdeFilePatternList::HasFilePattern(igdeFilePattern *filePattern) const{
-	if(! filePattern) DETHROW(deeInvalidParam);
+	if(!filePattern) DETHROW(deeInvalidParam);
 	int f;
 	
 	for(f=0; f<pFilePatternCount; f++){
@@ -99,7 +99,7 @@ void igdeFilePatternList::AddFilePattern(igdeFilePattern *filePattern){
 	if(pFilePatternCount == pFilePatternSize){
 		int newSize = pFilePatternSize * 3 / 2 + 1;
 		igdeFilePattern **newArray = new igdeFilePattern*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFilePatterns){
 			memcpy(newArray, pFilePatterns, sizeof(igdeFilePattern*) * pFilePatternSize);
 			delete [] pFilePatterns;

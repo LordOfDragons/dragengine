@@ -197,7 +197,7 @@ public:
 	}
 	
 	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
-		if(! Run(path, pClassFileSystem.GetTypeDirectory())){
+		if(!Run(path, pClassFileSystem.GetTypeDirectory())){
 			return false;
 		}
 		if(pRecursive){
@@ -237,7 +237,7 @@ void deClassFileSystem::nfSearchFiles::RunFunction(dsRunTime *rt, dsValue *mysel
 	const bool recursive = rt->GetValue(1)->GetBool();
 	dsValue * const block = rt->GetValue(2);
 	
-	if(! block->GetRealObject()){
+	if(!block->GetRealObject()){
 		DSTHROW_INFO(dueNullPointer, "block");
 	}
 	
@@ -290,7 +290,7 @@ void deClassFileSystem::nfBrowseOverlay::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.SetFromUnix(path);
 	ensurePath.AddComponent("__ds_overlay_delete_me__");
 	
-	if(! vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
+	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
 		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
 		vfs.DeleteFile(ensurePath);
 	}
@@ -328,7 +328,7 @@ void deClassFileSystem::nfBrowseCapture::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.Add(tempPath);
 	ensurePath.AddComponent("__ds_capture_delete_me__");
 	
-	if(! vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
+	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
 		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
 		vfs.DeleteFile(ensurePath);
 	}
@@ -366,7 +366,7 @@ void deClassFileSystem::nfBrowseConfig::RunFunction(dsRunTime *rt, dsValue *myse
 	ensurePath.Add(tempPath);
 	ensurePath.AddComponent("__ds_config_delete_me__");
 	
-	if(! vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
+	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
 		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
 		vfs.DeleteFile(ensurePath);
 	}
@@ -448,7 +448,7 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 	
 	for(i=0; i<moduleCount; i++){
 		const deLoadableModule * const module = modsys.GetModuleAt(i);
-		if(module->GetType() != moduleType || ! module->GetEnabled()
+		if(module->GetType() != moduleType || !module->GetEnabled()
 		|| module->GetErrorCode() != deLoadableModule::eecSuccess){
 			continue;
 		}
@@ -559,7 +559,7 @@ pTypeDirectory(NULL),
 pTypeSpecial(NULL),
 pTypesReady(false)
 {
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -110,19 +110,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** State. */
-	inline eState GetState() const{return pState;}
+	inline eState GetState() const{ return pState; }
 	
 	/** Visible. */
 	bool IsVisible() const;
 	
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Shaders are loading. */
-	inline bool GetHasLoadingShader() const{return pHasLoadingShader;}
+	inline bool GetHasLoadingShader() const{ return pHasLoadingShader; }
 	
 	/** Shaders are compiling. */
-	inline bool GetHasCompilingShader() const{return pHasCompilingShader;}
+	inline bool GetHasCompilingShader() const{ return pHasCompilingShader; }
 	
 	/** Update. Called from main thread. */
 	void Update(float elapsed);

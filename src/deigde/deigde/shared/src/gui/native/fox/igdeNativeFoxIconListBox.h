@@ -87,10 +87,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List box. */
-	inline FXIconList *GetListBox() const{return pListBox;}
+	inline FXIconList *GetListBox() const{ return pListBox; }
 	
 	/** \brief Resizer or \em NULL. */
-	inline igdeNativeFoxResizer *GetResizser() const{return pResizer;}
+	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	
 	

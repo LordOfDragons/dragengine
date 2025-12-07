@@ -67,31 +67,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
 	void SetValue(float value);
 	
 	/** \brief Goal value. */
-	inline float GetGoal() const{return pGoal;}
+	inline float GetGoal() const{ return pGoal; }
 	
 	/** \brief Set goal value. */
 	void SetGoal(float goal);
 	
 	/** \brief Adjustment time in seconds. */
-	inline float GetAdjustTime() const{return pAdjustTime;}
+	inline float GetAdjustTime() const{ return pAdjustTime; }
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
 	void SetAdjustTime(float adjustTime);
 	
 	/** \brief Adjustment range in units. */
-	inline float GetAdjustRange() const{return pAdjustRange;}
+	inline float GetAdjustRange() const{ return pAdjustRange; }
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
 	void SetAdjustRange(float limit);
 	
 	/** \brief Change speed of the value in units per second. */
-	inline float GetChangeSpeed() const{return pChangeSpeed;}
+	inline float GetChangeSpeed() const{ return pChangeSpeed; }
 	
 	/** \brief Set change speed of the value in units per second. */
 	void SetChangeSpeed(float changeSpeed);

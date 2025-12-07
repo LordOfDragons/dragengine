@@ -64,8 +64,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Select target. */
-	inline desynSynthesizerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const desynSynthesizerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline desynSynthesizerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const desynSynthesizerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	

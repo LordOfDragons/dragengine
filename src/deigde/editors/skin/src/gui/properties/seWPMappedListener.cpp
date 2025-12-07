@@ -57,7 +57,7 @@ void seWPMappedListener::MappedStructureChanged(seSkin *skin){
 }
 
 void seWPMappedListener::MappedChanged(seSkin *skin, seMapped *mapped){
-	if(skin != pPanel.GetSkin() || ! mapped->GetActive()){
+	if(skin != pPanel.GetSkin() || !mapped->GetActive()){
 		return;
 	}
 	

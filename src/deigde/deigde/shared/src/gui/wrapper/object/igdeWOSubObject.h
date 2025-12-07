@@ -75,19 +75,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Wrapper. */
-	inline igdeWObject &GetWrapper() const{return pWrapper;}
+	inline igdeWObject &GetWrapper() const{ return pWrapper; }
 	
 	/** \brief Property prefix. */
-	inline const decString &GetPrefix(){return pPrefix;}
+	inline const decString &GetPrefix(){ return pPrefix; }
 	
 	/** \brief Box minimum extends. */
-	inline const decVector GetBoxMinExtends() const{return pBoxMinExtends;}
+	inline const decVector GetBoxMinExtends() const{ return pBoxMinExtends; }
 	
 	/** \brief Box maximum extends. */
-	inline const decVector &GetBoxMaxExtends() const{return pBoxMaxExtends;}
+	inline const decVector &GetBoxMaxExtends() const{ return pBoxMaxExtends; }
 	
 	/** \brief Has box extends. */
-	inline bool HasBoxExtends() const{return pHasBoxExtends;}
+	inline bool HasBoxExtends() const{ return pHasBoxExtends; }
 	
 	/** \brief Set extends. */
 	void SetBoxExtends(const decVector &boxMinExtends, const decVector &boxMaxExtends);

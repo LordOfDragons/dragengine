@@ -45,12 +45,12 @@ pLayer(NULL),
 pBody(NULL),
 pIndex(0)
 {
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
 	seLayer * const layer = body->GetLayer();
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

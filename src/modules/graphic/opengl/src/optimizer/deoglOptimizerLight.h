@@ -89,28 +89,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the light to optimize. */
-	inline deoglRLight *GetLight() const{return pLight;}
+	inline deoglRLight *GetLight() const{ return pLight; }
 	/** Runs optimizer until the given time slice has elapsed. */
 	virtual bool Run(int timeSlice);
 	
 	/** Retrieves the initial warm up time in ms. */
-	inline int GetInitialWarmUpTime() const{return pInitWarmUpTime;}
+	inline int GetInitialWarmUpTime() const{ return pInitWarmUpTime; }
 	/** Sets the initial warm up time in ms. */
 	void SetInitialWarmUpTime(int warmUpTime);
 	
 	/** Determines if the light volume will be optimized. */
-	inline bool GetOptimizeLightVolume() const{return pDoOptimizeLightVolume;}
+	inline bool GetOptimizeLightVolume() const{ return pDoOptimizeLightVolume; }
 	/** Sets if the light volume will be optimized. */
 	void SetOptimizeLightVolume(bool optimizeLightVolume);
 	/** Resets the light volume optimization. */
 	void ResetLightVolume();
 	/** Retrieves the maximal volume count. */
-	inline int GetMaximalVolumeCount() const{return pMaxVolumeCount;}
+	inline int GetMaximalVolumeCount() const{ return pMaxVolumeCount; }
 	/** Sets the maximal volume count. */
 	void SetMaximalVolumeCount(int maximalVolumeCount);
 	
 	/** Determines if the shadow casters will be optimized. */
-	inline bool GetOptimizeShadowCaster() const{return pDoOptimizeShadowCaster;}
+	inline bool GetOptimizeShadowCaster() const{ return pDoOptimizeShadowCaster; }
 	/** Sets if the shadow casters will be optimized. */
 	void SetOptimizeShadowCaster(bool optimizeShadowCaster);
 	/** Resets the shadow caster optimization. */

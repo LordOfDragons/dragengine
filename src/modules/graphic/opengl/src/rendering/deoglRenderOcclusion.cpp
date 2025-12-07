@@ -216,7 +216,7 @@ pAddToRenderTask(NULL)
 				defines.SetDefines("USE_CLIP_PLANE");
 			}
 			
-			if(! (modifiers & epmOrtho)){
+			if(!(modifiers & epmOrtho)){
 				defines.SetDefines("PERSPECTIVE_TO_LINEAR");
 			}
 			
@@ -257,7 +257,7 @@ pAddToRenderTask(NULL)
 				defines.SetDefines("USE_CLIP_PLANE");
 			}
 			
-			if(! (modifiers & epmOrtho)){
+			if(!(modifiers & epmOrtho)){
 				defines.SetDefines("PERSPECTIVE_TO_LINEAR");
 			}
 			
@@ -279,7 +279,7 @@ pAddToRenderTask(NULL)
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer()){
+		if(!renderThread.GetChoices().GetRenderFSQuadStereoVSLayer()){
 			sources = shaderManager.GetSourcesNamed("DefRen Occlusion OccMap Down-Sample Stereo");
 		}
 		pAsyncGetPipeline(pPipelineOccMapDownSampleStereo, pipconf, sources, defines);
@@ -369,13 +369,13 @@ pAddToRenderTask(NULL)
 		};
 		
 		OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOFrustumPlanes));
-		if(! pVAOFrustumPlanes){
+		if(!pVAOFrustumPlanes){
 			DETHROW(deeOutOfMemory);
 		}
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOFrustumPlanes));
 		
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFrustumPlanes));
-		if(! pVBOFrustumPlanes){
+		if(!pVBOFrustumPlanes){
 			DETHROW(deeOutOfMemory);
 		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFrustumPlanes));
@@ -621,7 +621,7 @@ void deoglRenderOcclusion::RenderTestsSkyLayer(deoglRenderPlanSkyLight &planSkyL
 	// the same way as camera tests did
 	decMatrix matrixLightToCamera(matrixCamera.Invert());
 	
-	if(! pRenderThread.GetChoices().GetUseComputeRenderTask()){
+	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
 		// with compute render task test matrix includes camera position otherwise not
 		matrixLightToCamera *= decDMatrix::CreateTranslation(referencePosition - camPos);
 	}
@@ -640,7 +640,7 @@ const deoglPipeline *deoglRenderOcclusion::GetRenderOcclusionMapRTS(const deoglR
 const deoglRenderPlanMasked *mask, bool perspective, bool singleSided) const{
 	int modifiers = 0;
 	
-	if(! perspective){
+	if(!perspective){
 		modifiers |= epmOrtho;
 	}
 	if(mask && mask->GetUseClipPlane()){
@@ -822,7 +822,7 @@ const deoglRenderPlanMasked *mask, bool perspective){
 	// activate pipeline
 	int modifiers = 0;
 	
-	if(! perspective){
+	if(!perspective){
 		modifiers |= epmOrtho;
 	}
 	if(mask && mask->GetUseClipPlane()){
@@ -1203,7 +1203,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 
 
 void deoglRenderOcclusion::DebugOcclusionMap(deoglRenderPlan &plan){
-	if(! plan.GetDebug()){
+	if(!plan.GetDebug()){
 		return;
 	}
 	
@@ -1218,7 +1218,7 @@ void deoglRenderOcclusion::DebugOcclusionMap(deoglRenderPlan &plan){
 		const deoglCollideListComponent &clistComponent = *clist.GetComponentAt(i);
 		const deoglRComponent &component = *clistComponent.GetComponent();
 		
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			continue;
 		}
 		

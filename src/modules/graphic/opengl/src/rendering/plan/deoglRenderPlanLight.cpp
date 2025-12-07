@@ -181,7 +181,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeDynamic = pShadowSizeDynamic;
 	
 	// manipulate cached shadows only if not using temporary shadows
-	if(! pUseShadowTemporary){
+	if(!pUseShadowTemporary){
 		// update next frame sizes. this keeps the largest size across an entire frame
 		deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
 		deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
@@ -330,7 +330,7 @@ void deoglRenderPlanLight::pDetermineUseShadow(){
 	pUseShadowTemporary = false;
 	
 	// no shadows if the light wishes so
-	if(! pLight->GetLight()->GetCastShadows()){
+	if(!pLight->GetLight()->GetCastShadows()){
 		pUseShadow = false;
 	}
 	
@@ -343,7 +343,7 @@ void deoglRenderPlanLight::pDetermineUseShadow(){
 }
 
 void deoglRenderPlanLight::pDetermineUseAmbient(){
-	pUseAmbient = ! pPlan.GetNoAmbientLight();
+	pUseAmbient = !pPlan.GetNoAmbientLight();
 	
 	// disable ambient if GI is used. for rendering uses faster shader. for boundary
 	// calculation uses only depth map. ambient is only required if GI is disabled
@@ -367,7 +367,7 @@ void deoglRenderPlanLight::pDetermineRefilterShadows(){
 	// requirement to use the static shadow maps.
 	// TODO check if this special filter check should be added or not
 	pRefilterShadows = pPlan.GetUseLayerMask()
-		&& ! pLight->GetLight()->StaticMatchesCamera(pPlan.GetLayerMask());
+		&& !pLight->GetLight()->StaticMatchesCamera(pPlan.GetLayerMask());
 	
 	if(pRefilterShadows){
 		// if refiltering is used temporary shadow maps have to use used to avoid rebuilding

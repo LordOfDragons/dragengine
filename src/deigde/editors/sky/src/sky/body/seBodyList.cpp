@@ -68,14 +68,14 @@ bool seBodyList::Has(seBody *body) const{
 }
 
 void seBodyList::Add(seBody *body){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	pBodies.Add(body);
 }
 
 void seBodyList::InsertAt(seBody *body, int index){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	pBodies.Insert(body, index);

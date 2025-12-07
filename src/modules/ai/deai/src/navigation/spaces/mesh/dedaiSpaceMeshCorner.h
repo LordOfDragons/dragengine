@@ -67,31 +67,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index of vertex. */
-	inline unsigned short GetVertex() const{return pVertex;}
+	inline unsigned short GetVertex() const{ return pVertex; }
 	
 	/** \brief Set index of vertex. */
 	void SetVertex(unsigned short vertex);
 	
 	/** \brief Index of edge. */
-	inline unsigned short GetEdge() const{return pEdge;}
+	inline unsigned short GetEdge() const{ return pEdge; }
 	
 	/** \brief Set index of edge. */
 	void SetEdge(unsigned short edge);
 	
 	/** \brief Type number to cross edge. */
-	inline unsigned short GetTypeNumber() const{return pTypeNumber;}
+	inline unsigned short GetTypeNumber() const{ return pTypeNumber; }
 	
 	/** \brief Set type number to cross edge. */
 	void SetTypeNumber(unsigned short typeNumber);
 	
 	/** \brief Link index or -1 if edge is not linked. */
-	inline short GetLink() const{return pLink;}
+	inline short GetLink() const{ return pLink; }
 	
 	/** \brief Set link index or -1 if edge is not linked. */
 	void SetLink(short link);
 	
 	/** \brief Corner is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if corner is enabled. */
 	void SetEnabled(bool enabled);

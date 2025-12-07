@@ -95,13 +95,13 @@ public:
 	
 	
 	/** Major version. */
-	inline int GetVersionMajor() const{return pVersionMajor;}
+	inline int GetVersionMajor() const{ return pVersionMajor; }
 	
 	/** Minor version. */
-	inline int GetVersionMinor() const{return pVersionMinor;}
+	inline int GetVersionMinor() const{ return pVersionMinor; }
 	
 	/** List of extension strings supported by hardware. */
-	inline const decStringList &GetStringListExtensions() const{return pStrListExtensions;}
+	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	
 	
@@ -117,18 +117,18 @@ public:
 	
 	
 	/** EFX major version. */
-	inline int GetEfxVersionMajor() const{return pEfxVersionMajor;}
+	inline int GetEfxVersionMajor() const{ return pEfxVersionMajor; }
 	
 	/** EFX minor version. */
-	inline int GetEfxVersionMinor() const{return pEfxVersionMinor;}
+	inline int GetEfxVersionMinor() const{ return pEfxVersionMinor; }
 	
 	
 	
 	/** EFX is supported. */
-	inline bool GetHasEFX() const{return pHasEFX;}
+	inline bool GetHasEFX() const{ return pHasEFX; }
 	
 	/** HRTF is supported. */
-	inline bool GetHasHRTF() const{return pHasHRTF;}
+	inline bool GetHasHRTF() const{ return pHasHRTF; }
 	/*@}*/
 	
 	

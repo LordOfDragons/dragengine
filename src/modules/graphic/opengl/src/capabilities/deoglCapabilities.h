@@ -103,18 +103,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Texture format support. */
-	inline const deoglCapsFmtSupport &GetFormats() const{return pFormats;}
+	inline const deoglCapsFmtSupport &GetFormats() const{ return pFormats; }
 	
 	
 	
 	/** Maximum texture size. */
-	inline int GetMaxTextureSize() const{return pMaxTextureSize;}
+	inline int GetMaxTextureSize() const{ return pMaxTextureSize; }
 	
 	/** Maximum 3D texture size. */
-	inline int GetMax3DTextureSize() const{return pMax3DTextureSize;}
+	inline int GetMax3DTextureSize() const{ return pMax3DTextureSize; }
 	
 	/**
 	 * Maximum number of draw buffers available by the hardware.
@@ -122,62 +122,62 @@ public:
 	 * OpenGL Spec requires a minimum value of \em 8.
 	 * OpenGL EM Spec requires a minimum value of \em 4.
 	 */
-	inline int GetMaxDrawBuffers() const{return pMaxDrawBuffers;}
+	inline int GetMaxDrawBuffers() const{ return pMaxDrawBuffers; }
 	
 	/** Maximum size of UBOs. OpenGL Spec requires a minimum value of \em 16384. */
-	inline int GetUBOMaxSize() const{return pUBOMaxSize;}
+	inline int GetUBOMaxSize() const{ return pUBOMaxSize; }
 	
 	/** Maximum size of TBOs. OpenGL Spec requires a minimum value of \em 128000. */
-	inline int GetTBOMaxSize() const{return pTBOMaxSize;}
+	inline int GetTBOMaxSize() const{ return pTBOMaxSize; }
 	
 	/** Maximum size of SSBOs. OpenGL Spec requires a minimum value of \em 16777216. */
-	inline int GetSSBOMaxSize() const{return pSSBOMaxSize;}
+	inline int GetSSBOMaxSize() const{ return pSSBOMaxSize; }
 	
 	/** Maximum number of supported SSBO per vertex shader. */
-	inline int GetSSBOMaxBlocksVertex() const{return pSSBOMaxBlocksVertex;}
+	inline int GetSSBOMaxBlocksVertex() const{ return pSSBOMaxBlocksVertex; }
 	
 	/** Maximum number of supported SSBO per fragment shader. */
-	inline int GetSSBOMaxBlocksFragment() const{return pSSBOMaxBlocksFragment;}
+	inline int GetSSBOMaxBlocksFragment() const{ return pSSBOMaxBlocksFragment; }
 	
 	/** Maximum number of supported SSBO per geometry shader. */
-	inline int GetSSBOMaxBlocksGeometry() const{return pSSBOMaxBlocksGeometry;}
+	inline int GetSSBOMaxBlocksGeometry() const{ return pSSBOMaxBlocksGeometry; }
 	
 	/** Maximum number of supported SSBO per geometry shader. */
-	inline int GetSSBOMaxBlocksCompute() const{return pSSBOMaxBlocksCompute;}
+	inline int GetSSBOMaxBlocksCompute() const{ return pSSBOMaxBlocksCompute; }
 	
 	/** Uniform buffer offset alignment. */
-	inline int GetUBOOffsetAlignment() const{return pUBOOffsetAlignment;}
+	inline int GetUBOOffsetAlignment() const{ return pUBOOffsetAlignment; }
 	
 	/**
 	 * Maximum number of vertices a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 256.
 	 */
-	inline int GetGeometryShaderMaxVertices() const{return pGeometryShaderMaxVertices;}
+	inline int GetGeometryShaderMaxVertices() const{ return pGeometryShaderMaxVertices; }
 	
 	/**
 	 * Maximum number of components per invocation a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 1024.
 	 */
-	inline int GetGeometryShaderMaxComponents() const{return pGeometryShaderMaxComponents;}
+	inline int GetGeometryShaderMaxComponents() const{ return pGeometryShaderMaxComponents; }
 	
 	/** Count of binary shader formats the driver supports. */
-	inline int GetNumProgramBinaryFormats() const{return pNumProgramBinaryFormats;}
+	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
 	
 	/** Maximum compute work group size. */
-	inline int GetMaxComputeWorkGroupInvocations() const{return pMaxComputeWorkGroupInvocations;}
+	inline int GetMaxComputeWorkGroupInvocations() const{ return pMaxComputeWorkGroupInvocations; }
 	
 	/** Maximum count of compute work group invocations. */
-	inline const decPoint3 &GetMaxComputeWorkGroupSize() const{return pMaxComputeWorkGroupSize;}
+	inline const decPoint3 &GetMaxComputeWorkGroupSize() const{ return pMaxComputeWorkGroupSize; }
 	
 	/** Maximum texture image units. */
-	inline int GetMaxTextureImageUnits() const{return pMaxTextureImageUnits;}
+	inline int GetMaxTextureImageUnits() const{ return pMaxTextureImageUnits; }
 	
 	
 	
 	/** Array texture layer check. */
-	inline const deoglCapCheckATLUnbind &ATLUnbind() const{return pATLUnbind;}
+	inline const deoglCapCheckATLUnbind &ATLUnbind() const{ return pATLUnbind; }
 	
 	/** Indirect UBO matrix access check. */
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
@@ -196,16 +196,16 @@ public:
 		return pFramebufferTextureSingle;}
 	
 	/** Std430 support. */
-	inline const deoglCapCheckStd430 &GetStd430() const{return pStd430;}
+	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
 	
 	/** Restricted image buffer formats. */
-	inline bool GetRestrictedImageBufferFormats() const{return pRestrictedImageBufferFormats;}
+	inline bool GetRestrictedImageBufferFormats() const{ return pRestrictedImageBufferFormats; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();
 	
 	/** Full-Screen Quad VAO for internal testing only. */
-	inline GLuint GetFSQuadVAO() const{return pFSQuadVAO;}
+	inline GLuint GetFSQuadVAO() const{ return pFSQuadVAO; }
 	
 	/** Verify capabilities. */
 	bool Verify() const;

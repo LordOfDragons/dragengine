@@ -117,12 +117,12 @@ igdeNativeFoxNVNode::~igdeNativeFoxNVNode(){
 }
 
 igdeNativeFoxNVNode *igdeNativeFoxNVNode::CreateNativeWidget(igdeNVNode &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -289,7 +289,7 @@ long igdeNativeFoxNVNode::onTitleLeftMouseDown(FXObject *sender, FXSelector, voi
 }
 
 long igdeNativeFoxNVNode::onTitleMouseMove(FXObject*, FXSelector, void *pdata){
-	if(! pTitleIsDraging){
+	if(!pTitleIsDraging){
 		return 1;
 	}
 	
@@ -326,7 +326,7 @@ long igdeNativeFoxNVNode::onTitleMouseMove(FXObject*, FXSelector, void *pdata){
 }
 
 long igdeNativeFoxNVNode::onTitleLeftMouseUp(FXObject *sender, FXSelector, void*){
-	if(! pTitleIsDraging){
+	if(!pTitleIsDraging){
 		return 1;
 	}
 	
@@ -369,7 +369,7 @@ void meWVNode::UpdateWindowShape(){
 		// make sure the window shape exists and is created. should this fail for
 		// some reason we simply ignore the shape which causes garbage to show
 		// around the node but it would not prevent usage of the editor
-		if(! pWindowShape){
+		if(!pWindowShape){
 			pWindowShape = new FXBitmap(getApp());
 			if(pWindowShape){
 				pWindowShape->create();

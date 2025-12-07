@@ -44,7 +44,7 @@
 ////////////////////////////
 
 debpHeightTerrain::debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *heightTerrain){
-	if(! bullet || ! heightTerrain) DETHROW(deeInvalidParam);
+	if(!bullet || !heightTerrain) DETHROW(deeInvalidParam);
 	
 	int s, sectorCount = heightTerrain->GetSectorCount();
 	
@@ -162,7 +162,7 @@ void debpHeightTerrain::SectorAdded(deHeightTerrainSector *sector)
 		if(pSectorCount == pSectorSize){
 			int newSize = pSectorSize * 3 / 2 + 1;
 			debpHTSector **newArray = new debpHTSector*[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pSectors){
 				memcpy(newArray, pSectors, sizeof(debpHTSector*) * pSectorSize);
 				delete [] pSectors;
@@ -172,7 +172,7 @@ void debpHeightTerrain::SectorAdded(deHeightTerrainSector *sector)
 		}
 		
 		bpsector = new debpHTSector(this, sector);
-		if(! bpsector) DETHROW(deeOutOfMemory);
+		if(!bpsector) DETHROW(deeOutOfMemory);
 		
 		pSectors[pSectorCount++] = bpsector;
 		

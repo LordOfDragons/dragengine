@@ -190,7 +190,7 @@ void aeController::SetMaximumValue(float value){
 }
 
 void aeController::SetCurrentValue(float value){
-	if(! pFrozen){
+	if(!pFrozen){
 		value = pCheckValue(value);
 		
 		if(fabsf(value - pCurValue) > 1e-5f){
@@ -598,7 +598,7 @@ float aeController::pCheckValue(float value){
 }
 
 void aeController::pReleaseGizmos(){
-	if(! pGizmoIKPosition){
+	if(!pGizmoIKPosition){
 		return;
 	}
 	
@@ -607,7 +607,7 @@ void aeController::pReleaseGizmos(){
 }
 
 void aeController::pCreateGizmos(){
-	if(pGizmoIKPosition || ! pAnimator){
+	if(pGizmoIKPosition || !pAnimator){
 		return;
 	}
 	

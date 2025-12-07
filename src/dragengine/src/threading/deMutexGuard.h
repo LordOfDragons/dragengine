@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the lock. */
-	inline bool GetLocked() const{return pLocked;}
+	inline bool GetLocked() const{ return pLocked; }
 	
 	/** \brief Lock guarded mutex. */
 	void Lock();

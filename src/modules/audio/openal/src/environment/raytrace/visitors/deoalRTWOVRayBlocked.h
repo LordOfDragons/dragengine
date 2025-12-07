@@ -81,7 +81,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray is blocked. */
-	inline bool GetBlocked() const{return pBlocked;}
+	inline bool GetBlocked() const{ return pBlocked; }
 	
 	/** \brief Set if ray is blocked. */
 	void SetBlocked(bool blocked);

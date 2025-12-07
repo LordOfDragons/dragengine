@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin(aeRuleLimit *rule, const decVector &newMin){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

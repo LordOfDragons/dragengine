@@ -89,44 +89,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the parent rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	/** \brief Sets the parent rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{return pCollider;}
+	inline deColliderVolume *GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the push type. */
-	inline ePushTypes GetType() const{return pType;}
+	inline ePushTypes GetType() const{ return pType; }
 	/** \brief Sets the push type. */
 	void SetType(ePushTypes type);
 	/** \brief Retrieves the push position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the push position. */
 	void SetPosition(const decVector &position);
 	/** \brief Retrieves the push orientation. */
-	inline const decVector &GetOrientation() const{return pOrientation;}
+	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** \brief Sets the push orientation. */
 	void SetOrientation(const decVector &orientation);
 	/** \brief Retrieves the push impuls. */
-	inline float GetImpuls() const{return pImpuls;}
+	inline float GetImpuls() const{ return pImpuls; }
 	/** \brief Sets the push impuls. */
 	void SetImpuls(float impuls);
 	/** \brief Retrieves the number of rays to shoot. */
-	inline int GetRayCount() const{return pRayCount;}
+	inline int GetRayCount() const{ return pRayCount; }
 	/** \brief Sets the number of rays to shoot. */
 	void SetRayCount(int rayCount);
 	/** \brief Retrieves the cone angle. */
-	inline float GetConeAngle() const{return pConeAngle;}
+	inline float GetConeAngle() const{ return pConeAngle; }
 	/** \brief Sets the cone angle. */
 	void SetConeAngle(float angle);
 	
 	/** \brief Determines if the push is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	/** \brief Sets if the push is selected. */
 	void SetSelected(bool selected);
 	/** \brief Determines if the push is the active one. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	/** \brief Sets if the push is the active one. */
 	void SetActive(bool active);
 	

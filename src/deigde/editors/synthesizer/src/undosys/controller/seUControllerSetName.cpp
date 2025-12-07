@@ -45,7 +45,7 @@ seUControllerSetName::seUControllerSetName(seController *controller, const char 
 pController(controller),
 pNewValue(newValue)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetName();

@@ -113,22 +113,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Widget is editable. */
-	inline bool GetEditable() const{return pEditable;}
+	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if widget is editable. */
 	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -139,7 +139,7 @@ public:
 	
 	
 	/** \brief Point3. */
-	inline const decPoint3 &GetPoint3() const{return pPoint3;}
+	inline const decPoint3 &GetPoint3() const{ return pPoint3; }
 	
 	/** \brief Set point. */
 	void SetPoint3(const decPoint3 &point);

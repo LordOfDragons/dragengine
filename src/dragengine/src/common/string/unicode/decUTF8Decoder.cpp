@@ -56,7 +56,7 @@ bool decUTF8Decoder::HasReachedEnd() const{
 }
 
 void decUTF8Decoder::SetString(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	pString = string;

@@ -74,12 +74,12 @@ pLooping(source.GetLooping()),
 pTargetSpeed(synthesizer, firstLink, source.GetTargetSpeed()),
 pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 {
-	SetSilent(! source.GetEnabled());
+	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}
 	
-	if(! source.GetSound()){
+	if(!source.GetSound()){
 		SetSilent(true);
 		return;
 	}

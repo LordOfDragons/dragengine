@@ -352,10 +352,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the configuration. */
-	inline const deoglSkinShaderConfig &GetConfig() const{return pConfig;}
+	inline const deoglSkinShaderConfig &GetConfig() const{ return pConfig; }
 	
 	/** Retrieves the index for a texture target or -1 if not used. */
 	int GetTextureTarget(eTextureTargets target) const;
@@ -364,19 +364,19 @@ public:
 	int GetInstanceUniformTarget(eInstanceUniformTargets target) const;
 	
 	/** Required count of texture unit index used by this shader. */
-	inline int GetTextureUnitCount() const{return pTextureUnitCount;}
+	inline int GetTextureUnitCount() const{ return pTextureUnitCount; }
 	
 	/** Target of shared SPB instance index base parameter or -1 if not used. */
-	inline int GetTargetSPBInstanceIndexBase() const{return pTargetSPBInstanceIndexBase;}
+	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
 	
 	/** Target of draw id offset parameter or -1 if not used. */
-	inline int GetTargetDrawIDOffset() const{return pTargetDrawIDOffset;}
+	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
 	
 	/** Prepare shader. For use by deoglSkinShaderManager only. */
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader. */
-	inline deoglShaderProgram *GetShader() const{return pShader;}
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/** Create render skin shader shader parameter block. */
 	static deoglSPBlockUBO::Ref CreateSPBRender(deoglRenderThread &renderThread);

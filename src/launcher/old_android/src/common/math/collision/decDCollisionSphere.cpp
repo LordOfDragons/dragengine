@@ -152,12 +152,12 @@ double decDCollisionSphere::PointMoveHitsVolume(const decDVector &point, const d
 //////////////////////
 
 void decDCollisionSphere::GetEnclosingSphere(decDCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	sphere->SetAll(pCenter, pRadius);
 }
 
 void decDCollisionSphere::GetEnclosingBox(decDCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	box->SetCenter(pCenter);
 	box->SetHalfSize(decDVector(pRadius, pRadius, pRadius));
 }
@@ -203,7 +203,7 @@ bool decDCollisionSphere::RayHitsVolume(const decDVector &rayOrigin, const decDV
 /////////////
 
 void decDCollisionSphere::Visit(decDCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitSphere(this);
 }
 

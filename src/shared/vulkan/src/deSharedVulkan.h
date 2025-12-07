@@ -77,13 +77,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner module. */
-	inline deBaseModule &GetModule() const{return pModule;}
+	inline deBaseModule &GetModule() const{ return pModule; }
 	
 	/** Instance. */
-	inline devkInstance &GetInstance() const{return pInstance;}
+	inline devkInstance &GetInstance() const{ return pInstance; }
 	
 	/** Cache path. */
-	inline const decPath &GetCachePath() const{return pCachePath;}
+	inline const decPath &GetCachePath() const{ return pCachePath; }
 	
 	/** Set cache path. */
 	void SetCachePath(const decPath &path);

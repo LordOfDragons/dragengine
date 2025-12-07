@@ -42,7 +42,7 @@
 gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,7 +64,7 @@ gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
 ///////////////
 
 void gdeUOCToggleIsGhost::Undo(){
-	pObjectClass->SetIsGhost(! pObjectClass->GetIsGhost());
+	pObjectClass->SetIsGhost(!pObjectClass->GetIsGhost());
 }
 
 void gdeUOCToggleIsGhost::Redo(){

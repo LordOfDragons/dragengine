@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleAnimDiffToggleEnableSize::aeURuleAnimDiffToggleEnableSize(aeRuleAnimationDifference *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleAnimDiffToggleEnableSize::~aeURuleAnimDiffToggleEnableSize(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleAnimDiffToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

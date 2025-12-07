@@ -65,7 +65,7 @@ deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
 	// create and add debug drawer
 	try{
 		debugDrawer = new deDebugDrawer(this);
-		if(! debugDrawer) DETHROW(deeOutOfMemory);
+		if(!debugDrawer) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 		pDebugDrawers.Add(debugDrawer);
 	}catch(const deException &){
@@ -96,7 +96,7 @@ void deDebugDrawerManager::SystemGraphicLoad(){
 	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
 	while(debugDrawer){
-		if(! debugDrawer->GetPeerGraphic()){
+		if(!debugDrawer->GetPeerGraphic()){
 			GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 		}
 		

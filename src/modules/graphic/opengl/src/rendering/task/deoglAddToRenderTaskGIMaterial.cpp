@@ -106,7 +106,7 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture(deog
 	}
 	
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return NULL;
 	}
 	
@@ -124,7 +124,7 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture(deog
 //////////////////////
 
 bool deoglAddToRenderTaskGIMaterial::pFilterReject(const deoglSkinTexture *skinTexture) const{
-	if(! skinTexture){
+	if(!skinTexture){
 		return true;
 	}
 	if(/*skinTexture->GetHasSolidity() ||*/ skinTexture->GetHasTransparency()){
@@ -138,14 +138,14 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc){
 	// retrieve the shader and texture units configuration to use
 	const deoglPipeline *pipeline = nullptr;
 	
-	if(! pipeline){
+	if(!pipeline){
 		pipeline = skinTexture->GetPipelines().GetAt(deoglSkinTexturePipelinesList::eptComponent).
 			GetWithRef(pSkinPipelineType).GetPipeline();
 	}
 	
 	DEASSERT_NOTNULL(pipeline)
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	

@@ -72,7 +72,7 @@ bool gdeOCComponentList::Has(gdeOCComponent *component) const{
 }
 
 void gdeOCComponentList::Add(gdeOCComponent *component){
-	if(! component || Has(component)){
+	if(!component || Has(component)){
 		DETHROW(deeInvalidParam);
 	}
 	

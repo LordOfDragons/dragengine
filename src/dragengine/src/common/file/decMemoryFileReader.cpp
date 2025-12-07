@@ -42,7 +42,7 @@ decMemoryFileReader::decMemoryFileReader(decMemoryFile *memoryFile) :
 pFile(NULL),
 pPosition(0)
 {
-	if(! memoryFile){
+	if(!memoryFile){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -117,7 +117,7 @@ void decMemoryFileReader::SetPositionEnd(int position){
 ////////////
 
 void decMemoryFileReader::Read(void *buffer, int size){
-	if(! buffer){
+	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
 	if(pPosition + size > pFile->GetLength()){

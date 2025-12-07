@@ -255,17 +255,17 @@ void deoglDeveloperModeStats::ShaderSources(const decUnicodeArgumentList &comman
 		text.Format("- Shader Sources '%s' (shader file '%s'):\n", sources.GetName().GetString(), sources.GetFilename().GetString());
 		answer.AppendFromUTF8(text.GetString());
 		
-		if(! sources.GetPathGeometrySourceCode().IsEmpty()){
+		if(!sources.GetPathGeometrySourceCode().IsEmpty()){
 			text.Format("   - Geometry Source Code = %s\n", sources.GetPathGeometrySourceCode().GetString());
 			answer.AppendFromUTF8(text.GetString());
 		}
 		
-		if(! sources.GetPathVertexSourceCode().IsEmpty()){
+		if(!sources.GetPathVertexSourceCode().IsEmpty()){
 			text.Format("   - Vertex Source Code = %s\n", sources.GetPathVertexSourceCode().GetString());
 			answer.AppendFromUTF8(text.GetString());
 		}
 		
-		if(! sources.GetPathFragmentSourceCode().IsEmpty()){
+		if(!sources.GetPathFragmentSourceCode().IsEmpty()){
 			text.Format("   - Fragment Source Code = %s\n", sources.GetPathFragmentSourceCode().GetString());
 			answer.AppendFromUTF8(text.GetString());
 		}

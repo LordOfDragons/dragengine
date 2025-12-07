@@ -138,7 +138,7 @@ void dewmVPXTrackCallback::pProcessFrame(webm::Reader &reader, std::uint64_t &by
 		(unsigned int)frameSize, nullptr, 0) == VPX_CODEC_OK)
 	pIterator = nullptr;
 	
-	if(! pResBuffer){
+	if(!pResBuffer){
 		// skip frame
 		return;
 	}
@@ -248,7 +248,7 @@ void dewmVPXTrackCallback::pProcessAdditional(const std::vector<unsigned char> &
 	// additional data it would prevent processing the data per-frame. so right now
 	// it is assumed that with transparency each block has only one frame and one
 	// additional
-	if(! pHasTransparency){
+	if(!pHasTransparency){
 		return;
 	}
 	
@@ -256,7 +256,7 @@ void dewmVPXTrackCallback::pProcessAdditional(const std::vector<unsigned char> &
 	DEASSERT_TRUE(vpx_codec_decode(pContextTransparency, data.data(),
 		(unsigned int)data.size(), nullptr, 0) == VPX_CODEC_OK)
 	
-	if(! pResBuffer){
+	if(!pResBuffer){
 		// skip frame
 		return;
 	}

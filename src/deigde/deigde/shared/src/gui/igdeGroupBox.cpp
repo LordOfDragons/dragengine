@@ -126,7 +126,7 @@ void igdeGroupBox::SetCanCollapse(bool canCollapse){
 		return;
 	}
 	
-	if(! canCollapse){
+	if(!canCollapse){
 		SetCollapsed(false);
 	}
 	
@@ -186,7 +186,7 @@ void igdeGroupBox::CreateNativeWidget(){
 }
 
 void igdeGroupBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -197,7 +197,7 @@ void igdeGroupBox::DestroyNativeWidget(){
 
 
 void igdeGroupBox::OnTitleChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -205,7 +205,7 @@ void igdeGroupBox::OnTitleChanged(){
 }
 
 void igdeGroupBox::OnTitleAlignmentChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -214,7 +214,7 @@ void igdeGroupBox::OnTitleAlignmentChanged(){
 
 void igdeGroupBox::OnDescriptionChanged(){
 	/* // not supported
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -228,7 +228,7 @@ void igdeGroupBox::OnCanCollapseChanged(){
 }
 
 void igdeGroupBox::OnCollapsedChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -236,7 +236,7 @@ void igdeGroupBox::OnCollapsedChanged(){
 }
 
 void igdeGroupBox::OnStretchLastChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

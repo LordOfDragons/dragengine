@@ -40,7 +40,7 @@
 ////////////////////////////
 
 feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath){
-	if(! newPath) DETHROW(deeInvalidParam);
+	if(!newPath) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Font set image path");
 	

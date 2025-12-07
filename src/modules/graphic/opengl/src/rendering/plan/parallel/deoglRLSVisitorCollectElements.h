@@ -108,34 +108,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Frustum box min extend. */
-	inline const decVector &GetFrustumBoxMinExtend() const{return pFrustumBoxMinExtend;}
+	inline const decVector &GetFrustumBoxMinExtend() const{ return pFrustumBoxMinExtend; }
 	
 	/** Frustum box max extend. */
-	inline const decVector &GetFrustumBoxMaxExtend() const{return pFrustumBoxMaxExtend;}
+	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	/** X light axis. */
-	inline const decVector &GetAxisX() const{return pAxisX;}
+	inline const decVector &GetAxisX() const{ return pAxisX; }
 	
 	/** Y light axis. */
-	inline const decVector &GetAxisY() const{return pAxisY;}
+	inline const decVector &GetAxisY() const{ return pAxisY; }
 	
 	/** Z light axis. */
-	inline const decVector &GetAxisZ() const{return pAxisZ;}
+	inline const decVector &GetAxisZ() const{ return pAxisZ; }
 	
 	/** Absolute x light axis. */
-	inline const decVector &GetAbsAxisX() const{return pAbsAxisX;}
+	inline const decVector &GetAbsAxisX() const{ return pAbsAxisX; }
 	
 	/** Absolute y light axis. */
-	inline const decVector &GetAbsAxisY() const{return pAbsAxisY;}
+	inline const decVector &GetAbsAxisY() const{ return pAbsAxisY; }
 	
 	/** Absolute z light axis. */
-	inline const decVector &GetAbsAxisZ() const{return pAbsAxisZ;}
+	inline const decVector &GetAbsAxisZ() const{ return pAbsAxisZ; }
 	
 	/** Light space matrix. */
-	inline const decDMatrix &GetMatrixLightSpace() const{return pMatrixLightSpace;}
+	inline const decDMatrix &GetMatrixLightSpace() const{ return pMatrixLightSpace; }
 	
 	/** Layer mask is used for culling. */
-	inline bool GetCullLayerMask() const{return pCullLayerMask;}
+	inline bool GetCullLayerMask() const{ return pCullLayerMask; }
 	
 	/** Set if layer mask is used for culling. */
 	void SetCullLayerMask(bool cull);

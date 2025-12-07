@@ -65,7 +65,7 @@ void igdeMenuBar::CreateNativeWidget(){
 }
 
 void igdeMenuBar::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

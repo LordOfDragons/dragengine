@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent window. */
-	inline aeWPRule &GetWPRule() const{return pWPRule;}
+	inline aeWPRule &GetWPRule() const{ return pWPRule; }
 	
 	/** Required rule type. */
-	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetRequiredType() const{return pRequiredType;}
+	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetRequiredType() const{ return pRequiredType; }
 	
 	/** Main window. */
 	aeWindowMain &GetWindowMain() const;
@@ -111,7 +111,7 @@ public:
 	aeRule *GetRule() const;
 	
 	/** Target or \em NULL. */
-	inline aeControllerTarget *GetTarget() const{return pTarget;}
+	inline aeControllerTarget *GetTarget() const{ return pTarget; }
 	
 	/** Set target or \em NULL. */
 	void SetTarget(aeControllerTarget *target);

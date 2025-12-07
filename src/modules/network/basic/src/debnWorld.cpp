@@ -43,7 +43,7 @@
 ////////////////////////////
 
 debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
-	if(! netBasic || ! world){
+	if(!netBasic || !world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -60,7 +60,7 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 	
 	try{
 		pStateSlots = new debnState*[1000];
-		if(! pStateSlots){
+		if(!pStateSlots){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -162,7 +162,7 @@ int debnWorld::pNextFreeSlot(){
 	int i;
 	
 	for(i=0; i<pStateSlotCount; i++){
-		if(! pStateSlots[i]){
+		if(!pStateSlots[i]){
 			return i;
 		}
 	}

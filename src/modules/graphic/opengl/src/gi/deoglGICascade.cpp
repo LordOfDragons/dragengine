@@ -243,7 +243,7 @@ void deoglGICascade::Invalidate(){
 void deoglGICascade::InvalidateArea(const decDVector &minExtend, const decDVector &maxExtend, bool hard){
 	const decVector lminExtend(minExtend - pPosition - pStaticHalfEnlarge);
 	const decVector lmaxExtend(maxExtend - pPosition + pStaticHalfEnlarge);
-	if(! (lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox)){
+	if(!(lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox)){
 		return;
 	}
 	
@@ -274,7 +274,7 @@ void deoglGICascade::InvalidateArea(const decDVector &minExtend, const decDVecto
 void deoglGICascade::TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend){
 	const decVector lminExtend((minExtend - pPosition).ToVector() - pDynamicHalfEnlarge);
 	const decVector lmaxExtend((maxExtend - pPosition).ToVector() + pDynamicHalfEnlarge);
-	if(! (lmaxExtend > pFieldOrigin && lminExtend < -pFieldOrigin)){
+	if(!(lmaxExtend > pFieldOrigin && lminExtend < -pFieldOrigin)){
 		return;
 	}
 	
@@ -389,13 +389,13 @@ void deoglGICascade::UpdatePosition(const decDVector &position){
 	// set the new tracing position
 	pPosition = closestPosition;
 	
-	if(! refPosKeepX){
+	if(!refPosKeepX){
 		pLastRefPosition.x = position.x;
 	}
-	if(! refPosKeepY){
+	if(!refPosKeepY){
 		pLastRefPosition.y = position.y;
 	}
-	if(! refPosKeepZ){
+	if(!refPosKeepZ){
 		pLastRefPosition.z = position.z;
 	}
 	
@@ -667,7 +667,7 @@ void deoglGICascade::UpdateProbeOffsetFromShader(const char *data){
 				probe.countOffsetMoved = 5;
 			}
 			
-			if(! offsets[i].offset.IsEqualTo(probe.offset, 0.05f)){
+			if(!offsets[i].offset.IsEqualTo(probe.offset, 0.05f)){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offsets[i].offset;
 				probe.flags &= ~(epfRayCacheValid | epfDynamicDisable);

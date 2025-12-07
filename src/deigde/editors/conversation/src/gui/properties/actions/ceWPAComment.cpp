@@ -71,7 +71,7 @@ public:
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAComment * const action = pPanel.GetAction();
-		if(! topic || ! action || textArea->GetText() == action->GetComment()){
+		if(!topic || !action || textArea->GetText() == action->GetComment()){
 			return;
 		}
 		

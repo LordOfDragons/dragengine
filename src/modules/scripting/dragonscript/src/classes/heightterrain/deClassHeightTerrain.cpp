@@ -745,7 +745,7 @@ void deClassHeightTerrain::nfNavSpaceSetType::RunFunction(dsRunTime *rt, dsValue
 	const int index = rt->GetValue(1)->GetInt();
 	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(index);
 	
-	if(! rt->GetValue(2)->GetRealObject()){
+	if(!rt->GetValue(2)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1163,7 +1163,7 @@ void deClassHeightTerrain::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassHeightTerrain * const clsHT = (deClassHeightTerrain*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsHT)){
+	if(!p_IsObjOfType(object, clsHT)){
 		rt->PushBool(false);
 		
 	}else{
@@ -1310,7 +1310,7 @@ void deClassHeightTerrain::CreateClassMembers(dsEngine *engine){
 }
 
 deHeightTerrain *deClassHeightTerrain::GetHeightTerrain(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -1318,11 +1318,11 @@ deHeightTerrain *deClassHeightTerrain::GetHeightTerrain(dsRealObject *myself) co
 }
 
 void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! hterrain){
+	if(!hterrain){
 		rt->PushObject(NULL, this);
 		return;
 	}

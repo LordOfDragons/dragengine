@@ -44,7 +44,7 @@
 ////////////////////////////
 
 ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase){
-	if(! topic || ! ifElse){
+	if(!topic || !ifElse){
 		DETHROW(deeInvalidParam);
 	}
 	

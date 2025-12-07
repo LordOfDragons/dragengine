@@ -143,7 +143,7 @@ void decPath::SetPrefix(const char *prefix){
 }
 
 void decPath::SetFromUnix(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,7 +160,7 @@ void decPath::SetFromUnix(const char *path){
 }
 
 void decPath::SetFromNative(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -173,14 +173,14 @@ void decPath::SetFromNative(const char *path){
 void decPath::SetWorkingDirectory(){
 	#ifdef OS_UNIX
 	char buffer[FILENAME_MAX];
-	if(! getcwd(buffer, FILENAME_MAX)){
+	if(!getcwd(buffer, FILENAME_MAX)){
 		DETHROW(deeInvalidAction);
 	}
 	SetFromNative(buffer);
 	
 	#elif defined OS_W32
 	wchar_t buffer[FILENAME_MAX];
-	if(! _wgetcwd(buffer, FILENAME_MAX)){
+	if(!_wgetcwd(buffer, FILENAME_MAX)){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -217,7 +217,7 @@ bool decPath::IsEmpty() const{
 }
 
 bool decPath::IsAbsolute() const{
-	return ! pPrefix.IsEmpty();
+	return !pPrefix.IsEmpty();
 }
 
 bool decPath::IsRelative() const{
@@ -234,7 +234,7 @@ void decPath::Add(const decPath &path){
 }
 
 void decPath::AddUnixPath(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -247,7 +247,7 @@ void decPath::AddUnixPath(const char *path){
 }
 
 void decPath::AddNativePath(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -271,7 +271,7 @@ bool decPath::MatchesPattern(const decPath &filePattern) const{
 		
 		int i;
 		for(i=0; i<count; i++){
-			if(! decPath::fxfilematch(filePattern.pComponents.GetAt(i),
+			if(!decPath::fxfilematch(filePattern.pComponents.GetAt(i),
 				pComponents.GetAt(i), FILEMATCH_PERIOD)){
 					return false;
 			}
@@ -287,7 +287,7 @@ bool decPath::MatchesPattern(const decPath &filePattern) const{
 		const int offset = count - patternCount;
 		int i;
 		for(i=0; i<patternCount; i++){
-			if(! decPath::fxfilematch(filePattern.pComponents.GetAt(i),
+			if(!decPath::fxfilematch(filePattern.pComponents.GetAt(i),
 				pComponents.GetAt(offset + i), FILEMATCH_PERIOD)){
 					return false;
 			}
@@ -307,7 +307,7 @@ decPath decPath::AbsolutePath(const decPath &baseDirectory) const{
 }
 
 decPath decPath::RelativePath(const decPath &baseDirectory, bool onlyBelow) const{
-	if(! IsAbsolute() || ! baseDirectory.IsAbsolute() || pPrefix != baseDirectory.pPrefix){
+	if(!IsAbsolute() || !baseDirectory.IsAbsolute() || pPrefix != baseDirectory.pPrefix){
 		return decPath(*this);
 	}
 	
@@ -341,7 +341,7 @@ decPath decPath::RelativePath(const decPath &baseDirectory, bool onlyBelow) cons
 }
 
 bool decPath::IsParentOf(const decPath &path) const{
-	if(! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix){
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
@@ -362,7 +362,7 @@ bool decPath::IsParentOf(const decPath &path) const{
 }
 
 bool decPath::IsEqualOrParentOf(const decPath &path) const{
-	if(! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix){
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
@@ -383,7 +383,7 @@ bool decPath::IsEqualOrParentOf(const decPath &path) const{
 }
 
 bool decPath::IsDirectParentOf(const decPath &path) const{
-	if(! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix){
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
@@ -404,7 +404,7 @@ bool decPath::IsDirectParentOf(const decPath &path) const{
 }
 
 bool decPath::IsEqualOrDirectParentOf(const decPath &path) const{
-	if(! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix){
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
@@ -484,14 +484,14 @@ bool decPath::HasComponents() const{
 ////////////////////////
 
 bool decPath::IsUnixPathAbsolute(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	return path[0] == '/';
 }
 
 bool decPath::IsNativePathAbsolute(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -713,7 +713,7 @@ bool decPath::domatch(const char *pattern, const char *string, int flags){
 				if(c == '\0'){    // Optimize for case of trailing '*'
 					return true;
 				}
-				while(! domatch(p, q, flags & ~FILEMATCH_PERIOD)){
+				while(!domatch(p, q, flags & ~FILEMATCH_PERIOD)){
 					if(*q++ == '\0') return false;
 				}
 				return true;
@@ -741,7 +741,7 @@ bool decPath::domatch(const char *pattern, const char *string, int flags){
 					if((cs <= cc) && (cc <= ce)) goto match;
 				}
 				while(c != ']');
-				if(! neg) return false;
+				if(!neg) return false;
 				q++;
 				break;
 				

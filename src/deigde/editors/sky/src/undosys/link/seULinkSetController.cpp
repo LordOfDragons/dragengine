@@ -46,7 +46,7 @@ pLink(NULL),
 pOldController(NULL),
 pNewController(NULL)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

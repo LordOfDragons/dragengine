@@ -104,7 +104,7 @@ void deoxrDeviceAxis::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	

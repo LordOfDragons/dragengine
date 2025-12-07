@@ -85,10 +85,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Number of parameters. */
-	inline int GetParameterCount() const{return pParameterCount;}
+	inline int GetParameterCount() const{ return pParameterCount; }
 	
 	/** Set number of parameters. */
 	void SetParameterCount(int count);
@@ -97,13 +97,13 @@ public:
 	deoglSPBParameter &GetParameterAt(int index) const;
 	
 	/** Matrices are stored in row-major order. */
-	inline bool GetRowMajor() const{return pRowMajor;}
+	inline bool GetRowMajor() const{ return pRowMajor; }
 	
 	/** Set if matrices are stored in row-major order. */
 	void SetRowMajor(bool rowMajor);
 	
 	/** Number of elements. */
-	inline int GetElementCount() const{return pElementCount;}
+	inline int GetElementCount() const{ return pElementCount; }
 	
 	/** Set number of elements. */
 	void SetElementCount(int count);
@@ -128,19 +128,19 @@ public:
 	
 	
 	/** Element stride. */
-	inline int GetElementStride() const{return pElementStride;}
+	inline int GetElementStride() const{ return pElementStride; }
 	
 	/** Buffer offset padding required as multiple of 4. */
-	inline int GetOffsetPadding() const{return pOffsetPadding;}
+	inline int GetOffsetPadding() const{ return pOffsetPadding; }
 	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	
 	/** Buffer size. */
-	inline int GetBufferSize() const{return pBufferSize;}
+	inline int GetBufferSize() const{ return pBufferSize; }
 	
 	/** Mapped buffer pointer or \em NULL if not mapped. */
-	inline char *GetMappedBuffer() const{return pMapped;}
+	inline char *GetMappedBuffer() const{ return pMapped; }
 	
 	/** Buffer is mapped. */
 	bool IsBufferMapped() const;
@@ -496,8 +496,8 @@ protected:
 	
 	virtual void pUpdateBufferSize();
 	
-	inline int pGetElementLower() const{return pElementLower;}
-	inline int pGetElementUpper() const{return pElementUpper;}
+	inline int pGetElementLower() const{ return pElementLower; }
+	inline int pGetElementUpper() const{ return pElementUpper; }
 	
 	
 	

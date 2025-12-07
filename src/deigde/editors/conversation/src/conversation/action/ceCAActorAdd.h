@@ -54,11 +54,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the actor id. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	/** \brief Sets the actor id. */
 	void SetID(const char *id);
 	/** \brief Retrieves the alias id or an empty string if not used. */
-	inline const decString &GetAliasID() const{return pAliasID;}
+	inline const decString &GetAliasID() const{ return pAliasID; }
 	/** \brief Sets the alias id or an empty string if not used. */
 	void SetAliasID(const char *id);
 	

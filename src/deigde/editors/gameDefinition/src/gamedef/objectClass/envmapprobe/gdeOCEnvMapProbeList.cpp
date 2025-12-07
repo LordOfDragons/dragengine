@@ -72,7 +72,7 @@ bool gdeOCEnvMapProbeList::Has(gdeOCEnvMapProbe *probe) const{
 }
 
 void gdeOCEnvMapProbeList::Add(gdeOCEnvMapProbe *probe){
-	if(! probe || Has(probe)){
+	if(!probe || Has(probe)){
 		DETHROW(deeInvalidParam);
 	}
 	pProbes.Add(probe);

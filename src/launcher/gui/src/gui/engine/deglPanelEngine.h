@@ -107,7 +107,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Selected module or nullptr. */
 	delEngineModule *GetSelectedModule() const;

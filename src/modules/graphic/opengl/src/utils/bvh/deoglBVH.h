@@ -73,24 +73,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of nodes. */
-	inline int GetNodeCount() const{return pNodeCount;}
+	inline int GetNodeCount() const{ return pNodeCount; }
 	
 	/** Node at index. */
 	deoglBVHNode &GetNodeAt(int index) const;
 	
 	/** Direct access to nodes array. */
-	inline deoglBVHNode *GetNodes() const{return pNodes;}
+	inline deoglBVHNode *GetNodes() const{ return pNodes; }
 	
 	
 	
 	/** Count of primitives. */
-	inline int GetPrimitiveCount() const{return pPrimitiveCount;}
+	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
 	
 	/** Primitive at index. */
 	int GetPrimitiveAt(int index) const;
 	
 	/** Direct access to primitives array. */
-	inline int *GetPrimitives() const{return pPrimitives;}
+	inline int *GetPrimitives() const{ return pPrimitives; }
 	
 	
 	

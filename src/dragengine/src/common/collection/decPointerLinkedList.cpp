@@ -41,7 +41,7 @@ pPrev(NULL),
 pNext(NULL),
 pList(NULL)
 {
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -78,7 +78,7 @@ void decPointerLinkedList::cListEntry::Clear(){
 namespace {
 	static decPointerLinkedList &decPointerLinkedList_cIterator_List(
 	const decPointerLinkedList::cListEntry *entry){
-		if(! entry || ! entry->GetList()){
+		if(!entry || !entry->GetList()){
 			DETHROW(deeInvalidParam);
 		}
 		return *entry->GetList();
@@ -106,13 +106,13 @@ pEntry(NULL),
 pNextEntry(firstEntry),
 pLastEntry(lastEntry)
 {
-	if(! lastEntry || lastEntry->GetList() != firstEntry->GetList()){
+	if(!lastEntry || lastEntry->GetList() != firstEntry->GetList()){
 		DETHROW(deeInvalidParam);
 	}
 }
 
 void *decPointerLinkedList::cIterator::Entry() const{
-	if(! pEntry){
+	if(!pEntry){
 		DETHROW(deeInvalidParam);
 	}
 	return pEntry;
@@ -213,7 +213,7 @@ decPointerLinkedList::cListEntry *decPointerLinkedList::GetAt(int index) const{
 }
 
 int decPointerLinkedList::IndexOf(cListEntry *entry) const{
-	if(! entry || entry->GetList() != this){
+	if(!entry || entry->GetList() != this){
 		return -1;
 	}
 	
@@ -232,7 +232,7 @@ bool decPointerLinkedList::Has(cListEntry *entry) const{
 }
 
 void decPointerLinkedList::Add(cListEntry *entry){
-	if(! entry || entry->GetList()){
+	if(!entry || entry->GetList()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -254,7 +254,7 @@ void decPointerLinkedList::Add(cListEntry *entry){
 }
 
 void decPointerLinkedList::InsertAfter(cListEntry *entry, cListEntry *after){
-	if(! entry || entry->GetList() || ! after || after->GetList() != this){
+	if(!entry || entry->GetList() || !after || after->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -276,7 +276,7 @@ void decPointerLinkedList::InsertAfter(cListEntry *entry, cListEntry *after){
 }
 
 void decPointerLinkedList::InsertBefore(cListEntry *entry, cListEntry *before){
-	if(! entry || entry->GetList() || ! before || before->GetList() != this){
+	if(!entry || entry->GetList() || !before || before->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -298,7 +298,7 @@ void decPointerLinkedList::InsertBefore(cListEntry *entry, cListEntry *before){
 }
 
 void decPointerLinkedList::Remove(cListEntry *entry){
-	if(! entry || entry->GetList() != this){
+	if(!entry || entry->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -598,7 +598,7 @@ void meWorld::RemoveAllNavSpaces(){
 /////////////////////
 
 void meWorld::SetSize(const decDVector &size){
-	if(! (size > decDVector(1.0, 1.0, 1.0))){
+	if(!(size > decDVector(1.0, 1.0, 1.0))){
 		DETHROW(deeInvalidParam);
 	}
 	if(size.IsEqualTo(pSize)){
@@ -666,7 +666,7 @@ void meWorld::SetProperties(const decStringDictionary &properties){
 }
 
 void meWorld::RemoveProperty(const char *key){
-	if(! pProperties.Has(key)){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	
@@ -881,7 +881,7 @@ meWorldNotifier *meWorld::GetNotifierAt(int index) const{
 }
 
 int meWorld::IndexOfNotifier(meWorldNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -892,7 +892,7 @@ int meWorld::IndexOfNotifier(meWorldNotifier *notifier) const{
 }
 
 bool meWorld::HasNotifier(meWorldNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -1121,7 +1121,7 @@ void meWorld::NotifyHTStateChanged(){
 }
 
 void meWorld::NotifyHTSChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1130,7 +1130,7 @@ void meWorld::NotifyHTSChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSHeightChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1139,7 +1139,7 @@ void meWorld::NotifyHTSHeightChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSVisibilityChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1148,7 +1148,7 @@ void meWorld::NotifyHTSVisibilityChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSTextureCountChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1157,7 +1157,7 @@ void meWorld::NotifyHTSTextureCountChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSActiveTextureChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1166,7 +1166,7 @@ void meWorld::NotifyHTSActiveTextureChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSTextureChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
-	if(! sector || ! texture) DETHROW(deeInvalidParam);
+	if(!sector || !texture) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1175,7 +1175,7 @@ void meWorld::NotifyHTSTextureChanged(meHeightTerrainSector *sector, meHeightTer
 }
 
 void meWorld::NotifyHTSTextureMaskChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
-	if(! sector || ! texture) DETHROW(deeInvalidParam);
+	if(!sector || !texture) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1198,7 +1198,7 @@ void meWorld::NotifyHTActiveNavSpaceChanged(){
 }
 
 void meWorld::NotifyHTNavSpaceChanged(meHeightTerrainNavSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1209,7 +1209,7 @@ void meWorld::NotifyHTNavSpaceChanged(meHeightTerrainNavSpace *navspace){
 }
 
 void meWorld::NotifyHTNavSpaceTypeCountChanged(meHeightTerrainNavSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1220,7 +1220,7 @@ void meWorld::NotifyHTNavSpaceTypeCountChanged(meHeightTerrainNavSpace *navspace
 }
 
 void meWorld::NotifyHTNavSpaceActiveTypeChanged(meHeightTerrainNavSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1232,7 +1232,7 @@ void meWorld::NotifyHTNavSpaceActiveTypeChanged(meHeightTerrainNavSpace *navspac
 
 void meWorld::NotifyHTNavSpaceTypeChanged(meHeightTerrainNavSpace *navspace,
 meHeightTerrainNavSpaceType *type){
-	if(! navspace || ! type){
+	if(!navspace || !type){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1243,7 +1243,7 @@ meHeightTerrainNavSpaceType *type){
 }
 
 void meWorld::NotifyHTNavSpaceFacesChanged(meHeightTerrainNavSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1261,7 +1261,7 @@ void meWorld::NotifyHTNavSpaceSelectedPointsChanged(){
 }
 
 void meWorld::NotifyHTSPropFieldCountChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1270,7 +1270,7 @@ void meWorld::NotifyHTSPropFieldCountChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSActivePropFieldChanged(meHeightTerrainSector *sector){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1279,7 +1279,7 @@ void meWorld::NotifyHTSActivePropFieldChanged(meHeightTerrainSector *sector){
 }
 
 void meWorld::NotifyHTSPropFieldChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
-	if(! sector || ! propField) DETHROW(deeInvalidParam);
+	if(!sector || !propField) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1288,7 +1288,7 @@ void meWorld::NotifyHTSPropFieldChanged(meHeightTerrainSector *sector, meHeightT
 }
 
 void meWorld::NotifyHTSPropFieldMaskChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
-	if(! sector || ! propField) DETHROW(deeInvalidParam);
+	if(!sector || !propField) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1297,7 +1297,7 @@ void meWorld::NotifyHTSPropFieldMaskChanged(meHeightTerrainSector *sector, meHei
 }
 
 void meWorld::NotifyHTSPFTypeCountChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
-	if(! sector || ! propField) DETHROW(deeInvalidParam);
+	if(!sector || !propField) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1306,7 +1306,7 @@ void meWorld::NotifyHTSPFTypeCountChanged(meHeightTerrainSector *sector, meHeigh
 }
 
 void meWorld::NotifyHTSPFTypeChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField, meHeightTerrainPFType *type){
-	if(! sector || ! propField || ! type) DETHROW(deeInvalidParam);
+	if(!sector || !propField || !type) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1329,7 +1329,7 @@ void meWorld::NotifyHTActiveVLayerChanged(){
 }
 
 void meWorld::NotifyHTVLayerChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1338,7 +1338,7 @@ void meWorld::NotifyHTVLayerChanged(meHTVegetationLayer *vlayer){
 }
 
 void meWorld::NotifyHTVLVariationCountChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1347,7 +1347,7 @@ void meWorld::NotifyHTVLVariationCountChanged(meHTVegetationLayer *vlayer){
 }
 
 void meWorld::NotifyHTVLActiveVariationChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1356,7 +1356,7 @@ void meWorld::NotifyHTVLActiveVariationChanged(meHTVegetationLayer *vlayer){
 }
 
 void meWorld::NotifyHTVLVariationChanged(meHTVegetationLayer *vlayer, meHTVVariation *variation){
-	if(! vlayer || ! variation) DETHROW(deeInvalidParam);
+	if(!vlayer || !variation) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1365,7 +1365,7 @@ void meWorld::NotifyHTVLVariationChanged(meHTVegetationLayer *vlayer, meHTVVaria
 }
 
 void meWorld::NotifyHTVLRuleCountChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1374,7 +1374,7 @@ void meWorld::NotifyHTVLRuleCountChanged(meHTVegetationLayer *vlayer){
 }
 
 void meWorld::NotifyHTVLActiveRuleChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1383,7 +1383,7 @@ void meWorld::NotifyHTVLActiveRuleChanged(meHTVegetationLayer *vlayer){
 }
 
 void meWorld::NotifyHTVLRuleChanged(meHTVegetationLayer *vlayer, meHTVRule *rule){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1392,7 +1392,7 @@ void meWorld::NotifyHTVLRuleChanged(meHTVegetationLayer *vlayer, meHTVRule *rule
 }
 
 void meWorld::NotifyHTVLRuleMoved(meHTVegetationLayer *vlayer, meHTVRule *rule){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1401,7 +1401,7 @@ void meWorld::NotifyHTVLRuleMoved(meHTVegetationLayer *vlayer, meHTVRule *rule){
 }
 
 void meWorld::NotifyHTVLLinkCountChanged(meHTVegetationLayer *vlayer){
-	if(! vlayer) DETHROW(deeInvalidParam);
+	if(!vlayer) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1420,7 +1420,7 @@ void meWorld::NotifyObjectSelectionChanged(){
 }
 
 void meWorld::NotifyObjectChanged(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1429,7 +1429,7 @@ void meWorld::NotifyObjectChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectClassChanged(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1438,7 +1438,7 @@ void meWorld::NotifyObjectClassChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectGeometryChanged(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1449,7 +1449,7 @@ void meWorld::NotifyObjectGeometryChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectPropertiesChanged(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	int n;
@@ -1460,7 +1460,7 @@ void meWorld::NotifyObjectPropertiesChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectActivePropertyChanged(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1489,7 +1489,7 @@ void meWorld::NotifyObjectActiveAttachBehaviorChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectAdded(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1498,7 +1498,7 @@ void meWorld::NotifyObjectAdded(meObject *object){
 }
 
 void meWorld::NotifyObjectRemoved(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1507,7 +1507,7 @@ void meWorld::NotifyObjectRemoved(meObject *object){
 }
 
 void meWorld::NotifyObjectTextureCountChanged(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1516,7 +1516,7 @@ void meWorld::NotifyObjectTextureCountChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectActiveTextureChanged(meObject *object){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1525,7 +1525,7 @@ void meWorld::NotifyObjectActiveTextureChanged(meObject *object){
 }
 
 void meWorld::NotifyObjectTextureChanged(meObject *object, meObjectTexture *texture){
-	if(! object || ! texture) DETHROW(deeInvalidParam);
+	if(!object || !texture) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1534,7 +1534,7 @@ void meWorld::NotifyObjectTextureChanged(meObject *object, meObjectTexture *text
 }
 
 void meWorld::NotifyObjectTexturePropertiesChanged(meObject *object, meObjectTexture *texture){
-	if(! object || ! texture){
+	if(!object || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	int n;
@@ -1545,7 +1545,7 @@ void meWorld::NotifyObjectTexturePropertiesChanged(meObject *object, meObjectTex
 }
 
 void meWorld::NotifyObjectTextureActivePropertyChanged(meObject *object, meObjectTexture *texture){
-	if(! object || ! texture){
+	if(!object || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	int n;
@@ -1592,7 +1592,7 @@ void meWorld::NotifyDecalCountChanged(){
 }
 
 void meWorld::NotifyDecalChanged(meDecal *decal){
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1601,7 +1601,7 @@ void meWorld::NotifyDecalChanged(meDecal *decal){
 }
 
 void meWorld::NotifyDecalGeometryChanged(meDecal *decal){
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1610,7 +1610,7 @@ void meWorld::NotifyDecalGeometryChanged(meDecal *decal){
 }
 
 void meWorld::NotifyDecalPropertiesChanged(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	int n;
@@ -1621,7 +1621,7 @@ void meWorld::NotifyDecalPropertiesChanged(meDecal *decal){
 }
 
 void meWorld::NotifyDecalActivePropertyChanged(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1651,7 +1651,7 @@ void meWorld::NotifyNavSpaceCountChanged(){
 }
 
 void meWorld::NotifyNavSpaceChanged(meNavigationSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1665,7 +1665,7 @@ void meWorld::NotifyNavSpaceChanged(meNavigationSpace *navspace){
 }
 
 void meWorld::NotifyNavSpaceGeometryChanged(meNavigationSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1679,7 +1679,7 @@ void meWorld::NotifyNavSpaceGeometryChanged(meNavigationSpace *navspace){
 }
 
 void meWorld::NotifyNavSpaceUsedCostTypesChanged(meNavigationSpace *navspace){
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1709,7 +1709,7 @@ void meWorld::NotifyPFCountChanged(){
 }
 
 void meWorld::NotifyPFChanged(mePropField *field){
-	if(! field) DETHROW(deeInvalidParam);
+	if(!field) DETHROW(deeInvalidParam);
 	
 	int n;
 	
@@ -1719,7 +1719,7 @@ void meWorld::NotifyPFChanged(mePropField *field){
 }
 
 void meWorld::NotifyPFTypeCountChanged(mePropField *field){
-	if(! field) DETHROW(deeInvalidParam);
+	if(!field) DETHROW(deeInvalidParam);
 	
 	int n;
 	
@@ -1729,7 +1729,7 @@ void meWorld::NotifyPFTypeCountChanged(mePropField *field){
 }
 
 void meWorld::NotifyPFActiveTypeChanged(mePropField *field){
-	if(! field) DETHROW(deeInvalidParam);
+	if(!field) DETHROW(deeInvalidParam);
 	
 	int n;
 	
@@ -1739,7 +1739,7 @@ void meWorld::NotifyPFActiveTypeChanged(mePropField *field){
 }
 
 void meWorld::NotifyPFTypeChanged(mePropField *field, mePropFieldType *type){
-	if(! field || ! type) DETHROW(deeInvalidParam);
+	if(!field || !type) DETHROW(deeInvalidParam);
 	
 	int n;
 	
@@ -1759,7 +1759,7 @@ void meWorld::NotifyActiveCameraChanged(){
 }
 
 void meWorld::NotifyCameraChanged(meCamera *camera){
-	if(! camera) DETHROW(deeInvalidParam);
+	if(!camera) DETHROW(deeInvalidParam);
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){

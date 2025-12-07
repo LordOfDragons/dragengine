@@ -55,7 +55,7 @@ meDecalSelection::~meDecalSelection(){
 ///////////////
 
 void meDecalSelection::Add(meDecal *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,7 +64,7 @@ void meDecalSelection::Add(meDecal *object){
 }
 
 void meDecalSelection::Remove(meDecal *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	

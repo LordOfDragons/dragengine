@@ -73,7 +73,7 @@ deoglOcclusionMap *deoglOcclusionMapPool::Get(int width, int height, int layerCo
 }
 
 void deoglOcclusionMapPool::Return(deoglOcclusionMap *occlusionMap){
-	if(! occlusionMap){
+	if(!occlusionMap){
 		DETHROW(deeInvalidParam);
 	}
 	

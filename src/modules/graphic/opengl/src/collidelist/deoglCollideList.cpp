@@ -142,7 +142,7 @@ void deoglCollideList::FlagAllLit(bool lit){
 }
 
 void deoglCollideList::AddElementsColliding(deoglWorldOctree *octree, deoglDCollisionVolume *volume){
-	if(! octree || ! volume) DETHROW(deeInvalidParam);
+	if(!octree || !volume) DETHROW(deeInvalidParam);
 	deoglCLVisitorElements visitor(this, volume);
 	decDVector minExtend, maxExtend;
 	deoglDCollisionBox box;
@@ -157,7 +157,7 @@ void deoglCollideList::AddElementsColliding(deoglWorldOctree *octree, deoglDColl
 }
 
 void deoglCollideList::AddElementsColliding(deoglWorldOctree *octree, deoglDCollisionFrustum *volume){
-	if(! octree || ! volume) DETHROW(deeInvalidParam);
+	if(!octree || !volume) DETHROW(deeInvalidParam);
 	// HACK: frustum does not support GetEnclosingBox yet so we cheat in this particular case
 	// TODO: fix the enclosing box to improve speed
 	deoglCLVisitorElements visitor(this, volume);
@@ -207,7 +207,7 @@ void deoglCollideList::UpdateOccMeshCubeFaceMasks(const decDVector &position) co
 
 
 void deoglCollideList::AddParticleEmittersColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume){
-	if(! volume){
+	if(!volume){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -259,7 +259,7 @@ deoglCollideListComponent *deoglCollideList::GetComponentAt(int index) const{
 }
 
 int deoglCollideList::IndexOfComponent(deoglRComponent *component) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -274,7 +274,7 @@ int deoglCollideList::IndexOfComponent(deoglRComponent *component) const{
 }
 
 bool deoglCollideList::HasComponent(deoglRComponent *component) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -289,7 +289,7 @@ bool deoglCollideList::HasComponent(deoglRComponent *component) const{
 }
 
 deoglCollideListComponent *deoglCollideList::AddComponent(deoglRComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -309,7 +309,7 @@ deoglCollideListComponent *deoglCollideList::AddComponent(deoglRComponent *compo
 		pComponentSize = newSize;
 	}
 	
-	if(! pComponents[pComponentCount]){
+	if(!pComponents[pComponentCount]){
 		pComponents[pComponentCount] = new deoglCollideListComponent;
 	}
 	
@@ -346,7 +346,7 @@ void deoglCollideList::RemoveAllComponents(){
 
 
 void deoglCollideList::AddComponentsColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume){
-	if(! volume){
+	if(!volume){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -379,7 +379,7 @@ void deoglCollideList::RemoveSolidComponents(){
 	int i, last = 0;
 	for(i=0; i<pComponentCount; i++){
 		deoglRSkin * const skin = pComponents[i]->GetComponent()->GetSkin();
-		if(skin && ! skin->GetIsSolid()){
+		if(skin && !skin->GetIsSolid()){
 			pComponents[i]->Clear();
 			continue;
 		}
@@ -480,7 +480,7 @@ deoglCollideListLight *deoglCollideList::GetLightAt(int index) const{
 }
 
 int deoglCollideList::IndexOfLight(deoglRLight *light) const{
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -495,7 +495,7 @@ int deoglCollideList::IndexOfLight(deoglRLight *light) const{
 }
 
 bool deoglCollideList::HasLight(deoglRLight *light) const{
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -510,7 +510,7 @@ bool deoglCollideList::HasLight(deoglRLight *light) const{
 }
 
 deoglCollideListLight *deoglCollideList::AddLight(deoglRLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -530,7 +530,7 @@ deoglCollideListLight *deoglCollideList::AddLight(deoglRLight *light){
 		pLightSize = newSize;
 	}
 	
-	if(! pLights[pLightCount]){
+	if(!pLights[pLightCount]){
 		pLights[pLightCount] = new deoglCollideListLight;
 	}
 	
@@ -565,7 +565,7 @@ void deoglCollideList::RemoveAllLights(){
 }
 
 void deoglCollideList::AddLightsColliding(deoglWorldOctree *octree, deoglDCollisionVolume *colVol){
-	if(! octree || ! colVol){
+	if(!octree || !colVol){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -614,14 +614,14 @@ deoglRBillboard *deoglCollideList::GetBillboardAt(int index) const{
 }
 
 void deoglCollideList::AddBillboard(deoglRBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
 	if(pBillboardCount == pBillboardSize){
 		int i, newSize = pBillboardCount * 3 / 2 + 1;
 		deoglRBillboard **newArray = new deoglRBillboard*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBillboards){
 			for(i=0; i<pBillboardCount; i++) newArray[i] = pBillboards[i];
 			delete [] pBillboards;
@@ -639,7 +639,7 @@ void deoglCollideList::RemoveAllBillboards(){
 }
 
 void deoglCollideList::AddBillboardsColliding(deoglWorldOctree &octree, deoglDCollisionVolume *colVol){
-	if(! colVol){
+	if(!colVol){
 		DETHROW(deeInvalidParam);
 	}
 	deoglCLVisitorElements visitor(this, colVol);
@@ -654,7 +654,7 @@ void deoglCollideList::RemoveCulledBillboards(){
 	int i, last = 0;
 	for(i=0; i<pBillboardCount; i++){
 		//if( pBillboards[ i ]->GetCulled() ){
-		if(! pBillboards[i]->GetVisible()){
+		if(!pBillboards[i]->GetVisible()){
 			//pBillboards[ i ]->Clear();
 			continue;
 		}
@@ -679,7 +679,7 @@ deoglCollideListHTSector *deoglCollideList::GetHTSectorAt(int index) const{
 }
 
 deoglCollideListHTSector *deoglCollideList::AddHTSector(deoglHTViewSector *sector){
-	if(! sector){
+	if(!sector){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -698,7 +698,7 @@ deoglCollideListHTSector *deoglCollideList::AddHTSector(deoglHTViewSector *secto
 		pHTSectorSize = newSize;
 	}
 	
-	if(! pHTSectors[pHTSectorCount]){
+	if(!pHTSectors[pHTSectorCount]){
 		pHTSectors[pHTSectorCount] = new deoglCollideListHTSector;
 	}
 	pHTSectors[pHTSectorCount]->SetSector(sector);
@@ -743,7 +743,7 @@ void deoglCollideList::RemoveAllHTSectors(){
 }
 
 void deoglCollideList::AddHTSectorsColliding(deoglHTView *htview, deoglDCollisionVolume *volume){
-	if(! htview || ! volume){
+	if(!htview || !volume){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -788,7 +788,7 @@ deoglCollideListHTSCluster *deoglCollideList::AddHTSCluster(deoglHTViewSectorClu
 		pHTSClusterSize = newSize;
 	}
 	
-	if(! pHTSClusters[pHTSClusterCount]){
+	if(!pHTSClusters[pHTSClusterCount]){
 		pHTSClusters[pHTSClusterCount] = new deoglCollideListHTSCluster;
 	}
 	pHTSClusters[pHTSClusterCount]->SetCluster(cluster);
@@ -815,7 +815,7 @@ deoglCollideListPropField *deoglCollideList::GetPropFieldAt(int index) const{
 }
 
 deoglCollideListPropField *deoglCollideList::AddPropField(deoglRPropField *propField){
-	if(! propField){
+	if(!propField){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -834,7 +834,7 @@ deoglCollideListPropField *deoglCollideList::AddPropField(deoglRPropField *propF
 		pPropFieldSize = newSize;
 	}
 	
-	if(! pPropFields[pPropFieldCount]){
+	if(!pPropFields[pPropFieldCount]){
 		pPropFields[pPropFieldCount] = new deoglCollideListPropField;
 	}
 	pPropFields[pPropFieldCount]->SetPropField(propField);
@@ -862,14 +862,14 @@ void deoglCollideList::AddPropField(deoglRPropField *propField, deoglDCollisionV
 			const decDVector clusterMaxExtend(pfpos + cluster.GetMaximumExtend());
 			box.SetFromExtends(clusterMinExtend, clusterMaxExtend);
 			
-			if(! volume.BoxHitsVolume(&box)){
+			if(!volume.BoxHitsVolume(&box)){
 				continue;
 			}
 			
-			if(! clpropfield){
+			if(!clpropfield){
 				clpropfield = AddPropField(propField);
 			}
-			if(! cltype){
+			if(!cltype){
 				cltype = clpropfield->AddType(&type);
 			}
 			cltype->AddCluster(&cluster);
@@ -931,7 +931,7 @@ deoglCollideListPropFieldCluster *deoglCollideList::AddPropFieldCluster(deoglPro
 		pPropFieldClusterSize = newSize;
 	}
 	
-	if(! pPropFieldClusters[pPropFieldClusterCount]){
+	if(!pPropFieldClusters[pPropFieldClusterCount]){
 		pPropFieldClusters[pPropFieldClusterCount] = new deoglCollideListPropFieldCluster;
 	}
 	pPropFieldClusters[pPropFieldClusterCount]->SetCluster(cluster);
@@ -949,7 +949,7 @@ void deoglCollideList::RemoveAllPropFieldClusters(){
 
 #if 0
 void deoglCollideList::AddParticlesColliding(deoglRWorld *world, deoglDCollisionVolume *volume){
-	if(! world || ! volume) DETHROW(deeInvalidParam);
+	if(!world || !volume) DETHROW(deeInvalidParam);
 	
 	deWorld *engWorld = world->GetWorld();
 	int p, psysCount = engWorld->GetParticleEmitterCount();

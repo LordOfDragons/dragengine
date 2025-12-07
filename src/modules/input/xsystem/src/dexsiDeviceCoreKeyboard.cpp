@@ -101,7 +101,7 @@ dexsiDevice(module, esX11)
 		const int keyCodeCount = maxKeyCode - minKeyCode + 1;
 		
 		keysyms = XGetKeyboardMapping(display, minKeyCode, keyCodeCount, &keySymPerKeyCode);
-		if(! keysyms){
+		if(!keysyms){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -131,7 +131,7 @@ dexsiDevice(module, esX11)
 			const char * const keysymString = XKeysymToString(keysym);
 			if(keysymString){
 				string = keysymString;
-				if(! string.IsEmpty()){
+				if(!string.IsEmpty()){
 					string.SetAt(0, toupper(string.GetAt(0)));
 				}
 				button->SetName(string);
@@ -162,8 +162,8 @@ dexsiDevice(module, esX11)
 				
 				char character = 0;
 				KeySym charKeySym = 0;
-				if(! XLookupString(&fakeKeyEvent, &character, 1, &charKeySym, NULL)
-				|| ! charKeySym || ! character){
+				if(!XLookupString(&fakeKeyEvent, &character, 1, &charKeySym, NULL)
+				|| !charKeySym || !character){
 					continue;
 				}
 				

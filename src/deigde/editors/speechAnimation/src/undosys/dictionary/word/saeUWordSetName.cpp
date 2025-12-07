@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
-	if(! word || ! newName) DETHROW(deeInvalidParam);
+	if(!word || !newName) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;
 	

@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Button is toggled. */
-	inline bool GetToggled() const{return pToggled;}
+	inline bool GetToggled() const{ return pToggled; }
 	
 	/** \brief Set if button is toggled. */
 	void SetToggled(bool toogled);

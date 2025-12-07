@@ -66,10 +66,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Tree list. */
-	inline igdeTreeList &GetTreeList() const{return *pTreeList;}
+	inline igdeTreeList &GetTreeList() const{ return *pTreeList; }
 	
 	/** \brief Model or \em NULL. */
-	inline ceWPTTreeItemModel *GetModel() const{return pModel;}
+	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or \em NULL. */
 	void SetModel(ceWPTTreeItemModel *model);

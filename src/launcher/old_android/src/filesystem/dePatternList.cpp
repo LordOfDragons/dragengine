@@ -59,7 +59,7 @@ const char *dePatternList::GetPatternAt(int index) const{
 }
 
 int dePatternList::IndexOfPattern(const char *pattern) const{
-	if(! pattern) DETHROW(deeInvalidParam);
+	if(!pattern) DETHROW(deeInvalidParam);
 	int p;
 	
 	for(p=0; p<pPatternCount; p++){
@@ -72,7 +72,7 @@ int dePatternList::IndexOfPattern(const char *pattern) const{
 }
 
 bool dePatternList::HasPattern(const char *pattern) const{
-	if(! pattern) DETHROW(deeInvalidParam);
+	if(!pattern) DETHROW(deeInvalidParam);
 	int p;
 	
 	for(p=0; p<pPatternCount; p++){
@@ -90,7 +90,7 @@ void dePatternList::AddPattern(const char *pattern){
 	if(pPatternCount == pPatternSize){
 		int newSize = pPatternSize * 3 / 2 + 1;
 		char **newArray = new char*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pPatterns){
 			memcpy(newArray, pPatterns, sizeof(char*) * pPatternSize);
 			delete [] pPatterns;
@@ -100,7 +100,7 @@ void dePatternList::AddPattern(const char *pattern){
 	}
 	
 	pPatterns[pPatternCount] = new char[strlen(pattern) + 1];
-	if(! pPatterns[pPatternCount]) DETHROW(deeOutOfMemory);
+	if(!pPatterns[pPatternCount]) DETHROW(deeOutOfMemory);
 	strcpy(pPatterns[pPatternCount], pattern);
 	
 	pPatternCount++;
@@ -151,7 +151,7 @@ void dePatternList::SortPatternByLength(){
 }
 
 bool dePatternList::PathMatches(const char *path) const{
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	int pathLength = strlen(path);
 	int p, patternLength;
 	
@@ -169,7 +169,7 @@ bool dePatternList::PathMatches(const char *path) const{
 }
 
 int dePatternList::IndexOfPatternMatchingPath(const char *path) const{
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	int pathLength = strlen(path);
 	int p, patternLength;
 	

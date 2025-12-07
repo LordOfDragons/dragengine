@@ -65,7 +65,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
-	if(! component){
+	if(!component){
 		return NULL;
 	}
 	

@@ -42,7 +42,7 @@
 meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace *navspace) :
 pNavSpace(NULL)
 {
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

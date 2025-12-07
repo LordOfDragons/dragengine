@@ -165,7 +165,7 @@ void deoalMicrophone::Synchronize(){
 
 
 void deoalMicrophone::AddSyncSpeaker(deoalSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	if(speaker->GetLLSyncMic().GetList()){
@@ -177,7 +177,7 @@ void deoalMicrophone::AddSyncSpeaker(deoalSpeaker *speaker){
 }
 
 void deoalMicrophone::RemoveSyncSpeaker(deoalSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	if(speaker->GetLLSyncMic().GetList()){
@@ -349,7 +349,7 @@ void deoalMicrophone::pSyncSpeakers(){
 
 
 void deoalMicrophone::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncMicrophone(this);
 	}
 }

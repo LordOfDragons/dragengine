@@ -87,23 +87,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline gdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Color of bounding box. */
-	inline const decColor &GetColorBoundingBox() const{return pColorBoundingBox;}
+	inline const decColor &GetColorBoundingBox() const{ return pColorBoundingBox; }
 	
 	
 	
 	/** \brief Color of camera. */
-	inline const decColor &GetColorCamera() const{return pColorCamera;}
+	inline const decColor &GetColorCamera() const{ return pColorCamera; }
 	
 	/** \brief Color of active camera. */
-	inline const decColor &GetColorCameraActive() const{return pColorCameraActive;}
+	inline const decColor &GetColorCameraActive() const{ return pColorCameraActive; }
 	
 	/** \brief Color of environment map probes. */
-	inline const decColor &GetColorEnvMapProbe() const{return pColorEnvMapProbe;}
+	inline const decColor &GetColorEnvMapProbe() const{ return pColorEnvMapProbe; }
 	
 	/** \brief Color of environment map probes. */
 	inline const decColor &GetColorEnvMapProbeReflection() const{
@@ -114,10 +114,10 @@ public:
 		return pColorEnvMapProbeInfluence;}
 	
 	/** \brief Color of environment map probes. */
-	inline const decColor &GetColorEnvMapProbeMask() const{return pColorEnvMapProbeMask;}
+	inline const decColor &GetColorEnvMapProbeMask() const{ return pColorEnvMapProbeMask; }
 	
 	/** \brief Color of active environment map probes. */
-	inline const decColor &GetColorEnvMapProbeActive() const{return pColorEnvMapProbeActive;}
+	inline const decColor &GetColorEnvMapProbeActive() const{ return pColorEnvMapProbeActive; }
 	
 	/** \brief Color of active environment map probes. */
 	inline const decColor &GetColorEnvMapProbeActiveReflection() const{
@@ -132,57 +132,57 @@ public:
 		return pColorEnvMapProbeActiveMask;}
 	
 	/** \brief Color of light. */
-	inline const decColor &GetColorLight() const{return pColorLight;}
+	inline const decColor &GetColorLight() const{ return pColorLight; }
 	
 	/** \brief Color of active light. */
-	inline const decColor &GetColorLightActive() const{return pColorLightActive;}
+	inline const decColor &GetColorLightActive() const{ return pColorLightActive; }
 	
 	/** \brief Color of navigation space. */
-	inline const decColor &GetColorNavigationSpace() const{return pColorNavigationSpace;}
+	inline const decColor &GetColorNavigationSpace() const{ return pColorNavigationSpace; }
 	
 	/** \brief Color of active navigation space. */
-	inline const decColor &GetColorNavigationSpaceActive() const{return pColorNavigationSpaceActive;}
+	inline const decColor &GetColorNavigationSpaceActive() const{ return pColorNavigationSpaceActive; }
 	
 	/** \brief Color of navigation blocker. */
-	inline const decColor &GetColorNavigationBlocker() const{return pColorNavigationBlocker;}
+	inline const decColor &GetColorNavigationBlocker() const{ return pColorNavigationBlocker; }
 	
 	/** \brief Color of active navigation blocker. */
-	inline const decColor &GetColorNavigationBlockerActive() const{return pColorNavigationBlockerActive;}
+	inline const decColor &GetColorNavigationBlockerActive() const{ return pColorNavigationBlockerActive; }
 	
 	/** \brief Color of particle emitter. */
-	inline const decColor &GetColorParticleEmitter() const{return pColorParticleEmitter;}
+	inline const decColor &GetColorParticleEmitter() const{ return pColorParticleEmitter; }
 	
 	/** \brief Color of active particle emitter. */
-	inline const decColor &GetColorParticleEmitterActive() const{return pColorParticleEmitterActive;}
+	inline const decColor &GetColorParticleEmitterActive() const{ return pColorParticleEmitterActive; }
 	
 	/** \brief Color of force field. */
-	inline const decColor &GetColorForceField() const{return pColorForceField;}
+	inline const decColor &GetColorForceField() const{ return pColorForceField; }
 	
 	/** \brief Color of active force field. */
-	inline const decColor &GetColorForceFieldActive() const{return pColorForceFieldActive;}
+	inline const decColor &GetColorForceFieldActive() const{ return pColorForceFieldActive; }
 	
 	/** \brief Color of snap point. */
-	inline const decColor &GetColorSnapPoint() const{return pColorSnapPoint;}
+	inline const decColor &GetColorSnapPoint() const{ return pColorSnapPoint; }
 	
 	/** \brief Color of active snap point. */
-	inline const decColor &GetColorSnapPointActive() const{return pColorSnapPointActive;}
+	inline const decColor &GetColorSnapPointActive() const{ return pColorSnapPointActive; }
 	
 	/** \brief Color of speaker. */
-	inline const decColor &GetColorSpeaker() const{return pColorSpeaker;}
+	inline const decColor &GetColorSpeaker() const{ return pColorSpeaker; }
 	
 	/** \brief Color of active speaker. */
-	inline const decColor &GetColorSpeakerActive() const{return pColorSpeakerActive;}
+	inline const decColor &GetColorSpeakerActive() const{ return pColorSpeakerActive; }
 	
 	/** \brief Color of world. */
-	inline const decColor &GetColorWorld() const{return pColorWorld;}
+	inline const decColor &GetColorWorld() const{ return pColorWorld; }
 	
 	/** \brief Color of active world. */
-	inline const decColor &GetColorWorldActive() const{return pColorWorldActive;}
+	inline const decColor &GetColorWorldActive() const{ return pColorWorldActive; }
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

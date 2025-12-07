@@ -81,7 +81,7 @@ bool deoglSkinTextureProperty::IsDynamic() const{
 
 float deoglSkinTextureProperty::ResolveAsFloat(const deoglSkinState *skinState,
 const deoglRDynamicSkin *dynamicSkin, float defaultValue) const{
-	if(! skinState){
+	if(!skinState){
 		return defaultValue;
 	}
 	
@@ -102,7 +102,7 @@ const deoglRDynamicSkin *dynamicSkin, float defaultValue) const{
 
 bool deoglSkinTextureProperty::ResolveAsBool(const deoglSkinState *skinState,
 const deoglRDynamicSkin *dynamicSkin, bool defaultValue) const{
-	if(! skinState){
+	if(!skinState){
 		return defaultValue;
 	}
 	
@@ -123,7 +123,7 @@ const deoglRDynamicSkin *dynamicSkin, bool defaultValue) const{
 
 decColor deoglSkinTextureProperty::ResolveColor(const deoglSkinState *skinState,
 const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue) const{
-	if(! skinState){
+	if(!skinState){
 		return defaultValue;
 	}
 	
@@ -144,7 +144,7 @@ const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue) const{
 
 decVector2 deoglSkinTextureProperty::ResolveVector2(const deoglSkinState *skinState,
 const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue) const{
-	if(! skinState){
+	if(!skinState){
 		return defaultValue;
 	}
 	
@@ -167,7 +167,7 @@ const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue) const{
 
 decVector deoglSkinTextureProperty::ResolveVector(const deoglSkinState *skinState,
 const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue) const{
-	if(! skinState){
+	if(!skinState){
 		return defaultValue;
 	}
 	

@@ -67,7 +67,7 @@ pCondition(condition)
 ///////////////
 
 void ceWPTMACopyCondition::OnAction(){
-	if(! pCondition){
+	if(!pCondition){
 		return;
 	}
 	

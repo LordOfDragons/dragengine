@@ -52,7 +52,7 @@ pFile(NULL)
 	
 #ifdef OS_W32_VS
 	pFile = _wfsopen(widePath, append ? L"ab" : L"wb", _SH_DENYNO);
-	if(! pFile){
+	if(!pFile){
 		errno_t result = 0;
 		_get_errno(&result);
 		DETHROW_INFO(deeFileNotFound, pFormatError(result));
@@ -65,7 +65,7 @@ pFile(NULL)
 #else
 	pFile = fopen(filename, append ? "ab" : "wb");
 #endif
-	if(! pFile){
+	if(!pFile){
 		DETHROW_INFO(deeFileNotFound, filename);
 	}
 }

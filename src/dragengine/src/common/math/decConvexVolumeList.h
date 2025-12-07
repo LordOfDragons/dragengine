@@ -78,7 +78,7 @@ public:
 	/** \name Volume Management */
 	/*@{*/
 	/** \brief Number of volumes. */
-	inline int GetVolumeCount() const{return pVolumeCount;}
+	inline int GetVolumeCount() const{ return pVolumeCount; }
 	
 	/** \brief Volume at index. */
 	decConvexVolume *GetVolumeAt(int index) const;

@@ -93,7 +93,7 @@ public:
 	/** \name Texture Management */
 	/*@{*/
 	/** \brief Count of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Adds the given texture. */
 	void AddTexture(deSkinTexture *tex);
@@ -139,19 +139,19 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicSkin *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicSkin *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicSkin *peer);
 	
 	/** \brief Audio system peer object. */
-	inline deBaseAudioSkin *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioSkin *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
 	void SetPeerAudio(deBaseAudioSkin *peer);
 	
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsSkin *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsSkin *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsSkin *peer);

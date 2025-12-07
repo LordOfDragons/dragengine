@@ -46,7 +46,7 @@ pSnapPoint(NULL),
 pDecal(NULL),
 pNavigationSpace(NULL)
 {
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -58,7 +58,7 @@ pSnapPoint(NULL),
 pDecal(NULL),
 pNavigationSpace(NULL)
 {
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -70,7 +70,7 @@ pSnapPoint(snapPoint),
 pDecal(NULL),
 pNavigationSpace(NULL)
 {
-	if(! snapPoint){
+	if(!snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -82,7 +82,7 @@ pSnapPoint(NULL),
 pDecal(decal),
 pNavigationSpace(NULL)
 {
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -94,7 +94,7 @@ pSnapPoint(NULL),
 pDecal(NULL),
 pNavigationSpace(navspace)
 {
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -106,7 +106,7 @@ pNavigationSpace(navspace)
 
 const meColliderOwner *meColliderOwner::GetColliderOwner(
 igdeEnvironment &environment, deCollider *collider){
-	if(! collider){
+	if(!collider){
 		return NULL;
 	}
 	

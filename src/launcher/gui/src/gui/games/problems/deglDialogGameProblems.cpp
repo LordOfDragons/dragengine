@@ -82,7 +82,7 @@ pClrProblemText(FXRGB(0, 0, 0)),
 pPanelSystems(nullptr),
 pPanelFileFormats(nullptr)
 {
-	if(! game || ! profile) DETHROW(deeInvalidParam);
+	if(!game || !profile) DETHROW(deeInvalidParam);
 	
 	//const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXVerticalFrame *frameGroup;
@@ -146,12 +146,12 @@ void deglDialogGameProblems::VerifyGameAndProfile(){
 	pStatusWorking = true;
 	
 	pProfileWork->Verify(launcher);
-	if(! pProfileWork->GetValid()){
+	if(!pProfileWork->GetValid()){
 		pStatusWorking = false;
 	}
 	
 	pGame->VerifyRequirements();
-	if(! pGame->GetCanRun()){
+	if(!pGame->GetCanRun()){
 		pStatusWorking = false;
 	}
 	
@@ -210,7 +210,7 @@ void deglDialogGameProblems::UpdatePanelGame(){
 	
 	const delEngineModule * const module = modules.GetNamed(pGame->GetScriptModule());
 	
-	if(! module || module->GetType() != deModuleSystem::emtScript
+	if(!module || module->GetType() != deModuleSystem::emtScript
 	|| module->GetStatus() != delEngineModule::emsReady){
 		working = false;
 	}

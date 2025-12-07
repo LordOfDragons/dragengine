@@ -60,7 +60,7 @@ debnStateLink *debnStateLinkList::GetLinkAt(int index) const{
 }
 
 int debnStateLinkList::IndexOfLink(debnStateLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLinkCount; i++){
@@ -71,7 +71,7 @@ int debnStateLinkList::IndexOfLink(debnStateLink *link) const{
 }
 
 bool debnStateLinkList::HasLink(debnStateLink *link) const{
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLinkCount; i++){
@@ -82,12 +82,12 @@ bool debnStateLinkList::HasLink(debnStateLink *link) const{
 }
 
 void debnStateLinkList::AddLink(debnStateLink *link){
-	if(! link) DETHROW(deeInvalidParam);
+	if(!link) DETHROW(deeInvalidParam);
 	
 	if(pLinkCount == pLinkSize){
 		int newSize = pLinkSize * 3 / 2 + 1;
 		debnStateLink **newArray = new debnStateLink*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLinks){
 			memcpy(newArray, pLinks, sizeof(debnStateLink*) * pLinkSize);
 			delete pLinks;

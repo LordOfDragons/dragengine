@@ -91,7 +91,7 @@ bool deRig::Verify() const{
 					boneVisited[parent] = true;
 					parent = pBones[parent]->GetParent();
 				}
-				if(! success) break;
+				if(!success) break;
 			}
 			
 			// clean up
@@ -123,7 +123,7 @@ void deRig::Prepare(){
 	try{
 		// create a temporary array to hold the calculated status
 		calculated = new bool[pBoneCount];
-		if(! calculated) DETHROW(deeOutOfMemory);
+		if(!calculated) DETHROW(deeOutOfMemory);
 		for(i=0; i<pBoneCount; i++) calculated[i] = false;
 		
 		// keeps track of the count of bones in need of calculation
@@ -141,7 +141,7 @@ void deRig::Prepare(){
 				
 				// check if the parent if present is calculated
 				parent = bone->GetParent();
-				if(parent != -1 && ! calculated[parent]){
+				if(parent != -1 && !calculated[parent]){
 					continue;
 				}
 				
@@ -229,7 +229,7 @@ deRigBone &deRig::GetBoneAt(int index) const{
 }
 
 void deRig::AddBone(deRigBone *bone){
-	if(! bone || HasBoneNamed(bone->GetName())){
+	if(!bone || HasBoneNamed(bone->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

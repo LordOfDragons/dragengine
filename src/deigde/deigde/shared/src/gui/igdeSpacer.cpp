@@ -46,7 +46,7 @@ igdeSpacer::igdeSpacer(igdeEnvironment &environment, const decPoint &size) :
 igdeWidget(environment),
 pSize(size)
 {
-	if(! (size >= decPoint())){
+	if(!(size >= decPoint())){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -65,7 +65,7 @@ void igdeSpacer::SetSize(const decPoint &size){
 		return;
 	}
 	
-	if(! (size >= decPoint())){
+	if(!(size >= decPoint())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void igdeSpacer::CreateNativeWidget(){
 }
 
 void igdeSpacer::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

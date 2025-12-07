@@ -43,7 +43,7 @@ gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char
 pGameDefinition(NULL),
 pNewValue(newValue)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

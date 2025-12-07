@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
@@ -66,11 +66,11 @@ public:
 	/** Pushes the prop field which can be NULL. */
 	void PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter);
 	
-	inline dsClass *GetClassParticleEmitterParameter() const{return pClsParticleEmitterParameter;}
-	inline dsClass *GetClassParticleEmitterEmitController() const{return pClsParticleEmitterEmitController;}
-	inline dsClass *GetClassParticleEmitterCastFrom() const{return pClsParticleEmitterCastFrom;}
-	inline dsClass *GetClassParticleCollisionResponse() const{return pClsParticleCollisionResponse;}
-	inline dsClass *GetClassParticleEmitterSimulation() const{return pClsParticleEmitterSimulation;}
+	inline dsClass *GetClassParticleEmitterParameter() const{ return pClsParticleEmitterParameter; }
+	inline dsClass *GetClassParticleEmitterEmitController() const{ return pClsParticleEmitterEmitController; }
+	inline dsClass *GetClassParticleEmitterCastFrom() const{ return pClsParticleEmitterCastFrom; }
+	inline dsClass *GetClassParticleCollisionResponse() const{ return pClsParticleCollisionResponse; }
+	inline dsClass *GetClassParticleEmitterSimulation() const{ return pClsParticleEmitterSimulation; }
 	/*@}*/
 	
 private:

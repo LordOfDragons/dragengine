@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
-	if(! cameraShot){
+	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ ceUCCShotToggleLockUpAxis::~ceUCCShotToggleLockUpAxis(){
 ///////////////
 
 void ceUCCShotToggleLockUpAxis::Undo(){
-	pCameraShot->SetLockUpAxis(! pCameraShot->GetLockUpAxis());
+	pCameraShot->SetLockUpAxis(!pCameraShot->GetLockUpAxis());
 }
 
 void ceUCCShotToggleLockUpAxis::Redo(){
-	pCameraShot->SetLockUpAxis(! pCameraShot->GetLockUpAxis());
+	pCameraShot->SetLockUpAxis(!pCameraShot->GetLockUpAxis());
 }

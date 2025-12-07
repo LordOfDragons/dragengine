@@ -102,7 +102,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Type. */
-	inline eType GetType() const{return pType;}
+	inline eType GetType() const{ return pType; }
 	
 	
 	
@@ -140,9 +140,9 @@ public:
 	virtual decVector GetValueAtAsVector(int index) const;
 	virtual decMatrix GetValueAtAsMatrix(int index) const;
 	
-	inline decVector2 GetValueAsVector2() const{return GetValueAtAsVector2(0);}
-	inline decVector GetValueAsVector() const{return GetValueAtAsVector(0);}
-	inline decMatrix GetValueAsMatrix() const{return GetValueAtAsMatrix(0);}
+	inline decVector2 GetValueAsVector2() const{ return GetValueAtAsVector2(0); }
+	inline decVector GetValueAsVector() const{ return GetValueAtAsVector(0); }
+	inline decMatrix GetValueAsMatrix() const{ return GetValueAtAsMatrix(0); }
 	
 	
 	

@@ -79,7 +79,7 @@ public:
 	void Empty();
 	
 	/** \brief Count of characters in the unicode string. */
-	inline int GetLength() const{return pLength;}
+	inline int GetLength() const{ return pLength; }
 	
 	/** \brief Unicode character at the given location. */
 	int GetAt(int position) const;

@@ -58,7 +58,7 @@ void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
 	
 	entry->SetSelected(true);
 	
-	if(! pSelection.Has(entry)){
+	if(!pSelection.Has(entry)){
 		pSelection.Add(entry);
 	}
 }

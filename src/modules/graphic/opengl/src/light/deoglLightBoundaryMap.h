@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the size of the base level. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	/** Retrieves the level count. */
-	inline int GetLevelCount() const{return pLevelCount;}
+	inline int GetLevelCount() const{ return pLevelCount; }
 	/** Retrieves the base level for the given size. */
 	int GetBaseLevel(int baseSize);
 	
 	/** Retrieves the minimum texture. */
-	inline deoglTexture *GetTextureMin() const{return pTextureMin;}
+	inline deoglTexture *GetTextureMin() const{ return pTextureMin; }
 	/** Retrieves the maximum texture. */
-	inline deoglTexture *GetTextureMax() const{return pTextureMax;}
+	inline deoglTexture *GetTextureMax() const{ return pTextureMax; }
 	/** Retrieves the fbo for a level. */
 	deoglFramebuffer *GetFBOAt(int level);
 	

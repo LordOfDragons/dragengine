@@ -49,8 +49,7 @@
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
 #else
-#	error OS not supported!
-#endif
+#	error OS not supported!#endif
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deCmdLineArgs.h>
 #include <dragengine/common/file/decPath.h>
@@ -246,7 +245,7 @@ void delEngineProcess::StopEngine(){
 }
 
 void delEngineProcess::ReadCommandsFromInPipe(){
-	while(! pStopProcess){
+	while(!pStopProcess){
 		const eCommandCodes command = (eCommandCodes)ReadUCharFromPipe();
 		
 		if(pRunGame){ // this should never happen
@@ -443,13 +442,13 @@ void delEngineProcess::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	if(pPipeOut == INVALID_HANDLE_VALUE
-	|| ! WriteFile(pPipeOut, data, length, &bytesWritten, NULL)
+	|| !WriteFile(pPipeOut, data, length, &bytesWritten, NULL)
 	|| (int)bytesWritten != length){
 		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if(! pPipeOut || write(pPipeOut, data, length) != length){
+	if(!pPipeOut || write(pPipeOut, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
@@ -487,13 +486,13 @@ void delEngineProcess::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	if(pPipeIn == INVALID_HANDLE_VALUE
-	|| ! ReadFile(pPipeIn, data, length, &bytesRead, NULL)
+	|| !ReadFile(pPipeIn, data, length, &bytesRead, NULL)
 	|| (int)bytesRead != length){
 		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if(! pPipeIn || read(pPipeIn, data, length) != length){
+	if(!pPipeIn || read(pPipeIn, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
@@ -501,7 +500,7 @@ void delEngineProcess::ReadFromPipe(void *data, int length){
 
 
 void delEngineProcess::CommandGetProperty(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -546,7 +545,7 @@ void delEngineProcess::CommandGetProperty(){
 }
 
 void delEngineProcess::CommandLoadModules(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -565,7 +564,7 @@ void delEngineProcess::CommandLoadModules(){
 }
 
 void delEngineProcess::CommandGetModuleStatus(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -579,7 +578,7 @@ void delEngineProcess::CommandGetModuleStatus(){
 		const deLoadableModule * const module = pEngine->GetModuleSystem()->
 			GetModuleNamed(moduleName, moduleVersion);
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandGetModuleStatus "
 				"module '%s':%s not found", moduleName.GetString(), moduleVersion.GetString());
 			
@@ -638,7 +637,7 @@ void delEngineProcess::CommandGetInternalModules(){
 }
 
 void delEngineProcess::CommandGetModuleParamList(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -651,7 +650,7 @@ void delEngineProcess::CommandGetModuleParamList(){
 		ReadString16FromPipe(moduleVersion);
 		
 		const deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName);
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandGetModuleParamList "
 				"module '%s':%s not found", moduleName.GetString(), moduleVersion.GetString());
 			WriteUCharToPipe(ercFailed);
@@ -659,7 +658,7 @@ void delEngineProcess::CommandGetModuleParamList(){
 		}
 		
 		const deBaseModule * const baseModule = module->GetModule();
-		if(! baseModule){
+		if(!baseModule){
 			WriteUCharToPipe(ercFailed);
 			return;
 		}
@@ -705,7 +704,7 @@ void delEngineProcess::CommandGetModuleParamList(){
 }
 
 void delEngineProcess::CommandSetModuleParameter(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -725,7 +724,7 @@ void delEngineProcess::CommandSetModuleParameter(){
 			module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
 		}
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandSetModuleParameter "
 				"module '%s':%s not found", moduleName.GetString(), moduleVersion.GetString());
 			
@@ -756,7 +755,7 @@ void delEngineProcess::CommandSetModuleParameter(){
 }
 
 void delEngineProcess::CommandActivateModule(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -776,7 +775,7 @@ void delEngineProcess::CommandActivateModule(){
 			module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
 		}
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandActivateModule "
 				"module '%s':%s not found", moduleName.GetString(), moduleVersion.GetString());
 			WriteUCharToPipe(ercFailed);
@@ -847,7 +846,7 @@ void delEngineProcess::CommandActivateModule(){
 }
 
 void delEngineProcess::CommandEnableModule(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -862,7 +861,7 @@ void delEngineProcess::CommandEnableModule(){
 		
 		deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandEnableModule "
 				"module '%s':%s not found", moduleName.GetString(), moduleVersion.GetString());
 			
@@ -884,7 +883,7 @@ void delEngineProcess::CommandEnableModule(){
 }
 
 void delEngineProcess::CommandSetDataDir(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -907,7 +906,7 @@ void delEngineProcess::CommandSetDataDir(){
 }
 
 void delEngineProcess::CommandSetCacheAppID(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -930,7 +929,7 @@ void delEngineProcess::CommandSetCacheAppID(){
 }
 
 void delEngineProcess::CommandSetPathOverlay(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -953,7 +952,7 @@ void delEngineProcess::CommandSetPathOverlay(){
 }
 
 void delEngineProcess::CommandSetPathCapture(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -976,7 +975,7 @@ void delEngineProcess::CommandSetPathCapture(){
 }
 
 void delEngineProcess::CommandSetPathConfig(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -999,7 +998,7 @@ void delEngineProcess::CommandSetPathConfig(){
 }
 
 void delEngineProcess::CommandVFSAddDiskDir(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1043,7 +1042,7 @@ void delEngineProcess::CommandVFSAddDiskDir(){
 }
 
 void delEngineProcess::CommandVFSAddScriptSharedDataDir(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1063,7 +1062,7 @@ void delEngineProcess::CommandVFSAddScriptSharedDataDir(){
 }
 
 void delEngineProcess::CommandVFSAddDelgaFile(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1115,7 +1114,7 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 }
 
 void delEngineProcess::CommandModulesAddVFSContainers(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1143,7 +1142,7 @@ void delEngineProcess::CommandModulesAddVFSContainers(){
 
 void delEngineProcess::CommandSetCmdLineArgs()
 {
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1168,7 +1167,7 @@ void delEngineProcess::CommandSetCmdLineArgs()
 }
 
 void delEngineProcess::CommandCreateRenderWindow(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1188,7 +1187,7 @@ void delEngineProcess::CommandCreateRenderWindow(){
 		ReadString16FromPipe(iconPath);
 		
 		deImage::Ref icon;
-		if(! iconPath.IsEmpty()){
+		if(!iconPath.IsEmpty()){
 			try{
 				icon.TakeOver(pEngine->GetImageManager()->LoadImage(iconPath, "/"));
 				
@@ -1213,7 +1212,7 @@ void delEngineProcess::CommandCreateRenderWindow(){
 }
 
 void delEngineProcess::CommandStartGame(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1351,7 +1350,7 @@ void delEngineProcess::CommandStartGame(){
 }
 
 void delEngineProcess::CommandGetDisplayCurrentResolution(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1376,7 +1375,7 @@ void delEngineProcess::CommandGetDisplayCurrentResolution(){
 }
 
 void delEngineProcess::CommandGetDisplayResolutions(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1450,7 +1449,7 @@ void delEngineProcess::CommandGetDisplayCurrentScaleFactor(){
 }
 
 void delEngineProcess::CommandDelgaReadGameDefs(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1514,7 +1513,7 @@ void delEngineProcess::CommandDelgaReadGameDefs(){
 }
 
 void delEngineProcess::CommandDelgaReadPatchDefs(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}
@@ -1578,7 +1577,7 @@ void delEngineProcess::CommandDelgaReadPatchDefs(){
 }
 
 void delEngineProcess::CommandDelgaReadFiles(){
-	if(! pEngine){
+	if(!pEngine){
 		WriteUCharToPipe(ercFailed);
 		return;
 	}

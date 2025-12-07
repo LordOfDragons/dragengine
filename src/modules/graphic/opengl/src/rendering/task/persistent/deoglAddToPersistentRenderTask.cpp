@@ -187,10 +187,10 @@ void deoglAddToPersistentRenderTask::SetEnforceParamBlock(const deoglSPBlockUBO 
 void deoglAddToPersistentRenderTask::AddComponent(deoglPersistentRenderTaskOwner &owner,
 const deoglCollideListComponent &clcomponent){
 	deoglRComponent &component = *clcomponent.GetComponent();
-	if(! component.GetParentWorld() || ! component.GetModel()){
+	if(!component.GetParentWorld() || !component.GetModel()){
 		return;
 	}
-	if(pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
+	if(pFilterCubeFace != -1 && !clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ const deoglCollideListComponent &clcomponent){
 
 void deoglAddToPersistentRenderTask::AddComponentFaces(deoglPersistentRenderTaskOwner &owner,
 const deoglRComponent &component, int texture, int lodLevel, int specialFlags){
-	if(! component.GetModel()){
+	if(!component.GetModel()){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	}
 	
 	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	if(pFilterReject(skinTexture)){
@@ -246,7 +246,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	
 	// obtain render task vao and add faces
 	deoglVAO * const vao = component.GetVAO(lodLevel);
-	if(! vao){
+	if(!vao){
 		return;
 	}
 	
@@ -272,7 +272,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup(lodLevel);
 	
 	deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith(&group);
-	if(! rti){
+	if(!rti){
 		rti = rtvao->AddInstance(&spbElement.GetSPB(), &group);
 		rti->SetFirstPoint(component.GetPointOffset(lodLevel));
 		rti->SetFirstIndex(component.GetIndexOffset(lodLevel) + firstFace * 3);
@@ -288,11 +288,11 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 //////////////////////
 
 bool deoglAddToPersistentRenderTask::pFilterReject(const deoglSkinTexture *skinTexture) const{
-	if(! skinTexture){
+	if(!skinTexture){
 		return true;
 	}
 	if(pOutline){
-		if(! skinTexture->GetHasOutline()){
+		if(!skinTexture->GetHasOutline()){
 			return true;
 		}
 		if(pSolid != skinTexture->GetIsOutlineSolid()){
@@ -312,7 +312,7 @@ bool deoglAddToPersistentRenderTask::pFilterReject(const deoglSkinTexture *skinT
 }
 
 bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid(const deoglSkinTexture *skinTexture) const{
-	if(! skinTexture){
+	if(!skinTexture){
 		return true;
 	}
 	if(pFilterXRay && pXRay != skinTexture->GetXRay()){
@@ -327,7 +327,7 @@ bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid(const deoglSkinTexture
 	if(pNoShadowNone && skinTexture->GetShadowNone()){
 		return true;
 	}
-	if(pNoNotReflected && ! skinTexture->GetReflected()){
+	if(pNoNotReflected && !skinTexture->GetReflected()){
 		return true;
 	}
 	return false;
@@ -341,7 +341,7 @@ const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deogl
 	const deoglPipeline *pipeline = pEnforcePipeline;
 	int spbInstanceIndexBase = -1, drawIDOffset = -1;
 	
-	if(! pipeline){
+	if(!pipeline){
 		const deoglSkinTexturePipeline * const skinPipeline = skinTexture.GetPipelines().
 			GetAt(pipelinesType).GetWith(pipelineType, pipelineModifier);
 		if(skinPipeline){
@@ -353,12 +353,12 @@ const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deogl
 	
 	DEASSERT_NOTNULL(pipeline)
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	deoglPersistentRenderTaskPipeline *rtpipeline = pRenderTask.GetPipelineWith(pipeline);
-	if(! rtpipeline){
+	if(!rtpipeline){
 		rtpipeline = pRenderTask.AddPipeline(pipeline);
 		rtpipeline->SetParameterBlock(NULL);
 		rtpipeline->SetSPBInstanceIndexBase(spbInstanceIndexBase);
@@ -366,13 +366,13 @@ const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deogl
 	}
 	
 	deoglPersistentRenderTaskTexture *rttexture = rtpipeline->GetTextureWith(tuc);
-	if(! rttexture){
+	if(!rttexture){
 		rttexture = rtpipeline->AddTexture(tuc);
 		rttexture->SetParameterBlock(skinTexture.GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
 	deoglPersistentRenderTaskVAO *rtvao = rttexture->GetVAOWith(vao);
-	if(! rtvao){
+	if(!rtvao){
 		rtvao = rttexture->AddVAO(vao);
 	}
 	

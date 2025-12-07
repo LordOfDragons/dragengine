@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
+	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
 	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);

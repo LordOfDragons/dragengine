@@ -54,12 +54,12 @@ pLink(NULL),
 pTargets(NULL),
 pTargetCount(0)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
 	seSynthesizer * const synthesizer = link->GetSynthesizer();
-	if(! synthesizer){
+	if(!synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

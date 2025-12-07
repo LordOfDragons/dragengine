@@ -45,7 +45,7 @@ gdeUOCAddComponent::gdeUOCAddComponent(gdeObjectClass *objectClass, gdeOCCompone
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	

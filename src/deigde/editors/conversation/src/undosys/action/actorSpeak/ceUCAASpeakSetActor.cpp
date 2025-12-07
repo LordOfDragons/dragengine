@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newActorID){
-	if(! topic || ! newActorID) DETHROW(deeInvalidParam);
+	if(!topic || !newActorID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;

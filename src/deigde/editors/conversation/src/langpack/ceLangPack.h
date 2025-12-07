@@ -71,26 +71,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Identifier. */
-	inline const decString &GetIdentifier() const{return pIdentifier;}
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	void SetIdentifier(const char *identifier);
 	
 	/** Name. */
-	inline const decUnicodeString &GetName() const{return pName;}
+	inline const decUnicodeString &GetName() const{ return pName; }
 	void SetName(const decUnicodeString &name);
 	
 	/** Description. */
-	inline const decUnicodeString &GetDescription() const{return pDescription;}
+	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	void SetDescription(const decUnicodeString &description);
 	
 	/** Missing text. */
-	inline const decUnicodeString &GetMissingText() const{return pMissingText;}
+	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
 	void SetMissingText(const decUnicodeString &missingText);
 	
 	/** Language pack changed and needs to be saved. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	void SetChanged(bool changed);
 	/*@}*/
 	

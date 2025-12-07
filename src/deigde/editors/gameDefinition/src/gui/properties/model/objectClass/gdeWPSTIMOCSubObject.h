@@ -57,10 +57,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{return pObjectClass;}
+	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Verify if component is valid. */
 	virtual bool IsValid() const;

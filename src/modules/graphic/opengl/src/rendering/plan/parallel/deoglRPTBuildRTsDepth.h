@@ -68,10 +68,10 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Elapsed time. */
-	inline float GetElapsedTime() const{return pElapsedTime;}
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** Finished semaphore. */
-	inline deSemaphore &GetSemaphore(){return pSemaphore;}
+	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
 	/*@}*/
 	
 	

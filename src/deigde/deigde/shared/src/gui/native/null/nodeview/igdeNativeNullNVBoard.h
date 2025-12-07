@@ -83,13 +83,13 @@ public:
 	void BeginCreateLink(igdeNativeNullNVSlot *source);
 	
 	/** \brief Link drag and drop source or NULL. */
-	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{return nullptr;}
+	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{ return nullptr; }
 	
 	/** \brief Set create link drag and drop position. */
 	void SetCreateLinkPosition(const decPoint &position);
 	
 	/** \brief Create link drag and drop target or NULL. */
-	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{return nullptr;}
+	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{ return nullptr; }
 	
 	/** \brief Set create link drag and drop target or NULL. */
 	void SetCreateLinkTarget(igdeNativeNullNVSlot *target);
@@ -101,7 +101,7 @@ public:
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
 	/** \brief Hover link or NULL. */
-	inline igdeNVLink *GetHoverLink() const{return nullptr;}
+	inline igdeNVLink *GetHoverLink() const{ return nullptr; }
 	
 	/** \brief Set hover link. */
 	void SetHoverLink(igdeNVLink *link);

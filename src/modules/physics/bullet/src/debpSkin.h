@@ -53,7 +53,7 @@ public:
 	debpSkin(deSkin *skin);
 	~debpSkin();
 	// management
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 private:
 	void pCleanUp();

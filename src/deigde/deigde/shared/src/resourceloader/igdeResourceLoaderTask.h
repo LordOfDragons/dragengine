@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Resource type. */
-	inline deResourceLoader::eResourceType GetResourceType() const{return pResourceType;}
+	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	/*@}*/
 	
 	

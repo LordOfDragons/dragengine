@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created shape or NULL if something went wrong. */
-	inline const debpShape::Ref &GetCreatedShape() const{return pShape;}
+	inline const debpShape::Ref &GetCreatedShape() const{ return pShape; }
 	
 	/** \brief Set created shape or NULL. */
 	void SetCreatedShape(debpShape *shape);

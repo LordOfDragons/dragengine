@@ -96,7 +96,7 @@ void decBSPTree::ClearTree(bool clearNodes){
 
 decBSPTree *decBSPTree::CreateBSPTree(const decVector &normal, float distance) const{
 	decBSPTree *bspTree = new decBSPTree(normal, distance);
-	if(! bspTree) DETHROW(deeOutOfMemory);
+	if(!bspTree) DETHROW(deeOutOfMemory);
 	
 	return bspTree;
 }
@@ -241,7 +241,7 @@ void decBSPTree::InsertFaceIntoTree(const decBSPTreeFace &face){
 				
 			}else{
 				pNodeFront = CreateBSPTree(faceNormal, faceDot);
-				if(! pNodeFront) DETHROW(deeOutOfMemory);
+				if(!pNodeFront) DETHROW(deeOutOfMemory);
 				
 				pNodeFront->AddCoplanarFace(face);
 			}
@@ -252,7 +252,7 @@ void decBSPTree::InsertFaceIntoTree(const decBSPTreeFace &face){
 				
 			}else{
 				pNodeBack = CreateBSPTree(faceNormal, faceDot);
-				if(! pNodeBack) DETHROW(deeOutOfMemory);
+				if(!pNodeBack) DETHROW(deeOutOfMemory);
 				
 				pNodeBack->AddCoplanarFace(face);
 			}
@@ -268,7 +268,7 @@ void decBSPTree::InsertFaceIntoTree(const decBSPTreeFace &face){
 					
 				}else{
 					pNodeFront = CreateBSPTree(faceNormal, faceDot);
-					if(! pNodeFront) DETHROW(deeOutOfMemory);
+					if(!pNodeFront) DETHROW(deeOutOfMemory);
 					
 					pNodeFront->AddCoplanarFace(front);
 				}
@@ -280,7 +280,7 @@ void decBSPTree::InsertFaceIntoTree(const decBSPTreeFace &face){
 					
 				}else{
 					pNodeBack = CreateBSPTree(faceNormal, faceDot);
-					if(! pNodeBack) DETHROW(deeOutOfMemory);
+					if(!pNodeBack) DETHROW(deeOutOfMemory);
 					
 					pNodeBack->AddCoplanarFace(back);
 				}

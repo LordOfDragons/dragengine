@@ -75,7 +75,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor()){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
@@ -95,7 +95,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || textField->GetText() == condition->GetCommand()){
+		if(!topic || !action || !condition || textField->GetText() == condition->GetCommand()){
 			return;
 		}
 		
@@ -116,12 +116,12 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
 		decString text(condition->GetCommand());
-		if(! igdeCommonDialogs::GetMultilineString(
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
 			"Edit Command", "Command:", text)
 		|| text == condition->GetCommand()){
@@ -144,7 +144,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition){
+		if(!topic || !action || !condition){
 			return;
 		}
 		

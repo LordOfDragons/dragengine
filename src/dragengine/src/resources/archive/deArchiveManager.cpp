@@ -83,7 +83,7 @@ deArchive *deArchiveManager::OpenArchive(const char *filename, const char *baseP
 
 deArchive *deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	decBaseFileReader *fileReader = NULL;
@@ -93,7 +93,7 @@ const char *basePath){
 	decPath path;
 	
 	try{
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -148,7 +148,7 @@ const char *basePath){
 
 deArchiveContainer *deArchiveManager::CreateContainer(const decPath &rootPath,
 deArchive *archive, const decPath &archivePath){
-	if(! archive){
+	if(!archive){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -216,12 +216,12 @@ void deArchiveManager::RemoveResource(deResource *resource){
 }
 
 void deArchiveManager::RemoveContainer(deArchiveContainer *container){
-	if(! container){
+	if(!container){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(container != pContainerRoot && ! container->GetLLManagerNext()
-	&& ! container->GetLLManagerPrev()){
+	if(container != pContainerRoot && !container->GetLLManagerNext()
+	&& !container->GetLLManagerPrev()){
 		return;
 	}
 	
@@ -240,7 +240,7 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		}
 		
 	}else{
-		if(! container->GetLLManagerNext()){
+		if(!container->GetLLManagerNext()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -258,7 +258,7 @@ void deArchiveManager::RemoveContainer(deArchiveContainer *container){
 		}
 		
 	}else{
-		if(! container->GetLLManagerPrev()){
+		if(!container->GetLLManagerPrev()){
 			DETHROW(deeInvalidParam);
 		}
 		

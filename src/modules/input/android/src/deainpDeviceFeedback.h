@@ -65,25 +65,25 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
 	void SetIndex(int index);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Type. */
-	inline deInputDeviceFeedback::eFeedbackTypes GetType() const{return pType;}
+	inline deInputDeviceFeedback::eFeedbackTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(deInputDeviceFeedback::eFeedbackTypes type);
@@ -91,7 +91,7 @@ public:
 	
 	
 	/** \brief Maximum value. */
-	inline int GetMaximum() const{return pMaximum;}
+	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** \brief Set maximum value. */
 	void SetMaximum(int maximum);
@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Current value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
 	void SetValue(float value);
@@ -107,7 +107,7 @@ public:
 	
 	
 	/** \brief Libevdev specific event code. */
-	inline int GetEvdevCode() const{return pEvdevCode;}
+	inline int GetEvdevCode() const{ return pEvdevCode; }
 	
 	/** \brief Set libevdev specific event code. */
 	void SetEvdevCode(int code);

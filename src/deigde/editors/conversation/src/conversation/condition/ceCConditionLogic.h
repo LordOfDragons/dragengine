@@ -66,12 +66,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the operator. */
-	inline eOperators GetOperator() const{return pOperator;}
+	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
 	void SetOperator(eOperators aOperator);
 	/** Retrieves the list of conditions. */
-	inline ceConversationConditionList &GetConditions(){return pConditions;}
-	inline const ceConversationConditionList &GetConditions() const {return pConditions;}
+	inline ceConversationConditionList &GetConditions(){ return pConditions; }
+	inline const ceConversationConditionList &GetConditions() const { return pConditions; }
 	
 	/** Create a copy of this condition. */
     virtual ceConversationCondition *CreateCopy() const;
@@ -82,7 +82,7 @@ public:
 	/** \name UI */
 	/*@{*/
 	/** \brief Tree list item expanded state. */
-	inline bool GetTIMExpanded() const{return pTIMExpanded;}
+	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
 	void SetTIMExpanded(bool expanded);

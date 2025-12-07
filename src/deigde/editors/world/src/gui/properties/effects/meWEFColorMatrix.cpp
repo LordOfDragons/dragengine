@@ -63,7 +63,7 @@ meWEFColorMatrix::meWEFColorMatrix(){}
 meWEFColorMatrix::meWEFColorMatrix(deEffectColorMatrix *effectColorMatrix, meWindowEffects *windowEffects, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT,
 0, 0, 0, 0, 0, 0, 0, 0){
-	if(! effectColorMatrix || ! windowEffects) DETHROW(deeInvalidParam);
+	if(!effectColorMatrix || !windowEffects) DETHROW(deeInvalidParam);
 	int i, padding = 3, spacing = 3;
 	FXString text;
 	
@@ -209,12 +209,12 @@ void meWEFColorMatrix::UpdateColorMatrix(){
 }
 
 void meWEFColorMatrix::AddTemplate(meWTColorMatrix *aTemplate){
-	if(! aTemplate) DETHROW(deeInvalidParam);
+	if(!aTemplate) DETHROW(deeInvalidParam);
 	
 	if(pTemplateCount == pTemplateSize){
 		int i, newSize = pTemplateCount * 3 / 2 + 1;
 		meWTColorMatrix **newArray = new meWTColorMatrix*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pTemplates){
 			for(i=0; i<pTemplateCount; i++) newArray[i] = pTemplates[i];
@@ -353,7 +353,7 @@ void meWEFColorMatrix::pAddTemplates(){
 	try{
 		// Identity
 		aTemplate = new meWTColorMatrix("Null Matrix", decColorMatrix());
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -361,7 +361,7 @@ void meWEFColorMatrix::pAddTemplates(){
 		// Raise intensity
 		aTemplate = new meWTColorMatrix("Raise Intensity 25%",
 			decColorMatrix::CreateTranslation(0.25f, 0.25f, 0.25f, 0.0f));
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -369,7 +369,7 @@ void meWEFColorMatrix::pAddTemplates(){
 		// Lower intensity
 		aTemplate = new meWTColorMatrix("Lower Intensity 25%",
 			decColorMatrix::CreateTranslation(-0.25f, -0.25f, -0.25f, 0.0f));
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -377,7 +377,7 @@ void meWEFColorMatrix::pAddTemplates(){
 		// Raise Brightness
 		aTemplate = new meWTColorMatrix("Raise Brightness 25%",
 			decColorMatrix::CreateScaling(1.25f, 1.25f, 1.25f, 0.0f));
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -385,7 +385,7 @@ void meWEFColorMatrix::pAddTemplates(){
 		// Lower Brightness
 		aTemplate = new meWTColorMatrix("Lower Brightness 25%",
 			decColorMatrix::CreateScaling(0.75f, 0.75f, 0.75f, 0.0f));
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -397,7 +397,7 @@ void meWEFColorMatrix::pAddTemplates(){
 				decColor(0.0f, 0.0f, 0.0f, 1.0f), decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		
 		aTemplate = new meWTColorMatrix("Desaturate", cmDesaturate);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;
@@ -407,7 +407,7 @@ void meWEFColorMatrix::pAddTemplates(){
 			* decColorMatrix::CreateTranslation( 0.0f, 0.1f, 0.0f, 0.0f );
 		
 		aTemplate = new meWTColorMatrix("Night Vision Googles", colorMatrix);
-		if(! aTemplate) DETHROW(deeOutOfMemory);
+		if(!aTemplate) DETHROW(deeOutOfMemory);
 		
 		AddTemplate(aTemplate);
 		aTemplate = NULL;

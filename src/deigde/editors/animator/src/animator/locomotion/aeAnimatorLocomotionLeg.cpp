@@ -62,7 +62,7 @@
 ////////////////////////////
 
 aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion){
-	if(! locomotion) DETHROW(deeInvalidParam);
+	if(!locomotion) DETHROW(deeInvalidParam);
 	
 	deDebugDrawer *debugDrawer = locomotion->GetDebugDrawer();
 	
@@ -103,7 +103,7 @@ aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
 ///////////////
 
 void aeAnimatorLocomotionLeg::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
@@ -164,7 +164,7 @@ void aeAnimatorLocomotionLeg::SetPutDownTime(float time){
 }
 
 void aeAnimatorLocomotionLeg::SetVisBoneName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pVisBoneName = name;
 }
@@ -320,7 +320,7 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 		lockPosition = true;
 	}
 	
-	if(lockPosition && ! pPositionLocked){
+	if(lockPosition && !pPositionLocked){
 		pLockedPosition = pPredictPosition;
 		pLockedRotation = pPredictRotation;
 		pLockedNormal = pPredictNormal;
@@ -384,7 +384,7 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 		engRig = engComponent->GetRig();
 	}
 	
-	if(! engRig){
+	if(!engRig){
 		pIKInfluence = 0.0f;
 		return;
 	}
@@ -410,7 +410,7 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 	closestHit.Reset();
 	touchSensor.RayHits(aeAnimatorLocomotion::etsaGround, castOrigin, decVector(0.0f, -1.0f, 0.0f), &closestHit);
 	
-	if(! closestHit.GetHasHit()){
+	if(!closestHit.GetHasHit()){
 		pIKInfluence = 0.0f;
 		return;
 	}
@@ -470,12 +470,12 @@ void aeAnimatorLocomotionLeg::UpdateShapes(){
 	try{
 		shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
 		//shape = new decShapeSphere( 0.05 );
-		if(! shape) DETHROW(deeOutOfMemory);
+		if(!shape) DETHROW(deeOutOfMemory);
 		pDDSLocked.AddShape(shape);
 		shape = NULL;
 		
 		shape = new decShapeSphere(0.05f);
-		if(! shape) DETHROW(deeOutOfMemory);
+		if(!shape) DETHROW(deeOutOfMemory);
 		pDDSPredict.AddShape(shape);
 		shape = NULL;
 		

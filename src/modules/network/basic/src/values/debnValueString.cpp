@@ -59,7 +59,7 @@ debnValueString::~debnValueString(){
 ///////////////
 
 bool debnValueString::UpdateValue(bool force){
-	if(! force && pValueString.GetString() == pLastValue){
+	if(!force && pValueString.GetString() == pLastValue){
 		return false;
 	}
 	

@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data  type. */
-	inline eValueTypes GetDataType() const{return pDataType;}
+	inline eValueTypes GetDataType() const{ return pDataType; }
 	
 	/** \brief Set data type. */
 	void SetDataType(eValueTypes dataType);

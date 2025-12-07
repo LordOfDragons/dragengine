@@ -126,7 +126,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(((sLigNatDat*)p_GetNativeData(myself))->light);
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -531,7 +531,7 @@ void deClassLight::nfHasShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValu
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
-	if(! component){
+	if(!component){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -550,7 +550,7 @@ void deClassLight::nfAddShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValu
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
-	if(! component){
+	if(!component){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -569,7 +569,7 @@ void deClassLight::nfRemoveShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsV
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
-	if(! component){
+	if(!component){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -671,7 +671,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLightHintMovement); // type
 }
 void deClassLight::nfSetHintMovement::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -700,7 +700,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetHintParameter::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(((sLigNatDat*)p_GetNativeData(myself))->light);
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -837,7 +837,7 @@ void deClassLight::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLight * const clsLight = (deClassLight*)GetOwnerClass();
 	
 	dsValue * const obj = rt->GetValue(0) ;
-	if(! p_IsObjOfType(obj, clsLight)){
+	if(!p_IsObjOfType(obj, clsLight)){
 		rt->PushBool(false);
 		
 	}else{
@@ -975,18 +975,18 @@ void deClassLight::CreateClassMembers(dsEngine *engine){
 }
 
 deLight *deClassLight::GetLight(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((sLigNatDat*)p_GetNativeData(myself->GetBuffer()))->light;
 }
 
 void deClassLight::PushLight(dsRunTime *rt, deLight *light){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! light){
+	if(!light){
 		rt->PushObject(NULL, this);
 		return;
 	}

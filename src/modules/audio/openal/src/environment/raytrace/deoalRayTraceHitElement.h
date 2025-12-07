@@ -60,24 +60,24 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Distance in meters to hit point. */
-	inline float GetDistance() const{return pDistance;}
+	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Hit point in world coordinates. */
-	inline const decDVector &GetPoint() const{return pPoint;}
+	inline const decDVector &GetPoint() const{ return pPoint; }
 	
 	/** \brief Hit normal in world coordinates. */
-	inline const decDVector &GetNormal() const{return pNormal;}
+	inline const decDVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Hit element is forward facing. */
-	inline bool GetForwardFacing() const{return pForwardFacing;}
+	inline bool GetForwardFacing() const{ return pForwardFacing; }
 	
 	
 	
 	/** \brief Hit component or NULL. */
-	inline deoalAComponent *GetComponent() const{return pComponent;}
+	inline deoalAComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Hit component face or -1. */
-	inline int GetComponentFace() const{return pComponentFace;}
+	inline int GetComponentFace() const{ return pComponentFace; }
 	
 	
 	

@@ -106,7 +106,7 @@ void dealDialogMain::OnDeactivate(){
 
 
 void dealDialogMain::SetRunEnabled(bool enabled){
-	if(! pButtonRun){
+	if(!pButtonRun){
 		return;
 	}
 	pButtonRun->SetEnabled(enabled);

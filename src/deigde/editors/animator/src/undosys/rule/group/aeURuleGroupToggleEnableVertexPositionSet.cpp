@@ -62,11 +62,11 @@ aeURuleGroupToggleEnableVertexPositionSet::~aeURuleGroupToggleEnableVertexPositi
 ///////////////
 
 void aeURuleGroupToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleGroupToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 

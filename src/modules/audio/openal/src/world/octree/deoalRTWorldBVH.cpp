@@ -88,7 +88,7 @@ void deoalRTWorldBVH::Build(const decDVector &position){
 }
 
 void deoalRTWorldBVH::AddComponent(deoalAComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

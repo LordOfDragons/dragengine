@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Curve. */
-	inline const decCurveBezier &GetCurve() const{return pCurve;}
+	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set curve. */
 	void SetCurve(const decCurveBezier &curve);

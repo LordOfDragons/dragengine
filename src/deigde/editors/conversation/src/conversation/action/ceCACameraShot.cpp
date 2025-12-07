@@ -58,7 +58,7 @@ ceCACameraShot::~ceCACameraShot(){
 ///////////////
 
 void ceCACameraShot::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
@@ -68,7 +68,7 @@ void ceCACameraShot::SetDuration(float duration){
 }
 
 void ceCACameraShot::SetCameraTarget(const char *target){
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -76,7 +76,7 @@ void ceCACameraShot::SetCameraTarget(const char *target){
 }
 
 void ceCACameraShot::SetLookAtTarget(const char *target){
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	

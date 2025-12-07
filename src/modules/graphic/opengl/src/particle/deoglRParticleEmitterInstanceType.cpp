@@ -227,7 +227,7 @@ const deoglSkinTexturePipelines &deoglRParticleEmitterInstanceType::GetUseSkinPi
 }
 
 const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
-	if(! pValidParamBlock){
+	if(!pValidParamBlock){
 		pParamBlock = nullptr;
 		
 		if(pUseSkinTexture){
@@ -353,7 +353,7 @@ deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCGeometryDepthTest(
 
 deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::BareGetTUCFor(
 deoglSkinTexturePipelines::eTypes shaderType) const{
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
@@ -427,7 +427,7 @@ deoglSkinTexturePipelines::eTypes shaderType) const{
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
@@ -456,7 +456,7 @@ void deoglRParticleEmitterInstanceType::MarkTUCsDirty(){
 
 void deoglRParticleEmitterInstanceType::UpdateInstanceParamBlock(
 deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -519,7 +519,7 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
 
 
 const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetLightInstanceParameterBlock(){
-	if(! pParamBlockLightInstance){
+	if(!pParamBlockLightInstance){
 		pParamBlockLightInstance = pEmitterInstance.GetEmitter()->GetTypeAt(pIndex).GetPipelines().
 			GetWithRef(deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBInstParam();
 	}

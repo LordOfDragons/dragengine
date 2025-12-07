@@ -76,7 +76,7 @@ bool seControllerTarget::HasLink(seLink *link) const{
 }
 
 void seControllerTarget::AddLink(seLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);
@@ -93,14 +93,14 @@ void seControllerTarget::RemoveAllLinks(){
 
 
 void seControllerTarget::UpdateEngineTarget(seSynthesizer *synthesizer, deSynthesizerControllerTarget &target) const{
-	if(! synthesizer){
+	if(!synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	
 	target.RemoveAllLinks();
 	
 	deSynthesizer * const engSynthesizer = synthesizer->GetEngineSynthesizer();
-	if(! engSynthesizer){
+	if(!engSynthesizer){
 		return;
 	}
 	
@@ -109,7 +109,7 @@ void seControllerTarget::UpdateEngineTarget(seSynthesizer *synthesizer, deSynthe
 	
 	for(i=0; i<linkCount; i++){
 		deSynthesizerLink * const engLink = ((seLink*)pLinks.GetAt(i))->GetEngineLink();
-		if(! engLink){
+		if(!engLink){
 			continue;
 		}
 		

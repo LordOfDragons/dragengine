@@ -42,7 +42,7 @@
 seUSourceToggleEnabled::seUSourceToggleEnabled(seSource *source) :
 pSource(NULL)
 {
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ seUSourceToggleEnabled::~seUSourceToggleEnabled(){
 ///////////////
 
 void seUSourceToggleEnabled::Undo(){
-	pSource->SetEnabled(! pSource->GetEnabled());
+	pSource->SetEnabled(!pSource->GetEnabled());
 }
 
 void seUSourceToggleEnabled::Redo(){
-	pSource->SetEnabled(! pSource->GetEnabled());
+	pSource->SetEnabled(!pSource->GetEnabled());
 }
 
 

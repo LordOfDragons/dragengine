@@ -69,7 +69,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor()){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
@@ -89,7 +89,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition){
+		if(!topic || !action || !condition){
 			return;
 		}
 		

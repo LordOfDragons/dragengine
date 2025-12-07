@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavBlocker. */
-	gdeOCNavigationBlocker *GetNavBlocker() const{return pNavBlocker;}
+	gdeOCNavigationBlocker *GetNavBlocker() const{ return pNavBlocker; }
 	/*@}*/
 };
 

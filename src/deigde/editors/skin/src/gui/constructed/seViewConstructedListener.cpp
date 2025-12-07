@@ -63,7 +63,7 @@ void seViewConstructedListener::ActiveTextureChanged(seSkin *skin){
 }
 
 void seViewConstructedListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
-	if(pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive()){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -72,7 +72,7 @@ void seViewConstructedListener::PropertyChanged(seSkin *skin, seTexture *texture
 }
 
 void seViewConstructedListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
-	if(pView.GetSkin() != skin || ! texture->GetActive()){
+	if(pView.GetSkin() != skin || !texture->GetActive()){
 		return;
 	}
 	
@@ -82,8 +82,8 @@ void seViewConstructedListener::ActivePropertyChanged(seSkin *skin, seTexture *t
 
 void seViewConstructedListener::PropertyNodeChanged(seSkin *skin, seTexture *texture,
 seProperty *property, sePropertyNode *node){
-	if(pView.GetSkin() != skin || ! texture->GetActive()
-	|| ! property->GetActive() || node != property->GetNodeGroup()){
+	if(pView.GetSkin() != skin || !texture->GetActive()
+	|| !property->GetActive() || node != property->GetNodeGroup()){
 		return;
 	}
 	
@@ -93,7 +93,7 @@ seProperty *property, sePropertyNode *node){
 
 void seViewConstructedListener::PropertyActiveNodeLayerChanged(seSkin *skin, seTexture *texture,
 seProperty *property){
-	if(pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive()){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	

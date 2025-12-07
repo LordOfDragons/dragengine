@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of kernel rows. */
-	inline int GetKernelRows() const{return pKernelRows;}
+	inline int GetKernelRows() const{ return pKernelRows; }
 	
 	/** Number of kernel cols. */
-	inline int GetKernelCols() const{return pKernelCols;}
+	inline int GetKernelCols() const{ return pKernelCols; }
 	
 	/** Set kernel size. */
 	void SetKernelSize(int rows, int cols);
@@ -74,7 +74,7 @@ public:
 	void SetKernelValueAt(int row, int col, float value);
 	
 	/** Kernel scale. */
-	inline float GetScale() const{return pScale;}
+	inline float GetScale() const{ return pScale; }
 	
 	/** Set kernel scale. */
 	void SetScale(float scale);

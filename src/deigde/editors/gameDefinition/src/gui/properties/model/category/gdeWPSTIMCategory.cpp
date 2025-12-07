@@ -46,7 +46,7 @@ gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCate
 gdeWPSTreeItemModel(tree, type),
 pCategory(NULL)
 {
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	

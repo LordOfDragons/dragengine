@@ -76,8 +76,8 @@ void DSParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread
 	
 	ProblemPointer p = readContents();
 	
-	if(! (minimumFeatures() & (TopDUContext::ForceUpdate | Resheduled))
-	&& ! isUpdateRequired(languageString)){
+	if(!(minimumFeatures() & (TopDUContext::ForceUpdate | Resheduled))
+	&& !isUpdateRequired(languageString)){
 		DUChainReadLocker lock;
 		foreach(const ParsingEnvironmentFilePointer &file,
 		DUChain::self()->allEnvironmentFiles(document())){
@@ -85,7 +85,7 @@ void DSParseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread
 				continue;
 			}
 			
-			if(! file->needsUpdate() && file->featuresSatisfied(minimumFeatures()) && file->topContext()){
+			if(!file->needsUpdate() && file->featuresSatisfied(minimumFeatures()) && file->topContext()){
 				qDebug() << "KDevDScript: DSParseJob::run: Already up to date" << document().str();
 				setDuChain(file->topContext());
 				if(ICore::self()->languageController()->backgroundParser()->trackerForUrl(document())){
@@ -243,7 +243,7 @@ bool DSParseJob::hasParentDocument(const IndexedString &doc){
 	if(document() == doc){
 		return true;
 	}
-	if(! pParentJob){
+	if(!pParentJob){
 		return false;
 	}
 	if(pParentJob->document() == doc){

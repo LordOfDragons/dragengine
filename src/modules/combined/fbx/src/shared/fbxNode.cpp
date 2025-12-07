@@ -198,7 +198,7 @@ bool fbxNode::GetPropertyColorIf(const char *name, decColor &value) const{
 
 bool fbxNode::GetPropertyBool(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->GetValueAsBool();
@@ -206,7 +206,7 @@ bool fbxNode::GetPropertyBool(const char *name) const{
 
 int fbxNode::GetPropertyInt(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->GetValueAsInt();
@@ -214,7 +214,7 @@ int fbxNode::GetPropertyInt(const char *name) const{
 
 int64_t fbxNode::GetPropertyLong(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->GetValueAsLong();
@@ -222,7 +222,7 @@ int64_t fbxNode::GetPropertyLong(const char *name) const{
 
 float fbxNode::GetPropertyFloat(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->GetValueAsFloat();
@@ -230,7 +230,7 @@ float fbxNode::GetPropertyFloat(const char *name) const{
 
 double fbxNode::GetPropertyDouble(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->GetValueAsDouble();
@@ -238,7 +238,7 @@ double fbxNode::GetPropertyDouble(const char *name) const{
 
 const decString &fbxNode::GetPropertyString(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return node->GetPropertyAt(4)->CastString().GetValue();
@@ -246,7 +246,7 @@ const decString &fbxNode::GetPropertyString(const char *name) const{
 
 decVector fbxNode::GetPropertyVector(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return decVector(node->GetPropertyAt(4)->GetValueAsFloat(),
@@ -256,7 +256,7 @@ decVector fbxNode::GetPropertyVector(const char *name) const{
 
 decColor fbxNode::GetPropertyColor(const char *name) const{
 	const fbxNode * const node = pProp70Named(name);
-	if(! node){
+	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
 	return decColor(node->GetPropertyAt(4)->GetValueAsFloat(),
@@ -542,7 +542,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 
 
 fbxNode *fbxNode::pProp70Named(const char* name) const{
-	if(! pNodeProperties70){
+	if(!pNodeProperties70){
 		return NULL;
 	}
 	
@@ -575,7 +575,7 @@ void fbxNode::pInitID(){
 }
 
 void fbxNode::pPrepareTransformation(){
-	if(! pDirtyTransformation){
+	if(!pDirtyTransformation){
 		return;
 	}
 	
@@ -616,47 +616,47 @@ void fbxNode::pPrepareTransformation(){
 	pLocalRotation = GetPropertyVector("Lcl Rotation", zeroVector);
 	pLocalScaling = GetPropertyVector("Lcl Scaling", oneVector);
 	
-	if(! scalingPivot.IsZero()){ // Inverse of the scaling pivot
+	if(!scalingPivot.IsZero()){ // Inverse of the scaling pivot
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(-scalingPivot));
 	}
-	if(! pLocalScaling.IsEqualTo(oneVector)){ // Scaling
+	if(!pLocalScaling.IsEqualTo(oneVector)){ // Scaling
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateScale(pLocalScaling));
 	}
-	if(! scalingPivot.IsZero()){ // Scaling pivot
+	if(!scalingPivot.IsZero()){ // Scaling pivot
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(scalingPivot));
 	}
-	if(! scalingOffset.IsZero()){ // Scaling offset
+	if(!scalingOffset.IsZero()){ // Scaling offset
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(scalingOffset));
 	}
-	if(! rotationPivot.IsZero()){ // Inverse of the rotation pivot
+	if(!rotationPivot.IsZero()){ // Inverse of the rotation pivot
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(-rotationPivot));
 	}
-	if(! postRotation.IsZero()){ // Inverse of the post-rotation
+	if(!postRotation.IsZero()){ // Inverse of the post-rotation
 		pTransformation = pTransformation.QuickMultiply(
 			fbxScene::CreateRotationMatrix(postRotation, rotationOrder).QuickInvert());
 	}
-	if(! pLocalRotation.IsZero()){ // Rotation
+	if(!pLocalRotation.IsZero()){ // Rotation
 		pTransformation = pTransformation.QuickMultiply(
 			fbxScene::CreateRotationMatrix(pLocalRotation * DEG2RAD, rotationOrder));
 	}
-	if(! preRotation.IsZero()){ // Pre-rotation
+	if(!preRotation.IsZero()){ // Pre-rotation
 		pTransformation = pTransformation.QuickMultiply(
 			fbxScene::CreateRotationMatrix(preRotation, rotationOrder));
 	}
-	if(! rotationPivot.IsZero()){ // Rotation pivot
+	if(!rotationPivot.IsZero()){ // Rotation pivot
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(rotationPivot));
 	}
-	if(! rotationOffset.IsZero()){ // Rotation offset
+	if(!rotationOffset.IsZero()){ // Rotation offset
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(rotationOffset));
 	}
-	if(! pLocalTranslation.IsZero()){ // Translation
+	if(!pLocalTranslation.IsZero()){ // Translation
 		pTransformation = pTransformation.QuickMultiply(
 			decMatrix::CreateTranslation(pLocalTranslation));
 	}

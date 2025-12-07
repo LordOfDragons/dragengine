@@ -80,7 +80,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
@@ -129,7 +129,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
@@ -166,7 +166,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
@@ -190,7 +190,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter || particleEmitter->GetPath() == editPath->GetPath()){
+		if(!particleEmitter || particleEmitter->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -275,7 +275,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
@@ -310,7 +310,7 @@ public:
 	cComboTriggerNameTarget(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetParticleEmitter()){
+		if(!pPanel.GetParticleEmitter()){
 			return;
 		}
 		

@@ -130,7 +130,7 @@ long deVFSCacheDiskDirectory::CalculateDirectorySize(const char *path){
 				// fetch next directory entry
 				errno = 0;
 				entry = readdir(theDir);
-				if(! entry){
+				if(!entry){
 					if(errno == 0){
 						break;
 					}
@@ -209,7 +209,7 @@ long deVFSCacheDiskDirectory::CalculateDirectorySize(const char *path){
 				}
 				
 				// read next entry
-				if(! FindNextFile(searchHandle, &dirEntry)){
+				if(!FindNextFile(searchHandle, &dirEntry)){
 				    if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}
@@ -260,7 +260,7 @@ long &oldestAccesTime, bool &hasOldestFile, const char *path){
 				// fetch next directory entry
 				errno = 0;
 				entry = readdir(theDir);
-				if(! entry){
+				if(!entry){
 					if(errno == 0){
 						break;
 					}
@@ -284,7 +284,7 @@ long &oldestAccesTime, bool &hasOldestFile, const char *path){
 				
 				if(S_ISREG(st.st_mode)){
 					entryAccessTime = (long)st.st_atime;
-					if(! hasOldestFile || entryAccessTime < oldestAccesTime){
+					if(!hasOldestFile || entryAccessTime < oldestAccesTime){
 						oldestFile = pathFile;
 						oldestAccesTime = entryAccessTime;
 						oldestFileSize = (long)st.st_size;
@@ -350,7 +350,7 @@ long &oldestAccesTime, bool &hasOldestFile, const char *path){
 				}
 				
 				// read next entry
-				if(! FindNextFile(searchHandle, &dirEntry)){
+				if(!FindNextFile(searchHandle, &dirEntry)){
 				    if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}

@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	/*@}*/
 };
 

@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavSpace. */
-	gdeOCNavigationSpace *GetNavSpace() const{return pNavSpace;}
+	gdeOCNavigationSpace *GetNavSpace() const{ return pNavSpace; }
 	/*@}*/
 };
 

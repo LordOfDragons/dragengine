@@ -68,7 +68,7 @@ void projProjectXml::ReadFromFile(decBaseFileReader &reader, projProject &projec
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "project") != 0){
+	if(!root || strcmp(root->GetName(), "project") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -147,7 +147,7 @@ void projProjectXml::pWriteProfile(decXmlWriter &writer, const projProfile &prof
 	
 	writer.WriteDataTagString("delgaPath", profile.GetDelgaPath());
 	
-	if(! profile.GetRunArguments().IsEmpty()){
+	if(!profile.GetRunArguments().IsEmpty()){
 		writer.WriteDataTagString("runArguments", profile.GetRunArguments());
 	}
 	
@@ -162,7 +162,7 @@ void projProjectXml::pReadProject(const decXmlElementTag &root, projProject &pro
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -193,7 +193,7 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 		
 		for(i=0; i<count; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -263,7 +263,7 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 		if(profile->GetName().IsEmpty()){
 			LogErrorGenericProblem(root, "Profile requires a non-empty name");
 		}
-		if(! profile->GetIdentifier()){
+		if(!profile->GetIdentifier()){
 			LogErrorGenericProblem(root, "Profile requires valid identifier");
 		}
 		if(project.GetProfiles().HasNamed(profile->GetName())){

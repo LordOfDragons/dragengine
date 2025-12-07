@@ -38,7 +38,7 @@ aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName) :
 pRule(rule),
 pMatchName(matchName)
 {
-	if(! rule || ! matchName){
+	if(!rule || !matchName){
 		DETHROW(deeInvalidAction);
 	}
 	

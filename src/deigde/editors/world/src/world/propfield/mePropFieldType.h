@@ -80,12 +80,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the prop field or NULL. */
-	inline mePropField *GetPropField() const{return pPropField;}
+	inline mePropField *GetPropField() const{ return pPropField; }
 	/** Sets the prop field or NULL. */
 	void SetPropField(mePropField *propField);
 	
 	/** Retrieves the engine prop field type or NULL. */
-	inline dePropFieldType *GetEnginePFType() const{return pEngPFType;}
+	inline dePropFieldType *GetEnginePFType() const{ return pEngPFType; }
 	/** Sets the engine prop field type or NULL. */
 	void SetEnginePFType(dePropFieldType *engPFType);
 	
@@ -95,19 +95,19 @@ public:
 	void UpdateEnginePFType();
 	
 	/** Retrieves the model path. */
-	inline const decString &GetPathModel() const{return pPathModel;}
+	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
 	/** Retrieves the skin path. */
-	inline const decString &GetPathSkin() const{return pPathSkin;}
+	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
 	/** Retrieves the rotation per force around the X axis. */
-	inline float GetRotationPerForceX() const{return pRotPerForceX;}
+	inline float GetRotationPerForceX() const{ return pRotPerForceX; }
 	/** Sets the rotation per force aorund the X axis. */
 	void SetRotationPerForceX(float rotPerForce);
 	/** Retrieves the rotation per force around the Z axis. */
-	inline float GetRotationPerForceZ() const{return pRotPerForceZ;}
+	inline float GetRotationPerForceZ() const{ return pRotPerForceZ; }
 	/** Sets the rotation per force aorund the Z axis. */
 	void SetRotationPerForceZ(float rotPerForce);
 	

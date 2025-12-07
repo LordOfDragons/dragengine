@@ -69,8 +69,8 @@ public:
 	void VisitNodesCollidingVolume(deoglModelOctreeVisitor &visitor, deoglCollisionVolume &volume);
 	
 	/** Retrieves the list of faces. */
-	inline deoglModelFaceList &GetFaceList(){return pFaces;}
-	inline const deoglModelFaceList &GetFaceList() const{return pFaces;}
+	inline deoglModelFaceList &GetFaceList(){ return pFaces; }
+	inline const deoglModelFaceList &GetFaceList() const{ return pFaces; }
 	/*@}*/
 	
 private:

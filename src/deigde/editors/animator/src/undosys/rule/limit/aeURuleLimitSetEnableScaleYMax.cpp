@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnableScaleYMax::aeURuleLimitSetEnableScaleYMax(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableScaleYMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleYMax::Redo(){
-	pRule->SetEnableScalingYMax(! pRule->GetEnableScalingYMax());
+	pRule->SetEnableScalingYMax(!pRule->GetEnableScalingYMax());
 }

@@ -225,7 +225,7 @@ void deoalEnergyHistogram::BlendAddScaled(const deoalEnergyHistogram &histogram,
 }
 
 void deoalEnergyHistogram::Integrate(float *integrations) const{
-	if(! integrations){
+	if(!integrations){
 		DETHROW(deeInvalidParam);
 	}
 	

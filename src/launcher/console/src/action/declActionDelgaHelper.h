@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline declLauncher &GetLauncher() const{return pLauncher;}
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Games. */
-	inline const delGameList &GetGames() const{return pGames;}
+	inline const delGameList &GetGames() const{ return pGames; }
 	
 	/** \brief Patches. */
-	inline const delPatchList &GetPatches() const{return pPatches;}
+	inline const delPatchList &GetPatches() const{ return pPatches; }
 	
 	/** \brief Load delga file. */
 	void Load();

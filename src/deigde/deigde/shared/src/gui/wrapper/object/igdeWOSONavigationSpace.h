@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationSpace resource. */
-	inline deNavigationSpace *GetNavigationSpace() const{return pNavigationSpace;}
+	inline deNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

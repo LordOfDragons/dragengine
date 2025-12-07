@@ -60,7 +60,7 @@ dealGPMParameter *dealGPMParameterList::GetParameterAt(int index) const{
 }
 
 dealGPMParameter *dealGPMParameterList::GetParameterNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ int dealGPMParameterList::IndexOfParameter(dealGPMParameter *parameter) const{
 }
 
 int dealGPMParameterList::IndexOfParameterNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ int dealGPMParameterList::IndexOfParameterNamed(const char *name) const{
 }
 
 void dealGPMParameterList::AddParameter(dealGPMParameter *parameter){
-	if(! parameter || HasParameterNamed(parameter->GetName().GetString())){
+	if(!parameter || HasParameterNamed(parameter->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

@@ -42,10 +42,10 @@ deNetworkMessageWriter::deNetworkMessageWriter(deNetworkMessage *message, bool a
 pMessage(message),
 pPosition(0)
 {
-	if(! message){
+	if(!message){
 		DETHROW(deeInvalidParam);
 	}
-	if(! append){
+	if(!append){
 		message->Clear();
 	}
 }
@@ -103,7 +103,7 @@ void deNetworkMessageWriter::Write(const void *buffer, int size){
 		return;
 	}
 	
-	if(! buffer || size < 0){
+	if(!buffer || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 	

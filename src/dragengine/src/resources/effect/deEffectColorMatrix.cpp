@@ -51,7 +51,7 @@ deEffectColorMatrix::~deEffectColorMatrix(){
 ///////////////
 
 void deEffectColorMatrix::SetColorMatrix(const decColorMatrix &colorMatrix){
-	if(! colorMatrix.IsEqualTo(pColorMatrix)){
+	if(!colorMatrix.IsEqualTo(pColorMatrix)){
 		pColorMatrix = colorMatrix;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();

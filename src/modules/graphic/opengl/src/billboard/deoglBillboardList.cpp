@@ -63,7 +63,7 @@ deoglRBillboard *deoglBillboardList::GetAt(int index) const{
 }
 
 int deoglBillboardList::IndexOf(deoglRBillboard *billboard) const{
-	if(! billboard) DETHROW(deeInvalidParam);
+	if(!billboard) DETHROW(deeInvalidParam);
 	
 	int l;
 	
@@ -77,7 +77,7 @@ int deoglBillboardList::IndexOf(deoglRBillboard *billboard) const{
 }
 
 bool deoglBillboardList::Has(deoglRBillboard *billboard) const{
-	if(! billboard) DETHROW(deeInvalidParam);
+	if(!billboard) DETHROW(deeInvalidParam);
 	
 	int l;
 	
@@ -148,7 +148,7 @@ void deoglBillboardList::pAddBillboard(deoglRBillboard *billboard){
 	if(pBillboardCount == pBillboardSize){
 		int newSize = pBillboardCount + 10; // * 3 / 2 + 1;
 		deoglRBillboard **newArray = new deoglRBillboard*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pBillboards){
 			memcpy(newArray, pBillboards, sizeof(deoglRBillboard*) * pBillboardSize);

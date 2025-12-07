@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleBlendMode::aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendModes newMode){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

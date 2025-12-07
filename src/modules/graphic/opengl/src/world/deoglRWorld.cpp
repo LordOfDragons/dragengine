@@ -252,7 +252,7 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor){
 #endif
 
 void deoglRWorld::EarlyPrepareForRender(deoglRenderPlan &plan){
-	if(! pDirtyPrepareForRenderEarly){
+	if(!pDirtyPrepareForRenderEarly){
 		return;
 	}
 	pDirtyPrepareForRenderEarly = false;
@@ -284,7 +284,7 @@ void deoglRWorld::EarlyPrepareForRender(deoglRenderPlan &plan){
 }
 
 void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
-	if(! pDirtyPrepareForRender){
+	if(!pDirtyPrepareForRender){
 		return;
 	}
 	pDirtyPrepareForRender = false;
@@ -482,16 +482,16 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 }
 
 void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
-	if(! component->GetLLPrepareForRenderWorld().GetList()){
+	if(!component->GetLLPrepareForRenderWorld().GetList()){
 		pListPrepareForRenderComponents.Add(&component->GetLLPrepareForRenderWorld());
 	}
 }
 
 void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	if(component->GetLLPrepareForRenderWorld().GetList()){
@@ -500,16 +500,16 @@ void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent *component){
 }
 
 void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
-	if(! billboard->GetLLPrepareForRenderWorld().GetList()){
+	if(!billboard->GetLLPrepareForRenderWorld().GetList()){
 		pListPrepareForRenderBillboards.Add(&billboard->GetLLPrepareForRenderWorld());
 	}
 }
 
 void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	if(billboard->GetLLPrepareForRenderWorld().GetList()){
@@ -518,16 +518,16 @@ void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard *billboard){
 }
 
 void deoglRWorld::AddPrepareForRenderLight(deoglRLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
-	if(! light->GetLLPrepareForRenderWorld().GetList()){
+	if(!light->GetLLPrepareForRenderWorld().GetList()){
 		pListPrepareForRenderLights.Add(&light->GetLLPrepareForRenderWorld());
 	}
 }
 
 void deoglRWorld::RemovePrepareForRenderLight(deoglRLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	if(light->GetLLPrepareForRenderWorld().GetList()){
@@ -536,16 +536,16 @@ void deoglRWorld::RemovePrepareForRenderLight(deoglRLight *light){
 }
 
 void deoglRWorld::AddPrepareForRenderPropField(deoglRPropField *propField){
-	if(! propField){
+	if(!propField){
 		DETHROW(deeInvalidParam);
 	}
-	if(! propField->GetLLPrepareForRenderWorld().GetList()){
+	if(!propField->GetLLPrepareForRenderWorld().GetList()){
 		pListPrepareForRenderPropFields.Add(&propField->GetLLPrepareForRenderWorld());
 	}
 }
 
 void deoglRWorld::RemovePrepareForRenderPropField(deoglRPropField *propField){
-	if(! propField){
+	if(!propField){
 		DETHROW(deeInvalidParam);
 	}
 	if(propField->GetLLPrepareForRenderWorld().GetList()){
@@ -618,7 +618,7 @@ deoglRPropField *deoglRWorld::GetPropFieldAt(int index) const{
 }
 
 void deoglRWorld::AddPropField(deoglRPropField *propField){
-	if(! propField){
+	if(!propField){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -654,7 +654,7 @@ void deoglRWorld::RemoveRemovalMarkedPropFields(){
 	
 	for(i=0; i<count; i++){
 		deoglRPropField * const propField = (deoglRPropField*)pPropFields.GetAt(i);
-		if(! propField->GetWorldMarkedRemove()){
+		if(!propField->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -679,7 +679,7 @@ deoglRParticleEmitterInstance *deoglRWorld::GetParticleEmitterInstanceAt(int ind
 }
 
 void deoglRWorld::AddParticleEmitterInstance(deoglRParticleEmitterInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -715,7 +715,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 	
 	for(i=0; i<count; i++){
 		deoglRParticleEmitterInstance * const instance = (deoglRParticleEmitterInstance*)pParticleEmitterInstances.GetAt(i);
-		if(! instance->GetWorldMarkedRemove()){
+		if(!instance->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -830,7 +830,7 @@ deoglRLight *deoglRWorld::GetLightAt(int index) const{
 }
 
 void deoglRWorld::AddLight(deoglRLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -873,7 +873,7 @@ void deoglRWorld::RemoveRemovalMarkedLights(){
 	
 	for(i=0; i<count; i++){
 		deoglRLight * const light = (deoglRLight*)pLights.GetAt(i);
-		if(! light->GetWorldMarkedRemove()){
+		if(!light->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -900,7 +900,7 @@ deoglREnvMapProbe *deoglRWorld::GetEnvMapProbeAt(int index) const{
 void deoglRWorld::AddEnvMapProbe(deoglREnvMapProbe *envMapProbe){
 	// NOTE Called during synchrinization by main thread.
 	
-	if(! envMapProbe){
+	if(!envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -941,7 +941,7 @@ void deoglRWorld::RemoveRemovalMarkedEnvMapProbes(){
 	
 	for(i=0; i<count; i++){
 		deoglREnvMapProbe * const envMapProbe = (deoglREnvMapProbe*)pEnvMapProbes.GetAt(i);
-		if(! envMapProbe->GetWorldMarkedRemove()){
+		if(!envMapProbe->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -958,7 +958,7 @@ void deoglRWorld::RemoveRemovalMarkedEnvMapProbes(){
 /////////////////////
 
 void deoglRWorld::AddEnvMap(deoglEnvironmentMap *envmap){
-	if(! envmap || envmap->GetWorld()){
+	if(!envmap || envmap->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -969,7 +969,7 @@ void deoglRWorld::AddEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
-	if(! envmap || envmap->GetWorld() != this){
+	if(!envmap || envmap->GetWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1050,7 +1050,7 @@ deoglRLumimeter *deoglRWorld::GetLumimeterAt(int index) const{
 }
 
 void deoglRWorld::AddLumimeter(deoglRLumimeter *lumimeter){
-	if(! lumimeter){
+	if(!lumimeter){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1089,7 +1089,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 	
 	for(i=0; i<count; i++){
 		deoglRLumimeter * const lumimeter = (deoglRLumimeter*)pLumimeters.GetAt(i);
-		if(! lumimeter->GetWorldMarkedRemove()){
+		if(!lumimeter->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -1106,7 +1106,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 ///////////////
 
 void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1210,7 +1210,7 @@ deoglRSkyInstance *deoglRWorld::GetSkyAt(int index) const{
 }
 
 void deoglRWorld::AddSky(deoglRSkyInstance *sky){
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1254,7 +1254,7 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	
 	for(i=0; i<count; i++){
 		deoglRSkyInstance * const sky = (deoglRSkyInstance*)pSkies.GetAt(i);
-		if(! sky->GetWorldMarkedRemove()){
+		if(!sky->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -1287,7 +1287,7 @@ deoglRDebugDrawer *deoglRWorld::GetDebugDrawerAt(int index) const{
 }
 
 void deoglRWorld::AddDebugDrawer(deoglRDebugDrawer *debugDrawer){
-	if(! debugDrawer){
+	if(!debugDrawer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1326,7 +1326,7 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 	
 	for(i=0; i<count; i++){
 		deoglRDebugDrawer * const debugDrawer = (deoglRDebugDrawer*)pDebugDrawers.GetAt(i);
-		if(! debugDrawer->GetWorldMarkedRemove()){
+		if(!debugDrawer->GetWorldMarkedRemove()){
 			continue;
 		}
 		
@@ -1365,7 +1365,7 @@ const deoglGIState *deoglRWorld::ClosestGIState(const decDVector &position) cons
 			distance = decMath::min(distance, (position - giState->GetCascadeAt(j).GetPosition()).Length());
 		}
 		
-		if(! bestGIState || distance < bestDistance){
+		if(!bestGIState || distance < bestDistance){
 			bestGIState = giState;
 			bestDistance = distance;
 		}
@@ -1379,7 +1379,7 @@ void deoglRWorld::AddGICascade(const deoglGIState *giState){
 }
 
 void deoglRWorld::RemoveGICascade(const deoglGIState *giState){
-	if(! pGIStates.Has((void*)giState)){
+	if(!pGIStates.Has((void*)giState)){
 		return;
 	}
 	

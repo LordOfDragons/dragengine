@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or \em NULL if not set. */
-	inline deoglRCamera *GetCamera() const{return pCamera;}
+	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera or \em NULL if not set. */
 	void SetCamera(deoglRCamera *camera);

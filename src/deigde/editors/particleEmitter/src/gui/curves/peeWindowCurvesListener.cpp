@@ -59,7 +59,7 @@ void peeWindowCurvesListener::TypeStructureChanged(peeEmitter*){
 }
 
 void peeWindowCurvesListener::TypeParameterChanged(peeEmitter*, peeType *type, peeParameter *parameter){
-	if(! type->GetActive() || ! parameter->GetActive()){
+	if(!type->GetActive() || !parameter->GetActive()){
 		return;
 	}
 	
@@ -67,7 +67,7 @@ void peeWindowCurvesListener::TypeParameterChanged(peeEmitter*, peeType *type, p
 }
 
 void peeWindowCurvesListener::ActiveTypeParameterChanged(peeEmitter*, peeType *type){
-	if(! type->GetActive()){
+	if(!type->GetActive()){
 		return;
 	}
 	

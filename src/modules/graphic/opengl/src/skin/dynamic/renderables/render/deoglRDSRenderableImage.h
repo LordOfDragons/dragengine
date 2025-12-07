@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline const deoglRImage::Ref &GetImage() const{return pImage;}
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image. */
 	void SetImage(deoglRImage *image);

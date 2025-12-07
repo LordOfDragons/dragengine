@@ -239,7 +239,7 @@ float referenceRotation){
 	
 	bool flip = (referenceSize.x < 0);
 	if(decMath::normalize(rotation - referenceRotation, -180.0f, 180.0f) > 90.0f){
-		flip = ! flip;
+		flip = !flip;
 	}
 	
 	if(flip){
@@ -391,12 +391,12 @@ void sePropertyNode::SetSelected(bool selected){
 
 void sePropertyNode::NotifyStructreChanged(){
 	seProperty * const property = GetProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
 	seTexture * const texture = property->GetTexture();
-	if(! texture){
+	if(!texture){
 		return;
 	}
 	
@@ -410,12 +410,12 @@ void sePropertyNode::NotifyStructreChanged(){
 
 void sePropertyNode::NotifyChanged(){
 	seProperty * const property = GetProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
 	seTexture * const texture = property->GetTexture();
-	if(! texture){
+	if(!texture){
 		return;
 	}
 	

@@ -80,13 +80,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class component. */
-	inline gdeOCComponent *GetOCComponent() const{return pOCComponent;}
+	inline gdeOCComponent *GetOCComponent() const{ return pOCComponent; }
 	
 	/** \brief Component or \em NULL if not present. */
-	inline deComponent *GetComponent() const{return pComponent;}
+	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{return pCollider;}
+	inline deCollider *GetCollider() const{ return pCollider; }
 	
 	/** \brief Update. */
 	void Update(float elapsed);

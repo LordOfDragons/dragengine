@@ -78,7 +78,7 @@ void seWPNodeListener::ActiveTextureChanged(seSkin *skin){
 }
 
 void seWPNodeListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -87,7 +87,7 @@ void seWPNodeListener::PropertyChanged(seSkin *skin, seTexture *texture, sePrope
 }
 
 void seWPNodeListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive()){
 		return;
 	}
 	
@@ -99,7 +99,7 @@ void seWPNodeListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
 
 void seWPNodeListener::PropertyNodeChanged(seSkin *skin, seTexture *texture,
 seProperty *property, sePropertyNode*){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -109,7 +109,7 @@ seProperty *property, sePropertyNode*){
 
 void seWPNodeListener::PropertyNodeStructureChanged(seSkin *skin, seTexture *texture,
 seProperty *property){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -119,7 +119,7 @@ seProperty *property){
 
 void seWPNodeListener::PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture,
 seProperty *property){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -129,7 +129,7 @@ seProperty *property){
 
 void seWPNodeListener::PropertyActiveNodeChanged(seSkin *skin, seTexture *texture,
 seProperty *property){
-	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
+	if(skin != pPanel.GetSkin() || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	

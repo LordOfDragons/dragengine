@@ -65,7 +65,7 @@ FXProgressBar(pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags(powner), 0,
 pOwner(&powner)
 {
 	setFont((FXFont*)ProgressBarFont(powner, guitheme)->GetNativeFont());
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	
@@ -78,12 +78,12 @@ igdeNativeFoxProgressBar::~igdeNativeFoxProgressBar(){
 }
 
 igdeNativeFoxProgressBar *igdeNativeFoxProgressBar::CreateNativeWidget(igdeProgressBar &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	

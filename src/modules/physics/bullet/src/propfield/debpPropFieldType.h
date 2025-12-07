@@ -80,11 +80,11 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of bend states. */
-	inline int GetBendStateCount() const{return pBendStateCount;}
+	inline int GetBendStateCount() const{ return pBendStateCount; }
 	/** Sets the size of states keeping the state values intact where possible. */
 	void SetBendStateSize(int count);
 	/** Retrieves the instances. */
-	inline debpPropFieldBendState *GetBendStates() const{return pBendStates;}
+	inline debpPropFieldBendState *GetBendStates() const{ return pBendStates; }
 	
 	/** Marks the type dirty. */
 	void MarkDirty();

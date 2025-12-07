@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Color matrix. */
-	inline const decColorMatrix &GetColorMatrix() const{return pColorMatrix;}
+	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
 	
 	/** \brief Set color matrix. */
 	void SetColorMatrix(const decColorMatrix &colorMatrix);

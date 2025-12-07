@@ -413,7 +413,7 @@ void deClassSkyController::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyCtrl)){
+	if(!p_IsObjOfType(obj, clsSkyCtrl)){
 		rt->PushBool(false);
 		
 	}else{
@@ -495,7 +495,7 @@ void deClassSkyController::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
-	if(! rt || ! sky || index < 0 || index >= sky->GetControllerCount()){
+	if(!rt || !sky || index < 0 || index >= sky->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -508,7 +508,7 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 }
 
 void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance, int index){
-	if(! rt || ! instance || index < 0 || index >= instance->GetControllerCount()){
+	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

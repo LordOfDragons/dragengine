@@ -78,7 +78,7 @@ deBaseModule *EosSdkCreateModule(deLoadableModule *loadableModule){
 
 static void fEosLogging(const EOS_LogMessage* message){
 	deEosSdk * const mod = deEosSdk::globalModule;
-	if(! mod){
+	if(!mod){
 		return;
 	}
 	

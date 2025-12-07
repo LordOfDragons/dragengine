@@ -45,7 +45,7 @@
 
 aeALGroundChecker::aeALGroundChecker(){
 	pColInfo = new deCollisionInfo;
-	if(! pColInfo) DETHROW(deeOutOfMemory);
+	if(!pColInfo) DETHROW(deeOutOfMemory);
 	
 	pHasCollision = false;
 }
@@ -70,7 +70,7 @@ void aeALGroundChecker::Reset(){
 //////////////////
 
 void aeALGroundChecker::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! pHasCollision || info->GetDistance() < pColInfo->GetDistance()){
+	if(!pHasCollision || info->GetDistance() < pColInfo->GetDistance()){
 		if(info->IsHTSector()){
 			pColInfo->SetHTSector(info->GetHeightTerrain(), info->GetHTSector());
 			

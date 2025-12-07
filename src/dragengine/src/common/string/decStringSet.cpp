@@ -95,7 +95,7 @@ int decStringSet::IndexOf(const decString &string) const{
 }
 
 int decStringSet::IndexOf(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -173,7 +173,7 @@ void decStringSet::Remove(const decString &string){
 }
 
 void decStringSet::Remove(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -238,7 +238,7 @@ bool decStringSet::operator==(const decStringSet &set) const{
 	}
 	
 	for(i=0; i<pStringCount; i++){
-		if(! set.Has(*pStrings[i])){
+		if(!set.Has(*pStrings[i])){
 			return false;
 		}
 	}
@@ -247,7 +247,7 @@ bool decStringSet::operator==(const decStringSet &set) const{
 }
 
 bool decStringSet::operator!=(const decStringSet &set) const{
-	return ! (*this == set);
+	return !(*this == set);
 }
 
 decStringSet decStringSet::operator+(const decStringSet &set) const{
@@ -282,7 +282,7 @@ decStringSet decStringSet::operator+(const decString &string) const{
 }
 
 decStringSet decStringSet::operator+(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -300,7 +300,7 @@ decStringSet &decStringSet::operator+=(const decString &string){
 }
 
 decStringSet &decStringSet::operator+=(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	

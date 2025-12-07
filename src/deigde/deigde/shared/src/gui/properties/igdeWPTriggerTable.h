@@ -92,7 +92,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Trigger target list or NULL if not set. */
-	inline igdeTriggerTargetList *GetTriggerTargetList() const{return pTriggerTargetList;}
+	inline igdeTriggerTargetList *GetTriggerTargetList() const{ return pTriggerTargetList; }
 	
 	/** \brief Set trigger target list or NULL if not set. */
 	void SetTriggerTargetList(igdeTriggerTargetList *triggerTargetList);
@@ -107,18 +107,18 @@ public:
 	void UpdateTable();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionToggle() const{return pActionToggle;}
-	inline igdeAction *GetActionClear() const{return pActionClear;}
-	inline igdeAction *GetActionAdd() const{return pActionAdd;}
-	inline igdeAction *GetActionRemove() const{return pActionRemove;}
-	inline igdeAction *GetActionFire() const{return pActionFire;}
-	inline igdeAction *GetActionReset() const{return pActionReset;}
-	inline igdeAction *GetActionFullReset() const{return pActionFullReset;}
+	inline igdeAction *GetActionToggle() const{ return pActionToggle; }
+	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
+	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
+	inline igdeAction *GetActionFire() const{ return pActionFire; }
+	inline igdeAction *GetActionReset() const{ return pActionReset; }
+	inline igdeAction *GetActionFullReset() const{ return pActionFullReset; }
 	
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

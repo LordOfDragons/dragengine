@@ -98,25 +98,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine sky. */
-	inline deSky *GetEngineSky() const{return pEngSky;}
+	inline deSky *GetEngineSky() const{ return pEngSky; }
 	
 	/** \brief Engine sky instance. */
-	inline deSkyInstance *GetEngineSkyInstance() const{return pEngSkyInstance;}
+	inline deSkyInstance *GetEngineSkyInstance() const{ return pEngSkyInstance; }
 	
 	/** \brief Camera. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** \brief Horizon debug drawer. */
-	inline deDebugDrawer *GetDDHorizon(){return pDDHorizon;}
+	inline deDebugDrawer *GetDDHorizon(){ return pDDHorizon; }
 	
 	/** \brief Horizon debug drawer shape. */
-	inline igdeWDebugDrawerShape &GetDDSHorizon(){return pDDSHorizon;}
+	inline igdeWDebugDrawerShape &GetDDSHorizon(){ return pDDSHorizon; }
 	
 	/** \brief Sky compass overlay is drawn. */
 	bool GetDrawSkyCompass() const;
@@ -142,7 +142,7 @@ public:
 	
 	
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
 	void SetBgColor(const decColor &color);
@@ -153,7 +153,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	const seControllerList &GetControllers() const{return pControllers;}
+	const seControllerList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(seController *controller);
@@ -171,7 +171,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** \brief Active controller or \em NULL. */
-	inline seController *GetActiveController() const{return pActiveController;}
+	inline seController *GetActiveController() const{ return pActiveController; }
 	
 	/** \brief Set active controller or \em NULL. */
 	void SetActiveController(seController *controller);
@@ -185,7 +185,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** \brief Links. */
-	const seLinkList &GetLinks() const{return pLinks;}
+	const seLinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);
@@ -197,7 +197,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** \brief Active link or \em NULL. */
-	inline seLink *GetActiveLink() const{return pActiveLink;}
+	inline seLink *GetActiveLink() const{ return pActiveLink; }
 	
 	/** \brief Set active link or \em NULL. */
 	void SetActiveLink(seLink *link);
@@ -211,7 +211,7 @@ public:
 	/** \name Layers */
 	/*@{*/
 	/** \brief Layers. */
-	const seLayerList &GetLayers() const{return pLayers;}
+	const seLayerList &GetLayers() const{ return pLayers; }
 	
 	/** \brief Add layer. */
 	void AddLayer(seLayer *layer);
@@ -229,7 +229,7 @@ public:
 	void RemoveAllLayers();
 	
 	/** \brief Active layer or \em NULL. */
-	inline seLayer *GetActiveLayer() const{return pActiveLayer;}
+	inline seLayer *GetActiveLayer() const{ return pActiveLayer; }
 	
 	/** \brief Set active layer or \em NULL. */
 	void SetActiveLayer(seLayer *layer);

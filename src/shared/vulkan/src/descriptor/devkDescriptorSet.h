@@ -78,13 +78,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline devkDescriptorPool &GetPool() const{return pPool;}
+	inline devkDescriptorPool &GetPool() const{ return pPool; }
 	
 	/** Layout. */
-	inline VkDescriptorSetLayout GetLayout() const{return pLayout;}
+	inline VkDescriptorSetLayout GetLayout() const{ return pLayout; }
 	
 	/** Descriptor set. */
-	inline VkDescriptorSet GetSet() const{return pSet;}
+	inline VkDescriptorSet GetSet() const{ return pSet; }
 	
 	/** Set binding. */
 	void SetBinding(int index, devkBuffer *buffer,

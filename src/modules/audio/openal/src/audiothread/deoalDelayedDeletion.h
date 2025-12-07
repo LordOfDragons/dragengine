@@ -65,13 +65,13 @@ public:
 	 */
 	/*@{*/
 	/** \brief Previous entry in the linked list or \em NULL. */
-	inline deoalDelayedDeletion *GetLLPrev() const{return pLLPrev;}
+	inline deoalDelayedDeletion *GetLLPrev() const{ return pLLPrev; }
 	
 	/** \brief Set previous entry in the linked list or \em NULL. */
 	void SetLLPrev(deoalDelayedDeletion *prev);
 	
 	/** \brief Next entry in the linked list or \em NULL. */
-	inline deoalDelayedDeletion *GetLLNext() const{return pLLNext;}
+	inline deoalDelayedDeletion *GetLLNext() const{ return pLLNext; }
 	
 	/** \brief Set next entry in the linked list or \em NULL. */
 	void SetLLNext(deoalDelayedDeletion *next);

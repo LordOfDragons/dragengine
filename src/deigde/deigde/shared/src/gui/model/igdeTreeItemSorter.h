@@ -77,7 +77,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Sort ascending. */
-	inline bool GetAscending() const{return pAscending;}
+	inline bool GetAscending() const{ return pAscending; }
 	
 	/** \brief Sort ascending. */
 	void SetAscending(bool ascending);

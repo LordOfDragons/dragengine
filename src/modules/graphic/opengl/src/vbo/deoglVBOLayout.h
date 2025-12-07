@@ -81,28 +81,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** VBO size. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** Set VBO size. */
 	void SetSize(int size);
 	
 	/** Stride. */
-	inline int GetStride() const{return pStride;}
+	inline int GetStride() const{ return pStride; }
 	
 	/** Set stride. */
 	void SetStride(int stride);
 	
 	/** Index type. */
-	inline eIndexTypes GetIndexType() const{return pIndexType;}
+	inline eIndexTypes GetIndexType() const{ return pIndexType; }
 	
 	/** Set index type. */
 	void SetIndexType(eIndexTypes indexType);
 	
 	/** Size in bytes of indices. */
-	inline int GetIndexSize() const{return pIndexSize;}
+	inline int GetIndexSize() const{ return pIndexSize; }
 	
 	/** Opengl type of the indices. */
-	inline int GetIndexGLType() const{return pIndexGLType;}
+	inline int GetIndexGLType() const{ return pIndexGLType; }
 	/*@}*/
 	
 	
@@ -110,7 +110,7 @@ public:
 	/** \name Attributes */
 	/*@{*/
 	/** Number of attributes. */
-	inline int GetAttributeCount() const{return pAttributeCount;}
+	inline int GetAttributeCount() const{ return pAttributeCount; }
 	
 	/** Set number of attributes. */
 	void SetAttributeCount(int count);

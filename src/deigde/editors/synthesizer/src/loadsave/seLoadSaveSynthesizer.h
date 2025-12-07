@@ -72,10 +72,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Load synthesizer from file. */
 	void LoadSynthesizer(seSynthesizer &synthesizer, decBaseFileReader &reader);

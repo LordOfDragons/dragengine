@@ -38,7 +38,7 @@
 reUToggleBoneIKLocked::reUToggleBoneIKLocked(reRigBone *bone, int axis) :
 pAxis(axis)
 {
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -64,11 +64,11 @@ reUToggleBoneIKLocked::~reUToggleBoneIKLocked(){
 ///////////////
 
 void reUToggleBoneIKLocked::Undo(){
-	pBone->SetIKLocked(pAxis, ! pBone->GetIKLocked(pAxis));
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 void reUToggleBoneIKLocked::Redo(){
-	pBone->SetIKLocked(pAxis, ! pBone->GetIKLocked(pAxis));
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 

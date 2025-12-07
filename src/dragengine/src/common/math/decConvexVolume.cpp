@@ -89,7 +89,7 @@ void decConvexVolume::AddVertex(const decVector &vertex){
 	if(pVertexCount == pVertexSize){
 		int i, newSize = pVertexSize * 3 / 2 + 1;
 		decVector *newArray = new decVector[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pVertices){
 			for(i=0; i<pVertexSize; i++) newArray[i] = pVertices[i];
@@ -151,12 +151,12 @@ int decConvexVolume::IndexOfFace(decConvexVolumeFace *face) const{
 }
 
 void decConvexVolume::AddFace(decConvexVolumeFace *face){
-	if(! face || HasFace(face)) DETHROW(deeInvalidParam);
+	if(!face || HasFace(face)) DETHROW(deeInvalidParam);
 	
 	if(pFaceCount == pFaceSize){
 		int i, newSize = pFaceSize * 3 / 2 + 1;
 		decConvexVolumeFace **newArray = new decConvexVolumeFace*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pFaces){
 			for(i=0; i<pFaceSize; i++) newArray[i] = pFaces[i];
@@ -219,7 +219,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 	try{
 		// add front face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(0.0f, 0.0f, -1.0f));
 		face->AddVertex(0);
 		face->AddVertex(1);
@@ -230,7 +230,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		
 		// add right face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(1.0f, 0.0f, 0.0f));
 		face->AddVertex(1);
 		face->AddVertex(5);
@@ -241,7 +241,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		
 		// add back face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		face->AddVertex(5);
 		face->AddVertex(4);
@@ -252,7 +252,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		
 		// add left face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(-1.0f, 0.0f, 0.0f));
 		face->AddVertex(4);
 		face->AddVertex(0);
@@ -263,7 +263,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		
 		// add top face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(0.0f, 1.0f, 0.0f));
 		face->AddVertex(4);
 		face->AddVertex(5);
@@ -274,7 +274,7 @@ void decConvexVolume::SetToCube(const decVector &halfSize){
 		
 		// add bottom face
 		face = new decConvexVolumeFace;
-		if(! face) DETHROW(deeOutOfMemory);
+		if(!face) DETHROW(deeOutOfMemory);
 		face->SetNormal(decVector(0.0f, -1.0f, 0.0f));
 		face->AddVertex(3);
 		face->AddVertex(2);

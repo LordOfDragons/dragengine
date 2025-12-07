@@ -69,7 +69,7 @@ deEffectFilterKernel *deEffectManager::CreateEffectFilterKernel(){
 	// create and add effect
 	try{
 		effect = new deEffectFilterKernel(this);
-		if(! effect) DETHROW(deeOutOfMemory);
+		if(!effect) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadEffect(effect);
 		//GetPhysicsSystem()->LoadEffect( effect );
 		pEffects.Add(effect);
@@ -89,7 +89,7 @@ deEffectOverlayImage *deEffectManager::CreateEffectOverlayImage(){
 	// create and add effect
 	try{
 		effect = new deEffectOverlayImage(this);
-		if(! effect) DETHROW(deeOutOfMemory);
+		if(!effect) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadEffect(effect);
 		pEffects.Add(effect);
 		
@@ -108,7 +108,7 @@ deEffectColorMatrix *deEffectManager::CreateEffectColorMatrix(){
 	// create and add effect
 	try{
 		effect = new deEffectColorMatrix(this);
-		if(! effect) DETHROW(deeOutOfMemory);
+		if(!effect) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadEffect(effect);
 		pEffects.Add(effect);
 		
@@ -128,7 +128,7 @@ deEffectDistortImage *deEffectManager::CreateEffectDistortImage(){
 	// create and add effect
 	try{
 		effect = new deEffectDistortImage(this);
-		if(! effect) DETHROW(deeOutOfMemory);
+		if(!effect) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadEffect(effect);
 		pEffects.Add(effect);
 		
@@ -161,7 +161,7 @@ void deEffectManager::SystemGraphicLoad(){
 	deEffect *effect = (deEffect*)pEffects.GetRoot();
 	
 	while(effect){
-		if(! effect->GetPeerGraphic()){
+		if(!effect->GetPeerGraphic()){
 			GetGraphicSystem()->LoadEffect(effect);
 		}
 		

@@ -157,7 +157,7 @@ void deoalWOVPrepareRayTrace::Visit(deoalAWorld &world){
 		
 		int i;
 		for(i=0; i<count; i++){
-			if(! DummyTest((deoalAComponent*)pComponents.GetAt(i)).VisitBVH(*pRTWorldBVH)){
+			if(!DummyTest((deoalAComponent*)pComponents.GetAt(i)).VisitBVH(*pRTWorldBVH)){
 				world.GetAudioThread().GetLogger().LogInfoFormat("ERROR: Component %d missing (count %d)", i, count);
 				return;
 			}
@@ -200,10 +200,10 @@ void deoalWOVPrepareRayTrace::pPrepareRTWorldBVH(deoalRTWorldBVH &bvh){
 	int i;
 	for(i=0; i<count; i++){
 		deoalAComponent * const component = (deoalAComponent*)pComponents.GetAt(i);
-		if(! component->GetModel()){
+		if(!component->GetModel()){
 			continue;
 		}
-		if(! component->GetBVH() && ! component->GetModel()->GetRTBVH()){
+		if(!component->GetBVH() && !component->GetModel()->GetRTBVH()){
 			continue;
 		}
 		

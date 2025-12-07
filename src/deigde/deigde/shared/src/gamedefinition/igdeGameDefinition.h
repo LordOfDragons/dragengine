@@ -98,60 +98,60 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	
 	
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Set filename. */
 	void SetFilename(const char *filename);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Base path or empty string if not used. */
-	inline const decString &GetBasePath() const{return pBasePath;}
+	inline const decString &GetBasePath() const{ return pBasePath; }
 	
 	/** \brief Set base path or empty string if not used. */
 	void SetBasePath(const char *path);
 	
 	/** \brief VFS path or empty string if not used. */
-	inline const decString &GetVFSPath() const{return pVFSPath;}
+	inline const decString &GetVFSPath() const{ return pVFSPath; }
 	
 	/** \brief Set vfs path or empty string if not used. */
 	void SetVFSPath(const char *path);
 	
 	/** \brief Script module this game definition is compatible with. */
-	inline const decString &GetScriptModule() const{return pScriptModule;}
+	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set script module this game definition is compatible with. */
 	void SetScriptModule(const char *identifier);
 	
 	/** \brief Base game definition id list. */
-	inline decStringList &GetBaseGameDefinitionIDList(){return pBaseGameDefinitionIDList;}
-	inline const decStringList &GetBaseGameDefinitionIDList() const{return pBaseGameDefinitionIDList;}
+	inline decStringList &GetBaseGameDefinitionIDList(){ return pBaseGameDefinitionIDList; }
+	inline const decStringList &GetBaseGameDefinitionIDList() const{ return pBaseGameDefinitionIDList; }
 	
 	
 	
 	/** \brief Skin manager. */
-	inline igdeGDSkinManager *GetSkinManager() const{return pSkinManager;}
+	inline igdeGDSkinManager *GetSkinManager() const{ return pSkinManager; }
 	
 	/** \brief Class manager. */
-	inline igdeGDClassManager *GetClassManager() const{return pClassManager;}
+	inline igdeGDClassManager *GetClassManager() const{ return pClassManager; }
 	
 	/** \brief Sky manager. */
-	inline igdeGDSkyManager *GetSkyManager() const{return pSkyManager;}
+	inline igdeGDSkyManager *GetSkyManager() const{ return pSkyManager; }
 	
 	/** \brief Particle emitter manager. */
 	inline igdeGDParticleEmitterManager &GetParticleEmitterManager(){
@@ -160,12 +160,12 @@ public:
 		return pParticleEmitterManager;}
 	
 	/** \brief World properties. */
-	inline igdeGDPropertyList &GetListWorldProperties(){return pListWorldProperties;}
-	inline const igdeGDPropertyList &GetListWorldProperties() const{return pListWorldProperties;}
+	inline igdeGDPropertyList &GetListWorldProperties(){ return pListWorldProperties; }
+	inline const igdeGDPropertyList &GetListWorldProperties() const{ return pListWorldProperties; }
 	
 	/** \brief Decal properties. */
-	inline igdeGDPropertyList &GetListDecalProperties(){return pListDecalProperties;}
-	inline const igdeGDPropertyList &GetListDecalProperties() const{return pListDecalProperties;}
+	inline igdeGDPropertyList &GetListDecalProperties(){ return pListDecalProperties; }
+	inline const igdeGDPropertyList &GetListDecalProperties() const{ return pListDecalProperties; }
 	
 	
 	
@@ -229,13 +229,13 @@ public:
 	 */
 	/*@{*/
 	/** \brief Default model. */
-	inline deModel *GetDefaultModel() const{return pDefaultModel;}
+	inline deModel *GetDefaultModel() const{ return pDefaultModel; }
 	
 	/** \brief Set default model. */
 	void SetDefaultModel(deModel *model);
 	
 	/** \brief Default skin. */
-	inline deSkin *GetDefaultSkin() const{return pDefaultSkin;}
+	inline deSkin *GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** \brief Set default skin. */
 	void SetDefaultSkin(deSkin *skin);

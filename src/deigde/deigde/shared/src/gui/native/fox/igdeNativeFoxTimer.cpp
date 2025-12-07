@@ -92,7 +92,7 @@ void igdeNativeFoxTimer::StopTimer(){
 ///////////
 
 long igdeNativeFoxTimer::onTimeout(FXObject*, FXSelector, void*){
-	if(! pOwner->GetRunning()){
+	if(!pOwner->GetRunning()){
 		// just in case FOX manages to send an event although the user stopped the timer
 		return 1;
 	}

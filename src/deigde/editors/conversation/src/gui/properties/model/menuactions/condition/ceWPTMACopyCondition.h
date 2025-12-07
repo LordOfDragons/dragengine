@@ -62,7 +62,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationCondition *GetCondition() const{return pCondition;}
+	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

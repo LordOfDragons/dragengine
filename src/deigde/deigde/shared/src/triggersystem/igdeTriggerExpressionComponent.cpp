@@ -123,7 +123,7 @@ void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerT
 	SetTarget(NULL);
 	SetTargetListener(NULL);
 	
-	if(pType == ectTarget && ! pTargetName.IsEmpty()){
+	if(pType == ectTarget && !pTargetName.IsEmpty()){
 		SetTarget(triggerTable.GetNamedAddIfMissing(pTargetName.GetString()));
 		
 		if(listener){
@@ -176,7 +176,7 @@ bool igdeTriggerExpressionComponent::Evaluate(){
 		const int count = pChildred.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			if(! ((igdeTriggerExpressionComponent*)pChildred.GetAt(i))->Evaluate()){
+			if(!((igdeTriggerExpressionComponent*)pChildred.GetAt(i))->Evaluate()){
 				break;
 			}
 		}
@@ -219,14 +219,14 @@ int igdeTriggerExpressionComponent::IndexOfChild(igdeTriggerExpressionComponent 
 }
 
 void igdeTriggerExpressionComponent::AddChild(igdeTriggerExpressionComponent *child){
-	if(! child){
+	if(!child){
 		DETHROW(deeInvalidParam);
 	}
 	pChildred.Add(child);
 }
 
 void igdeTriggerExpressionComponent::InsertChild(igdeTriggerExpressionComponent *child, int index){
-	if(! child){
+	if(!child){
 		DETHROW(deeInvalidParam);
 	}
 	pChildred.Insert(child, index);

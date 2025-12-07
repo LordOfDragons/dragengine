@@ -72,7 +72,7 @@ bool gdeOCSpeakerList::Has(gdeOCSpeaker *speaker) const{
 }
 
 void gdeOCSpeakerList::Add(gdeOCSpeaker *speaker){
-	if(! speaker || Has(speaker)){
+	if(!speaker || Has(speaker)){
 		DETHROW(deeInvalidParam);
 	}
 	pSpeakers.Add(speaker);

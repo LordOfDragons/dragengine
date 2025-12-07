@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video or NULL if not set. */
-	inline deVideo *GetVideo() const{return pVideo;}
+	inline deVideo *GetVideo() const{ return pVideo; }
 	
 	/** \brief Set video or NULL if not set. */
 	void SetVideo(deVideo *video);
@@ -103,7 +103,7 @@ public:
 	
 	
 	/** \brief Video is looping instead of being played back once. */
-	inline bool GetLooping() const{return pLooping;}
+	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if video is looping instead of being played back once. */
 	void SetLooping(bool looping);
@@ -111,22 +111,22 @@ public:
 	
 	
 	/** \brief Start play position in seconds. */
-	inline float GetPlayFrom() const{return pPlayFrom;}
+	inline float GetPlayFrom() const{ return pPlayFrom; }
 	
 	/** \brief End play position in seconds. */
-	inline float GetPlayTo() const{return pPlayTo;}
+	inline float GetPlayTo() const{ return pPlayTo; }
 	
 	/** \brief Set play range. */
 	void SetPlayRange(float fromTime, float toTime);
 	
 	/** \brief Play speed. */
-	inline float GetPlaySpeed() const{return pPlaySpeed;}
+	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
 	/** \brief Set play speed. */
 	void SetPlaySpeed(float playSpeed);
 	
 	/** \brief Current play position in seconds. */
-	inline float GetPlayPosition() const{return pPlayPosition;}
+	inline float GetPlayPosition() const{ return pPlayPosition; }
 	
 	/** \brief Set current play position in seconds. */
 	void SetPlayPosition(float position);
@@ -134,16 +134,16 @@ public:
 	
 	
 	/** \brief play state. */
-	inline ePlayState GetPlayState() const{return pPlayState;}
+	inline ePlayState GetPlayState() const{ return pPlayState; }
 	
 	/** \brief Video is playing back. */
-	inline bool GetPlaying() const{return pPlayState == epsPlaying;}
+	inline bool GetPlaying() const{ return pPlayState == epsPlaying; }
 	
 	/** \brief Video is paused. */
-	inline bool GetPaused() const{return pPlayState == epsPaused;}
+	inline bool GetPaused() const{ return pPlayState == epsPaused; }
 	
 	/** \brief Video is stopped. */
-	inline bool GetStopped() const{return pPlayState == epsStopped;}
+	inline bool GetStopped() const{ return pPlayState == epsStopped; }
 	
 	/** \brief Set play state. */
 	void SetPlayState(ePlayState playState);
@@ -172,13 +172,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicVideoPlayer *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicVideoPlayer *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicVideoPlayer *peer);
 	
 	/** \brief Audio system peer. */
-	inline deBaseAudioVideoPlayer *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioVideoPlayer *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
 	void SetPeerAudio(deBaseAudioVideoPlayer *peer);

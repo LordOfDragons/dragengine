@@ -37,10 +37,10 @@
 ////////////////////////////
 
 meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &newPosition){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pOldPosition = object->GetPosition();
 	pNewPosition = newPosition;

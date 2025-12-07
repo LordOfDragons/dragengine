@@ -148,7 +148,7 @@ void dedaiNavigator::GetCostParametersFor(int costTableEntry, float &fixCost, fl
 }
 
 void dedaiNavigator::Prepare(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -166,7 +166,7 @@ void dedaiNavigator::UpdateDDSPath(){
 	
 	if(devmode.GetEnabled() && (devmode.GetShowPath() || devmode.GetShowPathFaces())){
 		// ensure the debug drawer exists
-		if(! pDebugDrawer){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			
@@ -177,7 +177,7 @@ void dedaiNavigator::UpdateDDSPath(){
 		
 		// ensure the debug drawer shapes exists or not depending on the show states
 		if(devmode.GetShowPath()){
-			if(! pDDSPath){
+			if(!pDDSPath){
 				pDDSPath = new deDebugDrawerShape;
 				pDDSPath->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
 				pDDSPath->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 0.8f));
@@ -192,21 +192,21 @@ void dedaiNavigator::UpdateDDSPath(){
 		}
 		
 		if(devmode.GetShowPathFaces()){
-			if(! pDDSPathFaces){
+			if(!pDDSPathFaces){
 				pDDSPathFaces = new deDebugDrawerShape;
 				pDDSPathFaces->SetFillColor(decColor(0.0f, 1.0f, 1.0f, 0.2f));
 				pDDSPathFaces->SetEdgeColor(decColor(0.0f, 1.0f, 1.0f, 0.8f));
 				pDebugDrawer->AddShape(pDDSPathFaces);
 			}
 			/*
-			if(! pDDSPathFacesOpen){
+			if(!pDDSPathFacesOpen){
 				pDDSPathFacesOpen = new deDebugDrawerShape;
 				pDDSPathFacesOpen->SetFillColor(decColor(0.0f, 0.6f, 0.0f, 0.2f));
 				pDDSPathFacesOpen->SetEdgeColor(decColor(0.0f, 0.6f, 0.0f, 0.8f));
 				pDebugDrawer->AddShape(pDDSPathFacesOpen);
 			}
 			
-			if(! pDDSPathFacesClosed){
+			if(!pDDSPathFacesClosed){
 				pDDSPathFacesClosed = new deDebugDrawerShape;
 				pDDSPathFacesClosed->SetFillColor(decColor(0.6f, 0.0f, 0.0f, 0.2f));
 				pDDSPathFacesClosed->SetEdgeColor(decColor(0.6f, 0.0f, 0.0f, 0.8f));
@@ -248,7 +248,7 @@ void dedaiNavigator::UpdateDDSPath(){
 }
 
 void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
-	if(! pDDSPath){
+	if(!pDDSPath){
 		return;
 	}
 	
@@ -317,7 +317,7 @@ void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
 //////////////////
 
 void dedaiNavigator::LayerChanged(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -345,7 +345,7 @@ void dedaiNavigator::ParametersChanged(){
 
 
 void dedaiNavigator::FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -415,7 +415,7 @@ void dedaiNavigator::CostTableDefinitionChanged(){
 
 bool dedaiNavigator::NearestPoint(const decDVector &point, float radius,
 decDVector &nearestPoint, int &nearestType){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return false;
 	}
 	
@@ -450,7 +450,7 @@ decDVector &nearestPoint, int &nearestType){
 }
 
 bool dedaiNavigator::LineCollide(const decDVector &origin, const decVector &direction, float &distance) {
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return false;
 	}
 	
@@ -651,7 +651,7 @@ void dedaiNavigator::pUpdateTypeMappings(){
 }
 
 void dedaiNavigator::pDevModeMarkLayerDirty(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	

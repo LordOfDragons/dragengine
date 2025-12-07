@@ -43,7 +43,7 @@
 
 ceUCAASpeakToggleUseSpeechAnimation::ceUCAASpeakToggleUseSpeechAnimation(
 ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
-	if(! topic){
+	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -78,6 +78,6 @@ void ceUCAASpeakToggleUseSpeechAnimation::Undo(){
 }
 
 void ceUCAASpeakToggleUseSpeechAnimation::Redo(){
-	pActorSpeak->SetUseSpeechAnimation(! pActorSpeak->GetUseSpeechAnimation());
+	pActorSpeak->SetUseSpeechAnimation(!pActorSpeak->GetUseSpeechAnimation());
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -43,18 +43,18 @@ public:
 	deClassColliderListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassColliderListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	/** \brief Function index for collisionResponse(). */
-	inline int GetFuncIndexCollisionResponse() const{return pFuncIndexCollisionResponse;}
+	inline int GetFuncIndexCollisionResponse() const{ return pFuncIndexCollisionResponse; }
 	
 	/** \brief Function index for canHitCollider(). */
-	inline int GetFuncIndexCanHitCollider() const{return pFuncIndexCanHitCollider;}
+	inline int GetFuncIndexCanHitCollider() const{ return pFuncIndexCanHitCollider; }
 	
 	/** \brief Function index for colliderChanged(). */
-	inline int GetFuncIndexColliderChanged() const{return pFuncIndexColliderChanged;}
+	inline int GetFuncIndexColliderChanged() const{ return pFuncIndexColliderChanged; }
 	
 private:
 	int pFuncIndexCollisionResponse;

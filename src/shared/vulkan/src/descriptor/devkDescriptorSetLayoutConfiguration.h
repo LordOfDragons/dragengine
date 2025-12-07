@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline VkDescriptorType GetType() const{return pType;}
+	inline VkDescriptorType GetType() const{ return pType; }
 	
 	/** Set Type. */
 	void SetType(VkDescriptorType type);
 	
 	/** Shader stage flags. */
-	inline VkShaderStageFlags GetShaderStageFlags() const{return pShaderStageFlags;}
+	inline VkShaderStageFlags GetShaderStageFlags() const{ return pShaderStageFlags; }
 	
 	/** Set shader stage flags. */
 	void SetShaderStageFlags(VkShaderStageFlags flags);
@@ -73,7 +73,7 @@ public:
 	
 	
 	/** Layout binding count. */
-	inline int GetLayoutBindingCount() const{return pLayoutBindingCount;}
+	inline int GetLayoutBindingCount() const{ return pLayoutBindingCount; }
 	
 	/** Set layout binding count. */
 	void SetLayoutBindingCount(int count);

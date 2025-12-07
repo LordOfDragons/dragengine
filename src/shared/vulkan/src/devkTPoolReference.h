@@ -72,7 +72,7 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	operator T&() const{
-		if(! pSlot){
+		if(!pSlot){
 			DETHROW(deeNullPointer);
 		}
 		return *pSlot;
@@ -82,7 +82,7 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	T* operator->() const{
-		if(! pSlot){
+		if(!pSlot){
 			DETHROW(deeNullPointer);
 		}
 		return pSlot;

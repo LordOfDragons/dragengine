@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class light. */
-	inline gdeOCLight *GetOCLight() const{return pOCLight;}
+	inline gdeOCLight *GetOCLight() const{ return pOCLight; }
 	
 	/** \brief Update. */
 	void Update(float elapsed);

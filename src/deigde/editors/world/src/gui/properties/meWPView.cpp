@@ -133,7 +133,7 @@ public:
 	
 	virtual void OnAction(meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetMoveSnap(! configuration.GetMoveSnap());
+		configuration.SetMoveSnap(!configuration.GetMoveSnap());
 		world.NotifyEditingChanged();
 	}
 };
@@ -159,7 +159,7 @@ public:
 	
 	virtual void OnAction(meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetRotateSnap(! configuration.GetRotateSnap());
+		configuration.SetRotateSnap(!configuration.GetRotateSnap());
 		world.NotifyEditingChanged();
 	}
 };
@@ -185,7 +185,7 @@ public:
 	
 	virtual void OnAction(meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetScaleSnap(! configuration.GetScaleSnap());
+		configuration.SetScaleSnap(!configuration.GetScaleSnap());
 		world.NotifyEditingChanged();
 	}
 };
@@ -288,7 +288,7 @@ public:
 	
 	virtual void OnAction(meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetAutoUpdate(! configuration.GetAutoUpdate());
+		configuration.SetAutoUpdate(!configuration.GetAutoUpdate());
 		world.NotifyEditingChanged();
 	}
 };
@@ -363,7 +363,7 @@ public:
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -387,7 +387,7 @@ public:
 	
 	virtual void OnAction(meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetEnableAuralization(! configuration.GetEnableAuralization());
+		configuration.SetEnableAuralization(!configuration.GetEnableAuralization());
 		world.NotifyEditingChanged();
 	}
 };
@@ -763,7 +763,7 @@ void meWPView::UpdateCameraList(){
 	pCBCameraObjects->SortItems();
 	
 	pCBCameraObjects->SetSelectionWithData(selectedCamera);
-	if(! pCBCameraObjects->GetSelectedItem() && pCBCameraObjects->GetItemCount() > 0){
+	if(!pCBCameraObjects->GetSelectedItem() && pCBCameraObjects->GetItemCount() > 0){
 		pCBCameraObjects->SetSelection(0);
 	}
 	

@@ -71,7 +71,7 @@ bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe *probe) const{
 }
 
 void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
-	if(! probe){
+	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
 }
 
 void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe *probe, int index){
-	if(! probe){
+	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
 	

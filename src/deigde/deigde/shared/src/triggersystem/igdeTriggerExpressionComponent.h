@@ -87,37 +87,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Test result is negated. */
-	inline bool GetNegate() const{return pNegate;}
+	inline bool GetNegate() const{ return pNegate; }
 	
 	/** \brief Set if test result is negated. */
 	void SetNegate(bool negate);
 	
 	/** \brief Current state is queried instead of testing if the trigger ever fired. */
-	inline bool GetCurState() const{return pCurState;}
+	inline bool GetCurState() const{ return pCurState; }
 	
 	/** \brief Set if current state is queried instead of testing if the trigger ever fired. */
 	void SetCurState(bool curState);
 	
 	/** \brief Type of component. */
-	inline eComponentTypes GetType() const{return pType;}
+	inline eComponentTypes GetType() const{ return pType; }
 	
 	/** \brief Set type of component. */
 	void SetType(eComponentTypes type);
 	
 	/** \brief Target name. */
-	inline const decString &GetTargetName() const{return pTargetName;}
+	inline const decString &GetTargetName() const{ return pTargetName; }
 	
 	/** \brief Set target name. */
 	void SetTargetName(const char *name);
 	
 	/** \brief Trigger target or NULL. */
-	inline igdeTriggerTarget *GetTarget() const{return pTarget;}
+	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
 	
 	/** \brief Set trigger target or NULL. */
 	void SetTarget(igdeTriggerTarget *target);
 	
 	/** \brief Target listener or NULL. */
-	inline igdeTriggerListener *GetTargetListener() const{return pTargetListener;}
+	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
 	
 	/** \brief Set target listener or NULL. */
 	void SetTargetListener(igdeTriggerListener *listener);

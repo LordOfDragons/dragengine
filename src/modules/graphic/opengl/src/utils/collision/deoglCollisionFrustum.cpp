@@ -139,12 +139,12 @@ float deoglCollisionFrustum::PointMoveHitsVolume(const decVector &point, const d
 //////////////////////
 
 void deoglCollisionFrustum::GetEnclosingSphere(deoglCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	// todo
 }
 
 void deoglCollisionFrustum::GetEnclosingBox(deoglCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	// todo
 }
 
@@ -202,7 +202,7 @@ decVector deoglCollisionFrustum::ClosestPointTo(const decVector &point){
 /////////////
 
 void deoglCollisionFrustum::Visit(deoglCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitFrustum(this);
 }
 

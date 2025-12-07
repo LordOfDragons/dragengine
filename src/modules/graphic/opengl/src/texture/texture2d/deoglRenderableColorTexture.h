@@ -61,27 +61,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	/** Retrieves the height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	/** Retrieves the number of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	/** Retrieves the texture is of float format. */
-	inline bool GetIsFloat() const{return pIsFloat;}
+	inline bool GetIsFloat() const{ return pIsFloat; }
 	
 	/** Determines if the format matches the given format. */
 	bool Matches(int width, int height, int componentCount, bool isFloat) const;
 	
 	/** Determines if the shadow map is in use. */
-	inline bool GetInUse() const{return pInUse;}
+	inline bool GetInUse() const{ return pInUse; }
 	/** Sets if the shadow map is in use. */
 	void SetInUse(bool inUse);
 	
 	/** Retrieves the texture. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{return pMemoryUsageGPU;}
+	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	/** Updates the GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/

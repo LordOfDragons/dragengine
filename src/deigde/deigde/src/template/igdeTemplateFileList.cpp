@@ -71,7 +71,7 @@ bool igdeTemplateFileList::Has(igdeTemplateFile *file) const{
 }
 
 void igdeTemplateFileList::Add(igdeTemplateFile *file){
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	pFiles.Add(file);

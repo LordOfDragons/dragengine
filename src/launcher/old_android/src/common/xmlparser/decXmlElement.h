@@ -97,7 +97,7 @@ public:
 	 * The line number is set by the parser for locating the error line.
 	 * The line has to be 1 or larger with 1 beeing the first line.
 	 */
-	inline int GetLineNumber() const{return pLineNumber;}
+	inline int GetLineNumber() const{ return pLineNumber; }
 	
 	/**
 	 * \brief Set line number this element starts at in the source file.
@@ -113,7 +113,7 @@ public:
 	 * The position number is set by the parser for locating the error position.
 	 * The position has to be 0 or larger with 0 beeing the start of the line.
 	 */
-	inline int GetPositionNumber() const{return pPositionNumber;}
+	inline int GetPositionNumber() const{ return pPositionNumber; }
 	
 	/**
 	 * \brief Set position number this element starts at in the source file.
@@ -124,7 +124,7 @@ public:
 	void SetPositionNumber(int positionNumber);
 	
 	/** \brief Parent or NULL. */
-	inline decXmlElement *GetParent() const{return pParent;}
+	inline decXmlElement *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent or NULL. */
 	void SetParent(decXmlElement *parent);

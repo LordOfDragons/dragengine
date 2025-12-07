@@ -70,12 +70,12 @@ public:
 
 	virtual void OnAction(){
 		ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if(! action){
+		if(!action){
 			return;
 		}
 		
 		ceConversation * const conversation = pLane.GetWindow().GetConversation();
-		if(! conversation){
+		if(!conversation){
 			return;
 		}
 		
@@ -129,7 +129,7 @@ const ceStripList &ceWDSLaneWord::GetStripList() const{
 
 void ceWDSLaneWord::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if(! action){
+	if(!action){
 		return;
 	}
 	
@@ -140,7 +140,7 @@ void ceWDSLaneWord::FillIDList(decStringList &list){
 	if(actor){
 		speechAnimation = actor->GetSpeechAnimation();
 	}
-	if(! speechAnimation){
+	if(!speechAnimation){
 		return;
 	}
 	

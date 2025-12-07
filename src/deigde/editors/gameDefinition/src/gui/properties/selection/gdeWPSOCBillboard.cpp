@@ -89,7 +89,7 @@ public:
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard){
+		if(!billboard){
 			return;
 		}
 		
@@ -114,7 +114,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard){
+		if(!billboard){
 			return;
 		}
 		
@@ -152,7 +152,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard){
+		if(!billboard){
 			return;
 		}
 		
@@ -176,7 +176,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard){
+		if(!billboard){
 			return;
 		}
 		
@@ -201,7 +201,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard || billboard->GetSkinPath() == editPath->GetPath()){
+		if(!billboard || billboard->GetSkinPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -215,7 +215,7 @@ public:
 	cEditAxis(gdeWPSOCBillboard &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged (const decVector &vector, gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return ! billboard->GetAxis().IsEqualTo(vector)
+		return !billboard->GetAxis().IsEqualTo(vector)
 			? new gdeUOCBillboardSetAxis(objectClass, billboard, vector) : NULL;
 	}
 };
@@ -384,7 +384,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
-		if(! billboard){
+		if(!billboard){
 			return;
 		}
 		

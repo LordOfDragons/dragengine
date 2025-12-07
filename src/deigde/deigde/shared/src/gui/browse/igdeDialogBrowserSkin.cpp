@@ -65,7 +65,7 @@ igdeGDSkin *igdeDialogBrowserSkin::GetSelectedSkin() const{
 }
 
 void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){
-	if(! gdSkin){
+	if(!gdSkin){
 		return;
 	}
 	

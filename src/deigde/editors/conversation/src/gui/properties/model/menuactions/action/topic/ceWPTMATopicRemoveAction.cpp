@@ -54,7 +54,7 @@ pConversation(&conversation),
 pTopic(&topic),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, float newRotPerForce){
-	if(! variation) DETHROW(deeInvalidParam);
+	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	

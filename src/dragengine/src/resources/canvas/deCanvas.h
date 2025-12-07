@@ -125,55 +125,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position in parent canvas view units. */
-	inline const decPoint &GetPosition() const{return pPosition;}
+	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position in parent canvas view units. */
 	void SetPosition(const decPoint &position);
 	
 	/** \brief Size in parent canvas view units. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size in parent canvas view units. */
 	void SetSize(const decPoint &size);
 	
 	/** \brief Transformation matrix affecting the canvas and all its content. */
-	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
+	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set transformation matrix affecting the canvas and all its content. */
 	void SetTransform(const decTexMatrix2 &transform);
 	
 	/** \brief Transformation matrix affecting the canvas content color. */
-	inline const decColorMatrix &GetColorTransform() const{return pColorTransform;}
+	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
 	/** \brief Set transformation matrix affecting the canvas content color. */
 	void SetColorTransform(const decColorMatrix &transform);
 	
 	/** \brief Canvas is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if canvas is visible. */
 	void SetVisible(bool visible);
 	
 	/** \brief Render order. Larger renders ontop of smaller. */
-	inline float GetOrder() const{return pOrder;}
+	inline float GetOrder() const{ return pOrder; }
 	
 	/** \brief Set render order. Larger renders ontop of smaller. */
 	void SetOrder(float order);
 	
 	/** \brief Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
 	void SetTransparency(float transparency);
 	
 	/** \brief Blend mode used to blend canvas over previous content. */
-	inline eBlendModes GetBlendMode() const{return pBlendMode;}
+	inline eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** \brief Set blend mode used to blend canvas over previous content. */
 	void SetBlendMode(eBlendModes blendMode);
 	
 	/** \brief Mask canvas or NULL if not set. */
-	inline deCanvas *GetMask() const{return pMask;}
+	inline deCanvas *GetMask() const{ return pMask; }
 	
 	/** \brief Set mask canvas or NULL if not set. */
 	void SetMask(deCanvas *mask);
@@ -189,7 +189,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object or NULL if not set. */
-	inline deBaseGraphicCanvas *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicCanvas *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not set. */
 	void SetPeerGraphic(deBaseGraphicCanvas *peer);
@@ -208,25 +208,25 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent mask or NULL if not set. */
-	inline deCanvas *GetParentMask() const{return pParentMask;}
+	inline deCanvas *GetParentMask() const{ return pParentMask; }
 	
 	/** \brief Set parent mask or NULL if not set. */
 	void SetParentMask(deCanvas *mask);
 	
 	/** \brief Parent view or NULL if not set. */
-	inline deCanvasView *GetParentView() const{return pParentView;}
+	inline deCanvasView *GetParentView() const{ return pParentView; }
 	
 	/** \brief Set parent view or NULL if not set. */
 	void SetParentView(deCanvasView *view);
 	
 	/** \brief Previous canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewPrev() const{return pLLViewPrev;}
+	inline deCanvas *GetLLViewPrev() const{ return pLLViewPrev; }
 	
 	/** \brief Set next canvas in the parent view linked list or NULL if not set. */
 	void SetLLViewPrev(deCanvas *canvas);
 	
 	/** \brief Next canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewNext() const{return pLLViewNext;}
+	inline deCanvas *GetLLViewNext() const{ return pLLViewNext; }
 	
 	/** \brief Set next canvas in the parent view linked list NULL if not set. */
 	void SetLLViewNext(deCanvas *canvas);

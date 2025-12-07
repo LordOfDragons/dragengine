@@ -79,7 +79,7 @@ public:
 	virtual void OnAction(){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
-		if(! rig || ! hull){
+		if(!rig || !hull){
 			return;
 		}
 		
@@ -106,7 +106,7 @@ public:
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
 		const int index = pPanel.GetSelectedPoint();
-		if(! rig || ! hull || index == -1){
+		if(!rig || !hull || index == -1){
 			return;
 		}
 		
@@ -130,7 +130,7 @@ public:
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
 		const int index = pPanel.GetSelectedPoint();
-		if(! rig || ! hull || index == -1){
+		if(!rig || !hull || index == -1){
 			return;
 		}
 		

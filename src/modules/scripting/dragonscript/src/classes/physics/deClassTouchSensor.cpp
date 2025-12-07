@@ -83,7 +83,7 @@ void deClassTouchSensor::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create touchSensor
 	nd->touchSensor = tsMgr->CreateTouchSensor();
-	if(! nd->touchSensor) DSTHROW(dueOutOfMemory);
+	if(!nd->touchSensor) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -129,7 +129,7 @@ void deClassTouchSensor::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myse
 	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	touchSensor->SetPosition(clsTS->GetClassDVector()->GetDVector(obj));
 }
@@ -155,7 +155,7 @@ void deClassTouchSensor::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *m
 	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	touchSensor->SetOrientation(clsTS->GetClassQuaternion()->GetQuaternion(obj));
 }
@@ -388,7 +388,7 @@ void deClassTouchSensor::nfAllHits::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
 	dsRealObject * const objListener = rt->GetValue(0)->GetRealObject();
-	if(! objListener){
+	if(!objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -469,7 +469,7 @@ void deClassTouchSensor::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	dsRealObject *objCollider = rt->GetValue(0)->GetRealObject();
 	dsRealObject * const objListener = rt->GetValue(1)->GetRealObject();
-	if(! objCollider || ! objListener){
+	if(!objCollider || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -500,7 +500,7 @@ void deClassTouchSensor::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue 
 	dsRealObject * const objCollider = rt->GetValue(0)->GetRealObject();
 	dsRealObject * const objDisplacement = rt->GetValue(1)->GetRealObject();
 	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
-	if(! objCollider || ! objDisplacement || ! objListener){
+	if(!objCollider || !objDisplacement || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -532,7 +532,7 @@ void deClassTouchSensor::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, d
 	dsRealObject * const objCollider = rt->GetValue(0)->GetRealObject();
 	dsRealObject * const objDisplacement = rt->GetValue(1)->GetRealObject();
 	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
-	if(! objCollider || ! objDisplacement || ! objListener){
+	if(!objCollider || !objDisplacement || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -566,7 +566,7 @@ void deClassTouchSensor::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValu
 	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()) * DEG2RAD);
 	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
-	if(! collider || ! collider->GetPeerScripting() || ! objListener){
+	if(!collider || !collider->GetPeerScripting() || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -596,7 +596,7 @@ void deClassTouchSensor::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt,
 	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()) * DEG2RAD);
 	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
-	if(! collider || ! objListener){
+	if(!collider || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -629,7 +629,7 @@ void deClassTouchSensor::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, ds
 	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()) * DEG2RAD);
 	dsRealObject * const objListener = rt->GetValue(3)->GetRealObject();
 	
-	if(! collider || ! objListener){
+	if(!collider || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -661,7 +661,7 @@ void deClassTouchSensor::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime 
 	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()) * DEG2RAD);
 	dsRealObject * const objListener = rt->GetValue(3)->GetRealObject();
 	
-	if(! collider || ! objListener){
+	if(!collider || !objListener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -733,7 +733,7 @@ void deClassTouchSensor::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
 	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
-	if(! p_IsObjOfType(obj, clsTS)){
+	if(!p_IsObjOfType(obj, clsTS)){
 		rt->PushBool(false);
 	}else{
 		deTouchSensor *otherCol = ((sTSNatDat*)p_GetNativeData(obj))->touchSensor;
@@ -749,7 +749,7 @@ void deClassTouchSensor::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 // constructor
 deClassTouchSensor::deClassTouchSensor(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("TouchSensor", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pDS = scrMgr;
@@ -841,7 +841,7 @@ void deClassTouchSensor::CreateClassMembers(dsEngine *engine){
 }
 
 deTouchSensor *deClassTouchSensor::GetTouchSensor(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -849,11 +849,11 @@ deTouchSensor *deClassTouchSensor::GetTouchSensor(dsRealObject *myself) const{
 }
 
 void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! touchSensor){
+	if(!touchSensor){
 		rt->PushObject(NULL, this);
 		return;
 	}

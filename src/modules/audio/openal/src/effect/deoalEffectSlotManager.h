@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/**
 	 * Bind effect slot. Returns first unbound effect slot. If not existing a new effect slot

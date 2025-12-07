@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{return pDisplay;}
+	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	
 	
@@ -105,7 +105,7 @@ public:
 	
 	
 	/** \brief Parent widget or \em NULL if not set. */
-	inline dealWidgetLayout *GetParent() const{return pParent;}
+	inline dealWidgetLayout *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent widget or \em NULL if not set. */
 	void SetParent(dealWidgetLayout *parent);
@@ -116,19 +116,19 @@ public:
 	
 	
 	/** \brief Position. */
-	inline const decPoint &GetPosition() const{return pPosition;}
+	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decPoint &position);
 	
 	/** \brief Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
 	void SetSize(const decPoint &size);
 	
 	/** \brief Background color. */
-	inline const decColor &GetBackgroundColor() const{return pBackgroundColor;}
+	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
 	void SetBackgroundColor(const decColor &color);
@@ -136,10 +136,10 @@ public:
 	
 	
 	/** \brief Explicit minimum size if set. */
-	inline const decPoint &GetExplicitMinimumSize() const{return pExplicitMinSize;}
+	inline const decPoint &GetExplicitMinimumSize() const{ return pExplicitMinSize; }
 	
 	/** \brief Explicit minimum size is set. */
-	inline bool GetHasExplicitMinimumSize() const{return pHasExplicitMinSize;}
+	inline bool GetHasExplicitMinimumSize() const{ return pHasExplicitMinSize; }
 	
 	/** \brief Set explicit minimum size. */
 	void SetExplicitMinimumSize(const decPoint &size);
@@ -153,25 +153,25 @@ public:
 	
 	
 	/** \brief Left padding. */
-	inline int GetPaddingLeft() const{return pPaddingLeft;}
+	inline int GetPaddingLeft() const{ return pPaddingLeft; }
 	
 	/** \brief Set left padding. */
 	void SetPaddingLeft(int padding);
 	
 	/** \brief Top padding. */
-	inline int GetPaddingTop() const{return pPaddingTop;}
+	inline int GetPaddingTop() const{ return pPaddingTop; }
 	
 	/** \brief Set top padding. */
 	void SetPaddingTop(int padding);
 	
 	/** \brief Right padding. */
-	inline int GetPaddingRight() const{return pPaddingRight;}
+	inline int GetPaddingRight() const{ return pPaddingRight; }
 	
 	/** \brief Set right padding. */
 	void SetPaddingRight(int padding);
 	
 	/** \brief Bottom padding. */
-	inline int GetPaddingBottom() const{return pPaddingBottom;}
+	inline int GetPaddingBottom() const{ return pPaddingBottom; }
 	
 	/** \brief Set bottom padding. */
 	void SetPaddingBottom(int padding);
@@ -191,13 +191,13 @@ public:
 	
 	
 	/** \brief Widget is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if widget is visible. */
 	void SetVisible(bool visible);
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
 	void SetEnabled(bool enabled);

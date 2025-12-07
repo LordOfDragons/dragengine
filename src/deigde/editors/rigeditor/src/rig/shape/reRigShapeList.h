@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{return pShapeCount;}
+	inline int GetShapeCount() const{ return pShapeCount; }
 	/** Retrieves the shape at the given index. */
 	reRigShape *GetShapeAt(int index) const;
 	/** Retrieves the index of the shape or -1 if not found. */

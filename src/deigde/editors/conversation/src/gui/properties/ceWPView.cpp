@@ -105,7 +105,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetConversation();
-		if(! conversation){
+		if(!conversation){
 			return;
 		}
 		
@@ -391,7 +391,7 @@ public:
 		"Brings up a dialog to select the prop class"), pTextField(textField){}
 	
 	virtual igdeUndo *OnAction(ceConversation*){
-		if(! pPanel.GetProp() || ! pPanel.GetGameDefinition()){
+		if(!pPanel.GetProp() || !pPanel.GetGameDefinition()){
 			return NULL;
 		}
 		
@@ -409,7 +409,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation*){
 		if(pPanel.GetProp()){
-			pPanel.GetProp()->SetVisible(! pPanel.GetProp()->GetVisible());
+			pPanel.GetProp()->SetVisible(!pPanel.GetProp()->GetVisible());
 		}
 		return NULL;
 	}
@@ -622,7 +622,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation*){
 		if(pPanel.GetActor()){
-			pPanel.GetActor()->SetWaiting(! pPanel.GetActor()->GetWaiting());
+			pPanel.GetActor()->SetWaiting(!pPanel.GetActor()->GetWaiting());
 		}
 		return NULL;
 	}
@@ -665,12 +665,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceConversationActor * const actor = pPanel.GetActor();
-		if(! actor){
+		if(!actor){
 			return NULL;
 		}
 		
 		decString name;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Pose", "Pose:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Pose", "Pose:", name)){
 			return NULL;
 		}
 		
@@ -714,12 +714,12 @@ public:
 	virtual igdeUndo *OnAction(ceConversation*){
 		ceConversationActor * const actor = pPanel.GetActor();
 		ceActorPose * const pose = pPanel.GetActorPose();
-		if(! pose || ! actor){
+		if(!pose || !actor){
 			return NULL;
 		}
 		
 		decString name(pose->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Pose", "Pose:", name) || name == pose->GetName()){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Pose", "Pose:", name) || name == pose->GetName()){
 			return NULL;
 		}
 		
@@ -780,12 +780,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceActorPose * const pose = pPanel.GetActorPose();
-		if(! pose){
+		if(!pose){
 			return NULL;
 		}
 		
 		decString name;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames())){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames())){
 			return nullptr;
 		}
 		
@@ -849,12 +849,12 @@ public:
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Rename Actor Pose Controller"){}
 	
 	virtual igdeUndo *OnAction(ceConversation*){
-		if(! pPanel.GetActorPoseController()){
+		if(!pPanel.GetActorPoseController()){
 			return nullptr;
 		}
 		
 		decString name(pPanel.GetActorPoseController()->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Controller", "Controller:", name)
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Controller", "Controller:", name)
 		|| name == pPanel.GetActorPoseController()->GetName()){
 			return nullptr;
 		}
@@ -961,12 +961,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation*){
 		ceActorPose * const pose = pPanel.GetActorPose();
-		if(! pose){
+		if(!pose){
 			return NULL;
 		}
 		
 		decString name;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Gesture:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Gesture:", name)){
 			return NULL;
 		}
 		
@@ -1011,12 +1011,12 @@ public:
 	virtual igdeUndo *OnAction(ceConversation*){
 		ceActorPose * const pose = pPanel.GetActorPose();
 		ceActorGesture * const gesture = pPanel.GetActorGesture();
-		if(! gesture || ! pose){
+		if(!gesture || !pose){
 			return NULL;
 		}
 		
 		decString name(gesture->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Gesture:", name) || name == gesture->GetName()){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Gesture:", name) || name == gesture->GetName()){
 			return NULL;
 		}
 		
@@ -1068,12 +1068,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceConversationActor * const actor = pPanel.GetActor();
-		if(! actor){
+		if(!actor){
 			return NULL;
 		}
 		
 		decString command;
-		if(! igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
+		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
 		|| actor->GetCommands().HasWith(command)){
 			return NULL;
@@ -1136,7 +1136,7 @@ public:
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetActor()){
 			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
-			pcommand.SetValue(! pcommand.GetValue());
+			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
 	}
@@ -1159,18 +1159,18 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceConversationActor * const actor = pPanel.GetActor();
-		if(! actor){
+		if(!actor){
 			return NULL;
 		}
 		
 		decString name;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Set Parameter", "Parameter:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Set Parameter", "Parameter:", name)){
 			return NULL;
 		}
 		
 		ceActorParameter * const parameter = actor->GetParameters().GetNamed(name);
 		int value = parameter ? parameter->GetValue() : 0;
-		if(! igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter", "Value:", value)){
+		if(!igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter", "Value:", value)){
 			return NULL;
 		}
 		
@@ -1228,7 +1228,7 @@ public:
 	cListActorParameters(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int){
-		if(! pPanel.GetActor()){
+		if(!pPanel.GetActor()){
 			return;
 		}
 		
@@ -1400,7 +1400,7 @@ public:
 	NULL, "Determines if the topic is currently played back"){ }
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
-		conversation->GetPlayback()->SetRunning(! conversation->GetPlayback()->GetRunning());
+		conversation->GetPlayback()->SetRunning(!conversation->GetPlayback()->GetRunning());
 		return NULL;
 	}
 	
@@ -1416,7 +1416,7 @@ public:
 	NULL, "Determines if the played back is paused"){ }
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
-		conversation->GetPlayback()->SetPaused(! conversation->GetPlayback()->GetPaused());
+		conversation->GetPlayback()->SetPaused(!conversation->GetPlayback()->GetPaused());
 		return NULL;
 	}
 	
@@ -1432,7 +1432,7 @@ public:
 	nullptr, "Auto advance certain commands (game/actor commands, trigger, add/remove actor/coordsystem)"){}
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
-		conversation->GetPlayback()->SetAutoAdvanceCommands(! conversation->GetPlayback()->GetAutoAdvanceCommands());
+		conversation->GetPlayback()->SetAutoAdvanceCommands(!conversation->GetPlayback()->GetAutoAdvanceCommands());
 		return NULL;
 	}
 	
@@ -1463,7 +1463,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString command;
-		if(! igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
+		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
 		|| conversation->GetPlayback()->GetCommands().HasWith(command)){
 			return NULL;
@@ -1527,7 +1527,7 @@ public:
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetConversation()){
 			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
-			pcommand.SetValue(! pcommand.GetValue());
+			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyPlaybackCommandListChanged();
 		}
 	}
@@ -1550,7 +1550,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString variable;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Variable", "Variable:", variable)
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Variable", "Variable:", variable)
 		|| conversation->GetPlayback()->GetVariables().HasNamed(variable)){
 			return NULL;
 		}
@@ -1570,13 +1570,13 @@ public:
 	"Set Playback Variable"), pListBox(listBox){}
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(! pListBox.GetSelectedItem()){
+		if(!pListBox.GetSelectedItem()){
 			return NULL;
 		}
 		
 		cePlaybackVariable &variable = *((cePlaybackVariable*)pListBox.GetSelectedItem()->GetData());
 		int value = variable.GetValue();
-		if(! igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value)
+		if(!igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value)
 		|| variable.GetValue() == value){
 			return NULL;
 		}
@@ -1640,7 +1640,7 @@ public:
 	cListPlaybackVariables(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int){
-		if(! pPanel.GetConversation() || ! listBox->GetSelectedItem()){
+		if(!pPanel.GetConversation() || !listBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -2167,7 +2167,7 @@ void ceWPView::UpdateActorPoses(){
 			pCBActorPose->AddItem(pose->GetName(), NULL, pose);
 		}
 		
-		if(! activePose && poseCount > 0){
+		if(!activePose && poseCount > 0){
 			activePose = poses.GetAt(0);
 		}
 		actor->SetActivePose(activePose);
@@ -2217,7 +2217,7 @@ void ceWPView::UpdateActorGestures(){
 	}
 	
 	pCBActorGesture->SetSelectionWithData(gesture);
-	if(! pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItemCount() > 0){
+	if(!pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItemCount() > 0){
 		pCBActorGesture->SetSelection(0);
 	}
 	gesture = GetActorGesture();
@@ -2330,7 +2330,7 @@ void ceWPView::UpdateActorCommands(){
 	pListActorCommands->SortItems();
 	
 	pListActorCommands->SetSelectionWithData(selection);
-	if(! pListActorCommands->GetSelectedItem() && pListActorCommands->GetItemCount() > 0){
+	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItemCount() > 0){
 		pListActorCommands->SetSelection(0);
 	}
 }
@@ -2358,7 +2358,7 @@ void ceWPView::UpdateActorParameters(){
 	pListActorParameters->SortItems();
 	
 	pListActorParameters->SetSelectionWithData(selection);
-	if(! pListActorParameters->GetSelectedItem() && pListActorParameters->GetItemCount() > 0){
+	if(!pListActorParameters->GetSelectedItem() && pListActorParameters->GetItemCount() > 0){
 		pListActorParameters->SetSelection(0);
 	}
 }
@@ -2498,7 +2498,7 @@ void ceWPView::UpdatePlaybackCommands(){
 	pListPlaybackCommands->SortItems();
 	
 	pListPlaybackCommands->SetSelectionWithData(selectedEntry);
-	if(! pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItemCount() > 0){
+	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItemCount() > 0){
 		pListPlaybackCommands->SetSelection(0);
 	}
 }
@@ -2525,7 +2525,7 @@ void ceWPView::UpdatePlaybackVariables(){
 	pListPlaybackVars->SortItems();
 	
 	pListPlaybackVars->SetSelectionWithData(selectedVariable);
-	if(! pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItemCount() > 0){
+	if(!pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItemCount() > 0){
 		pListPlaybackVars->SetSelection(0);
 	}
 }
@@ -2552,7 +2552,7 @@ void ceWPView::UpdatePlaybackMissingWords(){
 	pCBPlaybackMissingWords->SortItems();
 	
 	pCBPlaybackMissingWords->SetText(selectedWord);
-	if(! pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItemCount() > 0){
+	if(!pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItemCount() > 0){
 		pCBPlaybackMissingWords->SetSelection(0);
 	}
 }

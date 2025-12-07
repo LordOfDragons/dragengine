@@ -91,7 +91,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -165,7 +165,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return NULL;
 		}
 		
@@ -210,7 +210,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
-		if(! cdata || rule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup){
+		if(!cdata || rule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup){
 			return NULL;
 		}
 		
@@ -484,7 +484,7 @@ void aeWPRule::UpdateRuleTree(){
 		for(i=0; i<count; i++){
 			aeRule * const rule = list.GetAt(i);
 			
-			if(! nextItem){
+			if(!nextItem){
 				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
 				pTreeRule->AppendItem(NULL, newItem);
 				nextItem = newItem;
@@ -506,13 +506,13 @@ void aeWPRule::UpdateRuleTree(){
 	}
 	
 	SelectActiveRule();
-	if(! pTreeRule->GetSelection() && pTreeRule->GetFirstChild()){
+	if(!pTreeRule->GetSelection() && pTreeRule->GetFirstChild()){
 		pTreeRule->SetSelection(pTreeRule->GetFirstChild());
 	}
 }
 
 void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
-	if(! item || ! rule){
+	if(!item || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -546,7 +546,7 @@ void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
 		for(i=0; i<count; i++){
 			aeRule * const rule2 = list.GetAt(i);
 			
-			if(! nextItem){
+			if(!nextItem){
 				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
 				pTreeRule->AppendItem(item, newItem);
 				nextItem = newItem;
@@ -574,7 +574,7 @@ void aeWPRule::SelectActiveRule(){
 
 void aeWPRule::ShowActiveSourcePanel(){
 	const aeRule * const rule = GetRule();
-	if(! rule){
+	if(!rule){
 		pSwitcher->SetCurrent(0);  // empty
 		return;
 	}
@@ -643,7 +643,7 @@ void aeWPRule::ShowActiveSourcePanel(){
 }
 
 void aeWPRule::UpdateRule(){
-	if(! pActivePanel){
+	if(!pActivePanel){
 		return;
 	}
 	

@@ -97,18 +97,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent height terrain or NULL. */
-	inline meHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set parent height terrain or NULL. */
 	void SetHeightTerrain(meHeightTerrain *heightTerrain);
 	
 	/** Retrieves the center of the nodes in the nodes view. */
-	inline const decVector2 &GetViewCenter() const{return pViewCenter;}
+	inline const decVector2 &GetViewCenter() const{ return pViewCenter; }
 	/** Sets the center of the nodes in the nodes view. */
 	void SetViewCenter(const decVector2 &center);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/*@}*/
@@ -116,7 +116,7 @@ public:
 	/** \name Variation */
 	/*@{*/
 	/** Retrieves the number of variations. */
-	inline int GetVariationCount() const{return pVariationCount;}
+	inline int GetVariationCount() const{ return pVariationCount; }
 	/** Retrieves the variation at the given index. */
 	meHTVVariation *GetVariationAt(int index) const;
 	/** Retrieves the index of the variation or -1 if not found. */
@@ -134,7 +134,7 @@ public:
 	/** Removes all variations. */
 	void RemoveAllVariations();
 	/** Retrieves the active variation or NULL. */
-	inline meHTVVariation *GetActiveVariation() const{return pActiveVariation;}
+	inline meHTVVariation *GetActiveVariation() const{ return pActiveVariation; }
 	/** Sets the active variation or NULL. */
 	void SetActiveVariation(meHTVVariation *variation);
 	/*@}*/
@@ -142,7 +142,7 @@ public:
 	/** \name Rule */
 	/*@{*/
 	/** Retrieves the number of rules. */
-	inline int GetRuleCount() const{return pRuleCount;}
+	inline int GetRuleCount() const{ return pRuleCount; }
 	/** Retrieves the rule at the given index. */
 	meHTVRule *GetRuleAt(int index) const;
 	/** Retrieves the index of the rule or -1 if not found. */
@@ -156,7 +156,7 @@ public:
 	/** Removes all rules. */
 	void RemoveAllRules();
 	/** Retrieves the active rule or NULL. */
-	inline meHTVRule *GetActiveRule() const{return pActiveRule;}
+	inline meHTVRule *GetActiveRule() const{ return pActiveRule; }
 	/** Sets the active rule or NULL. */
 	void SetActiveRule(meHTVRule *rule);
 	/** Notifies the world that a rule changed. */
@@ -171,7 +171,7 @@ public:
 	/** \name Link */
 	/*@{*/
 	/** Retrieves the number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	/** Retrieves the link at the given index. */
 	meHTVRLink *GetLinkAt(int index) const;
 	/** Retrieves the index of the link or -1 if not found. */

@@ -67,7 +67,7 @@ bool meDecalList::Has(meDecal *decal) const{
 }
 
 void meDecalList::Add(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -75,7 +75,7 @@ void meDecalList::Add(meDecal *decal){
 }
 
 void meDecalList::AddIfAbsent(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -83,7 +83,7 @@ void meDecalList::AddIfAbsent(meDecal *decal){
 }
 
 void meDecalList::Remove(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -91,7 +91,7 @@ void meDecalList::Remove(meDecal *decal){
 }
 
 void meDecalList::RemoveIfPresent(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	

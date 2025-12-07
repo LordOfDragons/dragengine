@@ -71,14 +71,14 @@ bool deAnimation::MatchesModel(deModel *model) const{
 	
 	int i;
 	for(i=0; i<pBoneCount; i++){
-		if(! model->HasBoneNamed(pBones[i]->GetName())){
+		if(!model->HasBoneNamed(pBones[i]->GetName())){
 			return false;
 		}
 	}
 	
 	const int vpsCount = pVertexPositionSets.GetCount();
 	for(i=0; i<vpsCount; i++){
-		if(! model->HasVertexPositionSetNamed(pVertexPositionSets.GetAt(i))){
+		if(!model->HasVertexPositionSetNamed(pVertexPositionSets.GetAt(i))){
 			return false;
 		}
 	}
@@ -111,14 +111,14 @@ int deAnimation::FindBone(const char *name) const{
 }
 
 void deAnimation::AddBone(deAnimationBone *bone){
-	if(! bone || FindBone(bone->GetName()) != -1){
+	if(!bone || FindBone(bone->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	if(pBoneCount == pBoneSize){
 		int i, newSize = pBoneCount * 3 / 2 + 1;
 		deAnimationBone **newArray = new deAnimationBone*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBones){
 			for(i=0; i<pBoneCount; i++) newArray[i] = pBones[i];
 			delete [] pBones;
@@ -143,7 +143,7 @@ deAnimationMove *deAnimation::GetMove(int index) const{
 }
 
 int deAnimation::FindMove(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -159,14 +159,14 @@ int deAnimation::FindMove(const char *name) const{
 }
 
 void deAnimation::AddMove(deAnimationMove *move){
-	if(! move || FindMove(move->GetName()) != -1){
+	if(!move || FindMove(move->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	if(pMoveCount == pMoveSize){
 		int i, newSize = pMoveCount * 3 / 2 + 1;
 		deAnimationMove **newArray = new deAnimationMove*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pMoves){
 			for(i=0; i<pMoveCount; i++) newArray[i] = pMoves[i];
 			delete [] pMoves;

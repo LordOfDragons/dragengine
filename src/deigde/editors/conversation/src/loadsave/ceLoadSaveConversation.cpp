@@ -119,7 +119,7 @@ decBaseFileReader &reader, const char *filename){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "conversation") != 0){
+	if(!root || strcmp(root->GetName(), "conversation") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -223,14 +223,14 @@ void ceLoadSaveConversation::pWriteTarget(decXmlWriter &writer, const ceTarget &
 	writer.WriteAttributeString("name", target.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if(! target.GetActor().IsEmpty()){
+	if(!target.GetActor().IsEmpty()){
 		writer.WriteDataTagString("actor", target.GetActor());
 	}
-	if(! target.GetCoordSystem().IsEmpty()){
+	if(!target.GetCoordSystem().IsEmpty()){
 		writer.WriteDataTagString("coordSystem", target.GetCoordSystem());
 	}
 	
-	if(! target.GetBone().IsEmpty()){
+	if(!target.GetBone().IsEmpty()){
 		writer.WriteDataTagString("bone", target.GetBone());
 	}
 	
@@ -501,13 +501,13 @@ void ceLoadSaveConversation::pWriteActionList(decXmlWriter &writer, const ceConv
 }
 
 void ceLoadSaveConversation::pWriteActionCommon(decXmlWriter &writer, const ceConversationAction &action){
-	if(! action.GetWaitForActor()){
+	if(!action.GetWaitForActor()){
 		writer.WriteDataTagBool("waitForActor", action.GetWaitForActor());
 	}
 	if(action.GetWaitSpeakOnly()){
 		writer.WriteDataTagBool("waitSpeakOnly", action.GetWaitSpeakOnly());
 	}
-	if(! action.GetWaitForActorID().IsEmpty()){
+	if(!action.GetWaitForActorID().IsEmpty()){
 		writer.WriteDataTagString("waitForActorID", action.GetWaitForActorID());
 	}
 	if(fabsf(action.GetDelay()) > FLOAT_SAFE_EPSILON){
@@ -522,10 +522,10 @@ void ceLoadSaveConversation::pWriteActionCameraShot(decXmlWriter &writer, const 
 	writer.WriteDataTagString("name", action.GetName());
 	writer.WriteDataTagFloat("duration", action.GetDuration());
 	
-	if(! action.GetCameraTarget().IsEmpty()){
+	if(!action.GetCameraTarget().IsEmpty()){
 		writer.WriteDataTagString("cameraTarget", action.GetCameraTarget());
 	}
-	if(! action.GetLookAtTarget().IsEmpty()){
+	if(!action.GetLookAtTarget().IsEmpty()){
 		writer.WriteDataTagString("lookAtTarget", action.GetLookAtTarget());
 	}
 	
@@ -548,16 +548,16 @@ void ceLoadSaveConversation::pWriteActionActorSpeak(decXmlWriter &writer, const 
 	
 	writer.WriteDataTagString("actor", action.GetActor());
 	
-	if(! action.GetTextBoxText().IsEmpty()){
+	if(!action.GetTextBoxText().IsEmpty()){
 		WriteMultilineString(writer, "textBoxText", action.GetTextBoxText().ToUTF8());
 	}
-	if(! action.GetTextBoxTextTranslate().IsEmpty()){
+	if(!action.GetTextBoxTextTranslate().IsEmpty()){
 		writer.WriteDataTagString("textBoxTextTranslate", action.GetTextBoxTextTranslate());
 	}
-	if(! action.GetTextBoxTextStyle().IsEmpty()){
+	if(!action.GetTextBoxTextStyle().IsEmpty()){
 		writer.WriteDataTagString("textBoxTextStyle", action.GetTextBoxTextStyle());
 	}
-	if(! action.GetPathSound().IsEmpty()){
+	if(!action.GetPathSound().IsEmpty()){
 		writer.WriteDataTagString("pathSound", action.GetPathSound());
 	}
 	if(action.GetWordList().GetCount() > 0){
@@ -590,13 +590,13 @@ void ceLoadSaveConversation::pWriteActionActorSpeak(decXmlWriter &writer, const 
 		pWriteStripList(writer, action.GetEyesLookAtList());
 		writer.WriteClosingTag("eyesLookAts");
 	}
-	if(! action.GetMovement().IsEmpty()){
+	if(!action.GetMovement().IsEmpty()){
 		writer.WriteDataTagString("movement", action.GetMovement());
 	}
 	if(action.GetMinSpeechTime() > 0.0f){
 		writer.WriteDataTagFloat("minSpeechTime", action.GetMinSpeechTime());
 	}
-	if(! action.GetUseSpeechAnimation()){
+	if(!action.GetUseSpeechAnimation()){
 		writer.WriteDataTagBool("useSpeechAnimation", false);
 	}
 	
@@ -652,7 +652,7 @@ void ceLoadSaveConversation::pWriteActionPlayerChoice(decXmlWriter &writer, cons
 	
 	pWriteActionCommon(writer, action);
 	
-	if(! action.GetVariableName().IsEmpty()){
+	if(!action.GetVariableName().IsEmpty()){
 		writer.WriteDataTagString("variable", action.GetVariableName());
 	}
 	
@@ -740,7 +740,7 @@ void ceLoadSaveConversation::pWriteActionSetVariable(decXmlWriter &writer, const
 	}
 	
 	writer.WriteDataTagInt("value", action.GetValue());
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		writer.WriteDataTagString("valueVariable", action.GetValueVariable());
 	}
 	
@@ -769,7 +769,7 @@ void ceLoadSaveConversation::pWriteActionSetActorParameter(decXmlWriter &writer,
 	}
 	
 	writer.WriteDataTagInt("value", action.GetValue());
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		writer.WriteDataTagString("valueVariable", action.GetValueVariable());
 	}
 	
@@ -845,7 +845,7 @@ void ceLoadSaveConversation::pWriteActionActorAdd(decXmlWriter &writer, const ce
 	pWriteActionCommon(writer, action);
 	
 	writer.WriteDataTagString("actor", action.GetID());
-	if(! action.GetAliasID().IsEmpty()){
+	if(!action.GetAliasID().IsEmpty()){
 		writer.WriteDataTagString("aliasID", action.GetAliasID());
 	}
 	
@@ -866,7 +866,7 @@ void ceLoadSaveConversation::pWriteActionCoordSystemAdd(decXmlWriter &writer, co
 	pWriteActionCommon(writer, action);
 	
 	writer.WriteDataTagString("coordSystem", action.GetCoordSystemID());
-	if(! action.GetAliasID().IsEmpty()){
+	if(!action.GetAliasID().IsEmpty()){
 		writer.WriteDataTagString("aliasID", action.GetAliasID());
 	}
 	
@@ -1020,7 +1020,7 @@ const ceCConditionVariable &condition){
 	
 	writer.WriteDataTagString("variable", condition.GetVariable());
 	writer.WriteDataTagInt("testValue", condition.GetTestValue());
-	if(! condition.GetTestVariable().IsEmpty()){
+	if(!condition.GetTestVariable().IsEmpty()){
 		writer.WriteDataTagString("testVariable", condition.GetTestVariable());
 	}
 	
@@ -1061,7 +1061,7 @@ const ceCConditionActorParameter &condition){
 	
 	writer.WriteDataTagString("parameter", condition.GetParameter());
 	writer.WriteDataTagInt("testValue", condition.GetTestValue());
-	if(! condition.GetTestVariable().IsEmpty()){
+	if(!condition.GetTestVariable().IsEmpty()){
 		writer.WriteDataTagString("testVariable", condition.GetTestVariable());
 	}
 	
@@ -1599,7 +1599,7 @@ void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceCon
 			try{
 				action = pReadAction(*tag, conversation);
 				
-				if(! action){
+				if(!action){
 					LogErrorUnknownTag(root, *tag);
 				}
 				
@@ -1969,7 +1969,7 @@ void ceLoadSaveConversation::pReadActionCameraShot(const decXmlElementTag &root,
 			}else if(strcmp(tag->GetName(), "lookAtTarget") == 0){
 				action.SetLookAtTarget(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -1988,7 +1988,7 @@ void ceLoadSaveConversation::pReadActionMusic(const decXmlElementTag &root, ceCA
 			if(strcmp(tag->GetName(), "name") == 0){
 				action.SetName(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2046,7 +2046,7 @@ void ceLoadSaveConversation::pReadActionActorSpeak(const decXmlElementTag &root,
 			}else if(strcmp(tag->GetName(), "useSpeechAnimation") == 0){
 				action.SetUseSpeechAnimation(GetCDataBool(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2100,7 +2100,7 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 			}else if(strcmp(tag->GetName(), "else") == 0){
 				pReadActionList(*tag, conversation, action.GetElseActions());
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2169,7 +2169,7 @@ void ceLoadSaveConversation::pReadActionPlayerChoice(const decXmlElementTag &roo
 			}else if(strcmp(tag->GetName(), "option") == 0){
 				pReadActionPlayerChoiceOption(*tag, conversation, action);
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2233,7 +2233,7 @@ void ceLoadSaveConversation::pReadActionStopConversation(const decXmlElementTag 
 		tag = root.GetElementIfTag(e);
 		
 		if(tag){
-			if(! pReadActionCommon(*tag, action)){
+			if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2249,7 +2249,7 @@ void ceLoadSaveConversation::pReadActionStopTopic(const decXmlElementTag &root, 
 		tag = root.GetElementIfTag(e);
 		
 		if(tag){
-			if(! pReadActionCommon(*tag, action)){
+			if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2288,7 +2288,7 @@ void ceLoadSaveConversation::pReadActionSetVariable(const decXmlElementTag &root
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2322,7 +2322,7 @@ void ceLoadSaveConversation::pReadActionSetVariable(const decXmlElementTag &root
 		}else if(tagName == "valueVariable"){
 			action.SetValueVariable(GetCDataString(*tag));
 			
-		}else if(! pReadActionCommon(*tag, action)){
+		}else if(!pReadActionCommon(*tag, action)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -2334,7 +2334,7 @@ void ceLoadSaveConversation::pReadActionSetActorParameter(const decXmlElementTag
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2371,7 +2371,7 @@ void ceLoadSaveConversation::pReadActionSetActorParameter(const decXmlElementTag
 		}else if(tagName == "valueVariable"){
 			action.SetValueVariable(GetCDataString(*tag));
 			
-		}else if(! pReadActionCommon(*tag, action)){
+		}else if(!pReadActionCommon(*tag, action)){
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
@@ -2392,7 +2392,7 @@ void ceLoadSaveConversation::pReadActionActorCommand(const decXmlElementTag &roo
 			}else if(strcmp(tag->GetName(), "command") == 0){
 				action.SetCommand(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2411,7 +2411,7 @@ void ceLoadSaveConversation::pReadActionGameCommand(const decXmlElementTag &root
 			if(strcmp(tag->GetName(), "command") == 0){
 				action.SetCommand(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2444,7 +2444,7 @@ void ceLoadSaveConversation::pReadActionWait(const decXmlElementTag &root, ceCon
 			}else if(strcmp(tag->GetName(), "actions") == 0){
 				pReadActionList(*tag, conversation, action.GetActions());
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2481,7 +2481,7 @@ void ceLoadSaveConversation::pReadActionTrigger(const decXmlElementTag &root, ce
 					LogErrorUnknownValue(*tag, identifier);
 				}
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2502,7 +2502,7 @@ void ceLoadSaveConversation::pReadActionActorAdd(const decXmlElementTag &root, c
 			}else if(strcmp(tag->GetName(), "aliasID") == 0){
 				action.SetAliasID(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2520,7 +2520,7 @@ void ceLoadSaveConversation::pReadActionActorRemove(const decXmlElementTag &root
 			if(strcmp(tag->GetName(), "actor") == 0){
 				action.SetActor(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2541,7 +2541,7 @@ void ceLoadSaveConversation::pReadActionCoordSystemAdd(const decXmlElementTag &r
 			}else if(strcmp(tag->GetName(), "aliasID") == 0){
 				action.SetAliasID(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2559,7 +2559,7 @@ void ceLoadSaveConversation::pReadActionCoordSystemRemove(const decXmlElementTag
 			if(strcmp(tag->GetName(), "coordSystem") == 0){
 				action.SetCoordSystemID(GetCDataString(*tag));
 				
-			}else if(! pReadActionCommon(*tag, action)){
+			}else if(!pReadActionCommon(*tag, action)){
 				LogWarnUnknownTag(root, *tag);
 			}
 		}
@@ -2600,7 +2600,7 @@ ceConversation &conversation, ceConversationConditionList &list){
 			try{
 				condition = pReadCondition(*tag, conversation);
 				
-				if(! condition){
+				if(!condition){
 					LogErrorUnknownTag(root, *tag);
 				}
 				
@@ -2818,7 +2818,7 @@ ceCConditionActorInConversation &condition){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2840,7 +2840,7 @@ void ceLoadSaveConversation::pReadConditionVariable(const decXmlElementTag &root
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2892,7 +2892,7 @@ void ceLoadSaveConversation::pReadConditionActorParameter(const decXmlElementTag
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

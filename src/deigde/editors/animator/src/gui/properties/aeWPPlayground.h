@@ -112,7 +112,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
@@ -121,7 +121,7 @@ public:
 	aeAnimatorLocomotionLeg *GetLeg() const;
 	
 	/** Number of controllers. */
-	inline int GetControllerCount() const{return pControllerCount;}
+	inline int GetControllerCount() const{ return pControllerCount; }
 	
 	/** Controller at index. */
 	sController &GetControllerAt(int index) const;

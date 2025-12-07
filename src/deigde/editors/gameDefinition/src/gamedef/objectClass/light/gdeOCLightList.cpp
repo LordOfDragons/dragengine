@@ -72,7 +72,7 @@ bool gdeOCLightList::Has(gdeOCLight *light) const{
 }
 
 void gdeOCLightList::Add(gdeOCLight *light){
-	if(! light || Has(light)){
+	if(!light || Has(light)){
 		DETHROW(deeInvalidParam);
 	}
 	pLights.Add(light);

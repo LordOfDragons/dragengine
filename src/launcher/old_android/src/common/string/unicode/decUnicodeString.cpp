@@ -229,7 +229,7 @@ void decUnicodeString::SetValue(double value){
 }
 
 void decUnicodeString::SetFromUTF8(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -239,7 +239,7 @@ void decUnicodeString::SetFromUTF8(const char *string){
 	int usize = 1;
 	int ulen = 0;
 	
-	while(! decoder.HasReachedEnd()){
+	while(!decoder.HasReachedEnd()){
 		const int character = decoder.DecodeNextCharacter();
 		
 		if(character != -1){
@@ -358,7 +358,7 @@ void decUnicodeString::AppendValue(double value){
 }
 
 void decUnicodeString::AppendFromUTF8(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -368,7 +368,7 @@ void decUnicodeString::AppendFromUTF8(const char *string){
 	int usize = 1;
 	int ulen = 0;
 	
-	while(! decoder.HasReachedEnd()){
+	while(!decoder.HasReachedEnd()){
 		const int character = decoder.DecodeNextCharacter();
 		
 		if(character != -1){
@@ -919,7 +919,7 @@ void decUnicodeString::TrimLeft(){
 	int i, j;
 	
 	for(i=0; i<pLength; i++){
-		if(! pIsSpace(pGetAt(i))){
+		if(!pIsSpace(pGetAt(i))){
 			break;
 		}
 	}
@@ -934,7 +934,7 @@ decUnicodeString decUnicodeString::GetTrimmedLeft() const{
 	int i;
 	
 	for(i=0; i<pLength; i++){
-		if(! pIsSpace(pGetAt(i))){
+		if(!pIsSpace(pGetAt(i))){
 			break;
 		}
 	}
@@ -946,7 +946,7 @@ void decUnicodeString::TrimRight(){
 	int i;
 	
 	for(i=pLength-1; i>=0; i--){
-		if(! pIsSpace(pGetAt(i))){
+		if(!pIsSpace(pGetAt(i))){
 			pLength = i + 1;
 			break;
 		}
@@ -957,7 +957,7 @@ decUnicodeString decUnicodeString::GetTrimmedRight() const{
 	int i;
 	
 	for(i=pLength-1; i>=0; i--){
-		if(! pIsSpace(pGetAt(i))){
+		if(!pIsSpace(pGetAt(i))){
 			break;
 		}
 	}
@@ -969,13 +969,13 @@ void decUnicodeString::Trim(){
 	int start, end, i;
 	
 	for(start=0; start<pLength; start++){
-		if(! pIsSpace(pGetAt(start))){
+		if(!pIsSpace(pGetAt(start))){
 			break;
 		}
 	}
 	
 	for(end=pLength-1; end>=start; end--){
-		if(! pIsSpace(pGetAt(end))){
+		if(!pIsSpace(pGetAt(end))){
 			break;
 		}
 	}
@@ -990,13 +990,13 @@ decUnicodeString decUnicodeString::GetTrimmed() const{
 	int start, end;
 	
 	for(start=0; start<pLength; start++){
-		if(! pIsSpace(pGetAt(start))){
+		if(!pIsSpace(pGetAt(start))){
 			break;
 		}
 	}
 	
 	for(end=pLength-1; end>=start; end--){
-		if(! pIsSpace(pGetAt(end))){
+		if(!pIsSpace(pGetAt(end))){
 			break;
 		}
 	}
@@ -1324,7 +1324,7 @@ void decUnicodeString::pCreateString(int size, int length){
 	
 	if(length > 0){
 		pString = new char[length * size];
-		if(! pString){
+		if(!pString){
 			DETHROW(deeOutOfMemory);
 		}
 	}

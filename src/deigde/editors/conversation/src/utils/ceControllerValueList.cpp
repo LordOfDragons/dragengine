@@ -110,7 +110,7 @@ bool ceControllerValueList::HasNamed(const char *controller) const{
 }
 
 void ceControllerValueList::Add(ceControllerValue *entry){
-	if(! entry || HasNamed (entry->GetController())){
+	if(!entry || HasNamed (entry->GetController())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -161,7 +161,7 @@ void spBaseType::SetPrivateNew(bool privateNew){
 }
 
 void spBaseType::AddMethod(const char *name, PyCFunction pyFunction, int argumentType, const char *documentation){
-	if(! name || ! pyFunction || ! documentation){
+	if(!name || !pyFunction || !documentation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -187,7 +187,7 @@ void spBaseType::AddMethod(const char *name, PyCFunction pyFunction, int argumen
 
 
 spBaseType *spBaseType::GetOwnerClass(PyObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -195,7 +195,7 @@ spBaseType *spBaseType::GetOwnerClass(PyObject *object){
 }
 
 void *spBaseType::GetObjectData(PyObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -240,7 +240,7 @@ void spBaseType::Destructor(PyObject *myself){
 //////////////////////
 
 PyObject *spBaseType::cfNew(PyTypeObject *type, PyObject *args, PyObject *kwds){
-	if(! type){
+	if(!type){
 		PyErr_SetString(PyExc_RuntimeError, "Tried to create a NULL type");
 		return NULL;
 	}
@@ -255,7 +255,7 @@ PyObject *spBaseType::cfNew(PyTypeObject *type, PyObject *args, PyObject *kwds){
 	//ownerClass.GetSP()->LogInfoFormat( "Type %s cfNew", ownerClass.GetFullTypeName().GetString() );
 	
 	PyObject * const myself = type->tp_alloc(type, 0);
-	if(! myself){
+	if(!myself){
 		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
@@ -266,7 +266,7 @@ PyObject *spBaseType::cfNew(PyTypeObject *type, PyObject *args, PyObject *kwds){
 }
 
 int spBaseType::cfInit(PyObject *myself, PyObject *args, PyObject *kwds){
-	if(! myself){
+	if(!myself){
 		PyErr_SetString(PyExc_RuntimeError, "Tried to init a NULL object");
 		return 1;
 	}

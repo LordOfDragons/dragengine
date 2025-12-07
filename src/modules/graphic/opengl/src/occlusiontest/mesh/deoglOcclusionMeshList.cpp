@@ -65,7 +65,7 @@ deoglOcclusionMesh *deoglOcclusionMeshList::GetAt(int index) const{
 }
 
 int deoglOcclusionMeshList::IndexOfOcclusionMesh(deoglOcclusionMesh *occlusionMesh) const{
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -81,7 +81,7 @@ int deoglOcclusionMeshList::IndexOfOcclusionMesh(deoglOcclusionMesh *occlusionMe
 }
 
 bool deoglOcclusionMeshList::Has(deoglOcclusionMesh *occlusionMesh) const{
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		DETHROW(deeInvalidParam);
 	}
 	

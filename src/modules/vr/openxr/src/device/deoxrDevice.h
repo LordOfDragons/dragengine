@@ -116,43 +116,43 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Oxr. */
-	inline deVROpenXR &GetOxr() const{return pOxr;}
+	inline deVROpenXR &GetOxr() const{ return pOxr; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
 	
 	/** Profile. */
-	inline const deoxrDeviceProfile &GetProfile() const{return pProfile;}
+	inline const deoxrDeviceProfile &GetProfile() const{ return pProfile; }
 	
 	/** Subaction path. */
-	inline const deoxrPath &GetSubactionPath() const{return pSubactionPath;}
+	inline const deoxrPath &GetSubactionPath() const{ return pSubactionPath; }
 	
 	/** Set subaction path. */
 	void SetSubactionPath(const deoxrPath &path);
 	
 	/** Pose action. */
-	inline const deoxrAction::Ref &GetActionPose() const{return pActionPose;}
+	inline const deoxrAction::Ref &GetActionPose() const{ return pActionPose; }
 	
 	/** Set pose action. */
 	void SetActionPose(deoxrAction *action);
 	
 	/** Orientation pose action. */
-	inline const deoxrAction::Ref &GetActionPoseOrientation() const{return pActionPoseOrientation;}
+	inline const deoxrAction::Ref &GetActionPoseOrientation() const{ return pActionPoseOrientation; }
 	
 	/** Set orientation pose action. */
 	void SetActionPoseOrientation(deoxrAction *action);
 	
 	/** Pose space. */
-	inline const deoxrSpace::Ref &GetSpacePose() const{return pSpacePose;}
+	inline const deoxrSpace::Ref &GetSpacePose() const{ return pSpacePose; }
 	
 	/** Set pose space. */
 	void SetSpacePose(deoxrSpace *space);
 	
 	/** Pose space orientation. */
-	inline const deoxrSpace::Ref &GetSpacePoseOrientation() const{return pSpacePoseOrientation;}
+	inline const deoxrSpace::Ref &GetSpacePoseOrientation() const{ return pSpacePoseOrientation; }
 	
 	/** Set pose space orientation. */
 	void SetSpacePoseOrientation(deoxrSpace *space);
@@ -160,37 +160,37 @@ public:
 	
 	
 	/** Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
+	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** Set device type. */
 	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Name number or -1 it not set. */
-	inline int GetNameNumber() const{return pNameNumber;}
+	inline int GetNameNumber() const{ return pNameNumber; }
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
@@ -198,7 +198,7 @@ public:
 	
 	
 	/** Bone configuration. */
-	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{return pBoneConfiguration;}
+	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
 	
 	/** Set bone configuration. */
 	void SetBoneConfiguration(deInputDevice::eBoneConfigurations config);
@@ -300,13 +300,13 @@ public:
 	
 	
 	/** Hand tracker or nullptr. */
-	inline const deoxrHandTracker::Ref &GetHandTracker() const{return pHandTracker;}
+	inline const deoxrHandTracker::Ref &GetHandTracker() const{ return pHandTracker; }
 	
 	/** Set hand tracker or nullptr. */
 	void SetHandTracker(deoxrHandTracker *handTracker);
 	
 	/** Matrix transforming from wrist space to device space. */
-	inline const decMatrix &GetMatrixWristToDevice() const{return pMatrixWristToDevice;}
+	inline const decMatrix &GetMatrixWristToDevice() const{ return pMatrixWristToDevice; }
 	
 	/** Set matrix transforming from wrist space to device space. */
 	void SetMatrixWristToDevice(const decMatrix &matrix);
@@ -320,7 +320,7 @@ public:
 	
 	
 	/** Face tracker or nullptr. */
-	inline const deoxrFaceTracker::Ref &GetFaceTracker() const{return pFaceTracker;}
+	inline const deoxrFaceTracker::Ref &GetFaceTracker() const{ return pFaceTracker; }
 	
 	/** Set face tracker or nullptr. */
 	void SetFaceTracker(deoxrFaceTracker *faceTracker);
@@ -343,7 +343,7 @@ public:
 	void GetDevicePose(deInputDevicePose &pose);
 
 	/** Direct device pose access for internal use. */
-	inline const deInputDevicePose &GetDirectDevicePose() const{return pPoseDevice;}
+	inline const deInputDevicePose &GetDirectDevicePose() const{ return pPoseDevice; }
 	
 	/** Reference space changed. */
 	void ReferenceSpaceChanged();

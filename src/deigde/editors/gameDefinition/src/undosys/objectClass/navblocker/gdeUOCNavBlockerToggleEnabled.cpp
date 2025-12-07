@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
 pObjectClass(NULL),
 pNavBlocker(NULL)
 {
-	if(! objectClass || ! navblocker){
+	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCNavBlockerToggleEnabled::~gdeUOCNavBlockerToggleEnabled(){
 ///////////////
 
 void gdeUOCNavBlockerToggleEnabled::Undo(){
-	pNavBlocker->SetEnabled(! pNavBlocker->GetEnabled());
+	pNavBlocker->SetEnabled(!pNavBlocker->GetEnabled());
 	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 

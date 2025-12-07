@@ -64,15 +64,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief AI module. */
-	inline deDEAIModule &GetDEAI() const{return pDEAI;}
+	inline deDEAIModule &GetDEAI() const{ return pDEAI; }
 	
 	/** \brief Height terrain. */
-	inline const deHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
+	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	
 	
 	/** \brief Parent world or \em NULL. */
-	inline dedaiWorld *GetParentWorld() const{return pParentWorld;}
+	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
 	void SetParentWorld(dedaiWorld *world);

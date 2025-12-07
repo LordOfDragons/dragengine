@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the actor id. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	/** \brief Sets the actor id. */
 	void SetActor(const char *id);
 	

@@ -214,7 +214,7 @@ void deClassModuleParameter::nfGetDefaultValue::RunFunction(dsRunTime *rt, dsVal
 
 deClassModuleParameter::deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
 dsClass("ModuleParameter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! GameEngine || ! ScrMgr){
+	if(!GameEngine || !ScrMgr){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -270,7 +270,7 @@ void deClassModuleParameter::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassModuleParameter::PushParameter(dsRunTime *rt, deBaseModule *module, int index){
-	if(! rt || ! module){
+	if(!rt || !module){
 		DSTHROW(dueInvalidParam);
 	}
 	

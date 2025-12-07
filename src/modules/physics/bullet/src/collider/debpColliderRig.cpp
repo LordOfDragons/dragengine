@@ -156,7 +156,7 @@ void debpColliderRig::SetParentWorld(debpWorld *parentWorld){
 
 void debpColliderRig::CreateBody(){
 	debpCollisionWorld * const dynWorld = GetDynamicsWorld();
-	if(! dynWorld){
+	if(!dynWorld){
 		return;
 	}
 	
@@ -417,7 +417,7 @@ void debpColliderRig::UpdateCollisionObjectAABBs(){
 
 
 void debpColliderRig::UpdateShapes(){
-	if(! pDirtyShapes){
+	if(!pDirtyShapes){
 		return;
 	}
 	
@@ -541,7 +541,7 @@ void debpColliderRig::UpdateDebugDrawer(){
 
 void debpColliderRig::UpdateDDSShape(){
 	deDebugDrawerShape * const ddshape = GetDDSShape();
-	if(! ddshape){
+	if(!ddshape){
 		return;
 	}
 	
@@ -650,7 +650,7 @@ void debpColliderRig::PositionChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetPosition(position);
 			
@@ -684,7 +684,7 @@ void debpColliderRig::OrientationChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetOrientation(orientation);
 			
@@ -717,7 +717,7 @@ void debpColliderRig::ScaleChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate && ! pSimplePhyBody){
+	if(!pPreventUpdate && !pSimplePhyBody){
 		DirtyBones();
 	}
 	
@@ -746,7 +746,7 @@ void debpColliderRig::GeometryChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetPosition(position);
 			pSimplePhyBody->SetOrientation(orientation);
@@ -774,7 +774,7 @@ void debpColliderRig::LinearVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetLinearVelocity(linVelo);
 			
@@ -798,7 +798,7 @@ void debpColliderRig::AngularVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetAngularVelocity(angVelo);
 			
@@ -995,16 +995,16 @@ void debpColliderRig::ConstraintChanged(int index, deColliderConstraint *constra
 
 
 void debpColliderRig::BonePositionChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		cbone->GetPhysicsBody()->SetPosition(pColliderRig.GetBoneAt(index).GetPosition());
 	}
 	
@@ -1017,16 +1017,16 @@ void debpColliderRig::BonePositionChanged(int index){
 }
 
 void debpColliderRig::BoneOrientationChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		cbone->GetPhysicsBody()->SetOrientation(pColliderRig.GetBoneAt(index).GetOrientation());
 	}
 	
@@ -1042,12 +1042,12 @@ void debpColliderRig::BoneLinearVelocityChanged(int index){
 	if(pPreventUpdate){
 		return;
 	}
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
@@ -1058,12 +1058,12 @@ void debpColliderRig::BoneAngularVelocityChanged(int index){
 	if(pPreventUpdate){
 		return;
 	}
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
@@ -1071,7 +1071,7 @@ void debpColliderRig::BoneAngularVelocityChanged(int index){
 }
 
 void debpColliderRig::BonePropertiesChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
@@ -1180,8 +1180,7 @@ void debpColliderRig::pUpdateBones(){
 				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
 				
 			}else{
-				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!
-			}
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!			}
 			
 		}else{
 			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);
@@ -1245,7 +1244,7 @@ void debpColliderRig::pUpdateBones(){
 }
 
 void debpColliderRig::pUpdateAttachments(bool force){
-	if(! pDirtyAttachments && ! force){
+	if(!pDirtyAttachments && !force){
 		return;
 	}
 	
@@ -1276,10 +1275,10 @@ void debpColliderRig::pUpdateAttachments(bool force){
 		changed = false;
 		
 		if(attachType == deColliderAttachment::eatStatic){
-			bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify);
+			bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 			
 		}else if(attachType == deColliderAttachment::eatRig){
-			if(! engRig){
+			if(!engRig){
 				continue;
 			}
 			
@@ -1342,12 +1341,12 @@ void debpColliderRig::pUpdateAttachments(bool force){
 				boneIndex = bpAttachment.GetTrackBone();
 				
 				if(boneIndex == -1){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify);
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 					
 				}else{
 					const deColliderBone &colBone = pColliderRig.GetBoneAt(boneIndex);
 					bpAttachment.Reposition(colBone.GetMatrix(), colBone.GetLinearVelocity(),
-						! pPreventAttNotify);
+						!pPreventAttNotify);
 				}
 			}
 			
@@ -1381,7 +1380,7 @@ void debpColliderRig::pUpdateAttachments(bool force){
 						}
 					}
 					
-					bpAttachment.Reposition(transform, velocity, ! pPreventAttNotify);
+					bpAttachment.Reposition(transform, velocity, !pPreventAttNotify);
 				}
 			}
 			

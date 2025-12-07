@@ -82,22 +82,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename of engine image resource or empty string if manually created. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Width of image. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height of image. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** Depth of image. */
-	inline int GetDepth() const{return pDepth;}
+	inline int GetDepth() const{ return pDepth; }
 	
 	/** Component count of image. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Bit count image. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	
 	
@@ -110,19 +110,19 @@ public:
 	void SetPixelBufferCubeMap(const deoglPixelBuffer::Ref &pixelBuffer);
 	void SetPixelBufferArrayTexture(const deoglPixelBuffer::Ref &pixelBuffer);
 	
-	inline const deoglPixelBuffer::Ref &GetPixelBufferTexture() const{return pPixelBufferTexture;}
-	inline const deoglPixelBuffer::Ref &GetPixelBufferCubeMap() const{return pPixelBufferCubeMap;}
-	inline const deoglPixelBuffer::Ref &GetPixelBufferArrayTexture() const{return pPixelBufferArrayTexture;}
+	inline const deoglPixelBuffer::Ref &GetPixelBufferTexture() const{ return pPixelBufferTexture; }
+	inline const deoglPixelBuffer::Ref &GetPixelBufferCubeMap() const{ return pPixelBufferCubeMap; }
+	inline const deoglPixelBuffer::Ref &GetPixelBufferArrayTexture() const{ return pPixelBufferArrayTexture; }
 	
 	
 	/** Texture or nullptr. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Cubemap or nullptr. */
-	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
+	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
 	/** Array texture or nullptr if not created yet. */
-	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/**
 	 * Set texture or nullptr.
@@ -161,15 +161,15 @@ public:
 	void SetArrayTexture(deoglArrayTexture *arrayTexture);
 	
 	/** Texture is used by skin. */
-	inline bool GetSkinUseTexture() const{return pSkinUseTexture;}
-	inline bool GetSkinUseCubeMap() const{return pSkinUseCubeMap;}
-	inline bool GetSkinUseArrayTexture() const{return pSkinUseArrayTexture;}
+	inline bool GetSkinUseTexture() const{ return pSkinUseTexture; }
+	inline bool GetSkinUseCubeMap() const{ return pSkinUseCubeMap; }
+	inline bool GetSkinUseArrayTexture() const{ return pSkinUseArrayTexture; }
 	
 	/** Scaling factor in U direction. */
-	inline float GetScaleFactorU() const{return pScaleU;}
+	inline float GetScaleFactorU() const{ return pScaleU; }
 	
 	/** Scaling factor in V direction. */
-	inline float GetScaleFactorV() const{return pScaleV;}
+	inline float GetScaleFactorV() const{ return pScaleV; }
 	
 	
 	

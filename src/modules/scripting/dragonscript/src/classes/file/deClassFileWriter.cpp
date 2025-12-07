@@ -376,7 +376,7 @@ void deClassFileWriter::nfWriteData::RunFunction(dsRunTime *rt, dsValue *myself)
 	deScriptingDragonScript &ds = *((deClassFileWriter*)GetOwnerClass())->GetDS();
 	
 	decBaseFileReader * const fileReader = ds.GetClassFileReader()->GetFileReader(rt->GetValue(0)->GetRealObject());
-	if(! fileReader){
+	if(!fileReader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -427,7 +427,7 @@ void deClassFileWriter::nfWriteData2::RunFunction(dsRunTime *rt, dsValue *myself
 	}
 	
 	decBaseFileReader * const fileReader = ds.GetClassFileReader()->GetFileReader(rt->GetValue(0)->GetRealObject());
-	if(! fileReader){
+	if(!fileReader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -490,7 +490,7 @@ void deClassFileWriter::nfWriteTimeDate::RunFunction(dsRunTime *rt, dsValue *mys
 
 deClassFileWriter::deClassFileWriter(deScriptingDragonScript *ds) :
 dsClass("FileWriter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -560,7 +560,7 @@ void deClassFileWriter::CreateClassMembers(dsEngine *engine){
 }
 
 decBaseFileWriter *deClassFileWriter::GetFileWriter(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -568,7 +568,7 @@ decBaseFileWriter *deClassFileWriter::GetFileWriter(dsRealObject *myself) const{
 }
 
 int deClassFileWriter::GetStreamVersion(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -576,11 +576,11 @@ int deClassFileWriter::GetStreamVersion(dsRealObject *myself) const{
 }
 
 void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! fileWriter){
+	if(!fileWriter){
 		rt->PushObject(NULL, this);
 		return;
 	}

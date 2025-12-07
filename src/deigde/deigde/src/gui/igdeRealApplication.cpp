@@ -72,7 +72,7 @@ bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 	// 	}
 		
 		// process command line. run application only if it succeeded
-		if(! GetWindowMain().ProcessCommandLine(arguments)){
+		if(!GetWindowMain().ProcessCommandLine(arguments)){
 			GetWindowMain().Close();
 			return false;
 		}

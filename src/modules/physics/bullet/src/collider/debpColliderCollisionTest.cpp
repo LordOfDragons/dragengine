@@ -75,7 +75,7 @@ void debpColliderCollisionTest::CollisionTestChanged(){
 }
 
 void debpColliderCollisionTest::Update(){
-	if(! pCollisionTest.GetEnabled()){
+	if(!pCollisionTest.GetEnabled()){
 		return;
 	}
 	
@@ -88,7 +88,7 @@ void debpColliderCollisionTest::Update(){
 	decQuaternion orientation(pCollisionTest.GetOrientation());
 	decVector direction(pCollisionTest.GetDirection());
 	
-	if(! pCollisionTest.GetBone().IsEmpty()){
+	if(!pCollisionTest.GetBone().IsEmpty()){
 		deComponent * const component = pCollisionTest.GetComponent();
 		
 		if(component){
@@ -184,7 +184,7 @@ void debpColliderCollisionTest::ColliderHits(const decDVector &position){
 
 void debpColliderCollisionTest::ColliderHits(const decDVector &position, const decQuaternion &orientation){
 	deCollider * const collider = pCollisionTest.GetCollider();
-	if(! collider){
+	if(!collider){
 		return;
 	}
 	
@@ -210,7 +210,7 @@ void debpColliderCollisionTest::ColliderMoveHits(const decDVector &position, con
 void debpColliderCollisionTest::ColliderMoveHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &direction){
 	deCollider * const collider = pCollisionTest.GetCollider();
-	if(! collider){
+	if(!collider){
 		return;
 	}
 	
@@ -236,7 +236,7 @@ void debpColliderCollisionTest::ColliderRotateHits(const decDVector &position, c
 void debpColliderCollisionTest::ColliderRotateHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &rotation){
 	deCollider * const collider = pCollisionTest.GetCollider();
-	if(! collider){
+	if(!collider){
 		return;
 	}
 	
@@ -263,7 +263,7 @@ const decVector &rotation){
 void debpColliderCollisionTest::ColliderMoveRotateHits(const decDVector &position, const decQuaternion &orientation,
 const decVector &direction, const decVector &rotation){
 	deCollider * const collider = pCollisionTest.GetCollider();
-	if(! collider){
+	if(!collider){
 		return;
 	}
 	

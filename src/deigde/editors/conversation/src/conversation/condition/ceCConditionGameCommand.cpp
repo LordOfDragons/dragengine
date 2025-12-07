@@ -57,7 +57,7 @@ ceCConditionGameCommand::~ceCConditionGameCommand(){
 ///////////////
 
 void ceCConditionGameCommand::SetCommand(const char *command){
-	if(! command){
+	if(!command){
 		DETHROW(deeInvalidParam);
 	}
 	

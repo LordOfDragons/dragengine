@@ -60,7 +60,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Script module. */
-	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Network state from object. */
 	deNetworkState *GetNetworkState(dsRealObject *myself) const;
@@ -68,8 +68,8 @@ public:
 	/** \brief Push network state. */
 	void PushNetworkState(dsRunTime *rt, deNetworkState *state);
 	
-	inline dsClass *GetClassNetworkStateValueType() const{return pClsNetworkStateValueType;}
-	inline dsClass *GetClassNetworkStateValueFormat() const{return pClsNetworkStateValueFormat;}
+	inline dsClass *GetClassNetworkStateValueType() const{ return pClsNetworkStateValueType; }
+	inline dsClass *GetClassNetworkStateValueFormat() const{ return pClsNetworkStateValueFormat; }
 	/*@}*/
 	
 	

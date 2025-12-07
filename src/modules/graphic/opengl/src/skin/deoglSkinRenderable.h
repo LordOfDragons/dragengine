@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** One or more texture properties using this renderable require a texture. */
-	inline bool GetRequiresTexture() const{return pRequiresTexture;}
+	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
 	/** Set if one or more texture properties using this renderable require a texture. */
 	void SetRequiresTexture(bool requiresTexture);

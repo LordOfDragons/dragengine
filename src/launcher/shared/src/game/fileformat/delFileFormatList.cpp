@@ -68,7 +68,7 @@ int delFileFormatList::IndexOf(delFileFormat *format) const{
 }
 
 void delFileFormatList::Add(delFileFormat *format){
-	if(! format){
+	if(!format){
 		DETHROW_INFO(deeNullPointer, "format");
 	}
 	

@@ -43,7 +43,7 @@ gdeUOCSetPropertyValues::gdeUOCSetPropertyValues(gdeObjectClass *objectClass,
 const decStringDictionary &newValues) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

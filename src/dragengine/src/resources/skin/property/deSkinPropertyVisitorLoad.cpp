@@ -69,7 +69,7 @@ void deSkinPropertyVisitorLoad::VisitImage(deSkinPropertyImage &property){
 	
 	deImage::Ref image;
 	
-	if(! property.GetPath().IsEmpty()){
+	if(!property.GetPath().IsEmpty()){
 		try{
 			image.TakeOver(pEngine.GetImageManager()->LoadImage(
 				pVirtualFileSystem, property.GetPath(), pBasePath));
@@ -80,7 +80,7 @@ void deSkinPropertyVisitorLoad::VisitImage(deSkinPropertyImage &property){
 	}
 	
 	// TODO missing image has to be handled by graphic module
-	if(! property.GetImage()){
+	if(!property.GetImage()){
 		try{
 			image.TakeOver(pEngine.GetImageManager()->LoadDefault());
 			property.SetImage(image);
@@ -97,7 +97,7 @@ void deSkinPropertyVisitorLoad::VisitVideo(deSkinPropertyVideo &property){
 	
 	deVideo::Ref video;
 	
-	if(! property.GetPath().IsEmpty()){
+	if(!property.GetPath().IsEmpty()){
 		try{
 			video.TakeOver(pEngine.GetVideoManager()->LoadVideo(
 				pVirtualFileSystem, property.GetPath(), pBasePath, false));

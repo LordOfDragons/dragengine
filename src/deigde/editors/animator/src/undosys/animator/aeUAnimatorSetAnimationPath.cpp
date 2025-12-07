@@ -43,7 +43,7 @@ aeUAnimatorSetAnimationPath::aeUAnimatorSetAnimationPath(aeAnimator *animator, c
 pAnimator(animator),
 pNewValue(newValue)
 {
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

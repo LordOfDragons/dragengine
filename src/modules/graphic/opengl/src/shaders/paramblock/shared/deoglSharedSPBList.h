@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Layout reference. */
-	inline const deoglShaderParameterBlock::Ref &GetLayout() const{return pLayout;}
+	inline const deoglShaderParameterBlock::Ref &GetLayout() const{ return pLayout; }
 	
 	/** Maximum number of elements per block. */
 	int GetSize() const;

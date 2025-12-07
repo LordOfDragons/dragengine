@@ -68,24 +68,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Height of line of text in pixels. */
-	inline int GetLineHeight() const{return pLineHeight;}
+	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** \brief Maximum width of all glyphs in pixels. */
-	inline int GetFontWidth() const{return pFontWidth;}
+	inline int GetFontWidth() const{ return pFontWidth; }
 	
 	/** \brief Base line position in pixels from top. */
-	inline int GetBaseLine() const{return pBaseLine;}
+	inline int GetBaseLine() const{ return pBaseLine; }
 	
 	/** \brief Set base line position in pixels from top. */
 	void SetBaseLine(int baseLine);
 	
 	
 	/** \brief Undefined glyph. */
-	inline deFontGlyph &GetUndefinedGlyph(){return pUndefinedGlyph;}
-	inline const deFontGlyph &GetUndefinedGlyph() const{return pUndefinedGlyph;}
+	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
+	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{return pGlyphCount;}
+	inline int GetGlyphCount() const{ return pGlyphCount; }
 	
 	/** \brief Glyph at index. */
 	deFontGlyph &GetGlyphAt(int index);
@@ -96,20 +96,20 @@ public:
 	
 	
 	/** \brief Path to image resource or empty string is not set. */
-	inline const decString &GetImagePath() const{return pImagePath;}
+	inline const decString &GetImagePath() const{ return pImagePath; }
 	
 	/** \brief Set path to image if existing. */
 	void SetImagePath(const char *path);
 	
 	/** \brief Image or nullptr. */
-	inline const deImage::Ref &GetImage() const{return pImage;}
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or nullptr. */
 	void SetImage(deImage *image);
 	
 	
 	/** \brief Load task or nullptr if finished. */
-	inline deParallelTask *GetTaskLoad() const{return pTaskLoad;}
+	inline deParallelTask *GetTaskLoad() const{ return pTaskLoad; }
 	
 	/** \brief Set load task or nullptr if finished. */
 	void SetTaskLoad(deParallelTask *task);

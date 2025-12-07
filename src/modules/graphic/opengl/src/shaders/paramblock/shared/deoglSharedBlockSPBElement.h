@@ -85,19 +85,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */
-	inline deoglSharedBlockSPB &GetSPB() const{return pSPB;}
+	inline deoglSharedBlockSPB &GetSPB() const{ return pSPB; }
 	
 	/** Element index in the shader parameter block. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Count of elements. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** Set count of elements. */
 	void SetCount(int count);
 	
 	/** Block is empty. */
-	inline bool GetEmpty() const{return pEmpty;}
+	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
 	void SetEmpty(bool empty);

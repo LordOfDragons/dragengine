@@ -77,7 +77,7 @@ void deClassTexMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
-	if(! objMat){
+	if(!objMat){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -94,7 +94,7 @@ void deClassTexMatrix::nfNewTranslation::RunFunction(dsRunTime *rt, dsValue *mys
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objTranslation = rt->GetValue(0)->GetRealObject();
-	if(! objTranslation){
+	if(!objTranslation){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -127,7 +127,7 @@ void deClassTexMatrix::nfNewScaling::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
-	if(! objScaling){
+	if(!objScaling){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -616,7 +616,7 @@ void deClassTexMatrix::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *mysel
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decTexMatrix matrix;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -640,7 +640,7 @@ void deClassTexMatrix::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself
 	const deClassFileWriter &clsFileWriter = *clsTexMatrix.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -666,7 +666,7 @@ void deClassTexMatrix::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
-	if(! objMat){
+	if(!objMat){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -685,7 +685,7 @@ void deClassTexMatrix::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
-	if(! objMat){
+	if(!objMat){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -730,7 +730,7 @@ void deClassTexMatrix::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
-	if(! objMat){
+	if(!objMat){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -750,7 +750,7 @@ void deClassTexMatrix::nfOpMultiply2::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objTexCoord = rt->GetValue(0)->GetRealObject();
-	if(! objTexCoord){
+	if(!objTexCoord){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -787,7 +787,7 @@ void deClassTexMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassTexMatrix * const clsTexMatrix = (deClassTexMatrix*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsTexMatrix)){
+	if(!p_IsObjOfType(obj, clsTexMatrix)){
 		rt->PushBool(false);
 		
 	}else{
@@ -875,7 +875,7 @@ void deClassTexMatrix::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *
 
 deClassTexMatrix::deClassTexMatrix(deScriptingDragonScript *ds) :
 dsClass("TexMatrix", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -977,7 +977,7 @@ const decTexMatrix &deClassTexMatrix::GetTexMatrix(dsRealObject *myself) const{
 }
 
 void deClassTexMatrix::PushTexMatrix(dsRunTime *rt, const decTexMatrix &matrix){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

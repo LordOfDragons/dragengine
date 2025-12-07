@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of selected entries. */
-	inline const lpeLangPackEntryList &GetSelected() const{return pSelection;}
+	inline const lpeLangPackEntryList &GetSelected() const{ return pSelection; }
 	/** \brief Adds a entries to the selection if not included already. */
 	void Add(lpeLangPackEntry *entry);
 	/** \brief Removes a entries from the selection if included. */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** \brief Retrieves the active entries or NULL if there is none. */
-	inline lpeLangPackEntry *GetActive() const{return pActive;}
+	inline lpeLangPackEntry *GetActive() const{ return pActive; }
 	/** \brief Determines if there is an active entries. */
 	bool HasActive() const;
 	/** \brief Sets the active entries or NULL if there is none. */

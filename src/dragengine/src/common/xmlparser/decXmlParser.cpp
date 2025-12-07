@@ -55,7 +55,7 @@
 ////////////////////////////
 
 decXmlParser::decXmlParser(deLogger *logger){
-	if(! logger) DETHROW(deeInvalidParam);
+	if(!logger) DETHROW(deeInvalidParam);
 	
 	pLogger = logger;
 	pLine = 1;
@@ -91,14 +91,14 @@ decXmlParser::~decXmlParser(){
 ///////////////
 
 bool decXmlParser::ParseXml(decBaseFileReader *file, decXmlDocument *doc){
-	if(! doc) DETHROW(deeInvalidParam);
+	if(!doc) DETHROW(deeInvalidParam);
 	PrepareParse(file);
 	try{
 		ParseDocument(doc);
 	}catch(const deException &){
-		if(! pHasFatalError) throw;
+		if(!pHasFatalError) throw;
 	}
-	return ! pHasFatalError;
+	return !pHasFatalError;
 }
 
 
@@ -120,7 +120,7 @@ void decXmlParser::UnexpectedToken(int line, int pos, const char *token){
 ///////////////////
 
 void decXmlParser::PrepareParse(decBaseFileReader *file){
-	if(! file) DETHROW(deeInvalidParam);
+	if(!file) DETHROW(deeInvalidParam);
 	pFile = file;
 	pFilePos = file->GetPosition();
 	pFileLen = file->GetLength();
@@ -136,7 +136,7 @@ void decXmlParser::PrepareParse(decBaseFileReader *file){
 void decXmlParser::ParseDocument(decXmlDocument *doc){
 	// document ::= prolog element Misc*
 	ParseProlog(doc);
-	if(! ParseElementTag(doc, doc->GetDocType())) RaiseFatalError();
+	if(!ParseElementTag(doc, doc->GetDocType())) RaiseFatalError();
 	ParseMisc(doc);
 	if(GetTokenAt(0) != DEXP_EOF) RaiseFatalError();
 }
@@ -152,12 +152,12 @@ void decXmlParser::ParseProlog(decXmlDocument *doc){
 void decXmlParser::ParseXMLDecl(decXmlDocument *doc){
 	bool hasSpaces = false;
 	// XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
-	if(! ParseToken("<?xml")) return;
+	if(!ParseToken("<?xml")) return;
 	// VersionInfo ::= S 'version' Eq ("'" VersionNum "'" | '"' VersionNum '"')
 	if(ParseSpaces() < 1) RaiseFatalError();
-	if(! ParseToken("version")) RaiseFatalError();
+	if(!ParseToken("version")) RaiseFatalError();
 	ParseEquals();
-	if(! (ParseToken("'1.0'") || ParseToken("\"1.0\""))) RaiseFatalError();
+	if(!(ParseToken("'1.0'") || ParseToken("\"1.0\""))) RaiseFatalError();
 	hasSpaces = ParseSpaces() > 0;
 	// EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' | "'" EncName "'" )
 	if(hasSpaces && ParseToken("encoding")){
@@ -178,12 +178,12 @@ void decXmlParser::ParseXMLDecl(decXmlDocument *doc){
 		hasSpaces = ParseSpaces() > 0;
 	}
 	// S? '?>'
-	if(! ParseToken("?>")) RaiseFatalError();
+	if(!ParseToken("?>")) RaiseFatalError();
 }
 
 void decXmlParser::ParseDocTypeDecl(decXmlDocument *doc){
 	// doctypedecl ::= '<!DOCTYPE' S Name (S ExternalID)? S? ('[' intSubset ']' S?)? '>'
-	if(! ParseToken("<!DOCTYPE")) return;
+	if(!ParseToken("<!DOCTYPE")) return;
 	if(ParseSpaces() < 1) RaiseFatalError();
 	ParseName(0, true);
 	doc->SetDocType(pCleanString);
@@ -207,7 +207,7 @@ void decXmlParser::ParseDocTypeDecl(decXmlDocument *doc){
 		RaiseFatalError();
 	}
 	// '>'
-	if(! ParseToken(">")) RaiseFatalError();
+	if(!ParseToken(">")) RaiseFatalError();
 }
 
 void decXmlParser::ParseSystemLiteral(decXmlDocument *doc){
@@ -231,7 +231,7 @@ void decXmlParser::ParseSystemLiteral(decXmlDocument *doc){
 	SetCleanString(count);
 	doc->SetSystemLiteral(pCleanString);
 	RemoveFromToken(count);
-	if(! ParseToken(delimiter)) RaiseFatalError();
+	if(!ParseToken(delimiter)) RaiseFatalError();
 }
 
 void decXmlParser::ParsePublicLiteral(decXmlDocument *doc){
@@ -251,13 +251,13 @@ void decXmlParser::ParsePublicLiteral(decXmlDocument *doc){
 	while(true){
 		nextChar = GetTokenAt(count);
 		if(nextChar == DEXP_EOF) RaiseFatalError();
-		if(! IsPubidChar(nextChar, restricted)) break;
+		if(!IsPubidChar(nextChar, restricted)) break;
 		count++;
 	}
 	SetCleanString(count);
 	doc->SetPublicLiteral(pCleanString);
 	RemoveFromToken(count);
-	if(! ParseToken(delimiter)) RaiseFatalError();
+	if(!ParseToken(delimiter)) RaiseFatalError();
 }
 
 bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requiredName){
@@ -270,7 +270,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 	// element ::= EmptyElemTag | STag content ETag
 	// EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
 	// STag ::= '<' Name (S Attribute)* S? '>'
-	if(! ParseToken("<")){
+	if(!ParseToken("<")){
 		return false;
 	}
 	ParseName(0, true);
@@ -316,7 +316,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 					if(ParseToken("</")){
 						break;
 					}
-					if(! (ParseComment(tag) || ParsePI(tag) || ParseReference(tag)
+					if(!(ParseComment(tag) || ParsePI(tag) || ParseReference(tag)
 					|| ParseCDSect(tag) || ParseElementTag(tag, NULL))){
 						RaiseFatalError();
 					}
@@ -328,7 +328,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 					RaiseFatalError();
 				}
 				ParseSpaces();
-				if(! ParseToken(">")){
+				if(!ParseToken(">")){
 					RaiseFatalError();
 				}
 				break;
@@ -376,7 +376,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 					character = 0;
 					count = 3;
 					tchar = GetTokenAt(count++);
-					if(! IsHex(tchar)) RaiseFatalError();
+					if(!IsHex(tchar)) RaiseFatalError();
 					
 					while(true){
 						if(tchar >= 'A' && tchar <= 'F'){
@@ -390,7 +390,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 						}
 						
 						tchar = GetTokenAt(count);
-						if(! IsHex(tchar)) break;
+						if(!IsHex(tchar)) break;
 						count++;
 					}
 					if(GetTokenAt(count) != ';') RaiseFatalError();
@@ -405,13 +405,13 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 					character = 0;
 					count = 2;
 					tchar = GetTokenAt(count++);
-					if(! IsLatinDigit(tchar)) RaiseFatalError();
+					if(!IsLatinDigit(tchar)) RaiseFatalError();
 					
 					while(true){
 						character = character * 10 + (tchar - '0');
 						
 						tchar = GetTokenAt(count);
-						if(! IsLatinDigit(tchar)) break;
+						if(!IsLatinDigit(tchar)) break;
 						count++;
 					}
 					if(GetTokenAt(count) != ';') RaiseFatalError();
@@ -487,7 +487,7 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 	// CDStart ::= '<![CDATA['
 	// CData ::= (Char* - (Char* ']]>' Char*))
 	// CDEnd ::= ']]>'
-	if(! ParseToken("<![CDATA[")) return false;
+	if(!ParseToken("<![CDATA[")) return false;
 	try{
 		while(true){
 			nextChar = GetTokenAt(count);
@@ -497,14 +497,14 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 		}
 		SetCleanString(count);
 		cdsect = new decXmlCDSect(pCleanString);
-		if(! cdsect) DETHROW(deeOutOfMemory);
+		if(!cdsect) DETHROW(deeOutOfMemory);
 		cdsect->SetLineNumber(lineNumber);
 		cdsect->SetPositionNumber(posNumber);
 		RemoveFromToken(count);
 		container->AddElement(cdsect);
 		cdsect->FreeReference();
 		cdsect = NULL;
-		if(! ParseToken("]]>")) RaiseFatalError();
+		if(!ParseToken("]]>")) RaiseFatalError();
 	}catch(const deException &){
 		if(cdsect){
 			cdsect->FreeReference();
@@ -523,7 +523,7 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 	// (ADDITION): if Name begins with 'xmlns:' make a namespace out of it
 	ParseName(0, true);
 	attValue = new decXmlAttValue(pCleanString);
-	if(! attValue) DETHROW(deeOutOfMemory);
+	if(!attValue) DETHROW(deeOutOfMemory);
 	attValue->SetLineNumber(lineNumber);
 	attValue->SetPositionNumber(posNumber);
 	try{
@@ -532,7 +532,7 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 		// check if this is a namespace
 		if(strncmp(attValue->GetName(), "xmlns:", 6) == 0){
 			ns = new decXmlNamespace(attValue->GetName() + 6, attValue->GetValue());
-			if(! ns) DETHROW(deeOutOfMemory);
+			if(!ns) DETHROW(deeOutOfMemory);
 			ns->SetLineNumber(lineNumber);
 			ns->SetPositionNumber(posNumber);
 			attValue->FreeReference();
@@ -585,7 +585,7 @@ void decXmlParser::ParseAttValue(decXmlAttValue *value){
 				if(nextChar == 'x'){
 					count += 3;
 					nextChar = GetTokenAt(count++);
-					if(! IsHex(nextChar)) RaiseFatalError();
+					if(!IsHex(nextChar)) RaiseFatalError();
 					while(true){
 						if(nextChar >= 'A' && nextChar <= 'F'){
 							character = (character << 4) + 10 + (nextChar - 'A');
@@ -598,18 +598,18 @@ void decXmlParser::ParseAttValue(decXmlAttValue *value){
 						}
 						
 						nextChar = GetTokenAt(count);
-						if(! IsHex(nextChar)) break;
+						if(!IsHex(nextChar)) break;
 						count++;
 					}
 				}else{
 					count += 2;
 					nextChar = GetTokenAt(count++);
-					if(! IsLatinDigit(nextChar)) RaiseFatalError();
+					if(!IsLatinDigit(nextChar)) RaiseFatalError();
 					while(true){
 						character = character * 10 + (nextChar - '0');
 						
 						nextChar = GetTokenAt(count);
-						if(! IsLatinDigit(nextChar)) break;
+						if(!IsLatinDigit(nextChar)) break;
 						count++;
 					}
 				}
@@ -669,7 +669,7 @@ int decXmlParser::ParseSpaces(){
 	// S ::= (#x20 | #x9 | #xD | #xA)+
 	while(true){
 		nextChar = GetTokenAt(0);
-		if(nextChar == DEXP_EOF || ! IsSpace(nextChar)) break;
+		if(nextChar == DEXP_EOF || !IsSpace(nextChar)) break;
 		RemoveFromToken(1);
 		count++;
 	}
@@ -679,7 +679,7 @@ int decXmlParser::ParseSpaces(){
 void decXmlParser::ParseEquals(){
 	// Eq ::= S? '=' S?
 	if(ParseSpaces() > 1) RaiseFatalError();
-	if(! ParseToken("=")) RaiseFatalError();
+	if(!ParseToken("=")) RaiseFatalError();
 	if(ParseSpaces() > 1) RaiseFatalError();
 }
 
@@ -696,11 +696,11 @@ void decXmlParser::ParseEncName(decXmlDocument *doc){
 		return;
 	}
 	nextChar = GetTokenAt(0);
-	if(nextChar == DEXP_EOF || ! IsLatinLetter(nextChar)) RaiseFatalError();
+	if(nextChar == DEXP_EOF || !IsLatinLetter(nextChar)) RaiseFatalError();
 	while(true){
 		nextChar = GetTokenAt(count);
 		if(nextChar == DEXP_EOF) RaiseFatalError();
-		if(! (IsLatinLetter(nextChar) || IsLatinDigit(nextChar)
+		if(!(IsLatinLetter(nextChar) || IsLatinDigit(nextChar)
 		|| nextChar == '-' || nextChar == '.' || nextChar == '_')){
 			break;
 		}
@@ -709,7 +709,7 @@ void decXmlParser::ParseEncName(decXmlDocument *doc){
 	SetCleanString(count);
 	doc->SetEncoding(pCleanString);
 	RemoveFromToken(count);
-	if(! ParseToken(delimiter)) RaiseFatalError();
+	if(!ParseToken(delimiter)) RaiseFatalError();
 }
 
 void decXmlParser::ParseMisc(decXmlContainer *container){
@@ -723,7 +723,7 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	int posNumber = pTokenPos;
 	int nextChar, count = 0;
 	decXmlComment *comment = NULL;
-	if(! ParseToken("<!--")) return false;
+	if(!ParseToken("<!--")) return false;
 	while(true){
 		nextChar = GetTokenAt(count);
 		if(nextChar == DEXP_EOF) RaiseFatalError();
@@ -745,7 +745,7 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	// add comment
 	SetCleanString(count);
 	comment = new decXmlComment(pCleanString);
-	if(! comment) DETHROW(deeOutOfMemory);
+	if(!comment) DETHROW(deeOutOfMemory);
 	comment->SetLineNumber(lineNumber);
 	comment->SetPositionNumber(posNumber);
 	try{
@@ -766,7 +766,7 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 	int posNumber = pTokenPos;
 	int nextChar, count = 0;
 	decXmlPI *pi = NULL;
-	if(! ParseToken("<?")) return false;
+	if(!ParseToken("<?")) return false;
 	ParseName(0, true);
 	if(strlen(pCleanString) >= 3){
 		if(pCleanString[0] == 'X' || pCleanString[0] == 'x'
@@ -776,7 +776,7 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 		}
 	}
 	pi = new decXmlPI(pCleanString);
-	if(! pi) DETHROW(deeOutOfMemory);
+	if(!pi) DETHROW(deeOutOfMemory);
 	pi->SetLineNumber(lineNumber);
 	pi->SetPositionNumber(posNumber);
 	try{
@@ -824,13 +824,13 @@ int decXmlParser::ParseName(int offset, bool autoRemove){
 	// NameChar ::= Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender
 	nextChar = GetTokenAt(count);
 	if(nextChar == DEXP_EOF) RaiseFatalError();
-	if(! IsLetter(nextChar) && nextChar != '_' && nextChar != ':') RaiseFatalError();
+	if(!IsLetter(nextChar) && nextChar != '_' && nextChar != ':') RaiseFatalError();
 	while(true){
 		nextChar = GetTokenAt(count);
 		if(nextChar == DEXP_EOF) break;
-		if(! IsLetter(nextChar) && ! IsDigit(nextChar) && nextChar != '.'
+		if(!IsLetter(nextChar) && !IsDigit(nextChar) && nextChar != '.'
 		&& nextChar != '-' && nextChar != '_' && nextChar != ':'
-		&& ! IsCombiningChar(nextChar) && ! IsExtender(nextChar)){
+		&& !IsCombiningChar(nextChar) && !IsExtender(nextChar)){
 			break;
 		}
 		count++;
@@ -1038,7 +1038,7 @@ void decXmlParser::SetCleanString(int length){
 	if(length > pTokenLen) DETHROW(deeInvalidParam);
 	if(length > pCleanStringSize){
 		char *newStr = new char[length + 1];
-		if(! newStr) DETHROW(deeOutOfMemory);
+		if(!newStr) DETHROW(deeOutOfMemory);
 		if(pCleanString) delete [] pCleanString;
 		pCleanString = newStr;
 		pCleanStringSize = length;
@@ -1088,7 +1088,7 @@ void decXmlParser::pGetNextCharAndAdd(){
 void decXmlParser::pGrowToken(){
 	int newSize = pTokenSize * 3 / 2 + 1;
 	char *newToken = new char[newSize + 1];
-	if(! newToken) DETHROW(deeOutOfMemory);
+	if(!newToken) DETHROW(deeOutOfMemory);
 	if(pToken){
 		if(pTokenLen > 0){
 			#ifdef OS_W32_VS
@@ -1118,7 +1118,7 @@ void decXmlParser::pAddCharacterData(decXmlContainer *container, const char *tex
 	}
 	
 	cdata = new decXmlCharacterData(text);
-	if(! cdata) DETHROW(deeOutOfMemory);
+	if(!cdata) DETHROW(deeOutOfMemory);
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);
@@ -1140,7 +1140,7 @@ void decXmlParser::pAddCharacterData(decXmlContainer *container, char character,
 	
 	char buffer[2] = {character, '\0'};
 	cdata = new decXmlCharacterData((const char *)&buffer);
-	if(! cdata) DETHROW(deeOutOfMemory);
+	if(!cdata) DETHROW(deeOutOfMemory);
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);

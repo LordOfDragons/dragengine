@@ -40,7 +40,7 @@
 ////////////////////////////
 
 cePlaybackVariable::cePlaybackVariable(const char *name, int value){
-	if(! name || strlen(name) == 0){
+	if(!name || strlen(name) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

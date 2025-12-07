@@ -46,7 +46,7 @@ meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const m
 	meObject *object;
 	int i;
 	
-	if(! key || count < 1){
+	if(!key || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -56,7 +56,7 @@ meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const m
 		
 		for(i=0; i<count; i++){
 			object = list.GetAt(i);
-			if(! object->GetWorld()){
+			if(!object->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			

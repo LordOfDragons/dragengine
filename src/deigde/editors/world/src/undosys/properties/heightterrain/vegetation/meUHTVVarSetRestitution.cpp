@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, float newRestitution){
-	if(! variation) DETHROW(deeInvalidParam);
+	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	

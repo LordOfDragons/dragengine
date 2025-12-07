@@ -51,7 +51,7 @@ aeIGDEModule::~aeIGDEModule(){
 ///////////////
 
 void aeIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new aeWindowMain(*this));
 	}
 }

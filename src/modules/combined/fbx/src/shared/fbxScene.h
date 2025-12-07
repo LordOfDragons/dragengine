@@ -125,7 +125,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Version in the form 7300 = 7.3 . */
-	inline int GetVersion() const{return pVersion;}
+	inline int GetVersion() const{ return pVersion; }
 	
 	/** Set version in the form 7300 = 7.3 . */
 	void SetVersion(int version);
@@ -133,16 +133,16 @@ public:
 	
 	
 	/** Root node. */
-	inline fbxNode *GetNode() const{return pNode;}
+	inline fbxNode *GetNode() const{ return pNode; }
 	
 	/** Root node. */
-	inline fbxNode *GetNodeObjects() const{return pNodeObjects;}
+	inline fbxNode *GetNodeObjects() const{ return pNodeObjects; }
 	
 	/** Scene transformation. */
-	inline const decMatrix &GetTransformation() const{return pTransformation;}
+	inline const decMatrix &GetTransformation() const{ return pTransformation; }
 	
 	/** Scene axis transformation. */
-	inline const decMatrix &GetAxisTransformation() const{return pAxisTransformation;}
+	inline const decMatrix &GetAxisTransformation() const{ return pAxisTransformation; }
 	
 	/** Transform matrix. */
 	decMatrix TransformMatrix(const decMatrix &matrix) const;

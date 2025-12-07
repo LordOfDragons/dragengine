@@ -153,10 +153,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline ceWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);

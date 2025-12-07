@@ -41,7 +41,7 @@
 ////////////////////////////
 
 peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *parameter, float newSpread){
-	if(! type || ! parameter){
+	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
 	

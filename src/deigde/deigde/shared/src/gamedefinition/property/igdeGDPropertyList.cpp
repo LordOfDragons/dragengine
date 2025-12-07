@@ -111,7 +111,7 @@ bool igdeGDPropertyList::HasNamed(const char *name) const{
 }
 
 void igdeGDPropertyList::Add(igdeGDProperty *property){
-	if(! property || HasNamed(property->GetName())){
+	if(!property || HasNamed(property->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pProperties.Add(property);

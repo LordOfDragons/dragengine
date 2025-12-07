@@ -134,7 +134,7 @@ uint64_t deVFSCacheDiskDirectory::CalculateDirectorySize(const char *path){
 				// fetch next directory entry
 				errno = 0;
 				entry = readdir(theDir);
-				if(! entry){
+				if(!entry){
 					if(errno == 0){
 						break;
 					}
@@ -214,7 +214,7 @@ uint64_t deVFSCacheDiskDirectory::CalculateDirectorySize(const char *path){
 				}
 				
 				// read next entry
-				if(! FindNextFileW(searchHandle, &dirEntry)){
+				if(!FindNextFileW(searchHandle, &dirEntry)){
 				    if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}
@@ -263,7 +263,7 @@ TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path){
 				// fetch next directory entry
 				errno = 0;
 				entry = readdir(theDir);
-				if(! entry){
+				if(!entry){
 					if(errno == 0){
 						break;
 					}
@@ -284,7 +284,7 @@ TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path){
 				
 				if(S_ISREG(st.st_mode)){
 					entryAccessTime = (TIME_SYSTEM)st.st_atime;
-					if(! hasOldestFile || entryAccessTime < oldestAccesTime){
+					if(!hasOldestFile || entryAccessTime < oldestAccesTime){
 						oldestFile = pathFile;
 						oldestAccesTime = entryAccessTime;
 						oldestFileSize = (uint64_t)st.st_size;
@@ -341,7 +341,7 @@ TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path){
 						
 					}else{
 						SYSTEMTIME stime;
-						if(! FileTimeToSystemTime(&dirEntry.ftLastWriteTime, &stime)){
+						if(!FileTimeToSystemTime(&dirEntry.ftLastWriteTime, &stime)){
 							DETHROW(deeInvalidParam);
 						}
 						
@@ -366,7 +366,7 @@ TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path){
 				}
 				
 				// read next entry
-				if(! FindNextFileW(searchHandle, &dirEntry)){
+				if(!FindNextFileW(searchHandle, &dirEntry)){
 				    if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}

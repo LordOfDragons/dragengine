@@ -93,7 +93,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -117,7 +117,7 @@ public:
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -139,7 +139,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -161,7 +161,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -183,7 +183,7 @@ public:
 	
 	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meWorld * const world = pPanel.GetWorld();
-		if(! world){
+		if(!world){
 			return;
 		}
 		
@@ -261,7 +261,7 @@ public:
 	cEditSize(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
 	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld *world){
-		return ! world->GetSize().IsEqualTo(vector) ? new meUWorldSetSize(world, vector) : NULL;
+		return !world->GetSize().IsEqualTo(vector) ? new meUWorldSetSize(world, vector) : NULL;
 	}
 };
 
@@ -271,7 +271,7 @@ public:
 	cEditGravity(meWPWorld &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo * OnChanged(const decVector &vector, meWorld *world){
-		return ! world->GetGravity().IsEqualTo(vector) ? new meUWorldSetGravity(world, vector) : NULL;
+		return !world->GetGravity().IsEqualTo(vector) ? new meUWorldSetGravity(world, vector) : NULL;
 	}
 };
 
@@ -356,7 +356,7 @@ public:
 		"Show Path", NULL, "Show path"){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
-		world->GetPathFindTest()->SetShowPath(! world->GetPathFindTest()->GetShowPath());
+		world->GetPathFindTest()->SetShowPath(!world->GetPathFindTest()->GetShowPath());
 		return NULL;
 	}
 };
@@ -452,7 +452,7 @@ public:
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
-		if(! pPanel.GetWorld()){
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
@@ -470,7 +470,7 @@ public:
 	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const int value = textField->GetInteger();
-		if(! type || value == type->GetTypeNumber()){
+		if(!type || value == type->GetTypeNumber()){
 			return NULL;
 		}
 		
@@ -812,7 +812,7 @@ void meWPWorld::UpdatePathFindTest(){
 }
 
 mePathFindTestType *meWPWorld::GetActivePathFindTestType() const{
-	if(! pWorld){
+	if(!pWorld){
 		return NULL;
 	}
 	
@@ -909,7 +909,7 @@ void meWPWorld::UpdateIdentifierLists(){
 	const decString &property = GetActiveProperty();
 	decStringSet identifiers;
 	
-	if(pWorld && ! property.IsEmpty()){
+	if(pWorld && !property.IsEmpty()){
 		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty(property);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
 			const meIDGroup * const idgroup = pWorld->GetIDGroupList().GetNamed(gdProperty->GetIdentifierGroup());

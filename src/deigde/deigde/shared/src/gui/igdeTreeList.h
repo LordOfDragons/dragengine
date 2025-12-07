@@ -84,19 +84,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief TreeList is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible rows. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Set visible rows. */
 	void SetRows(int rows);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -107,7 +107,7 @@ public:
 	
 	
 	/** \brief First child item. */
-	inline igdeTreeItem *GetFirstChild() const{return pFirstChild;}
+	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Last child item. */
 	igdeTreeItem *GetLastChild() const;
@@ -181,7 +181,7 @@ public:
 	
 	
 	/** \brief Sorter or NULL. */
-	inline igdeTreeItemSorter *GetSorter() const{return pSorter;}
+	inline igdeTreeItemSorter *GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
 	void SetSorter(igdeTreeItemSorter *sorter);
@@ -198,7 +198,7 @@ public:
 	
 	
 	/** \brief Selected item or NULL. */
-	inline igdeTreeItem *GetSelection() const{return pSelection;}
+	inline igdeTreeItem *GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selected item or NULL. */
 	void SetSelection(igdeTreeItem *selection);

@@ -172,7 +172,7 @@ int declActionDelga::pInstall(){
 	// load delga file to see what game is inside
 	declActionDelgaHelper delga(pLauncher, argumentList.GetArgumentAt(2)->ToUTF8());
 	delga.Load();
-	if(! delga.HasContent()){
+	if(!delga.HasContent()){
 		printf("Empty DELGA.\n");
 		return -1;
 	}
@@ -204,7 +204,7 @@ int declActionDelga::pInstall(){
 	for(i=0; i<patches.GetCount(); i++){
 		const delPatch &patch = *patches.GetAt(i);
 		const delGame *game = pLauncher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
-		if(! game){
+		if(!game){
 			game = delga.GetGames().GetWithID(patch.GetGameID());
 		}
 		printf("- Patch '%s' for game '%s'\n",
@@ -213,7 +213,7 @@ int declActionDelga::pInstall(){
 	}
 	
 	printf("\nDo you want to continue? [y/n] ");
-	if(! pLauncher.ReadInputConfirm()){
+	if(!pLauncher.ReadInputConfirm()){
 		printf("Aborting\n");
 		return -1;
 	}

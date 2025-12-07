@@ -109,7 +109,7 @@ void deSynthesizerInstanceManager::SystemSynthesizerLoad(){
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
 	while(instance){
-		if(! instance->GetPeerSynthesizer()){
+		if(!instance->GetPeerSynthesizer()){
 			synthSys.LoadSynthesizerInstance(instance);
 		}
 		
@@ -131,7 +131,7 @@ void deSynthesizerInstanceManager::SystemAudioLoad(){
 	deAudioSystem &system = *GetAudioSystem();
 	
 	while(instance){
-		if(! instance->GetPeerAudio()){
+		if(!instance->GetPeerAudio()){
 			system.LoadSynthesizerInstance(instance);
 		}
 		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();

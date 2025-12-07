@@ -74,13 +74,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Maximum cache in kilobytes. */
-	inline int GetMaxCacheSize() const{return pMaxCacheSize;}
+	inline int GetMaxCacheSize() const{ return pMaxCacheSize; }
 	
 	/** \brief Set maximum cache size in kilobytes. */
 	void SetMaxCacheSize(int kilobytes);
 	
 	/** \brief Current cache size in kilobytes. */
-	inline int GetCacheSize() const{return pCacheSize;}
+	inline int GetCacheSize() const{ return pCacheSize; }
 	
 	/** \brief Set current cache size in kilobytes. */
 	void SetCacheSize(int kilobytes);

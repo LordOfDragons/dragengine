@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent window. */
-	inline seWPSource &GetWPSource() const{return pWPSource;}
+	inline seWPSource &GetWPSource() const{ return pWPSource; }
 	
 	/** \brief Required source type. */
-	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetRequiredType() const{return pRequiredType;}
+	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetRequiredType() const{ return pRequiredType; }
 	
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
@@ -155,8 +155,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline const igdeAction::Ref &GetActionLinkAdd() const{return pActionLinkAdd;}
-	inline const igdeAction::Ref &GetActionLinkRemove() const{return pActionLinkRemove;}
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

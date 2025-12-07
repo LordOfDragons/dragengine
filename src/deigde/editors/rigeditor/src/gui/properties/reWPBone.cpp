@@ -86,7 +86,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if(! rig || ! bone){
+		if(!rig || !bone){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if(! rig || ! bone){
+		if(!rig || !bone){
 			return;
 		}
 		
@@ -134,7 +134,7 @@ public:
 	virtual void OnAction(){
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if(! rig || ! bone){
+		if(!rig || !bone){
 			return;
 		}
 		
@@ -157,7 +157,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if(! rig || ! bone){
+		if(!rig || !bone){
 			return;
 		}
 		
@@ -205,7 +205,7 @@ public:
 			return NULL;
 		}
 		
-		if(parent && ! bone->CanHaveParent(parent)){
+		if(parent && !bone->CanHaveParent(parent)){
 			igdeCommonDialogs::ErrorFormat(&pPanel, "Invalid Parent Bone",
 				"Internal error. Bone '%s' is not valid as parent and should not have been selectable!",
 				parent->GetName().GetString());

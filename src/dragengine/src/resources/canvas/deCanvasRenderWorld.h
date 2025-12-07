@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera or NULL if not set. */
-	inline deCamera *GetCamera() const{return pCamera;}
+	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL to unset. */
 	void SetCamera(deCamera *camera);

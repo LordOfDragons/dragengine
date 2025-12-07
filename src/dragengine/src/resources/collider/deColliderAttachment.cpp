@@ -48,7 +48,7 @@ pNoScaling(false),
 pWeights(NULL),
 pWeightCount(0)
 {
-	if(! resource || ! CanAttachResource(*resource)){
+	if(!resource || !CanAttachResource(*resource)){
 		DETHROW(deeInvalidParam);
 	}
 }

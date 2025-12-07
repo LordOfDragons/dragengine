@@ -96,43 +96,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline eOrientation GetOrientation() const{return pOrientation;}
+	inline eOrientation GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Range lower value. */
-	inline float GetLower() const{return pLower;}
+	inline float GetLower() const{ return pLower; }
 	
 	/** \brief Range upper value. */
-	inline float GetUpper() const{return pUpper;}
+	inline float GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
 	void SetRange(float lower, float upper);
 	
 	/** \brief Tick spacing. */
-	inline float GetTickSpacing() const{return pTickSpacing;}
+	inline float GetTickSpacing() const{ return pTickSpacing; }
 	
 	/** \brief Set tick spacing. */
 	void SetTickSpacing(float spacing);
 	
 	/** \brief Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(float value);
 	
 	/** \brief Precision. */
-	inline int GetPrecision() const{return pPrecision;}
+	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision. */
 	void SetPrecision(int precision);
 	
 	/** \brief Slider is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);

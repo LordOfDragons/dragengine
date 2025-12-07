@@ -93,8 +93,8 @@ public:
 	virtual void destroy();
 	FXbool canFocus() const;
 	
-	inline bool GetCanRender() const{return pCanRender;}
-	inline bool GetRenderWindowAttached() const{return pRenderWindowAttached;}
+	inline bool GetCanRender() const{ return pCanRender; }
+	inline bool GetRenderWindowAttached() const{ return pRenderWindowAttached; }
 	
 	virtual void DropNativeWindow();
 	virtual bool IsReallyVisible() const;

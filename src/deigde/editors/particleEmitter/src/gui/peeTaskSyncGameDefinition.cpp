@@ -60,7 +60,7 @@ peeTaskSyncGameDefinition::~peeTaskSyncGameDefinition(){
 ///////////////
 
 bool peeTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetEmitter()){
+	if(!pWindowMain.GetEmitter()){
 		return false;
 	}
 	

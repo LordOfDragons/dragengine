@@ -66,28 +66,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** VAO. */
-	inline GLuint GetVAO() const{return pVAO;}
+	inline GLuint GetVAO() const{ return pVAO; }
 	
 	/** Index type. */
-	inline deoglVBOLayout::eIndexTypes GetIndexType() const{return pIndexType;}
+	inline deoglVBOLayout::eIndexTypes GetIndexType() const{ return pIndexType; }
 	
 	/** Set index type. */
 	void SetIndexType(deoglVBOLayout::eIndexTypes indexType);
 	
 	/** Size in bytes of indices. */
-	inline int GetIndexSize() const{return pIndexSize;}
+	inline int GetIndexSize() const{ return pIndexSize; }
 	
 	/** OpenGL type of the indices. */
-	inline int GetIndexGLType() const{return pIndexGLType;}
+	inline int GetIndexGLType() const{ return pIndexGLType; }
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	/** Render task shared vao or NULL. */
-	inline deoglRenderTaskSharedVAO *GetRTSVAO() const{return pRTSVAO;}
+	inline deoglRenderTaskSharedVAO *GetRTSVAO() const{ return pRTSVAO; }
 	
 	/** Ensure render task shared vao is present. */
 	void EnsureRTSVAO();

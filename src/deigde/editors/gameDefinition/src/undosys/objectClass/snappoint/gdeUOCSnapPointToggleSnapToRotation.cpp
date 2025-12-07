@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
 pObjectClass(NULL),
 pSnapPoint(NULL)
 {
-	if(! objectClass || ! snapPoint){
+	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCSnapPointToggleSnapToRotation::~gdeUOCSnapPointToggleSnapToRotation(){
 ///////////////
 
 void gdeUOCSnapPointToggleSnapToRotation::Undo(){
-	pSnapPoint->SetSnapToRotation(! pSnapPoint->GetSnapToRotation());
+	pSnapPoint->SetSnapToRotation(!pSnapPoint->GetSnapToRotation());
 	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }
 

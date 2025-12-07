@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value count. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Value at index. */
 	bool GetValueAt(int index) const;

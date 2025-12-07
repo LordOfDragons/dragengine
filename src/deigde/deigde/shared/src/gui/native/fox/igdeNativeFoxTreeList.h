@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List box. */
-	inline FXTreeList *GetTreeList() const{return pTreeList;}
+	inline FXTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/** \brief Resizer or \em NULL. */
-	inline igdeNativeFoxResizer *GetResizser() const{return pResizer;}
+	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	
 	

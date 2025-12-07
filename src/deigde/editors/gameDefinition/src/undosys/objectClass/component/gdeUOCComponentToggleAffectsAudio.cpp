@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
 ///////////////
 
 void gdeUOCComponentToggleAffectsAudio::Undo(){
-	pComponent->SetAffectsAudio(! pComponent->GetAffectsAudio());
+	pComponent->SetAffectsAudio(!pComponent->GetAffectsAudio());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

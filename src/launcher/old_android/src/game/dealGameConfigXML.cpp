@@ -80,7 +80,7 @@ void dealGameConfigXML::ReadFromFile(decBaseFileReader &reader, dealGame &game){
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "gameConfig") != 0) DETHROW(deeInvalidParam);
+	if(!root || strcmp(root->GetName(), "gameConfig") != 0) DETHROW(deeInvalidParam);
 	
 	pReadConfig(*root, game);
 }
@@ -153,47 +153,47 @@ void dealGameConfigXML::pWriteProfileSystems(decXmlWriter &writer, const dealGam
 	writer.WriteOpeningTag("systems", false, true);
 	
 	writer.WriteDataTagString("graphic", profile.GetModuleGraphic());
-	if(! profile.GetModuleGraphicVersion().IsEmpty()){
+	if(!profile.GetModuleGraphicVersion().IsEmpty()){
 		writer.WriteDataTagString("graphicVersion", profile.GetModuleGraphicVersion());
 	}
 	
 	writer.WriteDataTagString("input", profile.GetModuleInput());
-	if(! profile.GetModuleInputVersion().IsEmpty()){
+	if(!profile.GetModuleInputVersion().IsEmpty()){
 		writer.WriteDataTagString("inputVersion", profile.GetModuleInputVersion());
 	}
 	
 	writer.WriteDataTagString("physics", profile.GetModulePhysics());
-	if(! profile.GetModulePhysicsVersion().IsEmpty()){
+	if(!profile.GetModulePhysicsVersion().IsEmpty()){
 		writer.WriteDataTagString("physicsVersion", profile.GetModulePhysicsVersion());
 	}
 	
 	writer.WriteDataTagString("animator", profile.GetModuleAnimator());
-	if(! profile.GetModuleAnimatorVersion().IsEmpty()){
+	if(!profile.GetModuleAnimatorVersion().IsEmpty()){
 		writer.WriteDataTagString("animatorVersion", profile.GetModuleAnimatorVersion());
 	}
 	
 	writer.WriteDataTagString("ai", profile.GetModuleAI());
-	if(! profile.GetModuleAIVersion().IsEmpty()){
+	if(!profile.GetModuleAIVersion().IsEmpty()){
 		writer.WriteDataTagString("aiVersion", profile.GetModuleAIVersion());
 	}
 	
 	writer.WriteDataTagString("crashRecovery", profile.GetModuleCrashRecovery());
-	if(! profile.GetModuleCrashRecoveryVersion().IsEmpty()){
+	if(!profile.GetModuleCrashRecoveryVersion().IsEmpty()){
 		writer.WriteDataTagString("crashRecoveryVersion", profile.GetModuleCrashRecoveryVersion());
 	}
 	
 	writer.WriteDataTagString("audio", profile.GetModuleAudio());
-	if(! profile.GetModuleAudioVersion().IsEmpty()){
+	if(!profile.GetModuleAudioVersion().IsEmpty()){
 		writer.WriteDataTagString("audioVersion", profile.GetModuleAudioVersion());
 	}
 	
 	writer.WriteDataTagString("synthesizer", profile.GetModuleSynthesizer());
-	if(! profile.GetModuleSynthesizerVersion().IsEmpty()){
+	if(!profile.GetModuleSynthesizerVersion().IsEmpty()){
 		writer.WriteDataTagString("synthesizerVersion", profile.GetModuleSynthesizerVersion());
 	}
 	
 	writer.WriteDataTagString("network", profile.GetModuleNetwork());
-	if(! profile.GetModuleNetworkVersion().IsEmpty()){
+	if(!profile.GetModuleNetworkVersion().IsEmpty()){
 		writer.WriteDataTagString("networkVersion", profile.GetModuleNetworkVersion());
 	}
 	
@@ -300,7 +300,7 @@ void dealGameConfigXML::pReadConfig(const decXmlElementTag &root, dealGame &game
 					
 				}else{
 					game.SetGlobalProfile(pGameManager.GetProfileList().GetNamed(profileName));
-					if(! game.GetGlobalProfile()){
+					if(!game.GetGlobalProfile()){
 						GetLogger()->LogWarnFormat(GetLoggerSource(),
 							"%s(%i:%i): Global profile '%s' does not exist",
 							tag->GetName().GetString(), tag->GetLineNumber(),
@@ -316,7 +316,7 @@ void dealGameConfigXML::pReadConfig(const decXmlElementTag &root, dealGame &game
 					
 				}else{
 					game.SetGameProfile(game.GetProfileList().GetNamed(profileName));
-					if(! game.GetGameProfile()){
+					if(!game.GetGameProfile()){
 						GetLogger()->LogWarnFormat(GetLoggerSource(),
 							"%s(%i:%i): Game profile '%s' does not exist",
 							tag->GetName().GetString(), tag->GetLineNumber(),
@@ -362,7 +362,7 @@ void dealGameConfigXML::pReadProfile(const decXmlElementTag &root, dealGame &gam
 	
 	try{
 		profile = new dealGameProfile;
-		if(! profile) DETHROW(deeOutOfMemory);
+		if(!profile) DETHROW(deeOutOfMemory);
 		
 		profile->SetName(profileName);
 		
@@ -528,7 +528,7 @@ void dealGameConfigXML::pReadProfileModule(const decXmlElementTag &root, dealGam
 	
 	try{
 		module = new dealGPModule;
-		if(! module) DETHROW(deeOutOfMemory);
+		if(!module) DETHROW(deeOutOfMemory);
 		
 		module->SetName(moduleName);
 		
@@ -568,7 +568,7 @@ void dealGameConfigXML::pReadProfileModuleParameters(const decXmlElementTag &roo
 				
 				try{
 					parameters = new dealGPMParameter;
-					if(! parameters) DETHROW(deeOutOfMemory);
+					if(!parameters) DETHROW(deeOutOfMemory);
 					
 					parameters->SetName(pGetAttributeString(*tag, "name"));
 					parameters->SetValue(pGetCDataString(*tag));

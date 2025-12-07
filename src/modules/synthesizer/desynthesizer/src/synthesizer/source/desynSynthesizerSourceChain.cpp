@@ -100,7 +100,7 @@ pTargetSpeed(synthesizer, firstLink, source.GetTargetSpeed()),
 pTargetSelect(synthesizer, firstLink, source.GetTargetSelect()),
 pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 {
-	SetSilent(! source.GetEnabled());
+	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}
@@ -117,7 +117,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 	
 	for(pSoundCount=0; pSoundCount<count; pSoundCount++){
 		const deSound * const engSound = source.GetSoundAt(pSoundCount);
-		if(! engSound){
+		if(!engSound){
 			continue;
 		}
 		
@@ -178,7 +178,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 		}
 	}
 	
-	if(! hasValidSound){
+	if(!hasValidSound){
 		SetSilent(true);
 		return;
 	}

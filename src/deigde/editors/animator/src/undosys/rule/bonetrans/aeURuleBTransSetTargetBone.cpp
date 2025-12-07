@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *rule, const char *newBone){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -218,7 +218,7 @@ void deClassSafeArray::nfSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	dsValue * const valueTo = (dsValue*)nd.array->GetAt(index);
 	
 	dsValue * const valueFrom = rt->GetValue(1);
-	if(! valueFrom->GetRealObject()){
+	if(!valueFrom->GetRealObject()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -325,7 +325,7 @@ deClassSafeArray::nfRemoveIfPresent::nfRemoveIfPresent(const sInitData &init) : 
 }
 void deClassSafeArray::nfRemoveIfPresent::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
-	if(! nd.array){
+	if(!nd.array){
 		return;
 	}
 	
@@ -343,7 +343,7 @@ deClassSafeArray::nfRemoveAll::nfRemoveAll(const sInitData &init) : dsFunction(i
 }
 void deClassSafeArray::nfRemoveAll::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
-	if(! nd.array){
+	if(!nd.array){
 		return;
 	}
 	
@@ -361,11 +361,11 @@ void deClassSafeArray::nfRemoveAll2::RunFunction(dsRunTime *rt, dsValue *myself)
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
-	if(! valueBlock->GetRealObject()){
+	if(!valueBlock->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(! nd.array){
+	if(!nd.array){
 		return;
 	}
 	
@@ -410,7 +410,7 @@ void deClassSafeArray::nfForEach::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
-	if(! valueBlock->GetRealObject()){
+	if(!valueBlock->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -451,7 +451,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
-	if(! valueBlock->GetRealObject()){
+	if(!valueBlock->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -496,7 +496,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 			
 		}
 		
-		if(! found){
+		if(!found){
 			rt->PushObject(NULL, rt->GetEngine()->GetClassObject());
 		}
 		
@@ -522,7 +522,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassSafeArray::deClassSafeArray(deScriptingDragonScript *ds) :
 dsClass("SafeArray", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	

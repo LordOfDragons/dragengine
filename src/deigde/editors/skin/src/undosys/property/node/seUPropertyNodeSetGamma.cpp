@@ -42,7 +42,7 @@ seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode *node, float new
 pNode(NULL),
 pNewValue(newValue)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

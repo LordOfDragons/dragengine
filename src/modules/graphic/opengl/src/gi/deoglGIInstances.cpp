@@ -88,7 +88,7 @@ deoglGIInstance &deoglGIInstances::GetInstanceAt(int slot) const{
 
 deoglGIInstance *deoglGIInstances::GetInstanceWithComponent(deoglRComponent *component) const{
 #if 0
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -176,7 +176,7 @@ void deoglGIInstances::UpdateDynamicBoxes(const decDVector &offset, const decVec
 	
 	for(i=0; i<count; i++){
 		const deoglGIInstance &instance = *((deoglGIInstance*)pInstances.GetAt(i));
-		if(! instance.GetDynamic()){
+		if(!instance.GetDynamic()){
 			continue;
 		}
 		
@@ -244,7 +244,7 @@ void deoglGIInstances::ApplyChanges(){
 	for(i=0; i<count; i++){
 		deoglGIInstance &instance = *((deoglGIInstance*)pChangedInstances.GetAt(i));
 		
-		bool invalidate = ! instance.GetDynamic();
+		bool invalidate = !instance.GetDynamic();
 		
 		if(instance.GetRecheckDynamic()){
 			instance.SetRecheckDynamic(false);
@@ -252,10 +252,10 @@ void deoglGIInstances::ApplyChanges(){
 			const bool dynamic = instance.GetDynamic();
 			
 			if(instance.GetComponent()){
-				instance.SetDynamic(! IsComponentStatic(*instance.GetComponent()));
+				instance.SetDynamic(!IsComponentStatic(*instance.GetComponent()));
 				
 			}else if(instance.GetDecal()){
-				instance.SetDynamic(! IsDecalStatic(*instance.GetDecal()));
+				instance.SetDynamic(!IsDecalStatic(*instance.GetDecal()));
 				
 			}else{
 				instance.SetDynamic(false);
@@ -335,7 +335,7 @@ void deoglGIInstances::ApplyChanges(){
 
 void deoglGIInstances::AddComponent(deoglRComponent *component, bool invalidate){
 	deoglGIInstance &instance = NextFreeSlot();
-	instance.SetComponent(component, ! IsComponentStatic(*component));
+	instance.SetComponent(component, !IsComponentStatic(*component));
 	if(invalidate){
 		#ifdef DO_LOG_ADD_REMOVE
 // 			pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
@@ -370,7 +370,7 @@ void deoglGIInstances::AddComponents(const deoglCollideList &list, bool invalida
 
 void deoglGIInstances::AddDecal(deoglRDecal *decal, bool invalidate){
 	deoglGIInstance &instance = NextFreeSlot();
-	instance.SetDecal(decal, ! IsDecalStatic(*decal));
+	instance.SetDecal(decal, !IsDecalStatic(*decal));
 	if(invalidate){
 		pInvalidateAddInstance(instance);
 	}
@@ -396,7 +396,7 @@ void deoglGIInstances::RemoveComponents(const deoglCollideList &list){
 	int i;
 	for(i=0; i<count; i++){
 		deoglGIInstance * const instance = GetInstanceWithComponent(list.GetComponentAt(i)->GetComponent());
-		if(! instance){
+		if(!instance){
 			continue;
 		}
 		

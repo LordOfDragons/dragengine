@@ -128,7 +128,7 @@ void debnState::LinkReadAllValues(decBaseFileReader &reader, debnStateLink &link
 		}
 	}
 	
-	if(! link.HasChangedValues()){
+	if(!link.HasChangedValues()){
 		link.SetChanged(false);
 	}
 }
@@ -189,7 +189,7 @@ void debnState::LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link){
 	writer.WriteByte((uint8_t)changedCount);
 	
 	for(i=0; i<pValueCount; i++){
-		if(! link.GetValueChangedAt(i)){
+		if(!link.GetValueChangedAt(i)){
 			continue;
 		}
 		
@@ -236,13 +236,13 @@ void debnState::SetParentWorld(debnWorld *world){
 //////////////////
 
 void debnState::ValueAdded(int index, deNetworkValue *value){
-	if(! value) DETHROW(deeInvalidParam);
+	if(!value) DETHROW(deeInvalidParam);
 	debnVisitorValueCreate visitorCreate;
 	
 	if(pValueCount == pValueSize){
 		int newSize = pValueSize * 3 / 2 + 1;
 		debnValue **newArray = new debnValue*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pValues){
 			memcpy(newArray, pValues, sizeof(debnValue*) * pValueSize);
 			delete [] pValues;
@@ -252,7 +252,7 @@ void debnState::ValueAdded(int index, deNetworkValue *value){
 	}
 	
 	value->Visit(visitorCreate);
-	if(! visitorCreate.GetValue()) DETHROW(deeInvalidParam);
+	if(!visitorCreate.GetValue()) DETHROW(deeInvalidParam);
 	
 	pValues[pValueCount] = visitorCreate.GetValue();
 	pValueCount++;
@@ -260,7 +260,7 @@ void debnState::ValueAdded(int index, deNetworkValue *value){
 
 void debnState::ValueChanged(int index, deNetworkValue*){
 //	printf( "value %i at state %p changed\n", index, pState );
-	if(! pValues[index]->UpdateValue(false)){
+	if(!pValues[index]->UpdateValue(false)){
 		// value did not change enough to require synchronize links
 		return;
 	}

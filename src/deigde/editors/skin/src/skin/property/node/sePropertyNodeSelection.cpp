@@ -56,7 +56,7 @@ sePropertyNodeSelection::~sePropertyNodeSelection(){
 ///////////////
 
 void sePropertyNodeSelection::Add(sePropertyNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,17 +68,17 @@ void sePropertyNodeSelection::Add(sePropertyNode *node){
 	pSelection.Add(node);
 	NotifyNodeSelectionChanged();
 	
-	if(! pActive){
+	if(!pActive){
 		SetActive(node);
 	}
 }
 
 void sePropertyNodeSelection::Remove(sePropertyNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pSelection.Has(node)){
+	if(!pSelection.Has(node)){
 		return;
 	}
 	
@@ -123,7 +123,7 @@ void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
 	if(count == pSelection.GetCount()){
 		int i;
 		for(i=0; i<count; i++){
-			if(! pSelection.Has(list.GetAt(i))){
+			if(!pSelection.Has(list.GetAt(i))){
 				break;
 			}
 		}
@@ -133,7 +133,7 @@ void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
 		}
 	}
 	
-	if(! list.Has(pActive)){
+	if(!list.Has(pActive)){
 		SetActive(NULL);
 	}
 	
@@ -185,12 +185,12 @@ void sePropertyNodeSelection::SetActive(sePropertyNode *node){
 
 
 void sePropertyNodeSelection::NotifyNodeSelectionChanged() const{
-	if(! pProperty.GetTexture()){
+	if(!pProperty.GetTexture()){
 		return;
 	}
 	
 	seTexture * const texture = pProperty.GetTexture();
-	if(! texture->GetSkin()){
+	if(!texture->GetSkin()){
 		return;
 	}
 	
@@ -198,12 +198,12 @@ void sePropertyNodeSelection::NotifyNodeSelectionChanged() const{
 }
 
 void sePropertyNodeSelection::NotifyActiveNodeChanged() const{
-	if(! pProperty.GetTexture()){
+	if(!pProperty.GetTexture()){
 		return;
 	}
 	
 	seTexture * const texture = pProperty.GetTexture();
-	if(! texture->GetSkin()){
+	if(!texture->GetSkin()){
 		return;
 	}
 	

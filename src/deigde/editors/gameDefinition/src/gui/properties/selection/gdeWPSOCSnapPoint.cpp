@@ -75,7 +75,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCSnapPoint * const snapPoint = pPanel.GetSnapPoint();
-		if(! snapPoint){
+		if(!snapPoint){
 			return;
 		}
 		
@@ -99,7 +99,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCSnapPoint * const snapPoint = pPanel.GetSnapPoint();
-		if(! snapPoint){
+		if(!snapPoint){
 			return;
 		}
 		
@@ -177,7 +177,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCSnapPoint * const snapPoint = pPanel.GetSnapPoint();
-		if(! snapPoint){
+		if(!snapPoint){
 			return;
 		}
 		

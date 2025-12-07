@@ -47,9 +47,9 @@ public:
 	
 		cMatchName(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type);
 		
-		inline const decString &GetFirst() const{return pFirst;}
-		inline const decString &GetSecond() const{return pSecond;}
-		inline deAnimatorRuleMirror::eMatchNameType GetType() const{return pType;}
+		inline const decString &GetFirst() const{ return pFirst; }
+		inline const decString &GetSecond() const{ return pSecond; }
+		inline deAnimatorRuleMirror::eMatchNameType GetType() const{ return pType; }
 		
 		bool operator==(const cMatchName &matchName) const;
 		bool operator!=(const cMatchName &matchName) const;
@@ -96,13 +96,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mirror axis. */
-	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{return pMirrorAxis;}
+	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return pMirrorAxis; }
 	
 	/** Set mirror axis. */
 	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
 	
 	/** Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{return pMirrorBone;}
+	inline const decString &GetMirrorBone() const{ return pMirrorBone; }
 	
 	/** Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
@@ -135,25 +135,25 @@ public:
 	void RemoveAllMatchNames();
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool enabled);

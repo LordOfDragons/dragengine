@@ -360,7 +360,7 @@ decString debnAddress::ToString() const{
 			const int b = pValues[i * 2 + 1];
 			
 			// groups of 0 can be truncated but only once
-			if(! a && ! b){
+			if(!a && !b){
 				if(groupingZeros){
 					continue;
 					

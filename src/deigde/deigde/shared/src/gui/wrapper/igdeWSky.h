@@ -90,16 +90,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{return pEngWorld;}
+	inline deWorld *GetWorld() const{ return pEngWorld; }
 	
 	/** \brief Set world or NULL. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Maximum light intensity found in the sky. */
-	inline float GetMaxLightIntensity() const{return pMaxLightIntensity;}
+	inline float GetMaxLightIntensity() const{ return pMaxLightIntensity; }
 	
 	/** \brief Get sky instance controller count. */
 	int GetControllerCount() const;
@@ -114,10 +114,10 @@ public:
 	const deSky *GetSky() const;
 	
 	/** \brief Game definition sky or NULL if sky is set manually. */
-	inline igdeGDSky *GetGDSky() const{return pGDSky;}
+	inline igdeGDSky *GetGDSky() const{ return pGDSky; }
 	
 	/** \brief Sky path or NULL if sky is set manually. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set sky to use. */
 	void SetSky(deSky *sky);
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Asynchronous load finished listener or NULL. */
-	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{return pAsyncLoadFinished;}
+	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
 	 * \brief Set asynchronous load finished listener or NULL.

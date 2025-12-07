@@ -40,7 +40,7 @@
 
 void deoglCubeHelper::CalcFaceVisibility(const decDVector &boxMin,
 const decDVector &boxMax, bool *result){
-	if(! result){
+	if(!result){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -43,7 +43,7 @@
 void igdeContainerForm::RemoveChild(igdeWidget *child){
 	igdeContainer::RemoveChild(child);
 	
-	if(! GetNativeContainer()){
+	if(!GetNativeContainer()){
 		return;
 	}
 	
@@ -90,7 +90,7 @@ void igdeContainerForm::CreateNativeWidget(){
 }
 
 void igdeContainerForm::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

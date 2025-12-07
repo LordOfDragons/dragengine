@@ -42,12 +42,12 @@
 ////////////////////////////
 
 meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

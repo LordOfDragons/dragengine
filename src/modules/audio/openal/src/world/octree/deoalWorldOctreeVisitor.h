@@ -67,25 +67,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Microphones are visited. */
-	inline bool GetVisitMicrophones() const{return pVisitMicrophones;}
+	inline bool GetVisitMicrophones() const{ return pVisitMicrophones; }
 	
 	/** \brief Set if microphones are visited. */
 	void SetVisitMicrophones(bool visitMicrophones);
 	
 	/** \brief Components are visited. */
-	inline bool GetVisitComponents() const{return pVisitComponents;}
+	inline bool GetVisitComponents() const{ return pVisitComponents; }
 	
 	/** \brief Set if components are visited. */
 	void SetVisitComponents(bool visitComponents);
 	
 	/** \brief Speakers are visited. */
-	inline bool GetVisitSpeakers() const{return pVisitSpeakers;}
+	inline bool GetVisitSpeakers() const{ return pVisitSpeakers; }
 	
 	/** \brief Set if speakers are visited. */
 	void SetVisitSpeakers(bool visitSpeakers);
 	
 	/** \brief Sound level meters are visited. */
-	inline bool GetVisitSoundLevelMeters() const{return pVisitSoundLevelMeters;}
+	inline bool GetVisitSoundLevelMeters() const{ return pVisitSoundLevelMeters; }
 	
 	/** \brief Set if sound level meters are visited. */
 	void SetVisitSoundLevelMeters(bool visitSoundLevelMeters);
@@ -94,7 +94,7 @@ public:
 	void SetVisitAll(bool visitAll);
 	
 	/** \brief Environment probes are visited. */
-	inline bool GetVisitEnvProbes() const{return pVisitEnvProbes;}
+	inline bool GetVisitEnvProbes() const{ return pVisitEnvProbes; }
 	
 	/** \brief Set if environment probes are visited. */
 	void SetVisitEnvProbes(bool visitEnvProbes);

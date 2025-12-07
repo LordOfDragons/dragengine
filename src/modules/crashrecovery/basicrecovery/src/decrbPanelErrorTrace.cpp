@@ -55,7 +55,7 @@ decrbPanelErrorTrace::decrbPanelErrorTrace(){}
 
 decrbPanelErrorTrace::decrbPanelErrorTrace(decrbWindowMain *windowMain, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
-	if(! windowMain) DETHROW(deeInvalidParam);
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	

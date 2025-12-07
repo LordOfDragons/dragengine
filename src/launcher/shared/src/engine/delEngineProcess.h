@@ -225,26 +225,26 @@ public:
 	/*@{*/
 	/** \brief In pipe read end. */
 	#ifdef OS_W32
-	inline HANDLE GetPipeIn() const{return pPipeIn;}
+	inline HANDLE GetPipeIn() const{ return pPipeIn; }
 	#else
-	inline int GetPipeIn() const{return pPipeIn;}
+	inline int GetPipeIn() const{ return pPipeIn; }
 	#endif
 	
 	/** \brief Out pipe write end. */
 	#ifdef OS_W32
-	inline HANDLE GetPipeOut() const{return pPipeOut;}
+	inline HANDLE GetPipeOut() const{ return pPipeOut; }
 	#else
-	inline int GetPipeOut() const{return pPipeOut;}
+	inline int GetPipeOut() const{ return pPipeOut; }
 	#endif
 	
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{return pLogger;}
+	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	/** \brief Use console. */
-	inline bool GetUseConsole() const{return pUseConsole;}
+	inline bool GetUseConsole() const{ return pUseConsole; }
 	
 	/** \brief Set use console. */
 	void SetUseConsole(bool useConsole);

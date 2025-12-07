@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current widget index. */
-	inline int GetCurrent() const{return pCurrent;}
+	inline int GetCurrent() const{ return pCurrent; }
 	
 	/** \brief Set current widget index. */
 	void SetCurrent(int current);

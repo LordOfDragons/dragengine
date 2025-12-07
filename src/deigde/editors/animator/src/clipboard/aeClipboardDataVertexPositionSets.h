@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** VertexPositionSetss. */
-	inline const decStringSet &GetVertexPositionSets() const{return pVertexPositionSets;}
+	inline const decStringSet &GetVertexPositionSets() const{ return pVertexPositionSets; }
 	/*@}*/
 };
 

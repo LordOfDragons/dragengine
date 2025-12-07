@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSModMinRotation::aeUSetRuleSModMinRotation(aeRuleStateManipulator *rule, const decVector &newMin){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	

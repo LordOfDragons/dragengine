@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**  Animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
@@ -93,12 +93,12 @@ public:
 	
 	
 	/** Engine controller link or \em NULL if not managed. */
-	inline deAnimatorLink *GetEngineLink() const{return pEngLink;}
+	inline deAnimatorLink *GetEngineLink() const{ return pEngLink; }
 	
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
@@ -106,13 +106,13 @@ public:
 	
 	
 	/** Controller or \em NULL. */
-	inline aeController *GetController() const{return pController;}
+	inline aeController *GetController() const{ return pController; }
 	
 	/** Set controller or \em NULL. */
 	void SetController(aeController *controller, bool notify = true);
 	
 	/** Repeat count of input value. */
-	inline int GetRepeat() const{return pRepeat;}
+	inline int GetRepeat() const{ return pRepeat; }
 	
 	/**
 	 * Set repeat count of input value.
@@ -121,7 +121,7 @@ public:
 	void SetRepeat(int repeat);
 	
 	/** Curve. */
-	const decCurveBezier &GetCurve() const{return pCurve;}
+	const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** Set curve. */
 	void SetCurve(const decCurveBezier &curve);
@@ -130,7 +130,7 @@ public:
 	 * Bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	inline const decString &GetBone() const{return pBone;}
+	inline const decString &GetBone() const{ return pBone; }
 	
 	/**
 	 * Set bone to use parameter of as input or empty string to not use.
@@ -142,7 +142,7 @@ public:
 	 * Bone parameter to use as input.
 	 * \version 1.6
 	 */
-	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{return pBoneParameter;}
+	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
 	
 	/**
 	 * Set bone parameter to use as input.
@@ -154,7 +154,7 @@ public:
 	 * Minimum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMinimum() const{return pBoneMinimum;}
+	inline float GetBoneMinimum() const{ return pBoneMinimum; }
 	
 	/**
 	 * Set minimum bone parameter value
@@ -166,7 +166,7 @@ public:
 	 * Maximum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMaximum() const{return pBoneMaximum;}
+	inline float GetBoneMaximum() const{ return pBoneMaximum; }
 	
 	/**
 	 * Set maximum bone parameter value.
@@ -175,19 +175,19 @@ public:
 	void SetBoneMaximum(float value);
 	
 	/** Vertex position set to use as input or empty string to not use. */
-	inline const decString &GetVertexPositionSet() const{return pVertexPositionSet;}
+	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
 	
 	/** Set vertex position set to use as input or empty string to not use. */
 	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Minimum vertex position set parameter value. */
-	inline float GetVertexPositionSetMinimum() const{return pVertexPositionSetMinimum;}
+	inline float GetVertexPositionSetMinimum() const{ return pVertexPositionSetMinimum; }
 	
 	/** Set minimum vertex position set parameter value. */
 	void SetVertexPositionSetMinimum(float value);
 	
 	/** Maximum vertex position set parameter value. */
-	inline float GetVertexPositionSetMaximum() const{return pVertexPositionSetMaximum;}
+	inline float GetVertexPositionSetMaximum() const{ return pVertexPositionSetMaximum; }
 	
 	/** Set maximum vertex position set parameter value. */
 	void SetVertexPositionSetMaximum(float value);
@@ -196,7 +196,7 @@ public:
 	 * Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	inline bool GetWrapY() const{return pWrapY;}
+	inline bool GetWrapY() const{ return pWrapY; }
 	
 	/**
 	 * Set to wrap Y value instead of clamping.

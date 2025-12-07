@@ -131,7 +131,7 @@ deClassARTrackTo::nfSetTrackAxis::nfSetTrackAxis(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsARTrackToAxis); // axis
 }
 void deClassARTrackTo::nfSetTrackAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -152,7 +152,7 @@ deClassARTrackTo::nfSetUpAxis::nfSetUpAxis(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsARTrackToAxis); // axis
 }
 void deClassARTrackTo::nfSetUpAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -173,7 +173,7 @@ deClassARTrackTo::nfSetUpTarget::nfSetUpTarget(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsARTrackToUp); // target
 }
 void deClassARTrackTo::nfSetUpTarget::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -195,7 +195,7 @@ deClassARTrackTo::nfSetLockedAxis::nfSetLockedAxis(const sInitData &init) : dsFu
 }
 void deClassARTrackTo::nfSetLockedAxis::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -218,7 +218,7 @@ deClassARTrackTo::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFu
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARTrackTo::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -256,7 +256,7 @@ deClassARTrackTo::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData
 	p_AddParameter(init.clsARTrackToTarget); // target
 }
 void deClassARTrackTo::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -354,7 +354,7 @@ void deClassARTrackTo::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -362,7 +362,7 @@ deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
 }
 
 void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -386,11 +386,11 @@ void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator
 }
 
 void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

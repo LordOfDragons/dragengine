@@ -62,11 +62,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active module or nullptr if none is active. */
-	inline deBaseVRModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseVRModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief VR queue. */
-	inline deInputEventQueue &GetEventQueue(){return pEventQueue;}
-	inline const deInputEventQueue &GetEventQueue() const{return pEventQueue;}
+	inline deInputEventQueue &GetEventQueue(){ return pEventQueue; }
+	inline const deInputEventQueue &GetEventQueue() const{ return pEventQueue; }
 	
 	/**
 	 * \brief Add events to the VR System event queue.
@@ -151,7 +151,7 @@ public:
 	bool IsRuntimeRunning();
 	
 	/** \brief Camera to render on head mounted display or nullptr. */
-	inline deCamera *GetCamera() const{return pCamera;}
+	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/**
 	 * \brief Set camera to render on head mounted display.
@@ -172,7 +172,7 @@ public:
 	 * 
 	 * Has no effect if SupportsPassthrough() returns false.
 	 */
-	inline bool GetEnablePassthrough() const{return pEnablePassthrough;}
+	inline bool GetEnablePassthrough() const{ return pEnablePassthrough; }
 	
 	/**
 	 * \brief Enable presenting user environment inside the rendered world.
@@ -189,7 +189,7 @@ public:
 	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
-	inline float GetPassthroughTransparency() const{return pPassthroughTransparency;}
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
 	
 	/**
 	 * \brief Set transparency of user environment presented inside the rendered world.

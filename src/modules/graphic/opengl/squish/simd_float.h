@@ -60,10 +60,10 @@ public:
 		return Vec3(m_x, m_y, m_z);
 	}
 	
-	Vec4 SplatX() const {return Vec4(m_x);}
-	Vec4 SplatY() const {return Vec4(m_y);}
-	Vec4 SplatZ() const {return Vec4(m_z);}
-	Vec4 SplatW() const {return Vec4(m_w);}
+	Vec4 SplatX() const { return Vec4(m_x); }
+	Vec4 SplatY() const { return Vec4(m_y); }
+	Vec4 SplatZ() const { return Vec4(m_z); }
+	Vec4 SplatW() const { return Vec4(m_w); }
 
 	Vec4& operator+=(Arg v)
 	{

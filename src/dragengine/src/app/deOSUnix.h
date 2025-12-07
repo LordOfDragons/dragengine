@@ -187,10 +187,10 @@ public:
 	/** \name Unix related */
 	/*@{*/
 	/** \brief Display used during creation. */
-	inline Display *GetDisplay() const{return pDisplay;}
+	inline Display *GetDisplay() const{ return pDisplay; }
 	
 	/** \brief Screen used during creation. */
-	inline int GetScreen() const{return pScreen;}
+	inline int GetScreen() const{ return pScreen; }
 	
 	/**
 	 * \brief Current game window.
@@ -199,7 +199,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline Window GetWindow() const{return pCurWindow;}
+	inline Window GetWindow() const{ return pCurWindow; }
 	
 	/**
 	 * \brief Set current game window.
@@ -218,7 +218,7 @@ public:
 	 * 
 	 * Set by the input module to receive the events it is interested in.
 	 */
-	inline long GetEventMask() const{return pEventMask;}
+	inline long GetEventMask() const{ return pEventMask; }
 	
 	/**
 	 * \brief Set event mask to set for all windows.
@@ -228,7 +228,7 @@ public:
 	void SetEventMask(long mask);
 	
 	/** \brief Hosting main window or 0 if not set. */
-	inline Window GetHostingMainWindow() const{return pHostingMainWindow;}
+	inline Window GetHostingMainWindow() const{ return pHostingMainWindow; }
 	
 	/**
 	 * \brief Set hosting main window or 0 if not set.
@@ -241,7 +241,7 @@ public:
 	void SetHostingMainWindow(Window window);
 	
 	/** \brief Hosting render window or 0 if not set. */
-	inline Window GetHostingRenderWindow() const{return pHostingRenderWindow;}
+	inline Window GetHostingRenderWindow() const{ return pHostingRenderWindow; }
 	
 	/**
 	 * \brief Set hosting render window or 0 if not set.

@@ -41,10 +41,10 @@
 ////////////////////////////
 
 meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *key, const char *value){
-	if(! object || ! key || ! value){
+	if(!object || !key || !value){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

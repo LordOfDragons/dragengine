@@ -45,10 +45,10 @@ gdeUOCPropertyRemove::gdeUOCPropertyRemove(gdeObjectClass *objectClass, gdePrope
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! objectClass->GetProperties().Has(property)){
+	if(!objectClass->GetProperties().Has(property)){
 		DETHROW(deeInvalidParam);
 	}
 	

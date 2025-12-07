@@ -72,7 +72,7 @@ void deAISystem::LoadWorld(deWorld *world){
 			DETHROW(deeInvalidParam);
 		}
 		world->SetPeerAI(pActiveModule->CreateWorld(world));
-		if(! world->GetPeerAI()){
+		if(!world->GetPeerAI()){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -84,7 +84,7 @@ void deAISystem::LoadNavigationSpace(deNavigationSpace *navspace){
 			DETHROW(deeInvalidParam);
 		}
 		navspace->SetPeerAI(pActiveModule->CreateNavigationSpace(navspace));
-		if(! navspace->GetPeerAI()){
+		if(!navspace->GetPeerAI()){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -97,7 +97,7 @@ void deAISystem::LoadNavigationBlocker(deNavigationBlocker *blocker){
 		}
 		
 		blocker->SetPeerAI(pActiveModule->CreateNavigationBlocker(blocker));
-		if(! blocker->GetPeerAI()){
+		if(!blocker->GetPeerAI()){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -109,14 +109,14 @@ void deAISystem::LoadNavigator(deNavigator *navigator){
 			DETHROW(deeInvalidParam);
 		}
 		navigator->SetPeerAI(pActiveModule->CreateNavigator(navigator));
-		if(! navigator->GetPeerAI()){
+		if(!navigator->GetPeerAI()){
 			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
 void deAISystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
-	if(! GetIsRunning()){
+	if(!GetIsRunning()){
 		return;
 	}
 	
@@ -124,7 +124,7 @@ void deAISystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	heightTerrain.SetPeerAI(pActiveModule->CreateHeightTerrain(heightTerrain));
-	if(! heightTerrain.GetPeerAI()){
+	if(!heightTerrain.GetPeerAI()){
 		DETHROW(deeOutOfMemory);
 	}
 }
@@ -149,7 +149,7 @@ void deAISystem::PostStart(){
 	int i;
 	
 	// init module
-	if(! pActiveModule->Init()){
+	if(!pActiveModule->Init()){
 		DETHROW(deeInvalidAction);
 	}
 	

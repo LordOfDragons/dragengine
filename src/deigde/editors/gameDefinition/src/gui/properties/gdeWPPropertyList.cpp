@@ -120,7 +120,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPropertyList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPropertyList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -160,7 +160,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -187,7 +187,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetClipboard()){
+		if(!property || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -211,7 +211,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem() || ! pPanel.GetClipboard()){
+		if(!property || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -234,13 +234,13 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetClipboard()){
+		if(!pPanel.GetClipboard()){
 			return;
 		}
 		
 		const gdeClipboardDataProperty * const clip = (const gdeClipboardDataProperty *)
 			pPanel.GetClipboard()->GetWithTypeName(gdeClipboardDataProperty::TYPE_NAME);
-		if(! clip){
+		if(!clip){
 			return;
 		}
 		
@@ -249,7 +249,7 @@ public:
 		
 		while(list.HasNamed(name)){
 			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Paste Property", "Name exists already.");
-			if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
+			if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
 				return;
 			}
 		}
@@ -281,7 +281,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -303,7 +303,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -325,7 +325,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -348,7 +348,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -427,11 +427,11 @@ public:
 	
 	virtual void OnPropertyValueChanged(igdeEditPropertyValue *editPropertyValue){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		if(! pUndo){
+		if(!pUndo){
 			pOldValue = property->GetDefaultValue();
 		}
 		pUndo.TakeOver(pPanel.UndoDefaultValue(property, editPropertyValue->GetValue(), pOldValue));
@@ -443,11 +443,11 @@ public:
 	
 	virtual void OnPropertyValueChanging(igdeEditPropertyValue *editPropertyValue){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		if(! pUndo){
+		if(!pUndo){
 			pOldValue = property->GetDefaultValue();
 		}
 		pUndo.TakeOver(pPanel.UndoDefaultValue(property, editPropertyValue->GetValue(), pOldValue));
@@ -597,12 +597,12 @@ public:
 	
 	virtual void OnAction(){
 		gdeProperty * const property = pPanel.GetProperty();
-		if(! property || ! pPanel.GetUndoSystem()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		decString name("File Pattern");
-		if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add File Pattern", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add File Pattern", "Name:", name)){
 			return;
 		}
 		
@@ -627,7 +627,7 @@ public:
 	
 	virtual igdeUndo *OnActionUndo(gdeProperty *property){
 		gdeFilePattern * const filePattern = pPanel.GetCustomPattern();
-		if(! filePattern){
+		if(!filePattern){
 			return NULL;
 		}
 		return pPanel.UndoCustomFilePatternRemove(property, filePattern);
@@ -707,7 +707,7 @@ public:
 		return pPanel.UndoIdentifierUsage(property);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 }
@@ -896,7 +896,7 @@ void gdeWPPropertyList::SetClipboard(igdeClipboard *clipboard){
 
 
 gdeProperty *gdeWPPropertyList::GetProperty() const{
-	if(! pPropertyList){
+	if(!pPropertyList){
 		return NULL;
 	}
 	
@@ -1165,7 +1165,7 @@ void gdeWPPropertyList::SelectCustomPattern(gdeFilePattern *filePattern){
 
 void gdeWPPropertyList::SetDefaultValueFromType(){
 	gdeProperty * const property = GetProperty();
-	if(! pGameDefinition || ! property){
+	if(!pGameDefinition || !property){
 		return;
 	}
 	

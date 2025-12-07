@@ -197,7 +197,7 @@ pRenderPass(VK_NULL_HANDLE)
 					}
 				}
 				
-				if(! isUsed && i < attRetain[j]){
+				if(!isUsed && i < attRetain[j]){
 					ptrAttPreserve[subPassInfo[i].preserveAttachmentCount++] = (uint32_t)j;
 				}
 			}

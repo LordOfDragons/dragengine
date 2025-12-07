@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Is input slot. */
-	inline bool GetIsInput() const{return pIsInput;}
+	inline bool GetIsInput() const{ return pIsInput; }
 	
 	/** \brief Set is input slot. */
 	void SetIsInput(bool isInput);

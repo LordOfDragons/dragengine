@@ -104,7 +104,7 @@ bool igdeGDCCTextureList::HasNamed(const char *name) const{
 }
 
 void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
 }
 
 void igdeGDCCTextureList::InsertAt(igdeGDCCTexture *texture, int index){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	

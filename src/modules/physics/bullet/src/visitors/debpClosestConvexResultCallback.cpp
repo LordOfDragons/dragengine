@@ -71,7 +71,7 @@ pHitFace(-1){
 ///////////////
 
 void debpClosestConvexResultCallback::SetTestCollider(debpCollider *bpCollider){
-	if(! bpCollider){
+	if(!bpCollider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void debpClosestConvexResultCallback::SetTestCollider(debpCollider *bpCollider){
 }
 
 void debpClosestConvexResultCallback::SetTestCollider(debpCollider *bpCollider, const decDVector &displacement){
-	if(! bpCollider){
+	if(!bpCollider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -217,7 +217,7 @@ void debpClosestConvexResultCallback::GetResult(deCollisionInfo &collisionInfo) 
 
 bool debpClosestConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if(! ConvexResultCallback::needsCollision(proxy0)){
+	if(!ConvexResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
@@ -245,7 +245,7 @@ bool debpClosestConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) 
 		
 		// check if a collision between the two colliders is possible according to the moving collider listener
 		if(engOrgCollider->GetPeerScripting()
-		&& ! engOrgCollider->GetPeerScripting()->CanHitCollider(engOrgCollider, engCollider)){
+		&& !engOrgCollider->GetPeerScripting()->CanHitCollider(engOrgCollider, engCollider)){
 			return false;
 		}
 // 		if( pColliderComponent ) printf( "collider %s needsCollision %s\n",

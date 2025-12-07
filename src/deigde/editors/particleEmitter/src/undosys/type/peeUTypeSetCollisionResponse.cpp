@@ -44,7 +44,7 @@ deParticleEmitterType::eCollisionResponses newResponse) :
 pType(NULL),
 pNewResponse(newResponse)
 {
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

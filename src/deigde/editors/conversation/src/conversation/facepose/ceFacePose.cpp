@@ -58,9 +58,9 @@ void ceFacePose::SetConversation(ceConversation *conversation){
 }
 
 void ceFacePose::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		if(pConversation && pConversation->GetFacePoseList().HasNamed(name)) DETHROW(deeInvalidParam);
 		
 		pName = name;

@@ -61,10 +61,10 @@ public:
 	/*@{*/
 	/** \brief Overlay list. */
 	deainpOverlayList GetOverlayList(){return pOverlays;}
-	const deainpOverlayList &GetOverlayList() const{return pOverlays;}
+	const deainpOverlayList &GetOverlayList() const{ return pOverlays; }
 	
 	/** \brief Overlays canvas. */
-	inline deCanvasView *GetCanvas() const{return pCanvas;}
+	inline deCanvasView *GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Update canvas content. */
 	void UpdateContent();
@@ -76,7 +76,7 @@ public:
 	void UpdateBindingIndices();
 	
 	/** \brief Overlay is in horizontal mode. */
-	inline bool GetInHorizontalMode() const{return pInHorizontalMode;}
+	inline bool GetInHorizontalMode() const{ return pInHorizontalMode; }
 	
 	/** \brief Set if overlay is in horizontal mode. */
 	void SetInHorizontalMode(bool inHorizontalMode);

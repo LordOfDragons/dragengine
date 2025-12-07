@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	/** Retrieves the link at the given index. */
 	debnStateLink *GetLinkAt(int index) const;
 	/** Retrieves the index of the link or -1 if not found. */

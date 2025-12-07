@@ -178,7 +178,7 @@ void deClassCanvasImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCanvasImage * const clsCImage = (deClassCanvasImage*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCImage)){
+	if(!p_IsObjOfType(obj, clsCImage)){
 		rt->PushBool(false);
 		
 	}else{
@@ -246,7 +246,7 @@ void deClassCanvasImage::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasImage *deClassCanvasImage::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -254,11 +254,11 @@ deCanvasImage *deClassCanvasImage::GetCanvas(dsRealObject *myself) const {
 }
 
 void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

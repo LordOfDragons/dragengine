@@ -78,7 +78,7 @@ bool debpDeveloperMode::ExecuteCommand(const decUnicodeArgumentList &command, de
 		return true;
 	}
 	
-	if(! pEnabled){
+	if(!pEnabled){
 		return false;
 	}
 	
@@ -114,7 +114,7 @@ bool debpDeveloperMode::ExecuteCommand(const decUnicodeArgumentList &command, de
 
 void debpDeveloperMode::TakeSnapshot(debpWorld *world){
 	if(pTakeSnapshot){
-		if(! world) DETHROW(deeInvalidParam);
+		if(!world) DETHROW(deeInvalidParam);
 		
 		// determine the file to save to. currently this is a hack in that we store
 		// the file into the shared path of the module which is of course in a real
@@ -168,7 +168,7 @@ void debpDeveloperMode::pCmdShowCategory(const decUnicodeArgumentList &command, 
 		
 		pShowCategory.ClearMask();
 		
-		if(! newValue.EqualsInsensitive("off")){
+		if(!newValue.EqualsInsensitive("off")){
 			const decStringList bits(newValue.Split(','));
 			const int count = bits.GetCount();
 			int i;
@@ -187,7 +187,7 @@ void debpDeveloperMode::pCmdShowCategory(const decUnicodeArgumentList &command, 
 	int i;
 	for(i=0; i<63; i++){
 		if(pShowCategory.IsBitSet(i)){
-			if(! bitString.IsEmpty()){
+			if(!bitString.IsEmpty()){
 				bitString.AppendCharacter(',');
 			}
 			bitString.AppendValue(i);

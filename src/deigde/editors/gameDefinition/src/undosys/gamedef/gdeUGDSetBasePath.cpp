@@ -43,7 +43,7 @@ gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const ch
 pGameDefinition(NULL),
 pNewValue(newValue)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

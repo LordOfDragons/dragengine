@@ -43,7 +43,7 @@ pContext(ctx)
 
 
 void PinNamespaceVisitor::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
-	if(! node->nameSequence || node->nameSequence->count() == 0){
+	if(!node->nameSequence || node->nameSequence->count() == 0){
 		return;
 	}
 	
@@ -81,7 +81,7 @@ const QVector<IdentifierAst*> nodes, const QVector<QString> &names, int index){
 	
 	foreach(Declaration *declaration, declarations){
 		DUContext * const context = declaration->internalContext();
-		if(! context){
+		if(!context){
 			continue;
 		}
 		

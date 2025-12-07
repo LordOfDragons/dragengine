@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
 	void SetSize(const decPoint &size);

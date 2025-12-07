@@ -168,40 +168,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine world. */
-	inline const deWorld::Ref &GetEngineWorld() const{return pEngWorld;}
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** Engine microphone. */
-	inline const deMicrophone::Ref &GetEngineMicrophone() const{return pEngMicrophone;}
+	inline const deMicrophone::Ref &GetEngineMicrophone() const{ return pEngMicrophone; }
 	
 	/** Voice audio preview speaker. */
-	inline const deSpeaker::Ref &GetEngineSpeakerVAPreview() const{return pEngSpeakerVAPreview;}
+	inline const deSpeaker::Ref &GetEngineSpeakerVAPreview() const{ return pEngSpeakerVAPreview; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Free roaming camera. */
-	inline igdeCamera *GetCameraFree() const{return pCameraFree;}
+	inline igdeCamera *GetCameraFree() const{ return pCameraFree; }
 	
 	/** Retrieves the text box. */
-	inline ceTextBox *GetTextBox() const{return pTextBox;}
+	inline ceTextBox *GetTextBox() const{ return pTextBox; }
 	/** Retrieves the player choice box. */
-	inline cePlayerChoiceBox &GetPlayerChoiceBox() const{return *pPlayerChoiceBox;}
+	inline cePlayerChoiceBox &GetPlayerChoiceBox() const{ return *pPlayerChoiceBox; }
 	/** Retrieves the info box. */
-	inline ceConversationInfoBox &GetInfoBox() const{return *pInfoBox;}
+	inline ceConversationInfoBox &GetInfoBox() const{ return *pInfoBox; }
 	/** Retrieves the playback object. */
-	inline cePlayback *GetPlayback() const{return pPlayback;}
+	inline cePlayback *GetPlayback() const{ return pPlayback; }
 	
 	/** Retrieves the ration of the screen. */
-	inline float GetScreenRatio() const{return pScreenRatio;}
+	inline float GetScreenRatio() const{ return pScreenRatio; }
 	/** Sets the ratio of the screen. */
 	void SetScreenRatio(float ratio);
 	/** Determines if the rule of thirds aid is displayed. */
-	inline bool GetShowRuleOfThirdsAid() const{return pShowRuleOfThirdsAid;}
+	inline bool GetShowRuleOfThirdsAid() const{ return pShowRuleOfThirdsAid; }
 	/** Sets if the rule of thirds aid is displayed. */
 	void SetShowRuleOfThirdsAid(bool showRuleOfThirdsAid);
 	
@@ -218,30 +218,30 @@ public:
 	
 	
 	/** CTS path. */
-	inline const decString &GetCTSPath() const{return pCTSPath;}
+	inline const decString &GetCTSPath() const{ return pCTSPath; }
 	void SetCTSPath(const char *path);
 	
 	/** CTA path. */
-	inline const decString &GetCTAPath() const{return pCTAPath;}
+	inline const decString &GetCTAPath() const{ return pCTAPath; }
 	void SetCTAPath(const char *path);
 	
 	/** CTFI path. */
-	inline const decString &GetCTFIPath() const{return pCTFIPath;}
+	inline const decString &GetCTFIPath() const{ return pCTFIPath; }
 	void SetCTFIPath(const char *path);
 	
 	/** Language pack path. */
-	inline const decString &GetLangPackPath() const{return pLangPackPath;}
+	inline const decString &GetLangPackPath() const{ return pLangPackPath; }
 	void SetLangPackPath(const char *path);
 	
 	/** Language pack entry name. */
-	inline const decString &GetLangPackEntryName() const{return pLangPackEntryName;}
+	inline const decString &GetLangPackEntryName() const{ return pLangPackEntryName; }
 	void SetLangPackEntryName(const char *name);
 	
 	/** Paste snippet dialog parameters. */
-	inline sPasteSnippetDialogParams &GetPasteSnippetDialogParams(){return pPasteSnippetDialogParams;}
+	inline sPasteSnippetDialogParams &GetPasteSnippetDialogParams(){ return pPasteSnippetDialogParams; }
 	
 	/** Language pack or nullptr. */
-	inline const ceLangPack::Ref &GetLanguagePack() const{return pLangPack;}
+	inline const ceLangPack::Ref &GetLanguagePack() const{ return pLangPack; }
 	void SetLanguagePack(ceLangPack *langpack);
 	/*@}*/
 	
@@ -250,7 +250,7 @@ public:
 	/** \name Imported conversations */
 	/*@{*/
 	/** List of import conversation path. */
-	inline const decStringList &GetImportConversationPath() const{return pImportConversationPath;}
+	inline const decStringList &GetImportConversationPath() const{ return pImportConversationPath; }
 	
 	/** Set list of import conversation path. */
 	void SetImportConversationPath(const decStringList &list);
@@ -259,7 +259,7 @@ public:
 	void UpdateImportedConversations(ceLoadSaveSystem &lssystem);
 	
 	/** Imported conversations. */
-	inline const ceConversationList &GetImportedConversations() const{return pImportedConversations;}
+	inline const ceConversationList &GetImportedConversations() const{ return pImportedConversations; }
 	/*@}*/
 	
 	
@@ -267,7 +267,7 @@ public:
 	/** \name Targets */
 	/*@{*/
 	/** Retrieves the target list read-only. */
-	inline const ceTargetList &GetTargetList() const{return pTargetList;}
+	inline const ceTargetList &GetTargetList() const{ return pTargetList; }
 	/** Adds a target. */
 	void AddTarget(ceTarget *target);
 	/** Removes a target. */
@@ -275,7 +275,7 @@ public:
 	/** Remove all targets. */
 	void RemoveAllTargets();
 	/** Retrieves the active target or NULL if none is active. */
-	inline ceTarget *GetActiveTarget() const{return pActiveTarget;}
+	inline ceTarget *GetActiveTarget() const{ return pActiveTarget; }
 	/** Sets the active target or NULL if none is active. */
 	void SetActiveTarget(ceTarget *target);
 	
@@ -290,7 +290,7 @@ public:
 	/** \name Camera Shots */
 	/*@{*/
 	/** Retrieves the camera shot list read-only. */
-	inline const ceCameraShotList &GetCameraShotList() const{return pCameraShotList;}
+	inline const ceCameraShotList &GetCameraShotList() const{ return pCameraShotList; }
 	/** Adds a camera shot. */
 	void AddCameraShot(ceCameraShot *cameraShot);
 	/** Removes a camera shot. */
@@ -298,7 +298,7 @@ public:
 	/** Remove all camera shots. */
 	void RemoveAllCameraShots();
 	/** Retrieves the active camera shot or NULL if none is active. */
-	inline ceCameraShot *GetActiveCameraShot() const{return pActiveCameraShot;}
+	inline ceCameraShot *GetActiveCameraShot() const{ return pActiveCameraShot; }
 	/** Sets the active camera shot or NULL if none is active. */
 	void SetActiveCameraShot(ceCameraShot *cameraShot);
 	
@@ -315,7 +315,7 @@ public:
 	/** \name Gestures */
 	/*@{*/
 	/** Retrieves the gesture list read-only. */
-	inline const ceGestureList &GetGestureList() const{return pGestureList;}
+	inline const ceGestureList &GetGestureList() const{ return pGestureList; }
 	/** Adds a gesture. */
 	void AddGesture(ceGesture *gesture);
 	/** Removes a gesture. */
@@ -323,7 +323,7 @@ public:
 	/** Remove all gestures. */
 	void RemoveAllGestures();
 	/** Retrieves the active gesture or NULL if none is active. */
-	inline ceGesture *GetActiveGesture() const{return pActiveGesture;}
+	inline ceGesture *GetActiveGesture() const{ return pActiveGesture; }
 	/** Sets the active gesture or NULL if none is active. */
 	void SetActiveGesture(ceGesture *gesture);
 	
@@ -340,10 +340,10 @@ public:
 	/** \name FacePoses */
 	/*@{*/
 	/** Retrieves the list of face pose controller names. */
-	inline decStringList &GetFacePoseControllerNameList(){return pFacePoseControllerNames;}
-	inline const decStringList &GetFacePoseControllerNameList() const{return pFacePoseControllerNames;}
+	inline decStringList &GetFacePoseControllerNameList(){ return pFacePoseControllerNames; }
+	inline const decStringList &GetFacePoseControllerNameList() const{ return pFacePoseControllerNames; }
 	/** Retrieves the face pose list read-only. */
-	inline const ceFacePoseList &GetFacePoseList() const{return pFacePoseList;}
+	inline const ceFacePoseList &GetFacePoseList() const{ return pFacePoseList; }
 	/** Adds a face pose. */
 	void AddFacePose(ceFacePose *facePose);
 	/** Removes a face pose. */
@@ -351,7 +351,7 @@ public:
 	/** Remove all face poses. */
 	void RemoveAllFacePoses();
 	/** Retrieves the active face pose or NULL if none is active. */
-	inline ceFacePose *GetActiveFacePose() const{return pActiveFacePose;}
+	inline ceFacePose *GetActiveFacePose() const{ return pActiveFacePose; }
 	/** Sets the active face pose or NULL if none is active. */
 	void SetActiveFacePose(ceFacePose *facePose);
 	
@@ -368,7 +368,7 @@ public:
 	/** \name Files */
 	/*@{*/
 	/** Retrieves the file list read-only. */
-	inline const ceConversationFileList &GetFileList() const{return pFileList;}
+	inline const ceConversationFileList &GetFileList() const{ return pFileList; }
 	/** Adds an file. */
 	void AddFile(ceConversationFile *file);
 	/** Removes an file. */
@@ -376,7 +376,7 @@ public:
 	/** Remove all files. */
 	void RemoveAllFiles();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationFile *GetActiveFile() const{return pActiveFile;}
+	inline ceConversationFile *GetActiveFile() const{ return pActiveFile; }
 	/** Sets the active file or NULL if none is active. */
 	void SetActiveFile(ceConversationFile *file);
 	
@@ -400,7 +400,7 @@ public:
 	/** \name Actors */
 	/*@{*/
 	/** Retrieves the actor list read-only. */
-	inline const ceConversationActorList &GetActorList() const{return pActorList;}
+	inline const ceConversationActorList &GetActorList() const{ return pActorList; }
 	/** Adds a new actor. */
 	void AddActor(ceConversationActor *actor);
 	/** Removes a actor. */
@@ -408,7 +408,7 @@ public:
 	/** Removes all actors. */
 	void RemoveAllActors();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationActor *GetActiveActor() const{return pActiveActor;}
+	inline ceConversationActor *GetActiveActor() const{ return pActiveActor; }
 	/** Determines if there is an active actor or not. */
 	bool HasActiveActor() const;
 	/** Sets the active actor or NULL if none is active. */
@@ -420,7 +420,7 @@ public:
 	/** \name Coordinate Systems */
 	/*@{*/
 	/** Retrieves the coordinate system list read-only. */
-	inline const ceCoordSystemList &GetCoordSystemList() const{return pCoordSystemList;}
+	inline const ceCoordSystemList &GetCoordSystemList() const{ return pCoordSystemList; }
 	/** Adds a new coordinate system. */
 	void AddCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes a coordinate system. */
@@ -428,7 +428,7 @@ public:
 	/** Removes all coordinate system. */
 	void RemoveAllCoordSystems();
 	/** Retrieves the active coordinate system or NULL if none is active. */
-	inline ceCoordSystem *GetActiveCoordSystem() const{return pActiveCoordSystem;}
+	inline ceCoordSystem *GetActiveCoordSystem() const{ return pActiveCoordSystem; }
 	/** Determines if there is an active coordinate system or not. */
 	bool HasActiveCoordSystem() const;
 	/** Sets the active coordinate system or NULL if none is active. */
@@ -440,7 +440,7 @@ public:
 	/** \name Props */
 	/*@{*/
 	/** Retrieves the prop list read-only. */
-	inline const cePropList &GetPropList() const{return pPropList;}
+	inline const cePropList &GetPropList() const{ return pPropList; }
 	/** Adds a prop. */
 	void AddProp(ceProp *prop);
 	/** Removes a prop. */
@@ -448,7 +448,7 @@ public:
 	/** Removes all props. */
 	void RemoveAllProps();
 	/** Retrieves the active prop or NULL if none is active. */
-	inline ceProp *GetActiveProp() const{return pActiveProp;}
+	inline ceProp *GetActiveProp() const{ return pActiveProp; }
 	/** Determines if there is an active prop or not. */
 	bool HasActiveProp() const;
 	/** Sets the active prop or NULL if none is active. */

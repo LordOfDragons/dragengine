@@ -175,37 +175,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Model used for casting or NULL. */
-	inline deModel *GetModel() const{return pModel;}
+	inline deModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model used for casting or NULL. */
 	void SetModel(deModel *model);
 	
 	/** \brief Skin for the model used for casting or NULL. */
-	inline deSkin *GetModelSkin() const{return pModelSkin;}
+	inline deSkin *GetModelSkin() const{ return pModelSkin; }
 	
 	/** \brief Set skin for the model used for casting or NULL. */
 	void SetModelSkin(deSkin *skin);
 	
 	/** \brief What part of the model to cast particles from. */
-	inline eCastFrom GetCastFrom() const{return pCastFrom;}
+	inline eCastFrom GetCastFrom() const{ return pCastFrom; }
 	
 	/** \brief Set what part of the model to cast particles from. */
 	void SetCastFrom(eCastFrom castFrom);
 	
 	/** \brief Simulation type. */
-	inline eSimulationTypes GetSimulationType() const{return pSimulationType;}
+	inline eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** \brief Set simulation type. */
 	void SetSimulationType(eSimulationTypes simulationType);
 	
 	/** \brief Interval parameter is used as distance not time. */
-	inline bool GetIntervalAsDistance() const{return pIntervalAsDistance;}
+	inline bool GetIntervalAsDistance() const{ return pIntervalAsDistance; }
 	
 	/** \brief Set if interval parameter is used as distance not time. */
 	void SetIntervalAsDistance(bool intervalAsDistance);
@@ -213,7 +213,7 @@ public:
 	
 	
 	/** \brief Particle emitter for trails behind particles or NULL. */
-	inline deParticleEmitter *GetTrailEmitter() const{return pTrailEmitter;}
+	inline deParticleEmitter *GetTrailEmitter() const{ return pTrailEmitter; }
 	
 	/** \brief Set particle emitter for trails behind particles or NULL. */
 	void SetTrailEmitter(deParticleEmitter *emitter);
@@ -227,7 +227,7 @@ public:
 	
 	
 	/** \brief Physics size. */
-	inline float GetPhysicsSize() const{return pPhysicsSize;}
+	inline float GetPhysicsSize() const{ return pPhysicsSize; }
 	
 	/** \brief Set physics size. */
 	void SetPhysicsSize(float size);
@@ -235,19 +235,19 @@ public:
 	
 	
 	/** \brief Collision response. */
-	inline eCollisionResponses GetCollisionResponse() const{return pCollisionResponse;}
+	inline eCollisionResponses GetCollisionResponse() const{ return pCollisionResponse; }
 	
 	/** \brief Set collision response. */
 	void SetCollisionResponse(eCollisionResponses response);
 	
 	/** \brief Particle emitter for colliding particles or NULL. */
-	inline deParticleEmitter *GetCollisionEmitter() const{return pCollisionEmitter;}
+	inline deParticleEmitter *GetCollisionEmitter() const{ return pCollisionEmitter; }
 	
 	/** \brief Set particle emitter for colliding particles or NULL. */
 	void SetCollisionEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Minimum impulse required for colliding particles to emit instances. */
-	inline float GetEmitMinImpulse() const{return pEmitMinImpulse;}
+	inline float GetEmitMinImpulse() const{ return pEmitMinImpulse; }
 	
 	/** \brief Set minimum impulse required for colliding particles to emit instances. */
 	void SetEmitMinImpulse(float impulse);
@@ -261,19 +261,19 @@ public:
 	
 	
 	/** \brief Maximum linear velocity for mapping as requested by the graphic module. */
-	inline float GetMaxLinearVelocity() const{return pMaxLinearVelocity;}
+	inline float GetMaxLinearVelocity() const{ return pMaxLinearVelocity; }
 	
 	/** \brief Set maximum linear velocity for mapping as requested by the graphic module. */
 	void SetMaxLinearVelocity(float maxLinearVelocity);
 	
 	/** \brief Maximum angular velocity for mapping as requested by the graphic module. */
-	inline float GetMaxAngularVelocity() const{return pMaxAngularVelocity;}
+	inline float GetMaxAngularVelocity() const{ return pMaxAngularVelocity; }
 	
 	/** \brief Set maximum angular velocity for mapping as requested by the graphic module. */
 	void SetMaxAngularVelocity(float maxAngularVelocity);
 	
 	/** \brief Velocities have to be squared as requested by the graphic module. */
-	inline bool GetSquareVelocities() const{return pSquaredVelocities;}
+	inline bool GetSquareVelocities() const{ return pSquaredVelocities; }
 	
 	/** \brief Set if velocities have to be squared as requested by the graphic module. */
 	void SetSquareVelocities(bool squareVelocities);

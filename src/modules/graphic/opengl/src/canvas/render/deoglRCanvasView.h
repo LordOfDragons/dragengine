@@ -71,13 +71,13 @@ public:
 	
 	
 	/** Paint tracker number. */
-	inline unsigned int GetPaintTracker() const{return pPaintTracker;}
+	inline unsigned int GetPaintTracker() const{ return pPaintTracker; }
 	
 	/** Increment paint tracker number by one. */
 	void IncrementPaintTracker();
 	
 	/** Render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetRenderTarget() const{return pRenderTarget;}
+	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Render target has to be resized. */
 	void SetResizeRenderTarget();

@@ -96,7 +96,7 @@ void deSsdkServiceSteam::StartRequest(const decUniqueID &id, const deServiceObje
 
 void deSsdkServiceSteam::CancelRequest(const decUniqueID &id){
 	deSsdkPendingRequest * const pr = GetPendingRequestWithId(id);
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -187,7 +187,7 @@ void deSsdkServiceSteam::RequestCurrentStats(const decUniqueID &id){
 	NewPendingRequest(id, "requestCurrentStats");
 	
 	try{
-		if(! SteamUserStats()->RequestCurrentStats()){
+		if(!SteamUserStats()->RequestCurrentStats()){
 			DETHROW_INFO(deeInvalidAction, "SteamUserStats.RequestCurrentStats Failed");
 		}
 		
@@ -293,11 +293,11 @@ void deSsdkServiceSteam::LoadUserResource(const decUniqueID &id, const deService
 }
 
 deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
-	if(! pAuthProviderIcon){
+	if(!pAuthProviderIcon){
 		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
 			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
 	}
-	if(! pAuthProviderImage){
+	if(!pAuthProviderImage){
 		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
 			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
 	}
@@ -390,7 +390,7 @@ void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &
 	// store
 	NewPendingRequest(id, "setStats", response);
 	try{
-		if(! SteamUserStats()->StoreStats()){
+		if(!SteamUserStats()->StoreStats()){
 			DETHROW_INFO(deeInvalidAction, "SteamUserStats.StoreStats Failed");
 		}
 		
@@ -426,7 +426,7 @@ void deSsdkServiceSteam::FailRequest(const deSsdkPendingRequest::Ref &pr, const 
 
 void deSsdkServiceSteam::OnUserStatsReceived(UserStatsReceived_t *response){
 	const deSsdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithFunction("requestCurrentStats"));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -460,7 +460,7 @@ void deSsdkServiceSteam::OnUserStatsReceived(UserStatsReceived_t *response){
 
 void deSsdkServiceSteam::OnUserStatsStored(UserStatsStored_t *response){
 	const deSsdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithFunction("setStats"));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -485,7 +485,7 @@ void deSsdkServiceSteam::OnUserStatsStored(UserStatsStored_t *response){
 
 void deSsdkServiceSteam::OnEncryptedAppTicketResponse(EncryptedAppTicketResponse_t *response, bool iofailure){
 	const deSsdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithFunction("requestEncryptedAppTicket"));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -504,7 +504,7 @@ void deSsdkServiceSteam::OnEncryptedAppTicketResponse(EncryptedAppTicketResponse
 			return;
 		}
 		
-		if(! SteamUser()->GetEncryptedAppTicket(rgubTicket, sizeof(rgubTicket), &cubTicket)){
+		if(!SteamUser()->GetEncryptedAppTicket(rgubTicket, sizeof(rgubTicket), &cubTicket)){
 			DETHROW_INFO(deeInvalidAction, "Failed retrieving encrypted app ticket");
 		}
 		
@@ -521,7 +521,7 @@ void deSsdkServiceSteam::OnEncryptedAppTicketResponse(EncryptedAppTicketResponse
 
 void deSsdkServiceSteam::OnAvatarImageLoaded(AvatarImageLoaded_t *response){
 	const deSsdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithFunction("loadUserResource"));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	

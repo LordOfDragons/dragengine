@@ -88,11 +88,11 @@ void meViewEditorNavSpaceEdit::OnResize(){
 void meViewEditorNavSpaceEdit::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
-	if(! GetDragLeftMouseButton() || ! pCLSelect){
+	if(!GetDragLeftMouseButton() || !pCLSelect){
 		return;
 	}
 	
-	pCLSelect->SetSingleSelect(! shift);
+	pCLSelect->SetSingleSelect(!shift);
 	pCLSelect->SetRectSelect(false);
 	
 	decLayerMask collisionCategory;
@@ -150,7 +150,7 @@ void meViewEditorNavSpaceEdit::OnLeftMouseButtonRelease(int x, int y, bool shift
 void meViewEditorNavSpaceEdit::OnMouseMove(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if(! GetDragLeftMouseButton() || ! pCLSelect){
+	if(!GetDragLeftMouseButton() || !pCLSelect){
 		return;
 	}
 }

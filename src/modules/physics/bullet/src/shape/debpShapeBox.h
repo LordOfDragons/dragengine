@@ -61,9 +61,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the box shape. */
-	inline decShapeBox *GetShapeBox() const{return pSBox;}
+	inline decShapeBox *GetShapeBox() const{ return pSBox; }
 	/** Retrieves the box collision volume. */
-	inline const debpDCollisionBox &GetCollisionBox() const{return pCBox;}
+	inline const debpDCollisionBox &GetCollisionBox() const{ return pCBox; }
 	
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);

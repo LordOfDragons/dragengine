@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Color matrix. */
-	inline const decColorMatrix &GetColorMatrix() const{return pColorMatrix;}
+	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
 	
 	/** Set color matrix. */
 	void SetColorMatrix(const decColorMatrix &colorMatrix);

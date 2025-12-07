@@ -43,7 +43,7 @@ meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture *texture) :
 pTexture(texture),
 pPropertyExists(false)
 {
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	texture->AddReference();

@@ -43,7 +43,7 @@ peeUControllerSetLower::peeUControllerSetLower(peeController *controller, float 
 pController(NULL),
 pNewLower(newValue)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	

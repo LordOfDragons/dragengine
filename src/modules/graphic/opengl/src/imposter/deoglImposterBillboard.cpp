@@ -91,7 +91,7 @@ void deoglImposterBillboard::EnableChannelTexture(int channel, bool enable){
 		pChannelTextures[channel] = new deoglArrayTexture(pRenderThread);
 		
 	}else{
-		if(! pChannelTextures[channel]){
+		if(!pChannelTextures[channel]){
 			return;
 		}
 		

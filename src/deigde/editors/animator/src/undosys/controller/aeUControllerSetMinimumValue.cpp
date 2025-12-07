@@ -44,7 +44,7 @@ aeUControllerSetMinimumValue::aeUControllerSetMinimumValue(aeController *control
 pController(controller),
 pNewValue(newValue)
 {
-	if(! controller || ! controller->GetAnimator()){
+	if(!controller || !controller->GetAnimator()){
 		DETHROW(deeInvalidParam);
 	}
 	

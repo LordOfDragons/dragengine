@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleBTransSetEnableOrien::aeURuleBTransSetEnableOrien(aeRuleBoneTransformator *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleBTransSetEnableOrien::Undo(){
 }
 
 void aeURuleBTransSetEnableOrien::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }

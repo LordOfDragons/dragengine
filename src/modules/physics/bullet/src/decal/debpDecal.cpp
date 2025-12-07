@@ -50,7 +50,7 @@
 ////////////////////////////
 
 debpDecal::debpDecal(deDecal *decal){
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	
 	pDecal = decal;
 	
@@ -102,7 +102,7 @@ void debpDecal::SetParentComponent(debpComponent *component){
 
 
 bool debpDecal::TouchesVolume(debpDCollisionVolume *volume) const{
-	if(! volume) DETHROW(deeOutOfMemory);
+	if(!volume) DETHROW(deeOutOfMemory);
 	debpDCollisionTriangle triangle;
 	int i;
 	
@@ -157,7 +157,7 @@ void debpDecal::pCleanUp(){
 
 void debpDecal::pCreateMeshComponent(){
 	/*
-	if(! pParentComponent->GetComponent()){
+	if(!pParentComponent->GetComponent()){
 		return;
 	}
 	oglVector *compVerts = pParentComponent->GetVertices();
@@ -192,7 +192,7 @@ void debpDecal::pCreateMeshComponent(){
 	
 	// create points array
 	pPoints = new debpVBOPoint[6];
-	if(! pPoints) DETHROW(deeOutOfMemory);
+	if(!pPoints) DETHROW(deeOutOfMemory);
 	pPointCount = 6;
 	
 	// calculate vertices

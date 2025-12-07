@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** FOX icon or nullptr if unable to load. */
-	inline deglSharedIcon *GetFoxIcon() const{return pFoxIcon;}
+	inline deglSharedIcon *GetFoxIcon() const{ return pFoxIcon; }
 	
 	/** FOX icon scaled to size or nullptr if unable to load. */
 	deglSharedIcon::Ref GetScaledFoxIcon(int size) const;

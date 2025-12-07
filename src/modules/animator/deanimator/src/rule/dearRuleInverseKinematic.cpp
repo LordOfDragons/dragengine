@@ -111,7 +111,7 @@ dearRuleInverseKinematic::~dearRuleInverseKinematic(){
 
 void dearRuleInverseKinematic::Apply(dearBoneStateList &stalist, dearVPSStateList&){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	
@@ -452,7 +452,7 @@ float range, const decVector &center){
 
 void dearRuleInverseKinematic::pApplyAdjustOrientation(decMatrix &goalMatrix,
 decVector &tipPosition, const decVector &localPosition){
-	if(! pAdjustOrientation){
+	if(!pAdjustOrientation){
 		return;
 	}
 	
@@ -612,7 +612,7 @@ void dearRuleInverseKinematic::pSolveCCD(dearBoneStateList &stalist, const sPara
 				continue;
 			}
 			
-			if(! pCalcRotation(params, params.goalPosition, tipPosition, bonePosition,
+			if(!pCalcRotation(params, params.goalPosition, tipPosition, bonePosition,
 			rotationAxis, rotationAngle)){
 				continue;
 			}
@@ -877,7 +877,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 			
 			targetPosition = bonePosition;
 			
-			if(! adjustOrientation){
+			if(!adjustOrientation){
 				decQuaternion rotation;
 				if(j < pChainCount - 1){
 					dearIKWorkState &iws2 = pChain[j + 1];

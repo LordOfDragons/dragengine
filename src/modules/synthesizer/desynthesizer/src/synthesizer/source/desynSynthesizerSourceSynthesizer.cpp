@@ -54,7 +54,7 @@ pChildSynthesizer(NULL),
 pSources(NULL),
 pSourceCount(0)
 {
-	SetSilent(! source.GetEnabled());
+	SetSilent(!source.GetEnabled());
 	if(GetSilent()){
 		return;
 	}
@@ -123,7 +123,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 	pClearSources();
 	
 	const deSynthesizer * const childSynthesizer = source.GetSynthesizer();
-	if(! childSynthesizer){
+	if(!childSynthesizer){
 		SetSilent(true);
 		return;
 	}
@@ -199,7 +199,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 }
 
 void desynSynthesizerSourceSynthesizer::pClearSources(){
-	if(! pSources){
+	if(!pSources){
 		return;
 	}
 	

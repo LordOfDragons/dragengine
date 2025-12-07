@@ -180,7 +180,7 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 		for(j=0; j<clusterCount; j++){
 			const deoglCollideListHTSCluster &cluster = sector.GetClusterAt(j);
 			if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
-				if(! addSector){
+				if(!addSector){
 					addSector = pTempCollideList.AddHTSector(sector.GetSector());
 				}
 				addSector->AddCluster(cluster.GetCoordinates());
@@ -211,10 +211,10 @@ void deoglRPTSkyLightBuildRT::pFilter(int layerIndex){
 			for(k=0; k<clusterCount; k++){
 				const deoglCollideListPropFieldCluster &cluster = type.GetClusterAt(k);
 				if((cluster.GetCascadeMask() & cascadeMask) == cascadeMask){
-					if(! addPropField){
+					if(!addPropField){
 						addPropField = pTempCollideList.AddPropField(propfield.GetPropField());
 					}
-					if(! addType){
+					if(!addType){
 						addType = addPropField->AddType(type.GetType());
 					}
 					addType->AddCluster(cluster.GetCluster());

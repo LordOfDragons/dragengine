@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator){
-	if(! topic || ! action){
+	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -79,7 +79,7 @@ void saeLoadSaveSAnimation::LoadSAnimation(saeSAnimation &sanimation, decBaseFil
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "speechAnimation") != 0){
+	if(!root || strcmp(root->GetName(), "speechAnimation") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ void saeLoadSaveSAnimation::pWriteSAnimation(decXmlWriter &writer, const saeSAni
 	writer.WriteDataTagString("rig", sanimation.GetRigPath());
 	writer.WriteDataTagString("animation", sanimation.GetAnimationPath());
 	
-	if(! sanimation.GetNeutralMoveName().IsEmpty()){
+	if(!sanimation.GetNeutralMoveName().IsEmpty()){
 		writer.WriteDataTagString("neutralMoveName", sanimation.GetNeutralMoveName());
 	}
 	
@@ -149,13 +149,13 @@ void saeLoadSaveSAnimation::pWritePhoneme(decXmlWriter &writer, const saePhoneme
 	writer.WriteAttributeInt("ipa", phoneme.GetIPA());
 	writer.WriteOpeningTagEnd();
 	
-	if(! phoneme.GetSampleText().IsEmpty()){
+	if(!phoneme.GetSampleText().IsEmpty()){
 		writer.WriteDataTagString("sampleText", phoneme.GetSampleText());
 	}
-	if(! phoneme.GetMoveName().IsEmpty()){
+	if(!phoneme.GetMoveName().IsEmpty()){
 		writer.WriteDataTagString("moveName", phoneme.GetMoveName());
 	}
-	if(! phoneme.GetVertexPositionSet().IsEmpty()){
+	if(!phoneme.GetVertexPositionSet().IsEmpty()){
 		writer.WriteDataTagString("vertexPositionSet", phoneme.GetVertexPositionSet());
 	}
 	writer.WriteDataTagFloat("length", phoneme.GetLength());
@@ -249,7 +249,7 @@ void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnima
 	
 	try{
 		phoneme = new saePhoneme;
-		if(! phoneme) DETHROW(deeOutOfMemory);
+		if(!phoneme) DETHROW(deeOutOfMemory);
 		
 		/*if( ! HasAttribute( root, "name" ) ){
 			LogErrorGenericProblemValue(root, "name", "Attribute missing");
@@ -302,7 +302,7 @@ void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimatio
 	
 	try{
 		word = new saeWord;
-		if(! word) DETHROW(deeOutOfMemory);
+		if(!word) DETHROW(deeOutOfMemory);
 		
 		/*if( ! HasAttribute( root, "name" ) ){
 			LogErrorGenericProblemValue(root, "name", "Attribute missing");

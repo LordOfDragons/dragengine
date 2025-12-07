@@ -133,14 +133,14 @@ public:
 	void UpdateOccMeshCubeFaceMasks(const decDVector &position) const;
 	
 	/** Retrieves the list of particle emitters. */
-	inline deoglParticleEmitterInstanceList &GetParticleEmitterList(){return pParticleEmitterList;}
-	inline const deoglParticleEmitterInstanceList &GetParticleEmitterList() const{return pParticleEmitterList;}
+	inline deoglParticleEmitterInstanceList &GetParticleEmitterList(){ return pParticleEmitterList; }
+	inline const deoglParticleEmitterInstanceList &GetParticleEmitterList() const{ return pParticleEmitterList; }
 	/** Adds all particle emitters colliding with the given volume. */
 	void AddParticleEmittersColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume);
 	
 	/** Retrieves the list of environment maps. */
-	inline deoglEnvironmentMapList &GetEnvironmentMapList(){return pEnvMapList;}
-	inline const deoglEnvironmentMapList &GetEnvironmentMapList() const{return pEnvMapList;}
+	inline deoglEnvironmentMapList &GetEnvironmentMapList(){ return pEnvMapList; }
+	inline const deoglEnvironmentMapList &GetEnvironmentMapList() const{ return pEnvMapList; }
 	/** Adds all environment maps colliding with the given volume. */
 	void AddEnvironmentMapsColliding(deoglWorldOctree &octree, deoglDCollisionVolume *volume);
 	
@@ -153,7 +153,7 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** Count of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Component at index. */
 	deoglCollideListComponent *GetComponentAt(int index) const;
@@ -203,7 +203,7 @@ public:
 	/** \name Lights */
 	/*@{*/
 	/** Count of lights. */
-	inline int GetLightCount() const{return pLightCount;}
+	inline int GetLightCount() const{ return pLightCount; }
 	
 	/** Light at index. */
 	deoglCollideListLight *GetLightAt(int index) const;
@@ -241,7 +241,7 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** Count of billboards. */
-	inline int GetBillboardCount() const{return pBillboardCount;}
+	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
 	/** Billboard at index. */
 	deoglRBillboard *GetBillboardAt(int index) const;
@@ -264,7 +264,7 @@ public:
 	/** \name Height Terrain Sectors */
 	/*@{*/
 	/** Count of height terrain sectors. */
-	inline int GetHTSectorCount() const{return pHTSectorCount;}
+	inline int GetHTSectorCount() const{ return pHTSectorCount; }
 	
 	/** Height terrain sector at index. */
 	deoglCollideListHTSector *GetHTSectorAt(int index) const;
@@ -287,7 +287,7 @@ public:
 	/** \name Height Terrain Sector Clusters */
 	/*@{*/
 	/** Count of height terrain sector clusters. */
-	inline int GetHTSClusterCount() const{return pHTSClusterCount;}
+	inline int GetHTSClusterCount() const{ return pHTSClusterCount; }
 	
 	/** Height terrain sector cluster at index. */
 	deoglCollideListHTSCluster *GetHTSClusterAt(int index) const;
@@ -304,7 +304,7 @@ public:
 	/** \name Prop Fields */
 	/*@{*/
 	/** Count of prop fields. */
-	inline int GetPropFieldCount() const{return pPropFieldCount;}
+	inline int GetPropFieldCount() const{ return pPropFieldCount; }
 	
 	/** Prop field at index. */
 	deoglCollideListPropField *GetPropFieldAt(int index) const;
@@ -327,7 +327,7 @@ public:
 	/** \name Prop Field Clusters */
 	/*@{*/
 	/** Count of prop field clusters. */
-	inline int GetPropFieldClusterCount() const{return pPropFieldClusterCount;}
+	inline int GetPropFieldClusterCount() const{ return pPropFieldClusterCount; }
 	
 	/** Prop field cluster at index. */
 	deoglCollideListPropFieldCluster *GetPropFieldClusterAt(int index) const;

@@ -88,7 +88,7 @@ private:
 	public:
 		cPrepareShader(deoglSkinShaderManager &manager, const deoglSkinShader::Ref &shader);
 		
-		inline const deoglSkinShader::Ref &GetShader() const{return pShader;}
+		inline const deoglSkinShader::Ref &GetShader() const{ return pShader; }
 		
 		void AddListener(cGetShaderListener *listener);
 		
@@ -118,7 +118,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Unit source code path. */
 	const char *GetUnitSourceCodePath(eUnitSourceCodePath unitSourceCodePath) const;

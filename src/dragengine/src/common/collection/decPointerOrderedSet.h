@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of pointers. */
-	inline int GetCount() const{return pPointerCount;}
+	inline int GetCount() const{ return pPointerCount; }
 	
 	/**
 	 * \brief Pointer at index.

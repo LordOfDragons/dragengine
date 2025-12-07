@@ -141,7 +141,7 @@ deModioService::~deModioService(){
 			done = true;
 		});
 		
-		while(! done){
+		while(!done){
 			Modio::RunPendingHandlers();
 		}
 	}
@@ -164,7 +164,7 @@ deModioService::~deModioService(){
 ///////////////
 
 void deModioService::StartRequest(const decUniqueID &id, const deServiceObject& request){
-	if(! pIsInitialized){
+	if(!pIsInitialized){
 		DETHROW_INFO(deeInvalidAction, "Not initialized");
 	}
 	
@@ -228,7 +228,7 @@ void deModioService::StartRequest(const decUniqueID &id, const deServiceObject& 
 
 void deModioService::CancelRequest(const decUniqueID &id){
 	deModioPendingRequest * const pr = GetPendingRequestWithId(id);
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -241,7 +241,7 @@ void deModioService::CancelRequest(const decUniqueID &id){
 }
 
 deServiceObject::Ref deModioService::RunAction(const deServiceObject &action){
-	if(! pIsInitialized){
+	if(!pIsInitialized){
 		DETHROW_INFO(deeInvalidAction, "Not initialized");
 	}
 	
@@ -704,7 +704,7 @@ void deModioService::LoadUserResource(const decUniqueID &id, const deServiceObje
 			
 			try{
 				const Modio::Optional<Modio::User> user(Modio::QueryUserProfile());
-				if(! user.has_value()){
+				if(!user.has_value()){
 					DETHROW_INFO(deeInvalidParam, "User not logged in");
 				}
 				if(user.value().UserId != userId){
@@ -874,7 +874,7 @@ public:
 		}
 	}
 	
-	inline bool GetMatched() const{return pMatched;}
+	inline bool GetMatched() const{ return pMatched; }
 	
 	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		int i;
@@ -1021,7 +1021,7 @@ void deModioService::FailRequest(const deModioPendingRequest::Ref &request, cons
 	request->data->SetStringChildAt("message", ec.message().c_str());
 	
 	if(ec == Modio::ApiError::UserNoAcceptTermsOfUse){
-		if(! pPendingRequests.Has(request)){
+		if(!pPendingRequests.Has(request)){
 			pPendingRequests.Add(request);
 		}
 		
@@ -1053,7 +1053,7 @@ void deModioService::FailRequest(const deModioPendingRequest::Ref &request, cons
 
 void deModioService::OnFinishedLoadResource(const decUniqueID &id, const decString &path,
 deResource *resource){
-	if(! resource){
+	if(!resource){
 		decString message;
 		message.Format("Failed loading cached resource: %s", path.GetString());
 		FailRequest(id, deeInvalidAction(__FILE__, __LINE__, message));
@@ -1063,7 +1063,7 @@ deResource *resource){
 	pModule.LogInfoFormat("deModioService.OnFinishedLoadResource: path=%s", path.GetString());
 	
 	const deModioPendingRequest::Ref pr(RemoveFirstPendingRequestWithId(id));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1190,7 +1190,7 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results){
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1257,7 +1257,7 @@ public:
 		
 		const deResourceLoaderTask * const rlt = pTaskLoadResource;
 		
-		if(! IsCancelled() && rlt->GetState() == deResourceLoaderTask::esSucceeded){
+		if(!IsCancelled() && rlt->GetState() == deResourceLoaderTask::esSucceeded){
 			pService.OnFinishedLoadResource(pRequestId, pPath, rlt->GetResource());
 			
 		}else{
@@ -1277,7 +1277,7 @@ private:
 		
 		switch(rlt->GetState()){
 		case deResourceLoaderTask::esPending:
-			if(! DoesDependOn(rlt)){
+			if(!DoesDependOn(rlt)){
 				AddDependsOn(rlt);
 			}
 			break;
@@ -1305,7 +1305,7 @@ Modio::Optional<std::string> filename){
 	}
 	
 	try{
-		if(! filename.has_value()){
+		if(!filename.has_value()){
 			DETHROW_INFO(deeInvalidParam, "Missing filename in server response");
 		}
 		
@@ -1337,12 +1337,12 @@ Modio::Optional<Modio::ModInfo> info){
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
 	try{
-		if(! info.has_value()){
+		if(!info.has_value()){
 			DETHROW_INFO(deeInvalidParam, "Mod info not received from server");
 		}
 		
@@ -1362,7 +1362,7 @@ void deModioService::pOnAuthenticateUserExternal(const decUniqueID &id, Modio::E
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec, true));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1391,7 +1391,7 @@ void deModioService::pOnClearUserData(const decUniqueID &id, Modio::ErrorCode ec
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1455,7 +1455,7 @@ void deModioService::pOnGetUserPurchasedMods(const decUniqueID &id, Modio::Error
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1478,7 +1478,7 @@ Modio::Optional<Modio::TransactionRecord> record){
 		ec.value(), ec.message().c_str());
 	
 	const deModioPendingRequest::Ref pr(pOnBaseResponseInit(id, ec));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -1583,7 +1583,7 @@ void deModioService::pInitVFS(){
 
 void deModioService::pUpdateModManagementEnabled(){
 	if(pPauseModManagement){
-		if(! pModManagementEnabled){
+		if(!pModManagementEnabled){
 			return;
 		}
 		
@@ -1621,7 +1621,7 @@ void deModioService::pCheckProgressUpdate(float elapsed){
 	pElapsedUpdateProgress = 0.0f;
 	
 	const Modio::Optional<Modio::ModProgressInfo> progress = Modio::QueryCurrentModUpdate();
-	if(! progress.has_value()){
+	if(!progress.has_value()){
 		return;
 	}
 	

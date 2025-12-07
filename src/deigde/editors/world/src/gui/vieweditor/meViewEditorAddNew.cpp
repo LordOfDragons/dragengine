@@ -185,7 +185,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		
 		pAddDecal->SetRay(camera.GetViewMatrix().GetPosition(),
 			camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y));
-		pAddDecal->SetAlignWithNormal(! shift);
+		pAddDecal->SetAlignWithNormal(!shift);
 		
 		pUpdateUndo(shift, control);
 		

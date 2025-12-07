@@ -86,25 +86,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Layout horizontal instead of vertical. */
-	inline bool GetHorizontal() const{return pHorizontal;}
+	inline bool GetHorizontal() const{ return pHorizontal; }
 	
 	/** \brief Set if widgets are laid out horizontal instead of vertical. */
 	void SetHorizontal(bool horizontal);
 	
 	/** \brief Gap in pixels between widgets. */
-	inline int GetGap() const{return pGap;}
+	inline int GetGap() const{ return pGap; }
 	
 	/** \brief Set gap in pxiels between widgets. */
 	void SetGap(int gap);
 	
 	/** \brief Layout type in X direction. */
-	inline eLayoutTypes GetLayoutX() const{return pLayoutX;}
+	inline eLayoutTypes GetLayoutX() const{ return pLayoutX; }
 	
 	/** \brief Set layout type in X direction. */
 	void SetLayoutX(eLayoutTypes type);
 	
 	/** \brief Layout type in Y direction. */
-	inline eLayoutTypes GetLayoutY() const{return pLayoutY;}
+	inline eLayoutTypes GetLayoutY() const{ return pLayoutY; }
 	
 	/** \brief Set layout type in Y direction. */
 	void SetLayoutY(eLayoutTypes type);

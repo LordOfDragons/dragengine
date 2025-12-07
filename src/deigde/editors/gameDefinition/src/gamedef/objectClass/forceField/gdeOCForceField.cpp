@@ -141,7 +141,7 @@ void gdeOCForceField::SetEnabled(bool enabled){
 
 
 bool gdeOCForceField::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &gdeOCForceField::GetPropertyName(eProperties property) const{
@@ -165,7 +165,7 @@ bool gdeOCForceField::HasPropertyWithName(const char *name) const{
 
 
 bool gdeOCForceField::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &gdeOCForceField::GetTriggerName(eTriggers trigger) const{

@@ -113,7 +113,7 @@ void deoglRComponentWCElement::UpdateData(sDataElement &data) const{
 				
 				const deoglRComponentTexture &texture = pComponent.GetTextureAt(j);
 				deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-				if(! skinTexture){
+				if(!skinTexture){
 					if(shadowCombineCount > 1){
 						data.geometryCount++;
 					}
@@ -233,7 +233,7 @@ void deoglRComponentWCElement::UpdateDataGeometries(sDataElementGeometry *data) 
 		}
 		
 		const deoglVAO * const vao = lod.GetUseVAO();
-		if(! vao || ! vao->GetRTSVAO()){
+		if(!vao || !vao->GetRTSVAO()){
 			continue;
 		}
 		
@@ -255,7 +255,7 @@ void deoglRComponentWCElement::UpdateDataGeometries(sDataElementGeometry *data) 
 			
 			const deoglRComponentTexture &texture = pComponent.GetTextureAt(j);
 			deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-			if(! skinTexture){
+			if(!skinTexture){
 #ifdef SPECIAL_DEBUG
 				pComponent.GetRenderThread().GetLogger().LogInfoFormat(
 					"U2-B %p: i=%d j=%d scc=%d d=%d",

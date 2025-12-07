@@ -46,7 +46,7 @@
 ////////////////////////////
 
 reRigTexture::reRigTexture(deEngine *engine, const char *name){
-	if(! engine || ! name) DETHROW(deeInvalidParam);
+	if(!engine || !name) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
@@ -64,9 +64,9 @@ reRigTexture::~reRigTexture(){
 ///////////////
 
 void reRigTexture::SetSkinPath(const char *skinPath){
-	if(! skinPath) DETHROW(deeInvalidParam);
+	if(!skinPath) DETHROW(deeInvalidParam);
 	
-	if(! pSkinPath.Equals(skinPath)){
+	if(!pSkinPath.Equals(skinPath)){
 		pSkinPath = skinPath;
 		LoadSkin();
 	}
@@ -75,7 +75,7 @@ void reRigTexture::SetSkinPath(const char *skinPath){
 void reRigTexture::LoadSkin(){
 	deSkin *engSkin = NULL;
 	
-	if(! pSkinPath.IsEmpty()){
+	if(!pSkinPath.IsEmpty()){
 		deSkinManager &skinMgr = *pEngine->GetSkinManager();
 		
 		try{

@@ -60,7 +60,7 @@ reTaskSyncGameDefinition::~reTaskSyncGameDefinition(){
 ///////////////
 
 bool reTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetRig()){
+	if(!pWindowMain.GetRig()){
 		return false;
 	}
 	

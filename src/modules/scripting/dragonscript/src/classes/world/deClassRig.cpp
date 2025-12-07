@@ -72,7 +72,7 @@ void deClassRig::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// load rig
 	nd.rig = rigMgr.LoadRig(rt->GetValue(0)->GetString(), "/");
-	if(! nd.rig){
+	if(!nd.rig){
 		DSTHROW(dueInvalidParam);
 	}
 }
@@ -88,7 +88,7 @@ void deClassRig::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue*){
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -533,7 +533,7 @@ void deClassRig::nfSave::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	deBaseRigModule * const module = (deBaseRigModule*)engine.GetModuleSystem()->
 		GetModuleAbleToLoad(deModuleSystem::emtRig, filename);
-	if(! module){
+	if(!module){
 		DSTHROW_INFO(dueInvalidParam, "no module found to handle filename");
 	}
 	
@@ -565,7 +565,7 @@ void deClassRig::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassRig * const clsRig = (deClassRig*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsRig)){
+	if(!p_IsObjOfType(obj, clsRig)){
 		rt->PushBool(false);
 		
 	}else{
@@ -585,7 +585,7 @@ void deClassRig::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassRig::deClassRig(deScriptingDragonScript *ds) :
 dsClass("Rig", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -665,7 +665,7 @@ void deClassRig::CreateClassMembers(dsEngine *engine){
 }
 
 deRig *deClassRig::GetRig(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -673,11 +673,11 @@ deRig *deClassRig::GetRig(dsRealObject *myself) const{
 }
 
 void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rig){
+	if(!rig){
 		rt->PushObject(NULL, this);
 		return;
 	}

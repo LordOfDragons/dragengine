@@ -44,7 +44,7 @@
 
 ceUCCVarSetVariable::ceUCCVarSetVariable(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionVariable *condition, const char *newVariable){
-	if(! topic || ! action || ! condition) DETHROW(deeInvalidParam);
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

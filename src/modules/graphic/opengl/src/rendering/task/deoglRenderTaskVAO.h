@@ -81,7 +81,7 @@ public:
 	
 	
 	/** VAO. */
-	inline const deoglRenderTaskSharedVAO *GetVAO() const{return pVAO;}
+	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
 	void SetVAO(const deoglRenderTaskSharedVAO *vao);
@@ -89,7 +89,7 @@ public:
 	
 	
 	/** Number of render task instances. */
-	inline int GetInstanceCount() const{return pInstanceCount;}
+	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** Render task instance at index. */
 	deoglRenderTaskInstance *GetInstanceAt(int index) const;

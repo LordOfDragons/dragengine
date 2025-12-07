@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of arguments. */
-	inline int GetArgumentCount() const{return pArgumentCount;}
+	inline int GetArgumentCount() const{ return pArgumentCount; }
 	/** Retrieves the argument at the given index. */
 	const decUnicodeString *GetArgumentAt(int index) const;
 	/** Adds an argument to the end of the list. */

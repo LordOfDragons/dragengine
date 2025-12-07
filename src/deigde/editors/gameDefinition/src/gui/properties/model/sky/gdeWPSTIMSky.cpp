@@ -49,7 +49,7 @@ gdeWPSTIMSky::gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky) :
 gdeWPSTreeItemModel(tree, etSky),
 pSky(NULL)
 {
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -105,7 +105,7 @@ void dealWidgetLogFile::CheckFile(){
 	}
 	
 	deVirtualFileSystem &vfs = *GetDisplay().GetLauncher().GetFileSystem();
-	if(! vfs.ExistsFile(pPath)){
+	if(!vfs.ExistsFile(pPath)){
 		return;
 	}
 	

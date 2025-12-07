@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pNavSpace(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! navspace){
+	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -51,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Weight. */
-	inline float GetWeight() const{return pWeight;}
+	inline float GetWeight() const{ return pWeight; }
 	
 	/** Set weight. */
 	void SetWeight(float weight);

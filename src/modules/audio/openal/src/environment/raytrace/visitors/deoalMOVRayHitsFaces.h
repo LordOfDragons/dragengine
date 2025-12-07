@@ -93,19 +93,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decVector &GetRayOrigin() const{ return pRayOrigin; }
 	
 	/** \brief Ray direction. */
-	inline const decVector &GetRayDirection() const{return pRayDirection;}
+	inline const decVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Ray length. */
-	inline float GetRayLength() const{return pRayLength;}
+	inline float GetRayLength() const{ return pRayLength; }
 	
 	/** \brief Ray box minimum extend. */
-	inline const decVector &GetRayBoxMin() const{return pRayBoxMin;}
+	inline const decVector &GetRayBoxMin() const{ return pRayBoxMin; }
 	
 	/** \brief Ray box maximum extend. */
-	inline const decVector &GetRayBoxMax() const{return pRayBoxMax;}
+	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
 	void SetRay(const decVector &origin, const decVector &direction);
@@ -113,13 +113,13 @@ public:
 	
 	
 	/** \brief Result or NULL if not set. */
-	inline deoalRayTraceResult *GetResult() const{return pResult;}
+	inline deoalRayTraceResult *GetResult() const{ return pResult; }
 	
 	/** \brief Set result or NULL if not set. */
 	void SetResult(deoalRayTraceResult *result);
 	
 	/** \brief Transform result into world space. */
-	inline bool GetResultInWorldSpace() const{return pResultInWorldSpace;}
+	inline bool GetResultInWorldSpace() const{ return pResultInWorldSpace; }
 	
 	/** \brief Set to transform result into world space. */
 	void SetResultInWorldSpace(bool resultInWorldSpace);

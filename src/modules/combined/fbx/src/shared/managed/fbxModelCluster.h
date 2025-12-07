@@ -76,16 +76,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Model. */
-	inline fbxModel &GetModel() const{return pModel;}
+	inline fbxModel &GetModel() const{ return pModel; }
 	
 	/** \brief Cluster node. */
-	inline fbxNode &GetNodeCluster() const{return pNodeCluster;}
+	inline fbxNode &GetNodeCluster() const{ return pNodeCluster; }
 	
 	/** \brief Cluster node ID. */
-	inline int64_t GetNodeClusterID() const{return pNodeClusterID;}
+	inline int64_t GetNodeClusterID() const{ return pNodeClusterID; }
 	
 	/** \brief Rig bone or NULL. */
-	inline fbxRigBone *GetRigBone() const{return pRigBone;}
+	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set rig bone or NULL. */
 	void SetRigBone(fbxRigBone *rigBone);

@@ -80,7 +80,7 @@ void deConnection::SetConnected(bool connected){
 }
 
 bool deConnection::ConnectTo(const char *address){
-	if(! address){
+	if(!address){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -98,7 +98,7 @@ void deConnection::Disconnect(){
 }
 	
 void deConnection::SendMessage(deNetworkMessage *message, int maxDelay){
-	if(! message || message->GetDataLength() < 1 || maxDelay < 0){
+	if(!message || message->GetDataLength() < 1 || maxDelay < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ void deConnection::SendMessage(deNetworkMessage *message, int maxDelay){
 }
 
 void deConnection::SendReliableMessage(deNetworkMessage *message){
-	if(! message || message->GetDataLength() < 1){
+	if(!message || message->GetDataLength() < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void deConnection::SendReliableMessage(deNetworkMessage *message){
 }
 
 void deConnection::LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly){
-	if(! message || message->GetDataLength() < 1 || ! state){
+	if(!message || message->GetDataLength() < 1 || !state){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -68,7 +68,7 @@ deoglSkinStateCNImage::~deoglSkinStateCNImage(){
 ///////////////
 
 void deoglSkinStateCNImage::Update(deoglSkinState &state){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	
@@ -83,7 +83,7 @@ void deoglSkinStateCNImage::Update(deoglSkinState &state){
 }
 
 void deoglSkinStateCNImage::PrepareForRender(deoglSkinState &state){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	
@@ -93,7 +93,7 @@ void deoglSkinStateCNImage::PrepareForRender(deoglSkinState &state){
 }
 
 void deoglSkinStateCNImage::Render(deoglSkinState &state, const deoglRenderCanvasContext &context){
-	if(! pImage){
+	if(!pImage){
 		return;
 	}
 	
@@ -115,7 +115,7 @@ deoglSkinStateConstructedNode::Ref deoglSkinStateCNImage::Copy() const{
 //////////////////////
 
 void deoglSkinStateCNImage::pUpdateTCTransform(){
-	if(! pDirtyTCTransform){
+	if(!pDirtyTCTransform){
 		return;
 	}
 	

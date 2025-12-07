@@ -45,7 +45,7 @@ gdeOCLight *light, deLight::eLightTypes newValue) :
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	

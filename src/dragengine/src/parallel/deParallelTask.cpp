@@ -100,7 +100,7 @@ bool deParallelTask::DoesDependOn(deParallelTask *task) const{
 }
 
 void deParallelTask::AddDependsOn(deParallelTask *task){
-	if(! task || task == this){
+	if(!task || task == this){
 		DETHROW(deeInvalidParam);
 	}
 	if(task->DoesDependOn(this)){
@@ -115,7 +115,7 @@ void deParallelTask::AddDependsOn(deParallelTask *task){
 }
 
 void deParallelTask::RemoveDependsOn(deParallelTask *task){
-	if(! task || task == this){
+	if(!task || task == this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -163,7 +163,7 @@ bool deParallelTask::CanRun() const{
 	const int count = pDependsOn.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(! ((deParallelTask*)pDependsOn.GetAt(i))->GetFinished()){
+		if(!((deParallelTask*)pDependsOn.GetAt(i))->GetFinished()){
 			return false;
 		}
 	}
@@ -201,14 +201,14 @@ decString deParallelTask::GetDebugDetails() const{
 void deParallelTask::VerifyDependsOn(){
 	int i, count = pDependsOn.GetCount();
 	for(i=0; i<count; i++){
-		if(! ((deParallelTask*)pDependsOn.GetAt(i))->GetDependedOnBy().Has(this)){
+		if(!((deParallelTask*)pDependsOn.GetAt(i))->GetDependedOnBy().Has(this)){
 			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	count = pDependedOnBy.GetCount();
 	for(i=0; i<count; i++){
-		if(! ((deParallelTask*)pDependedOnBy.GetAt(i))->DoesDependOn(this)){
+		if(!((deParallelTask*)pDependedOnBy.GetAt(i))->DoesDependOn(this)){
 			DETHROW(deeInvalidParam);
 		}
 	}

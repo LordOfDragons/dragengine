@@ -140,7 +140,7 @@ void ceConversationTopic::FindMissingWords(decStringSet &missingWords) const{
 
 void ceConversationTopic::FindMissingWords(const ceConversationActionList &actions,
 decStringSet &missingWords) const{
-	if(! pFile || ! pFile->GetConversation()){
+	if(!pFile || !pFile->GetConversation()){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ decStringSet &missingWords) const{
 		switch(action.GetType()){
 		case ceConversationAction::eatActorSpeak:{
 			const ceCAActorSpeak &speak = (ceCAActorSpeak&)action;
-			if(! speak.GetUseSpeechAnimation()){
+			if(!speak.GetUseSpeechAnimation()){
 				continue;
 			}
 			
@@ -167,7 +167,7 @@ decStringSet &missingWords) const{
 			}
 			
 			const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID(actorID);
-			if(! conversationActor || ! conversationActor->GetSpeechAnimation()){
+			if(!conversationActor || !conversationActor->GetSpeechAnimation()){
 				continue;
 			}
 			
@@ -176,7 +176,7 @@ decStringSet &missingWords) const{
 			
 			for(j=0; j<wordCount; j++){
 				const decString &word = words.GetAt(j)->GetID();
-				if(! word.IsEmpty() && ! saWordList.HasNamed(word)){
+				if(!word.IsEmpty() && !saWordList.HasNamed(word)){
 					missingWords.Add(word);
 				}
 			}

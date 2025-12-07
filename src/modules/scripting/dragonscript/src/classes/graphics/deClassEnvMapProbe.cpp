@@ -359,7 +359,7 @@ void deClassEnvMapProbe::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsEmp)){
+	if(!p_IsObjOfType(object, clsEmp)){
 		rt->PushBool(false);
 		
 	}else{
@@ -394,7 +394,7 @@ void deClassEnvMapProbe::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassEnvMapProbe::deClassEnvMapProbe(deScriptingDragonScript *ds) :
 dsClass("EnvMapProbe", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -471,7 +471,7 @@ void deClassEnvMapProbe::CreateClassMembers(dsEngine *engine){
 }
 
 deEnvMapProbe *deClassEnvMapProbe::GetEnvMapProbe(dsRealObject *object) const{
-	if(! object){
+	if(!object){
 		return NULL;
 	}
 	
@@ -479,11 +479,11 @@ deEnvMapProbe *deClassEnvMapProbe::GetEnvMapProbe(dsRealObject *object) const{
 }
 
 void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! envMapProbe){
+	if(!envMapProbe){
 		rt->PushObject(NULL, this);
 		return;
 	}

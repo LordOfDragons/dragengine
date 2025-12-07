@@ -245,7 +245,7 @@ void debpCollisionDetection::ColliderHits(debpCollider *collider, debpWorld *wor
 
 void debpCollisionDetection::ColliderMoveHits(debpCollider *collider, const decDVector &displacement,
 debpWorld *world, deBaseScriptingCollider *listener){
-	if(! collider || ! world || ! listener){
+	if(!collider || !world || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -282,7 +282,7 @@ debpWorld *world, deBaseScriptingCollider *listener){
 
 void debpCollisionDetection::ColliderRotateHits(debpCollider *collider, const decVector &rotation,
 debpWorld *world, deBaseScriptingCollider *listener){
-	if(! collider || ! world || ! listener){
+	if(!collider || !world || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -320,7 +320,7 @@ debpWorld *world, deBaseScriptingCollider *listener){
 
 void debpCollisionDetection::ColliderMoveRotateHits(debpCollider *collider, const decVector &displacement,
 const decVector &rotation, debpWorld *world, deBaseScriptingCollider *listener){
-	if(! collider || ! world || ! listener){
+	if(!collider || !world || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -364,7 +364,7 @@ const decVector &rotation, debpWorld *world, deBaseScriptingCollider *listener){
 #if 0
 bool debpCollisionDetection::RayHitsHeightTerrain(const decDVector &origin, const decDVector &direction,
 debpHTSector *sector, bool testHiddenFaces, debpCollisionResult &result){
-	if(! sector) DETHROW(deeInvalidParam);
+	if(!sector) DETHROW(deeInvalidParam);
 	
 	int x, z, sx, sz, ex, ez, base;
 	debpCollisionResult tresult;
@@ -445,7 +445,7 @@ debpHTSector *sector, bool testHiddenFaces, debpCollisionResult &result){
 						if(distance >= 0.0){
 							hp = origin + direction * distance;
 							if(debpDCollisionDetection::PointInTriangle(pt[0], pt[1], pt[3], hp)){
-								if(! hasHit || distance < hitDist){
+								if(!hasHit || distance < hitDist){
 									hitDist = distance;
 									hitNormal = collisionTriangle.GetNormal();
 									hasHit = true;
@@ -460,7 +460,7 @@ debpHTSector *sector, bool testHiddenFaces, debpCollisionResult &result){
 						if(distance >= 0.0){
 							hp = origin + direction * distance;
 							if(debpDCollisionDetection::PointInTriangle(pt[0], pt[3], pt[2], hp)){
-								if(! hasHit || distance < hitDist){
+								if(!hasHit || distance < hitDist){
 									hitDist = distance;
 									hitNormal = collisionTriangle.GetNormal();
 									hasHit = true;
@@ -486,7 +486,7 @@ debpHTSector *sector, bool testHiddenFaces, debpCollisionResult &result){
 
 #if 0
 bool debpCollisionDetection::ShapeHitsHeightTerrain(debpShape *shape, debpHTSector *sector, debpCollisionResult &result){
-	if(! shape || ! sector) DETHROW(deeInvalidParam);
+	if(!shape || !sector) DETHROW(deeInvalidParam);
 	
 	debpDCollisionVolume *colvol = shape->GetCollisionVolume();
 	int x, z, sx, sz, ex, ez, base;
@@ -578,9 +578,9 @@ bool debpCollisionDetection::ShapeHitsHeightTerrain(debpShape *shape, debpHTSect
 #endif
 
 bool debpCollisionDetection::ColliderHitsHeightTerrain(debpCollider *collider, debpHTSector *sector, debpCollisionResult &result){
-	if(! collider || ! sector) DETHROW(deeInvalidParam);
+	if(!collider || !sector) DETHROW(deeInvalidParam);
 	
-	if(! sector->GetSector()->GetHeightImage()) return false;
+	if(!sector->GetSector()->GetHeightImage()) return false;
 	if(sector->GetSector()->GetTextureCount() == 0) return false;
 	
 	int x, z, sx, sz, ex, ez, base;
@@ -680,9 +680,9 @@ bool debpCollisionDetection::ColliderHitsHeightTerrain(debpCollider *collider, d
 #if 0
 bool debpCollisionDetection::ColliderMoveHitsHeightTerrain(debpCollider *collider, const decDVector &displacement,
 debpHTSector *sector, debpCollisionResult &result){
-	if(! collider || ! sector) DETHROW(deeInvalidParam);
+	if(!collider || !sector) DETHROW(deeInvalidParam);
 	
-	if(! sector->GetSector()->GetHeightImage()) return false;
+	if(!sector->GetSector()->GetHeightImage()) return false;
 	if(sector->GetSector()->GetTextureCount() == 0) return false;
 	
 	int x, z, sx, sz, ex, ez, base;
@@ -757,7 +757,7 @@ debpHTSector *sector, debpCollisionResult &result){
 						
 						// test first triangle ( 1, 2, 4 )
 						if(ColliderMoveHitsTriangle(collider, displacement, pt[0], pt[1], pt[3], tresult)){
-							if(! hasCollision || tresult.distance < hitDistance){
+							if(!hasCollision || tresult.distance < hitDistance){
 								hitDistance = tresult.distance;
 								hitNormal = tresult.normal;
 								hitShape = tresult.shape1;
@@ -768,7 +768,7 @@ debpHTSector *sector, debpCollisionResult &result){
 						
 						// test second traingle ( 1, 4, 3 )
 						if(ColliderMoveHitsTriangle(collider, displacement, pt[0], pt[3], pt[2], tresult)){
-							if(! hasCollision || tresult.distance < hitDistance){
+							if(!hasCollision || tresult.distance < hitDistance){
 								hitDistance = tresult.distance;
 								hitNormal = tresult.normal;
 								hitShape = tresult.shape1;
@@ -799,7 +799,7 @@ debpHTSector *sector, debpCollisionResult &result){
 bool debpCollisionDetection::ColliderRotateHitsHeightTerrain(debpCollider *collider, const decVector &rotation,
 debpHTSector *sector, debpCollisionResult &result){
 #if 0
-	if(! collider || ! sector) DETHROW(deeInvalidParam);
+	if(!collider || !sector) DETHROW(deeInvalidParam);
 	
 	// this test is not optimal yet. the currentl implementation of the collision tests
 	// does not contain yet tests for rotation hit testing. since we do not yet use
@@ -881,7 +881,7 @@ debpHTSector *sector, debpCollisionResult &result){
 						
 						// test first triangle ( 1, 2, 4 )
 						if(ColliderMoveHitsTriangle(collider, displacement, pt[0], pt[1], pt[3], tresult)){
-							if(! hasCollision || tresult.distance < hitDistance){
+							if(!hasCollision || tresult.distance < hitDistance){
 								hitDistance = tresult.distance;
 								hitNormal = tresult.normal;
 								hitShape = tresult.shape1;
@@ -892,7 +892,7 @@ debpHTSector *sector, debpCollisionResult &result){
 						
 						// test second traingle ( 1, 4, 3 )
 						if(ColliderMoveHitsTriangle(collider, displacement, pt[0], pt[3], pt[2], tresult)){
-							if(! hasCollision || tresult.distance < hitDistance){
+							if(!hasCollision || tresult.distance < hitDistance){
 								hitDistance = tresult.distance;
 								hitNormal = tresult.normal;
 								hitShape = tresult.shape1;
@@ -923,7 +923,7 @@ debpHTSector *sector, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::RayHitsCollider(const decDVector &origin, const decDVector &direction, debpCollider *collider,
 debpCollisionResult &result){
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	
 	if(collider->IsVolume()){
 		if(RayHitsColliderVolume(origin, direction, *((debpColliderVolume*)collider), result)){
@@ -1177,7 +1177,7 @@ debpContactResultCallback &result, bool reversedColliders){
 #if 0
 bool debpCollisionDetection::ShapeHitsCollider(debpShape *shape, debpCollider *collider,
 debpCollisionResult &result){
-	if(! shape || ! collider){
+	if(!shape || !collider){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1198,7 +1198,7 @@ debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::ColliderMoveHitsCollider(debpCollider *collider1, const decDVector &displacement,
 debpCollider *collider2, debpCollisionResult &result){
-	if(! collider1 || ! collider2) DETHROW(deeInvalidParam);
+	if(!collider1 || !collider2) DETHROW(deeInvalidParam);
 	
 	if(collider1->IsVolume()){
 		debpColliderVolume &colliderVolume = *((debpColliderVolume*)collider1);
@@ -1267,7 +1267,7 @@ debpCollider *collider2, debpCollisionResult &result){
 
 
 bool debpCollisionDetection::ShapeHitsModelFace(debpShape &shape, debpComponent &component, int face){
-	if(! component.GetComponent()->GetModel()){
+	if(!component.GetComponent()->GetModel()){
 		return false;
 	}
 	
@@ -1301,7 +1301,7 @@ bool debpCollisionDetection::ShapeHitsModelFace(debpShape &shape, debpComponent 
 
 bool debpCollisionDetection::ShapeMoveHitsModelFace(debpShape &shape, const decDVector &displacement,
 const debpComponent &component, int face, debpCollisionResult &result){
-	if(! component.GetComponent()->GetModel()){
+	if(!component.GetComponent()->GetModel()){
 		return false;
 	}
 	
@@ -1352,7 +1352,7 @@ const debpComponent &component, int face, debpCollisionResult &result){
 
 bool debpCollisionDetection::ColliderHitsTriangle(debpCollider *collider, const decDVector &p1,
 const decDVector &p2, const decDVector &p3, debpCollisionResult &result){
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	
 	debpDCollisionTriangle collisionTriangle;
 	
@@ -1383,7 +1383,7 @@ const decDVector &p2, const decDVector &p3, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::ColliderMoveHitsTriangle(debpCollider *collider, const decDVector &displacement,
 const decDVector &p1, const decDVector &p2, const decDVector &p3, debpCollisionResult &result){
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	
 	debpDCollisionTriangle collisionTriangle;
 	decDVector normal;
@@ -1426,11 +1426,11 @@ const decDVector &p1, const decDVector &p2, const decDVector &p3, debpCollisionR
 
 bool debpCollisionDetection::ColliderMoveHitsModelFace(debpCollider *collider, const decDVector &displacement,
 const debpComponent &component, int face, debpCollisionResult &result){
-	if(! collider){
+	if(!collider){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! component.GetComponent()->GetModel()){
+	if(!component.GetComponent()->GetModel()){
 		return false;
 	}
 	
@@ -1572,7 +1572,7 @@ debpColliderVolume &collider, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::RayHitsColliderComponent(const decDVector &origin, const decDVector &direction,
 debpColliderComponent &collider, debpCollisionResult &result){
-	if(! collider.GetColliderComponent().GetComponent()){
+	if(!collider.GetColliderComponent().GetComponent()){
 		return false;
 	}
 	
@@ -1604,7 +1604,7 @@ debpColliderComponent &collider, debpCollisionResult &result){
 		// coordinates instead of local to the bone. and second there
 		// exists no octree yet or another form of speedup. hence we
 		// use a brute force check here.
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			return false;
 		}
 		
@@ -1642,7 +1642,7 @@ debpColliderComponent &collider, debpCollisionResult &result){
 					
 					distance = debpDCollisionDetection::RayPlane(p1, normal, origin, direction);
 					if(distance >= 0.0){
-						if(! hasHit || distance < hitDist){
+						if(!hasHit || distance < hitDist){
 							if(debpDCollisionDetection::PointInTriangle(p1, p2, p3, origin + direction * distance)){
 								hitShape = -1;
 								hitBone = -1;
@@ -1667,7 +1667,7 @@ debpColliderComponent &collider, debpCollisionResult &result){
 			debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
 			
 			if(collisionVolume.RayHitsVolume(origin, direction, distance)){
-				if(! hasHit || distance < hitDist){
+				if(!hasHit || distance < hitDist){
 					hitShape = s;
 					hitBone = -1;
 					//hitFace = -1;
@@ -1684,7 +1684,7 @@ debpColliderComponent &collider, debpCollisionResult &result){
 		
 		for(b=0; b<boneCount; b++){
 			debpColliderBone *bpbone = collider.GetBoneAt(b);
-			if(! bpbone){
+			if(!bpbone){
 				continue;
 			}
 			
@@ -1695,7 +1695,7 @@ debpColliderComponent &collider, debpCollisionResult &result){
 				debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
 				
 				if(collisionVolume.RayHitsVolume(origin, direction, distance)){
-					if(! hasHit || distance < hitDist){
+					if(!hasHit || distance < hitDist){
 						hitShape = s;
 						hitBone = b;
 						//hitFace = -1;
@@ -1749,7 +1749,7 @@ debpColliderRig &collider, debpCollisionResult &result){
 			debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
 			
 			if(collisionVolume.RayHitsVolume(origin, direction, distance)){
-				if(! hasHit || distance < hitDist){
+				if(!hasHit || distance < hitDist){
 					hitShape = s;
 					hitBone = -1;
 					hitDist = distance;
@@ -1767,7 +1767,7 @@ debpColliderRig &collider, debpCollisionResult &result){
 		
 		for(b=0; b<boneCount; b++){
 			bpbone = collider.GetBoneAt(b);
-			if(! bpbone){
+			if(!bpbone){
 				continue;
 			}
 			
@@ -1778,7 +1778,7 @@ debpColliderRig &collider, debpCollisionResult &result){
 				debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
 				
 				if(collisionVolume.RayHitsVolume(origin, direction, distance)){
-					if(! hasHit || distance < hitDist){
+					if(!hasHit || distance < hitDist){
 						hitShape = s;
 						hitBone = b;
 						hitDist = distance;
@@ -1857,7 +1857,7 @@ bool debpCollisionDetection::ShapeHitsColliderComponent(debpShape &shape, debpCo
 		*/
 		
 		deComponent &component = *colcomp.GetComponent();
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			return false;
 		}
 		
@@ -1898,7 +1898,7 @@ bool debpCollisionDetection::ShapeHitsColliderComponent(debpShape &shape, debpCo
 		
 	}else if(testMode == debpColliderComponent::etmModelDynamic){
 		deComponent &component = *colcomp.GetComponent();
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			return false;
 		}
 		
@@ -1960,7 +1960,7 @@ bool debpCollisionDetection::ShapeHitsColliderComponent(debpShape &shape, debpCo
 		
 		for(b=0; b<boneCount; b++){
 			debpColliderBone * const cbone = collider.GetBoneAt(b);
-			if(! cbone){
+			if(!cbone){
 				continue;
 			}
 			
@@ -2068,7 +2068,7 @@ debpColliderVolume &collider2, debpCollisionResult &result){
 
 bool debpCollisionDetection::ColliderVolumeHitsColliderComponent(debpColliderVolume &collider1,
 debpColliderComponent &collider2, debpCollisionResult &result){
-	if(! collider2.GetColliderComponent().GetComponent()){
+	if(!collider2.GetColliderComponent().GetComponent()){
 		return false;
 	}
 	
@@ -2079,7 +2079,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 	
 	// test against triangles directly
 	if(testMode == debpColliderComponent::etmModelStatic){
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			return false;
 		}
 		
@@ -2111,7 +2111,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		}
 		
 	}else if(testMode == debpColliderComponent::etmModelDynamic){
-		if(! component.GetModel()){
+		if(!component.GetModel()){
 			return false;
 		}
 		
@@ -2189,7 +2189,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		
 	// test against bone shapes
 	}else if(testMode == debpColliderComponent::etmBoneShape){
-		if(! collider2.GetBones()){
+		if(!collider2.GetBones()){
 			return false;
 		}
 		
@@ -2257,7 +2257,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 		
 	// test against bone shapes
 	}else if(testMode == debpColliderComponent::etmBoneShape){
-		if(! collider2.GetBones()){
+		if(!collider2.GetBones()){
 			return false;
 		}
 		
@@ -2339,7 +2339,7 @@ debpColliderVolume &collider2, debpCollisionResult &result){
 			if(distance > 0.99999f) continue;
 			if(displacement * normal > -1e-6f) continue;
 			
-			if(! hasHit || distance < result.distance){
+			if(!hasHit || distance < result.distance){
 				result.shape1 = s1;
 				result.shape2 = s2;
 				result.distance = distance;
@@ -2356,7 +2356,7 @@ debpColliderVolume &collider2, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::ColliderVolumeMoveHitsColliderComponent(debpColliderVolume &collider1,
 const decDVector &displacement, debpColliderComponent &collider2, debpCollisionResult &result){
-	if(! collider2.GetColliderComponent().GetComponent()){
+	if(!collider2.GetColliderComponent().GetComponent()){
 		return false;
 	}
 	
@@ -2372,7 +2372,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 	const decDVector reldisp = displacement; // - bpcollider->GetPredictedDisplacement();
 	
 	if(testMode == debpColliderComponent::etmModelStatic){
-		if(! engComponent.GetModel()){
+		if(!engComponent.GetModel()){
 			return false;
 		}
 		
@@ -2405,7 +2405,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 		}
 		
 	}else if(testMode == debpColliderComponent::etmModelDynamic){
-		if(! engComponent.GetModel()){
+		if(!engComponent.GetModel()){
 			return false;
 		}
 		
@@ -2451,7 +2451,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 					if(distance > 0.99999f) continue;
 					if(displacement * hitNormal >= -1e-6) continue;
 					
-					if(! hasHit || distance < result.distance){
+					if(!hasHit || distance < result.distance){
 						result.shape1 = s1;
 						result.shape2 = -1;
 						result.bone1 = -1; //bone1;
@@ -2482,7 +2482,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 				if(distance > 0.99999f) continue;
 				if(displacement * hitNormal >= -1e-6) continue;
 				
-				if(! hasHit || distance < result.distance){
+				if(!hasHit || distance < result.distance){
 					result.shape1 = s1;
 					result.shape2 = s2;
 					result.bone1 = -1; //bone1;
@@ -2520,7 +2520,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 						if(distance > 0.99999f) continue;
 						if(displacement * hitNormal >= -1e-6) continue;
 						
-						if(! hasHit || distance < result.distance){
+						if(!hasHit || distance < result.distance){
 							result.shape1 = s1;
 							result.shape2 = s2;
 							result.bone1 = -1; // bone1;
@@ -2574,7 +2574,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 				if(distance > 0.99999f) continue;
 				if(displacement * hitNormal >= -1e-6) continue;
 				
-				if(! hasHit || distance < result.distance){
+				if(!hasHit || distance < result.distance){
 					result.shape1 = s1;
 					result.shape2 = s2;
 					result.bone1 = -1; //bone1;
@@ -2612,7 +2612,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 						if(distance > 0.99999f) continue;
 						if(displacement * hitNormal >= -1e-6) continue;
 						
-						if(! hasHit || distance < result.distance){
+						if(!hasHit || distance < result.distance){
 							result.shape1 = s1;
 							result.shape2 = s2;
 							result.bone1 = -1; // bone1;
@@ -2635,7 +2635,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::ColliderComponentMoveHitsColliderComponent(debpColliderComponent &collider1, const decDVector &displacement,
 debpColliderComponent &collider2, debpCollisionResult &result){
-	if(! collider1.GetColliderComponent().GetComponent() || ! collider2.GetColliderComponent().GetComponent()){
+	if(!collider1.GetColliderComponent().GetComponent() || !collider2.GetColliderComponent().GetComponent()){
 		return false;
 	}
 	
@@ -2653,7 +2653,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		const decDVector reldisp(displacement); // - bpcollider->GetPredictedDisplacement();
 		
 		if(testMode == debpColliderComponent::etmModelStatic){
-			if(! engComponent.GetModel()){
+			if(!engComponent.GetModel()){
 				return false;
 			}
 			
@@ -2689,7 +2689,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 			}
 			
 		}else if(testMode == debpColliderComponent::etmModelDynamic){
-			if(! engComponent.GetModel()){
+			if(!engComponent.GetModel()){
 				return false;
 			}
 			
@@ -2737,7 +2737,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 						if(distance > 0.99999f) continue;
 						if(displacement * hitNormal >= -1e-6) continue;
 						
-						if(! hasHit || distance < result.distance){
+						if(!hasHit || distance < result.distance){
 							result.shape1 = s1;
 							result.shape2 = -1;
 							result.bone1 = -1; //bone1;
@@ -2768,7 +2768,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 					if(distance > 0.99999f) continue;
 					if(displacement * hitNormal >= -1e-6) continue;
 					
-					if(! hasHit || distance < result.distance){
+					if(!hasHit || distance < result.distance){
 						result.shape1 = s1;
 						result.shape2 = s2;
 						result.bone1 = -1; //bone1;
@@ -2806,7 +2806,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 							if(distance > 0.99999f) continue;
 							if(displacement * hitNormal >= -1e-6) continue;
 							
-							if(! hasHit || distance < result.distance){
+							if(!hasHit || distance < result.distance){
 								result.shape1 = s1;
 								result.shape2 = s2;
 								result.bone1 = -1; // bone1;
@@ -2839,7 +2839,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 #if 0
 bool debpCollisionDetection::ColliderComponentMoveHitsColliderRig(debpColliderComponent &collider1, const decDVector &displacement,
 debpColliderRig &collider2, debpCollisionResult &result){
-	if(! collider1.GetColliderComponent().GetComponent()){
+	if(!collider1.GetColliderComponent().GetComponent()){
 		return false;
 	}
 	
@@ -2871,7 +2871,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 					if(distance > 0.99999f) continue;
 					if(displacement * hitNormal >= -1e-6) continue;
 					
-					if(! hasHit || distance < result.distance){
+					if(!hasHit || distance < result.distance){
 						result.shape1 = s1;
 						result.shape2 = s2;
 						result.bone1 = -1; //bone1;
@@ -2909,7 +2909,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 							if(distance > 0.99999f) continue;
 							if(displacement * hitNormal >= -1e-6) continue;
 							
-							if(! hasHit || distance < result.distance){
+							if(!hasHit || distance < result.distance){
 								result.shape1 = s1;
 								result.shape2 = s2;
 								result.bone1 = -1; // bone1;

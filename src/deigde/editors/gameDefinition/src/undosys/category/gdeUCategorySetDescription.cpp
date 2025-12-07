@@ -45,7 +45,7 @@ gdeCategory *category, eCategoryType type, const char *newValue) :
 gdeUCategoryBase(gameDefinition, type),
 pCategory(NULL)
 {
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	

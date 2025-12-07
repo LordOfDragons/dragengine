@@ -71,7 +71,7 @@ decBaseFileReader &file){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "texturePropertyList"){
+	if(!root || root->GetName() != "texturePropertyList"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ igdeTexturePropertyList &list){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -119,7 +119,7 @@ void igdeXMLLoadTexturePropertyList::pReadProperty(const decXmlElementTag &root,
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -175,7 +175,7 @@ igdeTextureProperty &property){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -211,7 +211,7 @@ igdeTextureProperty &property){
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

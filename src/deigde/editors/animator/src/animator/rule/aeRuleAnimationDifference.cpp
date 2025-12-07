@@ -222,7 +222,7 @@ deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleAnimationDifference;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
 		InitEngineRule(engRule);

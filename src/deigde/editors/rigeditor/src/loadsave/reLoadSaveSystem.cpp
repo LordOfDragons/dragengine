@@ -83,7 +83,7 @@ reLSRig *reLoadSaveSystem::GetLSRigAt(int index) const{
 }
 
 int reLoadSaveSystem::IndexOfLSRig(reLSRig *lsRig) const{
-	if(! lsRig) DETHROW(deeInvalidParam);
+	if(!lsRig) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSRigCount; i++){
@@ -96,7 +96,7 @@ int reLoadSaveSystem::IndexOfLSRig(reLSRig *lsRig) const{
 }
 
 bool reLoadSaveSystem::HasLSRig(reLSRig *lsRig) const{
-	if(! lsRig) DETHROW(deeInvalidParam);
+	if(!lsRig) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSRigCount; i++){
@@ -127,7 +127,7 @@ void reLoadSaveSystem::AddLSRig(reLSRig *lsRig){
 	if(pLSRigCount == pLSRigSize){
 		int newSize = pLSRigSize * 3 / 2 + 1;
 		reLSRig **newArray = new reLSRig*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSRigs){
 			memcpy(newArray, pLSRigs, sizeof(reLSRig*) * pLSRigSize);
 			delete [] pLSRigs;
@@ -176,10 +176,10 @@ void reLoadSaveSystem::UpdateLSRigs(){
 			loadableModule = modSys->GetModuleAt(m);
 			
 			if(loadableModule->GetType() != deModuleSystem::emtRig) continue;
-			if(! loadableModule->IsLoaded()) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
 			lsRig = new reLSRig((deBaseRigModule*)loadableModule->GetModule());
-			if(! lsRig) DETHROW(deeOutOfMemory);
+			if(!lsRig) DETHROW(deeOutOfMemory);
 			
 			AddLSRig(lsRig);
 			lsRig = NULL;

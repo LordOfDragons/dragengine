@@ -177,7 +177,7 @@ void deoglEnvironmentMap::SetWorld(deoglRWorld *world){
 }
 
 void deoglEnvironmentMap::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		pDirtyOctreeNode = true;
@@ -193,7 +193,7 @@ void deoglEnvironmentMap::SetPosition(const decDVector &position){
 
 void deoglEnvironmentMap::UpdateOctreePosition(){
 	if(pDirtyOctreeNode){
-		if(! pSkyOnly && pWorld){
+		if(!pSkyOnly && pWorld){
 			pWorld->GetOctree().InsertEnvMapIntoTree(this);
 		}
 		
@@ -209,7 +209,7 @@ void deoglEnvironmentMap::SetOctreeNode(deoglWorldOctree *node){
 
 
 void deoglEnvironmentMap::SetSkyOnly(bool skyOnly){
-	if(! pRenderThread.GetConfiguration().GetEnvMapEnable()){
+	if(!pRenderThread.GetConfiguration().GetEnvMapEnable()){
 		skyOnly = true; // nvidia problem
 	}
 	
@@ -437,13 +437,13 @@ void deoglEnvironmentMap::SetSlotIndex(int slotIndex){
 
 
 void deoglEnvironmentMap::PrepareForRender(){
-	if(! pDirtyInit){
+	if(!pDirtyInit){
 		UpdateConvexVolumeList();
 		return;
 	}
 	
 	// create env map fully prepared
-	if(! pEnvMap){
+	if(!pEnvMap){
 		pEnvMap = new deoglCubeMap(pRenderThread);
 		pEnvMap->SetFBOFormat(4, pIsFloat); // color + mask
 		//pEnvMap->SetFBOFormat( 3, pIsFloat );
@@ -465,28 +465,28 @@ void deoglEnvironmentMap::PrepareForRender(){
 	pEnvMap->CreateMipMaps();
 	
 	// create material env maps
-	if(! pEnvMapPosition){
+	if(!pEnvMapPosition){
 		pEnvMapPosition = new deoglArrayTexture(pRenderThread);
 		pEnvMapPosition->SetFBOFormat(3, true);
 	}
 	pEnvMapPosition->SetSize(pSize, pSize, 6);
 	pEnvMapPosition->CreateTexture();
 	
-	if(! pEnvMapDiffuse){
+	if(!pEnvMapDiffuse){
 		pEnvMapDiffuse = new deoglArrayTexture(pRenderThread);
 		pEnvMapDiffuse->SetFBOFormat(3, false);
 	}
 	pEnvMapDiffuse->SetSize(pSize, pSize, 6);
 	pEnvMapDiffuse->CreateTexture();
 	
-	if(! pEnvMapNormal){
+	if(!pEnvMapNormal){
 		pEnvMapNormal = new deoglArrayTexture(pRenderThread);
 		pEnvMapNormal->SetFBOFormat(3, false);
 	}
 	pEnvMapNormal->SetSize(pSize, pSize, 6);
 	pEnvMapNormal->CreateTexture();
 	
-	if(! pEnvMapEmissive){
+	if(!pEnvMapEmissive){
 		pEnvMapEmissive = new deoglArrayTexture(pRenderThread);
 		pEnvMapEmissive->SetFormat(pEnvMap->GetFormat());
 	}
@@ -506,7 +506,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 	
 	// create the initial equi env map
 	if(pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap()){
-		if(! pEnvMapEqui){
+		if(!pEnvMapEqui){
 			pEnvMapEqui = new deoglTexture(pRenderThread);
 			pEnvMapEqui->SetFBOFormat(4, pIsFloat); // color + mask
 			//pEnvMapEqui->SetFBOFormat( 3, pIsFloat );
@@ -526,7 +526,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 }
 
 void deoglEnvironmentMap::Update(deoglRenderPlan &parentPlan){
-	if(! pDirty || ! pWorld || pWorld->GetEnvMapUpdateCount() == 0){
+	if(!pDirty || !pWorld || pWorld->GetEnvMapUpdateCount() == 0){
 		return;
 	}
 	
@@ -732,7 +732,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap(deoglRenderPlan &parentPlan){
 			//     of the problem. the only working solution is to somehow prevent
 			//     PrepareRender from touching env-map list at all. using the pEnvMap being
 			//     NULL as indicator for a removed env-map is a workaround
-			if(! pEnvMap){
+			if(!pEnvMap){
 				pRenderThread.GetFramebuffer().Activate(NULL);
 				plan.SetFBOTarget(NULL);
 				plan.SetFBOMaterial(NULL);
@@ -814,7 +814,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap(deoglRenderPlan &parentPlan){
 
 
 void deoglEnvironmentMap::UpdateConvexVolumeList(){
-	if(! pDirtyConvexVolumeList){
+	if(!pDirtyConvexVolumeList){
 		return;
 	}
 	
@@ -840,7 +840,7 @@ void deoglEnvironmentMap::UpdateConvexVolumeList(){
 				const deoglEnvironmentMap &envmap = *list.GetAt(i);
 				const decDVector &position = envmap.GetPosition();
 				
-				if(position >= boxMinExtend && position <= boxMaxExtend && ! pPosition.IsEqualTo(position, 0.01)){
+				if(position >= boxMinExtend && position <= boxMaxExtend && !pPosition.IsEqualTo(position, 0.01)){
 					const decVector splitPosition = ((position - pPosition) * 0.5).ToVector();
 					const decVector splitNormal = -splitPosition.Normalized();
 					

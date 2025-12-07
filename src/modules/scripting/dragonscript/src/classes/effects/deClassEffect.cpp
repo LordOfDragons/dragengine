@@ -94,7 +94,7 @@ deClassEffect::nfGetEnabled::nfGetEnabled(const sInitData &init) : dsFunction(in
 }
 void deClassEffect::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sEffNatDat &nd = *((sEffNatDat*)p_GetNativeData(myself));
-	if(! nd.effect){
+	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -108,7 +108,7 @@ deClassEffect::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(in
 }
 void deClassEffect::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sEffNatDat &nd = *((sEffNatDat*)p_GetNativeData(myself));
-	if(! nd.effect){
+	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -138,7 +138,7 @@ void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassEffect * const clsEffect = (deClassEffect*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsEffect)){
+	if(!p_IsObjOfType(obj, clsEffect)){
 		rt->PushBool(false);
 		
 	}else{
@@ -200,7 +200,7 @@ void deClassEffect::CreateClassMembers(dsEngine *engine){
 
 
 void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -224,7 +224,7 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 
 
 deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -232,11 +232,11 @@ deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
 }
 
 void deClassEffect::PushEffect(dsRunTime *rt, deEffect *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

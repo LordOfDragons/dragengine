@@ -106,7 +106,7 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 	}
 	
 	const deoglRHTSector &sector = pSector.GetSector();
-	if(! sector.GetValid() || ! sector.GetValidTextures()){
+	if(!sector.GetValid() || !sector.GetValidTextures()){
 		return;
 	}
 	
@@ -121,7 +121,7 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 	for(i=0; i<textureCount; i++){
 		const deoglHTSTexture &httexture = sector.GetTextureAt(i);
 		const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-		if(! skinTexture){
+		if(!skinTexture){
 			for(j=0; j<5; j++){
 				pRTSInstances.Add(NULL);
 			}

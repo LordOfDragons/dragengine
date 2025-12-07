@@ -108,22 +108,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet rigid body. */
-	inline btRigidBody *GetRigidBody() const{return pRigidBody;}
+	inline btRigidBody *GetRigidBody() const{ return pRigidBody; }
 	
 	/** \brief Dynamic world or \em NULL. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
+	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
 	/** \brief Dynamic world or \em NULL. */
 	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** \brief Collision shape or \em NULL. */
-	inline debpBulletShape *GetShape() const{return pShape;}
+	inline debpBulletShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set collision shape or \em NULL. */
 	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Shape surface. */
-	inline float GetShapeSurface() const{return pShapeSurface;}
+	inline float GetShapeSurface() const{ return pShapeSurface; }
 	
 	/** \brief Set shape surface. */
 	void SetShapeSurface(float surface);
@@ -142,43 +142,43 @@ public:
 	
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity. */
-	inline const decVector &GetLinearVelocity() const{return pLinVelo;}
+	inline const decVector &GetLinearVelocity() const{ return pLinVelo; }
 	
 	/** \brief Set linear velocity. */
 	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity. */
-	inline const decVector &GetAngularVelocity() const{return pAngVelo;}
+	inline const decVector &GetAngularVelocity() const{ return pAngVelo; }
 	
 	/** \brief Set anglular velocity. */
 	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Gravity. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set gravity. */
 	void SetGravity(const decVector &gravity);
 	
 	/** \brief Mass. */
-	inline float GetMass() const{return pMass;}
+	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass. */
 	void SetMass(float mass);
 	
 	/** \brief Response type. */
-	inline eResponseTypes GetResponseType() const{return pResponseType;}
+	inline eResponseTypes GetResponseType() const{ return pResponseType; }
 	
 	/** \brief Set response type. */
 	void SetResponseType(eResponseTypes responseType);
@@ -187,7 +187,7 @@ public:
 	void ResetKinematicInterpolation();
 	
 	/** \brief Enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if physics body is enabled. */
 	void SetEnabled(bool enabled);
@@ -199,15 +199,15 @@ public:
 	const decDMatrix &GetMatrix();
 	
 	/** \brief State changed. */
-	inline bool GetStateChanged() const{return pStateChanged;}
+	inline bool GetStateChanged() const{ return pStateChanged; }
 	
 	
 	
 	/** \brief Ccd threshold. */
-	inline float GetCcdThreshold() const{return pCcdThreshold;}
+	inline float GetCcdThreshold() const{ return pCcdThreshold; }
 	
 	/** \brief Ccd radius. */
-	inline float GetCcdRadius() const{return pCcdRadius;}
+	inline float GetCcdRadius() const{ return pCcdRadius; }
 	
 	/** \brief Set ccd parameters. */
 	void SetCcdParameters(float threshold, float radius);
@@ -249,7 +249,7 @@ public:
 	/** \name Linked Constraints */
 	/*@{*/
 	/** \brief Number of linked constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	
 	/** \brief Linked constraint at index. */
 	debpColliderConstraint *GetConstraintAt(int index) const;

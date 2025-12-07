@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render canvas view or \em NULL if not existing. */
-	inline deoglRCanvasView *GetRCanvasView() const{return pRCanvasView;}
+	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
@@ -74,7 +74,7 @@ public:
 	void ChildOrderChanged();
 	
 	/** Paint dirty. */
-	inline bool GetDirtyPaint() const{return pDirtyPaint;}
+	inline bool GetDirtyPaint() const{ return pDirtyPaint; }
 	
 	/** Set paint dirty. */
 	void SetDirtyPaint();

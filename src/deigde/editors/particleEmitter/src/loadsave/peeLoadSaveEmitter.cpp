@@ -166,7 +166,7 @@ void peeLoadSaveEmitter::LoadEmitter(peeLoadSaveSystem&, peeEmitter &emitter, de
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "particleEmitter") != 0){
+	if(!root || strcmp(root->GetName(), "particleEmitter") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -235,10 +235,10 @@ void peeLoadSaveEmitter::pWriteType(decXmlWriter &writer, const peeEmitter &emit
 	writer.WriteDataTagString("name", type.GetName());
 	writer.WriteDataTagString("skin", type.GetSkinPath());
 	
-	if(! type.GetModelPath().IsEmpty()){
+	if(!type.GetModelPath().IsEmpty()){
 		writer.WriteDataTagString("model", type.GetModelPath());
 	}
-	if(! type.GetModelSkinPath().IsEmpty()){
+	if(!type.GetModelSkinPath().IsEmpty()){
 		writer.WriteDataTagString("modelSkin", type.GetModelSkinPath());
 	}
 	
@@ -272,7 +272,7 @@ void peeLoadSaveEmitter::pWriteType(decXmlWriter &writer, const peeEmitter &emit
 	
 	writer.WriteDataTagBool("intervalAsDistance", type.GetIntervalAsDistance());
 	
-	if(! type.GetPathTrailEmitter().IsEmpty()){
+	if(!type.GetPathTrailEmitter().IsEmpty()){
 		writer.WriteDataTagString("trailEmitter", type.GetPathTrailEmitter());
 	}
 	
@@ -302,7 +302,7 @@ void peeLoadSaveEmitter::pWriteType(decXmlWriter &writer, const peeEmitter &emit
 		break;
 	}
 	
-	if(! type.GetPathCollisionEmitter().IsEmpty()){
+	if(!type.GetPathCollisionEmitter().IsEmpty()){
 		writer.WriteDataTagString("collisionEmitter", type.GetPathCollisionEmitter());
 	}
 	writer.WriteDataTagFloat("emitMinImpulse", type.GetEmitMinImpulse());
@@ -458,7 +458,7 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 		
 		for(i=0; i<elementCount; i++){
 			tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -515,7 +515,7 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 			}else if(strcmp(tag->GetName(), "trailController") == 0){
 				identifier = GetAttributeString(*tag, "id");
 				deParticleEmitterType::eEmitControllers controller;
-				if(! ControllerForName(controller, identifier)){
+				if(!ControllerForName(controller, identifier)){
 					LogErrorUnknownValue(*tag, identifier);
 					continue;
 				}
@@ -549,7 +549,7 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 			}else if(strcmp(tag->GetName(), "emitController") == 0){
 				identifier = GetAttributeString(*tag, "id");
 				deParticleEmitterType::eEmitControllers controller;
-				if(! ControllerForName(controller, identifier)){
+				if(!ControllerForName(controller, identifier)){
 					LogErrorUnknownValue(*tag, identifier);
 					continue;
 				}
@@ -583,7 +583,7 @@ void peeLoadSaveEmitter::pReadParameter(const decXmlElementTag &root, peeEmitter
 	int e, index;
 	
 	deParticleEmitterType::eParameters parameterEnum;
-	if(! ParameterForName(parameterEnum, id)){
+	if(!ParameterForName(parameterEnum, id)){
 		LogErrorUnknownValue(root, id);
 		DETHROW(deeInvalidParam);
 	}

@@ -46,7 +46,7 @@
 ////////////////////////////
 
 igdeEditableEntity::igdeEditableEntity(igdeEnvironment *environment){
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,11 +92,11 @@ deLogger *igdeEditableEntity::GetLogger() const{
 }
 
 void igdeEditableEntity::SetFilePath(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pPathFile.Equals(path)){
+	if(!pPathFile.Equals(path)){
 		decPath pathDirectory;
 		
 		pPathFile = path;

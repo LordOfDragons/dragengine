@@ -157,13 +157,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actor can turn. */
-	inline bool GetCanTurn() const{return pCanTurn;}
+	inline bool GetCanTurn() const{ return pCanTurn; }
 	
 	/** \brief Set if actor can turn. */
 	void SetCanTurn(bool canTurn);
 	
 	/** \brief Look left/right is always limited. */
-	inline bool GetAlwaysLimitLeftRight() const{return pAlwaysLimitLeftRight;}
+	inline bool GetAlwaysLimitLeftRight() const{ return pAlwaysLimitLeftRight; }
 	
 	/** \brief Set if look left/right is always limited. */
 	void SetAlwaysLimitLeftRight(bool alwaysLimitLeftRight);
@@ -171,20 +171,20 @@ public:
 	
 	
 	/** \brief Looking up limit angle in degrees. */
-	inline float GetLimitLookUp() const{return pLimitLookUp;}
+	inline float GetLimitLookUp() const{ return pLimitLookUp; }
 	
 	/** \brief Set looking up limit angle in degrees. */
 	void SetLimitLookUp(float limit);
 	
 	/** \brief Looking down limit angle in degrees. */
-	inline float GetLimitLookDown() const{return pLimitLookDown;}
+	inline float GetLimitLookDown() const{ return pLimitLookDown; }
 	
 	/** \brief Set looking down limit angle in degrees. */
 	void SetLimitLookDown(float limit);
 	
 	/** \brief Looking up-down. */
-	inline decSmoothFloat &GetLookVertical(){return pLookVertical;}
-	inline const decSmoothFloat &GetLookVertical() const{return pLookVertical;}
+	inline decSmoothFloat &GetLookVertical(){ return pLookVertical; }
+	inline const decSmoothFloat &GetLookVertical() const{ return pLookVertical; }
 	
 	/** \brief Set looking up-down goal. Clamps to limits. */
 	void SetLookVerticalGoal(float goal);
@@ -195,23 +195,23 @@ public:
 	
 	
 	/** \brief Looking left limit in degrees. */
-	inline float GetLimitLookLeft() const{return pLimitLookLeft;}
+	inline float GetLimitLookLeft() const{ return pLimitLookLeft; }
 	
 	/** \brief Set looking left limit in degrees. */
 	void SetLimitLookLeft(float limit);
 	
 	/** \brief Looking right limit in degrees. */
-	inline float GetLimitLookRight() const{return pLimitLookRight;}
+	inline float GetLimitLookRight() const{ return pLimitLookRight; }
 	
 	/** \brief Set looking right limit in degrees. */
 	void SetLimitLookRight(float limit);
 	
 	/** \brief Look left-right. */
-	inline decSmoothFloat &GetLookHorizontal(){return pLookHorizontal;}
-	inline const decSmoothFloat &GetLookHorizontal() const{return pLookHorizontal;}
+	inline decSmoothFloat &GetLookHorizontal(){ return pLookHorizontal; }
+	inline const decSmoothFloat &GetLookHorizontal() const{ return pLookHorizontal; }
 	
 	/** \brief Adjust looking left-right while turning. */
-	inline bool GetTurnAdjustLookHorizontal() const{return pTurnAdjustLookHorizontal;}
+	inline bool GetTurnAdjustLookHorizontal() const{ return pTurnAdjustLookHorizontal; }
 	
 	/** \brief Set if looking left-right is adjusted while turning. */
 	void SetTurnAdjustLookHorizontal(bool turnAdjust);
@@ -219,17 +219,17 @@ public:
 	
 	
 	/** \brief Analog looking left-right. */
-	inline decSmoothFloat &GetAnalogMovingHorizontal(){return pAnalogMovingHorizontal;}
-	inline const decSmoothFloat &GetAnalogMovingHorizontal() const{return pAnalogMovingHorizontal;}
+	inline decSmoothFloat &GetAnalogMovingHorizontal(){ return pAnalogMovingHorizontal; }
+	inline const decSmoothFloat &GetAnalogMovingHorizontal() const{ return pAnalogMovingHorizontal; }
 	
 	/** \brief Analog looking up-down. */
-	inline float GetAnalogMovingVertical() const{return pAnalogMovingVertical;}
+	inline float GetAnalogMovingVertical() const{ return pAnalogMovingVertical; }
 	
 	/** \brief Set analog looking up-down. */
 	void SetAnalogMovingVertical(float value);
 	
 	/** \brief Turn left-right . */
-	inline float GetTurnHorizontal() const{return pTurnHorizontal;}
+	inline float GetTurnHorizontal() const{ return pTurnHorizontal; }
 	
 	/** \brief Set turn left-right. */
 	void SetTurnHorizontal(float value);
@@ -237,7 +237,7 @@ public:
 	
 	
 	/** \brief Analog moving speed. */
-	inline float GetAnalogMovingSpeed() const{return pAnalogMovingSpeed;}
+	inline float GetAnalogMovingSpeed() const{ return pAnalogMovingSpeed; }
 	
 	/** \brief Set analog moving speed. */
 	void SetAnalogMovingSpeed(float value);
@@ -245,31 +245,31 @@ public:
 	
 	
 	/** \brief Orientation adjustment time in seconds. */
-	inline float GetAdjustTimeOrientation() const{return pAdjustTimeOrientation;}
+	inline float GetAdjustTimeOrientation() const{ return pAdjustTimeOrientation; }
 	
 	/** \brief Set orientation adjustment time in seconds. */
 	void SetAdjustTimeOrientation(float time);
 	
 	/** \brief Actor orientation in world space. */
-	inline float GetOrientation() const{return pOrientation;}
+	inline float GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set actor orientation in world space. */
 	void SetOrientation(float orientation);
 	
 	/** \brief Actor orientation as quaternion. */
-	inline const decQuaternion &GetOrientationQuaternion() const{return pOrientationQuaternion;}
+	inline const decQuaternion &GetOrientationQuaternion() const{ return pOrientationQuaternion; }
 	
 	/** \brief Set actor orientation as quaternion. */
 	void SetOrientationQuaternion(const decQuaternion &orientation);
 	
 	/** \brief Turning speed in meters per second. */
-	inline float GetTurningSpeed() const{return pTurningSpeed;}
+	inline float GetTurningSpeed() const{ return pTurningSpeed; }
 	
 	/** \brief Set turning speed in meters per second. */
 	void SetTurningSpeed(float speed);
 	
 	/** \brief Angular velocity of the actor turning. */
-	inline const decVector &GetAngularVelocity() const{return pAngularVelocity;}
+	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** \brief Set angular velocity of the actor turning. */
 	void SetAngularVelocity(const decVector &velocity);
@@ -277,25 +277,25 @@ public:
 	
 	
 	/** \brief Determine if the actor is moving direct or analog. */
-	inline bool GetIsMoving() const{return pIsMoving;}
+	inline bool GetIsMoving() const{ return pIsMoving; }
 	
 	/** \brief Set determine if the actor is moving direct or analog. */
 	void SetIsMoving(bool isMoving);
 	
 	/** \brief Movement speed. */
-	inline float GetMovingSpeed() const{return pMovingSpeed;}
+	inline float GetMovingSpeed() const{ return pMovingSpeed; }
 	
 	/** \brief Set movement speed. */
 	void SetMovingSpeed(float speed);
 	
 	/** \brief Movement orientation in world space. */
-	inline float GetMovingOrientation() const{return pMovingOrientation;}
+	inline float GetMovingOrientation() const{ return pMovingOrientation; }
 	
 	/** \brief Set movement orientation in world space. */
 	void SetMovingOrientation(float orientation);
 	
 	/** \brief Movement direction relative to view orientation. */
-	inline float GetMovingDirection() const{return pMovingDirection;}
+	inline float GetMovingDirection() const{ return pMovingDirection; }
 	
 	/** \brief Set movement direction relative to view orientation. */
 	void SetMovingDirection(float direction);
@@ -303,43 +303,43 @@ public:
 	
 	
 	/** \brief Linear velocity. */
-	inline decSmoothVector &GetLinearVelocity(){return pLinearVelocity;}
-	inline const decSmoothVector &GetLinearVelocity() const{return pLinearVelocity;}
+	inline decSmoothVector &GetLinearVelocity(){ return pLinearVelocity; }
+	inline const decSmoothVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	
 	
 	/** \brief Stance value. */
-	inline decSmoothFloat &GetStance(){return pStance;}
-	inline const decSmoothFloat &GetStance() const{return pStance;}
+	inline decSmoothFloat &GetStance(){ return pStance; }
+	inline const decSmoothFloat &GetStance() const{ return pStance; }
 	
 	
 	
 	/** \brief Determine if the actor is turning in place. */
-	inline bool GetIsTurningIP() const{return pIsTurningIP;}
+	inline bool GetIsTurningIP() const{ return pIsTurningIP; }
 	
 	/** \brief Set if the actor is turning in place. */
 	void SetIsTurningIP(bool turnInPlace);
 	
 	/** \brief Adjustment time in seconds for turning in-place. */
-	inline float GetAdjustTimeTurnIP() const{return pAdjustTimeTurnIP;}
+	inline float GetAdjustTimeTurnIP() const{ return pAdjustTimeTurnIP; }
 	
 	/** \brief Set adjustment time in seconds for turning in-place. */
 	void SetAdjustTimeTurnIP(float time);
 	
 	/** \brief Turn in place value. */
-	inline float GetTurnIP() const{return pTurnIP;}
+	inline float GetTurnIP() const{ return pTurnIP; }
 	
 	/** \brief Set turn in place value. */
 	void SetTurnIP(float value);
 	
 	/** \brief Determine if the turn in place time linked controllers have to be reset. */
-	inline bool GetResetTimeTurnIP() const{return pResetTimeTurnIP;}
+	inline bool GetResetTimeTurnIP() const{ return pResetTimeTurnIP; }
 	
 	/** \brief Set if the turn in place time linked controllers have to be reset. */
 	void SetResetTimeTurnIP(bool reset);
 	
 	/** \brief Determine if the turn in place time linked controllers have to be reversed. */
-	inline bool GetReverseTimeTurnIP() const{return pReverseTimeTurnIP;}
+	inline bool GetReverseTimeTurnIP() const{ return pReverseTimeTurnIP; }
 	
 	/** \brief Set if the turn in place time linked controllers have to be reversed. */
 	void SetReverseTimeTurnIP(bool reverse);
@@ -347,19 +347,19 @@ public:
 	
 	
 	/** \brief Actor can turn in-place if looking beyond limits. */
-	inline bool GetCanTurnInPlace() const{return pCanTurnInPlace;}
+	inline bool GetCanTurnInPlace() const{ return pCanTurnInPlace; }
 	
 	/** \brief Set if actor can turn in-place if looking beyond limits. */
 	void SetCanTurnInPlace(bool canTurnInPlace);
 	
 	/** \brief Looking left limit in degrees before turning in-place. */
-	inline float GetLimitTurnInPlaceLeft() const{return pLimitTurnInPlaceLeft;}
+	inline float GetLimitTurnInPlaceLeft() const{ return pLimitTurnInPlaceLeft; }
 	
 	/** \brief Set looking left limit in degrees before turning in-place. */
 	void SetLimitTurnInPlaceLeft(float limit);
 	
 	/** \brief Looking right limit in degrees before turning in-place. */
-	inline float GetLimitTurnInPlaceRight() const{return pLimitTurnInPlaceRight;}
+	inline float GetLimitTurnInPlaceRight() const{ return pLimitTurnInPlaceRight; }
 	
 	/** \brief Set looking right limit in degrees before turning in-place. */
 	void SetLimitTurnInPlaceRight(float limit);
@@ -367,7 +367,7 @@ public:
 	
 	
 	/** \brief Determine if the walk/run time linked controllers have to be reset. */
-	inline bool GetResetTimeWalk() const{return pResetTimeWalk;}
+	inline bool GetResetTimeWalk() const{ return pResetTimeWalk; }
 	
 	/** \brief Set if the walk/run time linked controllers have to be reset. */
 	void SetResetTimeWalk(bool reset);
@@ -378,7 +378,7 @@ public:
 	 * \brief Determine if the actor can tilt the body.
 	 * \details If disabled no tilt calculation is done.
 	 */
-	inline bool GetCanTilt() const{return pCanTilt;}
+	inline bool GetCanTilt() const{ return pCanTilt; }
  	
 	/**
 	 * \brief Set if the actor can tilt the body.
@@ -387,37 +387,37 @@ public:
 	void SetCanTilt(bool canTilt);
 	
 	/** \brief Tilt mode. */
-	inline eTiltModes GetTiltMode() const{return pTiltMode;}
+	inline eTiltModes GetTiltMode() const{ return pTiltMode; }
 	
 	/** \brief Set tilt mode. */
 	void SetTiltMode(eTiltModes mode);
 	
 	/** \brief Single collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltSingle() const{return pCCTTiltSingle;}
+	inline deColliderCollisionTest *GetCCTTiltSingle() const{ return pCCTTiltSingle; }
 	
 	/** \brief Set single collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltSingle(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front left collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltFrontLeft() const{return pCCTTiltFrontLeft;}
+	inline deColliderCollisionTest *GetCCTTiltFrontLeft() const{ return pCCTTiltFrontLeft; }
 	
 	/** \brief Set front left collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front right collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltFrontRight() const{return pCCTTiltFrontRight;}
+	inline deColliderCollisionTest *GetCCTTiltFrontRight() const{ return pCCTTiltFrontRight; }
 	
 	/** \brief Set front right collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back left collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltBackLeft() const{return pCCTTiltBackLeft;}
+	inline deColliderCollisionTest *GetCCTTiltBackLeft() const{ return pCCTTiltBackLeft; }
 	
 	/** \brief Set back left collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back right collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltBackRight() const{return pCCTTiltBackRight;}
+	inline deColliderCollisionTest *GetCCTTiltBackRight() const{ return pCCTTiltBackRight; }
 	
 	/** \brief Set back right collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltBackRight(deColliderCollisionTest *collisionTest);
@@ -425,20 +425,20 @@ public:
 	
 	
 	/** \brief Tilt up limit in degrees. */
-	inline float GetLimitTiltUp() const{return pLimitTiltUp;}
+	inline float GetLimitTiltUp() const{ return pLimitTiltUp; }
 	
 	/** \brief Set tilt up limit in degrees. */
 	void SetLimitTiltUp(float limit);
 	
 	/** \brief Tilt down limit in degrees. */
-	inline float GetLimitTiltDown() const{return pLimitTiltDown;}
+	inline float GetLimitTiltDown() const{ return pLimitTiltDown; }
 	
 	/** \brief Set tilt down limit in degrees. */
 	void SetLimitTiltDown(float limit);
 	
 	/** \brief Tilt up/down angle in degrees. */
-	inline decSmoothFloat &GetTiltVertical(){return pTiltVertical;}
-	inline const decSmoothFloat &GetTiltVertical() const{return pTiltVertical;}
+	inline decSmoothFloat &GetTiltVertical(){ return pTiltVertical; }
+	inline const decSmoothFloat &GetTiltVertical() const{ return pTiltVertical; }
 	
 	/** \brief Set current tilt up/down angle in degrees clamped to range. */
 	void SetTiltVertical(float tiltVertical);
@@ -449,20 +449,20 @@ public:
 	
 	
 	/** \brief Tilt left limit in degrees. */
-	inline float GetLimitTiltLeft() const{return pLimitTiltLeft;}
+	inline float GetLimitTiltLeft() const{ return pLimitTiltLeft; }
 	
 	/** \brief Set tilt left limit in degrees. */
 	void SetLimitTiltLeft(float limit);
 	
 	/** \brief Tilt right limit in degrees. */
-	inline float GetLimitTiltRight() const{return pLimitTiltRight;}
+	inline float GetLimitTiltRight() const{ return pLimitTiltRight; }
 	
 	/** \brief Set Tilt right limit in degrees. */
 	void SetLimitTiltRight(float limit);
 	
 	/** \brief Tilt left/right angle in degrees. */
-	inline decSmoothFloat &GetTiltHorizontal(){return pTiltHorizontal;}
-	inline const decSmoothFloat &GetTiltHorizontal() const{return pTiltHorizontal;}
+	inline decSmoothFloat &GetTiltHorizontal(){ return pTiltHorizontal; }
+	inline const decSmoothFloat &GetTiltHorizontal() const{ return pTiltHorizontal; }
 	
 	/** \brief Set current tilt left/right angle in degrees clamped to range. */
 	void SetTiltHorizontal(float tiltHorizontal);
@@ -473,14 +473,14 @@ public:
 	
 	
 	/** \brief Tilt offset in meters. */
-	inline float GetTiltOffset() const{return pTiltOffset;}
+	inline float GetTiltOffset() const{ return pTiltOffset; }
 	
 	/** \brief Set tilt offset in meters. */
 	void SetTiltOffset(float offset);
 	
 	
 	/** \brief Number of controller mappings. */
-	inline int GetControllerMappingCount() const{return pControllerMappingCount;}
+	inline int GetControllerMappingCount() const{ return pControllerMappingCount; }
 	
 	/** \brief Controller mapping by index. */
 	const dedsLControllerMapping &GetControllerMappingAt(int index) const;
@@ -501,13 +501,13 @@ public:
 	
 	
 	/** \brief AI Collider to update or NULL if not used. */
-	inline deCollider *GetAICollider() const{return pAICollider;}
+	inline deCollider *GetAICollider() const{ return pAICollider; }
 	
 	/** \brief Set AI Collider to update or NULL if not used. */
 	void SetAICollider(deCollider *collider);
 	
 	/** \brief Determine if the angular velocity of the AI collider is updated. */
-	inline bool GetUpdateAIColliderAngularVelocity() const{return pUpdateAIColliderAngularVelocity;}
+	inline bool GetUpdateAIColliderAngularVelocity() const{ return pUpdateAIColliderAngularVelocity; }
  	
 	/** \brief Set if the angular velocity of the AI collider is updated. */
 	void SetUpdateAIColliderAngularVelocity(bool updateAngularVelocity);

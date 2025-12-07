@@ -36,7 +36,7 @@
 ////////////////////////////
 
 reUSetBonePosition::reUSetBonePosition(reRigBone *bone, const decVector &position){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();

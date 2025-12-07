@@ -60,7 +60,7 @@ igdeActionSelectDirectory::~igdeActionSelectDirectory(){
 
 void igdeActionSelectDirectory::OnAction(){
 	igdeContainer * const parent = pTextField.GetParent();
-	if(! parent){
+	if(!parent){
 		return;
 	}
 	
@@ -72,17 +72,17 @@ void igdeActionSelectDirectory::OnAction(){
 	const decString oldDirectory(directory);
 	
 	if(pUseGameVFS){
-		if(! igdeCommonDialogs::GetDirectory(&pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory)){
+		if(!igdeCommonDialogs::GetDirectory(&pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory)){
 			return;
 		}
 		
 	}else{
-		if(! igdeCommonDialogs::GetDirectory(&pTextField, GetText(), directory)){
+		if(!igdeCommonDialogs::GetDirectory(&pTextField, GetText(), directory)){
 			return;
 		}
 	}
 	
-	if(directory == oldDirectory || ! AcceptDirectory(directory)){
+	if(directory == oldDirectory || !AcceptDirectory(directory)){
 		return;
 	}
 	

@@ -152,70 +152,70 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module type. */
-	inline eModuleTypes GetType() const{return pType;}
+	inline eModuleTypes GetType() const{ return pType; }
 	/** Sets the module type. */
 	void SetType(eModuleTypes type);
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the description. */
-	inline const decUnicodeString &GetDescription () const{return pDescription;}
+	inline const decUnicodeString &GetDescription () const{ return pDescription; }
 	/** Sets the description. */
 	void SetDescription(const decUnicodeString &description);
 	/** Retrieves the author. */
-	inline const decUnicodeString &GetAuthor() const{return pAuthor;}
+	inline const decUnicodeString &GetAuthor() const{ return pAuthor; }
 	/** Sets the author. */
 	void SetAuthor(const decUnicodeString &author);
 	/** \brief Retrieves the version. */
-	inline const decString &GetVersion() const{return pVersion;}
+	inline const decString &GetVersion() const{ return pVersion; }
 	/** \brief Sets the version. */
 	void SetVersion(const char *version);
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
 	void SetPattern(const char *pattern);
 	/** Determines if this is a fallback module. */
-	inline bool GetIsFallback() const{return pIsFallback;}
+	inline bool GetIsFallback() const{ return pIsFallback; }
 	/** Sets if this is a fallback module. */
 	void SetIsFallback(bool isFallback);
 	/** Retrieves the module status. */
-	inline int GetStatus() const{return pStatus;}
+	inline int GetStatus() const{ return pStatus; }
 	/** Sets the module status. */
 	void SetStatus(int status);
 	/** Retrieves the module error code. */
-	inline int GetErrorCode() const{return pErrorCode;}
+	inline int GetErrorCode() const{ return pErrorCode; }
 	/** Sets the module error code. */
 	void SetErrorCode(int errorCode);
 	
 	/** Retrieves the library file name. */
-	inline const decString &GetLibFileName() const{return pLibFileName;}
+	inline const decString &GetLibFileName() const{ return pLibFileName; }
 	/** Sets the library file name. */
 	void SetLibFileName(const char *name);
 	/** Retrieves the size in bytes the library file should have. */
-	inline int GetLibFileSizeShould() const{return pLibFileSizeShould;}
+	inline int GetLibFileSizeShould() const{ return pLibFileSizeShould; }
 	/** Sets the size in bytes the library file should have. */
 	void SetLibFileSizeShould(int size);
 	/** Retrieves the size in bytes the library file actually has. */
-	inline int GetLibFileSizeIs() const{return pLibFileSizeIs;}
+	inline int GetLibFileSizeIs() const{ return pLibFileSizeIs; }
 	/** Sets the size in bytes the library file actually has. */
 	void SetLibFileSizeIs(int size);
 	/** Retrieves the hash value the library file should have. */
-	inline const decString &GetLibFileHashShould() const{return pLibFileHashShould;}
+	inline const decString &GetLibFileHashShould() const{ return pLibFileHashShould; }
 	/** Sets the hash value the library file should have. */
 	void SetLibFileHashShould(const char *hash);
 	/** Retrieves the hash value the library file actually has. */
-	inline const decString &GetLibFileHashIs() const{return pLibFileHashIs;}
+	inline const decString &GetLibFileHashIs() const{ return pLibFileHashIs; }
 	/** Sets the hash value the library file actually has. */
 	void SetLibFileHashIs(const char *hash);
 	/** Retrieves the entry point name. */
-	inline const decString &GetLibFileEntryPoint() const{return pLibFileEntryPoint;}
+	inline const decString &GetLibFileEntryPoint() const{ return pLibFileEntryPoint; }
 	/** Sets the entry point name. */
 	void SetLibFileEntryPoint(const char *name);
 	
 	/** Retrieves the parameter list. */
-	inline dealEMParameterList &GetParameterList(){return pParameterList;}
-	inline const dealEMParameterList &GetParameterList() const{return pParameterList;}
+	inline dealEMParameterList &GetParameterList(){ return pParameterList; }
+	inline const dealEMParameterList &GetParameterList() const{ return pParameterList; }
 	/*@}*/
 	
 	/** \name Helpers */

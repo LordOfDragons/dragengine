@@ -63,7 +63,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		seSky * const sky = pPanel.GetSky();
-		if(! sky){
+		if(!sky){
 			return;
 		}
 		

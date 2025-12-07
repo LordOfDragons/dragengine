@@ -43,7 +43,7 @@ meUHTNavSpaceTypeSetType::meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType *
 pType(NULL),
 pNewType(newType)
 {
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

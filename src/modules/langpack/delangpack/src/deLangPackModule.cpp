@@ -99,7 +99,7 @@ void deLangPackModule::LoadLanguagePack(decBaseFileReader &file, deLanguagePack 
 // 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "languagePack") != 0){
+	if(!root || strcmp(root->GetName(), "languagePack") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

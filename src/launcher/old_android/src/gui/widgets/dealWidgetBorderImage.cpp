@@ -125,7 +125,7 @@ void dealWidgetBorderImage::SetBorders(int left, int top, int right, int bottom)
 
 void dealWidgetBorderImage::RenderContent(const sRenderContext &context){
 	dealImage * const image = GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	

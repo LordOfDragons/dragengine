@@ -72,12 +72,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Background color of the sky. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** Set background color of the sky. */
 	void SetBgColor(const decColor &color);
@@ -85,7 +85,7 @@ public:
 	
 	
 	/** Number of layers. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Get link at index. */
 	const deoglRSkyLink &GetLinkAt(int index) const;

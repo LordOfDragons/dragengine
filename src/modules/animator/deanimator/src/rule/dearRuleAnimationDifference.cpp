@@ -114,7 +114,7 @@ dearRuleAnimationDifference::~dearRuleAnimationDifference(){
 
 void dearRuleAnimationDifference::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled() || ! pMove1 || ! pMove2){
+	if(!GetEnabled() || !pMove1 || !pMove2){
 		return;
 	}
 	

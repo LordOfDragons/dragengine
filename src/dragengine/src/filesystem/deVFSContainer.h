@@ -108,10 +108,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Root path. */
-	inline const decPath &GetRootPath(){return pRootPath;}
+	inline const decPath &GetRootPath(){ return pRootPath; }
 	
 	/** \brief Container is hidden. */
-	inline bool GetHidden() const{return pHidden;}
+	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if container is hidden. */
 	void SetHidden(bool hidden);

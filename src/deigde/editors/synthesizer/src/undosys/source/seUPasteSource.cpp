@@ -47,7 +47,7 @@ pIndex(index)
 {
 	const int sourceCount = sourceList.GetCount();
 	
-	if(! synthesizer || sourceCount == 0){
+	if(!synthesizer || sourceCount == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -124,9 +124,9 @@ void seUPasteSource::Redo(){
 		for(j=0; j<linkCount; j++){
 			seLink * const link = linkList.GetAt(j);
 			
-			if(! pSynthesizer->GetLinks().Has(link)){
+			if(!pSynthesizer->GetLinks().Has(link)){
 				seController * const controller = link->GetController();
-				if(controller && ! pSynthesizer->GetControllers().Has(controller)){
+				if(controller && !pSynthesizer->GetControllers().Has(controller)){
 					pRemoveControllerList.Add(controller);
 					pSynthesizer->AddController(controller);
 				}

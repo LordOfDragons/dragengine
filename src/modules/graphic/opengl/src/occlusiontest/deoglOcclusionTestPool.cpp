@@ -63,7 +63,7 @@ deoglOcclusionTest *deoglOcclusionTestPool::Get(){
 }
 
 void deoglOcclusionTestPool::Return(deoglOcclusionTest *occlusionTest){
-	if(! occlusionTest){
+	if(!occlusionTest){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -128,43 +128,43 @@ public:
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetAudioModel() const{return pAudioModel;}
+	inline deModel *GetAudioModel() const{ return pAudioModel; }
 	
 	void LoadOcclusionMesh(const char *path){
 		pPathOcclusionModel = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertOcclusionMesh, this);
 		pCounter++;
 	}
-	inline deOcclusionMesh *GetOcclusionMesh() const{return pOcclusionMesh;}
+	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	void LoadAnimation(const char *path){
 		pPathAnimation = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertAnimation, this);
 		pCounter++;
 	}
-	inline deAnimation *GetAnimation() const{return pAnimation;}
+	inline deAnimation *GetAnimation() const{ return pAnimation; }
 	
 	void LoadModel(const char *path){
 		pPathModel = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetModel() const{return pModel;}
+	inline deModel *GetModel() const{ return pModel; }
 	
 	void LoadSkin(const char *path){
 		pPathSkin = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
-	inline deSkin *GetSkin() const{return pSkin;}
-	inline bool HasPathSkin() const{return ! pPathSkin.IsEmpty();}
+	inline deSkin *GetSkin() const{ return pSkin; }
+	inline bool HasPathSkin() const{ return !pPathSkin.IsEmpty(); }
 	
 	void LoadRig(const char *path){
 		pPathRig = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertRig, this);
 		pCounter++;
 	}
-	inline deRig *GetRig() const{return pRig;}
+	inline deRig *GetRig() const{ return pRig; }
 	
 	void LoadTextureSkin(const char *path){
 		if(pTextureSkins.Has(path)){
@@ -178,10 +178,10 @@ public:
 		deObject *skin = NULL;
 		return pTextureSkins.GetAt(path, &skin) ? (deSkin*)skin : NULL;
 	}
-	inline const decObjectDictionary &GetTextureSkins() const{return pTextureSkins;}
+	inline const decObjectDictionary &GetTextureSkins() const{ return pTextureSkins; }
 	
 	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -224,7 +224,7 @@ public:
 	}
 	
 	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -369,7 +369,7 @@ void igdeWOSOComponent::UpdateVisibility(){
 }
 
 void igdeWOSOComponent::UpdateLayerMasks(){
-	if(! pComponent && ! pOutlineComponent){
+	if(!pComponent && !pOutlineComponent){
 		return;
 	}
 	
@@ -395,7 +395,7 @@ void igdeWOSOComponent::UpdateCollisionFilter(){
 }
 
 void igdeWOSOComponent::UpdateGeometry(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		pCollider->SetPosition(GetWrapper().GetPosition());
 		pCollider->SetOrientation(GetWrapper().GetOrientation());
 	}
@@ -434,7 +434,7 @@ void igdeWOSOComponent::UpdateGeometry(){
 
 void igdeWOSOComponent::UpdateColliderResponseType(){
 	deCollider::eResponseType responseType = pGDComponent.GetColliderResponseType();
-	if(! GetWrapper().GetDynamicCollider() && responseType == deCollider::ertDynamic){
+	if(!GetWrapper().GetDynamicCollider() && responseType == deCollider::ertDynamic){
 		responseType = deCollider::ertKinematic;
 	}
 	pCollider->SetResponseType(responseType);
@@ -442,7 +442,7 @@ void igdeWOSOComponent::UpdateColliderResponseType(){
 }
 
 void igdeWOSOComponent::Update(float elapsed){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -506,7 +506,7 @@ void igdeWOSOComponent::Visit(igdeWOSOVisitor &visitor){
 }
 
 void igdeWOSOComponent::AsyncLoadFinished(bool success){
-	if(! pResLoad){
+	if(!pResLoad){
 		return;
 	}
 	
@@ -567,37 +567,37 @@ void igdeWOSOComponent::pLoadResources(){
 	
 	const decString pathModel(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epModel), pGDComponent.GetModelPath()));
-	if(! pathModel.IsEmpty()){
+	if(!pathModel.IsEmpty()){
 		rl.LoadModel(pathModel);
 	}
 	
 	const decString pathSkin(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epSkin), pGDComponent.GetSkinPath()));
-	if(! pathSkin.IsEmpty()){
+	if(!pathSkin.IsEmpty()){
 		rl.LoadSkin(pathSkin);
 	}
 	
 	const decString pathRig(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epRig), pGDComponent.GetRigPath()));
-	if(! pathRig.IsEmpty()){
+	if(!pathRig.IsEmpty()){
 		rl.LoadRig(pathRig);
 	}
 	
 	const decString pathOcclusionMesh(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epOcclusionMesh), pGDComponent.GetOcclusionMeshPath()));
-	if(! pathOcclusionMesh.IsEmpty()){
+	if(!pathOcclusionMesh.IsEmpty()){
 		rl.LoadOcclusionMesh(pathOcclusionMesh);
 	}
 	
 	const decString pathAudioModel(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epAudioModel), pGDComponent.GetAudioModelPath()));
-	if(! pathAudioModel.IsEmpty()){
+	if(!pathAudioModel.IsEmpty()){
 		rl.LoadAudioModel(pathAudioModel);
 	}
 	
 	const decString pathAnimation(GetStringProperty(
 		pGDComponent.GetPropertyName(igdeGDCComponent::epAnimation), pGDComponent.GetAnimationPath()));
-	if(! pathAnimation.IsEmpty()){
+	if(!pathAnimation.IsEmpty()){
 		rl.LoadAnimation(pathAnimation);
 	}
 	
@@ -606,7 +606,7 @@ void igdeWOSOComponent::pLoadResources(){
 	for(i=0; i<textureCount; i++){
 		const igdeGDCCTexture &gdctexture = *pGDComponent.GetTextureList().GetAt(i);
 		
-		if(! gdctexture.GetPathSkin().IsEmpty()){
+		if(!gdctexture.GetPathSkin().IsEmpty()){
 			rl.LoadTextureSkin(gdctexture.GetPathSkin());
 		}
 	}
@@ -618,7 +618,7 @@ void igdeWOSOComponent::pLoadResources(){
 		textureCount = textures.GetCount();
 		for(i=0; i<textureCount; i++){
 			const igdeGDCCTexture &gdctexture = *textures.GetAt(i);
-			if(! gdctexture.GetPathSkin().IsEmpty()){
+			if(!gdctexture.GetPathSkin().IsEmpty()){
 				rl.LoadTextureSkin(gdctexture.GetPathSkin());
 			}
 		}
@@ -632,11 +632,11 @@ void igdeWOSOComponent::pUpdateComponent(){
 		(igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
 	deModel *model = rl.GetModel();
-	if(! model && GetWrapper().GetGDClass()){
+	if(!model && GetWrapper().GetGDClass()){
 		model = GetGameDefinition().GetDefaultModel();
 	}
 	
-	if(! model || model->GetLODAt(0)->GetFaceCount() == 0){
+	if(!model || model->GetLODAt(0)->GetFaceCount() == 0){
 		pResLoad = NULL;
 		pReleaseOutlineComponent();
 		pDestroyComponent();
@@ -644,7 +644,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	deSkin::Ref skin(rl.GetSkin());
-	if(! skin && rl.HasPathSkin() && GetWrapper().GetGDClass()){
+	if(!skin && rl.HasPathSkin() && GetWrapper().GetGDClass()){
 		skin = GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 	}
 	
@@ -679,7 +679,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pColliderCanInteract = model->GetLODAt(0)->GetFaceCount() > 0;
 	}
 	
-	if(pColliderCanInteract && ! GetWrapper().GetColliderComponent()){
+	if(pColliderCanInteract && !GetWrapper().GetColliderComponent()){
 		GetWrapper().SetInteractCollider(pCollider);
 		GetWrapper().AddInteractionCollider(pColliderInteraction);
 		pCollider->SetEnabled(pIsVisible());
@@ -712,7 +712,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		currentAnimation = pAnimator->GetAnimation();
 	}
 	
-	if(! pComponentInteraction){
+	if(!pComponentInteraction){
 		pComponentInteraction.TakeOver(GetEngine().GetComponentManager()->CreateComponent());
 		pComponentInteraction->SetHintMovement(pComponent->GetHintMovement());
 		pComponentInteraction->SetRig(GetEnvironment().GetStockRig(igdeEnvironment::esrModelCollision));
@@ -819,7 +819,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		deEngine &engine = GetEngine();
 		deAnimator::Ref animator;
 		
-		if(! pathAnimator.IsEmpty()){
+		if(!pathAnimator.IsEmpty()){
 			igdeLoadAnimator loadAnimator(GetEnvironment(), &GetLogger(), "DEIGDE");
 			const decPath vfsPath(decPath::CreatePathUnix(pathAnimator));
 			
@@ -903,7 +903,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pPlaybackControllerIndex = -1;
 		
 		if(animator){
-			if(! pAnimator){
+			if(!pAnimator){
 				pAnimator.TakeOver(engine.GetAnimatorInstanceManager()->CreateAnimatorInstance());
 				pAnimator->SetComponent(pComponent);
 			}
@@ -940,11 +940,11 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	// add to game world and optionally attach
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddComponent(pComponent);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
@@ -952,7 +952,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 }
 
 void igdeWOSOComponent::pUpdateTextures(){
-	if(! pComponent || ! pComponent->GetModel()){
+	if(!pComponent || !pComponent->GetModel()){
 		return;
 	}
 	
@@ -971,7 +971,7 @@ void igdeWOSOComponent::pUpdateTextures(){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt(i);
 		const decString &name = model.GetTextureAt(i)->GetName();
 		const igdeGDCCTexture *gdctexture = textures.GetNamed(name);
-		if(! gdctexture){
+		if(!gdctexture){
 			gdctexture = pGDComponent.GetTextureList().GetNamed(name);
 		}
 		
@@ -989,9 +989,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 			texCoordRotation = gdctexture->GetRotation();
 		}
 		
-		if(! useSkin && gdctexture){
+		if(!useSkin && gdctexture){
 			const decString &pathToLoad = gdctexture->GetPathSkin().GetString();
-			if(! pathToLoad.IsEmpty()){
+			if(!pathToLoad.IsEmpty()){
 				deObject *object;
 				if(pTextureSkins.GetAt(pathToLoad, &object) && object){
 					useSkin = (deSkin*)object;
@@ -1000,9 +1000,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 			}
 		}
 		
-		if(! useDynamicSkin && gdctexture){
+		if(!useDynamicSkin && gdctexture){
 			const decColor &gdctColorTint = gdctexture->GetColorTint();
-			const bool gdctHasTint = ! gdctColorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
+			const bool gdctHasTint = !gdctColorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 			bool gdctRequiresDynamicSkin = false;
 			
 			if(gdctHasTint){
@@ -1036,7 +1036,7 @@ void igdeWOSOComponent::pUpdateTextures(){
 		if(useSkin != componentTexture.GetSkin()
 		|| useTexture != componentTexture.GetTexture()
 		|| useDynamicSkin != componentTexture.GetDynamicSkin()
-		|| ! texCoordTransform.IsEqualTo(componentTexture.GetTransform())){
+		|| !texCoordTransform.IsEqualTo(componentTexture.GetTransform())){
 			componentTexture.SetSkin(useSkin);
 			componentTexture.SetTexture(useTexture);
 			componentTexture.SetTransform(texCoordTransform);
@@ -1081,7 +1081,7 @@ void igdeWOSOComponent::pDestroyComponent(){
 void igdeWOSOComponent::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(/*! pComponent ||*/ pGDComponent.GetAttachTarget()){
+	if(/*!pComponent ||*/ pGDComponent.GetAttachTarget()){
 		return;
 	}
 	
@@ -1101,7 +1101,7 @@ void igdeWOSOComponent::AttachToCollider(){
 		attachment->SetNoScaling(true);
 		
 		if(colliderComponent){
-			if(! pGDComponent.GetBoneName().IsEmpty()){
+			if(!pGDComponent.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDComponent.GetBoneName());
 			}
@@ -1124,7 +1124,7 @@ void igdeWOSOComponent::AttachToCollider(){
 }
 
 void igdeWOSOComponent::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
@@ -1135,7 +1135,7 @@ void igdeWOSOComponent::DetachFromCollider(){
 
 bool igdeWOSOComponent::pIsVisible() const{
 	bool visible = GetWrapper().GetVisible();
-	const bool partiallyVisible = visible && ! GetWrapper().GetPartiallyHidden();
+	const bool partiallyVisible = visible && !GetWrapper().GetPartiallyHidden();
 	
 	if(pGDComponent.GetPartialHide()){
 		visible = partiallyVisible;
@@ -1150,7 +1150,7 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	
 	// get outline skin and check if an outline is required
 	deSkin * const outlineSkin = GetWrapper().GetOutlineSkin();
-	if(! outlineSkin || ! pComponent || ! pComponent->GetModel() || ! pCollider || ! GetWrapper().GetWorld()){
+	if(!outlineSkin || !pComponent || !pComponent->GetModel() || !pCollider || !GetWrapper().GetWorld()){
 		return;
 	}
 	
@@ -1210,7 +1210,7 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 }
 
 void igdeWOSOComponent::pReleaseOutlineComponent(){
-	if(! pOutlineComponent){
+	if(!pOutlineComponent){
 		return;
 	}
 	

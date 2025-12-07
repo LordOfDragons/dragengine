@@ -45,7 +45,7 @@ seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode *node, sePropertyN
 pNode(NULL),
 pMask(NULL)
 {
-	if(! node || ! node->GetProperty() || node->GetMask() || ! mask){
+	if(!node || !node->GetProperty() || node->GetMask() || !mask){
 		DETHROW(deeInvalidParam);
 	}
 	

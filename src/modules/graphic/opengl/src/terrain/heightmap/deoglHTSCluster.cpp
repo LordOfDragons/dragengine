@@ -84,7 +84,7 @@ void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries(sDataElementGeom
 	for(i=0; i<count; i++){
 		const deoglHTSTexture &texture = sector.GetTextureAt(i);
 		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-		if(! valid || ! skinTexture){
+		if(!valid || !skinTexture){
 			continue;
 		}
 		
@@ -212,7 +212,7 @@ void deoglHTSCluster::SetSize(int firstPointX, int firstPointZ, int pointCountX,
 }
 
 void deoglHTSCluster::InitFromHeightImage(const deHeightTerrainSector &sector){
-	if(! pHTSector){
+	if(!pHTSector){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -317,7 +317,7 @@ void deoglHTSCluster::SetVBODataPoints1(GLuint vbo){
 }
 
 void deoglHTSCluster::UpdateVBOData1(){
-	if(! pHTSector || ! pVBODataPoints1){
+	if(!pHTSector || !pVBODataPoints1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -334,7 +334,7 @@ void deoglHTSCluster::SetVBODataPoints2(GLuint vbo){
 }
 
 void deoglHTSCluster::UpdateVBOData2(){
-	if(! pHTSector || ! pVBODataPoints2){
+	if(!pHTSector || !pVBODataPoints2){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -420,7 +420,7 @@ void deoglHTSCluster::SetVBODataFaces(GLuint vbo){
 }
 
 void deoglHTSCluster::UpdateVBODataFaces(){
-	if(! pHTSector || ! pVBODataFaces){
+	if(!pHTSector || !pVBODataFaces){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -432,14 +432,14 @@ void deoglHTSCluster::UpdateVBODataFaces(){
 }
 
 void deoglHTSCluster::UpdateVAO(){
-	if(! pHTSector){
+	if(!pHTSector){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deoglRenderThread &renderThread = pHTSector->GetHeightTerrain().GetRenderThread();
 	
 	if(pVBODataPoints1 && pVBODataPoints2 && pVBODataFaces){
-		if(! pVAO){
+		if(!pVAO){
 			pVAO = new deoglVAO(renderThread);
 			
 			pVAO->SetIndexType(deoglVBOLayout::eitUnsignedShort);

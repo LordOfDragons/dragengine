@@ -72,7 +72,7 @@ bool gdeOCBillboardList::Has(gdeOCBillboard *billboard) const{
 }
 
 void gdeOCBillboardList::Add(gdeOCBillboard *billboard){
-	if(! billboard || Has(billboard)){
+	if(!billboard || Has(billboard)){
 		DETHROW(deeInvalidParam);
 	}
 	pBillboards.Add(billboard);

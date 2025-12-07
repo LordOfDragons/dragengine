@@ -43,7 +43,7 @@ seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
 pLink(NULL),
 pNewName(newName)
 {
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

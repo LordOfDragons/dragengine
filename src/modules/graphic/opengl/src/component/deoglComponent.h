@@ -118,15 +118,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Engine resource component. */
-	inline deComponent &GetComponent() const{return pComponent;}
+	inline deComponent &GetComponent() const{ return pComponent; }
 	
 	
 	
 	/** Render component. */
-	inline deoglRComponent *GetRComponent() const{return pRComponent;}
+	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -137,7 +137,7 @@ public:
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
@@ -148,7 +148,7 @@ public:
 	
 	
 	/** Number of LODs. */
-	inline int GetLODCount() const{return pLODCount;}
+	inline int GetLODCount() const{ return pLODCount; }
 	
 	/** LOD at index. */
 	deoglComponentLOD &GetLODAt(int index) const;
@@ -156,7 +156,7 @@ public:
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
 	deoglComponentTexture &GetTextureAt(int index);
@@ -273,8 +273,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

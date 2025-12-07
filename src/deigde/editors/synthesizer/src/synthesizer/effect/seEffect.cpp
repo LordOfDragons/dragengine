@@ -85,7 +85,7 @@ seEffect::~seEffect(){
 ///////////////
 
 seSynthesizer *seEffect::GetSynthesizer() const{
-	if(! pParentSource){
+	if(!pParentSource){
 		return NULL;
 	}
 	
@@ -99,7 +99,7 @@ void seEffect::SetEngineEffect(deSynthesizerEffect *engEffect){
 }
 
 void seEffect::InitEngineEffect(deSynthesizerEffect *engEffect) const{
-	if(! engEffect){
+	if(!engEffect){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -187,7 +187,7 @@ void seEffect::ListLinks(seLinkList &list){
 
 void seEffect::NotifyEffectChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if(! synthesizer){
+	if(!synthesizer){
 		return;
 	}
 	
@@ -202,7 +202,7 @@ void seEffect::NotifyEffectChanged(){
 
 void seEffect::NotifyEngineOnlyEffectChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if(! synthesizer || ! pEngEffect){
+	if(!synthesizer || !pEngEffect){
 		return;
 	}
 	

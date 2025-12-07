@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object to add. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

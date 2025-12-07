@@ -65,7 +65,7 @@ FXMatrix(pparent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
 	powner.GetColumnSpacing(), powner.GetRowSpacing()),
 pOwner(&powner)
 {
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 }
@@ -74,12 +74,12 @@ igdeNativeFoxContainerForm::~igdeNativeFoxContainerForm(){
 }
 
 igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget(igdeContainerForm &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -63,7 +63,7 @@ bool igdeWDebugDrawerShapeList::Has(igdeWDebugDrawerShape *wrapper) const{
 }
 
 void igdeWDebugDrawerShapeList::Add(igdeWDebugDrawerShape *wrapper){
-	if(! wrapper){
+	if(!wrapper){
 		DETHROW(deeInvalidParam);
 	}
 	

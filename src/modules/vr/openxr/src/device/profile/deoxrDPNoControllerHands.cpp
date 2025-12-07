@@ -143,7 +143,7 @@ void deoxrDPNoControllerHands::pAddDevice(bool left){
 
 void deoxrDPNoControllerHands::pRemoveDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if(! device){
+	if(!device){
 		return;
 	}
 	

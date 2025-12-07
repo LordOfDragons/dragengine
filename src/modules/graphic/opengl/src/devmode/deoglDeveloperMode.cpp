@@ -291,7 +291,7 @@ const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith(int width,
 		}
 	}
 	
-	if(! pTextureDebugImage){
+	if(!pTextureDebugImage){
 		pTextureDebugImage = new deoglTexture(pRenderThread);
 		pTextureDebugImage->SetSize(width, height);
 		pTextureDebugImage->SetMipMapped(false);
@@ -318,7 +318,7 @@ const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith(int width,
 }
 
 void deoglDeveloperMode::CheckDebugImageUse(){
-	if(! pDebugImageUsed){
+	if(!pDebugImageUsed){
 		pFBODebugImage = nullptr;
 		
 		if(pTextureDebugImage){
@@ -622,7 +622,7 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 	if(formatCount > 0){
 		try{
 			formats = new GLint[formatCount];
-			if(! formats) DETHROW(deeOutOfMemory);
+			if(!formats) DETHROW(deeOutOfMemory);
 			
 			OGL_CHECK(pRenderThread, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats));
 			for(f=0; f<formatCount; f++){

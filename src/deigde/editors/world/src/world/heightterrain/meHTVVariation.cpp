@@ -50,7 +50,7 @@
 ////////////////////////////
 
 meHTVVariation::meHTVVariation(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pVLayer = NULL;
@@ -83,9 +83,9 @@ void meHTVVariation::SetVLayer(meHTVegetationLayer *vlayer){
 
 
 void meHTVVariation::SetPathModel(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathModel.Equals(path)){
+	if(!pPathModel.Equals(path)){
 		pPathModel = path;
 		
 		if(pModel){
@@ -93,7 +93,7 @@ void meHTVVariation::SetPathModel(const char *path){
 			pModel = NULL;
 		}
 		
-		if(! pPathModel.IsEmpty()){
+		if(!pPathModel.IsEmpty()){
 			try{
 				pModel = pEngine->GetModelManager()->LoadModel(pPathModel.GetString(), "/");
 				
@@ -106,9 +106,9 @@ void meHTVVariation::SetPathModel(const char *path){
 }
 
 void meHTVVariation::SetPathSkin(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathSkin.Equals(path)){
+	if(!pPathSkin.Equals(path)){
 		pPathSkin = path;
 		
 		if(pSkin){
@@ -116,7 +116,7 @@ void meHTVVariation::SetPathSkin(const char *path){
 			pSkin = NULL;
 		}
 		
-		if(! pPathSkin.IsEmpty()){
+		if(!pPathSkin.IsEmpty()){
 			try{
 				pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 				

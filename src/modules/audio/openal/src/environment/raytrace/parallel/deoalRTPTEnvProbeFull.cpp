@@ -265,7 +265,7 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	}
 	
 	// apply result
-	if(! hitElement){
+	if(!hitElement){
 		// ray hits nothing and ends
 		#ifdef THAN_DEBUG
 		thanTemp.AppendFormat(" (%.3f,%.3f,%.3f)", (ray.position + scaledDirection).x,
@@ -284,7 +284,7 @@ void deoalRTPTEnvProbeFull::pTraceRay(const sTraceRay &ray, const sTraceGain &ga
 	const deoalRayTraceHitElement *hitElementBack = NULL;
 	for(hitIndex++; hitIndex<hitCount; hitIndex++){
 		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
-		if(! he.GetForwardFacing()){
+		if(!he.GetForwardFacing()){
 			hitElementBack = &he;
 			break;
 		}

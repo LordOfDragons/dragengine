@@ -43,7 +43,7 @@ seUSkySetBgColor::seUSkySetBgColor(seSky *sky, const decColor &newColor) :
 pSky(NULL),
 pNewColor(newColor)
 {
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	

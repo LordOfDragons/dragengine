@@ -132,7 +132,7 @@ bool deadContainer::CanDeleteFile(const decPath &){
 
 decBaseFileReader *deadContainer::OpenFileForReading(const decPath &path){
 	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	
@@ -169,7 +169,7 @@ void deadContainer::SearchFiles(const decPath &directory, deContainerFileSearch 
 	if(directory.GetComponentCount() > 0){
 		adir = adir->GetDirectoryByPath(directory);
 	}
-	if(! adir){
+	if(!adir){
 		return;
 	}
 	
@@ -203,7 +203,7 @@ uint64_t deadContainer::GetFileSize(const decPath &path){
 	const deMutexGuard guard(pMutex);
 	
 	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	return file->GetFileSize();
@@ -213,7 +213,7 @@ TIME_SYSTEM deadContainer::GetFileModificationTime(const decPath &path){
 	const deMutexGuard guard(pMutex);
 	
 	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	return file->GetModificationTime();

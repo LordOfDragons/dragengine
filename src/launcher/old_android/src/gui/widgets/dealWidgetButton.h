@@ -71,13 +71,13 @@ public:
 	
 	
 	/** \brief Background color normal state. */
-	inline const decColor &GetBgColorNormal() const{return pBgColorNormal;}
+	inline const decColor &GetBgColorNormal() const{ return pBgColorNormal; }
 	
 	/** \brief Set background color normal state. */
 	void SetBgColorNormal(const decColor &color);
 	
 	/** \brief Text color normal. */
-	inline const decColor &GetTextColorNormal() const{return pTextColorNormal;}
+	inline const decColor &GetTextColorNormal() const{ return pTextColorNormal; }
 	
 	/** \brief Set text color normal. */
 	void SetTextColorNormal(const decColor &color);
@@ -89,13 +89,13 @@ public:
 	void SetBgImageColorizeNormal(const decColor &color);
 	
 	/** \brief Background color pressed state. */
-	inline const decColor &GetBgColorPressed() const{return pBgColorPressed;}
+	inline const decColor &GetBgColorPressed() const{ return pBgColorPressed; }
 	
 	/** \brief Set background color pressed state. */
 	void SetBgColorPressed(const decColor &color);
 	
 	/** \brief Text color pressed. */
-	inline const decColor &GetTextColorPressed() const{return pTextColorPressed;}
+	inline const decColor &GetTextColorPressed() const{ return pTextColorPressed; }
 	
 	/** \brief Set text color pressed. */
 	void SetTextColorPressed(const decColor &color);
@@ -121,15 +121,15 @@ public:
 	void SetImage(dealImage *image);
 	
 	/** \brief Bordered background image widget for normal state. */
-	inline dealWidgetBorderImage &GetBgImageNormal() const{return *pBgImageNormal;}
+	inline dealWidgetBorderImage &GetBgImageNormal() const{ return *pBgImageNormal; }
 	
 	/** \brief Bordered background image widget for pressed state. */
-	inline dealWidgetBorderImage &GetBgImagePressed() const{return *pBgImagePressed;}
+	inline dealWidgetBorderImage &GetBgImagePressed() const{ return *pBgImagePressed; }
 	
 	
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** \brief Set if button is pressed. */
 	void SetPressed(bool pressed);

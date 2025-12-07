@@ -71,7 +71,7 @@ const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer){
 	pPoolSolverConstraintFrictionSizes.resizeNoInitialize(numConstraints);
 	for(i=0; i<numConstraints; i++){
 		debpBPConstraintBase * const constraint = debpBPConstraintBase::GetBase(constraints[i]);
-		if(! constraint){
+		if(!constraint){
 			pPoolSolverConstraintFrictionSizes[i] = 0;
 			continue;
 		}
@@ -97,7 +97,7 @@ const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer){
 			debpBPConstraintBase * const constraint = debpBPConstraintBase::GetBase(constraints[i]);
 			const int constraintRowCount = m_tmpConstraintSizesPool[i].m_numConstraintRows;
 			
-			if(! constraint){
+			if(!constraint){
 				constraintRow += constraintRowCount;
 				continue;
 			}

@@ -87,7 +87,7 @@ desynParameter &desynParameterList::GetParameterNamed(const char *name) const{
 }
 
 void desynParameterList::AddParameter(desynParameter *parameter){
-	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

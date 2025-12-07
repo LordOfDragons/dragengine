@@ -72,7 +72,7 @@ bool gdeOCNavigationSpaceList::Has(gdeOCNavigationSpace *space) const{
 }
 
 void gdeOCNavigationSpaceList::Add(gdeOCNavigationSpace *space){
-	if(! space || Has(space)){
+	if(!space || Has(space)){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationSpaces.Add(space);

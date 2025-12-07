@@ -49,7 +49,7 @@
 ////////////////////////////
 
 reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
-	if(! rig || ! importedRig){
+	if(!rig || !importedRig){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -347,7 +347,7 @@ pDebugRayLightIndex(-1)
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Light GI Stereo");
 		}
 		pipconf.EnableBlendAdd();
@@ -595,7 +595,7 @@ void deoglRenderGI::TraceRays(deoglRenderPlan &plan){
 
 void deoglRenderGI::PrepareUBORenderLight(deoglRenderPlan &plan){
 	const deoglGIState * const giState = plan.GetRenderGIState();
-	if(! giState){
+	if(!giState){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -672,7 +672,7 @@ void deoglRenderGI::PrepareUBORenderLight(const deoglGIState &giState, const dec
 
 void deoglRenderGI::RenderMaterials(deoglRenderPlan &plan, const deoglRenderTask &renderTask){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -793,7 +793,7 @@ void deoglRenderGI::ClearProbes(deoglRenderPlan &plan){
 	DEASSERT_NOTNULL(giState)
 	
 	deoglGICascade &cascade = giState->GetActiveCascade();
-	if(! cascade.HasClearProbes()){
+	if(!cascade.HasClearProbes()){
 		return;
 	}
 	
@@ -840,7 +840,7 @@ void deoglRenderGI::ClearProbes(deoglRenderPlan &plan){
 
 void deoglRenderGI::UpdateProbes(deoglRenderPlan &plan){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -899,7 +899,7 @@ void deoglRenderGI::UpdateProbes(deoglRenderPlan &plan){
 
 void deoglRenderGI::ProbeOffset(deoglRenderPlan &plan){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
@@ -970,7 +970,7 @@ void deoglRenderGI::ProbeOffset(deoglRenderPlan &plan){
 
 void deoglRenderGI::ProbeExtends(deoglRenderPlan &plan){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
@@ -1078,15 +1078,15 @@ void deoglRenderGI::RenderLightGIRay(deoglRenderPlan &plan){
 
 void deoglRenderGI::RenderDebugOverlay(deoglRenderPlan &plan){
 	deoglGIState * const giState = plan.GetRenderGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace(renderThread, "GI.RenderDebugOverlay");
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	if(! devmode.GetEnabled() || (! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate()
-	&& ! devmode.GetGIShowProbeRays())){
+	if(!devmode.GetEnabled() || (!devmode.GetGIShowProbes() && !devmode.GetGIShowProbeUpdate()
+	&& !devmode.GetGIShowProbeRays())){
 		return;
 	}
 	
@@ -1152,7 +1152,7 @@ void deoglRenderGI::RenderDebugOverlay(deoglRenderPlan &plan){
 	if(devmode.GetGIShowProbeRays()){
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		
-		if(! pSSBODebugRayLight){
+		if(!pSSBODebugRayLight){
 			pSSBODebugRayLight.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
 			pSSBODebugRayLight->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 			pSSBODebugRayLight->SetParameterCount(1);

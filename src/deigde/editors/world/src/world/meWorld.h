@@ -236,45 +236,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the engine side world resource. */
-	inline deWorld *GetEngineWorld() const{return pDEWorld;}
+	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Background object wrapper. */
-	inline const igdeWObject::Ref &GetBgObject() const{return pBgObject;}
+	inline const igdeWObject::Ref &GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
-	inline deMicrophone *GetMicrophone() const{return pEngMicrophone;}
+	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
 	
 	/** Limit box extends. */
-	inline const decVector &GetLimitBoxMinExtend() const{return pLimitBoxMinExtend;}
-	inline const decVector &GetLimitBoxMaxExtend() const{return pLimitBoxMaxExtend;}
+	inline const decVector &GetLimitBoxMinExtend() const{ return pLimitBoxMinExtend; }
+	inline const decVector &GetLimitBoxMaxExtend() const{ return pLimitBoxMaxExtend; }
 	void SetLimitBoxMinExtend(const decVector &minExtend);
 	void SetLimitBoxMaxExtend(const decVector &maxExtend);
 	void SetLimitBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** Retrieves the height terrain. */
-	inline meHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	/** Retrieves the weather. */
-	inline meWeather *GetWeather() const{return pWeather;}
+	inline meWeather *GetWeather() const{ return pWeather; }
 	/** Retrieves the gui parameters. */
-	inline meWorldGuiParameters &GetGuiParameters() const{return *pGuiParams;}
+	inline meWorldGuiParameters &GetGuiParameters() const{ return *pGuiParams; }
 	/** Retrieves the trigger table. */
-	inline igdeTriggerTargetList &GetTriggerTable(){return pTriggerTable;}
-	inline const igdeTriggerTargetList &GetTriggerTable() const{return pTriggerTable;}
+	inline igdeTriggerTargetList &GetTriggerTable(){ return pTriggerTable; }
+	inline const igdeTriggerTargetList &GetTriggerTable() const{ return pTriggerTable; }
 	/** Retrieves the trigger expression parser. */
-	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){return pTriggerExpressionParser;}
-	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{return pTriggerExpressionParser;}
+	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){ return pTriggerExpressionParser; }
+	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
 	
 	/** Identifier group list. */
-	inline meIDGroupList &GetIDGroupList(){return pIDGroupList;}
-	inline const meIDGroupList &GetIDGroupList() const{return pIDGroupList;}
+	inline meIDGroupList &GetIDGroupList(){ return pIDGroupList; }
+	inline const meIDGroupList &GetIDGroupList() const{ return pIDGroupList; }
 	
 	
 	
 	/** Next object ID. */
-	inline const decUniqueID &GetNextObjectID() const {return pNextObjectID;}
+	inline const decUniqueID &GetNextObjectID() const { return pNextObjectID; }
 	
 	/** Set next object ID. */
 	void SetNextObjectID(const decUniqueID &id);
@@ -306,12 +306,12 @@ public:
 	/** \name Editing */
 	/*@{*/
 	/** Determines if a world dependency has changed. */
-	inline bool GetDepChanged() const{return pDepChanged;}
+	inline bool GetDepChanged() const{ return pDepChanged; }
 	/** Sets if a world dependency has changed. */
 	void SetDepChanged(bool changed);
 	
 	/** World changed or world dependency changed. */
-	inline bool GetAnyChanged() const{return GetChanged() || pDepChanged;}
+	inline bool GetAnyChanged() const{ return GetChanged() || pDepChanged; }
 	
 	/** Checks the changed state of all sectors adjusting the world changed state. */
 	void CheckChanged();
@@ -339,8 +339,8 @@ public:
 	void ClearScalingOfNonScaledElements();
 	
 	/** Retrieves the editing object shape list. */
-	inline meObjectShapeList &GetObjectShapes(){return pObjectShapes;}
-	inline const meObjectShapeList &GetObjectShapes() const{return pObjectShapes;}
+	inline meObjectShapeList &GetObjectShapes(){ return pObjectShapes; }
+	inline const meObjectShapeList &GetObjectShapes() const{ return pObjectShapes; }
 	/*@}*/
 	
 	
@@ -348,7 +348,7 @@ public:
 	/** \name Objects */
 	/*@{*/
 	/** List of objects. */
-	inline const meObjectList &GetObjects() const{return pObjects;}
+	inline const meObjectList &GetObjects() const{ return pObjects; }
 	
 	/** Add object. */
 	void AddObject(meObject *object);
@@ -374,7 +374,7 @@ public:
 	/** \name Decals */
 	/*@{*/
 	/** List of decals. */
-	inline const meDecalList &GetDecals() const{return pDecals;}
+	inline const meDecalList &GetDecals() const{ return pDecals; }
 	
 	/** Add decal. */
 	void AddDecal(meDecal *decal);
@@ -391,7 +391,7 @@ public:
 	/** \name Navigation Spaces */
 	/*@{*/
 	/** List of navigation spaces. */
-	inline const meNavigationSpaceList &GetNavSpaces() const{return pNavSpaces;}
+	inline const meNavigationSpaceList &GetNavSpaces() const{ return pNavSpaces; }
 	
 	/** Add navigation space. */
 	void AddNavSpace(meNavigationSpace *navspace);
@@ -409,19 +409,19 @@ public:
 	/*@{*/
 	
 	/** Size of world in meters. */
-	inline const decDVector &GetSize() const{return pSize;}
+	inline const decDVector &GetSize() const{ return pSize; }
 	
 	/** Set size of world in meters. */
 	void SetSize(const decDVector &size);
 	
 	/** World gravity. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** Set world gravity. */
 	void SetGravity(const decVector &gravity);
 	
 	/** Determines if the world is rendered in full bright mode. */
-	inline bool GetFullBright() const{return pFullBright;}
+	inline bool GetFullBright() const{ return pFullBright; }
 	/** Sets if the world is rendered in full bright mode. */
 	void SetFullBright(bool fullBright);
 	/*@}*/
@@ -431,7 +431,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** Properties. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** Set property. */
 	void SetProperty(const char *key, const char *value);
@@ -446,7 +446,7 @@ public:
 	void RemoveAllProperties();
 	
 	/** Active property. */
-	inline const decString &GetActiveProperty() const{return pActiveProperty;}
+	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** Set active property. */
 	void SetActiveProperty(const char *property);
@@ -457,27 +457,27 @@ public:
 	/** \name Selection */
 	/*@{*/
 	/** Retrieves the object selection. */
-	inline meObjectSelection &GetSelectionObject(){return pSelectionObject;}
-	inline const meObjectSelection &GetSelectionObject() const{return pSelectionObject;}
+	inline meObjectSelection &GetSelectionObject(){ return pSelectionObject; }
+	inline const meObjectSelection &GetSelectionObject() const{ return pSelectionObject; }
 	/** Retrieves the object shape selection. */
-	inline meObjectShapeSelection &GetSelectionObjectShape(){return pSelectionObjectShape;}
-	inline const meObjectShapeSelection &GetSelectionObjectShape() const{return pSelectionObjectShape;}
+	inline meObjectShapeSelection &GetSelectionObjectShape(){ return pSelectionObjectShape; }
+	inline const meObjectShapeSelection &GetSelectionObjectShape() const{ return pSelectionObjectShape; }
 	/** Retrieves the decal selection. */
-	inline meDecalSelection &GetSelectionDecal(){return pSelectionDecal;}
-	inline const meDecalSelection &GetSelectionDecal() const{return pSelectionDecal;}
+	inline meDecalSelection &GetSelectionDecal(){ return pSelectionDecal; }
+	inline const meDecalSelection &GetSelectionDecal() const{ return pSelectionDecal; }
 	/** Retrieves the navigation space selection. */
-	inline meNavigationSpaceSelection &GetSelectionNavigationSpace(){return pSelectionNavigationSpace;}
-	inline const meNavigationSpaceSelection &GetSelectionNavigationSpace() const{return pSelectionNavigationSpace;}
+	inline meNavigationSpaceSelection &GetSelectionNavigationSpace(){ return pSelectionNavigationSpace; }
+	inline const meNavigationSpaceSelection &GetSelectionNavigationSpace() const{ return pSelectionNavigationSpace; }
 	/*@}*/
 	
 	/** \name Camera */
 	/*@{*/
 	/** Retrieves the free roaming camera. */
-	inline meCamera *GetFreeRoamingCamera() const{return pFreeRoamCamera;}
+	inline meCamera *GetFreeRoamingCamera() const{ return pFreeRoamCamera; }
 	/** Retrieves the player camera. */
-	inline meCamera *GetPlayerCamera() const{return pPlayerCamera;}
+	inline meCamera *GetPlayerCamera() const{ return pPlayerCamera; }
 	/** Retrieves the active camera. */
-	inline meCamera *GetActiveCamera() const{return pActiveCamera;}
+	inline meCamera *GetActiveCamera() const{ return pActiveCamera; }
 	/** Sets the active camera. */
 	void SetActiveCamera(meCamera *camera);
 	/*@}*/
@@ -485,7 +485,7 @@ public:
 	/** \name Sensors */
 	/*@{*/
 	/** Retrieves the lumimeter sensor. */
-	inline meLumimeter *GetLumimeter() const{return pLumimeter;}
+	inline meLumimeter *GetLumimeter() const{ return pLumimeter; }
 	/** Updates sensors. */
 	void UpdateSensors();
 	/*@}*/
@@ -493,14 +493,14 @@ public:
 	/** \name Testing */
 	/*@{*/
 	/** Retrieves the path find test. */
-	inline mePathFindTest *GetPathFindTest() const{return pPathFindTest;}
+	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
 	/** Retrieves the last path used for loading/saving navigation test files. */
-	inline const decString &GetPathNavTest() const{return pPathNavTest;}
+	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
 	/** Sets the last path used for loading/saving navigation test files. */
 	void SetPathNavTest(const char *path);
 	
 	/** Music testing. */
-	inline meMusic &GetMusic() const{return pMusic;}
+	inline meMusic &GetMusic() const{ return pMusic; }
 	/*@}*/
 	
 	/** Activate microphone. */
@@ -514,7 +514,7 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{return pNotifierCount;}
+	inline int GetNotifierCount() const{ return pNotifierCount; }
 	/** Retrieves the notifier at the given index. */
 	meWorldNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */

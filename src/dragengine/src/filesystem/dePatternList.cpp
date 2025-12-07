@@ -106,7 +106,7 @@ void dePatternList::SortPatternByLength(){
 }
 
 bool dePatternList::PathMatches(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 
@@ -128,7 +128,7 @@ bool dePatternList::PathMatches(const char *path) const{
 }
 
 int dePatternList::IndexOfPatternMatchingPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 

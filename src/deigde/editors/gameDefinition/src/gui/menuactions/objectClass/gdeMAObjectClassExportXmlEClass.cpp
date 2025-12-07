@@ -66,12 +66,12 @@ gdeBaseAction(windowMain, "Object Class Export XML EClass",
 
 igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if(! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	const gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -84,7 +84,7 @@ igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameDefin
 	
 	decString filename(path.GetPathNative());
 	
-	if(! igdeCommonDialogs::GetFileSave(&pWindowMain, "Export XML Element Class",
+	if(!igdeCommonDialogs::GetFileSave(&pWindowMain, "Export XML Element Class",
 	pWindowMain.GetLoadSaveSystem().GetXmlEClassFilePatterns(), filename)){
 		return NULL;
 	}
@@ -99,7 +99,7 @@ igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameDefin
 
 void gdeMAObjectClassExportXmlEClass::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

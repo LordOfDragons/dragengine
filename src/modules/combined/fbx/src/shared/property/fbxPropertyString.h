@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(const char *value);

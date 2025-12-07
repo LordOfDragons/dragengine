@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCBillboardToggleLocked::~gdeUOCBillboardToggleLocked(){
 ///////////////
 
 void gdeUOCBillboardToggleLocked::Undo(){
-	pBillboard->SetLocked(! pBillboard->GetLocked());
+	pBillboard->SetLocked(!pBillboard->GetLocked());
 	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 

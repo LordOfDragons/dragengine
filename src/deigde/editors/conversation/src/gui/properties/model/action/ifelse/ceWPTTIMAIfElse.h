@@ -59,13 +59,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAIfElse *GetActionIfElse() const{return (ceCAIfElse*)GetAction();}
+	inline ceCAIfElse *GetActionIfElse() const{ return (ceCAIfElse*)GetAction(); }
 	
 	/** \brief Model with if-case or \em NULL. */
 	ceWPTTIMAIfElseIfCase *GetIfCaseChild(ceCAIfElseCase *ifCase) const;
 	
 	/** \brief Model with else-case or \em NULL. */
-	inline ceWPTTIMAIfElseElse *GetElseChild() const{return pElse;}
+	inline ceWPTTIMAIfElseElse *GetElseChild() const{ return pElse; }
 	
 	/** \brief Update action. */
 	virtual void Update();

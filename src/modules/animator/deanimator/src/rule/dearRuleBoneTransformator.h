@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Target bone index. */
-	inline int GetTargetBone() const{return pTargetBone;}
+	inline int GetTargetBone() const{ return pTargetBone; }
 	
 	
 	

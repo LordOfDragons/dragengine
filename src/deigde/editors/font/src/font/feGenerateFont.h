@@ -77,13 +77,13 @@ public:
 	void SetCodeRange(int first, int last);
 	
 	/** \brief Border size in pixels. */
-	inline int GetBorderSize() const{return pBorderSize;}
+	inline int GetBorderSize() const{ return pBorderSize; }
 	
 	/** \brief Set border size in pixels. */
 	void SetBorderSize(int borderSize);
 	
 	/** \brief Amount of pixels to enlarge the glyph box with. */
-	inline int GetEnlargeGlyph() const{return pEnlargeGlyph;}
+	inline int GetEnlargeGlyph() const{ return pEnlargeGlyph; }
 	
 	/** \brief Set amount of pixels to enlarge the glyph box with. */
 	void SetEnlargeGlpyh(int enlarge);

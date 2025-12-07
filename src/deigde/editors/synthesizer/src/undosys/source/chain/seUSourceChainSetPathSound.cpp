@@ -44,7 +44,7 @@ seSourceChain *source, int index, const char *newPath) :
 pSource(NULL),
 pNewPath(newPath)
 {
-	if(! source || index < 0 || index >= source->GetPathSounds().GetCount()){
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

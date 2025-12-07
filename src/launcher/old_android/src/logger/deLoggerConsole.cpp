@@ -57,7 +57,7 @@ deLoggerConsole::~deLoggerConsole(){
 ///////////////
 
 void deLoggerConsole::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,7 +82,7 @@ void deLoggerConsole::LogInfo(const char *source, const char *message){
 }
 
 void deLoggerConsole::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void deLoggerConsole::LogWarn(const char *source, const char *message){
 }
 
 void deLoggerConsole::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

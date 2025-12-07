@@ -113,7 +113,7 @@ bool gdeOCComponentTextureList::HasNamed(const char *name) const{
 }
 
 void gdeOCComponentTextureList::Add(gdeOCComponentTexture *texture){
-	if(! texture || HasNamed(texture->GetName())){
+	if(!texture || HasNamed(texture->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

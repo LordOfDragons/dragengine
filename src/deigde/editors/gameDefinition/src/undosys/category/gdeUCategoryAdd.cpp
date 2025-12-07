@@ -46,7 +46,7 @@ gdeUCategoryBase(gameDefinition, type),
 pParent(NULL),
 pCategory(NULL)
 {
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void gdeUCategoryAdd::Undo(){
 			case gdeGameDefinition::eotCategoryParticleEmitter:
 			case gdeGameDefinition::eotCategorySkin:
 			case gdeGameDefinition::eotCategorySky:
-				if(! activeCheck->GetParent()){
+				if(!activeCheck->GetParent()){
 					gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 				}
 				break;

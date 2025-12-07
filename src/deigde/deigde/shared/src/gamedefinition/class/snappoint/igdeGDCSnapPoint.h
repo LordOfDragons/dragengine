@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
 	void SetName(const char *name);
@@ -78,13 +78,13 @@ public:
 	
 	
 	/** \brief Snap position relative to parent object. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set snap position relative to parent object. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Snap orientation relative to parent object. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set snap orientation relative to parent object. */
 	void SetRotation(const decVector &orientation);
@@ -92,13 +92,13 @@ public:
 	
 	
 	/** \brief Snap distance in meters. */
-	inline float GetSnapDistance() const{return pSnapDistance;}
+	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/** \brief Set snap distance in meters. */
 	void SetSnapDistance(float distance);
 	
 	/** \brief Snap to orientation. */
-	inline bool GetSnapToRotation() const{return pSnapToRotation;}
+	inline bool GetSnapToRotation() const{ return pSnapToRotation; }
 	
 	/** \brief Set snap to orientation. */
 	void SetSnapToRotation(bool snapToRotation);

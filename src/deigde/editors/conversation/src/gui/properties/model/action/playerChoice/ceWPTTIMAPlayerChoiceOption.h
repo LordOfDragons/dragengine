@@ -65,10 +65,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{return pOption;}
+	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
 	void SetIndex(int index);
@@ -77,10 +77,10 @@ public:
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
 	
 	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{return pCondition;}
+	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{ return pCondition; }
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{return pActions;}
+	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();

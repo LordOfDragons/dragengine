@@ -51,7 +51,7 @@ gdeWPSTIMOCCamera::gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *obje
 gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index),
 pCamera(NULL)
 {
-	if(! camera){
+	if(!camera){
 		DETHROW(deeInvalidParam);
 	}
 	

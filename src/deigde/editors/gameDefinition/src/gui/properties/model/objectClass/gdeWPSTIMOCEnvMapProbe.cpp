@@ -51,7 +51,7 @@ gdeWPSTIMOCEnvMapProbe::gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree,
 gdeWPSTIMOCSubObject(tree, etObjectClassEnvMapProbe, objectClass, index),
 pEnvMapProbe(NULL)
 {
-	if(! envMapProbe){
+	if(!envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

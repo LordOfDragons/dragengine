@@ -83,28 +83,28 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** X-System input module. */
-	inline deXSystemInput &GetModule() const{return pModule;}
+	inline deXSystemInput &GetModule() const{ return pModule; }
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is presssed. */
 	void SetPressed(bool pressed);
 	
 	/** Type. */
-	inline deInputDeviceButton::eButtonTypes GetType() const{return pType;}
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deInputDeviceButton::eButtonTypes type);
@@ -112,10 +112,10 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -124,7 +124,7 @@ public:
 	void SetDisplayImages(const dexsiDeviceButton &button);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);
@@ -132,31 +132,31 @@ public:
 	
 	
 	/** X11 specific code. */
-	inline int GetX11Code() const{return pX11Code;}
+	inline int GetX11Code() const{ return pX11Code; }
 	
 	/** Set X11 specific code. */
 	void SetX11Code(int code);
 	
 	/** Libevdev specific event code. */
-	inline int GetEvdevCode() const{return pEvdevCode;}
+	inline int GetEvdevCode() const{ return pEvdevCode; }
 	
 	/** Set libevdev specific event code. */
 	void SetEvdevCode(int code);
 	
 	/** Input event key code. */
-	inline deInputEvent::eKeyCodes GetKeyCode() const{return pKeyCode;}
+	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/** Set input event key code. */
 	void SetKeyCode(deInputEvent::eKeyCodes keyCode);
 	
 	/** Match priority. */
-	inline int GetMatchPriority() const{return pMatchPriority;}
+	inline int GetMatchPriority() const{ return pMatchPriority; }
 	
 	/** Set match priority. */
 	void SetMatchPriority(int priority);
 	
 	/** Key location. */
-	inline deInputEvent::eKeyLocation GetKeyLocation() const{return pKeyLocation;}
+	inline deInputEvent::eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
 	
 	/** Set key location. */
 	void SetKeyLocation(deInputEvent::eKeyLocation location);

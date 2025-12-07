@@ -87,7 +87,7 @@ deoglParameter &deoglParameterList::GetParameterNamed(const char *name) const{
 }
 
 void deoglParameterList::AddParameter(deoglParameter *parameter){
-	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

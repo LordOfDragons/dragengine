@@ -161,7 +161,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Depth Downsample Stereo");
 	}
 	
@@ -231,7 +231,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	// now is a good time to do occlusion queries for all lights having passed
 	// the quick rejection test as well as all components which are costly
 	// enough to justify wasting an occlusion query on them.
-	if(! xray){
+	if(!xray){
 		RenderOcclusionQueryPass(plan, mask);
 		DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoSolidGeometryOcclusion, true);
 	}
@@ -267,7 +267,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	// depth pass
-	if(solid && ! mask){
+	if(solid && !mask){
 		renderThread.GetRenderers().GetVR().RenderHiddenArea(plan, false);
 	}
 	
@@ -444,7 +444,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	
 	
 	// outline
-	if(! renderThread.GetChoices().GetUseComputeRenderTask() && solid){
+	if(!renderThread.GetChoices().GetUseComputeRenderTask() && solid){
 		const deoglDebugTraceGroup debugTraceOutline(renderThread, "DepthPass.RenderDepth.Outline");
 		
 		deoglRenderPlanTasks &tasks = plan.GetTasks();

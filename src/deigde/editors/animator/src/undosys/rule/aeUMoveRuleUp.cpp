@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeUMoveRuleUp::aeUMoveRuleUp(aeAnimator *animator, aeRule *rule){
-	if(! animator || ! rule) DETHROW(deeInvalidParam);
+	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
 	pRule = NULL;

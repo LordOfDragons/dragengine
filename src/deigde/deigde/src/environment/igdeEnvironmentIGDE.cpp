@@ -404,7 +404,7 @@ void igdeEnvironmentIGDE::ReloadXMLElementClasses(){
 }
 
 bool igdeEnvironmentIGDE::OpenFileInEditor(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	

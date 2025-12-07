@@ -70,16 +70,16 @@ public:
 	void Update();
 	
 	/** Camera. */
-	inline const deCamera::Ref &GetCamera() const{return pCamera;}
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Set enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** Get game camera. */
-	inline const deCamera::Ref &GetCameCamera() const{return pGameCamera;}
+	inline const deCamera::Ref &GetCameCamera() const{ return pGameCamera; }
 	
 	/** Set game camera. */
 	void SetGameCamera(deCamera *camera);

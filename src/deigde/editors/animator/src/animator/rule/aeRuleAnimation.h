@@ -62,36 +62,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the animation move. */
-	inline const decString &GetMoveName() const{return pMoveName;}
+	inline const decString &GetMoveName() const{ return pMoveName; }
 	/** Set the animation move name. */
 	void SetMoveName(const char *moveName);
 	/** Retrieve the animation move time. */
-	inline float GetMoveTime() const{return pMoveTime;}
+	inline float GetMoveTime() const{ return pMoveTime; }
 	/** Set the animation move time. */
 	void SetMoveTime(float moveTime);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the move time target. */
-	inline aeControllerTarget &GetTargetMoveTime(){return pTargetMoveTime;}
-	inline const aeControllerTarget &GetTargetMoveTime() const{return pTargetMoveTime;}
+	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
+	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

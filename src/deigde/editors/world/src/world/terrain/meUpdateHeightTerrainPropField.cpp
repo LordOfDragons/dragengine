@@ -55,7 +55,7 @@
 ////////////////////////////
 
 meUpdateHeightTerrainPropField::meUpdateHeightTerrainPropField(meHeightTerrainPropField *propField){
-	if(! propField) DETHROW(deeInvalidParam);
+	if(!propField) DETHROW(deeInvalidParam);
 	
 	pPropField = propField;
 }
@@ -77,7 +77,7 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 	meHeightTerrainSector * const htsector = pPropField->GetHTSector();
 	dePropField * const engPF = pPropField->GetEnginePropField();
 	
-	if(! engPF || ! htsector || ! htsector->GetHeightTerrain()){
+	if(!engPF || !htsector || !htsector->GetHeightTerrain()){
 		// this should never fail but to avoid troubles we do nothing if so
 		const int count = engPF->GetTypeCount();
 		int i;

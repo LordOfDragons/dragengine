@@ -64,7 +64,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return *pConversation;}
+	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	
 	

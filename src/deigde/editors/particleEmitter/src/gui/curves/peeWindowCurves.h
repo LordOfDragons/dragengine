@@ -88,7 +88,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Active type. */
 	peeType *GetType() const;
@@ -100,7 +100,7 @@ public:
 	eCurves GetCurve() const;
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{return pEmitter;}
+	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

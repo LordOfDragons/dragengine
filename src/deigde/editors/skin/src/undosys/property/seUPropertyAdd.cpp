@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUPropertyAdd::seUPropertyAdd(seTexture *texture, const sePropertyList &properties){
-	if(! texture || properties.GetCount() == 0){
+	if(!texture || properties.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

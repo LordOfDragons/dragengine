@@ -43,7 +43,7 @@ meUDecalSetProperties::meUDecalSetProperties(meDecal *decal, const decStringDict
 pDecal(NULL),
 pNewValues(newValues)
 {
-	if(! decal || ! decal->GetWorld()){
+	if(!decal || !decal->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

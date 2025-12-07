@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
-	if(! phoneme) DETHROW(deeInvalidParam);
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	

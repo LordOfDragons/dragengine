@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const char *newPath){
-	if(! property || ! newPath){
+	if(!property || !newPath){
 		DETHROW(deeInvalidParam);
 	}
 	

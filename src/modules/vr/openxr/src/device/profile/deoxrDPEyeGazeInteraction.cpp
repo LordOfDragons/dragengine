@@ -64,7 +64,7 @@ void deoxrDPEyeGazeInteraction::CheckAttached(){
 }
 
 void deoxrDPEyeGazeInteraction::SuggestBindings(){
-	if(! GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
+	if(!GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
 		return;
 	}
 	
@@ -116,7 +116,7 @@ void deoxrDPEyeGazeInteraction::pAddDevice() {
 }
 
 void deoxrDPEyeGazeInteraction::pRemoveDevice() {
-	if(! pDevice){
+	if(!pDevice){
 		return;
 	}
 	

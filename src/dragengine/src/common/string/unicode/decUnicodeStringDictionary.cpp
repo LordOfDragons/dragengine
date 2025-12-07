@@ -161,7 +161,7 @@ decUnicodeStringDictionary::~decUnicodeStringDictionary(){
 ///////////////
 
 bool decUnicodeStringDictionary::Has(const decUnicodeString &key) const{
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -181,14 +181,14 @@ bool decUnicodeStringDictionary::Has(const decUnicodeString &key) const{
 
 const decUnicodeString &decUnicodeStringDictionary::GetAt(const decUnicodeString &key) const{
 	decUnicodeString *string;
-	if(! GetAt(key,&string)){
+	if(!GetAt(key,&string)){
 		DETHROW(deeInvalidParam);
 	}
 	return *string;
 }
 
 bool decUnicodeStringDictionary::GetAt(const decUnicodeString &key, decUnicodeString **string) const{
-	if(! key || ! string){
+	if(!key || !string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -210,7 +210,7 @@ bool decUnicodeStringDictionary::GetAt(const decUnicodeString &key, decUnicodeSt
 }
 
 void decUnicodeStringDictionary::SetAt(const decUnicodeString &key, const decUnicodeString &value){
-	if(! key || key[0] == '\0'){
+	if(!key || key[0] == '\0'){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -254,7 +254,7 @@ void decUnicodeStringDictionary::SetAt(const decUnicodeString &key, const decUni
 }
 
 void decUnicodeStringDictionary::Remove(const decUnicodeString &key){
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -287,7 +287,7 @@ void decUnicodeStringDictionary::Remove(const decUnicodeString &key){
 }
 
 void decUnicodeStringDictionary::RemoveIfPresent(const decUnicodeString &key){
-	if(! key){
+	if(!key){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -386,7 +386,7 @@ bool decUnicodeStringDictionary::Equals(const decUnicodeStringDictionary &dict) 
 		sDictEntry *iterEntry = pBuckets[i];
 		
 		while(iterEntry){
-			if(! dict.GetAt(iterEntry->key, &string) || *string != iterEntry->value){
+			if(!dict.GetAt(iterEntry->key, &string) || *string != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -404,7 +404,7 @@ void decUnicodeStringDictionary::CheckLoad(){
 		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if(! newBuckets){
+		if(!newBuckets){
 			DETHROW(deeInvalidParam);
 		}
 		for(i=0; i<newBucketCount; i++){

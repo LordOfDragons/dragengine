@@ -67,16 +67,16 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the face normal. */
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetNormal() const{ return pNormal; }
 	/** Sets the face normal. */
 	void SetNormal(const decVector &normal);
 	/** Retrieves the marker value. */
-	inline int GetMarker() const{return pMarker;}
+	inline int GetMarker() const{ return pMarker; }
 	/** Sets the marker value. */
 	void SetMarker(int marker);
 	
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the index of the vertex at the given position. */
 	int GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */

@@ -86,7 +86,7 @@ void debpCreateBulletShape::SetOffset(const decVector &offset){
 
 void debpCreateBulletShape::SetScale(const decVector &scale){
 	pScale = scale;
-	pHasScale = ! scale.IsEqualTo(decVector(1.0f, 1.0f, 1.0f));
+	pHasScale = !scale.IsEqualTo(decVector(1.0f, 1.0f, 1.0f));
 }
 
 void debpCreateBulletShape::SetNoMargin(bool noMargin){
@@ -169,14 +169,14 @@ printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n
 #endif
 	
 	// determine if the sphere is an ellipsoid
-	isEllipsoid = ! axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	isEllipsoid = !axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	// required since btTransform does not init and position/orientation is not guaranteed to be set
 	transform.setIdentity();
 	
 	// create the shape
 	try{
-		if(! position.IsZero()){
+		if(!position.IsZero()){
 			transform.setOrigin(btVector3(position.x, position.y, position.z));
 			needsTransform = true;
 		}
@@ -268,7 +268,7 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	float taperedHalfExtendZ = 0.0f;
 	
 	// determine if the box is tapered
-	const bool isTapered = ! tapering.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool isTapered = !tapering.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	// determine the smallest half extends
 	smallestHalfExtends = halfExtends.x;
@@ -304,7 +304,7 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	
 	// create the shape
 	try{
-		if(! orientation.IsEqualTo(decQuaternion()) || ! position.IsZero()){
+		if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 			transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 			transform.setOrigin(btVector3(position.x, position.y, position.z));
 			needsTransform = true;
@@ -401,8 +401,8 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 		
 		bulletShapeCylinder = new debpBulletShape(cylinderShape);
 		
-		if(! orientation.IsEqualTo(decQuaternion())) needsTransform = true;
-		if(! position.IsZero()) needsTransform = true;
+		if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
+		if(!position.IsZero()) needsTransform = true;
 		
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeCylinder: he=(%g,%g,%g)\n", cylinderShape->getHalfExtentsWithMargin().getX(),
@@ -468,8 +468,8 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 		
 		bulletShapeCapsule = new debpBulletShape(capsuleShape);
 		
-		if(! orientation.IsEqualTo(decQuaternion())) needsTransform = true;
-		if(! position.IsZero()) needsTransform = true;
+		if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
+		if(!position.IsZero()) needsTransform = true;
 		
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeCapsule: n=%i s1=(%g,%g,%g) s1=(%g,%g,%g) r1=%g r2=%g\n", capsuleShape->getSphereCount(),
@@ -535,7 +535,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 		
 		bulletShapeHull = new debpBulletShape(hullShape);
 		
-		if(! orientation.IsEqualTo(decQuaternion()) || ! position.IsZero()){
+		if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 			needsTransform = true;
 		}
 		
@@ -636,7 +636,7 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 	printf("debpCreateBulletShape.pAddCollisionShape\n");
 	#endif
 	
-	if(pBulletShape || (! pBulletCompoundShape && pHasScale)){
+	if(pBulletShape || (!pBulletCompoundShape && pHasScale)){
 		pCreateCompoundShape();
 	}
 	
@@ -669,7 +669,7 @@ void debpCreateBulletShape::pAddTransformedCollisionShape(debpBulletShape *colli
 	transform.getRotation().getZ(), transform.getRotation().getW());
 	#endif
 	
-	if(! pBulletCompoundShape){
+	if(!pBulletCompoundShape){
 		pCreateCompoundShape();
 	}
 	

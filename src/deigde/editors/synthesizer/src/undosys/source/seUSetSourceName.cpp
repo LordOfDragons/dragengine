@@ -42,7 +42,7 @@
 seUSetSourceName::seUSetSourceName(seSource *source, const char *newName) :
 pSource(NULL)
 {
-	if(! source || ! newName){
+	if(!source || !newName){
 		DETHROW(deeInvalidParam);
 	}
 	

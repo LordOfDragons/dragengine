@@ -42,7 +42,7 @@
 seULayerToggleMulBySkyLight::seULayerToggleMulBySkyLight(seLayer *layer) :
 pLayer(NULL)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ seULayerToggleMulBySkyLight::~seULayerToggleMulBySkyLight(){
 ///////////////
 
 void seULayerToggleMulBySkyLight::Undo(){
-	pLayer->SetMultiplyBySkyLight(! pLayer->GetMuliplyBySkyLight());
+	pLayer->SetMultiplyBySkyLight(!pLayer->GetMuliplyBySkyLight());
 }
 
 void seULayerToggleMulBySkyLight::Redo(){
-	pLayer->SetMultiplyBySkyLight(! pLayer->GetMuliplyBySkyLight());
+	pLayer->SetMultiplyBySkyLight(!pLayer->GetMuliplyBySkyLight());
 }

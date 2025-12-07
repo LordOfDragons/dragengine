@@ -60,7 +60,7 @@ reRigPush *reRigPushList::GetPushAt(int index) const{
 }
 
 int reRigPushList::IndexOfPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -71,7 +71,7 @@ int reRigPushList::IndexOfPush(reRigPush *push) const{
 }
 
 bool reRigPushList::HasPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){

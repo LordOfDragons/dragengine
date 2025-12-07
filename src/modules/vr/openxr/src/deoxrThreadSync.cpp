@@ -71,7 +71,7 @@ void deoxrThreadSync::WaitWaitFrameFinished(){
 	if(pNextCommand != ecWaitFrame){
 		return;
 	}
-	if(! pWaitFrameRunning){
+	if(!pWaitFrameRunning){
 		DEASSERT_FALSE(pWaitFrameFailed)
 	}
 	}

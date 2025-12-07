@@ -111,121 +111,121 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Model path. */
-	inline const decString &GetModelPath() const{return pModelPath;}
+	inline const decString &GetModelPath() const{ return pModelPath; }
 	
 	/** \brief Set model path. */
 	void SetModelPath(const char *path);
 	
 	/** \brief Skin path. */
-	inline const decString &GetSkinPath() const{return pSkinPath;}
+	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	
 	/** \brief Set skin path. */
 	void SetSkinPath(const char *path);
 	
 	/** \brief Rig path. */
-	inline const decString &GetRigPath() const{return pRigPath;}
+	inline const decString &GetRigPath() const{ return pRigPath; }
 	
 	/** \brief Set rig path. */
 	void SetRigPath(const char *path);
 	
 	/** \brief Animator path. */
-	inline const decString &GetAnimatorPath() const{return pAnimatorPath;}
+	inline const decString &GetAnimatorPath() const{ return pAnimatorPath; }
 	
 	/** \brief Set animator path. */
 	void SetAnimatorPath(const char *path);
 	
 	/** \brief Animation path. */
-	inline const decString &GetAnimationPath() const{return pAnimationPath;}
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	
 	/** \brief Set animation path. */
 	void SetAnimationPath(const char *path);
 	
 	/** \brief Move. */
-	inline const decString &GetMove() const{return pMove;}
+	inline const decString &GetMove() const{ return pMove; }
 	
 	/** \brief Set move. */
 	void SetMove(const char *move);
 	
 	/** \brief Occlusion mesh path. */
-	inline const decString &GetOcclusionMeshPath() const{return pOccMeshPath;}
+	inline const decString &GetOcclusionMeshPath() const{ return pOccMeshPath; }
 	
 	/** \brief Set occlusion mesh path. */
 	void SetOcclusionMeshPath(const char *path);
 	
 	/** \brief Audio model path. */
-	inline const decString &GetAudioModelPath() const{return pAudioModelPath;}
+	inline const decString &GetAudioModelPath() const{ return pAudioModelPath; }
 	
 	/** \brief Set audio model path. */
 	void SetAudioModelPath(const char *path);
 	
 	/** \brief Playback controller name. */
-	inline const decString &GetPlaybackController() const{return pPlaybackController;}
+	inline const decString &GetPlaybackController() const{ return pPlaybackController; }
 	
 	/** \brief Set playback controller name. */
 	void SetPlaybackController(const char *controller);
 	
 	/** \brief Determines if this component should not be scaled. */
-	inline bool GetDoNotScale() const{return pDoNotScale;}
+	inline bool GetDoNotScale() const{ return pDoNotScale; }
 	
 	/** \brief Sets if this component should not be scaled. */
 	void SetDoNotScale(bool doNotScale);
 	
 	/** \brief Determines if the component is static. */
-	inline bool GetStatic() const{return pStatic;}
+	inline bool GetStatic() const{ return pStatic; }
 	
 	/** \brief Sets if the component is static. */
 	void SetStatic(bool bStatic);
 	
 	/** \brief Determines if the component can be partially hidden. */
-	inline bool GetPartialHide() const{return pPartialHide;}
+	inline bool GetPartialHide() const{ return pPartialHide; }
 	
 	/** \brief Sets if the component can be partially hidden. */
 	void SetPartialHide(bool partiallyHidden);
 	
 	/** \brief Resourcec can be attached to component. */
-	inline bool GetAttachTarget() const{return pAttachTarget;}
+	inline bool GetAttachTarget() const{ return pAttachTarget; }
 	
 	/** \brief Set if resources can be attached to component. */
 	void SetAttachTarget(bool attachTarget);
 	
 	/** \brief Collider response type to use. */
-	inline deCollider::eResponseType GetColliderResponseType() const{return pColliderResponseType;}
+	inline deCollider::eResponseType GetColliderResponseType() const{ return pColliderResponseType; }
 	
 	/** \brief Set collider response type to use. */
 	void SetColliderResponseType(deCollider::eResponseType responseType);
 	
 	/** \brief Determines if the component is rendered into environment map probes. */
-	inline bool GetRenderEnvMap() const{return pRenderEnvMap;}
+	inline bool GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** \brief Sets if the component is rendered into environment map probes. */
 	void SetRenderEnvMap(bool renderEnvMap);
 	
 	/** \brief Component affects audio. */
-	inline bool GetAffectsAudio() const{return pAffectsAudio;}
+	inline bool GetAffectsAudio() const{ return pAffectsAudio; }
 	
 	/** \brief Ses if component affects audio. */
 	void SetAffectsAudio(bool affectsAudio);
 	
 	/** \brief Component is ignored from shadows cast by lights present in the same object. */
-	inline bool GetLightShadowIgnore() const{return pLightShadowIgnore;}
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
 	
 	/** \brief Ses if component is ignored from shadows cast by lights present in the same object. */
 	void SetLightShadowIgnore(bool lightShadowIgnore);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
@@ -243,8 +243,8 @@ public:
 	bool HasPropertyWithName(const char *name) const;
 	
 	/** \brief List of textures. */
-	inline igdeGDCCTextureList &GetTextureList(){return pTextureList;}
-	inline const igdeGDCCTextureList &GetTextureList() const{return pTextureList;}
+	inline igdeGDCCTextureList &GetTextureList(){ return pTextureList; }
+	inline const igdeGDCCTextureList &GetTextureList() const{ return pTextureList; }
 	/*@}*/
 };
 

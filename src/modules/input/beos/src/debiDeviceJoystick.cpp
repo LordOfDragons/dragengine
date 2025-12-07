@@ -97,7 +97,7 @@ pStateHat(NULL)
 			DETHROW(deeInvalidParam);
 		}
 		if(bname.Length() == 0){
-			module.LogWarnFormat("Bug! GetControllerName() returned empty string for device '%s'", name);
+			module.LogWarnFormat("Bug!GetControllerName() returned empty string for device '%s'", name);
 			bname << "BJoy@" << name;
 		}
 		SetName(bname.String());
@@ -328,7 +328,7 @@ void debiDeviceJoystick::Update(){
 		debiDeviceButton &button = *GetButtonAt(i);
 		
 		if((buttonValues & (1 << button.GetBICode())) == 0){
-			if(! button.GetPressed()){
+			if(!button.GetPressed()){
 				continue;
 			}
 			

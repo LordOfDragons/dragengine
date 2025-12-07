@@ -68,16 +68,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Source ID. */
-	inline int64_t GetSource() const{return pSource;}
+	inline int64_t GetSource() const{ return pSource; }
 	
 	/** \brief Target ID. */
-	inline int64_t GetTarget() const{return pTarget;}
+	inline int64_t GetTarget() const{ return pTarget; }
 	
 	/** \brief Other ID. */
 	int64_t OtherID(int64_t id) const;
 	
 	/** \brief Property or empty string. */
-	inline const decString &GetProperty() const{return pProperty;}
+	inline const decString &GetProperty() const{ return pProperty; }
 	
 	/** \brief Debug print property structure. */
 	void DebugPrintStructure(deBaseModule &module, const decString &prefix) const;

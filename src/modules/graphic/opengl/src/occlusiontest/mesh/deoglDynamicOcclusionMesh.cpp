@@ -65,7 +65,7 @@ deoglROcclusionMesh *occlusionmesh, deoglRComponent *component) :
 pRenderThread(renderThread),
 pBVH(NULL)
 {
-	if(! occlusionmesh || ! component){
+	if(!occlusionmesh || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -123,7 +123,7 @@ void deoglDynamicOcclusionMesh::ComponentStateChanged(){
 void deoglDynamicOcclusionMesh::UpdateBoneMappings(const deComponent &component){
 	pBoneMappings.RemoveAll();
 	
-	if(! component.GetModel() || ! component.GetOcclusionMesh()){
+	if(!component.GetModel() || !component.GetOcclusionMesh()){
 		return;
 	}
 	
@@ -149,7 +149,7 @@ void deoglDynamicOcclusionMesh::UpdateBoneMappings(const deComponent &component)
 }
 
 void deoglDynamicOcclusionMesh::PrepareForRender(){
-	if(! pDirtyVBO){
+	if(!pDirtyVBO){
 		return;
 	}
 	
@@ -237,7 +237,7 @@ void deoglDynamicOcclusionMesh::pCleanUp(){
 }
 
 void deoglDynamicOcclusionMesh::pBuildArrays(){
-	if(! pDirtyOccMesh){
+	if(!pDirtyOccMesh){
 		return;
 	}
 	
@@ -291,7 +291,7 @@ void deoglDynamicOcclusionMesh::pCalculateWeights(){
 		oglMatrix3x4 &weightsMatrix = pWeights[w];
 		const int entryCount = weightsCounts[w];
 		
-		if(entryCount == 0 || ! boneMatrices){
+		if(entryCount == 0 || !boneMatrices){
 			weightsMatrix.a11 = 1.0f;
 			weightsMatrix.a12 = 0.0f;
 			weightsMatrix.a13 = 0.0f;
@@ -437,9 +437,9 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	dataSize = VBO_P_STRIDE * vertexCount;
 	
-	if(! pVBO){
+	if(!pVBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		if(! pVBO){
+		if(!pVBO){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -475,7 +475,7 @@ void deoglDynamicOcclusionMesh::pWriteVBOData(){
 }
 
 void deoglDynamicOcclusionMesh::pUpdateVAO(){
-	if(pVAO || ! pVBO){
+	if(pVAO || !pVBO){
 		return;
 	}
 	

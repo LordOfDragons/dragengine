@@ -121,7 +121,7 @@ public:
 	
 	
 	virtual void BuildFont(deFont *engFont){
-		if(! engFont){
+		if(!engFont){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -195,7 +195,7 @@ private:
 			
 			// process characters
 			for(c=pFirstCode; c<=pLastCode; c++){
-				if(! nativeFont->hasChar(c)){
+				if(!nativeFont->hasChar(c)){
 					continue;
 				}
 				

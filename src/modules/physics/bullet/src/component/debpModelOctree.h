@@ -68,7 +68,7 @@ public:
 	void InsertFaceIntoTree(int face, const decVector &center, const decVector &halfSize, int maxDepth = 8);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the face at the given index. */
 	int GetFaceAt(int index) const;
 	/** Retrieves the index of the given face or -1 if not found. */

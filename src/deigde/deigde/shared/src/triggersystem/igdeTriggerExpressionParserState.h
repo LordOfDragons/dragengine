@@ -58,7 +58,7 @@ public:
 	bool HasMoreCharacters() const;
 	
 	/** \brief Position. */
-	inline int GetPosition() const{return pPosition;}
+	inline int GetPosition() const{ return pPosition; }
 	
 	/** \brief Next character in the string. */
 	char GetNextCharacter();

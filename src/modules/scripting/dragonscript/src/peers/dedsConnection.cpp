@@ -54,7 +54,7 @@ pConnection(connection),
 pValCB(NULL),
 pHasCB(false)
 {
-	if(! connection){
+	if(!connection){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -62,7 +62,7 @@ pHasCB(false)
 }
 
 dedsConnection::~dedsConnection(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -116,7 +116,7 @@ void dedsConnection::MessageProgress(int bytesReceived){
 }
 
 void dedsConnection::MessageReceived(deNetworkMessage *message){
-	if(! pHasCB || ! message){
+	if(!pHasCB || !message){
 		return;
 	}
 	
@@ -135,7 +135,7 @@ void dedsConnection::MessageReceived(deNetworkMessage *message){
 }
 
 bool dedsConnection::LinkState(deNetworkState *networkState, deNetworkMessage *message){
-	if(! networkState || ! message || message->GetDataLength() < 1){
+	if(!networkState || !message || message->GetDataLength() < 1){
 		return false;
 	}
 	

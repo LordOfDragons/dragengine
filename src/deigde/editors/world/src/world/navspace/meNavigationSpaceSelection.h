@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected navigation spacess. */
-	inline const meNavigationSpaceList &GetSelected() const{return pSelection;}
+	inline const meNavigationSpaceList &GetSelected() const{ return pSelection; }
 	/** Adds a navigation spaces to the selection if not included already. */
 	void Add(meNavigationSpace *navspaces);
 	/** Removes a navigation spaces from the selection if included. */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active navigation spaces or NULL if there is none. */
-	inline meNavigationSpace *GetActive() const{return pActive;}
+	inline meNavigationSpace *GetActive() const{ return pActive; }
 	/** Determines if there is an active navigation spaces. */
 	bool HasActive() const;
 	/** Sets the active navigation spaces or NULL if there is none. */

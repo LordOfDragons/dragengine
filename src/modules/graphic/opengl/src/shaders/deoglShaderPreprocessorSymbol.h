@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	/*@}*/
 };
 

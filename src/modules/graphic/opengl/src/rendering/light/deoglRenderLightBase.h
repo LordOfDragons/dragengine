@@ -58,8 +58,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Collider list. */
-	inline deoglCollideList &GetCollideList(){return pColList;}
-	inline const deoglCollideList &GetCollideList() const{return pColList;}
+	inline deoglCollideList &GetCollideList(){ return pColList; }
+	inline const deoglCollideList &GetCollideList() const{ return pColList; }
 	
 	/** Populate collider list with components from a component list. */
 	void AddComponentsToColliderList(const deoglComponentSet &list);

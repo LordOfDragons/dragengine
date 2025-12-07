@@ -82,35 +82,35 @@ static const Identifier nameConstructor("new");
 
 
 KDevelop::AbstractType::Ptr Helpers::getTypeVoid(){
-	if(! pTypeVoid){
+	if(!pTypeVoid){
 		pTypeVoid = new IntegralType(IntegralType::TypeVoid);
 	}
 	return pTypeVoid;
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeNull(){
-	if(! pTypeNull){
+	if(!pTypeNull){
 		pTypeNull = new IntegralType(IntegralType::TypeNull);
 	}
 	return pTypeNull;
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeInvalid(){
-	if(! pTypeInvalid){
+	if(!pTypeInvalid){
 		pTypeInvalid = new IntegralType(IntegralType::TypeMixed);
 	}
 	return pTypeInvalid;
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeByte(){
-	if(! pTypeDeclByte){
+	if(!pTypeDeclByte){
 		pTypeDeclByte = getInternalTypeDeclaration("byte");
 		if(pTypeDeclByte){
 			pTypeByte = pTypeDeclByte->abstractType();
 		}
 	}
 	
-	if(! pTypeByte){
+	if(!pTypeByte){
 		pTypeByte = new IntegralType(IntegralType::TypeByte);
 	}
 	
@@ -118,14 +118,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeByte(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeBool(){
-	if(! pTypeDeclBool){
+	if(!pTypeDeclBool){
 		pTypeDeclBool = getInternalTypeDeclaration("bool");
 		if(pTypeDeclBool){
 			pTypeBool = pTypeDeclBool->abstractType();
 		}
 	}
 	
-	if(! pTypeBool){
+	if(!pTypeBool){
 		pTypeBool = new IntegralType(IntegralType::TypeBoolean);
 	}
 	
@@ -133,14 +133,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeBool(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeInt(){
-	if(! pTypeDeclInt){
+	if(!pTypeDeclInt){
 		pTypeDeclInt = getInternalTypeDeclaration("int");
 		if(pTypeDeclInt){
 			pTypeInt = pTypeDeclInt->abstractType();
 		}
 	}
 	
-	if(! pTypeInt){
+	if(!pTypeInt){
 		pTypeInt = new IntegralType(IntegralType::TypeInt);
 	}
 	
@@ -148,14 +148,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeInt(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeFloat(){
-	if(! pTypeDeclFloat){
+	if(!pTypeDeclFloat){
 		pTypeDeclFloat = getInternalTypeDeclaration("float");
 		if(pTypeDeclFloat){
 			pTypeFloat = pTypeDeclFloat->abstractType();
 		}
 	}
 	
-	if(! pTypeFloat){
+	if(!pTypeFloat){
 		pTypeFloat = new IntegralType(IntegralType::TypeFloat);
 	}
 	
@@ -163,14 +163,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeFloat(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeString(){
-	if(! pTypeDeclString){
+	if(!pTypeDeclString){
 		pTypeDeclString = getInternalTypeDeclaration("String");
 		if(pTypeDeclString){
 			pTypeString = pTypeDeclString->abstractType();
 		}
 	}
 	
-	if(! pTypeString){
+	if(!pTypeString){
 		pTypeString = new IntegralType(IntegralType::TypeString);
 	}
 	
@@ -178,14 +178,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeString(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeObject(){
-	if(! pTypeDeclObject){
+	if(!pTypeDeclObject){
 		pTypeDeclObject = getInternalTypeDeclaration("Object");
 		if(pTypeDeclObject){
 			pTypeObject = pTypeDeclObject->abstractType();
 		}
 	}
 	
-	if(! pTypeObject){
+	if(!pTypeObject){
 		pTypeObject = new IntegralType(IntegralType::TypeMixed);
 	}
 	
@@ -193,14 +193,14 @@ KDevelop::AbstractType::Ptr Helpers::getTypeObject(){
 }
 
 KDevelop::AbstractType::Ptr Helpers::getTypeBlock(){
-	if(! pTypeDeclBlock){
+	if(!pTypeDeclBlock){
 		pTypeDeclBlock = getInternalTypeDeclaration("Block");
 		if(pTypeDeclBlock){
 			pTypeBlock = pTypeDeclBlock->abstractType();
 		}
 	}
 	
-	if(! pTypeBlock){
+	if(!pTypeBlock){
 		pTypeBlock = new IntegralType(IntegralType::TypeMixed);
 	}
 	
@@ -270,12 +270,12 @@ ClassDeclaration *Helpers::thisClassDeclFor(DUChainPointer<const DUContext> cont
 
 ClassDeclaration *Helpers::superClassDeclFor(DUChainPointer<const DUContext> context){
 	ClassDeclaration * const decl = thisClassDeclFor(context);
-	if(! decl){
+	if(!decl){
 		return nullptr;
 	}
 	
 	context = context->parentContext();
-	if(! context){
+	if(!context){
 		return nullptr;
 	}
 	
@@ -283,12 +283,12 @@ ClassDeclaration *Helpers::superClassDeclFor(DUChainPointer<const DUContext> con
 }
 
 ClassDeclaration *Helpers::classDeclFor(DUChainPointer<const DUContext> context){
-	if(! context){
+	if(!context){
 		return nullptr;
 	}
 	
 	Declaration * const declaration = context->owner();
-	if(! declaration){
+	if(!declaration){
 		return nullptr;
 	}
 	
@@ -296,17 +296,17 @@ ClassDeclaration *Helpers::classDeclFor(DUChainPointer<const DUContext> context)
 }
 
 ClassDeclaration *Helpers::classDeclFor(const TopDUContext *top, const KDevelop::AbstractType::Ptr &type){
-	if(! type){
+	if(!type){
 		return nullptr;
 	}
 	
 	StructureType::Ptr structType = type.cast<StructureType>();
-	if(! structType){
+	if(!structType){
 		return nullptr;
 	}
 	
 	Declaration * const declType = structType->declaration(top);
-	if(! declType){
+	if(!declType){
 		return nullptr;
 	}
 	
@@ -314,7 +314,7 @@ ClassDeclaration *Helpers::classDeclFor(const TopDUContext *top, const KDevelop:
 }
 
 ClassDeclaration *Helpers::superClassOf(const TopDUContext *top, const ClassDeclaration *declaration){
-	if(! declaration){
+	if(!declaration){
 		return nullptr;
 	}
 	
@@ -327,7 +327,7 @@ ClassDeclaration *Helpers::superClassOf(const TopDUContext *top, const ClassDecl
 
 QVector<ClassDeclaration*> Helpers::implementsOf(const TopDUContext *top, const ClassDeclaration *declaration){
 	QVector<ClassDeclaration*> implements;
-	if(! declaration){
+	if(!declaration){
 		return implements;
 	}
 	
@@ -345,7 +345,7 @@ QVector<ClassDeclaration*> Helpers::implementsOf(const TopDUContext *top, const 
 
 QVector<ClassDeclaration*> Helpers::baseClassesOf(const TopDUContext *top, const ClassDeclaration *declaration){
 	QVector<ClassDeclaration*> baseClasses;
-	if(! declaration){
+	if(!declaration){
 		return baseClasses;
 	}
 	
@@ -380,7 +380,7 @@ const KDevelop::AbstractType::Ptr &targetType){
 	
 	// test against supper class and interfaces of type1
 	ClassDeclaration * const classDecl = classDeclFor(top, type);
-	if(! classDecl){
+	if(!classDecl){
 		return false;
 	}
 	
@@ -409,7 +409,7 @@ const KDevelop::FunctionType::Ptr &func2){
 
 bool Helpers::sameSignatureAnyReturnType(const TopDUContext *top,
 const KDevelop::FunctionType::Ptr &func1, const KDevelop::FunctionType::Ptr &func2){
-	if(! func1 || ! func2){
+	if(!func1 || !func2){
 		return false;
 	}
 	
@@ -419,7 +419,7 @@ const KDevelop::FunctionType::Ptr &func1, const KDevelop::FunctionType::Ptr &fun
 	
 	int i;
 	for(i=0; i<func1->arguments().size(); i++){
-		if(! equals(top, func1->arguments().at(i), func2->arguments().at(i))){
+		if(!equals(top, func1->arguments().at(i), func2->arguments().at(i))){
 			return false;
 		}
 	}
@@ -476,13 +476,13 @@ const QVector<DUChainPointer<const DUContext>> &pinned){
 	// find declaration in local context
 	declarations = context->findLocalDeclarations(identifier, location /*,
 		nullptr, KDevelop::AbstractType::Ptr(), DUContext::DontResolveAliases */);
-	if(! declarations.isEmpty()){
+	if(!declarations.isEmpty()){
 		return declarations.last();
 	}
 	
 	// find declaration in this context, base class and up the parent chain
 	declarations = context->findDeclarations(identifier);
-	if(! declarations.isEmpty()){
+	if(!declarations.isEmpty()){
 		return declarations.last();
 	}
 	
@@ -494,7 +494,7 @@ const QVector<DUChainPointer<const DUContext>> &pinned){
 	// find declaration in pinned contexts
 	for(const DUChainPointer<const DUContext> &pinnedContext : pinned){
 		declarations = pinnedContext->findDeclarations(identifier);
-		if(! declarations.isEmpty()){
+		if(!declarations.isEmpty()){
 			return declarations.last();
 		}
 	}
@@ -503,7 +503,7 @@ const QVector<DUChainPointer<const DUContext>> &pinned){
 	const QVector<ReferencedTopDUContext> basicContexts(getDocumentationFileContexts());
 	foreach(const ReferencedTopDUContext &basicContext, basicContexts){
 		declarations = basicContext->findDeclarations(identifier);
-		if(! declarations.isEmpty()){
+		if(!declarations.isEmpty()){
 			return declarations.last();
 		}
 	}
@@ -514,7 +514,7 @@ const QVector<DUChainPointer<const DUContext>> &pinned){
 Declaration *Helpers::declarationForNameInBase(const QString& name,
 KDevelop::DUChainPointer<const DUContext> context){
 	const ClassDeclaration * const classDecl = dynamic_cast<ClassDeclaration*>(context->owner());
-	if(! classDecl || classDecl->baseClassesSize() == 0){
+	if(!classDecl || classDecl->baseClassesSize() == 0){
 		return nullptr;
 	}
 	
@@ -525,17 +525,17 @@ KDevelop::DUChainPointer<const DUContext> context){
 	for(i=0; i<classDecl->baseClassesSize(); i++){
 		const StructureType::Ptr structType = classDecl->baseClasses()[i]
 			.baseClass.abstractType().cast<StructureType>();
-		if(! structType){
+		if(!structType){
 			continue;
 		}
 		
 		DUContext * const baseContext = structType->internalContext(topContext);
-		if(! baseContext){
+		if(!baseContext){
 			continue;
 		}
 		
 		const QList<Declaration*> declarations(baseContext->findDeclarations(identifier));
-		if(! declarations.isEmpty()){
+		if(!declarations.isEmpty()){
 			return declarations.last();
 		}
 		
@@ -573,7 +573,7 @@ const QVector<DUChainPointer<const DUContext>> &pinned){
 	// find declaration in this context, base class and up the parent chain
 	declarations = context->findDeclarations(identifier);
 	foreach(Declaration *declaration, declarations){
-		if(! foundDeclarations.contains(declaration)){
+		if(!foundDeclarations.contains(declaration)){
 			foundDeclarations.append(declaration);
 		}
 	}
@@ -609,7 +609,7 @@ KDevelop::DUChainPointer<const DUContext> context){
 	QVector<Declaration*> foundDeclarations;
 	
 	const ClassDeclaration * const classDecl = dynamic_cast<ClassDeclaration*>(context->owner());
-	if(! classDecl || classDecl->baseClassesSize() == 0){
+	if(!classDecl || classDecl->baseClassesSize() == 0){
 		return foundDeclarations;
 	}
 	
@@ -620,18 +620,18 @@ KDevelop::DUChainPointer<const DUContext> context){
 	for(i=0; i<classDecl->baseClassesSize(); i++){
 		const StructureType::Ptr structType = classDecl->baseClasses()[i]
 			.baseClass.abstractType().cast<StructureType>();
-		if(! structType){
+		if(!structType){
 			continue;
 		}
 		
 		DUContext * const baseContext = structType->internalContext(topContext);
-		if(! baseContext){
+		if(!baseContext){
 			continue;
 		}
 		
 		const QList<Declaration*> declarations(baseContext->findDeclarations(identifier));
 		foreach(Declaration *declaration, declarations){
-			if(! foundDeclarations.contains(declaration)){
+			if(!foundDeclarations.contains(declaration)){
 				foundDeclarations.append(declaration);
 			}
 		}
@@ -650,7 +650,7 @@ QVector<Declaration*> Helpers::constructorsInClass(DUChainPointer<const DUContex
 	// find declaration in this context without base class or parent chain
 	declarations = context->findDeclarations(nameConstructor);
 	foreach(Declaration *declaration, declarations){
-		if(! foundDeclarations.contains(declaration)){
+		if(!foundDeclarations.contains(declaration)){
 			foundDeclarations.append(declaration);
 		}
 	}
@@ -668,7 +668,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature, const QVector<Declaration
 	
 	foreach(Declaration* declaration, declarations){
 		ClassFunctionDeclaration * const funcDecl = dynamic_cast<ClassFunctionDeclaration*>(declaration);
-		if(! funcDecl){
+		if(!funcDecl){
 			continue;
 		}
 		
@@ -678,7 +678,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature, const QVector<Declaration
 		}
 		
 		for(i=0; i<argCount; i++){
-			if(! equals(top, signature.at(i), funcType->arguments().at(i))){
+			if(!equals(top, signature.at(i), funcType->arguments().at(i))){
 				break;
 			}
 		}
@@ -699,7 +699,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature, const QVector<Declaration
 	
 	foreach(Declaration *declaration, declarations){
 		ClassFunctionDeclaration * const funcDecl = dynamic_cast<ClassFunctionDeclaration*>(declaration);
-		if(! funcDecl){
+		if(!funcDecl){
 			continue;
 		}
 		
@@ -709,7 +709,7 @@ const QVector<KDevelop::AbstractType::Ptr> &signature, const QVector<Declaration
 		}
 		
 		for(i=0; i<argCount; i++){
-			if(! castable(top, signature.at(i), funcType->arguments().at(i))){
+			if(!castable(top, signature.at(i), funcType->arguments().at(i))){
 				break;
 			}
 		}
@@ -762,7 +762,7 @@ bool Helpers::addImportsIncludePath(TopDUContext *top, const QString &includeDir
 	QStringList list;
 	
 	// ensure file listing exists
-	if(! cachedIncludeFiles.contains(includeDir)){
+	if(!cachedIncludeFiles.contains(includeDir)){
 		qDebug() << "KDevDScript: Helpers::getIncludeFileContexts: searching include directory" << includeDir;
 		QDirIterator iter(includeDir, QStringList() << "*.ds", QDir::Files, QDirIterator::Subdirectories);
 		QMutexLocker lock(&cacheMutex);
@@ -782,7 +782,7 @@ bool Helpers::addImportsIncludePath(TopDUContext *top, const QString &includeDir
 	
 	// TODO make this correct later on
 	const QVector<ReferencedTopDUContext> contexts(getImportsIncludeContexts(includeDir));
-	if(! contexts.isEmpty()){
+	if(!contexts.isEmpty()){
 		QList<QPair<TopDUContext*, CursorInRevision>> imports;
 		foreach(const ReferencedTopDUContext &each, contexts){
 			imports.append(qMakePair(each, CursorInRevision(1, 0)));
@@ -796,7 +796,7 @@ bool Helpers::addImportsIncludePath(TopDUContext *top, const QString &includeDir
 QVector<ReferencedTopDUContext> Helpers::getImportsIncludeContexts(const QString &includeDir){
 	QVector<ReferencedTopDUContext> contexts;
 	
-	if(! cachedIncludeFiles.contains(includeDir)){
+	if(!cachedIncludeFiles.contains(includeDir)){
 		return contexts;
 	}
 	
@@ -817,7 +817,7 @@ QVector<ReferencedTopDUContext> Helpers::getImportsIncludeContexts(const QString
 QVector<DUContext*> Helpers::internalContextsForClass(const KDevelop::StructureType::Ptr classType,
 const TopDUContext *context, ContextSearchFlags flags, int depth){
 	QVector<DUContext*> searchContexts;
-	if(! classType){
+	if(!classType){
 		return searchContexts;
 	}
 	if(auto c = classType->internalContext(context)){
@@ -911,7 +911,7 @@ IndexedString Helpers::getDocumentationFileObject(){
 
 QVector<ReferencedTopDUContext> Helpers::getDocumentationFileContexts(){
 // 	qDebug() << "KDevDScript: Helpers::getDocumentationFileContexts: ready" << documentationFileContextsReady;
-	if(! documentationFileContextsReady){
+	if(!documentationFileContextsReady){
 		const QVector<IndexedString> &files = getDocumentationFiles();
 		documentationFileContexts.clear();
 		
@@ -948,12 +948,12 @@ QVector<ReferencedTopDUContext> Helpers::getDocumentationFileContexts(){
 				}
 			}
 			
-			if(! allReady){
+			if(!allReady){
 				documentationFileContexts.clear();
 			}
 		}
 		
-		if(! documentationFileContexts.isEmpty()){
+		if(!documentationFileContexts.isEmpty()){
 			qDebug() << "KDevDScript: Helpers::getDocumentationFileContexts: All files read";
 			
 			if(documentationFileContextsParsing){
@@ -1002,7 +1002,7 @@ Declaration *Helpers::getInternalTypeDeclaration(const QString &name){
 	
 	foreach(const ReferencedTopDUContext &context, contexts){
 		const QList<Declaration*> declarations(context->findDeclarations(identifier));
-		if(! declarations.isEmpty()){
+		if(!declarations.isEmpty()){
 			return declarations.last();
 		}
 	}

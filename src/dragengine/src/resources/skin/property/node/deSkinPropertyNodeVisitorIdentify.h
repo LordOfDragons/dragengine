@@ -74,24 +74,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Node type. */
-	inline eNodeTypes GetType() const{return pType;}
+	inline eNodeTypes GetType() const{ return pType; }
 	
 	
 	
 	/** \brief Node is of type unknown. */
-	inline bool IsUnknown() const{return pType == entUnknown;}
+	inline bool IsUnknown() const{ return pType == entUnknown; }
 	
 	/** \brief Node is of type group. */
-	inline bool IsGroup() const{return pType == entGroup;}
+	inline bool IsGroup() const{ return pType == entGroup; }
 	
 	/** \brief Node is of type image. */
-	inline bool IsImage() const{return pType == entImage;}
+	inline bool IsImage() const{ return pType == entImage; }
 	
 	/** \brief Node is of type shape. */
-	inline bool IsShape() const{return pType == entShape;}
+	inline bool IsShape() const{ return pType == entShape; }
 	
 	/** \brief Node is of type text. */
-	inline bool IsText() const{return pType == entText;}
+	inline bool IsText() const{ return pType == entText; }
 	
 	
 	

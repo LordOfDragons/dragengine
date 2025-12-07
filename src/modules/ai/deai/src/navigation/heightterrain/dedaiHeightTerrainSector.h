@@ -74,18 +74,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Height terrain. */
-	inline dedaiHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
+	inline dedaiHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Sector. */
-	inline const deHeightTerrainSector &GetSector() const{return pSector;}
+	inline const deHeightTerrainSector &GetSector() const{ return pSector; }
 	
 	
 	
 	/** \brief World position of sector center. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Heights. */
-	inline const float *GetHeights() const{return pHeights;}
+	inline const float *GetHeights() const{ return pHeights; }
 	/*@}*/
 	
 	

@@ -183,20 +183,20 @@ const fbxAnimationMove &loadMove){
 	
 	for(i=0; i<countCurves; i++){
 		const fbxAnimationMoveCurves &moveCurves = *loadMove.GetCurvesAt(i);
-		if(! moveCurves.GetRigBone()
+		if(!moveCurves.GetRigBone()
 		|| moveCurves.GetTargetProperty() == fbxAnimationMoveCurves::etpUnsupported){
 			continue;
 		}
 		
 		const fbxAnimationCurve * const curves[3] = {
 			moveCurves.GetCurveX(), moveCurves.GetCurveY(), moveCurves.GetCurveZ()};
-		if(! curves[0] && ! curves[1] && ! curves[2]){
+		if(!curves[0] && !curves[1] && !curves[2]){
 			continue;
 		}
 		
 		int lastTime = 0;
 		for(j=0; j<3; j++){
-			if(! curves[j]){
+			if(!curves[j]){
 				continue;
 			}
 			

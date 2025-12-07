@@ -56,22 +56,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the path. */
-	inline const decPath &GetPath() const{return pPath;}
+	inline const decPath &GetPath() const{ return pPath; }
 	
 	/** \brief Retrieves the file name. */
-	inline const FXString &GetFileName() const{return pFileName;}
+	inline const FXString &GetFileName() const{ return pFileName; }
 	/** \brief Sets the file name. */
 	void SetFileName(const char *filename);
 	/** \brief Retrieves the file type. */
-	inline deVFSContainer::eFileTypes GetFileType() const{return pFileType;}
+	inline deVFSContainer::eFileTypes GetFileType() const{ return pFileType; }
 	/** \brief Sets the file type. */
 	void SetFileType(deVFSContainer::eFileTypes fileType);
 	/** \brief Retrieves the file size. */
-	inline int GetFileSize() const{return pFileSize;}
+	inline int GetFileSize() const{ return pFileSize; }
 	/** \brief Sets the file size. */
 	void SetFileSize(int fileSize);
 	/** \brief Retrieves the file modification time. */
-	inline TIME_SYSTEM GetFileModificationTime() const{return pFileModificationTime;}
+	inline TIME_SYSTEM GetFileModificationTime() const{ return pFileModificationTime; }
 	/** \brief Sets the file modification time. */
 	void SetFileModificationTime(TIME_SYSTEM time);
 	

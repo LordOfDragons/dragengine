@@ -81,13 +81,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Reset view. */
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
 	void SetWorld(meWorld *world);
@@ -108,7 +108,7 @@ public:
 	void ActiveCameraChanged();
 	
 	/** \brief Editor or NULL. */
-	inline meViewEditor *GetEditor() const{return pEditor;}
+	inline meViewEditor *GetEditor() const{ return pEditor; }
 	/*@}*/
 };
 

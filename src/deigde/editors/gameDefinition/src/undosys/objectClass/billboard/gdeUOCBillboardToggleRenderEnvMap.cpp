@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCBillboardToggleRenderEnvMap::~gdeUOCBillboardToggleRenderEnvMap(){
 ///////////////
 
 void gdeUOCBillboardToggleRenderEnvMap::Undo(){
-	pBillboard->SetRenderEnvMap(! pBillboard->GetRenderEnvMap());
+	pBillboard->SetRenderEnvMap(!pBillboard->GetRenderEnvMap());
 	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 

@@ -86,7 +86,7 @@ void deClassLanguagePack::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myse
 	}
 	
 	sLPNatDat &nd = *((sLPNatDat*)p_GetNativeData(myself));
-	if(! nd.langPack){
+	if(!nd.langPack){
 		return;
 	}
 	
@@ -226,7 +226,7 @@ void deClassLanguagePack::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLanguagePack * const clsLP = (deClassLanguagePack*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsLP)){
+	if(!p_IsObjOfType(obj, clsLP)){
 		rt->PushBool(false);
 		
 	}else{
@@ -292,7 +292,7 @@ void deClassLanguagePack::CreateClassMembers(dsEngine *engine){
 }
 
 deLanguagePack *deClassLanguagePack::GetLanguagePack(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -300,11 +300,11 @@ deLanguagePack *deClassLanguagePack::GetLanguagePack(dsRealObject *myself) const
 }
 
 void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPack){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! langPack){
+	if(!langPack){
 		rt->PushObject(NULL, this);
 		return;
 	}

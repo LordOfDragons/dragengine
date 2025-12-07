@@ -87,7 +87,7 @@ void deClassMemoryFile::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// check arguments
 	const decMemoryFile * const copyMemoryFile = clsMemFile.GetMemoryFile(rt->GetValue(0)->GetRealObject());
-	if(! copyMemoryFile){
+	if(!copyMemoryFile){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -262,18 +262,18 @@ void deClassMemoryFile::CreateClassMembers(dsEngine *engine){
 }
 
 decMemoryFile *deClassMemoryFile::GetMemoryFile(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((const sMemFileNatDat *)p_GetNativeData(myself->GetBuffer()))->memoryFile;
 }
 
 void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! memoryFile){
+	if(!memoryFile){
 		rt->PushObject(NULL, this);
 		return;
 	}

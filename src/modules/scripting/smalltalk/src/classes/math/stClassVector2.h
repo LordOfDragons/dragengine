@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline ScriptingSmalltalk &GetST() const{return pST;}
+	inline ScriptingSmalltalk &GetST() const{ return pST; }
 	
 	
 	

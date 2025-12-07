@@ -139,10 +139,10 @@ public:
 	/** \name Building */
 	/*@{*/
 	/** \brief Octree position in world coordinates. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Octree half extends in world coordinates. */
-	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
+	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
 	/**
 	 * \brief Begin building octree.
@@ -174,16 +174,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit nodes array. */
-	inline const sVisitNode *GetVisitNodes() const{return pVisitNodes;}
+	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes; }
 	
 	/** \brief Visit node count. */
-	inline int GetVisitNodeCount() const{return pVisitNodeCount;}
+	inline int GetVisitNodeCount() const{ return pVisitNodeCount; }
 	
 	/** \brief Visit components array. */
-	inline const sVisitComponent *GetVisitComponents() const{return pVisitComponents;}
+	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents; }
 	
 	/** \brief Visit component count. */
-	inline int GetVisitComponentCount() const{return pVisitComponentCount;}
+	inline int GetVisitComponentCount() const{ return pVisitComponentCount; }
 	/*@}*/
 	
 	

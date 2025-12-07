@@ -65,7 +65,7 @@ deoglRComponent *deoglComponentSet::GetAt(int index) const{
 }
 
 int deoglComponentSet::IndexOfComponent(deoglRComponent *component) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -81,7 +81,7 @@ int deoglComponentSet::IndexOfComponent(deoglRComponent *component) const{
 }
 
 bool deoglComponentSet::Has(deoglRComponent *component) const{
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,7 +191,7 @@ void deoglComponentSet::pAddComponent(deoglRComponent *component){
 	if(pComponentCount == pComponentSize){
 		int newSize = pComponentCount + 10; // * 3 / 2 + 1;
 		deoglRComponent **newArray = new deoglRComponent*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pComponents){
 			memcpy(newArray, pComponents, sizeof(deoglRComponent*) * pComponentSize);

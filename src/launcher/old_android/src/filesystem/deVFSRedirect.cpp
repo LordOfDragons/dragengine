@@ -48,7 +48,7 @@ pContainer(container),
 pVFS(NULL),
 pHoldVFSReference(false)
 {
-	if(! container){
+	if(!container){
 		DETHROW(deeInvalidParam);
 	}
 	container->AddReference();
@@ -62,7 +62,7 @@ pContainer(NULL),
 pVFS(vfs),
 pHoldVFSReference(false)
 {
-	if(! vfs){
+	if(!vfs){
 		DETHROW(deeInvalidParam);
 	}
 	

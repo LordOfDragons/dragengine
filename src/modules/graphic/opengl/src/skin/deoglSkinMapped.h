@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Skin mapped. */
-	const deSkinMapped &GetMapped() const{return pMapped;}
+	const deSkinMapped &GetMapped() const{ return pMapped; }
 	
 	/** Set renderable index. */
 	void SetRenderable(int renderable);

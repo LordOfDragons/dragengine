@@ -60,8 +60,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){return pList;}
-	inline const decObjectList &GetList() const{return pList;}
+	inline decObjectList &GetList(){ return pList; }
+	inline const decObjectList &GetList() const{ return pList; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

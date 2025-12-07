@@ -59,7 +59,7 @@ igdeGDSkyManager::~igdeGDSkyManager(){
 ///////////////
 
 void igdeGDSkyManager::AddSky(igdeGDSky *sky){
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	pSkyList.Add(sky);
@@ -147,7 +147,7 @@ void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 	pCategories->UpdateWith(manager.pCategories);
 	pAutoFindPath = manager.pAutoFindPath;
 	
-	if(! manager.pDefaultPath.IsEmpty()){
+	if(!manager.pDefaultPath.IsEmpty()){
 		pDefaultPath = manager.pDefaultPath;
 	}
 }
@@ -187,7 +187,7 @@ public:
 	}
 	
 	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
-		if(! path.GetLastComponent().MatchesPattern(pPattern)){
+		if(!path.GetLastComponent().MatchesPattern(pPattern)){
 			return true;
 		}
 		

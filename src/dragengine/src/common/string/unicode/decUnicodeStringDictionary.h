@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of entries in the dictionary. */
-	inline int GetCount() const{return pEntryCount;}
+	inline int GetCount() const{ return pEntryCount; }
 	
 	/** \brief Determines if a key is located in the dictionary. */
 	bool Has(const decUnicodeString &key) const;

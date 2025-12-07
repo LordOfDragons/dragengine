@@ -78,23 +78,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Data type size. */
-	inline int GetDataTypeSize() const{return pDataTypeSize;}
+	inline int GetDataTypeSize() const{ return pDataTypeSize; }
 	
 	/** TBO. */
-	inline GLuint GetTBO() const{return pTBO;}
+	inline GLuint GetTBO() const{ return pTBO; }
 	
 	/** Data. */
-	inline uint8_t *GetData(){return pData;}
-	inline const uint8_t *GetData() const{return pData;}
+	inline uint8_t *GetData(){ return pData; }
+	inline const uint8_t *GetData() const{ return pData; }
 	
 	/** Count of data entries. */
-	inline int GetDataCount() const{return pDataCount;}
+	inline int GetDataCount() const{ return pDataCount; }
 	
 	/** Increase count of entries. New entries have undefined content. */
 	void IncreaseDataCount(int byAmount);
@@ -130,7 +130,7 @@ public:
 	void Update(int offset, int count);
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumption() const{return pMemUse;}
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Debug print. */
 	virtual void DebugPrint() = 0;

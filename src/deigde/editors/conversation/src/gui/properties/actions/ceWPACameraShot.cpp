@@ -78,7 +78,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetName()){
+		if(!topic || !action  || comboBox->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -97,7 +97,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		const float duration = textField->GetFloat();
-		if(! topic || ! action || fabsf(duration - action->GetDuration()) < FLOAT_SAFE_EPSILON){
+		if(!topic || !action || fabsf(duration - action->GetDuration()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetCameraTarget()){
+		if(!topic || !action  || comboBox->GetText() == action->GetCameraTarget()){
 			return;
 		}
 		
@@ -133,7 +133,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if(! topic || ! action  || comboBox->GetText() == action->GetLookAtTarget()){
+		if(!topic || !action  || comboBox->GetText() == action->GetLookAtTarget()){
 			return;
 		}
 		
@@ -247,7 +247,7 @@ void ceWPACameraShot::UpdateTargetList(){
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! list.GetAt(i)->GetName().IsEmpty()){
+			if(!list.GetAt(i)->GetName().IsEmpty()){
 				pCBCameraTarget->AddItem(list.GetAt(i)->GetName());
 				pCBLookAtTarget->AddItem(list.GetAt(i)->GetName());
 			}

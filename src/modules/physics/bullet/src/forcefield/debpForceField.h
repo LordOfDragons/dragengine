@@ -70,18 +70,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline dePhysicsBullet &GetBullet() const{return pBullet;}
+	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
 	/** \brief Force field engine resource. */
-	inline const deForceField &GetForceField() const{return pForceField;}
+	inline const deForceField &GetForceField() const{ return pForceField; }
 	
 	
 	
 	/** \brief Force field direction vector. */
-	inline const decVector &GetDirection() const{return pDirection;}
+	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Vortex matrix. */
-	inline const decMatrix &GetVortexMatrix() const{return pVortexMatrix;}
+	inline const decMatrix &GetVortexMatrix() const{ return pVortexMatrix; }
 	
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Vortices */
 	/*@{*/
 	/** \brief Number of vortices. */
-	inline int GetVortexCount() const{return pVortexCount;}
+	inline int GetVortexCount() const{ return pVortexCount; }
 	
 	/** \brief Vortex at the given index. */
 	debpFFVortex *GetVortexAt(int index) const;

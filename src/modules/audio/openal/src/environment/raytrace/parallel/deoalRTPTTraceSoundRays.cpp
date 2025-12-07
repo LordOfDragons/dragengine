@@ -640,7 +640,7 @@ const sTraceAbsorptionSum &absorptionSum){
 	}
 	
 	// ray hits nothing and ends
-	if(! hitElement){
+	if(!hitElement){
 		const decDVector rayPosition(ray.position + scaledDirection);
 		pUpdateExtends(rayPosition);
 		DetectRayOutside(ray, rayPosition);
@@ -832,30 +832,30 @@ const sTraceAbsorptionSum &absorptionSum){
 		// compare to found
 		bool matching = true;
 		if(e1){
-			if(! hitElement
+			if(!hitElement
 			|| e1->GetForwardFacing() != hitElement->GetForwardFacing()
-			|| ! e1->GetPoint().IsEqualTo(hitElement->GetPoint(), 1e3f)){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching! (maxThick=%.3f)",
+			|| !e1->GetPoint().IsEqualTo(hitElement->GetPoint(), 1e3f)){
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching!(maxThick=%.3f)",
 					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}
 		}else if(hitElement){
-			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching! (maxThick=%.3f)",
+			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching!(maxThick=%.3f)",
 				pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 			matching = false;
 		}
 		
 		if(ray.transmissions < pMaxTransmitCount && maxThickness > 0.01f){
 			if(e2 && (e2->GetPoint() - e1->GetPoint()).Length() <= maxThickness){
-				if(! hitElementBack
+				if(!hitElementBack
 				|| e2->GetForwardFacing() != hitElementBack->GetForwardFacing()
-				|| ! e2->GetPoint().IsEqualTo(hitElementBack->GetPoint(), 1e3f)){
-					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(+) Not Matching! (maxThick=%.3f)",
+				|| !e2->GetPoint().IsEqualTo(hitElementBack->GetPoint(), 1e3f)){
+					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(+) Not Matching!(maxThick=%.3f)",
 						pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 					matching = false;
 				}
 			}else if(hitElementBack){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(-) Not Matching! (maxThick=%.3f)",
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(-) Not Matching!(maxThick=%.3f)",
 					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}

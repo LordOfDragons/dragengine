@@ -75,7 +75,7 @@ meHTVRuleClosestVegetation::~meHTVRuleClosestVegetation(){
 ///////////////
 
 void meHTVRuleClosestVegetation::SetVegetationType(const char *vegetationType){
-	if(! vegetationType) DETHROW(deeInvalidParam);
+	if(!vegetationType) DETHROW(deeInvalidParam);
 	
 	pVegetationType = vegetationType;
 	
@@ -89,7 +89,7 @@ void meHTVRuleClosestVegetation::SetSearchRadius(float searchRadius){
 }
 
 void meHTVRuleClosestVegetation::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	

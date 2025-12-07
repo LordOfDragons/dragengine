@@ -108,7 +108,7 @@ public:
 	static decPath RelativePathNative(const char *path, const char *baseDirectory, bool onlyBelow = false);
 	
 	/** \brief Path prefix. */
-	inline const decString &GetPrefix() const{return pPrefix;}
+	inline const decString &GetPrefix() const{ return pPrefix; }
 	
 	/**
 	 * \brief Set path prefix.

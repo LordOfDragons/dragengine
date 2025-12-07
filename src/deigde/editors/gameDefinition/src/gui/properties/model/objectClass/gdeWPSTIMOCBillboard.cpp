@@ -52,7 +52,7 @@ gdeWPSTIMOCBillboard::gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass
 gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index),
 pBillboard(NULL)
 {
-	if(! billboard){
+	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,8 +86,8 @@ void gdeWPSTIMOCBillboard::Validate(){
 bool gdeWPSTIMOCBillboard::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pBillboard->GetSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pBillboard->GetSkinPath()))){
+	if(!pBillboard->GetSkinPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pBillboard->GetSkinPath()))){
 		return false;
 	}
 	

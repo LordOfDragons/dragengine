@@ -41,7 +41,7 @@
 ////////////////////////////
 
 saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
-	if(! sanimation || ! word) DETHROW(deeInvalidParam);
+	if(!sanimation || !word) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	pWord = NULL;

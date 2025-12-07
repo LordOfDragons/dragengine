@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -90,7 +90,7 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** \brief Browser panel. */
-	inline meWPBrowser &GetBrowser() const{return *pPropBrowser;}
+	inline meWPBrowser &GetBrowser() const{ return *pPropBrowser; }
 	
 	/** \brief Switch to browser panel. */
 	void SwitchToBrowser();

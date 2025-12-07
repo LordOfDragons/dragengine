@@ -152,7 +152,7 @@ void deoglTextureStageManager::EnableTBO(int stage, GLuint tbo, deoglTexSamplerC
 
 void deoglTextureStageManager::EnableSkin(int stage, const deoglRSkin &skin, int texture,
 deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig){
-	if(stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || ! defaultTexture){
+	if(stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || !defaultTexture){
 		DETHROW(deeInvalidParam);
 	}
 	

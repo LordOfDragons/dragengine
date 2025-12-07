@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSModEnableSize::aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleSModEnableSize::~aeUSetRuleSModEnableSize(){
 ///////////////
 
 void aeUSetRuleSModEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeUSetRuleSModEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

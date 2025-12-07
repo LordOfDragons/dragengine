@@ -45,12 +45,12 @@ pProperty(NULL),
 pOldContent(NULL),
 pNewContent(NULL)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const deImage * const image = property->GetEngineImage();
-	if(! image){
+	if(!image){
 		DETHROW(deeInvalidParam);
 	}
 	

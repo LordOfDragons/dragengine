@@ -86,24 +86,24 @@ public:
 	debpColliderVolume(dePhysicsBullet *bullet, deColliderVolume &collider);
 	~debpColliderVolume();
 	// information
-	inline const decVector &GetPredictedDisplacement() const{return pPredictDisp;}
-	inline const decVector &GetPredictedRotation() const{return pPredictRot;}
+	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
+	inline const decVector &GetPredictedRotation() const{ return pPredictRot; }
 	// physics management
-	inline deColliderVolume &GetColliderVolume() const{return pColliderVolume;}
+	inline deColliderVolume &GetColliderVolume() const{ return pColliderVolume; }
 	
 	/** Retrieves the list of shapes. */
-	inline debpShapeList &GetShapes(){return pShapes;}
-	inline const debpShapeList &GetShapes() const{return pShapes;}
+	inline debpShapeList &GetShapes(){ return pShapes; }
+	inline const debpShapeList &GetShapes() const{ return pShapes; }
 	
 	/** Retrieves the physics body. */
-	inline debpPhysicsBody *GetPhysicsBody() const{return pPhyBody;}
+	inline debpPhysicsBody *GetPhysicsBody() const{ return pPhyBody; }
 	/** Determines if the collider has to be simulated using fake dynamics. */
-	inline bool GetUseFakeDynamics() const{return pUseFakeDynamics;}
+	inline bool GetUseFakeDynamics() const{ return pUseFakeDynamics; }
 	
 	/** Retrieves the gravity. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	/** Retrieves the linear velocity. */
-	inline const decVector &GetLinearVelocity() const{return pLinVelo;}
+	inline const decVector &GetLinearVelocity() const{ return pLinVelo; }
 	
 	/** \brief Mark shapes dirty. */
 	void DirtyBPShape();
@@ -146,9 +146,9 @@ public:
 	bool PrepareStaticCollisionTest() override;
 	
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Create physics body if not existing already. */
 	void CreateBody() override;

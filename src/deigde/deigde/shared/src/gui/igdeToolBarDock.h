@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Side. */
-	inline eSide GetSide() const{return pSide;}
+	inline eSide GetSide() const{ return pSide; }
 	/*@}*/
 	
 	

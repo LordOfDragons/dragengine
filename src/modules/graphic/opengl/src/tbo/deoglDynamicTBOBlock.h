@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shared TBO containing block or NULL. */
-	inline deoglDynamicTBOShared *GetSharedTBO() const{return pSharedTBO;}
+	inline deoglDynamicTBOShared *GetSharedTBO() const{ return pSharedTBO; }
 	
 	/** Drop shared TBO. */
 	void DropSharedTBO();
@@ -82,26 +82,26 @@ public:
 	 * Offset to block measured in units.
 	 * \warning Can potentially change during block lifetime.
 	 */
-	inline int GetOffset() const{return pOffset;}
+	inline int GetOffset() const{ return pOffset; }
 	
 	/** Set offset to block measured in units. */
 	void SetOffset(int offset);
 	
 	/** Size of block in units. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** Set size of block in units. Also sets data TBO to NULL. */
 	void SetSize(int size);
 	
 	/** TBO containing the data to use for the block or NULL if empty. */
-	inline const deoglDynamicTBO::Ref &GetData() const{return pData;}
-	inline const deoglDynamicTBO::Ref &GetData2() const{return pData2;}
+	inline const deoglDynamicTBO::Ref &GetData() const{ return pData; }
+	inline const deoglDynamicTBO::Ref &GetData2() const{ return pData2; }
 	
 	/** Set TBO containing the data to use for the block or NULL if empty. */
 	void SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
 	
 	/** Block is empty. */
-	inline bool GetEmpty() const{return pEmpty;}
+	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
 	void SetEmpty(bool empty);

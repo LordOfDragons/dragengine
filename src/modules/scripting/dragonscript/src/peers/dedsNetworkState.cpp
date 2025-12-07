@@ -48,7 +48,7 @@ pNetworkState(state),
 pValCB(NULL),
 pHasCB(false)
 {
-	if(! state){
+	if(!state){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -56,7 +56,7 @@ pHasCB(false)
 }
 
 dedsNetworkState::~dedsNetworkState(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -81,7 +81,7 @@ dedsNetworkState::~dedsNetworkState(){
 //////////////////
 
 void dedsNetworkState::StateValueChanged(int index){
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ dsRealObject *dedsNetworkState::GetCallback() const{
 }
 
 void dedsNetworkState::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	

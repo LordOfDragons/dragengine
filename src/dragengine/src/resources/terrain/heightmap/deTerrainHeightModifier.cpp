@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage){
-	if(! heightImage) DETHROW(deeInvalidParam);
+	if(!heightImage) DETHROW(deeInvalidParam);
 	
 	pScaling = 1.0f;
 	

@@ -120,7 +120,7 @@ void deoglROcclusionMesh::PrepareVBOBlock(){
 }
 
 deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
-	if(! pSharedSPBListUBO){
+	if(!pSharedSPBListUBO){
 		pSharedSPBListUBO = new deoglSharedSPBListUBO(pRenderThread,
 			pRenderThread.GetBufferObject().GetLayoutOccMeshInstanceUBO());
 	}
@@ -368,7 +368,7 @@ void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
 }
 
 void deoglROcclusionMesh::pWriteVBOData(){
-	if(! pVBOBlock){
+	if(!pVBOBlock){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 aeURuleTargetRemoveLink::aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
-	if(! rule || ! target || ! link) DETHROW(deeInvalidParam);
+	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pTarget = NULL;

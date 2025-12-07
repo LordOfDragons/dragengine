@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newTypeNumber){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTexture = texture;
 	

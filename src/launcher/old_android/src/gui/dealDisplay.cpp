@@ -126,7 +126,7 @@ void dealDisplay::Init(){
 			DETHROW(deeInvalidParam);
 		}
 		
-		if(! eglInitialize(pDisplay, 0, 0)){
+		if(!eglInitialize(pDisplay, 0, 0)){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -142,7 +142,7 @@ void dealDisplay::Init(){
 			EGL_NONE
 		};
 		EGLint configCount;
-		if(! eglChooseConfig(pDisplay, attribs, &pConfig, 1, &configCount)){
+		if(!eglChooseConfig(pDisplay, attribs, &pConfig, 1, &configCount)){
 			DETHROW(deeInvalidParam);
 		}
 		if(configCount == 0){
@@ -164,7 +164,7 @@ void dealDisplay::Init(){
 		
 		// set buffer geometry
 		EGLint format;
-		if(! eglGetConfigAttrib(pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format)){
+		if(!eglGetConfigAttrib(pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format)){
 			DETHROW(deeInvalidParam);
 		}
 		if(ANativeWindow_setBuffersGeometry(pLauncher.GetAndroidApp().window, 0, 0, format)){
@@ -196,10 +196,10 @@ void dealDisplay::Init(){
 	}
 	
 	// query display parameters
-	if(! eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pWidth)){
+	if(!eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pWidth)){
 		DETHROW(deeInvalidParam);
 	}
-	if(! eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pHeight)){
+	if(!eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pHeight)){
 		DETHROW(deeInvalidParam);
 	}
 	pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "Display size %ix%i", pWidth, pHeight);
@@ -223,7 +223,7 @@ void dealDisplay::Init(){
 	}
 	
 	// create content widget
-	if(! pContent){
+	if(!pContent){
 		pContent = new dealWidgetLayout(*this);
 		pContent->SetSize(decPoint(pWidth, pHeight));
 		pContent->SetBackgroundColor(decColor());
@@ -347,7 +347,7 @@ void dealDisplay::Paint(){
 }
 
 void dealDisplay::ActivateVBOShapes(){
-	if(! pVBOShapes){
+	if(!pVBOShapes){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -458,7 +458,7 @@ void dealDisplay::pCreateShapesVBO(){
 	
 	// create vbo
 	OGL_CHECK(pLauncher, glGenBuffers(1, &pVBOShapes));
-	if(! pVBOShapes){
+	if(!pVBOShapes){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(pLauncher, glBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));

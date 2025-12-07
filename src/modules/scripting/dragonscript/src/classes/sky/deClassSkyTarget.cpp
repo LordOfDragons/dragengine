@@ -196,7 +196,7 @@ void deClassSkyTarget::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyTarget)){
+	if(!p_IsObjOfType(obj, clsSkyTarget)){
 		rt->PushBool(false);
 		
 	}else{
@@ -266,7 +266,7 @@ void deClassSkyTarget::CreateClassMembers(dsEngine *engine){
 
 void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky *sky, int layer,
 deSkyLayer::eTargets target){
-	if(! rt || ! sky || layer < 0 || layer >= sky->GetLayerCount()
+	if(!rt || !sky || layer < 0 || layer >= sky->GetLayerCount()
 	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
 		DSTHROW(dueInvalidParam);
 	}

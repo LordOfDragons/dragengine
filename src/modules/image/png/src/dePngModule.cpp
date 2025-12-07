@@ -124,7 +124,7 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		// create infos object
 		infos = new dePngImageInfo(file.GetFilename());
-		if(! infos) DETHROW(deeOutOfMemory);
+		if(!infos) DETHROW(deeOutOfMemory);
 		
 		infos->feedback.module = this;
 		infos->feedback.filename = file.GetFilename();
@@ -132,10 +132,10 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 		// create structures
 		infos->readStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&infos->feedback,
 			(png_error_ptr)depngError, (png_error_ptr)depngWarning, NULL, NULL, NULL);
-		if(! infos->readStruct) DETHROW(deeOutOfMemory);
+		if(!infos->readStruct) DETHROW(deeOutOfMemory);
 		
 		infos->infoStruct = png_create_info_struct(infos->readStruct);
-		if(! infos->infoStruct) DETHROW(deeOutOfMemory);
+		if(!infos->infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
 		png_set_read_fn(infos->readStruct, (png_voidp)&file, (png_rw_ptr)depngRead);
@@ -255,7 +255,7 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	try{
 		// build rows array
 		rows = new png_bytep[height];
-		if(! rows) DETHROW(deeOutOfMemory);
+		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);
@@ -337,10 +337,10 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		// create structures
 		writeStruct = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)&feedback,
 			(png_error_ptr)depngError, (png_error_ptr)depngWarning, NULL, NULL, NULL);
-		if(! writeStruct) DETHROW(deeOutOfMemory);
+		if(!writeStruct) DETHROW(deeOutOfMemory);
 		
 		infoStruct = png_create_info_struct(writeStruct);
-		if(! infoStruct) DETHROW(deeOutOfMemory);
+		if(!infoStruct) DETHROW(deeOutOfMemory);
 		
 		// change callbacks
 		png_set_write_fn(writeStruct, (png_voidp)&file, (png_rw_ptr)depngWrite, (png_flush_ptr)depngFlush);
@@ -376,7 +376,7 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		
 		// build rows array
 		rows = new png_bytep[height];
-		if(! rows) DETHROW(deeOutOfMemory);
+		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);

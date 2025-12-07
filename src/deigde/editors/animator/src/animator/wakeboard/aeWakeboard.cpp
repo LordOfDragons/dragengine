@@ -62,7 +62,7 @@
 ////////////////////////////
 
 aeWakeboard::aeWakeboard(aeAnimator *animator){
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -164,7 +164,7 @@ void aeWakeboard::SetEnabled(bool enabled){
 
 
 void aeWakeboard::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		pEngComponent->SetPosition(position);

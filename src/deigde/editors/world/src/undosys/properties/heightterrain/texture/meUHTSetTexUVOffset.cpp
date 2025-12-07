@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset){
-	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;

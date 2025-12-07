@@ -56,11 +56,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
-	inline deoglShape *GetShape() const{return pShape;}
+	inline deoglShape *GetShape() const{ return pShape; }
 	/** Retrieves the first matrix. */
-	inline const decMatrix &GetMatrix1() const{return pMatrix1;}
+	inline const decMatrix &GetMatrix1() const{ return pMatrix1; }
 	/** Retrieves the second matrix. */
-	inline const decMatrix &GetMatrix2() const{return pMatrix2;}
+	inline const decMatrix &GetMatrix2() const{ return pMatrix2; }
 	
 	/** Resets the visitor. */
 	void Reset();

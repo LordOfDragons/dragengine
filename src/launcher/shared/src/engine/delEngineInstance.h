@@ -105,16 +105,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline delLauncher &GetLauncher() const{return pLauncher;}
+	inline delLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Log file. */
-	inline const decString &GetLogFile() const{return pLogFile;}
+	inline const decString &GetLogFile() const{ return pLogFile; }
 	
 	/** \brief Set log file. */
 	void SetLogFile(const decString &logFile);
 	
 	/** \brief Use console. */
-	inline bool GetUseConsole() const{return pUseConsole;}
+	inline bool GetUseConsole() const{ return pUseConsole; }
 	
 	/** \brief Set use console. */
 	void SetUseConsole(bool useConsole);

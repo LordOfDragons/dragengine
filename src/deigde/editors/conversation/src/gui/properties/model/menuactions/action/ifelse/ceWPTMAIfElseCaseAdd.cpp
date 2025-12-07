@@ -85,18 +85,18 @@ void ceWPTMAIfElseCaseAdd::OnAction(){
 	}
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if(! wptopic.GetActionTreeModel()){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
 	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	
 	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild(selectIfCase);
-	if(! modelIfCase){
+	if(!modelIfCase){
 		return;
 	}
 	

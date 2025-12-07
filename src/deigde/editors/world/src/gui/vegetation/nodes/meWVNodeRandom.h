@@ -60,7 +60,7 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleRandom *GetRuleRandom() const{return pRuleRandom;}
+	inline meHTVRuleRandom *GetRuleRandom() const{ return pRuleRandom; }
 	
 	/** \brief Update node. */
 	virtual void Update();

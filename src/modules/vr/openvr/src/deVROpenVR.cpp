@@ -101,28 +101,28 @@ deVROpenVR::~deVROpenVR(){
 ///////////////
 
 vr::IVRSystem &deVROpenVR::GetVRSystem() const{
-	if(! pVRSystem){
+	if(!pVRSystem){
 		DETHROW(deeInvalidAction);
 	}
 	return *pVRSystem;
 }
 
 vr::IVRInput &deVROpenVR::GetVRInput() const{
-	if(! pVRInput){
+	if(!pVRInput){
 		DETHROW(deeInvalidAction);
 	}
 	return *pVRInput;
 }
 
 vr::IVRRenderModels &deVROpenVR::GetVRRenderModels() const{
-	if(! pVRRenderModels){
+	if(!pVRRenderModels){
 		DETHROW(deeInvalidAction);
 	}
 	return *pVRRenderModels;
 }
 
 vr::IVRCompositor & deVROpenVR::GetVRCompositor() const{
-	if(! pVRCompositor){
+	if(!pVRCompositor){
 		DETHROW(deeInvalidAction);
 	}
 	return *pVRCompositor;
@@ -171,7 +171,7 @@ decMatrix deVROpenVR::ConvertMatrix(const vr::HmdMatrix34_t &matrix) const{
 }
 
 void deVROpenVR::CopyDevicesPoses(vr::TrackedDevicePose_t *poses){
-	if(! poses){
+	if(!poses){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -234,7 +234,7 @@ void deVROpenVR::StartRuntime(){
 	if(pVRSystem){
 		return;
 	}
-	if(! pRuntimeInstalled){
+	if(!pRuntimeInstalled){
 		DETHROW_INFO(deeInvalidAction, "runtime not found");
 	}
 	
@@ -247,7 +247,7 @@ void deVROpenVR::StartRuntime(){
 		vr::HmdError error = vr::VRInitError_None;
 		pVRSystem = vr::VR_Init(&error, vr::VRApplication_Scene);
 		
-		if(! pVRSystem || error != vr::VRInitError_None){
+		if(!pVRSystem || error != vr::VRInitError_None){
 			LogErrorFormat("Failed starting runtime: %s", vr::VR_GetVRInitErrorAsSymbol(error));
 			DETHROW_INFO(deeInvalidAction, "Failed starting runtime");
 		}
@@ -352,7 +352,7 @@ void deVROpenVR::StartRuntime(){
 }
 
 void deVROpenVR::StopRuntime(){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return;
 	}
 	
@@ -498,7 +498,7 @@ bool withController, deInputDevicePose &pose){
 ///////////
 
 void deVROpenVR::ProcessEvents(){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return;
 	}
 	
@@ -613,7 +613,7 @@ void deVROpenVR::ProcessEvents(){
 ////////////////////////////
 
 decPoint deVROpenVR::GetRenderSize(){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return decPoint(1024, 1024);
 	}
 	
@@ -631,7 +631,7 @@ deBaseVRModule::eVRRenderFormat deVROpenVR::GetRenderFormat(){
 }
 
 void deVROpenVR::GetProjectionParameters(eEye eye, float &left, float &right, float &top, float &bottom){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		switch(eye){
 		case deBaseVRModule::evreLeft:
 			left = -1.39863f;
@@ -654,7 +654,7 @@ void deVROpenVR::GetProjectionParameters(eEye eye, float &left, float &right, fl
 }
 
 decMatrix deVROpenVR::GetMatrixViewEye(eEye eye){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		switch(eye){
 		case deBaseVRModule::evreLeft:
 			return decMatrix::CreateTranslation(0.0303, 0, 0.015);
@@ -670,19 +670,19 @@ decMatrix deVROpenVR::GetMatrixViewEye(eEye eye){
 }
 
 deModel *deVROpenVR::GetHiddenArea(eEye eye){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return nullptr;
 	}
 	
 	switch(eye){
 	case deBaseVRModule::evreLeft:
-		if(! pHiddenMeshLeftEye){
+		if(!pHiddenMeshLeftEye){
 			pHiddenMeshLeftEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Left));
 		}
 		return pHiddenMeshLeftEye->GetModel();
 		
 	case deBaseVRModule::evreRight:
-		if(! pHiddenMeshRightEye){
+		if(!pHiddenMeshRightEye){
 			pHiddenMeshRightEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Right));
 		}
 		return pHiddenMeshRightEye->GetModel();
@@ -701,7 +701,7 @@ void deVROpenVR::StartBeginFrame(){
 }
 
 void deVROpenVR::WaitBeginFrameFinished(){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return;
 	}
 	
@@ -716,7 +716,7 @@ void deVROpenVR::WaitBeginFrameFinished(){
 
 void deVROpenVR::SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return;
 	}
 	
@@ -748,7 +748,7 @@ const decVector2 &tcTo, bool distortionApplied){
 }
 
 void deVROpenVR::EndFrame(){
-	if(! pVRSystem){
+	if(!pVRSystem){
 		return;
 	}
 	

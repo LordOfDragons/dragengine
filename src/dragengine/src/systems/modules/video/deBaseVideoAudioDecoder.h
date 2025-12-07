@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File reader. */
-	inline decBaseFileReader *GetFile() const{return pFile;}
+	inline decBaseFileReader *GetFile() const{ return pFile; }
 	
 	/** \brief File position in samples from the beginning. */
 	virtual int GetPosition() = 0;

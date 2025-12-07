@@ -255,7 +255,7 @@ bool dealGameProfile::VerifyModule(dealLauncher &launcher, const char *moduleNam
 		module = moduleList.GetModuleNamed(moduleName, moduleVersion);
 	}
 	
-	if(! module){
+	if(!module){
 		return false;
 	}
 	if(module->GetType() != requiredType){
@@ -280,38 +280,38 @@ void dealGameProfile::Activate(dealLauncher &launcher) const{
 		const dealGPDisableModuleVersion &version = *pDisableModuleVersionList.GetAt(i);
 		dealEngineModule * const module = engineModuleList.GetModuleNamed(version.GetName(), version.GetVersion());
 		if(module){
-			if(! engineInstance.EnableModule(module->GetName(), module->GetVersion(), false)){
+			if(!engineInstance.EnableModule(module->GetName(), module->GetVersion(), false)){
 				DETHROW(deeInvalidAction);
 			}
 		}
 	}
 	
 	// activate modules
-	if(! engineInstance.ActivateModule(pModuleCrashRecovery, pModuleCrashRecoveryVersion)){
+	if(!engineInstance.ActivateModule(pModuleCrashRecovery, pModuleCrashRecoveryVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleGraphic, pModuleGraphicVersion)){
+	if(!engineInstance.ActivateModule(pModuleGraphic, pModuleGraphicVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleInput, pModuleInputVersion)){
+	if(!engineInstance.ActivateModule(pModuleInput, pModuleInputVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModulePhysics, pModulePhysicsVersion)){
+	if(!engineInstance.ActivateModule(pModulePhysics, pModulePhysicsVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleAnimator, pModuleAnimatorVersion)){
+	if(!engineInstance.ActivateModule(pModuleAnimator, pModuleAnimatorVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleAI, pModuleAIVersion)){
+	if(!engineInstance.ActivateModule(pModuleAI, pModuleAIVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleAudio, pModuleAudioVersion)){
+	if(!engineInstance.ActivateModule(pModuleAudio, pModuleAudioVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleSynthesizer, pModuleSynthesizerVersion)){
+	if(!engineInstance.ActivateModule(pModuleSynthesizer, pModuleSynthesizerVersion)){
 		DETHROW(deeInvalidAction);
 	}
-	if(! engineInstance.ActivateModule(pModuleNetwork, pModuleNetworkVersion)){
+	if(!engineInstance.ActivateModule(pModuleNetwork, pModuleNetworkVersion)){
 		DETHROW(deeInvalidAction);
 	}
 	

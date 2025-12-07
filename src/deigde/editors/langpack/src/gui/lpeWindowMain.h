@@ -103,35 +103,35 @@ public:
 	//inline igdeIcon* GetIconLangPackNew() const{ return pIconLangPackNew; }
 	
 	/** Actions. */
-	inline igdeAction *GetActionLangPackNew() const{return pActionLangPackNew;}
-	inline igdeAction *GetActionLangPackOpen() const{return pActionLangPackOpen;}
-	inline igdeAction *GetActionLangPackSave() const{return pActionLangPackSave;}
-	inline igdeAction *GetActionLangPackSaveAs() const{return pActionLangPackSaveAs;}
-	inline igdeAction *GetActionLangPackOpenRef() const{return pActionLangPackOpenRef;}
-	inline igdeAction *GetActionEntryAdd() const{return pActionEntryAdd;}
-	inline igdeAction *GetActionEntryRemove() const{return pActionEntryRemove;}
-	inline igdeAction *GetActionEntryNextMissing() const{return pActionEntryNextMissing;}
+	inline igdeAction *GetActionLangPackNew() const{ return pActionLangPackNew; }
+	inline igdeAction *GetActionLangPackOpen() const{ return pActionLangPackOpen; }
+	inline igdeAction *GetActionLangPackSave() const{ return pActionLangPackSave; }
+	inline igdeAction *GetActionLangPackSaveAs() const{ return pActionLangPackSaveAs; }
+	inline igdeAction *GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
+	inline igdeAction *GetActionEntryAdd() const{ return pActionEntryAdd; }
+	inline igdeAction *GetActionEntryRemove() const{ return pActionEntryRemove; }
+	inline igdeAction *GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
-	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
-	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
-	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
-	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
+	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
+	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
+	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
+	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
+	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
 	
 	/** Configuration. */
-	inline lpeConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline lpeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	
 	/** Load save system. */
-	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Language pack. */
-	inline lpeLangPack *GetLangPack() const{return pLangPack;}
+	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack. */
 	void SetLangPack(lpeLangPack *langpack);

@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
@@ -82,10 +82,10 @@ public:
 	int GetSourceCount() const;
 	
 	/** \brief Number of bound sources. */
-	inline int GetCountBound() const{return pCountBound;}
+	inline int GetCountBound() const{ return pCountBound; }
 	
 	/** \brief Number of unbound sources. */
-	inline int GetCountUnbound() const{return pCountUnbound;}
+	inline int GetCountUnbound() const{ return pCountUnbound; }
 	
 	/** \brief Managed source by index for debug purpose. */
 	deoalSource *GetSourceAt(int index) const;

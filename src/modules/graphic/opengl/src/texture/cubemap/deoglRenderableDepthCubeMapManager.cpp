@@ -74,18 +74,18 @@ deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith(
 	
 	// find the cubemap with the matching format
 	for(i=0; i<pCubeMapCount; i++){
-		if(! pCubeMaps[i]->GetInUse() && pCubeMaps[i]->Matches(size, useFloat)){
+		if(!pCubeMaps[i]->GetInUse() && pCubeMaps[i]->Matches(size, useFloat)){
 			cubemap = pCubeMaps[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if(! cubemap){
+	if(!cubemap){
 		if(pCubeMapCount == pCubeMapSize){
 			int newSize = pCubeMapSize * 3 / 2 + 1;
 			deoglRenderableDepthCubeMap **newArray = new deoglRenderableDepthCubeMap*[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pCubeMaps){
 				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableDepthCubeMap*) * pCubeMapSize);
 				delete [] pCubeMaps;

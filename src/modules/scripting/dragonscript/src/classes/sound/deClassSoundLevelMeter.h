@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -68,7 +68,7 @@ public:
 	/** \brief Push sound level meter or NULL onto the stack. */
 	void PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter);
 	
-	inline dsClass *GetClassSoundLevelMeterType() const{return pClsSoundLevelMeterType;}
+	inline dsClass *GetClassSoundLevelMeterType() const{ return pClsSoundLevelMeterType; }
 	/*@}*/
 	
 	

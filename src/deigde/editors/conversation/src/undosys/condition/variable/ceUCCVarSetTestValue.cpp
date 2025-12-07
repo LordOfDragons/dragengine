@@ -44,7 +44,7 @@
 
 ceUCCVarSetTestValue::ceUCCVarSetTestValue(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionVariable *condition, int newValue){
-	if(! topic || ! action || ! condition) DETHROW(deeInvalidParam);
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

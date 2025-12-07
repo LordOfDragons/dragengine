@@ -92,7 +92,7 @@ pStreamDataSize(0),
 	pStreaming(true)
 {
 	pDetermineValid();
-	if(! pValid){
+	if(!pValid){
 		return;
 	}
 	
@@ -164,18 +164,18 @@ void desynSound::LoadEntireSound(){
 void desynSound::Prepare(){
 	// for the time being streaming is not supported. this has to be fixed
 	if(pStreaming){
-		if(! pStreamData){
+		if(!pStreamData){
 			LoadEntireSound();
 		}
 		return;
 	}
 	// end
 	
-	if(pStreaming || ! pValid){
+	if(pStreaming || !pValid){
 		return;
 	}
 	
-	if(! pIsUsed){
+	if(!pIsUsed){
 		// first time the sound is used. samples data could be already loaded
 		// asynchronously during construction time. if loaded from cache and marked
 		// not used we have to load data
@@ -184,7 +184,7 @@ void desynSound::Prepare(){
 				pSound.GetFilename().GetString());
 		}
 		
-		if(! pStreamData){
+		if(!pStreamData){
 			LoadEntireSound();
 		}
 		
@@ -216,7 +216,7 @@ void desynSound::pLoadFromCache(){
 	decBaseFileReader::Ref reader;
 	
 	const decPath path(decPath::CreatePathUnix(filename));
-	if(! vfs.CanReadFile(path)){
+	if(!vfs.CanReadFile(path)){
 		// without a source file no cache since it is no more unique
 		return;
 	}
@@ -225,7 +225,7 @@ void desynSound::pLoadFromCache(){
 	
 	try{
 		reader.TakeOver(cacheSound.Read(filename));
-		if(! reader){
+		if(!reader){
 			// cache file absent
 			caches.Unlock();
 			return;
@@ -317,7 +317,7 @@ void desynSound::pLoadFromCache(){
 }
 
 void desynSound::pWriteToCache(){
-	if(! pValid || pStreaming){
+	if(!pValid || pStreaming){
 		return;
 	}
 	
@@ -330,7 +330,7 @@ void desynSound::pWriteToCache(){
 	decBaseFileWriter::Ref writer;
 	
 	const decPath path(decPath::CreatePathUnix(filename));
-	if(! vfs.CanReadFile(path)){
+	if(!vfs.CanReadFile(path)){
 		return; // without a source file no cache since it is no more unique
 	}
 	

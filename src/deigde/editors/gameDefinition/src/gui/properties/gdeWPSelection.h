@@ -91,16 +91,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline gdeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL if not present. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Tree model or NULL. */
-	inline gdeWPSTreeModel *GetModelTreeObjects() const{return pModelTreeObjects;}
+	inline gdeWPSTreeModel *GetModelTreeObjects() const{ return pModelTreeObjects; }
 	
 	
 	

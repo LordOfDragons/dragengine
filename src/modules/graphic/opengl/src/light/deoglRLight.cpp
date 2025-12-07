@@ -221,7 +221,7 @@ void deoglRLight::SetOctreeNode(deoglWorldOctree *octreeNode){
 void deoglRLight::UpdateOctreeNode(){
 	// WARNING called from main thread during synchronization
 	
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -320,7 +320,7 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	
 	pLightSkin = skin;
 	
-	if(! skin){
+	if(!skin){
 		return;
 	}
 	
@@ -330,7 +330,7 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
 	
-	if(! pSkinState){
+	if(!pSkinState){
 		pSkinState = new deoglSkinState(pRenderThread, *this);
 	}
 }
@@ -405,7 +405,7 @@ void deoglRLight::RemoveAllShadowIgnoreComponents(){
 }
 
 void deoglRLight::AddShadowIgnoreComponent(deoglRComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -488,7 +488,7 @@ void deoglRLight::DynamicSkinRenderablesChanged(){
 }
 
 void deoglRLight::UpdateRenderableMapping(){
-	if(! pSkinState){
+	if(!pSkinState){
 		return;
 	}
 	
@@ -754,7 +754,7 @@ deoglLightPipelines &deoglRLight::GetPipelines(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){
-	if(! pParamBlockLight){
+	if(!pParamBlockLight){
 		pParamBlockLight = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBLightParam();
 	}
@@ -762,7 +762,7 @@ const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
-	if(! pParamBlockInstance){
+	if(!pParamBlockInstance){
 		pParamBlockInstance = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBInstParam();
 	}
@@ -770,7 +770,7 @@ const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetOccQueryParameterBlock(){
-	if(! pParamBlockOccQuery){
+	if(!pParamBlockOccQuery){
 		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam(pRenderThread);
 	}
 	return pParamBlockOccQuery;
@@ -791,7 +791,7 @@ void deoglRLight::SetDirtyTouching(){
 }
 
 void deoglRLight::EnvMapNotifyLightChanged(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -883,7 +883,7 @@ void deoglRLight::RemoveAllComponents(){
 }
 
 void deoglRLight::TestComponent(deoglRComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1031,14 +1031,14 @@ void deoglRLight::LightVolumeImproved(){
 }
 
 void deoglRLight::ReplaceLightVolume(decConvexVolumeList *list){
-	if(! list) DETHROW(deeInvalidParam);
+	if(!list) DETHROW(deeInvalidParam);
 	if(pConvexVolumeList) delete pConvexVolumeList;
 	pConvexVolumeList = list;
 	LightVolumeImproved();
 }
 
 void deoglRLight::ReplaceShadowCaster(deoglShadowCaster *shadowCaster){
-	if(! shadowCaster) DETHROW(deeInvalidParam);
+	if(!shadowCaster) DETHROW(deeInvalidParam);
 	if(pShadowCaster) delete pShadowCaster;
 	pShadowCaster = shadowCaster;
 	//pCalcShadowCasterParams();
@@ -1124,7 +1124,7 @@ void deoglRLight::pCleanUp(){
 }
 
 void deoglRLight::pUpdateFullExtends(){
-	if(! pDirtyFullExtends){
+	if(!pDirtyFullExtends){
 		return;
 	}
 	
@@ -1232,7 +1232,7 @@ void deoglRLight::pUpdateFullExtends(){
 }
 
 void deoglRLight::pUpdateExtends(){
-	if(! pDirtyExtends){
+	if(!pDirtyExtends){
 		return;
 	}
 	
@@ -1254,7 +1254,7 @@ void deoglRLight::pUpdateExtends(){
 }
 
 void deoglRLight::pUpdateCollideLists(){
-	if(! pDirtyCollideLists) return;
+	if(!pDirtyCollideLists) return;
 	
 	int i, count;
 	
@@ -1290,7 +1290,7 @@ void deoglRLight::pUpdateCollideLists(){
 }
 
 void deoglRLight::pCheckTouching(){
-	if(! pDirtyTouching){
+	if(!pDirtyTouching){
 		return;
 	}
 	
@@ -1339,7 +1339,7 @@ void deoglRLight::pCheckTouching(){
 }
 
 void deoglRLight::pUpdateCollisionVolume(){
-	if(! pDirtyColVol){
+	if(!pDirtyColVol){
 		return;
 	}
 	
@@ -1388,7 +1388,7 @@ void deoglRLight::pUpdateCollisionVolume(){
 void deoglRLight::pUpdateLightVolume(){
 	// NOTE Can be called indirectly from main thread during synchronization.
 	
-	if(! pDirtyConvexVolumeList){
+	if(!pDirtyConvexVolumeList){
 		return;
 	}
 	
@@ -1433,10 +1433,10 @@ void deoglRLight::pUpdateLightVolume(){
 	
 	// optimizer stuff
 #if 0
-	if(! pOptimizer){
+	if(!pOptimizer){
 		try{
 			pOptimizer = new deoglOptimizerLight(this, oglWorld);
-			if(! pOptimizer) DETHROW(deeOutOfMemory);
+			if(!pOptimizer) DETHROW(deeOutOfMemory);
 			
 			if(lightType == deLight::eltPoint){
 				pOptimizer->SetOptimizeShadowCaster(false);
@@ -1497,7 +1497,7 @@ void deoglRLight::pUpdateLightVolume(){
 }
 
 void deoglRLight::pRequiresPrepareForRender(){
-	if(! pLLPrepareForRenderWorld.GetList() && pParentWorld){
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
 		pParentWorld->AddPrepareForRenderLight(this);
 	}
 }

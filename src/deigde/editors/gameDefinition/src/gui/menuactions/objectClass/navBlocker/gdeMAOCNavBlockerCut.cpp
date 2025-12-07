@@ -67,7 +67,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
-	if(! navBlocker){
+	if(!navBlocker){
 		return NULL;
 	}
 	

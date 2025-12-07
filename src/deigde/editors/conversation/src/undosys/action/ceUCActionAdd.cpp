@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *action, int index){
-	if(! topic || ! action){
+	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > topic->GetActionList().GetCount()){

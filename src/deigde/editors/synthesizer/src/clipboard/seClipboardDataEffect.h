@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Effects. */
-	inline const seEffectList &GetEffects() const{return pEffects;}
+	inline const seEffectList &GetEffects() const{ return pEffects; }
 	/*@}*/
 };
 

@@ -63,7 +63,7 @@ deoglDebugOverlay::~deoglDebugOverlay(){
 void deoglDebugOverlay::PrepareOverlay(deCanvasView &canvasView){
 	deoglRenderThread &renderThread = pOgl.GetRenderThread();
 	
-	if(! canvasView.GetRootCanvas()){
+	if(!canvasView.GetRootCanvas()){
 		renderThread.SetCanvasDebugOverlay(nullptr);
 		return;
 	}

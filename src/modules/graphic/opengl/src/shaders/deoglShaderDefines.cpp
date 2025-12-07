@@ -121,7 +121,7 @@ void deoglShaderDefines::SetDefine(const char *name, const char *value){
 		}
 	}
 	
-	if(! define){
+	if(!define){
 		if(pDefineCount == pDefineSize){
 			const int newSize = pDefineSize * 3 / 2 + 1;
 			sDefine * const newArray = new sDefine[newSize];

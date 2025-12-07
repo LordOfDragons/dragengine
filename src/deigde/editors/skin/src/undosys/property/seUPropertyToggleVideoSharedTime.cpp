@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *property){
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,7 +63,7 @@ seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
 ///////////////
 
 void seUPropertyToggleVideoSharedTime::Undo(){
-	pProperty->SetVideoSharedTime(! pProperty->GetVideoSharedTime());
+	pProperty->SetVideoSharedTime(!pProperty->GetVideoSharedTime());
 }
 
 void seUPropertyToggleVideoSharedTime::Redo(){

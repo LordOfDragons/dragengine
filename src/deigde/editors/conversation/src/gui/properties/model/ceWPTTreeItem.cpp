@@ -44,7 +44,7 @@ igdeTreeItem(""),
 pTreeList(treeList),
 pModel(NULL)
 {
-	if(! treeList){
+	if(!treeList){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -79,7 +79,7 @@ void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
 
 
 void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
-	if(! pTreeList || ! model){
+	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -89,7 +89,7 @@ void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
 }
 
 void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
-	if(! pTreeList || ! model || position < 0 || position > GetChildrenCount()){
+	if(!pTreeList || !model || position < 0 || position > GetChildrenCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -115,12 +115,12 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 }
 
 void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
-	if(! pTreeList || ! model){
+	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}
 	
 	ceWPTTreeItem * const item = model->GetTreeItem();
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -129,7 +129,7 @@ void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
 }
 
 void ceWPTTreeItem::RemoveAllItems(){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -146,7 +146,7 @@ void ceWPTTreeItem::RemoveAllItems(){
 }
 
 void ceWPTTreeItem::SortItems(){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -154,7 +154,7 @@ void ceWPTTreeItem::SortItems(){
 }
 
 void ceWPTTreeItem::SetAsCurrentItem(){
-	if(! pTreeList){
+	if(!pTreeList){
 		DETHROW(deeInvalidParam);
 	}
 	

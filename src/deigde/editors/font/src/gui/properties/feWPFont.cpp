@@ -84,7 +84,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		feFont * const font = pPanel.GetFont();
-		if(! font){
+		if(!font){
 			return;
 		}
 		
@@ -120,7 +120,7 @@ public:
 	pWindow(window){}
 	
 	virtual bool AcceptFile(decString &path){
-		if(! pWindow.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(path))){
+		if(!pWindow.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(path))){
 			return true;
 		}
 		
@@ -175,7 +175,7 @@ public:
 	
 	virtual void OnAction(){
 		feFont * const font = pPanel.GetFont();
-		if(! font){
+		if(!font){
 			return;
 		}
 		

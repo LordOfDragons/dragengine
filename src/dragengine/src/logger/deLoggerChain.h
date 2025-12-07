@@ -102,7 +102,7 @@ public:
 	
 	
 protected:
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 };
 
 #endif

@@ -58,12 +58,12 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deConnection *GetConnection(dsRealObject *myself) const;
 	void PushConnection(dsRunTime *rt, deConnection *connection);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassNetworkState *GetClassNetworkState() const{return pClsNS;}
-	inline deClassNetworkMessage *GetClassNetworkMessage() const{return pClsNM;}
-	inline deClassConnectionListener *GetClassConnectionListener() const{return pClsConL;}
+	inline deClassNetworkState *GetClassNetworkState() const{ return pClsNS; }
+	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }
+	inline deClassConnectionListener *GetClassConnectionListener() const{ return pClsConL; }
 	
 private:
 	struct sInitData{

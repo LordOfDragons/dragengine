@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnablePosYMin::aeURuleLimitSetEnablePosYMin(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosYMin::Undo(){
 }
 
 void aeURuleLimitSetEnablePosYMin::Redo(){
-	pRule->SetEnablePositionYMin(! pRule->GetEnablePositionYMin());
+	pRule->SetEnablePositionYMin(!pRule->GetEnablePositionYMin());
 }

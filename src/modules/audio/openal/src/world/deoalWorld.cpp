@@ -137,16 +137,16 @@ void deoalWorld::DevModeChanged(){
 
 
 void deoalWorld::AddSyncComponent(deoalComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
-	if(! component->GetLLSyncWorld().GetList()){
+	if(!component->GetLLSyncWorld().GetList()){
 		pListSyncComponents.Add(&component->GetLLSyncWorld());
 	}
 }
 
 void deoalWorld::RemoveSyncComponent(deoalComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	if(component->GetLLSyncWorld().GetList()){
@@ -155,16 +155,16 @@ void deoalWorld::RemoveSyncComponent(deoalComponent *component){
 }
 
 void deoalWorld::AddSyncSpeaker(deoalSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
-	if(! speaker->GetLLSyncWorld().GetList()){
+	if(!speaker->GetLLSyncWorld().GetList()){
 		pListSyncSpeakers.Add(&speaker->GetLLSyncWorld());
 	}
 }
 
 void deoalWorld::RemoveSyncSpeaker(deoalSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	if(speaker->GetLLSyncWorld().GetList()){
@@ -173,16 +173,16 @@ void deoalWorld::RemoveSyncSpeaker(deoalSpeaker *speaker){
 }
 
 void deoalWorld::AddSyncMicrophone(deoalMicrophone *microphone){
-	if(! microphone){
+	if(!microphone){
 		DETHROW(deeInvalidParam);
 	}
-	if(! microphone->GetLLSyncWorld().GetList()){
+	if(!microphone->GetLLSyncWorld().GetList()){
 		pListSyncMicrophones.Add(&microphone->GetLLSyncWorld());
 	}
 }
 
 void deoalWorld::RemoveSyncMicrophone(deoalMicrophone *microphone){
-	if(! microphone){
+	if(!microphone){
 		DETHROW(deeInvalidParam);
 	}
 	if(microphone->GetLLSyncWorld().GetList()){
@@ -191,16 +191,16 @@ void deoalWorld::RemoveSyncMicrophone(deoalMicrophone *microphone){
 }
 
 void deoalWorld::AddSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter){
-	if(! soundLevelMeter){
+	if(!soundLevelMeter){
 		DETHROW(deeInvalidParam);
 	}
-	if(! soundLevelMeter->GetLLSyncWorld().GetList()){
+	if(!soundLevelMeter->GetLLSyncWorld().GetList()){
 		pListSyncSoundLevelMeters.Add(&soundLevelMeter->GetLLSyncWorld());
 	}
 }
 
 void deoalWorld::RemoveSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter){
-	if(! soundLevelMeter){
+	if(!soundLevelMeter){
 		DETHROW(deeInvalidParam);
 	}
 	if(soundLevelMeter->GetLLSyncWorld().GetList()){
@@ -226,7 +226,7 @@ void deoalWorld::Update(float){
 	
 	deSpeaker *speaker = pWorld.GetRootSpeaker();
 	while(speaker){
-		if(speaker->GetPlaying() && ! speaker->GetLooping()){
+		if(speaker->GetPlaying() && !speaker->GetLooping()){
 			speaker->Stop();
 		}
 		speaker = speaker->GetLLWorldNext();
@@ -520,7 +520,7 @@ void deoalWorld::pSyncSoundLevelMeters(){
 }
 
 void deoalWorld::pSyncAllMicLayerMask(){
-	if(! pDirtyAllMicLayerMask){
+	if(!pDirtyAllMicLayerMask){
 		return;
 	}
 	
@@ -560,7 +560,7 @@ void deoalWorld::pSyncAllMicLayerMask(){
 }
 
 void deoalWorld::pSyncAudioParameters(){
-	if(! pDirtyAudioParameters){
+	if(!pDirtyAudioParameters){
 		return;
 	}
 	

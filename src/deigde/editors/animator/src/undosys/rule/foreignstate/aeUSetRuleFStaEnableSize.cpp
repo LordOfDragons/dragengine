@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleFStaEnableSize::aeUSetRuleFStaEnableSize(aeRuleForeignState *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleFStaEnableSize::~aeUSetRuleFStaEnableSize(){
 ///////////////
 
 void aeUSetRuleFStaEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeUSetRuleFStaEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

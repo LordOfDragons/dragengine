@@ -45,7 +45,7 @@
 
 ceUCAIfElseAdd::ceUCAIfElseAdd(ceConversationTopic *topic, ceCAIfElse *ifElse,
 ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
-	if(! topic || ! ifElse || ! action){
+	if(!topic || !ifElse || !action){
 		DETHROW(deeInvalidParam);
 	}
 	

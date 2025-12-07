@@ -79,7 +79,7 @@ deImage *deInputDeviceComponent::GetDisplayIconAt(int index) const{
 }
 
 void deInputDeviceComponent::AddDisplayIcon(deImage *image){
-	if(! image){
+	if(!image){
 		DETHROW(deeNullPointer);
 	}
 	pDisplayIcons.Add(image);

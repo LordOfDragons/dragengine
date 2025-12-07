@@ -93,7 +93,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Icon size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Create scaled copy of icon. */
 	igdeIcon *Scale(const decPoint &size) const;
@@ -118,7 +118,7 @@ public:
 	 * \brief Get native icon pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void *GetNativeIcon() const{return pNativeIcon;}
+	void *GetNativeIcon() const{ return pNativeIcon; }
 	/*@}*/
 };
 

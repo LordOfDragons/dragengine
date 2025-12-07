@@ -43,7 +43,7 @@
 ////////////////////////////
 
 reCamera::reCamera(reRig *rig, deEngine *engine) : igdeCamera(engine){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -76,7 +76,7 @@ void reCamera::SetBone(reRigBone *bone){
 }
 
 void reCamera::SetFreePosition(const decDVector &freePosition){
-	if(! freePosition.IsEqualTo(pFreePosition)){
+	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
 		
@@ -85,7 +85,7 @@ void reCamera::SetFreePosition(const decDVector &freePosition){
 }
 
 void reCamera::SetFreeOrientation(const decVector &freeOrientation){
-	if(! freeOrientation.IsEqualTo(pFreeOrientation)){
+	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
 		
@@ -103,7 +103,7 @@ void reCamera::SetFreeDistance(float freeDistance){
 }
 
 void reCamera::SetRelativePosition(const decDVector &relativePosition){
-	if(! relativePosition.IsEqualTo(pRelPosition)){
+	if(!relativePosition.IsEqualTo(pRelPosition)){
 		pRelPosition = relativePosition;
 		pDirty = true;
 		
@@ -112,7 +112,7 @@ void reCamera::SetRelativePosition(const decDVector &relativePosition){
 }
 
 void reCamera::SetRelativeOrientation(const decVector &relativeOrientation){
-	if(! relativeOrientation.IsEqualTo(pRelOrientation)){
+	if(!relativeOrientation.IsEqualTo(pRelOrientation)){
 		pRelOrientation = relativeOrientation;
 		pDirty = true;
 		

@@ -76,16 +76,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{return pDevice;}
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Configuration. */
-	inline const devkImageConfiguration &GetConfiguration() const{return pConfiguration;}
+	inline const devkImageConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** Image. */
-	inline VkImage GetImage() const{return pImage;}
+	inline VkImage GetImage() const{ return pImage; }
 	
 	/** Host buffer or VK_NULL_HANDLE. */
-	inline VkBuffer GetBufferHost() const{return pBufferHost;}
+	inline VkBuffer GetBufferHost() const{ return pBufferHost; }
 	
 	
 	

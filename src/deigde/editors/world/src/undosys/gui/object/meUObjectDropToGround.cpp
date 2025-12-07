@@ -147,7 +147,7 @@ void meUObjectDropToGround::Redo(){
 	float distance;
 	int o;
 	
-	if(! phyWorld) return;
+	if(!phyWorld) return;
 	
 	closestElement.SetTestHeightTerrain(true);
 	closestElement.SetTestObjects(pDropOnObjects);
@@ -169,7 +169,7 @@ void meUObjectDropToGround::Redo(){
 		object = pObjects[o].object;
 		
 		collider = object->GetColDetCollider();
-		if(! collider){
+		if(!collider){
 			continue;
 		}
 		

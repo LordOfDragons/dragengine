@@ -52,18 +52,18 @@ public:
 	~deClassConnectionListener();
 	
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
-	inline deClassNetworkMessage *GetClassNetworkMessage() const{return pClsNM;}
-	inline deClassNetworkState *GetClassNetworkState() const{return pClsNS;}
+	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }
+	inline deClassNetworkState *GetClassNetworkState() const{ return pClsNS; }
 	
 	/** \brief Function index for messageReceived(). */
-	inline int GetFuncIndexMessageReceived() const{return pFuncIndexMessageReceived;}
+	inline int GetFuncIndexMessageReceived() const{ return pFuncIndexMessageReceived; }
 	
 	/** \brief Function index for linkState(). */
-	inline int GetFuncIndexLinkState() const{return pFuncIndexLinkState;}
+	inline int GetFuncIndexLinkState() const{ return pFuncIndexLinkState; }
 	
 private:
 	int pFuncIndexMessageReceived;

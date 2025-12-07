@@ -84,9 +84,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	/** Retrieves the module. */
-	inline delEngineModule *GetModule() const{return pModule;}
+	inline delEngineModule *GetModule() const{ return pModule; }
 	
 	/** Set values from moduel. */
 	void SetFromModule();

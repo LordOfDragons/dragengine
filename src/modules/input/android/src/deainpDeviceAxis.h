@@ -75,25 +75,25 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
 	void SetIndex(int index);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Type. */
-	inline deInputDeviceAxis::eAxisTypes GetType() const{return pType;}
+	inline deInputDeviceAxis::eAxisTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(deInputDeviceAxis::eAxisTypes type);
@@ -101,44 +101,44 @@ public:
 	
 	
 	/** \brief Minimum value. */
-	inline int GetMinimum() const{return pMinimum;}
+	inline int GetMinimum() const{ return pMinimum; }
 	
 	/** \brief Set minimum value. */
 	void SetMinimum(int minimum);
 	
 	/** \brief Maximum value. */
-	inline int GetMaximum() const{return pMaximum;}
+	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** \brief Set maximum value. */
 	void SetMaximum(int maximum);
 	
 	/** \brief Fuzz. */
-	inline int GetFuzz() const{return pFuzz;}
+	inline int GetFuzz() const{ return pFuzz; }
 	
 	/** \brief Set fuzz. */
 	void SetFuzz(int fuzz);
 	
 	/** \brief Flat. */
-	inline int GetFlat() const{return pFlat;}
+	inline int GetFlat() const{ return pFlat; }
 	
 	/** \brief Set flat. */
 	void SetFlat(int flat);
 	
 	/** \brief Axis is absolute. */
-	inline bool GetAbsolute() const{return pAbsolute;}
+	inline bool GetAbsolute() const{ return pAbsolute; }
 	
 	/** \brief Set if axis is absolute. */
 	void SetAbsolute(bool absolute);
 	
 	/** \brief Wheel around other axis. */
-	inline bool GetWheelOtherAxis() const{return pWheelOtherAxis;}
+	inline bool GetWheelOtherAxis() const{ return pWheelOtherAxis; }
 	
 	/** \brief Set to wheel around other axis. */
 	void SetWheelOtherAxis(bool otherAxis);
 	
 	
 	/** \brief Value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(float value);
@@ -146,7 +146,7 @@ public:
 	
 	
 	/** \brief Android specific code. */
-	inline int GetAICode() const{return pAICode;}
+	inline int GetAICode() const{ return pAICode; }
 	
 	/** \brief Set Android specific code. */
 	void SetAICode(int code);

@@ -71,7 +71,7 @@ aeRuleTrackTo::~aeRuleTrackTo(){
 ///////////////
 
 void aeRuleTrackTo::SetTrackBone(const char *boneName){
-	if(! boneName){
+	if(!boneName){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -220,7 +220,7 @@ deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleTrackTo;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
 		InitEngineRule(engRule);

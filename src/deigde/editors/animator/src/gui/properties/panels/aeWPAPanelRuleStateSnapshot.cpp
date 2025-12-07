@@ -84,7 +84,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -123,7 +123,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -253,7 +253,7 @@ public:
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRuleStateSnapshot &){
-		SetEnabled(! pPanel.GetCBMoveNameText().IsEmpty());
+		SetEnabled(!pPanel.GetCBMoveNameText().IsEmpty());
 	}
 };
 

@@ -56,11 +56,11 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
 	void SetPattern(const char *pattern);
 	

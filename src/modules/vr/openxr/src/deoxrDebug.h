@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline deoxrInstance &GetInstance() const{return pInstance;}
+	inline deoxrInstance &GetInstance() const{ return pInstance; }
 	
 	/** Debug mode is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Enable or disable debug mode. */
 	void SetEnabled(bool enabled);

@@ -118,7 +118,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if(! gameDefinition || textField->GetText() == gameDefinition->GetID()){
+		if(!gameDefinition || textField->GetText() == gameDefinition->GetID()){
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if(! gameDefinition){
+		if(!gameDefinition){
 			return;
 		}
 		
@@ -181,7 +181,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if(! gameDefinition || textArea->GetText() == gameDefinition->GetDescription()){
+		if(!gameDefinition || textArea->GetText() == gameDefinition->GetDescription()){
 			return;
 		}
 		

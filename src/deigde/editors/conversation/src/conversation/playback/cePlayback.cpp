@@ -318,7 +318,7 @@ cePlaybackActor &cePlayback::GetActorAt(int index) const{
 
 
 void cePlayback::Update(float elapsed){
-	if((pTopic || pTestActionList.GetCount() > 0) && pRunning && ! pPaused){
+	if((pTopic || pTestActionList.GetCount() > 0) && pRunning && !pPaused){
 		int i;
 		
 		for(i=0; i<pActorCount; i++){
@@ -339,7 +339,7 @@ void cePlayback::UpdateCamera(float elapsed){
 		break;
 		
 	case echCameraShot:{
-		if(! pConversation.GetActiveCameraShot()){
+		if(!pConversation.GetActiveCameraShot()){
 			break;
 		}
 		
@@ -442,7 +442,7 @@ void cePlayback::ProcessActions(float elapsed){
 }
 
 void cePlayback::AdvanceToNextAction(){
-	if(! pTopic && pTestActionList.GetCount() == 0){
+	if(!pTopic && pTestActionList.GetCount() == 0){
 		SetRunning(false);
 		return;
 	}
@@ -481,14 +481,14 @@ void cePlayback::AdvanceToNextAction(){
 }
 
 void cePlayback::FastForwardSpeaking(){
-	if(pTopic && pTestActionList.GetCount() == 0 && pRunning && ! pPaused){
+	if(pTopic && pTestActionList.GetCount() == 0 && pRunning && !pPaused){
 		const float timeStep = 0.1f;
 		float timeToForward = 0.0f;
 		float actorTime;
 		int i;
 		
 		for(i=0; i<pActorCount; i++){
-			if(! pActors[i].IsSpeechDone()){
+			if(!pActors[i].IsSpeechDone()){
 				actorTime = pActors[i].GetSpeechLength() - pActors[i].GetElapsedTime();
 				
 				if(actorTime > timeToForward){
@@ -532,7 +532,7 @@ void cePlayback::SetTextBoxText(const decUnicodeString &text){
 	
 	ClearTextBoxText();
 	
-	if(! pTextBoxText){
+	if(!pTextBoxText){
 		pTextBoxText = new ceTextBoxText;
 		pTextBoxText->SetName(decUnicodeString::NewFromUTF8("Playback:"));
 	}
@@ -578,7 +578,7 @@ void cePlayback::pProcessActions(float elapsed){
 		cePlaybackActionStackEntry &stackEntry = pActiveActionStack->GetAt(i);
 		
 		const ceConversationCondition * const condition = stackEntry.GetLoopCondition();
-		if(! condition){
+		if(!condition){
 			continue;
 		}
 		
@@ -606,7 +606,7 @@ void cePlayback::pProcessActions(float elapsed){
 		
 		// special case. it is possible the stack entry is looping but contains no actions.
 		// in this case skip processing until a change comes from the outside world
-		if(! action && stackEntry.GetLooping()){
+		if(!action && stackEntry.GetLooping()){
 			return;
 		}
 	}
@@ -618,11 +618,11 @@ void cePlayback::pProcessActions(float elapsed){
 			const ceConversationActorList &actorList = pConversation.GetActorList();
 			
 			if(action->GetWaitForActor()){
-				const bool useActorWait = ! action->GetWaitSpeakOnly();
+				const bool useActorWait = !action->GetWaitSpeakOnly();
 				
 				if(action->GetWaitForActorID().IsEmpty()){
 					for(i=0; i<pActorCount; i++){
-						if(! pActors[i].IsSpeechDone()
+						if(!pActors[i].IsSpeechDone()
 						|| (useActorWait && actorList.GetAt(i)->GetWaiting())){
 							return;
 						}
@@ -631,7 +631,7 @@ void cePlayback::pProcessActions(float elapsed){
 				}else{
 					const int index = actorList.IndexWithIDOrAliasID(action->GetWaitForActorID());
 					if(index != -1){
-						if(! pActors[index].IsSpeechDone()
+						if(!pActors[index].IsSpeechDone()
 						|| (useActorWait && actorList.GetAt(index)->GetWaiting())){
 							return;
 						}
@@ -663,7 +663,7 @@ void cePlayback::pProcessActions(float elapsed){
 		}else if(pActiveActionStack == pMainActionStack){
 			// end of conversation. wait for all actors to be done speaking and exit the loop
 			for(i=0; i<pActorCount; i++){
-				if(! pActors[i].IsSpeechDone()){
+				if(!pActors[i].IsSpeechDone()){
 					return;
 				}
 			}

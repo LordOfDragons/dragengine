@@ -71,25 +71,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet. */
-	inline dePhysicsBullet &GetBullet() const{return pBullet;}
+	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
 	/** \brief Enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Debug information. */
-	inline debpDebugInformation *GetDIColliderPrepareDetection() const{return pDIColliderPrepareDetection;}
-	inline debpDebugInformation *GetDIColliderDetectCustomCollision() const{return pDIColliderDetectCustomCollision;}
-	inline debpDebugInformation *GetDIColliderUpdateFromBody() const{return pDIColliderUpdateFromBody;}
-	inline debpDebugInformation *GetDIColliderFinishDetection() const{return pDIColliderFinishDetection;}
-	inline debpDebugInformation *GetDIColliderCollisionTests() const{return pDIColliderCollisionTests;}
-	inline debpDebugInformation *GetDIColliderUpdateOctree() const{return pDIColliderUpdateOctree;}
-	inline debpDebugInformation *GetDITouchSensorApplyChanges() const{return pDITouchSensorApplyChanges;}
-	inline debpDebugInformation *GetDIWorldStepSimulation() const{return pDIWorldStepSimulation;}
-	inline debpDebugInformation *GetDIWorldUpdateOctrees() const{return pDIWorldUpdateOctrees;}
-	inline debpDebugInformation *GetDIWorldCheckDynamicCollisions() const{return pDIWorldCheckDynamicCollisions;}
+	inline debpDebugInformation *GetDIColliderPrepareDetection() const{ return pDIColliderPrepareDetection; }
+	inline debpDebugInformation *GetDIColliderDetectCustomCollision() const{ return pDIColliderDetectCustomCollision; }
+	inline debpDebugInformation *GetDIColliderUpdateFromBody() const{ return pDIColliderUpdateFromBody; }
+	inline debpDebugInformation *GetDIColliderFinishDetection() const{ return pDIColliderFinishDetection; }
+	inline debpDebugInformation *GetDIColliderCollisionTests() const{ return pDIColliderCollisionTests; }
+	inline debpDebugInformation *GetDIColliderUpdateOctree() const{ return pDIColliderUpdateOctree; }
+	inline debpDebugInformation *GetDITouchSensorApplyChanges() const{ return pDITouchSensorApplyChanges; }
+	inline debpDebugInformation *GetDIWorldStepSimulation() const{ return pDIWorldStepSimulation; }
+	inline debpDebugInformation *GetDIWorldUpdateOctrees() const{ return pDIWorldUpdateOctrees; }
+	inline debpDebugInformation *GetDIWorldCheckDynamicCollisions() const{ return pDIWorldCheckDynamicCollisions; }
 	
 	
 	

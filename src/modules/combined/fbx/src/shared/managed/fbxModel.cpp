@@ -99,7 +99,7 @@ pCulling(true)
 		}
 	}
 	
-	if(! pNodeModel){
+	if(!pNodeModel){
 		DETHROW_INFO(deeInvalidParam, "model not found");
 	}
 	
@@ -228,7 +228,7 @@ void fbxModel::BuildWeights(){
 	
 	for(i=0; i<count; i++){
 		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
-		if(! cluster.GetRigBone()){
+		if(!cluster.GetRigBone()){
 			continue;
 		}
 		
@@ -236,7 +236,7 @@ void fbxModel::BuildWeights(){
 		
 		const fbxNode * const nodeIndex = cluster.GetNodeCluster().FirstNodeNamedOrNull("Indexes");
 		const fbxNode * const nodeWeight = cluster.GetNodeCluster().FirstNodeNamedOrNull("Weights");
-		if(! nodeIndex || ! nodeWeight){
+		if(!nodeIndex || !nodeWeight){
 			continue; // rig affects nobody
 		}
 		
@@ -377,7 +377,7 @@ int fbxModel::pAddWeightSet(const decIntList &weights){
 		
 		const int setFirstWeight = pWeightSetsFirstWeight.GetAt(i);
 		for(j=0; j<weightCount; j++){
-			if(! weights.Has(pWeightSetWeights.GetAt(setFirstWeight + j))){
+			if(!weights.Has(pWeightSetWeights.GetAt(setFirstWeight + j))){
 				break;
 			}
 		}

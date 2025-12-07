@@ -40,7 +40,7 @@
 ////////////////////////////
 
 cePlaybackCommand::cePlaybackCommand(const char *command, bool value){
-	if(! command || strlen(command) == 0){
+	if(!command || strlen(command) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

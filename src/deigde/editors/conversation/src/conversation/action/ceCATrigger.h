@@ -68,11 +68,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the name of the trigger. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** \brief Sets the name of the trigger. */
 	void SetName(const char *name);
 	/** \brief Retrieves the action. */
-	inline eActions GetAction() const{return pAction;}
+	inline eActions GetAction() const{ return pAction; }
 	/** \brief Sets the action. */
 	void SetAction(eActions action);
 	

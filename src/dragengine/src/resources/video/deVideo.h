@@ -103,40 +103,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Number of frames. */
-	inline int GetFrameCount() const{return pFrameCount;}
+	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** \brief Frame rate. */
-	inline float GetFrameRate() const{return pFrameRate;}
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Bits per pixel. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/** \brief Play time in seconds. */
-	inline float GetPlayTime() const{return pPlayTime;}
+	inline float GetPlayTime() const{ return pPlayTime; }
 	
 	/** \brief Color conversion matrix. */
-	inline const decColorMatrix3 &GetColorConversionMatrix() const{return pColorConversionMatrix;}
+	inline const decColorMatrix3 &GetColorConversionMatrix() const{ return pColorConversionMatrix; }
 	
 	/** \brief Bytes per sample or 0 if no audio. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Number of samples or 0 if no audio. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Number of channels or 0 if no audio. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Sample rate or 0 if no audio. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	/*@}*/
 	
 	
@@ -144,7 +144,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicVideo *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicVideo *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicVideo *peer);

@@ -81,10 +81,10 @@ pScaleSize(rule.GetScaleSize()),
 pScaleVPS(rule.GetScaleVertexPositionSet()),
 pSourceCoordFrame(rule.GetSourceCoordinateFrame()),
 pDestCoordFrame(rule.GetDestCoordinateFrame()),
-pLockX(! rule.GetModifyX()),
-pLockY(! rule.GetModifyY()),
-pLockZ(! rule.GetModifyZ()),
-pLockNone(! pLockX && ! pLockY && ! pLockZ),
+pLockX(!rule.GetModifyX()),
+pLockY(!rule.GetModifyY()),
+pLockZ(!rule.GetModifyZ()),
+pLockNone(!pLockX && !pLockY && !pLockZ),
 pEnablePosition(rule.GetEnablePosition()),
 pEnableOrientation(rule.GetEnableOrientation()),
 pEnableSize(rule.GetEnableSize()),
@@ -103,7 +103,7 @@ dearRuleForeignState::~dearRuleForeignState(){
 
 void dearRuleForeignState::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	

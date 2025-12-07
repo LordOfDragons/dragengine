@@ -436,7 +436,7 @@ void deClassParticleEmitterController::nfSetValueFrom::RunFunction(dsRunTime *rt
 		: nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
-	if(! valFrom->GetRealObject()){
+	if(!valFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -465,7 +465,7 @@ void deClassParticleEmitterController::nfSetAllFrom::RunFunction(dsRunTime *rt, 
 		: nd.instance->GetControllerAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
-	if(! valFrom->GetRealObject()){
+	if(!valFrom->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -525,7 +525,7 @@ void deClassParticleEmitterController::nfEquals::RunFunction(dsRunTime *rt, dsVa
 	const sParticleEmitterCtrlNatDat &nd = *((const sParticleEmitterCtrlNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsParticleEmitterCtrl)){
+	if(!p_IsObjOfType(obj, clsParticleEmitterCtrl)){
 		rt->PushBool(false);
 		
 	}else{
@@ -613,7 +613,7 @@ void deClassParticleEmitterController::CreateClassMembers(dsEngine *engine){
 
 void deClassParticleEmitterController::GetController(dsRealObject *myself, deParticleEmitter *&emitter,
 deParticleEmitterInstance *&instance, int &index) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -624,7 +624,7 @@ deParticleEmitterInstance *&instance, int &index) const{
 }
 
 void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter *emitter, int index){
-	if(! rt || ! emitter || index < 0 || index >= emitter->GetControllerCount()){
+	if(!rt || !emitter || index < 0 || index >= emitter->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -638,7 +638,7 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 }
 
 void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index){
-	if(! rt || ! instance || index < 0 || index >= instance->GetControllerCount()){
+	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

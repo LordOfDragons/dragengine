@@ -72,7 +72,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -94,7 +94,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -118,7 +118,7 @@ public:
 	
 	virtual void OnAction(){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -213,7 +213,7 @@ public:
 		NULL, "Playback looping"){}
 	
 	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		synthesizer->SetLooping(! synthesizer->GetLooping());
+		synthesizer->SetLooping(!synthesizer->GetLooping());
 		return NULL;
 	}
 };
@@ -262,7 +262,7 @@ public:
 	}
 	
 	virtual void Update(const seSynthesizer &synthesizer){
-		SetEnabled(! synthesizer.GetStopped());
+		SetEnabled(!synthesizer.GetStopped());
 	}
 };
 

@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Component",
 igdeUndo *gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

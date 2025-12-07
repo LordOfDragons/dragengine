@@ -45,7 +45,7 @@ gdeUGDWPSetDefaultValue::gdeUGDWPSetDefaultValue(gdeGameDefinition *gamedef,
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

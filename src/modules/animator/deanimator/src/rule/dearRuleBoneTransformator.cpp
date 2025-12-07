@@ -103,7 +103,7 @@ dearRuleBoneTransformator::~dearRuleBoneTransformator(){
 
 void dearRuleBoneTransformator::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	

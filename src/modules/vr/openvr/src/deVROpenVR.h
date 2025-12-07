@@ -122,8 +122,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Devices. */
-	inline deovrDeviceManager &GetDevices(){return pDevices;}
-	inline const deovrDeviceManager &GetDevices() const{return pDevices;}
+	inline deovrDeviceManager &GetDevices(){ return pDevices; }
+	inline const deovrDeviceManager &GetDevices() const{ return pDevices; }
 	
 	/** VR System. */
 	vr::IVRSystem &GetVRSystem() const;
@@ -138,10 +138,10 @@ public:
 	vr::IVRCompositor &GetVRCompositor() const;
 	
 	/** VR Action Set Handle. */
-	inline vr::VRActionSetHandle_t GetActionSetHandle() const{return pActionSetHandle;}
+	inline vr::VRActionSetHandle_t GetActionSetHandle() const{ return pActionSetHandle; }
 	
 	/** VR Action Handle. */
-	inline vr::VRActionHandle_t GetActionHandle(eInputActions action) const{return pActionHandle[action];}
+	inline vr::VRActionHandle_t GetActionHandle(eInputActions action) const{ return pActionHandle[action]; }
 	
 	/** Get render model loading it if required. */
 	deovrRenderModel *GetRenderModelNamed(const char *name);
@@ -215,7 +215,7 @@ public:
 	virtual bool IsRuntimeRunning();
 	
 	/** Camera or nullptr. */
-	inline deCamera *GetCamera() const{return pCamera;}
+	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera to render on head mounted display. */
 	virtual void SetCamera(deCamera *camera);

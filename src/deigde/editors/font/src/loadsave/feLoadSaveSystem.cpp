@@ -56,7 +56,7 @@
 ////////////////////////////
 
 feLoadSaveSystem::feLoadSaveSystem(feWindowMain *wndMain){
-	if(! wndMain) DETHROW(deeInvalidParam);
+	if(!wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
 	
@@ -81,7 +81,7 @@ feLoadSaveFont *feLoadSaveSystem::GetLSFontAt(int index) const{
 }
 
 int feLoadSaveSystem::IndexOfLSFont(feLoadSaveFont *lsFont) const{
-	if(! lsFont) DETHROW(deeInvalidParam);
+	if(!lsFont) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSFontCount; i++){
@@ -94,7 +94,7 @@ int feLoadSaveSystem::IndexOfLSFont(feLoadSaveFont *lsFont) const{
 }
 
 bool feLoadSaveSystem::HasLSFont(feLoadSaveFont *lsFont) const{
-	if(! lsFont) DETHROW(deeInvalidParam);
+	if(!lsFont) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pLSFontCount; i++){
@@ -125,7 +125,7 @@ void feLoadSaveSystem::AddLSFont(feLoadSaveFont *lsFont){
 	if(pLSFontCount == pLSFontSize){
 		int newSize = pLSFontSize * 3 / 2 + 1;
 		feLoadSaveFont **newArray = new feLoadSaveFont*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSFonts){
 			memcpy(newArray, pLSFonts, sizeof(feLoadSaveFont*) * pLSFontSize);
 			delete [] pLSFonts;
@@ -174,10 +174,10 @@ void feLoadSaveSystem::UpdateLSFonts(){
 			loadableModule = modSys->GetModuleAt(m);
 			
 			if(loadableModule->GetType() != deModuleSystem::emtFont) continue;
-			if(! loadableModule->IsLoaded()) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
 			lsFont = new feLoadSaveFont((deBaseFontModule*)loadableModule->GetModule());
-			if(! lsFont) DETHROW(deeOutOfMemory);
+			if(!lsFont) DETHROW(deeOutOfMemory);
 			
 			AddLSFont(lsFont);
 			lsFont = NULL;
@@ -192,7 +192,7 @@ void feLoadSaveSystem::UpdateLSFonts(){
 
 
 feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gameDefinition){
-	if(! filename || ! gameDefinition) DETHROW(deeInvalidParam);
+	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	//decDiskFileReader file( filename );
 	deEngine *engine = pWndMain->GetEngine();
 	decBaseFileReader *fileReader = NULL;
@@ -209,7 +209,7 @@ feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gam
 		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
 		
 		font = new feFont(&pWndMain->GetEnvironment());
-		if(! font) DETHROW(deeOutOfMemory);
+		if(!font) DETHROW(deeOutOfMemory);
 		
 		pLSFonts[lsIndex]->LoadFont(filename, font, fileReader);
 		fileReader->FreeReference();
@@ -226,7 +226,7 @@ feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gam
 }
 
 void feLoadSaveSystem::SaveFont(feFont *font, const char *filename){
-	if(! font || ! filename) DETHROW(deeInvalidParam);
+	if(!font || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWndMain->GetEngine();
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;

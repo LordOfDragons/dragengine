@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Config path. */
-	inline const decString &GetPathConfig() const{return pPathConfig;}
+	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Share path. */
-	inline const decString &GetPathShare() const{return pPathShare;}
+	inline const decString &GetPathShare() const{ return pPathShare; }
 	
 	/** \brief Library path. */
-	inline const decString &GetPathLib() const{return pPathLib;}
+	inline const decString &GetPathLib() const{ return pPathLib; }
 	
 	/** \brief Start engine. */
 	void Start();

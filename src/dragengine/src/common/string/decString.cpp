@@ -33,7 +33,7 @@
 #include "../exceptions.h"
 #include "../../dragengine_configuration.h"
 
-#if defined OS_BEOS && ! defined va_copy
+#if defined OS_BEOS && !defined va_copy
 #define va_copy __va_copy
 #endif
 
@@ -59,7 +59,7 @@ decString::decString(){
 }
 
 decString::decString(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	const int length = (int)strlen(string);
@@ -98,7 +98,7 @@ decString::decString(const decString &string1, const decString &string2){
 }
 
 decString::decString(const decString &string1, const char *string2){
-	if(! string2){
+	if(!string2){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -133,7 +133,7 @@ bool decString::IsEmpty() const{
 void decString::Empty(){
 	if(pString[0] != '\0'){
 		char *newString = new char[1];
-		if(! newString) DETHROW(deeOutOfMemory);
+		if(!newString) DETHROW(deeOutOfMemory);
 		newString[0] = '\0';
 		
 		delete [] pString;
@@ -194,7 +194,7 @@ void decString::Set(const decString &string){
 }
 
 void decString::Set(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -233,7 +233,7 @@ void decString::SetValue(char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hi", value);
 #else
@@ -254,7 +254,7 @@ void decString::SetValue(unsigned char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hu", value);
 #else
@@ -271,7 +271,7 @@ void decString::SetValue(short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hi", value);
 	newString[length] = '\0';
 	
@@ -284,7 +284,7 @@ void decString::SetValue(unsigned short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hu", value);
 	newString[length] = '\0';
 	
@@ -297,7 +297,7 @@ void decString::SetValue(int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%i", value);
 	newString[length] = '\0';
 	
@@ -310,7 +310,7 @@ void decString::SetValue(unsigned int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%u", value);
 	newString[length] = '\0';
 	
@@ -323,7 +323,7 @@ void decString::SetValue(float value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	
@@ -336,7 +336,7 @@ void decString::SetValue(double value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(! newString) DETHROW(deeOutOfMemory);
+	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	
@@ -391,7 +391,7 @@ void decString::Append(const decString &string){
 }
 
 void decString::Append(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -768,7 +768,7 @@ int decString::Find(const char *characters, int start) const{
 }
 
 int decString::Find(const char *characters, int start, int end) const{
-	if(! characters){
+	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -842,7 +842,7 @@ int decString::FindReverse(const char *characters, int start) const{
 }
 
 int decString::FindReverse(const char *characters, int start, int end) const{
-	if(! characters){
+	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -881,7 +881,7 @@ int decString::FindString(const char *string, int start) const{
 }
 
 int decString::FindString(const char *string, int start, int end) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -937,7 +937,7 @@ int decString::FindStringReverse(const char *string, int start) const{
 }
 
 int decString::FindStringReverse(const char *string, int start, int end) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1099,7 +1099,7 @@ decStringList decString::Split(int character) const{
 }
 
 decStringList decString::Split(const char *characters) const{
-	if(! characters){
+	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1157,7 +1157,7 @@ void decString::Replace(int replaceCharacter, int withCharacter){
 }
 
 void decString::Replace(const char *replaceCharacters, int withCharacter){
-	if(! replaceCharacters){
+	if(!replaceCharacters){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1174,7 +1174,7 @@ void decString::Replace(const decString &replaceCharacters, int withCharacter){
 }
 
 void decString::ReplaceString(const char *replaceString, const char *withString){
-	if(! replaceString || ! withString){
+	if(!replaceString || !withString){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1250,7 +1250,7 @@ decString decString::GetReplaced(int replaceCharacter, int withCharacter) const{
 }
 
 decString decString::GetReplaced(const char *replaceCharacters, int withCharacter) const{
-	if(! replaceCharacters){
+	if(!replaceCharacters){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1275,7 +1275,7 @@ decString decString::GetReplaced(const decString &replaceCharacters, int withCha
 }
 
 decString decString::GetReplacedString(const char *replaceString, const char *withString) const{
-	if(! replaceString || ! withString){
+	if(!replaceString || !withString){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1536,7 +1536,7 @@ bool decString::Equals(const decString &string) const{
 }
 
 bool decString::Equals(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1548,7 +1548,7 @@ bool decString::EqualsInsensitive(const decString &string) const{
 }
 
 bool decString::EqualsInsensitive(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1560,7 +1560,7 @@ int decString::Compare(const decString &string) const{
 }
 
 int decString::Compare(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1572,7 +1572,7 @@ int decString::CompareInsensitive(const decString &string) const{
 }
 
 int decString::CompareInsensitive(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1584,7 +1584,7 @@ bool decString::BeginsWith(const decString &string) const{
 }
 
 bool decString::BeginsWith(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	return pBeginsWith(string);
@@ -1595,7 +1595,7 @@ bool decString::BeginsWithInsensitive(const decString &string) const{
 }
 
 bool decString::BeginsWithInsensitive(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	return pBeginsWithInsensitive(string);
@@ -1606,7 +1606,7 @@ bool decString::EndsWith(const decString &string) const{
 }
 
 bool decString::EndsWith(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	return pEndsWith(string);
@@ -1617,7 +1617,7 @@ bool decString::EndsWithInsensitive(const decString &string) const{
 }
 
 bool decString::EndsWithInsensitive(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	return pEndsWithInsensitive(string);
@@ -1630,13 +1630,13 @@ bool decString::MatchesPattern(const decString &pattern) const{
 }
 
 bool decString::MatchesPattern(const char *pattern) const{
-	if(! pattern) DETHROW(deeInvalidParam);
+	if(!pattern) DETHROW(deeInvalidParam);
 	
 	return decString::fxfilematch(pattern, pString, FILEMATCH_PERIOD);
 }
 
 bool decString::StringMatchesPattern(const char *string, const char *pattern){
-	if(! string || ! pattern) DETHROW(deeInvalidParam);
+	if(!string || !pattern) DETHROW(deeInvalidParam);
 	
 	return decString::fxfilematch(pattern, string, FILEMATCH_PERIOD);
 }
@@ -1703,7 +1703,7 @@ bool decString::operator==(const decString &string) const{
 }
 
 bool decString::operator==(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1715,7 +1715,7 @@ bool decString::operator!=(const decString &string) const{
 }
 
 bool decString::operator!=(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	return pCompare(string) != 0;
@@ -1726,7 +1726,7 @@ bool decString::operator<(const decString &string) const{
 }
 
 bool decString::operator<(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1738,7 +1738,7 @@ bool decString::operator<=(const decString &string) const{
 }
 
 bool decString::operator<=(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1750,7 +1750,7 @@ bool decString::operator>(const decString &string) const{
 }
 
 bool decString::operator>(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1762,7 +1762,7 @@ bool decString::operator>=(const decString &string) const{
 }
 
 bool decString::operator>=(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1963,7 +1963,7 @@ bool decString::domatch(const char *pattern, const char *string, int flags){
 				if(c == '\0'){    // Optimize for case of trailing '*'
 					return true;
 				}
-				while(! domatch(p, q, flags & ~FILEMATCH_PERIOD)){
+				while(!domatch(p, q, flags & ~FILEMATCH_PERIOD)){
 					if(*q++ == '\0') return false;
 				}
 				return true;
@@ -1991,7 +1991,7 @@ bool decString::domatch(const char *pattern, const char *string, int flags){
 					if((cs <= cc) && (cc <= ce)) goto match;
 				}
 				while(c != ']');
-				if(! neg) return false;
+				if(!neg) return false;
 				q++;
 				break;
 				

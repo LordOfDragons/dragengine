@@ -74,7 +74,7 @@ debnValueVector3::~debnValueVector3(){
 ///////////////
 
 bool debnValueVector3::UpdateValue(bool force){
-	if(! force && pValueVector3.GetVector().IsEqualTo(pLastValue, pValueVector3.GetPrecision())){
+	if(!force && pValueVector3.GetVector().IsEqualTo(pLastValue, pValueVector3.GetPrecision())){
 		return false;
 	}
 	

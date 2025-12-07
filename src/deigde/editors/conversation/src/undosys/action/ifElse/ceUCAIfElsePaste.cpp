@@ -46,7 +46,7 @@ ceUCAIfElsePaste::ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifEls
 ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
-	if(! ifElse || actions.GetCount() == 0){
+	if(!ifElse || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

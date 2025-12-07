@@ -72,7 +72,7 @@ deAnimator *deAnimatorManager::CreateAnimator(){
 	try{
 		// create and add animator
 		animator = new deAnimator(this);
-		if(! animator) DETHROW(deeOutOfMemory);
+		if(!animator) DETHROW(deeOutOfMemory);
 		GetAnimatorSystem()->LoadAnimator(animator);
 		// add animator
 		pAnimators.Add(animator);
@@ -107,7 +107,7 @@ void deAnimatorManager::SystemAnimatorLoad(){
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
 	while(animator){
-		if(! animator->GetPeerAnimator()){
+		if(!animator->GetPeerAnimator()){
 			aniSys.LoadAnimator(animator);
 		}
 		

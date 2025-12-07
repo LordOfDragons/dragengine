@@ -59,9 +59,9 @@ aeURuleAnimSelectToggleEnableVertexPositionSet::~aeURuleAnimSelectToggleEnableVe
 ///////////////
 
 void aeURuleAnimSelectToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleAnimSelectToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }

@@ -48,12 +48,12 @@
 ////////////////////////////
 
 meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -67,7 +67,7 @@ meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(! object->HasTextureNamed(modelTextureNames.GetAt(i).GetString())){
+		if(!object->HasTextureNamed(modelTextureNames.GetAt(i).GetString())){
 			pTextureNameList.Add(modelTextureNames.GetAt(i));
 		}
 	}
@@ -121,7 +121,7 @@ void meUObjectAddUsedTextures::Redo(){
 			if(gdctexlist){
 				gdctex = gdctexlist->GetNamed(textureName);
 			}
-			if(! gdctex && gdccomptex){
+			if(!gdctex && gdccomptex){
 				gdctex = gdccomptex->GetNamed(textureName);
 			}
 			

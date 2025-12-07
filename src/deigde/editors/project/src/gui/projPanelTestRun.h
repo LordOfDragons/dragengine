@@ -111,16 +111,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{return pProject;}
+	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);
 	
 	/** \brief Test runner or \em NULL. */
-	inline projTestRunner *GetTestRunner() const{return pTestRunner;}
+	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }
 	
 	
 	

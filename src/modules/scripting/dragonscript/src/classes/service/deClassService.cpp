@@ -132,7 +132,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 
 void deClassService::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -148,7 +148,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceListener){
 
 void deClassService::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -173,7 +173,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassService::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -205,7 +205,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassService::nfStartRequest::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -213,7 +213,7 @@ void deClassService::nfStartRequest::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deServiceObject * const request = clsService.GetDS().GetClassServiceObject()->
 		GetServiceObject(rt->GetValue(0)->GetRealObject());
 	
-	if(! request){
+	if(!request){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -233,7 +233,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassService::nfStartRequest2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -243,7 +243,7 @@ void deClassService::nfStartRequest2::RunFunction(dsRunTime *rt, dsValue *myself
 	const deServiceObject * const request = ds.GetClassServiceObject()->GetServiceObject(
 		rt->GetValue(1)->GetRealObject());
 	
-	if(! request){
+	if(!request){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -262,7 +262,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassService::nfCancelRequest::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -285,7 +285,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 
 void deClassService::nfRunAction::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -294,7 +294,7 @@ void deClassService::nfRunAction::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deServiceObject * const action = clsServiceObject.GetServiceObject(
 		rt->GetValue(0)->GetRealObject());
 	
-	if(! action){
+	if(!action){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -312,7 +312,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 
 void deClassService::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -329,14 +329,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 
 void deClassService::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sServiceNatDat &nd = *((sServiceNatDat*)p_GetNativeData(myself));
-	if(! nd.service){
+	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
 	
 	deClassService * const clsService = (deClassService*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsService)){
+	if(!p_IsObjOfType(obj, clsService)){
 		rt->PushBool(false);
 		
 	}else{
@@ -405,7 +405,7 @@ void deClassService::CreateClassMembers(dsEngine *engine){
 }
 
 deService *deClassService::GetService(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return nullptr;
 	}
 	
@@ -413,11 +413,11 @@ deService *deClassService::GetService(dsRealObject *myself) const{
 }
 
 void deClassService::PushService(dsRunTime *rt, deService *service){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! service){
+	if(!service){
 		rt->PushObject(nullptr, this);
 		return;
 	}

@@ -71,7 +71,7 @@ pSignalCounter(0)
 	// windows
 	#ifdef OS_W32
 	pEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	if(! pEvent){
+	if(!pEvent){
 		DETHROW(deeOutOfMemory);
 	}
 	InitializeCriticalSection(&pCSWaitCounter);
@@ -103,7 +103,7 @@ pSignalCounter(0)
 	// windows
 	#ifdef OS_W32
 	pEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	if(! pEvent){
+	if(!pEvent){
 		DETHROW(deeOutOfMemory);
 	}
 	InitializeCriticalSection(&pCSWaitCounter);
@@ -291,7 +291,7 @@ void deSemaphore::Signal(){
 	pSignalCounter++;
 	LeaveCriticalSection(&pCSWaitCounter);
 	
-	if(! SetEvent(pEvent)){
+	if(!SetEvent(pEvent)){
 		EnterCriticalSection(&pCSWaitCounter);
 		pSignalCounter--;
 		pCounter--;
@@ -343,7 +343,7 @@ void deSemaphore::SignalAll(){
 		
 		while(pSignalCounter > 0){
 			LeaveCriticalSection(&pCSWaitCounter);
-			if(! SetEvent(pEvent)){
+			if(!SetEvent(pEvent)){
 				DETHROW(deeInvalidAction);
 			}
 			EnterCriticalSection(&pCSWaitCounter);

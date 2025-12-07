@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reSelectionConstraints::reSelectionConstraints(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -67,7 +67,7 @@ reRigConstraint *reSelectionConstraints::GetConstraintAt(int index) const{
 }
 
 bool reSelectionConstraints::HasConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -80,7 +80,7 @@ bool reSelectionConstraints::HasConstraint(reRigConstraint *constraint) const{
 }
 	
 int reSelectionConstraints::IndexOfConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -93,7 +93,7 @@ int reSelectionConstraints::IndexOfConstraint(reRigConstraint *constraint) const
 }
 
 int reSelectionConstraints::IndexOfConstraintWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -111,7 +111,7 @@ void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		reRigConstraint **newArray = new reRigConstraint*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(reRigConstraint*) * pConstraintSize);
 			delete [] pConstraints;
@@ -181,7 +181,7 @@ bool reSelectionConstraints::HasActiveConstraint() const{
 
 void reSelectionConstraints::SetActiveConstraint(reRigConstraint *constraint){
 	if(constraint != pActiveConstraint){
-		if(constraint && ! HasConstraint(constraint)) DETHROW(deeInvalidParam);
+		if(constraint && !HasConstraint(constraint)) DETHROW(deeInvalidParam);
 		
 		if(pActiveConstraint){
 			pActiveConstraint->SetActive(false);

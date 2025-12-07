@@ -90,13 +90,13 @@ pRestrictedImageBufferFormats(false)
 	
 	// full screen quad VBO and VAO
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pFSQuadVAO));
-	if(! pFSQuadVAO){
+	if(!pFSQuadVAO){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindVertexArray(pFSQuadVAO));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pFSQuadVBO));
-	if(! pFSQuadVBO){
+	if(!pFSQuadVBO){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pFSQuadVBO));
@@ -446,7 +446,7 @@ void deoglCapabilities::pAndroidTest(deoglFramebuffer *framebuffer){
 	try{
 		// load shader
 		sources = shaderManager.GetSourcesNamed("Test Integer Packing");
-		if(! sources){
+		if(!sources){
 			DETHROW(deeInvalidParam);
 		}
 		const deoglShaderProgram * const shader = shaderManager.GetProgramWith(sources, defines);

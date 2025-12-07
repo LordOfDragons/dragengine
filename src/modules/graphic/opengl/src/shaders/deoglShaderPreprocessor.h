@@ -140,13 +140,13 @@ public:
 	/** \name Sources */
 	/*@{*/
 	/** Sources. */
-	inline const char *GetSources() const{return pSources;}
+	inline const char *GetSources() const{ return pSources; }
 	
 	/** Sources length. */
-	inline int GetSourcesLength() const{return pSourcesLen;}
+	inline int GetSourcesLength() const{ return pSourcesLen; }
 	
 	/** Source locations. */
-	inline const decObjectList &GetSourceLocations() const{return pSourceLocations;}
+	inline const decObjectList &GetSourceLocations() const{ return pSourceLocations; }
 	
 	/** Append to sources. */
 	void SourcesAppend(const char *text, bool mapLines);

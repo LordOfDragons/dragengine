@@ -121,7 +121,7 @@ void deoxrDPHtcViveTracker::OnActionsSynced(){
 
 void deoxrDPHtcViveTracker::CheckAttached(){
 	const deoxrInstance &instance = GetInstance();
-	if(! instance.SupportsExtension(deoxrInstance::extHTCXViveTrackerInteraction)){
+	if(!instance.SupportsExtension(deoxrInstance::extHTCXViveTrackerInteraction)){
 		return;
 	}
 	
@@ -158,7 +158,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 			// remove devices of no more connected trackers or trackers having changed role
 			for(t=0; t<pTrackers.GetCount(); t++){
 				Tracker &tracker = *((Tracker*)pTrackers.GetAt(t));
-				if(! tracker.device){
+				if(!tracker.device){
 					continue;
 				}
 				
@@ -204,7 +204,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 						tracker->pathRole = deoxrPath(instance, trackerPaths[i].rolePath);
 					}
 					
-					if(! tracker->device){
+					if(!tracker->device){
 						// do not add device if the session is about to restart
 						if(instance.GetOxr().GetRestartSession()){
 							continue;
@@ -291,7 +291,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 
 void deoxrDPHtcViveTracker::CreateActions(deoxrActionSet &actionSet){
 	const deoxrInstance &instance = GetInstance();
-	if(! instance.SupportsExtension(deoxrInstance::extHTCXViveTrackerInteraction)){
+	if(!instance.SupportsExtension(deoxrInstance::extHTCXViveTrackerInteraction)){
 		return;
 	}
 	
@@ -394,11 +394,11 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	int i;
 	for(i=0; i<pTrackers.GetCount(); i++){
 		const Tracker &tracker = *((Tracker*)pTrackers.GetAt(i));
-		if(! tracker.action){
+		if(!tracker.action){
 			continue;
 		}
 		
-		if(! tracker.pathRole){
+		if(!tracker.pathRole){
 			continue; // persistent path not accepted by SteamVR. returns unsupported path error
 		}
 		
@@ -439,8 +439,8 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 			return;
 
 		}catch(const deException &){
-			instance.GetOxr().LogError("Binding HTCXViveTrackerInteraction:V3 failed! "
-				"Broken VR Runtime Detected! Downgrading to HTCXViveTrackerInteraction:V1!");
+			instance.GetOxr().LogError("Binding HTCXViveTrackerInteraction:V3 failed!"
+				"Broken VR Runtime Detected!Downgrading to HTCXViveTrackerInteraction:V1!");
 			count = pRoleActions.GetCount() - 4;
 		}
 	}
@@ -652,7 +652,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 		deVirtualFileSystem& vfs = oxr.GetVFS();
 		
 		const decPath filePath(decPath::CreatePathUnix(PATH_VIVETRACKER_XML));
-		if(! vfs.CanReadFile(filePath)){
+		if(!vfs.CanReadFile(filePath)){
 			return;
 		}
 		
@@ -663,7 +663,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 		xmlDoc->CleanCharData();
 		
 		decXmlElementTag * const root = xmlDoc->GetRoot();
-		if(! root || root->GetName() != "viveTrackers"){
+		if(!root || root->GetName() != "viveTrackers"){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -671,7 +671,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 		int i;
 		for(i=0; i<elementCount; i++){
 			decXmlElement * const element = root->GetElementAt(i);
-			if(! element->CanCastToElementTag()){
+			if(!element->CanCastToElementTag()){
 				continue;
 			}
 			
@@ -684,7 +684,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 				int j;
 				for(j=0; j<elementCount2; j++){
 					decXmlElement * const element2 = tag.GetElementAt(j);
-					if(! element2->CanCastToElementTag()){
+					if(!element2->CanCastToElementTag()){
 						continue;
 					}
 					
@@ -703,7 +703,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 					}
 				}
 				
-				if(! path || ! number){
+				if(!path || !number){
 					oxr.LogWarnFormat("Invalid entry in tracker database. Ignoring entry");
 					continue;
 				}
@@ -751,7 +751,7 @@ void deoxrDPHtcViveTracker::pSaveTrackerDatabase(){
 }
 
 void deoxrDPHtcViveTracker::pAddDevice(Tracker &tracker){
-	if(! tracker.action /* || ! tracker.pathRole */){
+	if(!tracker.action /* || !tracker.pathRole */){
 		return;
 	}
 	

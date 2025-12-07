@@ -145,7 +145,7 @@ void deClassEffectDistortImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 	deClassEffectDistortImage * const clsEffDistImg = (deClassEffectDistortImage*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsEffDistImg)){
+	if(!p_IsObjOfType(obj, clsEffDistImg)){
 		rt->PushBool(false);
 		
 	}else{
@@ -209,7 +209,7 @@ void deClassEffectDistortImage::CreateClassMembers(dsEngine *engine){
 
 
 deEffectDistortImage *deClassEffectDistortImage::GetEffect(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -217,11 +217,11 @@ deEffectDistortImage *deClassEffectDistortImage::GetEffect(dsRealObject *myself)
 }
 
 void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

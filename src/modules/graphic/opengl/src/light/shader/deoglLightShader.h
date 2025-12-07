@@ -190,10 +190,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Configuration. */
-	inline const deoglLightShaderConfig &GetConfig() const{return pConfig;}
+	inline const deoglLightShaderConfig &GetConfig() const{ return pConfig; }
 	
 	/** Index for texture target or -1 if not used. */
 	int GetTextureTarget(eTextureTargets target) const;
@@ -214,7 +214,7 @@ public:
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader or nullptr if not generated yet. */
-	inline deoglShaderProgram *GetShader() const{return pShader;}
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/** Set index for light parameter uniform target or -1 if not used. */
 	void SetLightUniformTarget(eLightUniformTargets target, int index);

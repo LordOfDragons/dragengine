@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleAnimToggleEnableSize::aeURuleAnimToggleEnableSize(aeRuleAnimation *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleAnimToggleEnableSize::~aeURuleAnimToggleEnableSize(){
 ///////////////
 
 void aeURuleAnimToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleAnimToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

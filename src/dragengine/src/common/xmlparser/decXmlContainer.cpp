@@ -76,7 +76,7 @@ void decXmlContainer::InsertElement(decXmlElement *element, int beforeIndex){
 }
 
 void decXmlContainer::RemoveElement(decXmlElement *element){
-	if(! pElements.Has(element)){
+	if(!pElements.Has(element)){
 		DETHROW(deeInvalidParam);
 	}
 	

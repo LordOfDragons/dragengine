@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the active environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetActiveEnvMap() const{return pEnvMapActive;}
+	inline deoglEnvironmentMap *GetActiveEnvMap() const{ return pEnvMapActive; }
 	/** Retrieves the fading environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetFadingEnvMap() const{return pEnvMapFading;}
+	inline deoglEnvironmentMap *GetFadingEnvMap() const{ return pEnvMapFading; }
 	/** Retrieves the delayed environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetDelayedEnvMap() const{return pEnvMapDelayed;}
+	inline deoglEnvironmentMap *GetDelayedEnvMap() const{ return pEnvMapDelayed; }
 	/**
 	 * Retrieves the blend factor for the active environment map. The blend factor for the
 	 * fading environment map is 1 minus blend factor.
 	 */
-	inline float GetBlendFactor() const{return pBlendFactor;}
+	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** Retrieves the amount of fading per second. */
-	inline float GetFadePerTime() const{return pFadePerTime;}
+	inline float GetFadePerTime() const{ return pFadePerTime; }
 	/** Sets the amount of fading per second. */
 	void SetFadePerTime(float fadePerTime);
 	

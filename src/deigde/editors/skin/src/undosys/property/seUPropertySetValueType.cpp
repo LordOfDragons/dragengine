@@ -38,7 +38,7 @@
 ////////////////////////////
 
 seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
-	if(! property) DETHROW(deeInvalidParam);
+	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	

@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of formats. */
-	inline int GetFormatCount() const{return pFormatCount;}
+	inline int GetFormatCount() const{ return pFormatCount; }
 	
 	/** Format at index. */
 	const deoglCapsTextureFormat *GetFormatAt(int index) const;

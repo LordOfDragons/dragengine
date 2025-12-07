@@ -95,52 +95,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Eengine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Parent rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set parent rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Parent rig bone. */
-	inline reRigBone *GetRigBone() const{return pRigBone;}
+	inline reRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set parent rig bone. */
 	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
-	inline deColliderVolume *GetCollider() const{return pCollider;}
+	inline deColliderVolume *GetCollider() const{ return pCollider; }
 	
 	/** \brief Shape type. */
-	inline eShapeTypes GetShapeType() const{return pShapeType;}
+	inline eShapeTypes GetShapeType() const{ return pShapeType; }
 	
 	/** \brief Position. */
-	inline decVector GetPosition() const{return pPosition;}
+	inline decVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline decVector GetOrientation() const{return pOrientation;}
+	inline decVector GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Property. */
-	inline const decString &GetProperty() const{return pProperty;}
+	inline const decString &GetProperty() const{ return pProperty; }
 	
 	/** \brief Set property. */
 	void SetProperty(const char *property);
 	
 	/** \brief Shape is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if shape is selected. */
 	void SetSelected(bool selected);
 	
 	/** \brief Shape is the active one. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if shape is the active one. */
 	void SetActive(bool active);

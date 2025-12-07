@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Local address. */
-	inline const decString &GetLocalAddress() const{return pLocalAddress;}
+	inline const decString &GetLocalAddress() const{ return pLocalAddress; }
 	
 	/**
 	 * \brief Set local address.
@@ -93,7 +93,7 @@ public:
 	void SetLocalAddress(const char *address);
 	
 	/** \brief Remote address. */
-	inline const decString &GetRemoteAddress() const{return pRemoteAddress;}
+	inline const decString &GetRemoteAddress() const{ return pRemoteAddress; }
 	
 	/**
 	 * \brief Set remote address.
@@ -103,7 +103,7 @@ public:
 	void SetRemoteAddress(const char *address);
 	
 	/** \brief Connection to a remote host is established. */
-	inline bool GetConnected() const{return pConnected;}
+	inline bool GetConnected() const{ return pConnected; }
 	
 	/**
 	 * \brief Set if connection to remote host is established.
@@ -162,13 +162,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Network system peer object. */
-	inline deBaseNetworkConnection *GetPeerNetwork() const{return pPeerNetwork;}
+	inline deBaseNetworkConnection *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
 	void SetPeerNetwork(deBaseNetworkConnection *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingConnection *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingConnection *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
 	void SetPeerScripting(deBaseScriptingConnection *peer);

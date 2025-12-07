@@ -131,7 +131,7 @@ void deClassCanvasRenderWorld::nfProject::RunFunction(dsRunTime *rt, dsValue *my
 	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
-	if(! camera){
+	if(!camera){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -175,7 +175,7 @@ void deClassCanvasRenderWorld::nfBackProject::RunFunction(dsRunTime *rt, dsValue
 	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
-	if(! camera){
+	if(!camera){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -223,7 +223,7 @@ void deClassCanvasRenderWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassCanvasRenderWorld * const clsCRenW = (deClassCanvasRenderWorld*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCRenW)){
+	if(!p_IsObjOfType(obj, clsCRenW)){
 		rt->PushBool(false);
 		
 	}else{
@@ -293,7 +293,7 @@ void deClassCanvasRenderWorld::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasRenderWorld *deClassCanvasRenderWorld::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -301,11 +301,11 @@ deCanvasRenderWorld *deClassCanvasRenderWorld::GetCanvas(dsRealObject *myself) c
 }
 
 void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

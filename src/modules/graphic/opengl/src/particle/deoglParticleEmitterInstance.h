@@ -74,15 +74,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Particle emitter instance. */
-	inline const deParticleEmitterInstance &GetInstance() const{return pInstance;}
+	inline const deParticleEmitterInstance &GetInstance() const{ return pInstance; }
 	
 	
 	
 	/** Render particle emitter instance. */
-	inline deoglRParticleEmitterInstance *GetRInstance() const{return pRInstance;}
+	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -90,10 +90,10 @@ public:
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglParticleEmitter *GetEmitter() const{return pEmitter;}
+	inline deoglParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** Number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** Type at index. */
 	deoglParticleEmitterInstanceType &GetTypeAt(int index);

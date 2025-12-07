@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief SnapPoint. */
-	gdeOCSnapPoint *GetSnapPoint() const{return pSnapPoint;}
+	gdeOCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
 	/*@}*/
 };
 

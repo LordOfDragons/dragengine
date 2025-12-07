@@ -169,7 +169,7 @@ bool deoalSpeakerList::operator==(const deoalSpeakerList &list) const{
 	
 	int i;
 	for(i=0; i<count; i++){
-		if(! list.pSpeakers.Has(pSpeakers.GetAt(i))){
+		if(!list.pSpeakers.Has(pSpeakers.GetAt(i))){
 			return false;
 		}
 	}
@@ -178,5 +178,5 @@ bool deoalSpeakerList::operator==(const deoalSpeakerList &list) const{
 }
 
 bool deoalSpeakerList::operator!=(const deoalSpeakerList &list) const{
-	return ! operator==(list);
+	return !operator==(list);
 }

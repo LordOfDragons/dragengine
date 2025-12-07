@@ -73,7 +73,7 @@ struct LocalInfoAdder : public btCollisionWorld::ConvexResultCallback{
 		
 		shapeInfo.m_shapePart = -1;
 		shapeInfo.m_triangleIndex = pI;
-		if(! r.m_localShapeInfo){
+		if(!r.m_localShapeInfo){
 			r.m_localShapeInfo = &shapeInfo;
 		}
 		
@@ -267,7 +267,7 @@ void debpBulletShapeCollision::ShapeCastConvex(const btConvexShape *castShape, c
 const btTransform &castToTrans, const btCollisionObjectWrapper *colObjWrap,
 btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration){
 	// check if the transformation contains rotation. fast versions can only be used without rotation
-	if(! HasTransformRotation(castFromTrans,castToTrans)){
+	if(!HasTransformRotation(castFromTrans,castToTrans)){
 		const btCollisionShape * const collisionShape = colObjWrap->getCollisionShape();
 		
 		if(castShape->getShapeType() == BOX_SHAPE_PROXYTYPE){

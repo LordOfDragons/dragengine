@@ -97,7 +97,7 @@ void igdeWOSONavigationSpace::Visit(igdeWOSOVisitor &visitor){
 //////////////////////
 
 void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
-	if(! pNavigationSpace){
+	if(!pNavigationSpace){
 		pNavigationSpace.TakeOver(GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace());
 		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 	}
@@ -115,7 +115,7 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 		pNavigationSpace->SetVertexCount(0);
 		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 		
-		if(! pathNavSpace.IsEmpty()){
+		if(!pathNavSpace.IsEmpty()){
 			igdeLoadSaveNavSpace loadNavSpace(&GetEnvironment(), "DEIGDE");
 			const decPath vfsPath(decPath::CreatePathUnix(pathNavSpace));
 			deEngine &engine = GetEngine();
@@ -169,17 +169,17 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	}
 	pNavigationSpace->NotifyBlockerShapeListChanged();
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddNavigationSpace(pNavigationSpace);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
-	if(! pNavigationSpace){
+	if(!pNavigationSpace){
 		return;
 	}
 	
@@ -197,7 +197,7 @@ void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
 void igdeWOSONavigationSpace::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pNavigationSpace){
+	if(!pNavigationSpace){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 			pGDNavigationSpace.GetOrientation()));
 		
 		if(colliderComponent){
-			if(! pGDNavigationSpace.GetBoneName().IsEmpty()){
+			if(!pGDNavigationSpace.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDNavigationSpace.GetBoneName());
 			}
@@ -239,7 +239,7 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 }
 
 void igdeWOSONavigationSpace::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	

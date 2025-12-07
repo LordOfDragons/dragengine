@@ -50,7 +50,7 @@ reURemoveShape::reURemoveShape(reRigShapeList &list){
 	if(shapeCount == 0) DETHROW(deeInvalidParam);
 	
 	pRig = list.GetShapeAt(0)->GetRig();
-	if(! pRig) DETHROW(deeInvalidParam);
+	if(!pRig) DETHROW(deeInvalidParam);
 	pRig->AddReference();
 	
 	pEntries = NULL;
@@ -58,7 +58,7 @@ reURemoveShape::reURemoveShape(reRigShapeList &list){
 	
 	try{
 		pEntries = new sEntry[shapeCount];
-		if(! pEntries) DETHROW(deeOutOfMemory);
+		if(!pEntries) DETHROW(deeOutOfMemory);
 		
 		while(pEntryCount < shapeCount){
 			shape = list.GetShapeAt(pEntryCount);

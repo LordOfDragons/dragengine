@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of texture coordinates. */
-	inline int GetTextureCoordinatesCount() const{return pTextureCoordinatesCount;}
+	inline int GetTextureCoordinatesCount() const{ return pTextureCoordinatesCount; }
 	
 	/** \brief Set number of texture coordinates. */
 	void SetTextureCoordinatesCount(int count);
@@ -67,7 +67,7 @@ public:
 	void SetTextureCoordinatesAt(int index, const decVector2 &textureCoordinates);
 	
 	/** \brief Pointer to the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{return pTextureCoordinates;}
+	inline decVector2 *GetTextureCoordinates() const{ return pTextureCoordinates; }
 	/*@}*/
 };
 

@@ -102,12 +102,12 @@ void deoglRDSRenderableCanvas::Render(const deoglRenderPlanMasked *renderPlanMas
 }
 
 deoglTexture *deoglRDSRenderableCanvas::GetRenderTexture(){
-	if(! pCanvas){
+	if(!pCanvas){
 		return NULL;
 	}
 	
 	deoglRenderTarget * const renderTarget = pCanvas->GetRenderTarget();
-	if(! renderTarget){
+	if(!renderTarget){
 		return NULL;
 	}
 	

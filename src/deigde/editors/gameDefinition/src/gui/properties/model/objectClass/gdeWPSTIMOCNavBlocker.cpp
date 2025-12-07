@@ -51,7 +51,7 @@ gdeWPSTIMOCNavBlocker::gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree,
 gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index),
 pNavBlocker(NULL)
 {
-	if(! navBlocker){
+	if(!navBlocker){
 		DETHROW(deeInvalidParam);
 	}
 	

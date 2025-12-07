@@ -130,7 +130,7 @@ void deoglRCaptureCanvas::DropPixelBuffer(){
 
 
 void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
-	if(! pCapturePending){
+	if(!pCapturePending){
 		return;
 	}
 	
@@ -172,7 +172,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 }
 
 void deoglRCaptureCanvas::CapturePending(){
-	if(! pCapturePending){
+	if(!pCapturePending){
 		return;
 	}
 	

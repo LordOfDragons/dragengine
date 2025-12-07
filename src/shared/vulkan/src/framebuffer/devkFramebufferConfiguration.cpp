@@ -102,7 +102,7 @@ void devkFramebufferConfiguration::SetAttachmentAt(int index, devkImageView *att
 }
 
 void devkFramebufferConfiguration::SetSize(const decPoint &size){
-	if(! (size >= decPoint(1, 1))){
+	if(!(size >= decPoint(1, 1))){
 		DETHROW_INFO(deeInvalidParam, "!(size >= (1,1))");
 	}
 	

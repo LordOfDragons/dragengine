@@ -67,25 +67,25 @@ bool meObjectTextureList::HasTexture(meObjectTexture *texture){
 }
 
 void meObjectTextureList::AddTexture(meObjectTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTextures.Add(texture);
 }
 
 void meObjectTextureList::AddTextureIfAbsent(meObjectTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTextures.AddIfAbsent(texture);
 }
 
 void meObjectTextureList::RemoveTexture(meObjectTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTextures.Remove(texture);
 }
 
 void meObjectTextureList::RemoveTextureIfPresent(meObjectTexture *texture){
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTextures.RemoveIfPresent(texture);
 }

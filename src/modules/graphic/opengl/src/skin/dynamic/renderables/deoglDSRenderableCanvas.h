@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableCanvas &GetRenderableCanvas() const{return pRenderableCanvas;}
+	inline const deDSRenderableCanvas &GetRenderableCanvas() const{ return pRenderableCanvas; }
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

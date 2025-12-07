@@ -103,7 +103,7 @@ public:
 		ChildObject(igdeEnvironment &environment);
 		
 		/** \brief Object wrapper. */
-		inline const igdeWObject::Ref &GetWrapper(){return pWrapper;}
+		inline const igdeWObject::Ref &GetWrapper(){ return pWrapper; }
 		
 		/** \brief Count of textures. */
 		int GetTextureCount() const;

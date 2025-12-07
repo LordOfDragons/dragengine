@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pForceField(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! forceField){
+	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
 	}
 	

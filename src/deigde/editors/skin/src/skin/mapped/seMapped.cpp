@@ -93,7 +93,7 @@ void seMapped::SetName(const char *name){
 }
 
 void seMapped::MakeNameUnique(const seMappedList &list){
-	if(! list.HasNamed(pName)){
+	if(!list.HasNamed(pName)){
 		return;
 	}
 	

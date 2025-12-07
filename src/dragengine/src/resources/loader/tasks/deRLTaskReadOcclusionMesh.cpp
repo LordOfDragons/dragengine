@@ -81,7 +81,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 	LogRunEnter();
 	deBaseOcclusionMeshModule * const module = (deBaseOcclusionMeshModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtOcclusionMesh, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 	module->LoadOcclusionMesh(decBaseFileReader::Ref::New(
 		GetVFS()->OpenFileForReading(vfsPath)), pOcclusionMesh);
 	
-	if(! pOcclusionMesh->Verify()){
+	if(!pOcclusionMesh->Verify()){
 		DETHROW(deeInvalidParam);
 	}
 	pOcclusionMesh->Prepare();
@@ -105,7 +105,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 
 void deRLTaskReadOcclusionMesh::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pOcclusionMesh = NULL;
 		LogFinishedExit();

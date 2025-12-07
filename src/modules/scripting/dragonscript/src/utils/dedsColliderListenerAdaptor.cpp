@@ -52,7 +52,7 @@ pHasListener(false)
 }
 
 dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){
-	if(! pListener){
+	if(!pListener){
 		return;
 	}
 	
@@ -89,7 +89,7 @@ void dedsColliderListenerAdaptor::Reset(){
 //////////////////
 
 void dedsColliderListenerAdaptor::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! pHasListener){
+	if(!pHasListener){
 		return;
 	}
 	
@@ -110,7 +110,7 @@ void dedsColliderListenerAdaptor::CollisionResponse(deCollider *owner, deCollisi
 }
 
 bool dedsColliderListenerAdaptor::CanHitCollider(deCollider *owner, deCollider *collider){
-	if(! pHasListener){
+	if(!pHasListener){
 		return false;
 	}
 	

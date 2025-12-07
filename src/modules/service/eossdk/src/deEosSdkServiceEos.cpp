@@ -130,7 +130,7 @@ productUserId(nullptr)
 		#endif
 
 		pHandlePlatform = EOS_Platform_Create(&options);
-		if(! pHandlePlatform){
+		if(!pHandlePlatform){
 			DETHROW_INFO(deeInvalidAction, "Failed create platform interface");
 		}
 		
@@ -154,35 +154,35 @@ deEosSdkServiceEos::~deEosSdkServiceEos(){
 ///////////////
 
 EOS_HAuth deEosSdkServiceEos::GetHandleAuth(){
-	if(! pHandleAuth){
+	if(!pHandleAuth){
 		pHandleAuth = EOS_Platform_GetAuthInterface(pHandlePlatform);
 	}
 	return pHandleAuth;
 }
 
 EOS_HUserInfo deEosSdkServiceEos::GetHandleUserInfo(){
-	if(! pHandleUserInfo){
+	if(!pHandleUserInfo){
 		pHandleUserInfo = EOS_Platform_GetUserInfoInterface(pHandlePlatform);
 	}
 	return pHandleUserInfo;
 }
 
 EOS_HAchievements deEosSdkServiceEos::GetHandleAchievements(){
-	if(! pHandleAchievements){
+	if(!pHandleAchievements){
 		pHandleAchievements = EOS_Platform_GetAchievementsInterface(pHandlePlatform);
 	}
 	return pHandleAchievements;
 }
 
 EOS_HStats deEosSdkServiceEos::GetHandleStats(){
-	if(! pHandleStats){
+	if(!pHandleStats){
 		pHandleStats = EOS_Platform_GetStatsInterface(pHandlePlatform);
 	}
 	return pHandleStats;
 }
 
 EOS_HConnect deEosSdkServiceEos::GetHandleConnect(){
-	if(! pHandleConnect){
+	if(!pHandleConnect){
 		pHandleConnect = EOS_Platform_GetConnectInterface(pHandlePlatform);
 	}
 	return pHandleConnect;
@@ -190,7 +190,7 @@ EOS_HConnect deEosSdkServiceEos::GetHandleConnect(){
 
 EOS_HUI deEosSdkServiceEos::GetHandleUI()
 {
-	if(! pHandleUI){
+	if(!pHandleUI){
 		pHandleUI = EOS_Platform_GetUIInterface(pHandlePlatform);
 	}
 	return pHandleUI;
@@ -221,7 +221,7 @@ void deEosSdkServiceEos::StartRequest(const decUniqueID &id, const deServiceObje
 
 void deEosSdkServiceEos::CancelRequest(const decUniqueID &id){
 	deEosSdkPendingRequest * const pr = GetPendingRequestWithId(id);
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -321,7 +321,7 @@ void deEosSdkServiceEos::QueryUserInfo(const decUniqueID &id, const deServiceObj
 	pModule.LogInfo("deEosSdkServiceEos: Get user information");
 	NewPendingRequest(id, "queryUserInfo");
 	try{
-		if(! localUserId){
+		if(!localUserId){
 			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		
@@ -334,7 +334,7 @@ void deEosSdkServiceEos::QueryUserInfo(const decUniqueID &id, const deServiceObj
 }
 
 deServiceObject::Ref deEosSdkServiceEos::CopyIdToken(const deServiceObject &action){
-	if(! selectedAccountId){
+	if(!selectedAccountId){
 		DETHROW_INFO(deeInvalidAction, "No user logged in");
 	}
 	
@@ -370,11 +370,11 @@ deServiceObject::Ref deEosSdkServiceEos::IsUserLoggedIn(const deServiceObject &a
 }
 
 deServiceObject::Ref deEosSdkServiceEos::GetUserFeatures(){
-	if(! pAuthProviderIcon){
+	if(!pAuthProviderIcon){
 		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
 			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
 	}
-	if(! pAuthProviderImage){
+	if(!pAuthProviderImage){
 		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
 			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
 	}
@@ -444,7 +444,7 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data){
 	}
 	
 	const deEosSdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithId(id));
-	if(! pr){
+	if(!pr){
 		return;
 	}
 	
@@ -501,7 +501,7 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data){
 void deEosSdkServiceEos::OnDisplaySettingsUpdatedCallback(
 const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo &data){
 	if(data.bIsExclusiveInput){
-		if(! pUiExclusiveModeEnabled){
+		if(!pUiExclusiveModeEnabled){
 			pModule.LogInfo("deEosSdkServiceEos.OnDisplaySettingsUpdatedCallback: Start drop input");
 			pModule.GetGameEngine()->GetInputSystem()->StartDropInput();
 			pUiExclusiveModeEnabled = true;
@@ -571,7 +571,7 @@ void deEosSdkServiceEos::pAddListenUIUpdate(){
 
 void deEosSdkServiceEos::pRemoveListenUIUpdate()
 {
-	if(! pNotifyIdUi){
+	if(!pNotifyIdUi){
 		return;
 	}
 

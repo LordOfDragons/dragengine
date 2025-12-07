@@ -60,7 +60,7 @@ gdeTaskSyncGameDefinition::~gdeTaskSyncGameDefinition(){
 ///////////////
 
 bool gdeTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetActiveGameDefinition()){
+	if(!pWindowMain.GetActiveGameDefinition()){
 		return false;
 	}
 	

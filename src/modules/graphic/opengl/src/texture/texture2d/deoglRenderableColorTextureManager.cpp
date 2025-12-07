@@ -76,14 +76,14 @@ deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith(
 	
 	// find the texture with the matching format
 	for(i=0; i<pTextureCount; i++){
-		if(! pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, componentCount, isFloat)){
+		if(!pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, componentCount, isFloat)){
 			texture = pTextures[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if(! texture){
+	if(!texture){
 		if(pTextureCount == pTextureSize){
 			int newSize = pTextureSize * 3 / 2 + 1;
 			deoglRenderableColorTexture **newArray = new deoglRenderableColorTexture*[newSize];

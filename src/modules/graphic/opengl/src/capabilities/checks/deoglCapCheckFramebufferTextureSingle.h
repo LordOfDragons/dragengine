@@ -53,10 +53,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Clear entire array texture is working correctly. */
-	inline bool Working() const{return pWorking;}
+	inline bool Working() const{ return pWorking; }
 	
 	/** Clear entire array texture is not working correctly. */
-	inline bool Broken() const{return ! pWorking;}
+	inline bool Broken() const{ return !pWorking; }
 	
 	/** Run check. */
 	void Check(GLuint fbo);

@@ -68,20 +68,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Video resource. */
-	inline deVideo &GetVideo() const{return pVideo;}
+	inline deVideo &GetVideo() const{ return pVideo; }
 	
 	/** Render video or \em NULL if not existing. */
-	inline deoglRVideo *GetRVideo() const{return pRVideo;}
+	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
 	
 	
 	
 	/**
 	 * Video player has to use and update the cached frames.
 	 */
-	inline bool CacheFrames() const{return pCacheFrames;}
+	inline bool CacheFrames() const{ return pCacheFrames; }
 	
 	/**
 	 * All video frames are cached and ready to be used.

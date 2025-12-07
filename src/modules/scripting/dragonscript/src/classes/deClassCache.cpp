@@ -70,7 +70,7 @@ void deClassCache::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// check arguments
 	const char * const directory = rt->GetValue(0)->GetString();
-	if(! directory){
+	if(!directory){
 		DSTHROW(dueNullPointer);
 	}
 	

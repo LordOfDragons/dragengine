@@ -36,8 +36,7 @@
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
 #else
-#	error OS not supported!
-#endif
+#	error OS not supported!#endif
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deCmdLineArgs.h>
@@ -160,7 +159,7 @@ void projTestRunEngine::PutIntoVFS(){
 	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
-	if(! pEngine->GetOS()->GetPathSystemConfig().IsEmpty()){
+	if(!pEngine->GetOS()->GetPathSystemConfig().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/configSystem");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathSystemConfig());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -168,7 +167,7 @@ void projTestRunEngine::PutIntoVFS(){
 		vfs.AddContainer(container);
 	}
 	
-	if(! pPathConfig.IsEmpty()){
+	if(!pPathConfig.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/config");
 		pathDiskDir.SetFromNative(pPathConfig);
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -176,7 +175,7 @@ void projTestRunEngine::PutIntoVFS(){
 		vfs.AddContainer(container);
 	}
 	
-	if(! pPathShare.IsEmpty()){
+	if(!pPathShare.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/share");
 		pathDiskDir.SetFromNative(pPathShare);
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -184,7 +183,7 @@ void projTestRunEngine::PutIntoVFS(){
 		vfs.AddContainer(container);
 	}
 	
-	if(! pPathLib.IsEmpty()){
+	if(!pPathLib.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/lib");
 		pathDiskDir.SetFromNative(pPathLib);
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -192,7 +191,7 @@ void projTestRunEngine::PutIntoVFS(){
 		vfs.AddContainer(container);
 	}
 	
-	if(! pEngine->GetOS()->GetPathUserCache().IsEmpty()){
+	if(!pEngine->GetOS()->GetPathUserCache().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/cache");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCache());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -200,7 +199,7 @@ void projTestRunEngine::PutIntoVFS(){
 		vfs.AddContainer(container);
 	}
 	
-	if(! pEngine->GetOS()->GetPathUserCapture().IsEmpty()){
+	if(!pEngine->GetOS()->GetPathUserCapture().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/capture");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCapture());
 		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
@@ -246,7 +245,7 @@ const char *name, const char *version){
 		for(i=0; i<count; i++){
 			deLoadableModule * const module2 = moduleSystem.GetModuleAt(i);
 			
-			if(! module2->IsLoaded() || ! module2->GetEnabled()){
+			if(!module2->IsLoaded() || !module2->GetEnabled()){
 				continue;
 			}
 			if(module2->GetType() != type){
@@ -257,7 +256,7 @@ const char *name, const char *version){
 			}
 			
 			// no best module found. use this module
-			if(! module){
+			if(!module){
 				module = module2;
 				
 			// best module has been found and this module is fallback. skip module
@@ -278,14 +277,14 @@ const char *name, const char *version){
 		}
 	}
 	
-	if(! module){
+	if(!module){
 		pProcess.GetLogger()->LogErrorFormat(LOGSOURCE, "Module '%s' with version '%s' not found", name, version);
 		DETHROW(deeInvalidAction);
 	}
 	
 	// TODO apply disabled module versions
 	
-	if(module->GetType() != type || ! module->IsLoaded() || ! module->GetEnabled()){
+	if(module->GetType() != type || !module->IsLoaded() || !module->GetEnabled()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -456,7 +455,7 @@ void projTestRunEngine::Run(){
 }
 
 void projTestRunEngine::Stop(){
-	if(! pEngine){
+	if(!pEngine){
 		return;
 	}
 	

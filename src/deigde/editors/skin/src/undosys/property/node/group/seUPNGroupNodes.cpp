@@ -49,7 +49,7 @@ pNodes(NULL)
 	int i;
 	
 	sePropertyNodeGroup * const parentGroup = nodes.GetAt(0)->GetParent();
-	if(! parentGroup || ! parentGroup->GetProperty()){
+	if(!parentGroup || !parentGroup->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

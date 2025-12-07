@@ -96,12 +96,12 @@ const deoglSkinStateMapped &mapped) const{
 		}
 		
 		const deoglSkinStateRenderable * const renderable = skinState.GetRenderableAt(pRenderable);
-		if(! renderable){
+		if(!renderable){
 			break;
 		}
 		
 		const deoglRDynamicSkin * const dynamicSkin = skinState.GetOwnerDynamicSkin();
-		if(! dynamicSkin){
+		if(!dynamicSkin){
 			break;
 		}
 		
@@ -111,7 +111,7 @@ const deoglSkinStateMapped &mapped) const{
 		}
 		
 		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt(hostRenderable);
-		if(! dsrenderable){
+		if(!dsrenderable){
 			break;
 		}
 		
@@ -145,7 +145,7 @@ const deoglSkinStateMapped &mapped) const{
 		break;
 	}
 	
-	if(! pMapped.GetInputClamped()){
+	if(!pMapped.GetInputClamped()){
 		input = decMath::normalize(input, pMapped.GetInputLower(), pMapped.GetInputUpper());
 	}
 	

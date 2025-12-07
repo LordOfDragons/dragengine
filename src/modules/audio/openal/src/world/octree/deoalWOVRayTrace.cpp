@@ -132,7 +132,7 @@ void deoalWOVRayTrace::VisitNode(deoalDOctree *node, int /*intersection*/){
 	
 	for(i=0; i<count; i++){
 		deoalAComponent &component = *sonode.GetComponentAt(i);
-		if(! component.GetAffectsSound()){
+		if(!component.GetAffectsSound()){
 			continue;
 		}
 		if(component.GetLayerMask().MatchesNot(pLayerMask)){

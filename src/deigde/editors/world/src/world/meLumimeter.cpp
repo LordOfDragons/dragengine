@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meLumimeter::meLumimeter(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pWorld = NULL;
@@ -239,10 +239,10 @@ void meLumimeter::pUpdateDDVolume(){
 	/*
 	// check if we need a volume and create or destroy it if required
 	if(pWorld && pVisible && (pCurrent || pSelected)){
-		if(! pDDVolume){
+		if(!pDDVolume){
 			try{
 				pDDVolume = new deDebugDrawerVolume;
-				if(! pDDVolume) DETHROW(deeOutOfMemory);
+				if(!pDDVolume) DETHROW(deeOutOfMemory);
 				pWorld->GetDDObjects()->AddVolume(pDDVolume);
 				
 			}catch(const deException &){

@@ -43,7 +43,7 @@ seUBodySetSkin::seUBodySetSkin(seBody *body, const char *newSkin) :
 pBody(NULL),
 pNewSkin(newSkin)
 {
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	

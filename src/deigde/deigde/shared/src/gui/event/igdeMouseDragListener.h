@@ -88,13 +88,13 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Drag origin position. */
-	inline const decPoint &GetDragOrigin() const{return pDragOrigin;}
+	inline const decPoint &GetDragOrigin() const{ return pDragOrigin; }
 	
 	/** \brief Set drag origin position. */
 	void SetDragOrigin(const decPoint &origin);
 	
 	/** \brief Current drag position. */
-	inline const decPoint &GetDragPosition() const{return pDragPosition;}
+	inline const decPoint &GetDragPosition() const{ return pDragPosition; }
 	
 	/** \brief Set current drag position. */
 	void SetDragPosition(const decPoint &position);
@@ -105,7 +105,7 @@ public:
 	
 	
 	/** \brief Drag state. */
-	inline eDragState GetDragState() const{return pDragState;}
+	inline eDragState GetDragState() const{ return pDragState; }
 	
 	/** \brief Set drag state. */
 	void SetDragState(eDragState state);
@@ -120,34 +120,34 @@ public:
 	
 	
 	/** \brief Shift modifier button has been pressed at the beginning of dragging. */
-	inline bool GetShiftOrigin() const{return pShiftOrigin;}
+	inline bool GetShiftOrigin() const{ return pShiftOrigin; }
 	
 	/** \brief Set if shift modifier button has been pressed at the beginning of dragging. */
 	void SetShiftOrigin(bool pressed);
 	
 	/** \brief Shift modifier button is pressed now. */
-	inline bool GetShiftNow() const{return pShiftNow;}
+	inline bool GetShiftNow() const{ return pShiftNow; }
 	
 	/** \brief Set if shift modifier button is pressed now. */
 	void SetShiftNow(bool pressed);
 	
 	/** \brief Shift modifier button is pressed now or had been pressed at the beginning of dragging. */
-	inline bool GetShift() const{return pShiftNow | pShiftOrigin;}
+	inline bool GetShift() const{ return pShiftNow | pShiftOrigin; }
 	
 	/** \brief Control modifier button has been pressed at the beginning of dragging. */
-	inline bool GetControlOrigin() const{return pControlOrigin;}
+	inline bool GetControlOrigin() const{ return pControlOrigin; }
 	
 	/** \brief Set if control modifier button has been pressed at the beginning of dragging. */
 	void SetControlOrigin(bool pressed);
 	
 	/** \brief Control modifier button is pressed now. */
-	inline bool GetControlNow() const{return pControlNow;}
+	inline bool GetControlNow() const{ return pControlNow; }
 	
 	/** \brief Set if control modifier button is pressed now. */
 	void SetControlNow(bool pressed);
 	
 	/** \brief Control modifier button is pressed now or had been pressed at the beginning of dragging. */
-	inline bool GetControl() const{return pControlNow | pControlOrigin;}
+	inline bool GetControl() const{ return pControlNow | pControlOrigin; }
 	/*@}*/
 	
 	

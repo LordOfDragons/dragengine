@@ -84,7 +84,7 @@ void deClassConnectionListener::nfLinkState::RunFunction(dsRunTime*, dsValue*){
 
 deClassConnectionListener::deClassConnectionListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("ConnectionListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;

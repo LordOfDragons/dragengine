@@ -68,11 +68,11 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the stuck collider. */
-	inline debpCollider *GetStuckCollider() const{return pStuckCollider;}
+	inline debpCollider *GetStuckCollider() const{ return pStuckCollider; }
 	/** Sets the stuck collider. */
 	void SetStuckCollider(debpCollider *collider);
 	/** Retrieves the displacement. */
-	inline const decDVector &GetDisplacement() const{return pDisplacement;}
+	inline const decDVector &GetDisplacement() const{ return pDisplacement; }
 	/** Sets the displacement. */
 	void SetDisplacement(const decDVector &displacement);
 	/** Remove all colliders and blocker normals. */
@@ -89,7 +89,7 @@ public:
 	bool UnstuckCollider();
 	
 	/** Retrieves the number of nearby colliders. */
-	inline int GetNearbyColliderCount() const{return pNearbyColliderCount;}
+	inline int GetNearbyColliderCount() const{ return pNearbyColliderCount; }
 	/** Retrieves a nearby collider. */
 	debpCollider *GetNearbyColliderAt(int index) const;
 	/** Adds a nearby collider. */
@@ -98,7 +98,7 @@ public:
 	void RemoveAllNearbyColliders();
 	
 	/** Retrieves the number of blocker normals. */
-	inline int GetBlockerNormalCount() const{return pBlockerNormalCount;}
+	inline int GetBlockerNormalCount() const{ return pBlockerNormalCount; }
 	/** Retrieves a blocker normal. */
 	const decDVector &GetBlockerNormalAt(int index) const;
 	/** Adds a blocker normal. */

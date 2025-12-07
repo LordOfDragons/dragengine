@@ -61,7 +61,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeBox * const box = (reRigShapeBox*)pPanel.GetShape();
-		if(! rig || ! box){
+		if(!rig || !box){
 			return;
 		}
 		

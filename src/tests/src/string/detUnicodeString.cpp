@@ -359,11 +359,11 @@ void detUnicodeString::TestOperators(){
 	
 	// operator ! , is empty
 	ASSERT_TRUE(string1.IsEmpty());
-	ASSERT_TRUE(! string1);
+	ASSERT_TRUE(!string1);
 	
 	string1 = string2;
 	ASSERT_FALSE(string1.IsEmpty());
-	ASSERT_FALSE(! string1);
+	ASSERT_FALSE(!string1);
 	
 	// operator == , equality
 	string1.Set(string2);

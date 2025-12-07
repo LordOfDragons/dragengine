@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
@@ -142,7 +142,7 @@ public:
 	const decMatrix &GetInverseTransformation();
 	
 	/** \brief Object ID or 0 if this is not an object node. */
-	inline int64_t GetID() const{return pID;}
+	inline int64_t GetID() const{ return pID; }
 	
 	/** \brief Set object ID or 0 if this is not an object node. */
 	void SetID(int64_t id);

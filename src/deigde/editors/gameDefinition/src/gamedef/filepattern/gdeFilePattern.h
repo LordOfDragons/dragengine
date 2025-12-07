@@ -66,19 +66,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief File pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern. */
 	void SetPattern(const char *pattern);
 	
 	/** \brief Default extension. */
-	inline const decString &GetDefaultExtension() const{return pDefExtension;}
+	inline const decString &GetDefaultExtension() const{ return pDefExtension; }
 	
 	/** \brief Set default extension. */
 	void SetDefaultExtension(const char *extension);

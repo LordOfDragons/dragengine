@@ -84,15 +84,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Decal engine resource. */
-	inline const deDecal &GetDecal() const{return pDecal;}
+	inline const deDecal &GetDecal() const{ return pDecal; }
 	
 	
 	
 	/** Render decal. */
-	inline deoglRDecal *GetRDecal() const{return pRDecal;}
+	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** Parent component or \em NULL. */
-	inline deoglComponent *GetParentComponent() const{return pParentComponent;}
+	inline deoglComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/** Set parent component or \em NULL. */
 	void SetParentComponent(deoglComponent *component);

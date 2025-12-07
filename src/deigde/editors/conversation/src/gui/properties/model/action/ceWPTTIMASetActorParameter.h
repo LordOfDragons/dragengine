@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASetActorParameter *GetActionSetActorParameter() const{return (ceCASetActorParameter*)GetAction();}
+	inline ceCASetActorParameter *GetActionSetActorParameter() const{ return (ceCASetActorParameter*)GetAction(); }
 	
 	/** \brief Text representation for operator. */
 	static const char *GetOperatorText(ceCASetActorParameter::eOperators anOperator);

@@ -66,7 +66,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
-		if(! source || source->GetPathSynthesizer() == editPath->GetPath()){
+		if(!source || source->GetPathSynthesizer() == editPath->GetPath()){
 			return;
 		}
 		
@@ -99,7 +99,7 @@ public:
 	
 	virtual void OnAction(){
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public:
 	
 	virtual void OnAction(){
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
-		if(! source || source->GetConnectionCount() == 0){
+		if(!source || source->GetConnectionCount() == 0){
 			return;
 		}
 		
@@ -145,7 +145,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
 		const int target = pPanel.GetCBControllerTarget();
-		if(! source || target == -1 || pPanel.GetPreventUpdate()){
+		if(!source || target == -1 || pPanel.GetPreventUpdate()){
 			return;
 		}
 		

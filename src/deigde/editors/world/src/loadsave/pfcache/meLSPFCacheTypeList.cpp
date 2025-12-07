@@ -76,7 +76,7 @@ void meLSPFCacheTypeList::AddType(int vlayer, int variation){
 		if(pTypeCount == pTypeSize){
 			int newSize = pTypeSize * 3 / 2 + 1;
 			sType *newArray = new sType[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pTypes){
 				memcpy(newArray, pTypes, sizeof(sType) * pTypeSize);
 				delete [] pTypes;

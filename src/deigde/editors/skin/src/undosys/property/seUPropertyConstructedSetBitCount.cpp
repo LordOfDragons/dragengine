@@ -42,7 +42,7 @@ seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty 
 pProperty(NULL),
 pNewValue(newValue)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	

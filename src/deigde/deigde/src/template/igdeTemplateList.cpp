@@ -71,7 +71,7 @@ bool igdeTemplateList::Has(igdeTemplate *atemplate) const{
 }
 
 void igdeTemplateList::Add(igdeTemplate *atemplate){
-	if(! atemplate){
+	if(!atemplate){
 		DETHROW(deeInvalidParam);
 	}
 	pTemplates.Add(atemplate);

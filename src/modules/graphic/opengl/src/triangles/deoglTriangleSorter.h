@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of triangles. */
-	inline int GetTriangleCount() const{return pTriangleCount;}
+	inline int GetTriangleCount() const{ return pTriangleCount; }
 	
 	/** First vertex of triangle at index. */
 	const decVector &GetTriangleVertex1(int triangle) const;

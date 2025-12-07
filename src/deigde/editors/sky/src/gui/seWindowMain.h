@@ -104,18 +104,18 @@ public:
 	//inline igdeIcon* GetIconSkyNew() const{ return pIconSkyNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSkyNew() const{return pActionSkyNew;}
-	inline igdeAction *GetActionSkyOpen() const{return pActionSkyOpen;}
-	inline igdeAction *GetActionSkySave() const{return pActionSkySave;}
-	inline igdeAction *GetActionSkySaveAs() const{return pActionSkySaveAs;}
+	inline igdeAction *GetActionSkyNew() const{ return pActionSkyNew; }
+	inline igdeAction *GetActionSkyOpen() const{ return pActionSkyOpen; }
+	inline igdeAction *GetActionSkySave() const{ return pActionSkySave; }
+	inline igdeAction *GetActionSkySaveAs() const{ return pActionSkySaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
-	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
-	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
-	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
-	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
+	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
+	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
+	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
+	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
+	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	inline igdeAction *GetActionViewShowCompass() const{return pActionViewShowCompass;}
+	inline igdeAction *GetActionViewShowCompass() const{ return pActionViewShowCompass; }
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -124,21 +124,21 @@ public:
 	void ResetViews();
 	
 	/** \brief configuration. */
-	inline seConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline seConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	
 	/** \brief load save system. */
-	inline seLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Properties window. */
-	inline seWindowProperties &GetWindowProperties() const{return *pWindowProperties;}
+	inline seWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
 	
 	
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{return pSky;}
+	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *Sky);

@@ -68,7 +68,7 @@ bool ceStripList::Has(ceStrip *entry) const{
 }
 
 void ceStripList::Add(ceStrip *entry){
-	if(! entry){
+	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -76,7 +76,7 @@ void ceStripList::Add(ceStrip *entry){
 }
 
 void ceStripList::InsertAt(ceStrip *entry, int index){
-	if(! entry){
+	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,7 +84,7 @@ void ceStripList::InsertAt(ceStrip *entry, int index){
 }
 
 void ceStripList::MoveTo(ceStrip *entry, int index){
-	if(! entry){
+	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
 	

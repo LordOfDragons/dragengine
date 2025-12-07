@@ -99,7 +99,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light){
+		if(!light){
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light){
+		if(!light){
 			return;
 		}
 		
@@ -146,7 +146,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light){
+		if(!light){
 			return;
 		}
 		
@@ -170,7 +170,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light){
+		if(!light){
 			return;
 		}
 		
@@ -207,7 +207,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light || light->GetColor().IsEqualTo(colorBox->GetColor())){
+		if(!light || light->GetColor().IsEqualTo(colorBox->GetColor())){
 			return;
 		}
 		
@@ -453,7 +453,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light || light->GetLightSkinPath() == editPath->GetPath()){
+		if(!light || light->GetLightSkinPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -484,7 +484,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCLight * const light = pPanel.GetLight();
-		if(! light){
+		if(!light){
 			return;
 		}
 		
@@ -518,7 +518,7 @@ public:
 	cComboTriggerNameTarget(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetLight()){
+		if(!pPanel.GetLight()){
 			return;
 		}
 		

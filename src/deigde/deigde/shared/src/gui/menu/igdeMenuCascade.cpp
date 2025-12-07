@@ -196,7 +196,7 @@ void igdeMenuCascade::Popup(igdeWidget &owner, const decPoint &position){
 }
 
 void igdeMenuCascade::PopupBottom(igdeWidget &owner){
-	if(! owner.GetNativeWidget()){
+	if(!owner.GetNativeWidget()){
 		return;
 	}
 	
@@ -218,7 +218,7 @@ void igdeMenuCascade::CreateNativeWidget(){
 }
 
 void igdeMenuCascade::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -227,7 +227,7 @@ void igdeMenuCascade::DestroyNativeWidget(){
 }
 
 void *igdeMenuCascade::GetNativeContainer() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return NULL;
 	}
 	return igdeNativeMenuCascade::GetNativeContainer(*this, GetNativeWidget());
@@ -248,13 +248,13 @@ void igdeMenuCascade::OnDescriptionChanged(){
 }
 
 void igdeMenuCascade::OnHotKeyChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 }
 
 void igdeMenuCascade::OnMnemonicChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 }

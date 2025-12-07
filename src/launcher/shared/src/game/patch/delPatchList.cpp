@@ -132,7 +132,7 @@ void delPatchList::AddAll(const delPatchList &list){
 	
 	for(i=0; i<count; i++){
 		delPatch * const patch = (delPatch*)list.GetAt(i);
-		if(! HasWithID(patch->GetIdentifier())){
+		if(!HasWithID(patch->GetIdentifier())){
 			pPatches.Add(patch);
 		}
 	}

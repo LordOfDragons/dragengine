@@ -62,16 +62,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Minimum value. */
-	inline float GetMinimumValue() const{return pMinValue;}
+	inline float GetMinimumValue() const{ return pMinValue; }
 	
 	/** \brief Maximum value. */
-	inline float GetMaximumValue() const{return pMaxValue;}
+	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Clamp current value to range instead of wrapping around at the end points. */
-	inline bool GetClamp() const{return pClamp;}
+	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Value curve. */
-	inline const desynSynthesizerCurve &GetCurve() const{return pCurve;}
+	inline const desynSynthesizerCurve &GetCurve() const{ return pCurve; }
 	
 	
 	
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** \brief Dirty. */
-	inline bool GetDirty() const{return pDirty;}
+	inline bool GetDirty() const{ return pDirty; }
 	
 	/** \brief Set dirty. */
 	void SetDirty(bool dirty);

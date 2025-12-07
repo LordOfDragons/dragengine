@@ -116,19 +116,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
-	inline deoglDOctree *GetParent() const{return pParent;}
+	inline deoglDOctree *GetParent() const{ return pParent; }
 	/** Sets the parent of the octree or NULL if a root octree. */
 	void SetParent(deoglDOctree *parent);
 	/** Retrieves the center of the octree. */
-	inline const decDVector &GetCenter() const{return pCenter;}
+	inline const decDVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the octree. */
-	inline const decDVector &GetHalfSize() const{return pHalfSize;}
+	inline const decDVector &GetHalfSize() const{ return pHalfSize; }
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there

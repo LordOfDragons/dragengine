@@ -98,16 +98,16 @@ public:
 	//inline igdeIcon* GetIconEmitterNew() const{ return pIconEmitterNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEmitterNew() const{return pActionEmitterNew;}
-	inline igdeAction *GetActionEmitterOpen() const{return pActionEmitterOpen;}
-	inline igdeAction *GetActionEmitterSave() const{return pActionEmitterSave;}
-	inline igdeAction *GetActionEmitterSaveAs() const{return pActionEmitterSaveAs;}
+	inline igdeAction *GetActionEmitterNew() const{ return pActionEmitterNew; }
+	inline igdeAction *GetActionEmitterOpen() const{ return pActionEmitterOpen; }
+	inline igdeAction *GetActionEmitterSave() const{ return pActionEmitterSave; }
+	inline igdeAction *GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
-	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
-	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
-	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
-	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
+	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
+	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
+	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
+	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
+	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -116,18 +116,18 @@ public:
 	void ResetViews();
 	
 	/** \brief Configuration. */
-	inline peeConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline peeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	
 	/** \brief Load save system. */
-	inline peeLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline peeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{return pEmitter;}
+	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set Emitter. */
 	void SetEmitter(peeEmitter *Emitter);

@@ -180,7 +180,7 @@ void deoglTexture::CreateTexture(){
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 	
-	if(! pTexture){
+	if(!pTexture){
 		OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 		DEASSERT_NOTNULL(pTexture)
 	}
@@ -421,7 +421,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	
 #ifdef BACKEND_OPENGL
 	/*if(pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != 1){
-		pRenderThread.GetLogger().LogInfoFormat("PROBLEM! level=%d width(%d=%d) height(%d=%d) depth(%d)",
+		pRenderThread.GetLogger().LogInfoFormat("PROBLEM!level=%d width(%d=%d) height(%d=%d) depth(%d)",
 			level, pixelBuffer.GetWidth(), width, pixelBuffer.GetHeight(), height, pixelBuffer.GetDepth());
 		DETHROW(deeInvalidParam);
 	}*/
@@ -700,7 +700,7 @@ void deoglTexture::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
 #ifdef BACKEND_OPENGL
-	if(! pTexture || ! pFormat){
+	if(!pTexture || !pFormat){
 		return;
 	}
 	

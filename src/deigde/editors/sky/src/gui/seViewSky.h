@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brie Reset view. */
 	void ResetView();
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{return pSky;}
+	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

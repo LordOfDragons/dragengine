@@ -57,13 +57,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Delegee or \em NULL. */
-	inline deBaseScriptingCollider *GetDelegee() const{return pDelegee;}
+	inline deBaseScriptingCollider *GetDelegee() const{ return pDelegee; }
 	
 	/** \brief Set delegee or \em NULL. */
 	void SetDelegee(deBaseScriptingCollider *delegee);
 	
 	/** \brief User pointer. */
-	inline void *GetUserPointer() const{return pUserPointer;}
+	inline void *GetUserPointer() const{ return pUserPointer; }
 	
 	/** \brief Set user pointer. */
 	void SetUserPointer(void *userPointer);

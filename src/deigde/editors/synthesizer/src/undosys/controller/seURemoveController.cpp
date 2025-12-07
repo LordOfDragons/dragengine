@@ -44,7 +44,7 @@ seURemoveController::seURemoveController(seSynthesizer *synthesizer, seControlle
 pSynthesizer(NULL),
 pController(NULL)
 {
-	if(! synthesizer || ! controller){
+	if(!synthesizer || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

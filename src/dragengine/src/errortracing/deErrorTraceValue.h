@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the value. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Value. */
-	inline const decString &GetValue() const{return pValue;}
+	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(const char *value);
@@ -73,10 +73,10 @@ public:
 	/** \name Trace SubValue Management */
 	/*@{*/
 	/** \brief Determines if there exist trace values. */
-	inline bool HasSubValues() const{return pSubValueCount > 0;}
+	inline bool HasSubValues() const{ return pSubValueCount > 0; }
 	
 	/** \brief Count of trace values. */
-	inline int GetSubValueCount() const{return pSubValueCount;}
+	inline int GetSubValueCount() const{ return pSubValueCount; }
 	
 	/** \brief Indexed trace value. */
 	deErrorTraceValue *GetSubValue(int index) const;

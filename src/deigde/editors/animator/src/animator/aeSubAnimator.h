@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine animator or NULL if not existing. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Retrieves the path to the animator file. */
-	inline const decString &GetPathAnimator() const{return pPathAnimator;}
+	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	/** Sets the path to the animator file. */
 	void SetPathAnimator(const char *path);
 	/** Loads the engine animator using the stored path. */

@@ -81,7 +81,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Resolution. */
-	inline int GetResolution() const{return pResolution;}
+	inline int GetResolution() const{ return pResolution; }
 	
 	
 	

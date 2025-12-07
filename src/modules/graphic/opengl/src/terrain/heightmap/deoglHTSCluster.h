@@ -122,19 +122,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain sector. */
-	inline deoglRHTSector *GetHTSector() const{return pHTSector;}
+	inline deoglRHTSector *GetHTSector() const{ return pHTSector; }
 	
 	/** Set height terrain sector. */
 	void SetHTSector(deoglRHTSector *htsector);
 	
 	/** Coordinates. */
-	inline const decPoint &GetCoordinates() const{return pCoordinates;}
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
 	/** Set coordinates. */
 	void SetCoordinates(const decPoint &coordinates);
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
@@ -142,16 +142,16 @@ public:
 	
 	
 	/** First point in X direction. */
-	inline int GetFirstPointX() const{return pFirstPointX;}
+	inline int GetFirstPointX() const{ return pFirstPointX; }
 	
 	/** First point in Z direction. */
-	inline int GetFirstPointZ() const{return pFirstPointZ;}
+	inline int GetFirstPointZ() const{ return pFirstPointZ; }
 	
 	/** Count of points in X direction. */
-	inline int GetPointCountX() const{return pPointCountX;}
+	inline int GetPointCountX() const{ return pPointCountX; }
 	
 	/** Count of points in Z direction. */
-	inline int GetPointCountZ() const{return pPointCountZ;}
+	inline int GetPointCountZ() const{ return pPointCountZ; }
 	
 	/** Set size. */
 	void SetSize(int firstPointX, int firstPointZ, int pointCountX, int pointCountZ);
@@ -159,10 +159,10 @@ public:
 	
 	
 	/** Center of the enclosing box. */
-	inline const decVector &GetCenter() const{return pCenter;}
+	inline const decVector &GetCenter() const{ return pCenter; }
 	
 	/** Half extends of the enclosing box. */
-	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
+	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
 	
 	
@@ -172,7 +172,7 @@ public:
 	
 	
 	/** Cluster has no lod levels. */
-	inline bool GetNoLOD() const{return pNoLOD;}
+	inline bool GetNoLOD() const{ return pNoLOD; }
 	
 	/** LOD level. */
 	deoglHTSClusterLOD &GetLODAt(int level);
@@ -189,16 +189,16 @@ public:
 	
 	
 	/** VBO point offset. */
-	inline int GetOffsetVBODataPoints() const{return pOffsetVBODataPoints;}
+	inline int GetOffsetVBODataPoints() const{ return pOffsetVBODataPoints; }
 	
 	/** Set offset data vbo. */
 	void SetOffsetVBODataPoints(int offset);
 	
 	/** Count of data vbo points. */
-	inline int GetCountVBODataPoints() const{return pDataPointCount;}
+	inline int GetCountVBODataPoints() const{ return pDataPointCount; }
 	
 	/** Position data vbo. */
-	inline GLuint GetVBODataPoints1() const{return pVBODataPoints1;}
+	inline GLuint GetVBODataPoints1() const{ return pVBODataPoints1; }
 	
 	/** Set position data vbo. */
 	void SetVBODataPoints1(GLuint vbo);
@@ -207,7 +207,7 @@ public:
 	void UpdateVBOData1();
 	
 	/** Height data vbo. */
-	inline GLuint GetVBODataPoints2() const{return pVBODataPoints2;}
+	inline GLuint GetVBODataPoints2() const{ return pVBODataPoints2; }
 	
 	/** Set height data vbo. */
 	void SetVBODataPoints2(GLuint vbo);
@@ -218,7 +218,7 @@ public:
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{return pVAO;}
+	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Update vao. */
 	void UpdateVAO();
@@ -226,16 +226,16 @@ public:
 	
 	
 	/** VBO data faces offset. */
-	inline int GetOffsetVBODataFaces() const{return pOffsetVBODataFaces;}
+	inline int GetOffsetVBODataFaces() const{ return pOffsetVBODataFaces; }
 	
 	/** Set offset data faces vbo. */
 	void SetOffsetVBODataFaces(int offset);
 	
 	/** Count of data vbo faces. */
-	inline int GetCountVBODataFaces() const{return pFacePointCount;}
+	inline int GetCountVBODataFaces() const{ return pFacePointCount; }
 	
 	/** Faces data vbo. */
-	inline GLuint GetVBODataFaces() const{return pVBODataFaces;}
+	inline GLuint GetVBODataFaces() const{ return pVBODataFaces; }
 	
 	/** Set faces data vbo. */
 	void SetVBODataFaces(GLuint vbo);
@@ -263,10 +263,10 @@ public:
 	/** \name Face Points */
 	/*@{*/
 	/** Face points. */
-	inline GLushort *GetFacePoints() const{return pFacePoints;}
+	inline GLushort *GetFacePoints() const{ return pFacePoints; }
 	
 	/** Count of face points. */
-	inline int GetFacePointCount() const{return pFacePointCount;}
+	inline int GetFacePointCount() const{ return pFacePointCount; }
 	
 	/** Add face point. */
 	void AddFacePoints(int p1, int p2, int p3);

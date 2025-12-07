@@ -124,7 +124,7 @@ void deoglDynamicSkin::SyncToRender(){
 //////////////
 
 void deoglDynamicSkin::AddListener(deoglDynamicSkinListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -172,7 +172,7 @@ void deoglDynamicSkin::NotifyRenderableRequiresSync(deoglDSRenderable &renderabl
 //////////////////
 
 void deoglDynamicSkin::RenderableAdded(int, deDSRenderable *renderable){
-	if(! renderable){
+	if(!renderable){
 		DETHROW(deeInvalidParam);
 	}
 	

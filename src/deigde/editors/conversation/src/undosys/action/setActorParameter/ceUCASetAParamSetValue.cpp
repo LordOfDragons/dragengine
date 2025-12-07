@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCASetAParamSetValue::ceUCASetAParamSetValue(ceConversationTopic *topic, ceCASetActorParameter *action, int newValue){
-	if(! topic || ! action) DETHROW(deeInvalidParam);
+	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

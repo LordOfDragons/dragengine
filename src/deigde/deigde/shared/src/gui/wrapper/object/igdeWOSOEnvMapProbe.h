@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe resource. */
-	inline deEnvMapProbe *GetEnvMapProbe() const{return pEnvMapProbe;}
+	inline deEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

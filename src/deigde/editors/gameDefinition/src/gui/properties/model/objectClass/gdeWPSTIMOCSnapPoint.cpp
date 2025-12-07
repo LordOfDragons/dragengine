@@ -52,7 +52,7 @@ gdeWPSTIMOCSubObject(tree, etObjectClassSnapPoint, objectClass, index),
 pSnapPoint(NULL),
 pIndex(index)
 {
-	if(! snapPoint){
+	if(!snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

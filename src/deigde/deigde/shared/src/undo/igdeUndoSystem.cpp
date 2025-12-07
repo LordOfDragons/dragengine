@@ -67,7 +67,7 @@ igdeUndo *igdeUndoSystem::GetTop() const{
 }
 
 void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
-	if(! undo){
+	if(!undo){
 		DETHROW(deeInvalidParam);
 	}
 	

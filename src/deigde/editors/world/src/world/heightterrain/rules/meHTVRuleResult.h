@@ -73,11 +73,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Probability to use if there is no input probability. */
-	inline float GetProbability() const{return pProbability;}
+	inline float GetProbability() const{ return pProbability; }
 	/** Sets the probability to use if there is no input probability. */
 	void SetProbability(float probability);
 	/** Variation to use if there is no input variation. */
-	inline int GetVariation() const{return pVariation;}
+	inline int GetVariation() const{ return pVariation; }
 	/** Sets the variation to use if there is no input variation. */
 	void SetVariation(int variation);
 	

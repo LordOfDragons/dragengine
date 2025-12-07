@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation(aeRuleInverseKinematic *rule, const decVector &newRot){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	

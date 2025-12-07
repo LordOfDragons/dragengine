@@ -101,7 +101,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if(! rig || ! constraint){
+		if(!rig || !constraint){
 			return;
 		}
 		
@@ -124,7 +124,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if(! rig || ! constraint){
+		if(!rig || !constraint){
 			return;
 		}
 		
@@ -149,7 +149,7 @@ public:
 	virtual void OnAction(){
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if(! rig || ! constraint){
+		if(!rig || !constraint){
 			return;
 		}
 		
@@ -172,7 +172,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if(! rig || ! constraint){
+		if(!rig || !constraint){
 			return;
 		}
 		
@@ -212,7 +212,7 @@ public:
 	cEditPosition(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
-		return ! vector.IsEqualTo(constraint->GetPosition())
+		return !vector.IsEqualTo(constraint->GetPosition())
 			? new reUConstraintSetPosition(constraint, vector) : nullptr;
 	}
 };
@@ -222,7 +222,7 @@ public:
 	cEditRotation(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
-		return ! vector.IsEqualTo(constraint->GetOrientation())
+		return !vector.IsEqualTo(constraint->GetOrientation())
 			? new reUConstraintSetOrientation(constraint, vector) : nullptr;
 	}
 };
@@ -232,7 +232,7 @@ public:
 	cEditOffset(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
-		return ! vector.IsEqualTo(constraint->GetOffset())
+		return !vector.IsEqualTo(constraint->GetOffset())
 			? new reUConstraintSetOffset(constraint, vector) : nullptr;
 	}
 };
@@ -364,7 +364,7 @@ public:
 		"Shows joint errors visually during simulation."){}
 	
 	virtual igdeUndo *OnAction(reRig*, reRigConstraint *constraint){
-		constraint->SetShowJointError(! constraint->GetShowJointError());
+		constraint->SetShowJointError(!constraint->GetShowJointError());
 		return nullptr;
 	}
 };

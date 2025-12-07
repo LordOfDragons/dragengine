@@ -56,7 +56,7 @@ pBufferInPosition(0),
 pBufferOut(NULL),
 pBufferOutSize(0)
 {
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 	pInit(writer, false);
@@ -72,7 +72,7 @@ pBufferInPosition(0),
 pBufferOut(NULL),
 pBufferOutSize(0)
 {
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 	pInit(writer, pureMode);
@@ -207,7 +207,7 @@ void decZFileWriter::EndZWriting(){
 //////////////////////
 
 void decZFileWriter::pInit(decBaseFileWriter *writer, bool pureMode){
-	if(! pureMode){
+	if(!pureMode){
 		writer->WriteByte(0); // options in case we want to expand on functionality internally
 	}
 	

@@ -149,7 +149,7 @@ void igdeSlider::Focus(){
 
 
 void igdeSlider::AddListener(igdeSliderListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -192,7 +192,7 @@ void igdeSlider::CreateNativeWidget(){
 }
 
 void igdeSlider::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -215,7 +215,7 @@ void igdeSlider::OnValueChanged(){
 }
 
 void igdeSlider::OnPrecisionChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -65,7 +65,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
-	if(! navSpace){
+	if(!navSpace){
 		return NULL;
 	}
 	

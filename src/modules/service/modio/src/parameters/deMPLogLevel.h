@@ -51,7 +51,7 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Log level. */
-	inline Modio::LogLevel GetLogLevel() const{return pLogLevel;}
+	inline Modio::LogLevel GetLogLevel() const{ return pLogLevel; }
 	
 	/** Current value. */
 	decString GetParameterValue() override;

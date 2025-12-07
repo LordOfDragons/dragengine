@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controllers. */
-	inline const aeControllerList &GetControllers() const{return pControllers;}
+	inline const aeControllerList &GetControllers() const{ return pControllers; }
 	/*@}*/
 };
 

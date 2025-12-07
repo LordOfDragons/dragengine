@@ -41,12 +41,12 @@
 ////////////////////////////
 
 meUObjectAddProperty::meUObjectAddProperty(meObject *object, const char *key, const char *value){
-	if(! object || ! key || strlen(key) == 0 || ! value){
+	if(!object || !key || strlen(key) == 0 || !value){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

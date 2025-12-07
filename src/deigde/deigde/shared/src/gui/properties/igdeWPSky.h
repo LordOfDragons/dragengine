@@ -113,7 +113,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky wrapper or NULL if not set. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky wrapper or NULL if not set. */
 	void SetSky(igdeWSky *sky);
@@ -133,7 +133,7 @@ public:
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

@@ -212,7 +212,7 @@ void deComponent::SetModel(deModel *model){
 }
 
 void deComponent::SetModelKeepTextures(deModel* model){
-	if(! pModel || ! model || pModel->GetTextureCount() == 0 || model->GetTextureCount() == 0){
+	if(!pModel || !model || pModel->GetTextureCount() == 0 || model->GetTextureCount() == 0){
 		SetModel(model);
 		return;
 	}
@@ -297,7 +297,7 @@ void deComponent::SetRig(deRig *rig){
 void deComponent::SetModelAndSkin(deModel *model, deSkin *skin){
 	const bool modelChanged = model != pModel;
 	const bool skinChanged = skin != pSkin;
-	if(! modelChanged && ! skinChanged){
+	if(!modelChanged && !skinChanged){
 		return;
 	}
 	
@@ -582,7 +582,7 @@ void deComponent::InvalidateExtends(){
 }
 
 void deComponent::CopyBonesToComponent(deComponent &component){
-	if(pBoneCount == 0 || ! pRig || component.pBoneCount == 0 || ! component.pRig){
+	if(pBoneCount == 0 || !pRig || component.pBoneCount == 0 || !component.pRig){
 		return;
 	}
 	
@@ -640,7 +640,7 @@ void deComponent::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 ////////////
 
 void deComponent::AddDecal(deDecal *decal){
-	if(! decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
+	if(!decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -672,7 +672,7 @@ void deComponent::AddDecal(deDecal *decal){
 }
 
 void deComponent::RemoveDecal(deDecal *decal){
-	if(! decal || decal->GetParentComponent() != this){
+	if(!decal || decal->GetParentComponent() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -733,7 +733,7 @@ void deComponent::RemoveAllDecals(){
 
 
 void deComponent::PrepareMatrix(){
-	if(! pMatrixDirty){
+	if(!pMatrixDirty){
 		return;
 	}
 	
@@ -748,7 +748,7 @@ void deComponent::PrepareMatrix(){
 void deComponent::PrepareBones(){
 	WaitAnimatorTaskFinished();
 	
-	if(! pBonesDirty){
+	if(!pBonesDirty){
 		return;
 	}
 	

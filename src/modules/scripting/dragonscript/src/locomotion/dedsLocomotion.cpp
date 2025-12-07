@@ -585,7 +585,7 @@ void dedsLocomotion::CancelTurnInPlace(){
 }
 
 void dedsLocomotion::ForceBodyAdjustment(){
-	if(! pCanTurn){
+	if(!pCanTurn){
 		return;
 	}
 	
@@ -669,7 +669,7 @@ void dedsLocomotion::UpdateIsMoving(){
 }
 
 void dedsLocomotion::UpdateOrientation(float elapsed){
-	if(! pCanTurn){
+	if(!pCanTurn){
 		if(pLookHorizontal.GetValue() > pLimitLookRight){
 			pLookHorizontal.SetValue(pLimitLookRight);
 			pLookHorizontal.SetGoal(pLimitLookRight);
@@ -923,7 +923,7 @@ void dedsLocomotion::UpdateTilt(float elapsed){
 }
 
 void dedsLocomotion::UpdateTiltSingleCast(float elapsed){
-	if(! pCCTTiltSingle || ! pAICollider){
+	if(!pCCTTiltSingle || !pAICollider){
 		return;
 	}
 	
@@ -946,7 +946,7 @@ void dedsLocomotion::UpdateTiltSingleCast(float elapsed){
 }
 
 void dedsLocomotion::UpdateTiltWeightCast(float elapsed){
-	if(! pCCTTiltFrontLeft || ! pCCTTiltFrontRight || ! pCCTTiltBackLeft || ! pCCTTiltBackRight || ! pAICollider){
+	if(!pCCTTiltFrontLeft || !pCCTTiltFrontRight || !pCCTTiltBackLeft || !pCCTTiltBackRight || !pAICollider){
 		return;
 	}
 	

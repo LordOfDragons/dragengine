@@ -135,7 +135,7 @@ decString decLayerMask::ToBitString() const{
 }
 
 void decLayerMask::SetFromBitString(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,7 +188,7 @@ decString decLayerMask::ToHexString() const{
 }
 
 void decLayerMask::SetFromHexString(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	

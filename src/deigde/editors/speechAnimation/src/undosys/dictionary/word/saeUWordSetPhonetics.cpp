@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics){
-	if(! word) DETHROW(deeInvalidParam);
+	if(!word) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;
 	

@@ -110,7 +110,7 @@ bool peeTypeList::HasNamed(const char *name) const{
 }
 
 void peeTypeList::Add(peeType *type){
-	if(! type || HasNamed(type->GetName().GetString())){
+	if(!type || HasNamed(type->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void peeTypeList::Add(peeType *type){
 }
 
 void peeTypeList::InsertAt(peeType *type, int index){
-	if(! type || HasNamed(type->GetName().GetString())){
+	if(!type || HasNamed(type->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	

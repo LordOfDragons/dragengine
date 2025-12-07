@@ -36,7 +36,7 @@
 ////////////////////////////
 
 reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint(reRigBone *bone, const decVector &centralMassPoint){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();

@@ -42,7 +42,7 @@ gdeClipboardDataOCSpeaker::gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker) :
 igdeClipboardData(TYPE_NAME),
 pSpeaker(NULL)
 {
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

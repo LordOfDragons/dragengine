@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline gdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set game definition to monitor. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

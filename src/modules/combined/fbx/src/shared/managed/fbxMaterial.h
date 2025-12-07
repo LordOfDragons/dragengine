@@ -75,18 +75,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Scene. */
-	inline fbxScene &GetScene() const{return pScene;}
+	inline fbxScene &GetScene() const{ return pScene; }
 	
 	/** Material node. */
-	inline fbxNode &GetNodeMaterial() const{return pNodeMaterial;}
+	inline fbxNode &GetNodeMaterial() const{ return pNodeMaterial; }
 	
 	
 	
 	/** Material ID. */
-	inline int64_t GetMaterialID() const{return pMaterialID;}
+	inline int64_t GetMaterialID() const{ return pMaterialID; }
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);

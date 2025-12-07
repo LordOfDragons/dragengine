@@ -93,7 +93,7 @@ void deoglRBillboard::WorldComputeElement::UpdateData(sDataElement &data) const{
 
 void deoglRBillboard::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 	const deoglSkinTexture * const skinTexture = pBillboard.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	
@@ -221,7 +221,7 @@ void deoglRBillboard::SetOctreeNode(deoglWorldOctree *octreeNode){
 }
 
 void deoglRBillboard::UpdateOctreeNode(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -387,7 +387,7 @@ void deoglRBillboard::UpdateRenderableMapping(){
 }
 
 void deoglRBillboard::DynamicSkinRenderablesChanged(){
-	if(! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables()){
+	if(!pDynamicSkin || !pSkin || !pSkin->GetHasRenderables()){
 		return;
 	}
 	
@@ -471,7 +471,7 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType(deoglSkinTexturePipe
 }
 
 deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
@@ -491,7 +491,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
@@ -519,7 +519,7 @@ void deoglRBillboard::MarkTUCsDirty(){
 
 void deoglRBillboard::UpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
 int element, deoglSkinShader &skinShader){
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -579,8 +579,8 @@ int element, deoglSkinShader &skinShader){
 		const float rotate = propertyRotate.ResolveAsFloat(
 			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordRotate());
 		
-		const bool hasOffset = ! decVector2().IsEqualTo(offset);
-		const bool hasScale = ! decVector2(1.0f, 1.0f).IsEqualTo(scale);
+		const bool hasOffset = !decVector2().IsEqualTo(offset);
+		const bool hasScale = !decVector2(1.0f, 1.0f).IsEqualTo(scale);
 		const bool hasRotate = fabsf(rotate) > FLOAT_SAFE_EPSILON;
 		
 		if(hasScale || hasRotate){
@@ -697,7 +697,7 @@ void deoglRBillboard::SetDirtyCulling(){
 
 
 void deoglRBillboard::StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition){
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -821,7 +821,7 @@ void deoglRBillboard::WorldEnvMapLayoutChanged(){
 }
 
 void deoglRBillboard::UpdateRenderEnvMap(){
-	if(! pDirtyRenderEnvMap){
+	if(!pDirtyRenderEnvMap){
 		return;
 	}
 	pDirtyRenderEnvMap = false;
@@ -871,7 +871,7 @@ void deoglRBillboard::UpdateRenderEnvMap(){
 }
 
 void deoglRBillboard::InvalidateRenderEnvMap(){
-	if(! pRenderEnvMap && ! pRenderEnvMapFade){
+	if(!pRenderEnvMap && !pRenderEnvMapFade){
 		return;
 	}
 	
@@ -983,7 +983,7 @@ void deoglRBillboard::pUpdateCullSphere(){
 }
 
 void deoglRBillboard::pPrepareTUCs(){
-	if(! pDirtyTUCs){
+	if(!pDirtyTUCs){
 		return;
 	}
 	
@@ -1046,7 +1046,7 @@ void deoglRBillboard::pPrepareTUCs(){
 }
 
 void deoglRBillboard::pPrepareParamBlocks(){
-	if(! pSharedSPBElement){
+	if(!pSharedSPBElement){
 		if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
 			pSharedSPBElement = pRenderThread.GetBufferObject()
 				.GetSharedSPBList(deoglRTBufferObject::esspblSkinInstanceSSBO).AddElement();
@@ -1078,12 +1078,12 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		pDirtySharedSPBElement = false;
 	}
 	
-	if(! pSharedSPBRTIGroup && pSharedSPBElement){
+	if(!pSharedSPBRTIGroup && pSharedSPBElement){
 		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
 		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
 		pSharedSPBRTIGroup.TakeOver(list.GetWith(spb));
 		
-		if(! pSharedSPBRTIGroup){
+		if(!pSharedSPBRTIGroup){
 			pSharedSPBRTIGroup.TakeOver(list.AddWith(spb));
 			
 			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
@@ -1097,7 +1097,7 @@ void deoglRBillboard::pPrepareParamBlocks(){
 }
 
 void deoglRBillboard::pRequiresPrepareForRender(){
-	if(! pLLPrepareForRenderWorld.GetList() && pParentWorld){
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
 		pParentWorld->AddPrepareForRenderBillboard(this);
 	}
 }

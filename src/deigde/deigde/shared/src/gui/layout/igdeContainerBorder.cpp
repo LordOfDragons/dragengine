@@ -63,7 +63,7 @@ igdeContainerBorder::~igdeContainerBorder(){
 ///////////////
 
 void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
-	if(! child || child->GetParent()){
+	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -224,7 +224,7 @@ void igdeContainerBorder::CreateNativeWidget(){
 }
 
 void igdeContainerBorder::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

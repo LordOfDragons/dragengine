@@ -42,7 +42,7 @@
 meUndoDataObject::meUndoDataObject(meObject *object) :
 pObject(object)
 {
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	

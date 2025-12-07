@@ -73,7 +73,7 @@ pTypes(NULL),
 pTypeCount(0),
 pTypeSize(0)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ void meHeightTerrainPFLayer::SetHTSector(meHeightTerrainSector *htsector){
 
 
 void meHeightTerrainPFLayer::SetPathMask(const char *path){
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -144,7 +144,7 @@ void meHeightTerrainPFLayer::SetMaskSaved(bool saved){
 }
 
 void meHeightTerrainPFLayer::NotifyMaskChanged(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -153,7 +153,7 @@ void meHeightTerrainPFLayer::NotifyMaskChanged(){
 }
 
 void meHeightTerrainPFLayer::LoadMaskFromImage(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -162,7 +162,7 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 	decPath path;
 	int x, y, i;
 	
-	if(! pPathMask.IsEmpty()){
+	if(!pPathMask.IsEmpty()){
 		path.SetFromUnix(pPathMask.GetString());
 		
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(path)){
@@ -264,7 +264,7 @@ meHeightTerrainPFType *meHeightTerrainPFLayer::GetTypeAt(int index) const{
 }
 
 int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -279,7 +279,7 @@ int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
 }
 
 bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -294,7 +294,7 @@ bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
 }
 
 void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -376,7 +376,7 @@ void meHeightTerrainPFLayer::pCleanUp(){
 }
 
 void meHeightTerrainPFLayer::pResizeMask(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	

@@ -43,7 +43,7 @@ aeURuleSnapSetID::aeURuleSnapSetID(aeRuleStateSnapshot *rule, int newID) :
 pRule(NULL),
 pNewID(newID)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reSelectionShapes::reSelectionShapes(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -67,7 +67,7 @@ reRigShape *reSelectionShapes::GetShapeAt(int index) const{
 }
 
 bool reSelectionShapes::HasShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -80,7 +80,7 @@ bool reSelectionShapes::HasShape(reRigShape *shape) const{
 }
 	
 int reSelectionShapes::IndexOfShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -93,7 +93,7 @@ int reSelectionShapes::IndexOfShape(reRigShape *shape) const{
 }
 
 int reSelectionShapes::IndexOfShapeWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -111,7 +111,7 @@ void reSelectionShapes::AddShape(reRigShape *shape){
 	if(pShapeCount == pShapeSize){
 		int newSize = pShapeSize * 3 / 2 + 1;
 		reRigShape **newArray = new reRigShape*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pShapes){
 			memcpy(newArray, pShapes, sizeof(reRigShape*) * pShapeSize);
 			delete [] pShapes;
@@ -181,7 +181,7 @@ bool reSelectionShapes::HasActiveShape() const{
 
 void reSelectionShapes::SetActiveShape(reRigShape *shape){
 	if(shape != pActiveShape){
-		if(shape && ! HasShape(shape)) DETHROW(deeInvalidParam);
+		if(shape && !HasShape(shape)) DETHROW(deeInvalidParam);
 		
 		if(pActiveShape){
 			pActiveShape->SetActive(false);

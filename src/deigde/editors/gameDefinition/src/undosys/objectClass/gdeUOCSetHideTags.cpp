@@ -44,7 +44,7 @@ gdeUOCSetHideTags::gdeUOCSetHideTags(
 gdeObjectClass *objectClass, const decStringSet &newValue) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

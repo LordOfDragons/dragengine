@@ -107,7 +107,7 @@ void igdeContainerSplitted::SetSplitPositionRelative(float splitPosition){
 
 
 void igdeContainerSplitted::AddChild(igdeWidget *child, eArea area){
-	if(! child || child->GetParent()){
+	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -207,7 +207,7 @@ void igdeContainerSplitted::CreateNativeWidget(){
 }
 
 void igdeContainerSplitted::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

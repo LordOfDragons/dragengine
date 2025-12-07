@@ -71,14 +71,14 @@ void igdeWAngleRange::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 
 
 void igdeWAngleRange::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		pDDSDisk.SetPosition(position);
 	}
 }
 
 void igdeWAngleRange::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		pDDSDisk.SetOrientation(orientation);
 	}
@@ -87,14 +87,14 @@ void igdeWAngleRange::SetOrientation(const decQuaternion &orientation){
 
 
 void igdeWAngleRange::SetDiskLineColor(const decColor &color){
-	if(! color.IsEqualTo(pColorDiskLine)){
+	if(!color.IsEqualTo(pColorDiskLine)){
 		pColorDiskLine = color;
 		pDDSDisk.SetEdgeColor(pColorDiskLine);
 	}
 }
 
 void igdeWAngleRange::SetDiskAreaColor(const decColor &color){
-	if(! color.IsEqualTo(pColorDiskArea)){
+	if(!color.IsEqualTo(pColorDiskArea)){
 		pColorDiskArea = color;
 		pDDSDisk.SetFillColor(pColorDiskArea);
 	}
@@ -165,7 +165,7 @@ void igdeWAngleRange::pRebuildShape(){
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if(! ddFace) DETHROW(deeOutOfMemory);
+		if(!ddFace) DETHROW(deeOutOfMemory);
 		
 		ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		

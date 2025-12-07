@@ -128,7 +128,7 @@ void igdeSpinTextField::SetRange(int lower, int upper){
 
 
 void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -161,7 +161,7 @@ void igdeSpinTextField::CreateNativeWidget(){
 }
 
 void igdeSpinTextField::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

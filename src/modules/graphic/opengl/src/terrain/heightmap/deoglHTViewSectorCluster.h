@@ -85,15 +85,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent sector. */
-	inline deoglHTViewSector &GetSector() const{return pSector;}
+	inline deoglHTViewSector &GetSector() const{ return pSector; }
 	
 	
 	
 	/** Coordinate. */
-	inline const decPoint &GetCoordinate() const{return pCoordinate;}
+	inline const decPoint &GetCoordinate() const{ return pCoordinate; }
 	
 	/** Lod level. */
-	inline int GetLodLevel() const{return pLodLevel;}
+	inline int GetLodLevel() const{ return pLodLevel; }
 	
 	/** Set lod level. */
 	void SetLodLevel(int lodLevel);

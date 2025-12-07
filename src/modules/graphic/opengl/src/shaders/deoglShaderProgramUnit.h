@@ -79,13 +79,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sources. */
-	inline const deoglShaderUnitSourceCode *GetSources() const {return pSources;}
+	inline const deoglShaderUnitSourceCode *GetSources() const { return pSources; }
 	
 	/** Defines. */
-	inline const deoglShaderDefines &GetDefines() const {return pDefines;}
+	inline const deoglShaderDefines &GetDefines() const { return pDefines; }
 	
 	/** Handle or 0 if not created yet. */
-	inline GLuint GetHandle() const{return pHandle;}
+	inline GLuint GetHandle() const{ return pHandle; }
 	
 	/** Create handle if absent. */
 	void CreateHandle();
@@ -94,25 +94,25 @@ public:
 	void DropHandle();
 	
 	/** Is compiled. */
-	inline bool IsCompiled() const{return pHandle != 0;}
+	inline bool IsCompiled() const{ return pHandle != 0; }
 	
 	/** Processed sources. */
-	inline const decString &GetProcessedSources() const{return pProcessedSources;}
+	inline const decString &GetProcessedSources() const{ return pProcessedSources; }
 	
 	/** Set processed sources. */
 	void SetProcessedSources(const decString &code);
 	
 	/** Processed source locations. */
-	inline const decObjectList &GetProcessedSourceLocations() const{return pProcessedSourceLocations;}
+	inline const decObjectList &GetProcessedSourceLocations() const{ return pProcessedSourceLocations; }
 	
 	/** Set processed source locations. */
 	void SetProcessedSourceLocations(const decObjectList &locations);
 	
 	/** Mutex. */
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** Compile timer. */
-	inline decTimer &GetTimerCompile(){return pTimerCompile;}
+	inline decTimer &GetTimerCompile(){ return pTimerCompile; }
 	/*@}*/
 };
 

@@ -119,7 +119,7 @@ void deoglCollideListLight::TestInside(const deoglRenderPlan &plan){
 	// if the camera is not inside the extends box then there is no chance to inside the
 	// light volumes at all. to avoid flickering the box is slightly enlarged as the
 	// camera near plane has a certain distance from the position itself
-	if(! pCameraInside){
+	if(!pCameraInside){
 		return;
 	}
 	
@@ -182,7 +182,7 @@ void deoglCollideListLight::OcclusionTestInvisible(){
 }
 
 deoglOcclusionQuery &deoglCollideListLight::GetOcclusionQuery(){
-	if(! pOcclusionQuery){
+	if(!pOcclusionQuery){
 		DEASSERT_NOTNULL(pLight)
 		pOcclusionQuery = new deoglOcclusionQuery(pLight->GetRenderThread());
 	}
@@ -193,14 +193,14 @@ bool deoglCollideListLight::IsHiddenByOccQuery() const{
 	DEASSERT_NOTNULL(pLight)
 	
 // 	if( ! pCameraInside && pOcclusionQuery ){
-	if(! pCameraInsideOccQueryBox && pOcclusionQuery && pOccQueryValid){
+	if(!pCameraInsideOccQueryBox && pOcclusionQuery && pOccQueryValid){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value
 			// somewhere so we do not have to trip down to the driver to get
 			// the result since lights can be queried multiple times if they
 			// should be drawn. might be improved once upon time.
-			return ! pOcclusionQuery->GetResultAny();
+			return !pOcclusionQuery->GetResultAny();
 		//}
 	}
 	return false;

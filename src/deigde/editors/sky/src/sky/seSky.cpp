@@ -313,7 +313,7 @@ void seSky::SetBgColor(const decColor &color){
 ////////////////
 
 void seSky::AddController(seController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -323,13 +323,13 @@ void seSky::AddController(seController *controller){
 	
 	NotifyControllerStructureChanged();
 	
-	if(! pActiveController){
+	if(!pActiveController){
 		SetActiveController(controller);
 	}
 }
 
 void seSky::InsertControllerAt(seController *controller, int index){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -344,7 +344,7 @@ void seSky::InsertControllerAt(seController *controller, int index){
 	
 	NotifyControllerStructureChanged();
 	
-	if(! pActiveController){
+	if(!pActiveController){
 		SetActiveController(controller);
 	}
 }
@@ -362,7 +362,7 @@ void seSky::MoveControllerTo(seController *controller, int index){
 }
 
 void seSky::RemoveController(seController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -454,7 +454,7 @@ int seSky::CountControllerUsage(seController *controller) const{
 //////////
 
 void seSky::AddLink(seLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -464,13 +464,13 @@ void seSky::AddLink(seLink *link){
 	
 	NotifyLinkStructureChanged();
 	
-	if(! pActiveLink){
+	if(!pActiveLink){
 		SetActiveLink(link);
 	}
 }
 
 void seSky::RemoveLink(seLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -558,7 +558,7 @@ int seSky::CountLinkUsage(seLink *link) const{
 ///////////
 
 void seSky::AddLayer(seLayer *layer){
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -567,13 +567,13 @@ void seSky::AddLayer(seLayer *layer){
 	
 	NotifyLayerStructureChanged();
 	
-	if(! pActiveLayer){
+	if(!pActiveLayer){
 		SetActiveLayer(layer);
 	}
 }
 
 void seSky::InsertLayerAt(seLayer *layer, int index){
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -582,7 +582,7 @@ void seSky::InsertLayerAt(seLayer *layer, int index){
 	
 	NotifyLayerStructureChanged();
 	
-	if(! pActiveLayer){
+	if(!pActiveLayer){
 		SetActiveLayer(layer);
 	}
 }
@@ -593,7 +593,7 @@ void seSky::MoveLayerTo(seLayer *layer, int index){
 }
 
 void seSky::RemoveLayer(seLayer *layer){
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -658,7 +658,7 @@ void seSky::SetActiveLayer(seLayer *layer){
 //////////////
 
 void seSky::AddListener(seSkyListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -1061,7 +1061,7 @@ void seSky::pBuildShapeHorizon(){
 			vertex[3].z = vertex[0].z;
 			
 			face = new deDebugDrawerShapeFace;
-			if(! face) DETHROW(deeOutOfMemory);
+			if(!face) DETHROW(deeOutOfMemory);
 			
 			face->AddVertex(vertex[0]);
 			face->AddVertex(vertex[1]);
@@ -1114,7 +1114,7 @@ void seSky::pBuildShapeHorizon(){
 			vertex[3].z = vertex[0].z;
 			
 			face = new deDebugDrawerShapeFace;
-			if(! face) DETHROW(deeOutOfMemory);
+			if(!face) DETHROW(deeOutOfMemory);
 			
 			face->AddVertex(vertex[0]);
 			face->AddVertex(vertex[1]);

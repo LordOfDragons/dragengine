@@ -79,7 +79,7 @@ public:
 	virtual decString GetPathEngine();
 	
 	/** \brief Engine path. */
-	inline const decString &GetPathEngineBase() const{return pPathEngineBase;}
+	inline const decString &GetPathEngineBase() const{ return pPathEngineBase; }
 	
 	/** \brief Share path. */
 	virtual decString GetPathShare();
@@ -189,7 +189,7 @@ public:
 	/** \name Windows related */
 	/*@{*/
 	/** \brief Application instance handle. */
-	inline HINSTANCE GetInstApp() const{return pInstApp;}
+	inline HINSTANCE GetInstApp() const{ return pInstApp; }
 	
 	/**
 	 * \brief Set application instance handle.
@@ -205,7 +205,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline HWND GetWindow() const{return pCurWindow;}
+	inline HWND GetWindow() const{ return pCurWindow; }
 	
 	/**
 	 * \brief Set current game window.

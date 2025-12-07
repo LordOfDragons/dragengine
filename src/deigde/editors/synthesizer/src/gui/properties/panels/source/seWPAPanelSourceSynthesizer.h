@@ -78,7 +78,7 @@ public:
 	virtual void UpdateConnection();
 	
 	/** \brief Prevent update for listener use only. */
-	inline bool GetPreventUpdate() const{return pPreventUpdate;}
+	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
 	/*@}*/
 };
 

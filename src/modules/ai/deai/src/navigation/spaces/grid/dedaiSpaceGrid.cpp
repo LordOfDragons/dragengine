@@ -177,14 +177,14 @@ dedaiSpaceGridVertex *dedaiSpaceGrid::GetVertexClosestTo(const decVector &positi
 	int i;
 	
 	for(i=0; i<pVertexCount; i++){
-		if(! pVertices[i].GetEnabled()){
+		if(!pVertices[i].GetEnabled()){
 			continue;
 		}
 		
 		testDirection = pVertices[i].GetPosition() - position;
 		testDistSquared = testDirection * testDirection;
 		
-		if(! bestVertex || testDistSquared < bestDistSquared){
+		if(!bestVertex || testDistSquared < bestDistSquared){
 			bestVertex = pVertices + i;
 			bestDistSquared = testDistSquared;
 		}
@@ -304,7 +304,7 @@ decVector &nearestPosition, float &nearestDistSquared, float &nearestLambda) con
 // 		if( ! edge.GetEnabled() ){
 // 			return;
 // 		}
-		if(! v1.GetEnabled() || ! v2.GetEnabled()){
+		if(!v1.GetEnabled() || !v2.GetEnabled()){
 			continue;
 		}
 		
@@ -367,7 +367,7 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 					
 					dedaiSpace &space = *navspace->GetSpace();
 					dedaiSpaceGrid * const grid = space.GetGrid();
-					if(! grid){
+					if(!grid){
 						continue;
 					}
 					
@@ -533,7 +533,7 @@ void dedaiSpaceGrid::UpdateDDSSpaceShape(){
 		for(i=0; i<pEdgeCount; i++){
 			const dedaiSpaceGridVertex &vertex1 = pVertices[pEdges[i].GetVertex1()];
 			const dedaiSpaceGridVertex &vertex2 = pVertices[pEdges[i].GetVertex2()];
-			if(! vertex1.GetEnabled() || ! vertex2.GetEnabled()){
+			if(!vertex1.GetEnabled() || !vertex2.GetEnabled()){
 				continue;
 			}
 			
@@ -683,7 +683,7 @@ void dedaiSpaceGrid::pInitFromHTNavSpace(){
 	int i, j;
 	
 	// check for obvious bugs
-	if(! edges || ! vertices){
+	if(!edges || !vertices){
 		DETHROW(deeInvalidParam);
 	}
 	

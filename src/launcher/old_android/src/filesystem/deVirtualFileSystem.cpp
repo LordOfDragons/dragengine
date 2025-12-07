@@ -105,7 +105,7 @@ bool deVirtualFileSystem::ExistsFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.ExistsFile(relativePath)){
@@ -123,7 +123,7 @@ bool deVirtualFileSystem::CanReadFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanReadFile(relativePath)){
@@ -141,7 +141,7 @@ bool deVirtualFileSystem::CanWriteFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanWriteFile(relativePath)){
@@ -159,7 +159,7 @@ bool deVirtualFileSystem::CanDeleteFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanDeleteFile(relativePath)){
@@ -177,7 +177,7 @@ decBaseFileReader *deVirtualFileSystem::OpenFileForReading(const decPath &path) 
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanReadFile(relativePath)){
@@ -195,7 +195,7 @@ decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting(const decPath &path) 
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanWriteFile(relativePath)){
@@ -213,7 +213,7 @@ void deVirtualFileSystem::DeleteFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanDeleteFile(relativePath)){
@@ -229,7 +229,7 @@ void deVirtualFileSystem::TouchFile(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.CanWriteFile(relativePath)){
@@ -324,21 +324,21 @@ void deVirtualFileSystem::SearchFiles(const decPath &directory, deFileSearchVisi
 	
 	for(i=0; i<fileCount; i++){
 		path.SetLastComponent(files.GetAt(i));
-		if(! visitor.VisitFile(*this, path)){
+		if(!visitor.VisitFile(*this, path)){
 			return;
 		}
 	}
 	
 	for(i=0; i<specialCount; i++){
 		path.SetLastComponent(specials.GetAt(i));
-		if(! visitor.VisitSpecial(*this, path)){
+		if(!visitor.VisitSpecial(*this, path)){
 			return;
 		}
 	}
 	
 	for(i=0; i<directoryCount; i++){
 		path.SetLastComponent(directories.GetAt(i));
-		if(! visitor.VisitDirectory(*this, path)){
+		if(!visitor.VisitDirectory(*this, path)){
 			return;
 		}
 	}
@@ -351,7 +351,7 @@ deVFSContainer::eFileTypes deVirtualFileSystem::GetFileType(const decPath& path)
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.ExistsFile(relativePath)){
@@ -369,7 +369,7 @@ uint64_t deVirtualFileSystem::GetFileSize(const decPath &path) const{
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.ExistsFile(relativePath)){
@@ -387,7 +387,7 @@ TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime(const decPath &path) co
 	
 	for(i=count-1; i>=0; i--){
 		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
-		if(! pMatchContainer(container, path, relativePath)){
+		if(!pMatchContainer(container, path, relativePath)){
 			continue;
 		}
 		if(container.ExistsFile(relativePath)){
@@ -420,7 +420,7 @@ bool deVirtualFileSystem::HasContainer(deVFSContainer *container) const{
 }
 
 void deVirtualFileSystem::AddContainer(deVFSContainer *container){
-	if(! container){
+	if(!container){
 		DETHROW(deeInvalidParam);
 	}
 	pContainers.Add(container);

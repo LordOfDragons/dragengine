@@ -129,7 +129,7 @@ void debpBPConstraint6Dof::SetDamping(btScalar damping){
 }
 
 void debpBPConstraint6Dof::PrepareForStep(){
-	if(! m_jointFeedback){
+	if(!m_jointFeedback){
 		return;
 	}
 	

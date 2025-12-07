@@ -90,7 +90,7 @@ bool gdeSkyControllerList::HasNamed(const char *name) const{
 }
 
 void gdeSkyControllerList::Add(gdeSkyController *controller){
-	if(! controller || HasNamed(controller->GetName())){
+	if(!controller || HasNamed(controller->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Add(controller);

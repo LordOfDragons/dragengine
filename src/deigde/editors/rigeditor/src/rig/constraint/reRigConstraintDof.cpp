@@ -254,7 +254,7 @@ void reRigConstraintDof::NotifyAllConstraintDofChanged(){
 }
 
 void reRigConstraintDof::NotifyEngineConstraintChanged(){
-	if(! pRigConstraint.GetEngineConstraint()){
+	if(!pRigConstraint.GetEngineConstraint()){
 		return;
 	}
 	

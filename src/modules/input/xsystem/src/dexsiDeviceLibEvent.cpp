@@ -360,7 +360,7 @@ pEvdevMapKeys(NULL)
 	
 	if(hasRelativeAxes){
 		for(i=0; i<REL_MAX; i++){
-			if(! libevdev_has_event_code(pEvdevDevice, EV_REL, i)){
+			if(!libevdev_has_event_code(pEvdevDevice, EV_REL, i)){
 				continue;
 			}
 			
@@ -496,7 +496,7 @@ pEvdevMapKeys(NULL)
 		int nextGeneric = 0;
 		
 		for(i=BTN_MISC; i<KEY_MAX; i++){
-			if(! libevdev_has_event_code(pEvdevDevice, EV_KEY, i)){
+			if(!libevdev_has_event_code(pEvdevDevice, EV_KEY, i)){
 				continue;
 			}
 			

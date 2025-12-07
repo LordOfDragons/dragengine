@@ -119,7 +119,7 @@ void igdeGDPreviewManager::OnBeforeEngineStop(){
 }
 
 void igdeGDPreviewManager::Update(){
-	if(! pHasCreators){
+	if(!pHasCreators){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void igdeGDPreviewManager::Update(){
 	int i;
 	for(i=0; i<count; i++){
 		igdeGDPCObjectClass &creator = *((igdeGDPCObjectClass*)pCreatorsObjectClass.GetAt(i));
-		if(! creator.FinishCreation()){
+		if(!creator.FinishCreation()){
 			continue;
 		}
 		
@@ -150,7 +150,7 @@ void igdeGDPreviewManager::Update(){
 	
 	for(i=0; i<count; i++){
 		igdeGDPCSkin &creator = *((igdeGDPCSkin*)pCreatorsSkin.GetAt(i));
-		if(! creator.FinishCreation()){
+		if(!creator.FinishCreation()){
 			continue;
 		}
 		
@@ -171,7 +171,7 @@ void igdeGDPreviewManager::Update(){
 	count = pCreatorsSky.GetCount();
 	for(i=0; i<count; i++){
 		igdeGDPCSky &creator = *((igdeGDPCSky*)pCreatorsSky.GetAt(i));
-		if(! creator.FinishCreation()){
+		if(!creator.FinishCreation()){
 			continue;
 		}
 		
@@ -195,7 +195,7 @@ void igdeGDPreviewManager::Update(){
 }
 
 void igdeGDPreviewManager::AbortAllCreators(){
-	if(! pHasCreators){
+	if(!pHasCreators){
 		return;
 	}
 	
@@ -227,7 +227,7 @@ void igdeGDPreviewManager::AbortAllCreators(){
 
 
 deImage *igdeGDPreviewManager::GetPreviewObjectClass(igdeGDClass *gdclass) const{
-	if(! gdclass){
+	if(!gdclass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -242,7 +242,7 @@ deImage *igdeGDPreviewManager::GetPreviewObjectClass(igdeGDClass *gdclass) const
 }
 
 void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGDPreviewListener *listener){
-	if(! gdclass || ! listener){
+	if(!gdclass || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -266,7 +266,7 @@ void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGD
 }
 
 void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
-	if(! gdclass){
+	if(!gdclass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -278,7 +278,7 @@ void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
 
 
 deImage *igdeGDPreviewManager::GetPreviewSkin(igdeGDSkin *gdskin) const{
-	if(! gdskin){
+	if(!gdskin){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -293,7 +293,7 @@ deImage *igdeGDPreviewManager::GetPreviewSkin(igdeGDSkin *gdskin) const{
 }
 
 void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewListener *listener){
-	if(! gdskin || ! listener){
+	if(!gdskin || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -317,7 +317,7 @@ void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewLi
 }
 
 void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
-	if(! gdskin){
+	if(!gdskin){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -329,7 +329,7 @@ void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
 
 
 deImage *igdeGDPreviewManager::GetPreviewSky(igdeGDSky *gdsky) const{
-	if(! gdsky){
+	if(!gdsky){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -344,7 +344,7 @@ deImage *igdeGDPreviewManager::GetPreviewSky(igdeGDSky *gdsky) const{
 }
 
 void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListener *listener){
-	if(! gdsky || ! listener){
+	if(!gdsky || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -368,7 +368,7 @@ void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListe
 }
 
 void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
-	if(! gdsky){
+	if(!gdsky){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -392,7 +392,7 @@ void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &t
 	path.AddComponent(filename + ".png");
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	if(! vfs->ExistsFile(path)){
+	if(!vfs->ExistsFile(path)){
 		return;
 	}
 	
@@ -408,7 +408,7 @@ void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &t
 }
 
 void igdeGDPreviewManager::pSaveToFile(deImage *image, const decString &typedir, const decString &filename) const{
-	if(! image){
+	if(!image){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -435,7 +435,7 @@ void igdeGDPreviewManager::pDeleteFile(const decString &typedir, const decString
 	path.AddComponent(typedir);
 	path.AddComponent(filename + ".png");
 	
-	if(! vfs->ExistsFile(path)){
+	if(!vfs->ExistsFile(path)){
 		return;
 	}
 	

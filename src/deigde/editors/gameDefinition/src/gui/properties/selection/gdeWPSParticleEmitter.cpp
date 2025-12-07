@@ -80,7 +80,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter || particleEmitter->GetPath() == editPath->GetPath()){
+		if(!particleEmitter || particleEmitter->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter || particleEmitter->GetName() == textField->GetText()){
+		if(!particleEmitter || particleEmitter->GetName() == textField->GetText()){
 			return;
 		}
 		
@@ -121,7 +121,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter || particleEmitter->GetDescription() == textArea->GetDescription()){
+		if(!particleEmitter || particleEmitter->GetDescription() == textArea->GetDescription()){
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter || particleEmitter->GetCategory() == comboBox->GetText()){
+		if(!particleEmitter || particleEmitter->GetCategory() == comboBox->GetText()){
 			return;
 		}
 		
@@ -158,14 +158,14 @@ public:
 	
 	virtual void OnAction(){
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if(! particleEmitter){
+		if(!particleEmitter){
 			return;
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesParticleEmitter()
 			.GetWithPath(particleEmitter->GetCategory());
-		if(! category){
+		if(!category){
 			return;
 		}
 		
@@ -277,7 +277,7 @@ void gdeWPSParticleEmitter::UpdateCategoryList(){
 	}
 	
 	pCBCategory->SetText(selection);
-	pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty() && ! pCBCategory->GetSelectedItem());
+	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
 void gdeWPSParticleEmitter::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
@@ -306,8 +306,8 @@ void gdeWPSParticleEmitter::UpdateParticleEmitter(){
 		pEditName->SetText(particleEmitter->GetName());
 		pEditDescription->SetText(particleEmitter->GetDescription());
 		pCBCategory->SetText(particleEmitter->GetCategory());
-		pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty()
-			&& ! pCBCategory->GetSelectedItem());
+		pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty()
+			&& !pCBCategory->GetSelectedItem());
 		
 	}else{
 		pEditPath->ClearPath();

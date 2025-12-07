@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
@@ -66,7 +66,7 @@ public:
 	/** Pushes the curve. */
 	void PushCurve(dsRunTime *rt, const decCurveBezier &curve);
 	
-	inline dsClass *GetClassCurveBezierInterpolation() const{return pClsCurveBezierInterpolation;}
+	inline dsClass *GetClassCurveBezierInterpolation() const{ return pClsCurveBezierInterpolation; }
 	/*@}*/
 	
 private:

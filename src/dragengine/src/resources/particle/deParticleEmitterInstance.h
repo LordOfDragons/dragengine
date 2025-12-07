@@ -113,19 +113,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set emitter or NULL if none is set. */
-	inline deParticleEmitter *GetEmitter() const{return pEmitter;}
+	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter or NULL to unset it. */
 	void SetEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
@@ -137,7 +137,7 @@ public:
 	 * have to be rendered. If the Graphic Module does the simulation by itself setting
 	 * the reference position is not required.
 	 */
-	inline const decDVector &GetReferencePosition() const{return pReferencePosition;}
+	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
 	
 	/**
 	 * \brief Set reference position. Particles positions are relative to this position.
@@ -149,43 +149,43 @@ public:
 	void SetReferencePosition(const decDVector &position);
 	
 	/** \brief Determines if casting particles is enabled. */
-	inline bool GetEnableCasting() const{return pEnableCasting;}
+	inline bool GetEnableCasting() const{ return pEnableCasting; }
 	
 	/** \brief Sets if casting particles is enabled. */
 	void SetEnableCasting(bool enable);
 	
 	/** \brief Emitter instance is removed from the world if the last particle died. */
-	inline bool GetRemoveAfterLastParticleDied() const{return pRemoveAfterLastParticleDied;}
+	inline bool GetRemoveAfterLastParticleDied() const{ return pRemoveAfterLastParticleDied; }
 	
 	/** \brief Set if emitter instance is removed from the world if the last particle died. */
 	void SetRemoveAfterLastParticleDied(bool remove);
 	
 	/** \brief Scaling for the time to be added to controllers linked to time. */
-	inline float GetTimeScale() const{return pTimeScale;}
+	inline float GetTimeScale() const{ return pTimeScale; }
 	
 	/** \brief Set scaling for the time to be added to controllers linked to time. */
 	void SetTimeScale(float scale);
 	
 	/** \brief Warm up time used when enabling casting. */
-	inline float GetWarmUpTime() const{return pWarmUpTime;}
+	inline float GetWarmUpTime() const{ return pWarmUpTime; }
 	
 	/** \brief Set warm up time used when enabling casting. */
 	void SetWarmUpTime(float warmUpTime);
 	
 	/** \brief Burst time. Set by the physics module to be used by the graphics module. */
-	inline float GetBurstTime() const{return pBurstTime;}
+	inline float GetBurstTime() const{ return pBurstTime; }
 	
 	/** \brief Set burst time. Set by the physics module to be used by the graphics module. */
 	void SetBurstTime(float burstTime);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
@@ -193,7 +193,7 @@ public:
 	
 	
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{return pControllerCount;}
+	inline int GetControllerCount() const{ return pControllerCount; }
 	
 	/**
 	 * \brief Controller at index.
@@ -212,7 +212,7 @@ public:
 	
 	
 	/** \brief Count of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** \brief Type at the given index. */
 	deParticleEmitterInstanceType &GetTypeAt(int index);
@@ -289,19 +289,19 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object or NULL if not assigned. */
-	inline deBaseGraphicParticleEmitterInstance *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicParticleEmitterInstance *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not assigned. */
 	void SetPeerGraphic(deBaseGraphicParticleEmitterInstance *peer);
 	
 	/** \brief Physics system peer object or NULL if not assigned. */
-	inline deBasePhysicsParticleEmitterInstance *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsParticleEmitterInstance *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object or NULL if not assigned. */
 	void SetPeerPhysics(deBasePhysicsParticleEmitterInstance *peer);
 	
 	/** \brief Scripting system peer object or NULL if not assigned. */
-	inline deBaseScriptingParticleEmitterInstance *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingParticleEmitterInstance *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object or NULL if not assigned. */
 	void SetPeerScripting(deBaseScriptingParticleEmitterInstance *peer);
@@ -312,19 +312,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deParticleEmitterInstance *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next particle emitter in the parent world linked list. */
 	void SetLLWorldPrev(deParticleEmitterInstance *instance);
 	
 	/** \brief Next particle emitter in the parent world linked list. */
-	inline deParticleEmitterInstance *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deParticleEmitterInstance *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next particle emitter in the parent world linked list. */
 	void SetLLWorldNext(deParticleEmitterInstance *instance);

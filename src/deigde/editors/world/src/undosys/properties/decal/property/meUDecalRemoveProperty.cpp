@@ -43,10 +43,10 @@
 meUDecalRemoveProperty::meUDecalRemoveProperty(meDecal *decal, const char *key, const char *value) :
 pDecal(NULL)
 {
-	if(! decal || ! key || ! value){
+	if(!decal || !key || !value){
 		DETHROW(deeInvalidParam);
 	}
-	if(! decal->GetWorld()){
+	if(!decal->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

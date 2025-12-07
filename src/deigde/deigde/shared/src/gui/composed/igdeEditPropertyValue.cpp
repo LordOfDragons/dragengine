@@ -254,7 +254,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeTriggerTargetList *triggerTargetList = pWidget.GetTriggerTargets();
-		if(! triggerTargetList){
+		if(!triggerTargetList){
 			static igdeTriggerTargetList dummyList;
 			dummyList.RemoveAll();
 			triggerTargetList = &dummyList;
@@ -264,7 +264,7 @@ public:
 			pWidget.GetEnvironment(), *triggerTargetList, pWidget.GetTriggerExpressionParser()));
 		
 		dialog->SetExpression(pWidget.GetValue());
-		if(! dialog->Run(&pWidget) || dialog->GetExpression() == pWidget.GetValue()){
+		if(!dialog->Run(&pWidget) || dialog->GetExpression() == pWidget.GetValue()){
 			return;
 		}
 		
@@ -397,7 +397,7 @@ void igdeEditPropertyValue::SetEnabled(bool enabled){
 }
 
 void igdeEditPropertyValue::Focus(){
-	if(! pGDProperty){
+	if(!pGDProperty){
 		pString->Focus();
 		return;
 	}
@@ -521,7 +521,7 @@ void igdeEditPropertyValue::SetTriggerTargets(igdeTriggerTargetList *triggerTarg
 
 
 void igdeEditPropertyValue::AddListener(igdeEditPropertyValueListener* listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -558,7 +558,7 @@ void igdeEditPropertyValue::EditWidgetValueChanged(bool changing){
 		return;
 	}
 	
-	if(! pGDProperty){
+	if(!pGDProperty){
 		if(pValue == pString->GetText()){
 			return;
 		}
@@ -750,7 +750,7 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 
 
 void igdeEditPropertyValue::pUpdateEditWidgets(){
-	if(! pGDProperty){
+	if(!pGDProperty){
 		pSwitcher->SetCurrent(0);
 		pString->SetText(pValue);
 		return;

@@ -59,7 +59,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Number of values. */
-	inline int GetCount() const{return pValueCount;}
+	inline int GetCount() const{ return pValueCount; }
 	
 	/**
 	 * \brief Value at index.

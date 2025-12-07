@@ -88,22 +88,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
 	/** Octree. */
-	inline deoalWorldOctree *GetOctree() const{return pOctree;}
+	inline deoalWorldOctree *GetOctree() const{ return pOctree; }
 	
 	/** Visit content of world. */
 	void VisitRegion(const decDVector &center, const decDVector &halfSize,
 		deoalWorldOctreeVisitor &visitor);
 	
 	/** Layer mask containing all bits of all microphones. */
-	inline const decLayerMask &GetAllMicLayerMask() const{return pAllMicLayerMask;}
+	inline const decLayerMask &GetAllMicLayerMask() const{ return pAllMicLayerMask; }
 	
 	/** Speaker gain. */
-	inline float GetSpeakerGain() const{return pSpeakerGain;}
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
 	
 	/** Set speaker gain. */
 	void SetSpeakerGain(float gain);
@@ -149,10 +149,10 @@ public:
 	/** \name Components. */
 	/*@{*/
 	/** Number of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Root component. */
-	inline deoalAComponent *GetRootComponent() const{return pRootComponent;}
+	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
 	void AddComponent(deoalAComponent *component);
@@ -172,10 +172,10 @@ public:
 	/** \name Speakers. */
 	/*@{*/
 	/** Number of speakers. */
-	inline int GetSpeakerCount() const{return pSpeakerCount;}
+	inline int GetSpeakerCount() const{ return pSpeakerCount; }
 	
 	/** Root speaker. */
-	inline deoalASpeaker *GetRootSpeaker() const{return pRootSpeaker;}
+	inline deoalASpeaker *GetRootSpeaker() const{ return pRootSpeaker; }
 	
 	/**
 	 * Add speaker.
@@ -207,10 +207,10 @@ public:
 	/** \name Microphones. */
 	/*@{*/
 	/** Number of microphones. */
-	inline int GetMicrophoneCount() const{return pMicrophoneCount;}
+	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
 	
 	/** Root microphone. */
-	inline deoalAMicrophone *GetRootMicrophone() const{return pRootMicrophone;}
+	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
 	
 	/** Add microphone. */
 	void AddMicrophone(deoalAMicrophone *microphone);
@@ -230,10 +230,10 @@ public:
 	/** \name Sound level meters. */
 	/*@{*/
 	/** Number of sound level meters. */
-	inline int GetSoundLevelMeterCount() const{return pSoundLevelMeterCount;}
+	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
 	
 	/** Root sound level meter. */
-	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{return pRootSoundLevelMeter;}
+	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
 	
 	/**
 	 * Add sound level meter.

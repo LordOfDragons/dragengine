@@ -67,7 +67,7 @@ void deClassLumimeter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create lumimeter
 	nd->lumimeter = lumimeterMgr->CreateLumimeter();
-	if(! nd->lumimeter) DSTHROW(dueOutOfMemory);
+	if(!nd->lumimeter) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -113,7 +113,7 @@ void deClassLumimeter::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassLumimeter *clsLumimeter = (deClassLumimeter*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	lumimeter->SetPosition(clsLumimeter->GetClassDVector()->GetDVector(obj));
 }
@@ -139,7 +139,7 @@ void deClassLumimeter::nfSetDirection::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassLumimeter *clsLumimeter = (deClassLumimeter*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	lumimeter->SetDirection(clsLumimeter->GetClassVector()->GetVector(obj));
 }
@@ -268,7 +268,7 @@ void deClassLumimeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLumimeter *clsLumimeter = (deClassLumimeter*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsLumimeter)){
+	if(!p_IsObjOfType(obj, clsLumimeter)){
 		rt->PushBool(false);
 		
 	}else{
@@ -287,7 +287,7 @@ void deClassLumimeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassLumimeter::deClassLumimeter(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Lumimeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
@@ -352,7 +352,7 @@ void deClassLumimeter::CreateClassMembers(dsEngine *engine){
 }
 
 deLumimeter *deClassLumimeter::GetLumimeter(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -360,11 +360,11 @@ deLumimeter *deClassLumimeter::GetLumimeter(dsRealObject *myself) const{
 }
 
 void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! lumimeter){
+	if(!lumimeter){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -43,7 +43,7 @@ aeUAnimatorSetRigPath::aeUAnimatorSetRigPath(aeAnimator *animator, const char *n
 pAnimator(animator),
 pNewValue(newValue)
 {
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

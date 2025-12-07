@@ -296,7 +296,7 @@ void deLoggerConsoleColor::LogError(const char *source, const char *message){
 void deLoggerConsoleColor::pPrintMessage(const char *source, const char *message,
 eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground,
 char lineEnd) const {
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

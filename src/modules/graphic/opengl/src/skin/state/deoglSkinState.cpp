@@ -272,7 +272,7 @@ deoglSkinStateRenderable *deoglSkinState::AddRenderable(){
 	if(pRenderableCount == pRenderableSize){
 		int newSize = pRenderableSize * 3 / 2 + 1;
 		deoglSkinStateRenderable **newArray = new deoglSkinStateRenderable*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pRenderables){
 			memcpy(newArray, pRenderables, sizeof(deoglSkinStateRenderable*) * pRenderableSize);
 			delete [] pRenderables;
@@ -426,7 +426,7 @@ void deoglSkinState::InitAll(){
 	deoglRSkin * const skin = GetOwnerSkin();
 	int i;
 	
-	if(! skin){
+	if(!skin){
 		SetMappedCount(0);
 		SetBoneCount(0);
 		SetCalculatedPropertyCount(0);

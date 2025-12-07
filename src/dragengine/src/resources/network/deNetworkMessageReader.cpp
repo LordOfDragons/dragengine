@@ -42,7 +42,7 @@ deNetworkMessageReader::deNetworkMessageReader(deNetworkMessage *message) :
 pMessage(message),
 pPosition(0)
 {
-	if(! message){
+	if(!message){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -109,7 +109,7 @@ void deNetworkMessageReader::SetPositionEnd(int position){
 ////////////
 
 void deNetworkMessageReader::Read(void *buffer, int size){
-	if(! buffer){
+	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
 	

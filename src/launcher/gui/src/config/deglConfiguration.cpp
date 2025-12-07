@@ -111,7 +111,7 @@ void deglConfiguration::LoadConfiguration(){
 }
 
 void deglConfiguration::SaveConfiguration(){
-	if(! pCanSave){
+	if(!pCanSave){
 		// this can happen due to loading error or due to an early quite requested.
 		// for this reason no warning is logged
 		return;

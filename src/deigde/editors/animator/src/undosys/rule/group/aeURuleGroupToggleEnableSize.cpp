@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize(aeRuleGroup *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnableSize::~aeURuleGroupToggleEnableSize(){
 ///////////////
 
 void aeURuleGroupToggleEnableSize::Undo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleGroupToggleEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 

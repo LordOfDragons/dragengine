@@ -79,7 +79,7 @@ peeLoadSaveSystem::~peeLoadSaveSystem(){
 ///////////////
 
 peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
-	if(! filename) DETHROW(deeInvalidParam);
+	if(!filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileReader *fileReader = NULL;
@@ -111,7 +111,7 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 }
 
 void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
-	if(! emitter || ! filename) DETHROW(deeInvalidParam);
+	if(!emitter || !filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileWriter *fileWriter = NULL;

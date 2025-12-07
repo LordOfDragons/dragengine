@@ -184,7 +184,7 @@ void cePlayerChoiceBox::Clear(){
 
 int cePlayerChoiceBox::IndexOfOptionAt(int x, int y) const{
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if(! parentView){
+	if(!parentView){
 		return -1;
 	}
 	
@@ -195,7 +195,7 @@ int cePlayerChoiceBox::IndexOfOptionAt(int x, int y) const{
 	
 	for(i=0; i<count; i++){
 		const deCanvasView * const canvasOption = pOptions.GetAt(i)->GetCanvasView();
-		if(! canvasOption){
+		if(!canvasOption){
 			continue;
 		}
 		
@@ -221,7 +221,7 @@ void cePlayerChoiceBox::SelectOptionAt(int x, int y){
 void cePlayerChoiceBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if(! parentView){
+	if(!parentView){
 		return;
 	}
 	

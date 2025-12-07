@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait *wait, float newInterval){
-	if(! topic || ! wait) DETHROW(deeInvalidParam);
+	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pWait = NULL;

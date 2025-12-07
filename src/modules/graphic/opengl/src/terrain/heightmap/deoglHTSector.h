@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render height terrain sector. */
-	inline const deoglRHTSector::Ref &GetRSector() const{return pRSector;}
+	inline const deoglRHTSector::Ref &GetRSector() const{ return pRSector; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

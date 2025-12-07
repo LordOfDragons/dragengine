@@ -62,19 +62,19 @@ public:
 	void Clear();
 	
 	/** Cluster. */
-	inline deoglPropFieldCluster *GetCluster() const{return pCluster;}
+	inline deoglPropFieldCluster *GetCluster() const{ return pCluster; }
 	
 	/** Set cluster. */
 	void SetCluster(deoglPropFieldCluster *cluster);
 	
 	/** Component is culled. */
-	inline bool GetCulled() const{return pCulled;}
+	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set component is culled. */
 	void SetCulled(bool culled);
 	
 	/** Cascade mask. */
-	inline int GetCascadeMask() const{return pCascadeMask;}
+	inline int GetCascadeMask() const{ return pCascadeMask; }
 	
 	/** Set cascade mask. */
 	void SetCascadeMask(int mask);

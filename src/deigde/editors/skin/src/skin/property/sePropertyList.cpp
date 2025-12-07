@@ -110,13 +110,13 @@ bool sePropertyList::HasNamed(const char *name) const{
 }
 
 void sePropertyList::Add(seProperty *property){
-	if(! property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pProperties.Add(property);
 }
 
 void sePropertyList::InsertAt(seProperty *property, int index){
-	if(! property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pProperties.Insert(property, index);
 }

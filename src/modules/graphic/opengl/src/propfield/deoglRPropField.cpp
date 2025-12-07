@@ -117,7 +117,7 @@ void deoglRPropField::UpdateExtends(const dePropField &propField){
 		const dePropFieldType &engType = *propField.GetTypeAt(t);
 		const deoglRPropFieldType &type = GetTypeAt(t);
 		
-		if(! type.GetModel() || ! engType.GetSkin()){
+		if(!type.GetModel() || !engType.GetSkin()){
 			continue;
 		}
 		
@@ -226,7 +226,7 @@ void deoglRPropField::RemoveAllTypes(){
 }
 
 void deoglRPropField::AddType(deoglRPropFieldType *type){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	pTypes.Add(type);
@@ -259,7 +259,7 @@ void deoglRPropField::SetWorldMarkedRemove(bool marked){
 //////////////////////
 
 void deoglRPropField::pRequiresPrepareForRender(){
-	if(! pLLPrepareForRenderWorld.GetList() && pParentWorld){
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
 		pParentWorld->AddPrepareForRenderPropField(this);
 	}
 }

@@ -84,7 +84,7 @@ static void eglGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
 	}
 	
 	const void * const mapped = glMapBufferRange(target, offset, size, GL_MAP_READ_BIT);
-	if(! mapped){
+	if(!mapped){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -128,8 +128,8 @@ public:
 		}
 	}
 	
-	inline int GetSize() const{return pSize;}
-	inline uint8_t *GetData() const{return pData;}
+	inline int GetSize() const{ return pSize; }
+	inline uint8_t *GetData() const{ return pData; }
 	
 	void SetSize(int size){
 		DEASSERT_TRUE(size >= 1)

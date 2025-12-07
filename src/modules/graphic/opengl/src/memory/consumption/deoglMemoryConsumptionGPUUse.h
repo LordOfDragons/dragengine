@@ -53,25 +53,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get memory consumption. */
-	inline unsigned long long GetConsumption() const{return pConsumption;}
+	inline unsigned long long GetConsumption() const{ return pConsumption; }
 	
 	/** Consumption in KB. */
-	inline unsigned long long GetConsumptionKB() const{return pConsumption / 1024ull;}
+	inline unsigned long long GetConsumptionKB() const{ return pConsumption / 1024ull; }
 	
 	/** Consumption in MB. */
-	inline unsigned int GetConsumptionMB() const{return (unsigned int)(pConsumption / 1024000ull);}
+	inline unsigned int GetConsumptionMB() const{ return (unsigned int)(pConsumption / 1024000ull); }
 	
 	/** Consumption in GB. */
-	inline unsigned int GetConsumptionGB() const{return (unsigned int)(pConsumption / 1024000000ull);}
+	inline unsigned int GetConsumptionGB() const{ return (unsigned int)(pConsumption / 1024000000ull); }
 	
 	/** Consumption in KB as double. */
-	inline double GetConsumptionKBDouble() const{return (double)pConsumption / 1024e0;}
+	inline double GetConsumptionKBDouble() const{ return (double)pConsumption / 1024e0; }
 	
 	/** Consumption in MB as double. */
-	inline double GetConsumptionMBDouble() const{return (double)pConsumption / 1024e3;}
+	inline double GetConsumptionMBDouble() const{ return (double)pConsumption / 1024e3; }
 	
 	/** Consumption in GB as double. */
-	inline double GetConsumptionGBDouble() const{return (double)pConsumption / 1024e6;}
+	inline double GetConsumptionGBDouble() const{ return (double)pConsumption / 1024e6; }
 	
 	/** Set memory consumption. */
 	void SetConsumption(unsigned long long consumption);
@@ -88,7 +88,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Get memory consumption. */
-	inline operator unsigned long long() const{return pConsumption;}
+	inline operator unsigned long long() const{ return pConsumption; }
 	
 	/** Set memory consumption. */
 	deoglMemoryConsumptionGPUUse &operator=(unsigned long long consumption);

@@ -111,7 +111,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -151,7 +151,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -174,7 +174,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -197,7 +197,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -216,7 +216,7 @@ public:
 	cEditPositionMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
 			? new aeURuleLimitSetPosMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -226,7 +226,7 @@ public:
 	cEditPositionMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
 			? new aeURuleLimitSetPosMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -236,7 +236,7 @@ public:
 	cEditRotationMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
 			? new aeURuleLimitSetRotMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -246,7 +246,7 @@ public:
 	cEditRotationMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
 			? new aeURuleLimitSetRotMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -256,7 +256,7 @@ public:
 	cEditScalingMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
 			? new aeURuleLimitSetScaleMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -266,7 +266,7 @@ public:
 	cEditScalingMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
 			? new aeURuleLimitSetScaleMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -298,7 +298,7 @@ public:
 	cComboCoordFrame(aeWPAPanelRuleLimit &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		

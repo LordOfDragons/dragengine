@@ -69,7 +69,7 @@ void deoglRPTBuildRTsGeometry::Run(){
 		return;
 	}
 	
-	const bool useComputeRenderTask = pPlan.GetPlan().GetRenderThread().GetChoices().GetUseComputeRenderTask(); // TEMP! removed once properly working in compute render task
+	const bool useComputeRenderTask = pPlan.GetPlan().GetRenderThread().GetChoices().GetUseComputeRenderTask(); // TEMP!removed once properly working in compute render task
 	decTimer timer;
 	try{
 		pInitPipelineModifier();

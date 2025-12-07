@@ -82,7 +82,7 @@ void ceSpeechAnimationXML::ReadFromFile(const decString &pathSAnimation, decBase
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "speechAnimation") != 0){
+	if(!root || strcmp(root->GetName(), "speechAnimation") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

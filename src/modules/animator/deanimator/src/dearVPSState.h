@@ -60,37 +60,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const char *GetName() const{return pName;}
+	inline const char *GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Index of state. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index of state. */
 	void SetIndex(int index);
 	
 	/** Model index. */
-	inline int GetModelIndex() const{return pModelIndex;}
+	inline int GetModelIndex() const{ return pModelIndex; }
 	
 	/** Set model index. */
 	void SetModelIndex(int index);
 	
 	/** Weight. */
-	inline float GetWeight() const{return pWeight;}
+	inline float GetWeight() const{ return pWeight; }
 	
 	/** Set weight. */
 	void SetWeight(float weight);
 	
 	/** State is protected. */
-	inline bool GetProtected() const{return pProtect;}
+	inline bool GetProtected() const{ return pProtect; }
 	
 	/** Set if state is protected. */
 	void SetProtected(bool prot);
 	
 	/** State is dirty. */
-	inline bool GetDirty() const{return pDirty;}
+	inline bool GetDirty() const{ return pDirty; }
 	
 	/** Set if state is dirty. */
 	void SetDirty(bool dirty);

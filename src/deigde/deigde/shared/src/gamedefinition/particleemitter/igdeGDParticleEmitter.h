@@ -72,25 +72,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path. */
 	void SetPath(const char *path);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Category. */
-	inline const decString &GetCategory() const{return pCategory;}
+	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set cathegory. */
 	void SetCategory(const char *category);

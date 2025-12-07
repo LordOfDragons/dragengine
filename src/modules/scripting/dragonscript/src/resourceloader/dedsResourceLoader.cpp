@@ -52,7 +52,7 @@
 ////////////////////////////
 
 dedsResourceLoader::dedsResourceLoader(deScriptingDragonScript *ds){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -128,7 +128,7 @@ void dedsResourceLoader::OnFrameUpdate(){
 
 void dedsResourceLoader::AddRequest(const char* filename,
 deResourceLoader::eResourceType resourceType, dsRealObject* listener){
-	if(! filename || ! listener) DSTHROW(dueInvalidParam);
+	if(!filename || !listener) DSTHROW(dueInvalidParam);
 	int index = pIndexOfTaskWith(filename, resourceType);
 	
 	if(index == -1){
@@ -144,7 +144,7 @@ deResourceLoader::eResourceType resourceType, dsRealObject* listener){
 		}
 		
 		pTasks[pTaskCount] = new dedsResourceLoaderTask(pDS, filename, resourceType);
-		if(! pTasks[pTaskCount]) DSTHROW(dueOutOfMemory);
+		if(!pTasks[pTaskCount]) DSTHROW(dueOutOfMemory);
 		index = pTaskCount++;
 		
 		deEngine &engine = *pDS->GetGameEngine();
@@ -157,7 +157,7 @@ deResourceLoader::eResourceType resourceType, dsRealObject* listener){
 
 void dedsResourceLoader::CancelRequest(const char* filename,
 deResourceLoader::eResourceType resourceType, dsRealObject* listener){
-	if(! filename || ! listener) DSTHROW(dueInvalidParam);
+	if(!filename || !listener) DSTHROW(dueInvalidParam);
 	int index = pIndexOfTaskWith(filename, resourceType);
 	if(index != -1){
 		pTasks[index]->RemoveListener(listener);

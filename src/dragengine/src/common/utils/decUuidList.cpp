@@ -254,7 +254,7 @@ bool decUuidList::operator==(const decUuidList &list) const {
 }
 
 bool decUuidList::operator!=(const decUuidList &list) const {
-	return ! (*this == list);
+	return !(*this == list);
 }
 
 decUuidList decUuidList::operator+(const decUuidList &list) const{

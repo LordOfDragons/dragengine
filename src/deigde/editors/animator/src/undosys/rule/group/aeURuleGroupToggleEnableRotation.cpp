@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation(aeRuleGroup *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnableRotation::~aeURuleGroupToggleEnableRotation(){
 ///////////////
 
 void aeURuleGroupToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleGroupToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 

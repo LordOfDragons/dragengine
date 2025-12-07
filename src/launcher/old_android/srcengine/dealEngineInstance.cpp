@@ -76,7 +76,7 @@ dealIEngineInstance *CreateEngine(android_app* androidApp);
 ////////////////
 
 dealIEngineInstance *CreateEngine(android_app *androidApp){
-	if(! androidApp){
+	if(!androidApp){
 		return NULL;
 	}
 	
@@ -191,12 +191,12 @@ bool dealEngineInstance::Stop(){
 }
 
 void dealEngineInstance::ProcessInputEvent(const AInputEvent &event){
-	if(! pEngine){
+	if(!pEngine){
 		return;
 	}
 	
 	deBaseInputModule * const module = pEngine->GetInputSystem()->GetActiveModule();
-	if(! module){
+	if(!module){
 		return;
 	}
 	
@@ -204,7 +204,7 @@ void dealEngineInstance::ProcessInputEvent(const AInputEvent &event){
 }
 
 bool dealEngineInstance::FrameUpdate(bool &keepRunning){
-	if(! pEngine){
+	if(!pEngine){
 		return false;
 	}
 	
@@ -247,13 +247,13 @@ bool dealEngineInstance::FrameUpdate(bool &keepRunning){
 
 
 bool dealEngineInstance::GetModuleStatus(const char *moduleName, const char *moduleVersion, int &status){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleStatus: Engine not running");
 		return false;
 	}
 	
 	const deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
-	if(! module){
+	if(!module){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleStatus: module '%s':%s not found", moduleName, moduleVersion);
 		return false;
 	}
@@ -264,19 +264,19 @@ bool dealEngineInstance::GetModuleStatus(const char *moduleName, const char *mod
 
 bool dealEngineInstance::GetModuleParameterCount(const char *moduleName,
 const char *moduleVersion, int &parameterCount){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterCount: Engine not running");
 		return false;
 	}
 	
 	const deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
-	if(! module){
+	if(!module){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterCount: module '%s':%s not found", moduleName, moduleVersion);
 		return false;
 	}
 	
 	const deBaseModule * const baseModule = module->GetModule();
-	if(! baseModule){
+	if(!baseModule){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterCount: module '%s':%s not created", moduleName, moduleVersion);
 		return false;
 	}
@@ -288,19 +288,19 @@ const char *moduleVersion, int &parameterCount){
 bool dealEngineInstance::GetModuleParameterData(const char *moduleName, const char *moduleVersion,
 int parameter, const char *&parameterName, const char *&parameterDescription,
 const char *&parameterValue){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterData: Engine not running");
 		return false;
 	}
 	
 	const deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
-	if(! module){
+	if(!module){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterData: module '%s':%s not found", moduleName, moduleVersion);
 		return false;
 	}
 	
 	const deBaseModule * const baseModule = module->GetModule();
-	if(! baseModule){
+	if(!baseModule){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetModuleParameterData: module '%s':%s not created", moduleName, moduleVersion);
 		return false;
 	}
@@ -322,19 +322,19 @@ const char *&parameterValue){
 
 bool dealEngineInstance::SetModuleParameterValue(const char *moduleName,
 const char *moduleVersion, const char *parameter, const char *value){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "SetModuleParameterValue: Engine not running");
 		return false;
 	}
 	
 	const deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
-	if(! module){
+	if(!module){
 		pLogger->LogErrorFormat(LOGSOURCE, "SetModuleParameterValue: module '%s':%s not found", moduleName, moduleVersion);
 		return false;
 	}
 	
 	deBaseModule * const baseModule = module->GetModule();
-	if(! baseModule){
+	if(!baseModule){
 		pLogger->LogErrorFormat(LOGSOURCE, "SetModuleParameterValue: module '%s':%s not created", moduleName, moduleVersion);
 		return false;
 	}
@@ -351,7 +351,7 @@ const char *moduleVersion, const char *parameter, const char *value){
 }
 
 bool dealEngineInstance::GetProperty(int property, const char *&value){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "GetProperty: Engine not running");
 		return false;
 	}
@@ -380,7 +380,7 @@ bool dealEngineInstance::GetProperty(int property, const char *&value){
 }
 
 bool dealEngineInstance::ActivateModule(const char *moduleName, const char *moduleVersion){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "ActivateModule: Engine not running");
 		return false;
 	}
@@ -395,7 +395,7 @@ bool dealEngineInstance::ActivateModule(const char *moduleName, const char *modu
 			module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
 		}
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(LOGSOURCE, "ActivateModule: module '%s':%s not found", moduleName, moduleVersion);
 			return false;
 		}
@@ -458,7 +458,7 @@ bool dealEngineInstance::ActivateModule(const char *moduleName, const char *modu
 }
 
 bool dealEngineInstance::EnableModule(const char *moduleName, const char *moduleVersion, bool enable){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "EnableModule: Engine not running");
 		return false;
 	}
@@ -466,7 +466,7 @@ bool dealEngineInstance::EnableModule(const char *moduleName, const char *module
 	try{
 		deLoadableModule * const module = pEngine->GetModuleSystem()->GetModuleNamed(moduleName, moduleVersion);
 		
-		if(! module){
+		if(!module){
 			pLogger->LogErrorFormat(LOGSOURCE, "EnableModule: module '%s':%s not found", moduleName, moduleVersion);
 			return false;
 		}
@@ -484,7 +484,7 @@ bool dealEngineInstance::EnableModule(const char *moduleName, const char *module
 }
 
 bool dealEngineInstance::SetCmdLineArgs(const char *arguments) const{
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "SetCmdLineArgs: Engine not running");
 		return false;
 	}
@@ -494,7 +494,7 @@ bool dealEngineInstance::SetCmdLineArgs(const char *arguments) const{
 }
 
 bool dealEngineInstance::SetDataDirectory(const char *directory){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "SetDataDirectory: Engine not running");
 		return false;
 	}
@@ -506,7 +506,7 @@ bool dealEngineInstance::SetDataDirectory(const char *directory){
 
 
 bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fileLength){
-	if(! pEngine || fileDescriptor == 0 || fileOffset < 0 || fileLength < 0 || pDelga){
+	if(!pEngine || fileDescriptor == 0 || fileOffset < 0 || fileLength < 0 || pDelga){
 		return false;
 	}
 	
@@ -543,7 +543,7 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 
 
 bool dealEngineInstance::VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly){
-	if(! pEngine){
+	if(!pEngine){
 		return false;
 	}
 	
@@ -577,7 +577,7 @@ bool dealEngineInstance::VFSAddDiskDir(const char *vfsRoot, const char *nativeDi
 }
 
 bool dealEngineInstance::VFSAddScriptSharedDataDir(){
-	if(! pEngine){
+	if(!pEngine){
 		return false;
 	}
 	
@@ -598,7 +598,7 @@ bool dealEngineInstance::VFSAddScriptSharedDataDir(){
 }
 
 bool dealEngineInstance::VFSAddDelga(const char *vfsRoot, const char *vfsBase){
-	if(! pEngine || ! pDelga || ! vfsRoot || ! vfsBase){
+	if(!pEngine || !pDelga || !vfsRoot || !vfsBase){
 		return false;
 	}
 	
@@ -628,7 +628,7 @@ bool dealEngineInstance::VFSAddDelga(const char *vfsRoot, const char *vfsBase){
 }
 
 bool dealEngineInstance::VFSAddRedirect(const char *root, const char *redirect){
-	if(! pEngine){
+	if(!pEngine){
 		return false;
 	}
 	
@@ -659,7 +659,7 @@ bool dealEngineInstance::VFSAddRedirect(const char *root, const char *redirect){
 }
 
 bool dealEngineInstance::ModulesAddVFSContainers(const char *stage){
-	if(! pEngine){
+	if(!pEngine){
 		return false;
 	}
 	
@@ -682,7 +682,7 @@ bool dealEngineInstance::ModulesAddVFSContainers(const char *stage){
 
 
 bool dealEngineInstance::CreateRenderWindow(int width, int height, bool fullScreen, const char *windowTitle){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "CreateRenderWindow: Engine not running");
 		return false;
 	}
@@ -712,7 +712,7 @@ bool dealEngineInstance::CreateRenderWindow(int width, int height, bool fullScre
 }
 
 bool dealEngineInstance::StartGame(const char *scriptDirectory, const char *gameObject){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "StartGame: Engine not running");
 		return false;
 	}
@@ -726,17 +726,17 @@ bool dealEngineInstance::StartGame(const char *scriptDirectory, const char *game
 		pEngine->GetScriptingSystem()->SetGameObject(gameObject);
 		
 		// start systems
-		if(! pEngine->GetCrashRecoverySystem()->CanStart()
-		||  ! pEngine->GetGraphicSystem()->CanStart()
-		||  ! pEngine->GetAudioSystem()->CanStart()
-		||  ! pEngine->GetPhysicsSystem()->CanStart()
-		||  ! pEngine->GetNetworkSystem()->CanStart()
-		||  ! pEngine->GetInputSystem()->CanStart()
-		||  ! pEngine->GetAnimatorSystem()->CanStart()
-		||  ! pEngine->GetSynthesizerSystem()->CanStart()
-		||  ! pEngine->GetAISystem()->CanStart()
-		||  ! pEngine->GetSynthesizerSystem()->CanStart()
-		||  ! pEngine->GetScriptingSystem()->CanStart()){
+		if(!pEngine->GetCrashRecoverySystem()->CanStart()
+		||  !pEngine->GetGraphicSystem()->CanStart()
+		||  !pEngine->GetAudioSystem()->CanStart()
+		||  !pEngine->GetPhysicsSystem()->CanStart()
+		||  !pEngine->GetNetworkSystem()->CanStart()
+		||  !pEngine->GetInputSystem()->CanStart()
+		||  !pEngine->GetAnimatorSystem()->CanStart()
+		||  !pEngine->GetSynthesizerSystem()->CanStart()
+		||  !pEngine->GetAISystem()->CanStart()
+		||  !pEngine->GetSynthesizerSystem()->CanStart()
+		||  !pEngine->GetScriptingSystem()->CanStart()){
 			pLogger->LogErrorFormat(LOGSOURCE, "StartGame: Not all systems are ready to start");
 			return false;
 		}
@@ -744,37 +744,37 @@ bool dealEngineInstance::StartGame(const char *scriptDirectory, const char *game
 		pEngine->ResetFailureFlags();
 		
 		// start all systems
-		if(! pEngine->GetCrashRecoverySystem()->GetIsRunning()){
+		if(!pEngine->GetCrashRecoverySystem()->GetIsRunning()){
 			pEngine->GetCrashRecoverySystem()->Start();
 		}
-		if(! pEngine->GetGraphicSystem()->GetIsRunning()){
+		if(!pEngine->GetGraphicSystem()->GetIsRunning()){
 			pEngine->GetGraphicSystem()->Start();
 		}
-		if(! pEngine->GetAudioSystem()->GetIsRunning()){
+		if(!pEngine->GetAudioSystem()->GetIsRunning()){
 			pEngine->GetAudioSystem()->Start();
 		}
-		if(! pEngine->GetPhysicsSystem()->GetIsRunning()){
+		if(!pEngine->GetPhysicsSystem()->GetIsRunning()){
 			pEngine->GetPhysicsSystem()->Start();
 		}
-		if(! pEngine->GetNetworkSystem()->GetIsRunning()){
+		if(!pEngine->GetNetworkSystem()->GetIsRunning()){
 			pEngine->GetNetworkSystem()->Start();
 		}
-		if(! pEngine->GetInputSystem()->GetIsRunning()){
+		if(!pEngine->GetInputSystem()->GetIsRunning()){
 			pEngine->GetInputSystem()->Start();
 		}
-		if(! pEngine->GetAnimatorSystem()->GetIsRunning()){
+		if(!pEngine->GetAnimatorSystem()->GetIsRunning()){
 			pEngine->GetAnimatorSystem()->Start();
 		}
-		if(! pEngine->GetSynthesizerSystem()->GetIsRunning()){
+		if(!pEngine->GetSynthesizerSystem()->GetIsRunning()){
 			pEngine->GetSynthesizerSystem()->Start();
 		}
-		if(! pEngine->GetAISystem()->GetIsRunning()){
+		if(!pEngine->GetAISystem()->GetIsRunning()){
 			pEngine->GetAISystem()->Start();
 		}
-		if(! pEngine->GetSynthesizerSystem()->GetIsRunning()){
+		if(!pEngine->GetSynthesizerSystem()->GetIsRunning()){
 			pEngine->GetSynthesizerSystem()->Start();
 		}
-		if(! pEngine->GetScriptingSystem()->GetIsRunning()){
+		if(!pEngine->GetScriptingSystem()->GetIsRunning()){
 			pEngine->GetScriptingSystem()->Start();
 		}
 		
@@ -799,7 +799,7 @@ bool dealEngineInstance::StartGame(const char *scriptDirectory, const char *game
 }
 
 bool dealEngineInstance::StopGame(){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "StopGame: Engine not running");
 		return false;
 	}
@@ -818,7 +818,7 @@ bool dealEngineInstance::StopGame(){
 }
 
 int dealEngineInstance::IsGameRunning(){
-	if(! pEngine){
+	if(!pEngine){
 		pLogger->LogErrorFormat(LOGSOURCE, "IsGameRunning: Engine not running");
 		return 0;
 	}
@@ -829,7 +829,7 @@ int dealEngineInstance::IsGameRunning(){
 
 
 bool dealEngineInstance::FocusGained(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -840,7 +840,7 @@ bool dealEngineInstance::FocusGained(){
 }
 
 bool dealEngineInstance::FocusLost(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -851,7 +851,7 @@ bool dealEngineInstance::FocusLost(){
 }
 
 bool dealEngineInstance::Freeze(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -869,7 +869,7 @@ bool dealEngineInstance::Freeze(){
 }
 
 bool dealEngineInstance::Thaw(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -887,7 +887,7 @@ bool dealEngineInstance::Thaw(){
 }
 
 bool dealEngineInstance::InitAppWindow(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -906,7 +906,7 @@ bool dealEngineInstance::InitAppWindow(){
 }
 
 bool dealEngineInstance::TerminateAppWindow(){
-	if(! pEngine){
+	if(!pEngine){
 		return true;
 	}
 	
@@ -1002,7 +1002,7 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		// open asset file. use random access to read the zip file. the asset is kept open for
 		// the entire lifetime of the virtual file system. for reading a file descriptor is used
 		pEngineAsset = AAssetManager_open(pAndroidApp.activity->assetManager, filename, AASSET_MODE_RANDOM);
-		if(! pEngineAsset){
+		if(!pEngineAsset){
 			DETHROW(deeOpenFile);
 		}
 		

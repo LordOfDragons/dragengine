@@ -66,7 +66,7 @@ public:
 	void Reset();
 	
 	/** Created rule. */
-	inline dearRule *GetCreatedRule() const{return pCreatedRule;}
+	inline dearRule *GetCreatedRule() const{ return pCreatedRule; }
 	
 	/** Rule has been created. */
 	bool HasCreatedRule() const;

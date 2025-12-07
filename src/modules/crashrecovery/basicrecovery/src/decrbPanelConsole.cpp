@@ -66,7 +66,7 @@ decrbPanelConsole::decrbPanelConsole(){}
 
 decrbPanelConsole::decrbPanelConsole(decrbWindowMain *windowMain, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
-	if(! windowMain) DETHROW(deeInvalidParam);
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
@@ -76,7 +76,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	
 	// create console line buffer
 	pLog = new decUnicodeLineBuffer(200);
-	if(! pLog) DETHROW(deeOutOfMemory);
+	if(!pLog) DETHROW(deeOutOfMemory);
 	
 	// module selection
 	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
@@ -180,7 +180,7 @@ long decrbPanelConsole::onEditSendCommand(FXObject*, FXSelector, void*){
 		GetModuleNamed(pCBModule->getItemText(selection).text());
 	module = loadableModule->GetModule();
 	
-	if(! module){
+	if(!module){
 		answer.SetFromUTF8("\nSelected module is not loaded yet.");
 		AddToConsole(answer);
 		return 1;

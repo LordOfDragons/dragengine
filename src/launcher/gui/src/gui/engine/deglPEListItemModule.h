@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine panel. */
-	inline deglPanelEngine *GetPanelEngine() const{return pPanelEngine;}
+	inline deglPanelEngine *GetPanelEngine() const{ return pPanelEngine; }
 	
 	/** Module object. */
-	inline delEngineModule *GetModule() const{return pModule;}
+	inline delEngineModule *GetModule() const{ return pModule; }
 	
 	/** Type string. */
-	inline const decString &GetTypeString() const{return pTypeString;}
+	inline const decString &GetTypeString() const{ return pTypeString; }
 	
 	/** Status string. */
-	inline const decString &GetStatusString() const{return pStatusString;}
+	inline const decString &GetStatusString() const{ return pStatusString; }
 	/*@}*/
 };
 

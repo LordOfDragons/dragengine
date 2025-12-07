@@ -45,7 +45,7 @@
 ////////////////////////////
 
 dedaiCommandExecuter::dedaiCommandExecuter(deDEAIModule *deai){
-	if(! deai){
+	if(!deai){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -67,7 +67,7 @@ void dedaiCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command,
 	}else if(command.MatchesArgumentAt(0, "help")){
 		pHelp(command, answer);
 		
-	}else if(! pDEAI->GetDeveloperMode().ExecuteCommand(command, answer)){
+	}else if(!pDEAI->GetDeveloperMode().ExecuteCommand(command, answer)){
 		answer.SetFromUTF8("Unknown command '");
 		answer += *command.GetArgumentAt(0);
 		answer.AppendFromUTF8("'.");

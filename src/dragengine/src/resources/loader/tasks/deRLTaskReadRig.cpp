@@ -79,7 +79,7 @@ void deRLTaskReadRig::Run(){
 	LogRunEnter();
 	deBaseRigModule * const module = (deBaseRigModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtRig, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -89,7 +89,7 @@ void deRLTaskReadRig::Run(){
 	pRig->SetAsynchron(true);
 	module->LoadRig(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pRig);
 	
-	if(! pRig->Verify()){
+	if(!pRig->Verify()){
 		DETHROW(deeInvalidParam);
 	}
 	pRig->Prepare();
@@ -102,7 +102,7 @@ void deRLTaskReadRig::Run(){
 
 void deRLTaskReadRig::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pRig = NULL;
 		LogFinishedExit();

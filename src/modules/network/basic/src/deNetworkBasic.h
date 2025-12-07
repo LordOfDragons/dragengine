@@ -216,11 +216,11 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Configuration. */
-	inline debnConfiguration &GetConfiguration(){return pConfiguration;}
-	inline const debnConfiguration &GetConfiguration() const{return pConfiguration;}
+	inline debnConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const debnConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	inline deNetworkMessage *GetSharedSendDatagram() const{return pSharedSendDatagram;}
-	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{return pSharedSendDatagramWriter;}
+	inline deNetworkMessage *GetSharedSendDatagram() const{ return pSharedSendDatagram; }
+	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{ return pSharedSendDatagramWriter; }
 	
 	/** Register a connection. */
 	void RegisterConnection(debnConnection *connection);

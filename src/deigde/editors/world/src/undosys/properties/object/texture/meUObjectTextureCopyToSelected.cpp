@@ -48,7 +48,7 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectLis
 	meObject *object;
 	int i;
 	
-	if(! texture || count < 1){
+	if(!texture || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -59,7 +59,7 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectLis
 		
 		for(i=0; i<count; i++){
 			object = list.GetAt(i);
-			if(! object->GetWorld()){
+			if(!object->GetWorld()){
 				DETHROW(deeInvalidParam);
 			}
 			
@@ -124,7 +124,7 @@ void meUObjectTextureCopyToSelected::Redo(){
 		undoData = (meUndoDataObjectTexture*)pList.GetAt(i);
 		object = undoData->GetObject();
 		
-		if(! undoData->GetNewTexture()){
+		if(!undoData->GetNewTexture()){
 			try{
 				texture = new meObjectTexture(*pTexture);
 				undoData->SetNewTexture(texture);

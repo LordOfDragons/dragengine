@@ -89,8 +89,8 @@ void deoalSharedEffectSlotManager::ClearSpeakers(){
 }
 
 void deoalSharedEffectSlotManager::AssignSpeakers(){
-	if(! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX()){
+	if(!pAudioThread.GetExtensions().GetHasEFX()
+	|| !pAudioThread.GetConfiguration().GetEnableEFX()){
 		return;
 	}
 	
@@ -111,7 +111,7 @@ const deoalEnvironment &environment, float &bestDistance) const{
 	for(i=0; i<pMaxCount; i++){
 		const deoalASpeaker * const refSpeaker =
 			((deoalSharedEffectSlot*)pSlots.GetAt(i))->GetReferenceSpeaker();
-		if(! refSpeaker || ! refSpeaker->GetEnvironment()){
+		if(!refSpeaker || !refSpeaker->GetEnvironment()){
 			continue;
 		}
 		

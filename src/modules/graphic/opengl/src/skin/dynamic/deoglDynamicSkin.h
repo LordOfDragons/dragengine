@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Graphic module. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Dynamic skin resources. */
-	inline const deDynamicSkin &GetDynamicSkin() const{return pDynamicSkin;}
+	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render dynamic skin. */
-	inline deoglRDynamicSkin *GetRDynamicSkin() const{return pRDynamicSkin;}
+	inline deoglRDynamicSkin *GetRDynamicSkin() const{ return pRDynamicSkin; }
 	
 	
 	

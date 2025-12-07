@@ -77,7 +77,7 @@ void igdeContainerScroll::CreateNativeWidget(){
 }
 
 void igdeContainerScroll::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

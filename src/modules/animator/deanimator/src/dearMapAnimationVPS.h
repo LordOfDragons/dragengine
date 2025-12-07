@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of entries. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** Clear map. */
 	void Clear();

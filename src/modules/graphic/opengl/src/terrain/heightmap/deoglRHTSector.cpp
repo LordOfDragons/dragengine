@@ -146,7 +146,7 @@ void deoglRHTSector::AddToWorldCompute(deoglWorldCompute &worldCompute){
 }
 
 void deoglRHTSector::UpdateWorldCompute(){
-	if(! pHeightTerrain.GetParentWorld()){
+	if(!pHeightTerrain.GetParentWorld()){
 		return;
 	}
 	
@@ -158,7 +158,7 @@ void deoglRHTSector::UpdateWorldCompute(){
 }
 
 void deoglRHTSector::RemoveFromWorldCompute(){
-	if(! pHeightTerrain.GetParentWorld()){
+	if(!pHeightTerrain.GetParentWorld()){
 		return;
 	}
 	
@@ -170,7 +170,7 @@ void deoglRHTSector::RemoveFromWorldCompute(){
 }
 
 void deoglRHTSector::PrepareForRender(){
-	if(! pValidTextures){
+	if(!pValidTextures){
 		return;
 	}
 	
@@ -239,7 +239,7 @@ deoglHTSCluster & deoglRHTSector::GetClusterAt(const decPoint &coordinate) const
 }
 
 void deoglRHTSector::ClustersUpdateWorldComputeElementTextures(){
-	if(! pHeightTerrain.GetParentWorld()){
+	if(!pHeightTerrain.GetParentWorld()){
 		return;
 	}
 	
@@ -442,7 +442,7 @@ void deoglRHTSector::pSyncSector(const deHeightTerrainSector &sector){
 		pValid = false;
 	}
 	
-	if(! pValid){
+	if(!pValid){
 		pSetTextureCount(0);
 		return;
 	}
@@ -510,7 +510,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 	
 	for(t=0; t<textureCount; t++){
 		deImage * const image = sector.GetTextureAt(t)->GetMaskImage();
-		if(! image){
+		if(!image){
 			continue;
 		}
 		
@@ -599,7 +599,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 }
 
 void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to){
-	if(! pValid){
+	if(!pValid){
 		return;
 	}
 	
@@ -610,7 +610,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 	int x, y;
 	
 	// create height values if not existing already
-	if(! pHeights){
+	if(!pHeights){
 		pHeights = new float[pixelCount];
 	}
 	
@@ -661,7 +661,7 @@ void deoglRHTSector::pSyncHeightMap(const deHeightTerrainSector &sector, const d
 
 
 void deoglRHTSector::pUpdateMaskTextures(){
-	if(! pDirtyMaskTextures){
+	if(!pDirtyMaskTextures){
 		return;
 	}
 	pDirtyMaskTextures = false;
@@ -673,7 +673,7 @@ void deoglRHTSector::pUpdateMaskTextures(){
 		const int relT = decMath::min(textureCount - i * 4, 4);
 		
 		if(pPixBufMasks[i] && relT > 0){
-			if(! pMasks[i]){
+			if(!pMasks[i]){
 				pMasks[i] = new deoglTexture(pHeightTerrain.GetRenderThread());
 			}
 			
@@ -728,9 +728,9 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 	}
 	
 	for(v=0, c=0; c<clusterCount; c++){
-		if(! pVBODataPoints1[v]){
+		if(!pVBODataPoints1[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints1[v]));
-			if(! pVBODataPoints1[v]){
+			if(!pVBODataPoints1[v]){
 				DETHROW(deeOutOfMemory);
 			}
 			
@@ -789,9 +789,9 @@ void deoglRHTSector::pCreateVBODataFaces(){
 	}
 	
 	for(v=0, c=0; c<clusterCount; c++){
-		if(! pVBODataFaces[v]){
+		if(!pVBODataFaces[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataFaces[v]));
-			if(! pVBODataFaces[v]){
+			if(!pVBODataFaces[v]){
 				DETHROW(deeOutOfMemory);
 			}
 			
@@ -830,12 +830,12 @@ void deoglRHTSector::pCreateVBODataFaces(){
 }
 
 void deoglRHTSector::pUpdateHeightMap(){
-	if(! pDirtyPoints){
+	if(!pDirtyPoints){
 		return;
 	}
 	pDirtyPoints = false;
 	
-	if(! pValid || ! pHeights){
+	if(!pValid || !pHeights){
 		return;
 	}
 	
@@ -852,22 +852,22 @@ void deoglRHTSector::pUpdateHeightMap(){
 	int x, z;
 	
 	// create vbos if not existing already
-	if(! pVBODataPoints2){
+	if(!pVBODataPoints2){
 		int vboOffset = 0, assignedClusters = 0;
 		int v, vboCount = ((clusterCount - 1) / 32) + 1;
 		
 		if(vboCount > 0){
 			pVBODataPoints2 = new GLuint[vboCount];
-			if(! pVBODataPoints2) DETHROW(deeOutOfMemory);
+			if(!pVBODataPoints2) DETHROW(deeOutOfMemory);
 			
 			for(v=0; v<vboCount; v++){
 				pVBODataPoints2[v] = 0;
 			}
 			
 			for(v=0, c=0; c<clusterCount; c++){
-				if(! pVBODataPoints2[v]){
+				if(!pVBODataPoints2[v]){
 					OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints2[v]));
-					if(! pVBODataPoints2[v]) DETHROW(deeOutOfMemory);
+					if(!pVBODataPoints2[v]) DETHROW(deeOutOfMemory);
 					
 					pVBODataPoints2Count++;
 				}

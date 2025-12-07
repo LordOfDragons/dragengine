@@ -623,230 +623,230 @@ public:
 	
 	
 	/** Requested compatible module version. */
-	inline const sModuleVersion &GetModuleVersion() const{return pModuleVersion;}
+	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
 	
 	/** Module version. */
-	inline const sModuleVersion &GetCompatibleVersion() const{return pCompatibleVersion;}
+	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
 	
 	/** VR Placeholder or nullptr. */
-	inline const dedsVRPlaceholder::Ref &GetVRPlaceholder() const{return pVRPlaceholder;}
+	inline const dedsVRPlaceholder::Ref &GetVRPlaceholder() const{ return pVRPlaceholder; }
 	/*@}*/
 	
 	
 	
 public:
 	// script management
-	inline dsEngine *GetScriptEngine() const{return pScriptEngine;}
+	inline dsEngine *GetScriptEngine() const{ return pScriptEngine; }
 	
 	/** Retrieves the streaming version. */
-	inline int GetStreamingVersion() const{return 1;}
+	inline int GetStreamingVersion() const{ return 1; }
 	
 	/** Retrieves the resource loader. */
-	inline dedsResourceLoader *GetResourceLoader() const{return pResourceLoader;}
+	inline dedsResourceLoader *GetResourceLoader() const{ return pResourceLoader; }
 	
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{return pColInfo;}
+	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
 	
 	/** Shared collider listener closest. */
-	inline dedsColliderListenerClosest &GetColliderListenerClosest() const{return *pColliderListenerClosest;}
+	inline dedsColliderListenerClosest &GetColliderListenerClosest() const{ return *pColliderListenerClosest; }
 	
 	/** Shared collider listener adaptor. */
-	inline dedsColliderListenerAdaptor &GetColliderListenerAdaptor() const{return *pColliderListenerAdaptor;}
+	inline dedsColliderListenerAdaptor &GetColliderListenerAdaptor() const{ return *pColliderListenerAdaptor; }
 	
 	/** Log level. */
-	inline LogLevel GetLogLevel() const{return pLogLevel;}
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
 	inline void SetLogLevel(LogLevel level){pLogLevel = level;}
 	
 	/** Force dpi aware. */
-	inline bool GetForceDpiAware() const{return pForceDpiAware;}
+	inline bool GetForceDpiAware() const{ return pForceDpiAware; }
 	inline void SetForceDpiAware(bool forceDpiAware){pForceDpiAware = forceDpiAware;}
 	
 	// classes
-	inline deClassAISystem *GetClassAISystem() const{return pClsAISys;}
-	inline deClassAnimation *GetClassAnimation() const{return pClsAnim;}
-	inline deClassAnimationBuilder *GetClassAnimationBuilder() const{return pClsAnimBuilder;}
-	inline deClassAnimator *GetClassAnimator() const{return pClsAr;}
-	inline deClassAnimatorInstance *GetClassAnimatorInstance() const{return pClsArI;}
-	inline deClassAnimatorController *GetClassAnimatorController() const{return pClsAnimatorCtrl;}
-	inline deClassAnimatorRule *GetClassAnimatorRule() const{return pClsArR;}
-	inline deClassAnimatorSystem *GetClassAnimatorSystem() const{return pClsAnimatorSystem;}
-	inline deClassARAnimation *GetClassARAnimation() const{return pClsARAnim;}
-	inline deClassARAnimationDifference *GetClassARAnimationDifference() const{return pClsARAnimDiff;}
-	inline deClassARAnimationSelect *GetClassARAnimationSelect() const{return pClsARAnimSelect;}
-	inline deClassARBoneTransformator *GetClassARBoneTransformator() const{return pClsARBoneTrans;}
-	inline deClassARForeignState *GetClassARForeignState() const{return pClsARFSta;}
-	inline deClassARMirror *GetClassARMirror() const{return pClsARMirror;}
-	inline deClassARGroup *GetClassARGroup() const{return pClsARGroup;}
-	inline deClassARInverseKinematic *GetClassARInverseKinematic() const{return pClsARIK;}
-	inline deClassARLimit *GetClassARLimit() const{return pClsARLimit;}
-	inline deClassARStateManipulator *GetClassARStateManipulator() const{return pClsARStaM;}
-	inline deClassARStateSnapshot *GetClassARStateSnapshot() const{return pClsARSnap;}
-	inline deClassARSubAnimator *GetClassARSubAnimator() const{return pClsARSubA;}
-	inline deClassARTrackTo *GetClassARTrackTo() const{return pClsARTrack;}
-	inline deClassAudioSystem *GetClassAudioSystem() const{return pClsAudSys;}
-	inline deClassNetworkSystem *GetClassNetworkSystem() const{return pClsNetSys;}
-	inline deClassBillboard *GetClassBillboard() const{return pClsBillboard;}
-	inline deClassCachedVegetation *GetClassCachedVegetation() const{return pClsCVeg;}
-	inline deClassCamera *GetClassCamera() const{return pClsCam;}
-	inline deClassCanvas *GetClassCanvas() const{return pClsCanvas;}
-	inline deClassCanvasCanvasView *GetClassCanvasCanvasView() const{return pClsCanvasCView;}
-	inline deClassCanvasImage *GetClassCanvasImage() const{return pClsCanvasImage;}
-	inline deClassCanvasPaint *GetClassCanvasPaint() const{return pClsCanvasPaint;}
-	inline deClassCanvasRenderWorld *GetClassCanvasRenderWorld() const{return pClsCanvasRenW;}
-	inline deClassCanvasText *GetClassCanvasText() const{return pClsCanvasText;}
-	inline deClassCanvasVideoPlayer *GetClassCanvasVideoPlayer() const{return pClsCanvasVidP;}
-	inline deClassCanvasView *GetClassCanvasView() const{return pClsCanvasView;}
-	inline deClassCaptureCanvas *GetClassCaptureCanvas() const{return pClsCapCan;}
-	inline deClassCache *GetClassCache() const{return pClsCache;}
-	inline deClassCollider *GetClassCollider() const{return pClsCol;}
-	inline deClassColliderVolume *GetClassColliderVolume() const{return pClsColVol;}
-	inline deClassColliderComponent *GetClassColliderComponent() const{return pClsColComp;}
-	inline deClassColliderRig *GetClassColliderRig() const{return pClsColRig;}
-	inline deClassColliderListener *GetClassColliderListener() const{return pClsCLL;}
-	inline deClassColliderBreakingListener *GetClassColliderBreakingListener() const{return pClsCBL;}
-	inline deClassColliderConstraint *GetClassColliderConstraint() const{return pClsCCon;}
-	inline deClassColliderCollisionTest *GetClassColliderCollisionTest() const{return pClsCCT;}
-	inline deClassCollisionFilter *GetClassCollisionFilter() const{return pClsCF;}
-	inline deClassCollisionInfo *GetClassCollisionInfo() const{return pClsCI;}
-	inline deClassCollisionTester *GetClassCollisionTester() const{return pClsCT;}
-	inline deClassColor *GetClassColor() const{return pClsClr;}
-	inline deClassColorMatrix *GetClassColorMatrix() const{return pClsClrMat;}
-	inline deClassComponent *GetClassComponent() const{return pClsComp;}
-	inline deClassConnection *GetClassConnection() const{return pClsCon;}
-	inline deClassConnectionListener *GetClassConnectionListener() const{return pClsConL;}
-	inline deClassCrashRecoverySystem *GetClassCrashRecoverySystem() const{return pClsCRSys;}
-	inline deClassCurve2D *GetClassCurve2D() const{return pClsCurve2D;}
-	inline deClassCurveBezier *GetClassCurveBezier() const{return pClsCBe;}
-	inline deClassCurveBezier3D *GetClassCurveBezier3D() const{return pClsCBezier3D;}
-	inline deClassCurveDistanceMapping *GetClassCurveDistanceMapping() const{return pClsCDistMap;}
-	inline deClassDebugDrawer *GetClassDebugDrawer() const{return pClsDD;}
-	inline deClassDecal *GetClassDecal() const{return pClsDec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassDMatrix *GetClassDMatrix() const{return pClsDMat;}
-	inline deClassDMatrix4 *GetClassDMatrix4() const{return pClsDMat4;}
-	inline deClassDynamicSkin *GetClassDynamicSkin() const{return pClsDSkin;}
-	inline deClassEasyXMLElement *GetClassEasyXMLElement() const{return pClsXMLEl;}
-	inline deClassEasyXML *GetClassEasyXML() const{return pClsXML;}
-	inline deClassEffect *GetClassEffect() const{return pClsEff;}
-	inline deClassEffectColorMatrix *GetClassEffectColorMatrix() const{return pClsEffClrMat;}
-	inline deClassEffectDistortImage *GetClassEffectDistortImage() const{return pClsEffDistImg;}
-	inline deClassEffectFilterKernel *GetClassEffectFilterKernel() const{return pClsEffFilKer;}
-	inline deClassEffectOverlayImage *GetClassEffectOverlayImage() const{return pClsEffOverImg;}
-	inline deClassEngine *GetClassEngine() const{return pClsEngine;}
-	inline deClassEnvMapProbe *GetClassEnvMapProbe() const{return pClsEnvMapProbe;}
-	inline deClassFileReader *GetClassFileReader() const{return pClsFileReader;}
-	inline deClassFileWriter *GetClassFileWriter() const{return pClsFileWriter;}
-	inline deClassFileSystem *GetClassFileSystem() const{return pClsFileSys;}
-	inline deClassFont *GetClassFont() const{return pClsFnt;}
-	inline deClassFontBuilder *GetClassFontBuilder() const{return pClsFontBuilder;}
-	inline deClassForceField *GetClassForceField() const{return pClsFF;}
-	inline deClassGame *GetClassGame() const{return pClsGame;}
-	inline deClassGraphicSystem *GetClassGraphicSystem() const{return pClsGraSys;}
-	inline deClassHeightTerrain *GetClassHeightTerrain() const{return pClsHT;}
-	inline deClassImage *GetClassImage() const{return pClsImg;}
-	inline deClassImagePixels *GetClassImagePixels() const{return pClsImagePixels;}
-	inline deClassEditableImage *GetClassEditableImage() const{return pClsEditableImage;}
-	inline deClassInputDevice *GetClassInputDevice() const{return pClsInpDev;}
-	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{return pClsInpDevAxis;}
-	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{return pClsInpDevBtn;}
-	inline deClassInputDeviceFeedback *GetClassInputDeviceFeedback() const{return pClsInpDevFb;}
-	inline deClassInputDeviceComponent *GetClassInputDeviceComponent() const{return pClsInpDevComp;}
-	inline deClassInputEvent *GetClassInputEvent() const{return pClsInpEvent;}
-	inline deClassInputSystem *GetClassInputSystem() const{return pClsInpSys;}
-	inline deClassLanguagePack *GetClassLanguagePack() const{return pClsLP;}
-	inline deClassLanguagePackBuilder *GetClassLanguagePackBuilder() const{return pClsLangPackBuilder;}
-	inline deClassLayerMask *GetClassLayerMask() const{return pClsLyM;}
-	inline deClassLight *GetClassLight() const{return pClsLig;}
-	inline deClassLocomotion *GetClassLocomotion() const{return pClsLoco;}
-	inline deClassLumimeter *GetClassLumimeter() const{return pClsLM;}
-	inline deClassMath *GetClassMath() const{return pClsMath;}
-	inline deClassMatrix *GetClassMatrix() const{return pClsMat;}
-	inline deClassMatrix4 *GetClassMatrix4() const{return pClsMat4;}
-	inline deClassMemoryFile *GetClassMemoryFile() const{return pClsMemoryFile;}
-	inline deClassMicrophone *GetClassMicrophone() const{return pClsMic;}
-	inline deClassModel *GetClassModel() const{return pClsMdl;}
-	inline deClassModelBuilder *GetClassModelBuilder() const{return pClsModelBuilder;}
-	inline deClassModuleParameter *GetClassModuleParameter() const{return pClsModPar;}
-	inline deClassMutableID *GetClassMutableID() const{return pClsMUID;}
-	inline deClassNavigationInfo *GetClassNavigationInfo() const{return pClsNavInfo;}
-	inline deClassNavigationBlocker *GetClassNavigationBlocker() const{return pClsNavBlocker;}
-	inline deClassNavigationSpace *GetClassNavigationSpace() const{return pClsNavSpace;}
-	inline deClassNavigator *GetClassNavigator() const{return pClsNavigator;}
-	inline deClassNavigatorPath *GetClassNavigatorPath() const{return pClsNavigatorPath;}
-	inline deClassNetworkMessage *GetClassNetworkMessage() const{return pClsNM;}
-	inline deClassNetworkState *GetClassNetworkState() const{return pClsNS;}
-	inline deClassNetworkStateListener *GetClassNetworkStateListener() const{return pClsNSL;}
-	inline deClassOcclusionMesh *GetClassOcclusionMesh() const{return pClsOccM;}
-	inline deClassOcclusionMeshBuilder *GetClassOcclusionMeshBuilder() const{return pClsOccMBuilder;}
-	inline deClassParticleEmitter *GetClassParticleEmitter() const{return pClsPE;}
-	inline deClassParticleEmitterController *GetClassParticleEmitterController() const{return pClsPEC;}
-	inline deClassParticleEmitterInstance *GetClassParticleEmitterInstance() const{return pClsPEI;}
-	inline deClassParticleEmitterInstanceListener *GetClassParticleEmitterInstanceListener() const{return pClsPEIL;}
-	inline deClassPhysicsSystem *GetClassPhysicsSystem() const{return pClsPhySys;}
-	inline deClassPoint3 *GetClassPoint3() const{return pClsPt3;}
-	inline deClassPoint *GetClassPoint() const{return pClsPt;}
-	inline deClassPropField *GetClassPropField() const{return pClsPF;}
-	inline deClassPropFieldListener *GetClassPropFieldListener() const{return pClsPFL;}
-	inline deClassQuaternion *GetClassQuaternion() const{return pClsQuat;}
-	inline deClassResourceListener *GetClassResourceListener() const{return pClsRN;}
-	inline deClassRig *GetClassRig() const{return pClsRig;}
-	inline deClassRigBuilder *GetClassRigBuilder() const{return pClsRigBuilder;}
-	inline deClassRuntimeMeter *GetClassRuntimeMeter() const{return pClsRTM;}
-	inline deClassSafeArray *GetClassSafeArray() const{return pClsSA;}
-	inline deClassScriptSystem *GetClassScriptSystem() const{return pClsScrSys;}
-	inline deClassServer *GetClassServer() const{return pClsSvr;}
-	inline deClassServerListener *GetClassServerListener() const{return pClsSvrL;}
-	inline deClassShapeList *GetClassShapeList() const{return pClsShaList;}
-	inline deClassService *GetClassService() const{return pClsService;}
-	inline deClassServiceListener *GetClassServiceListener() const{return pClsServiceListener;}
-	inline deClassServiceObject *GetClassServiceObject() const{return pClsServiceObject;}
-	inline deClassSkin *GetClassSkin() const{return pClsSkin;}
-	inline deClassSkinBuilder *GetClassSkinBuilder() const{return pClsSkinBuilder;}
-	inline deClassSky *GetClassSky() const{return pClsSky;}
-	inline deClassSkyBody *GetClassSkyBody() const{return pClsSkyBody;}
-	inline deClassSkyController *GetClassSkyController() const{return pClsSkyCtrl;}
-	inline deClassSkyInstance *GetClassSkyInstance() const{return pClsSkyInst;}
-	inline deClassSkyLayer *GetClassSkyLayer() const{return pClsSkyLayer;}
-	inline deClassSkyLink *GetClassSkyLink() const{return pClsSkyLink;}
-	inline deClassSkyTarget *GetClassSkyTarget() const{return pClsSkyTarget;}
-	inline deClassSmoothFloat *GetClassSmoothFloat() const{return pClsSmFlt;}
-	inline deClassSmoothDouble *GetClassSmoothDouble() const{return pClsSmDbl;}
-	inline deClassSmoothVector *GetClassSmoothVector() const{return pClsSmVec;}
-	inline deClassSmoothVector2 *GetClassSmoothVector2() const{return pClsSmVec2;}
-	inline deClassSmoothDVector *GetClassSmoothDVector() const{return pClsSmDVec;}
-	inline deClassSound *GetClassSound() const{return pClsSnd;}
-	inline deClassSoundLevelMeter *GetClassSoundLevelMeter() const{return pClsSoundLevelMeter;}
-	inline deClassSoundLevelMeterSpeaker *GetClassSoundLevelMeterSpeaker() const{return pClsSoundLevelMeterSpeaker;}
-	inline deClassSoundLevelMeterListener *GetClassSoundLevelMeterListener() const{return pClsSoundLevelMeterListener;}
-	inline deClassSpeaker *GetClassSpeaker() const{return pClsSpk;}
-	inline deClassStringID *GetClassStringID() const{return pClsSID;}
-	inline deClassSynthesizer *GetClassSynthesizer() const{return pClsSyn;}
-	inline deClassSynthesizerController *GetClassSynthesizerController() const{return pClsSynCtrl;}
-	inline deClassSynthesizerEffect *GetClassSynthesizerEffect() const{return pClsSynEff;}
-	inline deClassSynthesizerInstance *GetClassSynthesizerInstance() const{return pClsSynI;}
-	inline deClassSynthesizerSource *GetClassSynthesizerSource() const{return pClsSynS;}
-	inline deClassSynthesizerSystem *GetClassSynthesizerSystem() const{return pClsSynthesizerSystem;}
-	inline deClassSEStretch *GetClassSEStretch() const{return pClsSEStretch;}
-	inline deClassSSSound *GetClassSSSound() const{return pClsSSSound;}
-	inline deClassSSWave *GetClassSSWave() const{return pClsSSWave;}
-	inline deClassSSChain *GetClassSSChain() const{return pClsSSChain;}
-	inline deClassSSSynthesizer *GetClassSSSynthesizer() const{return pClsSSSyn;}
-	inline deClassSSGroup *GetClassSSGroup() const{return pClsSSGroup;}
-	inline deClassTexMatrix *GetClassTexMatrix() const{return pClsTexMatrix;}
-	inline deClassTexMatrix2 *GetClassTexMatrix2() const{return pClsTexMatrix2;}
-	inline deClassTouchSensor *GetClassTouchSensor() const{return pClsTS;}
-	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{return pClsTSL;}
-	inline deClassUnicodeString *GetClassUnicodeString() const{return pClsUS;}
-	inline deClassUniqueID *GetClassUniqueID() const{return pClsUID;}
-	inline deClassUTF8Decoder *GetClassUTF8Decoder() const{return pClsU8D;}
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassVector2 *GetClassVector2() const{return pClsVec2;}
-	inline deClassVideo *GetClassVideo() const{return pClsVid;}
-	inline deClassVideoPlayer *GetClassVideoPlayer() const{return pClsVP;}
-	inline deClassVRSystem *GetClassVRSystem() const{return pClsVRSys;}
-	inline deClassWorld *GetClassWorld() const{return pClsWorld;}
+	inline deClassAISystem *GetClassAISystem() const{ return pClsAISys; }
+	inline deClassAnimation *GetClassAnimation() const{ return pClsAnim; }
+	inline deClassAnimationBuilder *GetClassAnimationBuilder() const{ return pClsAnimBuilder; }
+	inline deClassAnimator *GetClassAnimator() const{ return pClsAr; }
+	inline deClassAnimatorInstance *GetClassAnimatorInstance() const{ return pClsArI; }
+	inline deClassAnimatorController *GetClassAnimatorController() const{ return pClsAnimatorCtrl; }
+	inline deClassAnimatorRule *GetClassAnimatorRule() const{ return pClsArR; }
+	inline deClassAnimatorSystem *GetClassAnimatorSystem() const{ return pClsAnimatorSystem; }
+	inline deClassARAnimation *GetClassARAnimation() const{ return pClsARAnim; }
+	inline deClassARAnimationDifference *GetClassARAnimationDifference() const{ return pClsARAnimDiff; }
+	inline deClassARAnimationSelect *GetClassARAnimationSelect() const{ return pClsARAnimSelect; }
+	inline deClassARBoneTransformator *GetClassARBoneTransformator() const{ return pClsARBoneTrans; }
+	inline deClassARForeignState *GetClassARForeignState() const{ return pClsARFSta; }
+	inline deClassARMirror *GetClassARMirror() const{ return pClsARMirror; }
+	inline deClassARGroup *GetClassARGroup() const{ return pClsARGroup; }
+	inline deClassARInverseKinematic *GetClassARInverseKinematic() const{ return pClsARIK; }
+	inline deClassARLimit *GetClassARLimit() const{ return pClsARLimit; }
+	inline deClassARStateManipulator *GetClassARStateManipulator() const{ return pClsARStaM; }
+	inline deClassARStateSnapshot *GetClassARStateSnapshot() const{ return pClsARSnap; }
+	inline deClassARSubAnimator *GetClassARSubAnimator() const{ return pClsARSubA; }
+	inline deClassARTrackTo *GetClassARTrackTo() const{ return pClsARTrack; }
+	inline deClassAudioSystem *GetClassAudioSystem() const{ return pClsAudSys; }
+	inline deClassNetworkSystem *GetClassNetworkSystem() const{ return pClsNetSys; }
+	inline deClassBillboard *GetClassBillboard() const{ return pClsBillboard; }
+	inline deClassCachedVegetation *GetClassCachedVegetation() const{ return pClsCVeg; }
+	inline deClassCamera *GetClassCamera() const{ return pClsCam; }
+	inline deClassCanvas *GetClassCanvas() const{ return pClsCanvas; }
+	inline deClassCanvasCanvasView *GetClassCanvasCanvasView() const{ return pClsCanvasCView; }
+	inline deClassCanvasImage *GetClassCanvasImage() const{ return pClsCanvasImage; }
+	inline deClassCanvasPaint *GetClassCanvasPaint() const{ return pClsCanvasPaint; }
+	inline deClassCanvasRenderWorld *GetClassCanvasRenderWorld() const{ return pClsCanvasRenW; }
+	inline deClassCanvasText *GetClassCanvasText() const{ return pClsCanvasText; }
+	inline deClassCanvasVideoPlayer *GetClassCanvasVideoPlayer() const{ return pClsCanvasVidP; }
+	inline deClassCanvasView *GetClassCanvasView() const{ return pClsCanvasView; }
+	inline deClassCaptureCanvas *GetClassCaptureCanvas() const{ return pClsCapCan; }
+	inline deClassCache *GetClassCache() const{ return pClsCache; }
+	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
+	inline deClassColliderVolume *GetClassColliderVolume() const{ return pClsColVol; }
+	inline deClassColliderComponent *GetClassColliderComponent() const{ return pClsColComp; }
+	inline deClassColliderRig *GetClassColliderRig() const{ return pClsColRig; }
+	inline deClassColliderListener *GetClassColliderListener() const{ return pClsCLL; }
+	inline deClassColliderBreakingListener *GetClassColliderBreakingListener() const{ return pClsCBL; }
+	inline deClassColliderConstraint *GetClassColliderConstraint() const{ return pClsCCon; }
+	inline deClassColliderCollisionTest *GetClassColliderCollisionTest() const{ return pClsCCT; }
+	inline deClassCollisionFilter *GetClassCollisionFilter() const{ return pClsCF; }
+	inline deClassCollisionInfo *GetClassCollisionInfo() const{ return pClsCI; }
+	inline deClassCollisionTester *GetClassCollisionTester() const{ return pClsCT; }
+	inline deClassColor *GetClassColor() const{ return pClsClr; }
+	inline deClassColorMatrix *GetClassColorMatrix() const{ return pClsClrMat; }
+	inline deClassComponent *GetClassComponent() const{ return pClsComp; }
+	inline deClassConnection *GetClassConnection() const{ return pClsCon; }
+	inline deClassConnectionListener *GetClassConnectionListener() const{ return pClsConL; }
+	inline deClassCrashRecoverySystem *GetClassCrashRecoverySystem() const{ return pClsCRSys; }
+	inline deClassCurve2D *GetClassCurve2D() const{ return pClsCurve2D; }
+	inline deClassCurveBezier *GetClassCurveBezier() const{ return pClsCBe; }
+	inline deClassCurveBezier3D *GetClassCurveBezier3D() const{ return pClsCBezier3D; }
+	inline deClassCurveDistanceMapping *GetClassCurveDistanceMapping() const{ return pClsCDistMap; }
+	inline deClassDebugDrawer *GetClassDebugDrawer() const{ return pClsDD; }
+	inline deClassDecal *GetClassDecal() const{ return pClsDec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassDMatrix *GetClassDMatrix() const{ return pClsDMat; }
+	inline deClassDMatrix4 *GetClassDMatrix4() const{ return pClsDMat4; }
+	inline deClassDynamicSkin *GetClassDynamicSkin() const{ return pClsDSkin; }
+	inline deClassEasyXMLElement *GetClassEasyXMLElement() const{ return pClsXMLEl; }
+	inline deClassEasyXML *GetClassEasyXML() const{ return pClsXML; }
+	inline deClassEffect *GetClassEffect() const{ return pClsEff; }
+	inline deClassEffectColorMatrix *GetClassEffectColorMatrix() const{ return pClsEffClrMat; }
+	inline deClassEffectDistortImage *GetClassEffectDistortImage() const{ return pClsEffDistImg; }
+	inline deClassEffectFilterKernel *GetClassEffectFilterKernel() const{ return pClsEffFilKer; }
+	inline deClassEffectOverlayImage *GetClassEffectOverlayImage() const{ return pClsEffOverImg; }
+	inline deClassEngine *GetClassEngine() const{ return pClsEngine; }
+	inline deClassEnvMapProbe *GetClassEnvMapProbe() const{ return pClsEnvMapProbe; }
+	inline deClassFileReader *GetClassFileReader() const{ return pClsFileReader; }
+	inline deClassFileWriter *GetClassFileWriter() const{ return pClsFileWriter; }
+	inline deClassFileSystem *GetClassFileSystem() const{ return pClsFileSys; }
+	inline deClassFont *GetClassFont() const{ return pClsFnt; }
+	inline deClassFontBuilder *GetClassFontBuilder() const{ return pClsFontBuilder; }
+	inline deClassForceField *GetClassForceField() const{ return pClsFF; }
+	inline deClassGame *GetClassGame() const{ return pClsGame; }
+	inline deClassGraphicSystem *GetClassGraphicSystem() const{ return pClsGraSys; }
+	inline deClassHeightTerrain *GetClassHeightTerrain() const{ return pClsHT; }
+	inline deClassImage *GetClassImage() const{ return pClsImg; }
+	inline deClassImagePixels *GetClassImagePixels() const{ return pClsImagePixels; }
+	inline deClassEditableImage *GetClassEditableImage() const{ return pClsEditableImage; }
+	inline deClassInputDevice *GetClassInputDevice() const{ return pClsInpDev; }
+	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{ return pClsInpDevAxis; }
+	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{ return pClsInpDevBtn; }
+	inline deClassInputDeviceFeedback *GetClassInputDeviceFeedback() const{ return pClsInpDevFb; }
+	inline deClassInputDeviceComponent *GetClassInputDeviceComponent() const{ return pClsInpDevComp; }
+	inline deClassInputEvent *GetClassInputEvent() const{ return pClsInpEvent; }
+	inline deClassInputSystem *GetClassInputSystem() const{ return pClsInpSys; }
+	inline deClassLanguagePack *GetClassLanguagePack() const{ return pClsLP; }
+	inline deClassLanguagePackBuilder *GetClassLanguagePackBuilder() const{ return pClsLangPackBuilder; }
+	inline deClassLayerMask *GetClassLayerMask() const{ return pClsLyM; }
+	inline deClassLight *GetClassLight() const{ return pClsLig; }
+	inline deClassLocomotion *GetClassLocomotion() const{ return pClsLoco; }
+	inline deClassLumimeter *GetClassLumimeter() const{ return pClsLM; }
+	inline deClassMath *GetClassMath() const{ return pClsMath; }
+	inline deClassMatrix *GetClassMatrix() const{ return pClsMat; }
+	inline deClassMatrix4 *GetClassMatrix4() const{ return pClsMat4; }
+	inline deClassMemoryFile *GetClassMemoryFile() const{ return pClsMemoryFile; }
+	inline deClassMicrophone *GetClassMicrophone() const{ return pClsMic; }
+	inline deClassModel *GetClassModel() const{ return pClsMdl; }
+	inline deClassModelBuilder *GetClassModelBuilder() const{ return pClsModelBuilder; }
+	inline deClassModuleParameter *GetClassModuleParameter() const{ return pClsModPar; }
+	inline deClassMutableID *GetClassMutableID() const{ return pClsMUID; }
+	inline deClassNavigationInfo *GetClassNavigationInfo() const{ return pClsNavInfo; }
+	inline deClassNavigationBlocker *GetClassNavigationBlocker() const{ return pClsNavBlocker; }
+	inline deClassNavigationSpace *GetClassNavigationSpace() const{ return pClsNavSpace; }
+	inline deClassNavigator *GetClassNavigator() const{ return pClsNavigator; }
+	inline deClassNavigatorPath *GetClassNavigatorPath() const{ return pClsNavigatorPath; }
+	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }
+	inline deClassNetworkState *GetClassNetworkState() const{ return pClsNS; }
+	inline deClassNetworkStateListener *GetClassNetworkStateListener() const{ return pClsNSL; }
+	inline deClassOcclusionMesh *GetClassOcclusionMesh() const{ return pClsOccM; }
+	inline deClassOcclusionMeshBuilder *GetClassOcclusionMeshBuilder() const{ return pClsOccMBuilder; }
+	inline deClassParticleEmitter *GetClassParticleEmitter() const{ return pClsPE; }
+	inline deClassParticleEmitterController *GetClassParticleEmitterController() const{ return pClsPEC; }
+	inline deClassParticleEmitterInstance *GetClassParticleEmitterInstance() const{ return pClsPEI; }
+	inline deClassParticleEmitterInstanceListener *GetClassParticleEmitterInstanceListener() const{ return pClsPEIL; }
+	inline deClassPhysicsSystem *GetClassPhysicsSystem() const{ return pClsPhySys; }
+	inline deClassPoint3 *GetClassPoint3() const{ return pClsPt3; }
+	inline deClassPoint *GetClassPoint() const{ return pClsPt; }
+	inline deClassPropField *GetClassPropField() const{ return pClsPF; }
+	inline deClassPropFieldListener *GetClassPropFieldListener() const{ return pClsPFL; }
+	inline deClassQuaternion *GetClassQuaternion() const{ return pClsQuat; }
+	inline deClassResourceListener *GetClassResourceListener() const{ return pClsRN; }
+	inline deClassRig *GetClassRig() const{ return pClsRig; }
+	inline deClassRigBuilder *GetClassRigBuilder() const{ return pClsRigBuilder; }
+	inline deClassRuntimeMeter *GetClassRuntimeMeter() const{ return pClsRTM; }
+	inline deClassSafeArray *GetClassSafeArray() const{ return pClsSA; }
+	inline deClassScriptSystem *GetClassScriptSystem() const{ return pClsScrSys; }
+	inline deClassServer *GetClassServer() const{ return pClsSvr; }
+	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
+	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassService *GetClassService() const{ return pClsService; }
+	inline deClassServiceListener *GetClassServiceListener() const{ return pClsServiceListener; }
+	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
+	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
+	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }
+	inline deClassSky *GetClassSky() const{ return pClsSky; }
+	inline deClassSkyBody *GetClassSkyBody() const{ return pClsSkyBody; }
+	inline deClassSkyController *GetClassSkyController() const{ return pClsSkyCtrl; }
+	inline deClassSkyInstance *GetClassSkyInstance() const{ return pClsSkyInst; }
+	inline deClassSkyLayer *GetClassSkyLayer() const{ return pClsSkyLayer; }
+	inline deClassSkyLink *GetClassSkyLink() const{ return pClsSkyLink; }
+	inline deClassSkyTarget *GetClassSkyTarget() const{ return pClsSkyTarget; }
+	inline deClassSmoothFloat *GetClassSmoothFloat() const{ return pClsSmFlt; }
+	inline deClassSmoothDouble *GetClassSmoothDouble() const{ return pClsSmDbl; }
+	inline deClassSmoothVector *GetClassSmoothVector() const{ return pClsSmVec; }
+	inline deClassSmoothVector2 *GetClassSmoothVector2() const{ return pClsSmVec2; }
+	inline deClassSmoothDVector *GetClassSmoothDVector() const{ return pClsSmDVec; }
+	inline deClassSound *GetClassSound() const{ return pClsSnd; }
+	inline deClassSoundLevelMeter *GetClassSoundLevelMeter() const{ return pClsSoundLevelMeter; }
+	inline deClassSoundLevelMeterSpeaker *GetClassSoundLevelMeterSpeaker() const{ return pClsSoundLevelMeterSpeaker; }
+	inline deClassSoundLevelMeterListener *GetClassSoundLevelMeterListener() const{ return pClsSoundLevelMeterListener; }
+	inline deClassSpeaker *GetClassSpeaker() const{ return pClsSpk; }
+	inline deClassStringID *GetClassStringID() const{ return pClsSID; }
+	inline deClassSynthesizer *GetClassSynthesizer() const{ return pClsSyn; }
+	inline deClassSynthesizerController *GetClassSynthesizerController() const{ return pClsSynCtrl; }
+	inline deClassSynthesizerEffect *GetClassSynthesizerEffect() const{ return pClsSynEff; }
+	inline deClassSynthesizerInstance *GetClassSynthesizerInstance() const{ return pClsSynI; }
+	inline deClassSynthesizerSource *GetClassSynthesizerSource() const{ return pClsSynS; }
+	inline deClassSynthesizerSystem *GetClassSynthesizerSystem() const{ return pClsSynthesizerSystem; }
+	inline deClassSEStretch *GetClassSEStretch() const{ return pClsSEStretch; }
+	inline deClassSSSound *GetClassSSSound() const{ return pClsSSSound; }
+	inline deClassSSWave *GetClassSSWave() const{ return pClsSSWave; }
+	inline deClassSSChain *GetClassSSChain() const{ return pClsSSChain; }
+	inline deClassSSSynthesizer *GetClassSSSynthesizer() const{ return pClsSSSyn; }
+	inline deClassSSGroup *GetClassSSGroup() const{ return pClsSSGroup; }
+	inline deClassTexMatrix *GetClassTexMatrix() const{ return pClsTexMatrix; }
+	inline deClassTexMatrix2 *GetClassTexMatrix2() const{ return pClsTexMatrix2; }
+	inline deClassTouchSensor *GetClassTouchSensor() const{ return pClsTS; }
+	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{ return pClsTSL; }
+	inline deClassUnicodeString *GetClassUnicodeString() const{ return pClsUS; }
+	inline deClassUniqueID *GetClassUniqueID() const{ return pClsUID; }
+	inline deClassUTF8Decoder *GetClassUTF8Decoder() const{ return pClsU8D; }
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassVector2 *GetClassVector2() const{ return pClsVec2; }
+	inline deClassVideo *GetClassVideo() const{ return pClsVid; }
+	inline deClassVideoPlayer *GetClassVideoPlayer() const{ return pClsVP; }
+	inline deClassVRSystem *GetClassVRSystem() const{ return pClsVRSys; }
+	inline deClassWorld *GetClassWorld() const{ return pClsWorld; }
 	
-	inline dsClass *GetClassResourceLoaderType() const{return pClsResourceLoaderType;}
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	/** @name Management */
 	/*@{*/
@@ -855,7 +855,7 @@ public:
 	/*@}*/
 	
 	// helper functions
-	inline dsValue *GetGameObject() const{return pGameObj;}
+	inline dsValue *GetGameObject() const{ return pGameObj; }
 	const decVector &GetVector(dsRealObject *myself) const;
 	void PushVector(dsRunTime *rt, const decVector &v);
 	const decQuaternion &GetQuaternion(dsRealObject *myself) const;
@@ -869,7 +869,7 @@ public:
 	const decPoint3 &GetPoint3(dsRealObject *myself) const;
 	void PushPoint3(dsRunTime *rt, const decPoint3 &pt);
 	
-	inline const decString &GetRestartInfo() const{return pRestartInfo;}
+	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
 	void RequestRestart(const char *info);
 	
 	/** Adds a value to delete later. */

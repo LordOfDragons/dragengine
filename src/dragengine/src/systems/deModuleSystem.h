@@ -180,7 +180,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Linked game engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Scans the module directory for modules and loads them if possible. */
 	void DetectModules();
@@ -268,7 +268,7 @@ public:
 	void ServicesAddVFSContainers(deVirtualFileSystem &vfs, const char *stage);
 	
 	/** \brief Asset libraries virtual file system. */
-	inline const deVirtualFileSystem::Ref &GetVFSAssetLibraries() const{return pVFSAssetLibraries;}
+	inline const deVirtualFileSystem::Ref &GetVFSAssetLibraries() const{ return pVFSAssetLibraries; }
 	/*@}*/
 	
 	

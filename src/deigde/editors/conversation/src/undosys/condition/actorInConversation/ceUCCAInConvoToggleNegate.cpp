@@ -48,7 +48,7 @@ pTopic(NULL),
 pAction(NULL),
 pCondition(NULL)
 {
-	if(! topic || ! action || ! condition){
+	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,11 +82,11 @@ ceUCCAInConvoToggleNegate::~ceUCCAInConvoToggleNegate(){
 ///////////////
 
 void ceUCCAInConvoToggleNegate::Undo(){
-	pCondition->SetNegate(! pCondition->GetNegate());
+	pCondition->SetNegate(!pCondition->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCAInConvoToggleNegate::Redo(){
-	pCondition->SetNegate(! pCondition->GetNegate());
+	pCondition->SetNegate(!pCondition->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

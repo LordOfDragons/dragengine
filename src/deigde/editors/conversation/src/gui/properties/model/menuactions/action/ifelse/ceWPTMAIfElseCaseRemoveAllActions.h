@@ -62,13 +62,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
+	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 	
 	/** \brief If-case. */
-	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
+	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo *CreateUndo();

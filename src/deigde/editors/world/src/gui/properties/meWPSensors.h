@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Update sensors. */
 	void UpdateSensors();

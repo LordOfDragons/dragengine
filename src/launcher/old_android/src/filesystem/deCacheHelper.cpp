@@ -59,7 +59,7 @@ pVFS(NULL),
 pCachePath(cachePath),
 pCompressionMethod(ecmZCompression)
 {
-	if(! vfs){
+	if(!vfs){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -297,7 +297,7 @@ void deCacheHelper::DebugPrint(deLogger &logger, const char *loggingSource){
 	for(i=0; i<count; i++){
 		const decString &id = pMapping.GetAt(i);
 		
-		if(! id.IsEmpty()){
+		if(!id.IsEmpty()){
 			logger.LogInfoFormat(loggingSource, "- Slot %i: '%s' => f%i", i, id.GetString(), i);
 		}
 	}

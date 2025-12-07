@@ -35,9 +35,9 @@
 std::string GetWorkingDirectory(){
 	char buffer[FILENAME_MAX];
 	#ifdef OS_UNIX
-	if(! getcwd(buffer, FILENAME_MAX)){
+	if(!getcwd(buffer, FILENAME_MAX)){
 	#elif defined OS_W32
-	if(! _getcwd(buffer, FILENAME_MAX)){
+	if(!_getcwd(buffer, FILENAME_MAX)){
 	#endif
 		std::cerr << "GetWorkingDirectory: getcwd failed." << std::endl;
 		throw std::runtime_error("GetWorkingDirectory: getcwd failed");
@@ -59,7 +59,7 @@ std::string PathJoin(const std::list<std::string> &list){
 std::string RealPath(const std::string &filename){
 	#ifdef OS_UNIX
 	char buffer[FILENAME_MAX];
-	if(! realpath(filename.c_str(), buffer)){
+	if(!realpath(filename.c_str(), buffer)){
 		std::cerr << "RealPath: realpath failed." << std::endl;
 		throw std::runtime_error("RealPath: realpath failed");
 	}
@@ -109,7 +109,7 @@ bool PathExists(const std::string &path){
 void AssertPathExists(const std::string &path){
 	struct stat filestat;
 	const int result = stat(path.c_str(), &filestat);
-	if(result || ! S_ISREG(filestat.st_mode)){
+	if(result || !S_ISREG(filestat.st_mode)){
 		std::cerr << "File not found: '" << path << "'" << std::endl;
 		std::stringstream s;
 		s << "File not found: '" << path << "'" << std::endl;
@@ -237,9 +237,9 @@ void MakeDirs(const std::string &path){
 		}
 		
 		#ifdef OS_UNIX
-		if(! mkdir(dirname.c_str(), 0777)){
+		if(!mkdir(dirname.c_str(), 0777)){
 		#elif defined OS_W32
-		if(! mkdir(dirname.c_str())){
+		if(!mkdir(dirname.c_str())){
 		#endif
 			std::cerr << "MakeDirs: mkdir failed for '" << dirname << "'" << std::endl;
 			throw std::runtime_error("MakeDirs: mkdir failed");

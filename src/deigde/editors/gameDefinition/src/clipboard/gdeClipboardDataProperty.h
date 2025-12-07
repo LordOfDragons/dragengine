@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property. */
-	gdeProperty *GetProperty() const{return pProperty;}
+	gdeProperty *GetProperty() const{ return pProperty; }
 	/*@}*/
 };
 

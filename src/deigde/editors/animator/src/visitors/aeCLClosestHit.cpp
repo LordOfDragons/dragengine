@@ -74,7 +74,7 @@ void aeCLClosestHit::Reset(){
 }
 
 void aeCLClosestHit::IdentifyHitElement(igdeEnvironment &environment){
-	if(! pHitCollider){
+	if(!pHitCollider){
 		return;
 	}
 	

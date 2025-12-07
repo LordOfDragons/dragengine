@@ -1275,7 +1275,7 @@ deClassLocomotion::nfSetTiltMode::nfSetTiltMode(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfSetTiltMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1678,10 +1678,10 @@ void deClassLocomotion::nfAddControllerMapping::RunFunction(dsRunTime *rt, dsVal
 	
 	ds.GetClassAnimatorController()->GetController(rt->GetValue(0)->GetRealObject(),
 		acAnimator, acInstance, acController);
-	if(! acInstance || acAnimator){
+	if(!acInstance || acAnimator){
 		DSTHROW(dueInvalidParam);
 	}
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1709,7 +1709,7 @@ void deClassLocomotion::nfRemoveControllerMapping::RunFunction(dsRunTime *rt, ds
 	
 	ds.GetClassAnimatorController()->GetController(rt->GetValue(0)->GetRealObject(),
 		acAnimator, acInstance, acController);
-	if(! acInstance || acAnimator){
+	if(!acInstance || acAnimator){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1994,7 +1994,7 @@ void deClassLocomotion::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myse
 	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
 	
 	decBaseFileReader * const reader = ds.GetClassFileReader()->GetFileReader(rt->GetValue(0)->GetRealObject());
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -2011,7 +2011,7 @@ void deClassLocomotion::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
 	
 	decBaseFileWriter * const writer = ds.GetClassFileWriter()->GetFileWriter(rt->GetValue(0)->GetRealObject());
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -2041,7 +2041,7 @@ void deClassLocomotion::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLocomotion * const clsLoco = (deClassLocomotion*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsLoco)){
+	if(!p_IsObjOfType(object, clsLoco)){
 		rt->PushBool(false);
 		
 	}else{
@@ -2294,7 +2294,7 @@ void deClassLocomotion::CreateClassMembers(dsEngine *engine){
 }
 
 dedsLocomotion *deClassLocomotion::GetLocomotion(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -2302,11 +2302,11 @@ dedsLocomotion *deClassLocomotion::GetLocomotion(dsRealObject *myself) const{
 }
 
 void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! locomotion){
+	if(!locomotion){
 		rt->PushObject(NULL, this);
 		return;
 	}

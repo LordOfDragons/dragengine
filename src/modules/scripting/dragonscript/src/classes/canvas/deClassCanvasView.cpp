@@ -115,7 +115,7 @@ void deClassCanvasView::nfGetCanvasAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	int index = rt->GetValue(0)->GetInt();
 	deCanvas *canvas = nd.canvas->GetRootCanvas();
 	while(index-- > 0){
-		if(! canvas){
+		if(!canvas){
 			DSTHROW(dueInvalidParam);
 		}
 		canvas = canvas->GetLLViewNext();
@@ -147,7 +147,7 @@ void deClassCanvasView::nfHasCanvas::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deScriptingDragonScript &ds = ((deClassCanvasView*)GetOwnerClass())->GetDS();
 	
 	deCanvas * const child = ds.GetClassCanvas()->GetCanvas(rt->GetValue(0)->GetRealObject());
-	if(! child){
+	if(!child){
 		DSTHROW_INFO(dueNullPointer, "canvas");
 	}
 	rt->PushBool(child->GetParentView() == nd.canvas);
@@ -198,7 +198,7 @@ void deClassCanvasView::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCanvasView * const clsCView = (deClassCanvasView*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCView)){
+	if(!p_IsObjOfType(obj, clsCView)){
 		rt->PushBool(false);
 		
 	}else{
@@ -266,7 +266,7 @@ void deClassCanvasView::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasView *deClassCanvasView::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -274,11 +274,11 @@ deCanvasView *deClassCanvasView::GetCanvas(dsRealObject *myself) const {
 }
 
 void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

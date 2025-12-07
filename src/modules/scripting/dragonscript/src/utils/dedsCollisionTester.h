@@ -85,13 +85,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World to use for collision testing or null if not set. */
-	inline deWorld *GetWorld() const{return pWorld;}
+	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world to use for collision testing or null if not set. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Touch sensor to use for testing collisions or null if not set. */
-	inline deTouchSensor *GetTouchSensor() const{return pTouchSensor;}
+	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing collisions or null if not set. */
 	void SetTouchSensor(deTouchSensor *touchSensor);
@@ -105,10 +105,10 @@ public:
 	void SetCollisionShape(const decShapeList &shapeList);
 	
 	/** \brief Collider or null if not set. */
-	inline deCollider *GetCollider() const{return pCollider;}
+	inline deCollider *GetCollider() const{ return pCollider; }
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &filter);
@@ -120,25 +120,25 @@ public:
 	void SetColliderListener(dsRealObject *object);
 	
 	/** \brief List of colliders to ignore. */
-	inline decObjectOrderedSet &GetListIgnoreColliders(){return pListIgnoreColliders;}
-	inline const decObjectOrderedSet &GetListIgnoreColliders() const{return pListIgnoreColliders;}
+	inline decObjectOrderedSet &GetListIgnoreColliders(){ return pListIgnoreColliders; }
+	inline const decObjectOrderedSet &GetListIgnoreColliders() const{ return pListIgnoreColliders; }
 	
 	
 	
 	/** \brief Determine if a collision has been found. */
-	inline bool HasCollision() const{return pHasCollision;}
+	inline bool HasCollision() const{ return pHasCollision; }
 	
 	/** \brief Hit distance. Valid if hasCollision() returns true. */
-	inline float GetHitDistance() const{return pHitDistance;}
+	inline float GetHitDistance() const{ return pHitDistance; }
 	
 	/** \brief Hit normal. Valid if hasCollision() returns true. */
-	inline const decVector &GetHitNormal() const{return pHitNormal;}
+	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	
 	/** \brief Hit collider or null if none. Valid if hasCollision() returns true. */
-	inline deCollider *GetHitCollider() const{return pHitCollider;}
+	inline deCollider *GetHitCollider() const{ return pHitCollider; }
 	
 	/** \brief Hit collider bone or -1 if none. Valid if hasCollision() returns true. */
-	inline int GetHitBone() const{return pHitBone;}
+	inline int GetHitBone() const{ return pHitBone; }
 	
 	
 	

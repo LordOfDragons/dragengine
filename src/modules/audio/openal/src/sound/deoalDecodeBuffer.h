@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline char *GetBuffer() const{return pBuffer;}
+	inline char *GetBuffer() const{ return pBuffer; }
 	
 	/** \brief Size of buffer. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size of buffer. */
 	void SetSize(int size);

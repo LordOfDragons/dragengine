@@ -59,7 +59,7 @@ public:
 	/** Pushes the file writer on the stack. File writer can be NULL to push a null object. */
 	void PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/
 	
 private:

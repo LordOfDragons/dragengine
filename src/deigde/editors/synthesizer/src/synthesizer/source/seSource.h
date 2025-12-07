@@ -104,7 +104,7 @@ public:
 	
 	
 	/** \brief Engine synthesizer source or \em NULL. */
-	inline deSynthesizerSource *GetEngineSource() const{return pEngSource;}
+	inline deSynthesizerSource *GetEngineSource() const{ return pEngSource; }
 	
 	/** \brief Set the engine synthesizer source or \em NULL. */
 	void SetEngineSource(deSynthesizerSource *source);
@@ -116,10 +116,10 @@ public:
 	void InitEngineSource(deSynthesizerSource *engSource) const;
 	
 	/** \brief Retrieve the source type. */
-	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetType() const{return pType;}
+	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetType() const{ return pType; }
 	
 	/** \brief Retrieve the parent group or \em NULL if there is none. */
-	inline seSourceGroup *GetParentGroup() const{return pParentGroup;}
+	inline seSourceGroup *GetParentGroup() const{ return pParentGroup; }
 	
 	/** \brief Set the parent group or \em NULL if there is none. */
 	void SetParentGroup(seSourceGroup *group);
@@ -127,25 +127,25 @@ public:
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *filename);
 	
 	/** \brief Source is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if source is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Mix mode. */
-	inline deSynthesizerSource::eMixModes GetMixMode() const{return pMixMode;}
+	inline deSynthesizerSource::eMixModes GetMixMode() const{ return pMixMode; }
 	
 	/** \brief Set mix mode. */
 	void SetMixMode(deSynthesizerSource::eMixModes mode);
 	
 	/** \brief Blend factor. */
-	inline float GetBlendFactor() const{return pBlendFactor;}
+	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set blend factor. */
 	void SetBlendFactor(float factor);
@@ -153,25 +153,25 @@ public:
 	
 	
 	/** \brief Volume minimum relative to speaker volume in the range from 0 to 1. */
-	inline float GetMinVolume() const{return pMinVolume;}
+	inline float GetMinVolume() const{ return pMinVolume; }
 	
 	/** \brief Set minimum volume relative to speaker volume in the range from 0 to 1. */
 	void SetMinVolume(float volume);
 	
 	/** \brief Maximum volume relative to speaker volume in the range from 0 to 1. */
-	inline float GetMaxVolume() const{return pMaxVolume;}
+	inline float GetMaxVolume() const{ return pMaxVolume; }
 	
 	/** \brief Set maximum volume relative to speaker volume in the range from 0 to 1. */
 	void SetMaxVolume(float volume);
 	
 	/** \brief Minimum panning in the range from -1(left) to 1(right). */
-	inline float GetMinPanning() const{return pMinPanning;}
+	inline float GetMinPanning() const{ return pMinPanning; }
 	
 	/** \brief Set minimum panning in the range from -1(left) to 1(right). */
 	void SetMinPanning(float panning);
 	
 	/** \brief Maximum panning in the range from -1(left) to 1(right). */
-	inline float GetMaxPanning() const{return pMaxPanning;}
+	inline float GetMaxPanning() const{ return pMaxPanning; }
 	
 	/** \brief Set maximum panning in the range from -1(left) to 1(right). */
 	void SetMaxPanning(float panning);
@@ -191,16 +191,16 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** \brief Source factor target. */
-	inline seControllerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
-	inline const seControllerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
+	inline seControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const seControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** \brief Source volume target. */
-	inline seControllerTarget &GetTargetVolume(){return pTargetVolume;}
-	inline const seControllerTarget &GetTargetVolume() const{return pTargetVolume;}
+	inline seControllerTarget &GetTargetVolume(){ return pTargetVolume; }
+	inline const seControllerTarget &GetTargetVolume() const{ return pTargetVolume; }
 	
 	/** \brief Source panning target. */
-	inline seControllerTarget &GetTargetPanning(){return pTargetPanning;}
-	inline const seControllerTarget &GetTargetPanning() const{return pTargetPanning;}
+	inline seControllerTarget &GetTargetPanning(){ return pTargetPanning; }
+	inline const seControllerTarget &GetTargetPanning() const{ return pTargetPanning; }
 	
 	/** \brief List all links of all source targets. */
 	virtual void ListLinks(seLinkList& list);
@@ -226,13 +226,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active effect or \em NULL if none is active. */
-	inline seEffect *GetActiveEffect() const{return pActiveEffect;}
+	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
 	
 	/** \brief Set active effect or \em NULL if none is active. */
 	void SetActiveEffect(seEffect *effect);
 	
 	/** \brief Effects. */
-	inline const seEffectList &GetEffects() const{return pEffects;}
+	inline const seEffectList &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
 	void AddEffect(seEffect *effect);

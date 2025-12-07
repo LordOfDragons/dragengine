@@ -49,8 +49,8 @@ public:
 	pSuccess(true){
 	}
 	
-	inline deSemaphore &Semaphore(){return pSemaphore;}
-	inline bool GetSuccess() const{return pSuccess;}
+	inline deSemaphore &Semaphore(){ return pSemaphore; }
+	inline bool GetSuccess() const{ return pSuccess; }
 	
 	virtual void Run(){
 		try{
@@ -110,7 +110,7 @@ void deoglLoaderThread::Run(){
 	
 	deoglLoaderThreadTask *task = nullptr;
 	
-	while(! pShutdown){
+	while(!pShutdown){
 		{
 		const deMutexGuard guard(pMutex);
 		if(pTasks.GetCount() > 0){
@@ -206,7 +206,7 @@ bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
 	DEASSERT_NOTNULL(task);
 	
 	const deMutexGuard guard(pMutex);
-	if(! pContextEnabled){
+	if(!pContextEnabled){
 		return false;
 	}
 	
@@ -231,7 +231,7 @@ bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask *task){
 	#endif
 	
 	deSemaphore &semaphore = waitableTask->Semaphore();
-	if(! AddTask(waitableTask)){
+	if(!AddTask(waitableTask)){
 		return false;
 	}
 	
@@ -270,7 +270,7 @@ void deoglLoaderThread::pInit(){
 	pGLContextMakeCurrent(context.GetActiveRRenderWindow()->GetView());
 	
 #elif defined OS_W32
-	if(! wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext())){
+	if(!wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext())){
 		pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError());
 		DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");

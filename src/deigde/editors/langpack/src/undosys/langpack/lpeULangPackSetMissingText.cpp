@@ -44,7 +44,7 @@ lpeULangPackSetMissingText::lpeULangPackSetMissingText(
 pLangPack(NULL),
 pNewMissingText(newMissingText)
 {
-	if(! langpack){
+	if(!langpack){
 		DETHROW(deeInvalidParam);
 	}
 	

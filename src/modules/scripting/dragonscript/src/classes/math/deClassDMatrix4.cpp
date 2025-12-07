@@ -789,7 +789,7 @@ void deClassDMatrix4::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decDMatrix matrix;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -813,7 +813,7 @@ void deClassDMatrix4::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself)
 	const deClassFileWriter &clsFileWriter = *clsDMatrix.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -932,7 +932,7 @@ void deClassDMatrix4::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDMatrix4 * const clsDMatrix = (deClassDMatrix4*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsDMatrix)){
+	if(!p_IsObjOfType(obj, clsDMatrix)){
 		rt->PushBool(false);
 		
 	}else{
@@ -1033,7 +1033,7 @@ void deClassDMatrix4::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *m
 
 deClassDMatrix4::deClassDMatrix4(deScriptingDragonScript *ds) :
 dsClass("DMatrix4", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1140,7 +1140,7 @@ void deClassDMatrix4::CreateClassMembers(dsEngine *engine){
 }
 
 const decDMatrix &deClassDMatrix4::GetDMatrix4(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1148,7 +1148,7 @@ const decDMatrix &deClassDMatrix4::GetDMatrix4(dsRealObject *myself) const{
 }
 
 void deClassDMatrix4::PushDMatrix4(dsRunTime *rt, const decDMatrix &matrix){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -104,7 +104,7 @@ public:
 	igdeAction(text, icon, "Add Node"), pView(view), pType(type), pPosition(position){}
 	
 	virtual void OnAction(){
-		if(! pView.GetVLayer() || ! pView.GetWorld()){
+		if(!pView.GetVLayer() || !pView.GetWorld()){
 			return;
 		}
 		
@@ -262,7 +262,7 @@ public:
 	virtual void OnAction(){
 		if(pView.GetWorld()){
 			pView.GetWorld()->GetGuiParameters().SetAutoUpdateVegetation(
-				! pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation());
+				!pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation());
 		}
 	}
 	
@@ -280,7 +280,7 @@ public:
 	cBoardListener(meWindowVegetation &view) : pView(view){}
 	
 	meHTVRLink *RuleLinkForNodeLink(igdeNVSlot *sourceSlot, igdeNVSlot *targetSlot) const{
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return NULL;
 		}
 		
@@ -309,7 +309,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeNVBoard*, igdeMenuCascade &menu, const decPoint &position){
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return;
 		}
 		
@@ -361,7 +361,7 @@ public:
 	}
 	
 	virtual bool CanLink(igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target){
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return false;
 		}
 		
@@ -379,12 +379,12 @@ public:
 			DETHROW(deeInvalidParam);
 		}
 		
-		return ! pView.GetVLayer()->LinkProducesLoop(wvnodeSource.GetRule(),
+		return !pView.GetVLayer()->LinkProducesLoop(wvnodeSource.GetRule(),
 			indexSlotSource, wvnodeTarget.GetRule(), indexSlotTarget);
 	}
 	
 	virtual void OnLinkAdded(igdeNVBoard*, igdeNVLink *link){
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return;
 		}
 		
@@ -404,12 +404,12 @@ public:
 	}
 	
 	virtual void OnLinkRemoved(igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target){
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return;
 		}
 		
 		meHTVRLink * const ruleLink = RuleLinkForNodeLink(source, target);
-		if(! ruleLink){
+		if(!ruleLink){
 			return;
 		}
 		
@@ -419,7 +419,7 @@ public:
 	}
 	
 	virtual void OnOffsetChanged(igdeNVBoard *board){
-		if(! pView.GetVLayer()){
+		if(!pView.GetVLayer()){
 			return;
 		}
 		pView.GetVLayer()->SetViewCenter(decVector2(board->GetOffset()) * pView.GetPixelToUnits());
@@ -496,7 +496,7 @@ void meWindowVegetation::SetSector(const decPoint &sector){
 }
 
 void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
-	if(! pWorld && vlayer){
+	if(!pWorld && vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -528,7 +528,7 @@ meHTVRule *meWindowVegetation::GetVRule() const{
 void meWindowVegetation::UpdateNodesFromVLayer(){
 	RemoveAllNodes();
 	
-	if(! pVLayer){
+	if(!pVLayer){
 		return;
 	}
 	
@@ -613,7 +613,7 @@ void meWindowVegetation::UpdateNodesFromVLayer(){
 void meWindowVegetation::UpdateLinksFromVLayer(){
 	RemoveAllLinks();
 	
-	if(! pVLayer){
+	if(!pVLayer){
 		return;
 	}
 	
@@ -625,7 +625,7 @@ void meWindowVegetation::UpdateLinksFromVLayer(){
 		
 		igdeNVNode * const sourceNode = GetNodeWithRule(ruleLink.GetSourceRule());
 		igdeNVNode * const targetNode = GetNodeWithRule(ruleLink.GetDestinationRule());
-		if(! sourceNode || ! targetNode){
+		if(!sourceNode || !targetNode){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -636,7 +636,7 @@ void meWindowVegetation::UpdateLinksFromVLayer(){
 
 void meWindowVegetation::SelectNodeOfActiveRule(){
 	meHTVRule * const rule = pVLayer ? pVLayer->GetActiveRule() : NULL;
-	if(! rule){
+	if(!rule){
 		return;
 	}
 	

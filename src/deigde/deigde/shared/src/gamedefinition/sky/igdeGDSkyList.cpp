@@ -59,7 +59,7 @@ igdeGDSky *igdeGDSkyList::GetAt(int index) const{
 }
 
 igdeGDSky *igdeGDSkyList::GetWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -77,7 +77,7 @@ igdeGDSky *igdeGDSkyList::GetWithPath(const char *path) const{
 }
 
 igdeGDSky *igdeGDSkyList::GetWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -99,7 +99,7 @@ int igdeGDSkyList::IndexOf(igdeGDSky *sky) const{
 }
 
 int igdeGDSkyList::IndexOfWithPath(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -116,7 +116,7 @@ int igdeGDSkyList::IndexOfWithPath(const char *path) const{
 }
 
 int igdeGDSkyList::IndexOfWithName(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -133,7 +133,7 @@ int igdeGDSkyList::IndexOfWithName(const char *name) const{
 }
 
 int igdeGDSkyList::IndexOfWithPathOrName(const char *path, const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,14 +167,14 @@ bool igdeGDSkyList::HasWithPathOrName(const char *path, const char *name) const{
 }
 
 void igdeGDSkyList::Add(igdeGDSky *sky){
-	if(! sky || HasWithPathOrName(sky->GetPath(), sky->GetName())){
+	if(!sky || HasWithPathOrName(sky->GetPath(), sky->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pSkies.Add(sky);
 }
 
 void igdeGDSkyList::InsertAt(igdeGDSky *sky, int index){
-	if(! sky){
+	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	pSkies.Insert(sky, index);

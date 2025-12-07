@@ -70,12 +70,12 @@ void stClassScripting::CreateSingleton(){
 	OOP oopClass = NULL;
 	
 	oopClass = gst_class_name_to_oop("DEScripting");
-	if(! oopClass){
+	if(!oopClass){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pSingleton = pST->CreateNewObject(oopClass, sizeof(csScripting) - sizeof(csObject));
-	if(! pSingleton || pSingleton == pST->GetNil()){
+	if(!pSingleton || pSingleton == pST->GetNil()){
 		DETHROW(deeOutOfMemory);
 	}
 	

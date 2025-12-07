@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, int index){
-	if(! topic || ! actorSpeak || ! word){
+	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetWordList().GetCount()){

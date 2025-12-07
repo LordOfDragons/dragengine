@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Definitiojn is cache valid. */
-	inline bool GetCacheValid() const{return pCacheValid;}
+	inline bool GetCacheValid() const{ return pCacheValid; }
 	/*@}*/
 	
 	

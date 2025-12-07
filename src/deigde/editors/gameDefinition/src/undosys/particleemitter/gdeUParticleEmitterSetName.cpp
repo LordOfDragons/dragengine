@@ -43,7 +43,7 @@ gdeUParticleEmitterSetName::gdeUParticleEmitterSetName(
 gdeParticleEmitter *particleEmitter, const char *newValue) :
 pParticleEmitter(NULL)
 {
-	if(! particleEmitter){
+	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

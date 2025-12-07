@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt){
-	if(! topic || ! actorSpeak || ! headLookAt){
+	if(!topic || !actorSpeak || !headLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	

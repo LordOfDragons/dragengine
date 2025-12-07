@@ -84,10 +84,10 @@ public:
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -106,7 +106,7 @@ public:
 	}
 	
 	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
-		if(! pOwner){
+		if(!pOwner){
 			return;
 		}
 		
@@ -171,7 +171,7 @@ void igdeWOSOBillboard::OnAllSubObjectsFinishedLoading(){
 }
 
 void igdeWOSOBillboard::UpdateGeometry(){
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
@@ -188,12 +188,12 @@ void igdeWOSOBillboard::UpdateGeometry(){
 }
 
 void igdeWOSOBillboard::UpdateVisibility(){
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
 	bool visible = GetWrapper().GetVisible();
-	const bool partiallyVisible = visible && ! GetWrapper().GetPartiallyHidden();
+	const bool partiallyVisible = visible && !GetWrapper().GetPartiallyHidden();
 	
 	if(pGDBillboard.GetPartialHide()){
 		visible = partiallyVisible;
@@ -203,7 +203,7 @@ void igdeWOSOBillboard::UpdateVisibility(){
 }
 
 void igdeWOSOBillboard::UpdateLayerMasks(){
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
@@ -227,7 +227,7 @@ void igdeWOSOBillboard::Visit(igdeWOSOVisitor &visitor){
 }
 
 void igdeWOSOBillboard::AsyncLoadFinished(bool success){
-	if(! pResLoad){
+	if(!pResLoad){
 		return;
 	}
 	
@@ -258,7 +258,7 @@ void igdeWOSOBillboard::pLoadResources(){
 	
 	const decString pathSkin(GetStringProperty(
 		pGDBillboard.GetPropertyName(igdeGDCBillboard::epSkin), pGDBillboard.GetSkinPath()));
-	if(! pathSkin.IsEmpty()){
+	if(!pathSkin.IsEmpty()){
 		rl.LoadSkin(pathSkin);
 	}
 	
@@ -270,17 +270,17 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 		(igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
 	deSkin::Ref skin(rl.GetSkin());
-	if(! skin && GetWrapper().GetGDClass()){
+	if(!skin && GetWrapper().GetGDClass()){
 		skin = GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 	}
 	
-	if(! skin){
+	if(!skin){
 		pResLoad = NULL;
 		pDestroyBillboard();
 		return;
 	}
 	
-	if(! pBillboard){
+	if(!pBillboard){
 		pBillboard.TakeOver(GetEngine().GetBillboardManager()->CreateBillboard());
 		
 		pBillboard->SetSizeFixedToScreen(pGDBillboard.GetSizeFixedToScreen());
@@ -311,11 +311,11 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 	UpdateGeometry();
 	pUpdateExtends();
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddBillboard(pBillboard);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
@@ -323,7 +323,7 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 }
 
 void igdeWOSOBillboard::pDestroyBillboard(){
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
@@ -341,7 +341,7 @@ void igdeWOSOBillboard::pDestroyBillboard(){
 void igdeWOSOBillboard::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pBillboard){
+	if(!pBillboard){
 		return;
 	}
 	
@@ -358,7 +358,7 @@ void igdeWOSOBillboard::AttachToCollider(){
 		attachment->SetNoScaling(true);
 		
 		if(colliderComponent){
-			if(! pGDBillboard.GetBoneName().IsEmpty()){
+			if(!pGDBillboard.GetBoneName().IsEmpty()){
 				attachment->SetAttachType(deColliderAttachment::eatBone);
 				attachment->SetTrackBone(pGDBillboard.GetBoneName());
 			}
@@ -381,7 +381,7 @@ void igdeWOSOBillboard::AttachToCollider(){
 }
 
 void igdeWOSOBillboard::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
@@ -391,7 +391,7 @@ void igdeWOSOBillboard::DetachFromCollider(){
 }
 
 void igdeWOSOBillboard::pUpdateExtends(){
-	if(! pBillboard || pGDBillboard.GetDoNotScale()){
+	if(!pBillboard || pGDBillboard.GetDoNotScale()){
 		ClearBoxExtends();
 		return;
 	}

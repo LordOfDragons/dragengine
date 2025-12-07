@@ -641,12 +641,12 @@ const char *deoxrDeviceProfile::pButtonDisplayText(eButtonLabel label) const{
 
 deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker(deoxrDevice &device, bool leftHand,
 bool withInputSimulation){
-	if(! pInstance.SupportsExtension(deoxrInstance::extEXTHandTracking)){
+	if(!pInstance.SupportsExtension(deoxrInstance::extEXTHandTracking)){
 		return nullptr;
 	}
 	
 	deoxrSession &session = pInstance.GetOxr().GetSession();
-	if(! session.GetSystem().GetSupportsHandTracking()){
+	if(!session.GetSystem().GetSupportsHandTracking()){
 		return nullptr;
 	}
 	

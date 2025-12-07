@@ -58,7 +58,7 @@ deSky *deSkyManager::CreateSky(){
 	// create and add sky
 	try{
 		sky = new deSky(this);
-		if(! sky) DETHROW(deeOutOfMemory);
+		if(!sky) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadSky(sky);
 		pSkies.Add(sky);
 	}catch(const deException &){
@@ -89,7 +89,7 @@ void deSkyManager::SystemGraphicLoad(){
 	deSky *sky = (deSky*)pSkies.GetRoot();
 	
 	while(sky){
-		if(! sky->GetPeerGraphic()){
+		if(!sky->GetPeerGraphic()){
 			GetGraphicSystem()->LoadSky(sky);
 		}
 		sky = (deSky*)sky->GetLLManagerNext();

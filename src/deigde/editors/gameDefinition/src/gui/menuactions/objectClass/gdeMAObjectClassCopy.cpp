@@ -60,12 +60,12 @@ gdeBaseAction(windowMain, "Copy Object Class",
 
 igdeUndo *gdeMAObjectClassCopy::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if(! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAObjectClassCopy::OnAction(gdeGameDefinition &gameDefinition){
 
 void gdeMAObjectClassCopy::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

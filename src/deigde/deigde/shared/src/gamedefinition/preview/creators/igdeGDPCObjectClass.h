@@ -93,7 +93,7 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Game definition object class to create preview for. */
-	inline igdeGDClass *GetGDClass() const{return pGDClass;}
+	inline igdeGDClass *GetGDClass() const{ return pGDClass; }
 	
 	
 	

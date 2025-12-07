@@ -183,7 +183,7 @@ void deoglGIBVH::AddComponents(deoglRenderPlan &plan, const deoglGIInstances &in
 }
 
 void deoglGIBVH::AddComponent(deoglRenderPlan&, const decMatrix &matrix, deoglGIInstance &instance){
-	if(! instance.GetHasBVHNodes() || ! instance.GetComponent()){
+	if(!instance.GetHasBVHNodes() || !instance.GetComponent()){
 		return;
 	}
 	
@@ -198,7 +198,7 @@ void deoglGIBVH::AddComponent(deoglRenderPlan&, const decMatrix &matrix, deoglGI
 		lod.PrepareGIDynamicBVH();
 		instance.UpdateBVHExtends();
 		
-		if(! component.GetStaticTextures()){
+		if(!component.GetStaticTextures()){
 			instance.SetDirtyTUCs(true);
 		}
 	}

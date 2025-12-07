@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Activate synthesizer module or NULL if none is active. */
-	inline deBaseSynthesizerModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseSynthesizerModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create and assign peer for sound using the active module. */
 	void LoadSound(deSound *sound);

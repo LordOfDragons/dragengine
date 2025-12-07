@@ -66,7 +66,7 @@ void deoglSkinStateConstructed::SetProperty(deoglSkinConstructedProperty *proper
 }
 
 void deoglSkinStateConstructed::Update(deoglSkinState &skinState){
-	if(! pContent){
+	if(!pContent){
 		return;
 	}
 	
@@ -75,7 +75,7 @@ void deoglSkinStateConstructed::Update(deoglSkinState &skinState){
 }
 
 void deoglSkinStateConstructed::PrepareForRender(deoglSkinState &skinState){
-	if(! pContent || ! pDirty){
+	if(!pContent || !pDirty){
 		return;
 	}
 	

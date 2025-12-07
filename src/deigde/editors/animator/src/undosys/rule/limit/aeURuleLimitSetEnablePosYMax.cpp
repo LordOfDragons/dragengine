@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnablePosYMax::aeURuleLimitSetEnablePosYMax(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosYMax::Undo(){
 }
 
 void aeURuleLimitSetEnablePosYMax::Redo(){
-	pRule->SetEnablePositionYMax(! pRule->GetEnablePositionYMax());
+	pRule->SetEnablePositionYMax(!pRule->GetEnablePositionYMax());
 }

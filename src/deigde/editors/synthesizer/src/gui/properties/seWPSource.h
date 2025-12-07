@@ -90,10 +90,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View synthesizer. */
-	inline seViewSynthesizer &GetViewSynthesizer() const{return pViewSynthesizer;}
+	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -133,10 +133,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSourceCut() const{return pActionSourceCut;}
-	inline igdeAction *GetActionSourceCopy() const{return pActionSourceCopy;}
-	inline igdeAction *GetActionSourcePaste() const{return pActionSourcePaste;}
-	inline igdeAction *GetActionSourcePasteIntoGroup() const{return pActionSourcePasteIntoGroup;}
+	inline igdeAction *GetActionSourceCut() const{ return pActionSourceCut; }
+	inline igdeAction *GetActionSourceCopy() const{ return pActionSourceCopy; }
+	inline igdeAction *GetActionSourcePaste() const{ return pActionSourcePaste; }
+	inline igdeAction *GetActionSourcePasteIntoGroup() const{ return pActionSourcePasteIntoGroup; }
 	/*@}*/
 };
 

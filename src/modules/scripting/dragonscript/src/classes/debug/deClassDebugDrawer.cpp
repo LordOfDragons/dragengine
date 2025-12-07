@@ -78,7 +78,7 @@ void deClassDebugDrawer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create debug drawer
 	nd->ddrawer = ddmgr.CreateDebugDrawer();
-	if(! nd->ddrawer) DSTHROW(dueOutOfMemory);
+	if(!nd->ddrawer) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -456,7 +456,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction(dsRunTime *rt, ds
 	
 	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
 	const deModel * const model = ds.GetClassModel()->GetModel(rt->GetValue(1)->GetRealObject());
-	if(! model){
+	if(!model){
 		DSTHROW_INFO(dueNullPointer, "model");
 	}
 	
@@ -507,7 +507,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction(dsRunTime *rt, d
 	
 	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt(rt->GetValue(0)->GetInt());
 	const deModel * const model = ds.GetClassModel()->GetModel(rt->GetValue(1)->GetRealObject());
-	if(! model){
+	if(!model){
 		DSTHROW_INFO(dueNullPointer, "model");
 	}
 	
@@ -563,7 +563,7 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction(dsRunTime *rt, d
 
 deClassDebugDrawer::deClassDebugDrawer(deScriptingDragonScript *ds) :
 dsClass("DebugDrawer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -646,7 +646,7 @@ void deClassDebugDrawer::CreateClassMembers(dsEngine *engine){
 }
 
 deDebugDrawer* deClassDebugDrawer::GetDebugDrawer(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -654,11 +654,11 @@ deDebugDrawer* deClassDebugDrawer::GetDebugDrawer(dsRealObject *myself) const{
 }
 
 void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDrawer){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! debugDrawer){
+	if(!debugDrawer){
 		rt->PushObject(NULL, this);
 		return;
 	}

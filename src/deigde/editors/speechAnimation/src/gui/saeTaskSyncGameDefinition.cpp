@@ -59,7 +59,7 @@ saeTaskSyncGameDefinition::~saeTaskSyncGameDefinition(){
 ///////////////
 
 bool saeTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetSAnimation()){
+	if(!pWindowMain.GetSAnimation()){
 		return false;
 	}
 	

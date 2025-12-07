@@ -76,7 +76,7 @@ void deClassAnimation::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myse
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject *listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener) DSTHROW(dueInvalidParam);
+	if(!listener) DSTHROW(dueInvalidParam);
 	
 	clsAnim->GetDS().GetResourceLoader()->AddRequest(filename,
 		deResourceLoader::ertAnimation, listener);

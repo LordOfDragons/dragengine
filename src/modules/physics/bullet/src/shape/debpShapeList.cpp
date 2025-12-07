@@ -59,7 +59,7 @@ debpShape *debpShapeList::GetShapeAt(int index) const{
 }
 
 void debpShapeList::AddShape(debpShape *shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	pShapes.Add(shape);

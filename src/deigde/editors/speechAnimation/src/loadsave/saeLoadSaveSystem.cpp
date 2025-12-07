@@ -101,7 +101,7 @@ saeSAnimation *saeLoadSaveSystem::LoadSAnimation(const char *filename){
 }
 
 void saeLoadSaveSystem::SaveSAnimation(saeSAnimation *sanimation, const char *filename){
-	if(! sanimation || ! filename){
+	if(!sanimation || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -142,17 +142,17 @@ void igdeEditPath::cActionSelectFileDialog::PrepareFile(decString &path){
 	}
 	
 	if(pEditPath.GetUseGameVFS()){
-		pUseRelativePath = ! path.IsEmpty() && ! decPath::IsUnixPathAbsolute(path);
+		pUseRelativePath = !path.IsEmpty() && !decPath::IsUnixPathAbsolute(path);
 		path = decPath::AbsolutePathUnix(path, pEditPath.GetBasePath()).GetPathUnix();
 		
 	}else{
-		pUseRelativePath = ! path.IsEmpty() && ! decPath::IsNativePathAbsolute(path);
+		pUseRelativePath = !path.IsEmpty() && !decPath::IsNativePathAbsolute(path);
 		path = decPath::AbsolutePathNative(path, pEditPath.GetBasePath()).GetPathNative();
 	}
 }
 
 bool igdeEditPath::cActionSelectFileDialog::AcceptFile(decString &path){
-	if(pUseRelativePath && ! pEditPath.GetBasePath().IsEmpty()){
+	if(pUseRelativePath && !pEditPath.GetBasePath().IsEmpty()){
 		if(pEditPath.GetUseGameVFS()){
 			path = decPath::RelativePathUnix(path, pEditPath.GetBasePath()).GetPathUnix();
 			
@@ -182,7 +182,7 @@ igdeEditPath::cActionSkinSelectDialog::~cActionSkinSelectDialog(){
 }
 
 void igdeEditPath::cActionSkinSelectDialog::OnAction(){
-	if(! pEditPath.GetUseGameVFS()){
+	if(!pEditPath.GetUseGameVFS()){
 		return; // not possible on native file system
 	}
 	
@@ -190,19 +190,19 @@ void igdeEditPath::cActionSkinSelectDialog::OnAction(){
 	bool useRelativePath;
 	
 	if(pEditPath.GetUseGameVFS()){
-		useRelativePath = ! decPath::IsUnixPathAbsolute(path);
+		useRelativePath = !decPath::IsUnixPathAbsolute(path);
 		path = decPath::AbsolutePathUnix(path, pEditPath.GetBasePath()).GetPathUnix();
 		
 	}else{
-		useRelativePath = ! decPath::IsNativePathAbsolute(path);
+		useRelativePath = !decPath::IsNativePathAbsolute(path);
 		path = decPath::AbsolutePathNative(path, pEditPath.GetBasePath()).GetPathNative();
 	}
 	
-	if(! igdeDialogBrowserSkin::SelectSkin(&pEditPath, path) && path != pEditPath.GetPath()){
+	if(!igdeDialogBrowserSkin::SelectSkin(&pEditPath, path) && path != pEditPath.GetPath()){
 		return;
 	}
 	
-	if(useRelativePath && ! pEditPath.GetBasePath().IsEmpty()){
+	if(useRelativePath && !pEditPath.GetBasePath().IsEmpty()){
 		if(pEditPath.GetUseGameVFS()){
 			path = decPath::RelativePathUnix(path, pEditPath.GetBasePath()).GetPathUnix();
 			
@@ -234,7 +234,7 @@ void igdeEditPath::cActionBrowseFile::OnAction(){
 }
 
 void igdeEditPath::cActionBrowseFile::Update(){
-	SetEnabled(! pEditPath.GetPath().IsEmpty());
+	SetEnabled(!pEditPath.GetPath().IsEmpty());
 }
 
 
@@ -259,10 +259,10 @@ void igdeEditPath::cActionConvertAbsolute::Update(){
 	const decString &path = pEditPath.GetPath();
 	
 	if(pEditPath.GetUseGameVFS()){
-		SetEnabled(! path.IsEmpty() && ! decPath::IsUnixPathAbsolute(path));
+		SetEnabled(!path.IsEmpty() && !decPath::IsUnixPathAbsolute(path));
 		
 	}else{
-		SetEnabled(! path.IsEmpty() && ! decPath::IsNativePathAbsolute(path));
+		SetEnabled(!path.IsEmpty() && !decPath::IsNativePathAbsolute(path));
 	}
 }
 
@@ -288,10 +288,10 @@ void igdeEditPath::cActionConvertRelative::Update(){
 	const decString &path = pEditPath.GetPath();
 	
 	if(pEditPath.GetUseGameVFS()){
-		SetEnabled(! path.IsEmpty() && decPath::IsUnixPathAbsolute(path));
+		SetEnabled(!path.IsEmpty() && decPath::IsUnixPathAbsolute(path));
 		
 	}else{
-		SetEnabled(! path.IsEmpty() && decPath::IsNativePathAbsolute(path));
+		SetEnabled(!path.IsEmpty() && decPath::IsNativePathAbsolute(path));
 	}
 }
 
@@ -490,7 +490,7 @@ void igdeEditPath::SetDefaultPath(const char *path){
 }
 
 bool igdeEditPath::IsPathValid() const{
-	return ! pText->GetInvalidValue();
+	return !pText->GetInvalidValue();
 }
 
 void igdeEditPath::ValidatePath(){
@@ -509,7 +509,7 @@ void igdeEditPath::ValidatePath(){
 				path = decPath::AbsolutePathUnix(pText->GetText(), pBasePath);
 			}
 			
-			pText->SetInvalidValue(! GetEnvironment().GetFileSystemGame()->CanReadFile(path));
+			pText->SetInvalidValue(!GetEnvironment().GetFileSystemGame()->CanReadFile(path));
 			
 		}else{
 			if(decPath::IsNativePathAbsolute(pText->GetText())){
@@ -558,7 +558,7 @@ igdeAction *igdeEditPath::GetSelectPathActionAt(int index) const{
 }
 
 void igdeEditPath::AddSelectPathAction(igdeAction *action){
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	pSelectPathActions.AddIfAbsent(action);
@@ -614,7 +614,7 @@ void igdeEditPath::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		helper.MenuCommand(contextMenu, (igdeAction*)pSelectPathActions.GetAt(i));
 	}
 	
-	if(! pBasePath.IsEmpty()){
+	if(!pBasePath.IsEmpty()){
 		helper.MenuSeparator(contextMenu);
 		helper.MenuCommand(contextMenu, new cActionConvertAbsolute(*this), true);
 		helper.MenuCommand(contextMenu, new cActionConvertRelative(*this), true);
@@ -680,7 +680,7 @@ void igdeEditPath::BrowsePath(){
 
 
 void igdeEditPath::AddListener(igdeEditPathListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

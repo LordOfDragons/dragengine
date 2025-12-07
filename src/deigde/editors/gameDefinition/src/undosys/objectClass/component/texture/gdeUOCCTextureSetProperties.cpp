@@ -47,7 +47,7 @@ pObjectClass(NULL),
 pComponent(NULL),
 pTexture(NULL)
 {
-	if(! objectClass || ! component || ! texture){
+	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -84,7 +84,7 @@ gdeUOCCTextureSetProperties::~gdeUOCCTextureSetProperties(){
 ///////////////
 
 void gdeUOCCTextureSetProperties::Undo(){
-	if(! pOldValue.Has(pTexture->GetActiveProperty())){
+	if(!pOldValue.Has(pTexture->GetActiveProperty())){
 		pTexture->SetActiveProperty("");
 	}
 	
@@ -93,7 +93,7 @@ void gdeUOCCTextureSetProperties::Undo(){
 }
 
 void gdeUOCCTextureSetProperties::Redo(){
-	if(! pNewValue.Has(pTexture->GetActiveProperty())){
+	if(!pNewValue.Has(pTexture->GetActiveProperty())){
 		pTexture->SetActiveProperty("");
 	}
 	

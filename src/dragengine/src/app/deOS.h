@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine object or NULL if not existing. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Set engine object or NULL if not existing. */
 	void SetEngine(deEngine * engine);
@@ -97,7 +97,7 @@ public:
 	virtual void ProcessEventLoop(bool sendToInputModule) = 0;
 	
 	/** \brief Application is active. */
-	inline bool GetAppActive() const{return pAppActive;}
+	inline bool GetAppActive() const{ return pAppActive; }
 	
 	/**
 	 * \brief Set if application is active.

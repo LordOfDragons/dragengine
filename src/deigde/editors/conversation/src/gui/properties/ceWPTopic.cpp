@@ -212,12 +212,12 @@ public:
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetConversation();
-		if(! conversation){
+		if(!conversation){
 			return;
 		}
 		
 		decString name("Group");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Topic Group", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Topic Group", "Name:", name)){
 			return;
 		}
 		
@@ -268,12 +268,12 @@ public:
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetConversation();
 		ceConversationFile * const file = pPanel.GetFile();
-		if(! file || ! conversation){
+		if(!file || !conversation){
 			return;
 		}
 		
 		decString name(file->GetID());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Topic Group", "Name:", name) || name == file->GetID()){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Topic Group", "Name:", name) || name == file->GetID()){
 			return;
 		}
 		
@@ -300,7 +300,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationFile * const file = pPanel.GetFile();
-		if(! file){
+		if(!file){
 			return;
 		}
 		
@@ -328,7 +328,7 @@ public:
 		ceConversation * const conversation = pPanel.GetConversation();
 		ceClipboardDataFile * const clip = (ceClipboardDataFile*)pPanel.GetWindowProperties().GetWindowMain()
 			.GetClipboard().GetWithTypeName(ceClipboardDataFile::TYPE_NAME);
-		if(! conversation || ! clip){
+		if(!conversation || !clip){
 			return;
 		}
 		
@@ -353,12 +353,12 @@ public:
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetConversation();
 		ceConversationFile * const file = pPanel.GetFile();
-		if(! file || ! conversation){
+		if(!file || !conversation){
 			return;
 		}
 		
 		decString name(file->GetID());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic Group", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic Group", "Name:", name)){
 			return;
 		}
 		
@@ -385,7 +385,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationFile * const group = pPanel.GetFile();
-		if(! group){
+		if(!group){
 			return;
 		}
 		
@@ -459,12 +459,12 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationFile * const file = pPanel.GetFile();
-		if(! file){
+		if(!file){
 			return;
 		}
 		
 		decString name("Topic");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Topic", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Topic", "Name:", name)){
 			return;
 		}
 		
@@ -516,12 +516,12 @@ public:
 		ceConversationFile * const file = pPanel.GetFile();
 		ceConversationTopic * const topic = pPanel.GetTopic();
 		ceConversation * const conversation = pPanel.GetConversation();
-		if(! topic || ! file || ! conversation){
+		if(!topic || !file || !conversation){
 			return;
 		}
 		
 		decString name(topic->GetID());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Topic", "Name:", name) || name == topic->GetID()){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Topic", "Name:", name) || name == topic->GetID()){
 			return;
 		}
 		
@@ -547,7 +547,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if(! topic){
+		if(!topic){
 			return;
 		}
 		
@@ -571,7 +571,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if(! topic){
+		if(!topic){
 			return;
 		}
 		
@@ -599,7 +599,7 @@ public:
 		ceConversationFile * const file = pPanel.GetFile();
 		ceClipboardDataTopic * const clip = (ceClipboardDataTopic*)pPanel.GetWindowProperties().GetWindowMain()
 			.GetClipboard().GetWithTypeName(ceClipboardDataTopic::TYPE_NAME);
-		if(! file || ! clip){
+		if(!file || !clip){
 			return;
 		}
 		
@@ -624,12 +624,12 @@ public:
 	virtual void OnAction(){
 		ceConversationFile * const file = pPanel.GetFile();
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if(! file || ! topic){
+		if(!file || !topic){
 			return;
 		}
 		
 		decString name(topic->GetID());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Topic", "Name:", name)){
 			return;
 		}
 		
@@ -686,7 +686,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if(! topic || pPanel.GetActionTreeModel()->GetPreventUpdate()){
+		if(!topic || pPanel.GetActionTreeModel()->GetPreventUpdate()){
 			return;
 		}
 		
@@ -960,7 +960,7 @@ void ceWPTopic::SelectActiveFile(){
 	
 	pCBTopic->SetEnabled(pCBFile->GetSelectedItem());
 	pBtnTopic->GetAction()->Update();
-	if(! pCBTopic->GetEnabled()){
+	if(!pCBTopic->GetEnabled()){
 		pCBTopic->ClearText();
 	}
 	
@@ -1020,7 +1020,7 @@ void ceWPTopic::UpdateTopic(){
 
 ceConversationAction *ceWPTopic::GetTreeAction() const{
 	ceConversationTopic * const topic = GetTopic();
-	if(! topic){
+	if(!topic){
 		return NULL;
 	}
 	
@@ -1030,7 +1030,7 @@ ceConversationAction *ceWPTopic::GetTreeAction() const{
 
 ceConversationCondition *ceWPTopic::GetTreeCondition() const{
 	ceConversationTopic * const topic = GetTopic();
-	if(! topic){
+	if(!topic){
 		return NULL;
 	}
 	
@@ -1345,16 +1345,16 @@ void ceWPTopic::OnConversationPathChanged(){
 
 
 void ceWPTopic::LocateAction(ceConversationAction *action){
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pModelTreeActions){
+	if(!pModelTreeActions){
 		return;
 	}
 	
 	ceWPTTIMAction *item = pModelTreeActions->DeepFindAction(action);
-	if(! item){
+	if(!item){
 		return;
 	}
 	
@@ -1363,21 +1363,21 @@ void ceWPTopic::LocateAction(ceConversationAction *action){
 }
 
 void ceWPTopic::PlayActionFromHere(){
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationTopic * const topic = GetTopic();
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
 	ceWPTTreeItem * const item = (ceWPTTreeItem*)pTreeActions->GetSelection();
-	if(! item || ! item->GetModel()){
+	if(!item || !item->GetModel()){
 		return;
 	}
 	
-	if(! pConversation->GetPlayback()->GetMainActionStack()->GetTop().GetParentList()){
+	if(!pConversation->GetPlayback()->GetMainActionStack()->GetTop().GetParentList()){
 		return; // this should never happen
 	}
 	

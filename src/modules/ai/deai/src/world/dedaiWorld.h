@@ -71,15 +71,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief AI module. */
-	inline deDEAIModule &GetDEAI() const{return pDEAI;}
+	inline deDEAIModule &GetDEAI() const{ return pDEAI; }
 	
 	/** \brief World resource. */
-	inline deWorld &GetWorld() const{return pWorld;}
+	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	
 	
 	/** \brief Height terrain or \em NULL. */
-	inline dedaiHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline dedaiHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	
 	

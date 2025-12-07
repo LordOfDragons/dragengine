@@ -78,7 +78,7 @@ void dedaiLayer::Update(float elapsed){
 }
 
 void dedaiLayer::Prepare(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -119,13 +119,13 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 				}
 				
 				dedaiSpaceGrid * const grid = space.GetGrid();
-				if(! grid){
+				if(!grid){
 					continue;
 				}
 				
 				const decVector testPosition(space.GetInverseMatrix() * position);
 				dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo(testPosition, testDistance);
-				if(testVertex && (! bestVertex || testDistance < bestDistance)){
+				if(testVertex && (!bestVertex || testDistance < bestDistance)){
 					bestVertex = testVertex;
 					bestDistance = testDistance;
 				}
@@ -137,7 +137,7 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -149,14 +149,14 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
-		if(! grid){
+		if(!grid){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
 		
 		const decVector testPosition(space.GetInverseMatrix() * position);
 		dedaiSpaceGridVertex * const testVertex = grid->GetVertexClosestTo(testPosition, testDistance);
-		if(testVertex && (! bestVertex || testDistance < bestDistance)){
+		if(testVertex && (!bestVertex || testDistance < bestDistance)){
 			bestVertex = testVertex;
 			bestDistance = testDistance;
 		}
@@ -192,14 +192,14 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 				
 				dedaiSpaceMesh * const navmesh = space.GetMesh();
 				
-				if(! navmesh){
+				if(!navmesh){
 					continue;
 				}
 				
 				const decVector testPosition(space.GetInverseMatrix() * position);
 				dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo(testPosition, testDistance);
 				
-				if(testFace && (! bestFace || testDistance < bestDistance)){
+				if(testFace && (!bestFace || testDistance < bestDistance)){
 					bestFace = testFace;
 					bestDistance = testDistance;
 				}
@@ -211,7 +211,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -223,7 +223,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
-		if(! navmesh){
+		if(!navmesh){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -236,7 +236,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 		const decVector testPosition(space.GetInverseMatrix() * position);
 		dedaiSpaceMeshFace * const testFace = navmesh->GetFaceClosestTo(testPosition, testDistance);
 		
-		if(testFace && (! bestFace || testDistance < bestDistance)){
+		if(testFace && (!bestFace || testDistance < bestDistance)){
 			bestFace = testFace;
 			bestDistance = testDistance;
 		}
@@ -273,14 +273,14 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 				}
 				
 				dedaiSpaceGrid * const grid = space.GetGrid();
-				if(! grid){
+				if(!grid){
 					continue;
 				}
 				
 				const decVector testPoint(space.GetInverseMatrix() * point);
 				dedaiSpaceGridEdge * const testEdge = grid->NearestPoint(testPoint, radius,
 					testNearestPosition, testNearestDistance, testLambda);
-				if(! testEdge || testNearestDistance > bestDistanceSquared){
+				if(!testEdge || testNearestDistance > bestDistanceSquared){
 					continue;
 				}
 				
@@ -296,7 +296,7 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -308,7 +308,7 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 		}
 		
 		dedaiSpaceGrid * const grid = space.GetGrid();
-		if(! grid){
+		if(!grid){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -316,7 +316,7 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 		const decVector testPosition(space.GetInverseMatrix() * point);
 		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint(testPosition, radius,
 			testNearestPosition, testNearestDistance, testLambda);
-		if(! testEdge || testNearestDistance > bestDistanceSquared){
+		if(!testEdge || testNearestDistance > bestDistanceSquared){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -356,18 +356,18 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 				}
 				
 				dedaiSpaceMesh * const navmesh = space.GetMesh();
-				if(! navmesh){
+				if(!navmesh){
 					continue;
 				}
 				
-				if(! (space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
+				if(!(space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
 					continue;
 				}
 				
 				const decVector testPoint((space.GetInverseMatrix() * point));
 				dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint(testPoint, radius, testNearestPosition, testNearestDistance);
 				
-				if(testFace && (! bestFace || testNearestDistance < bestDistanceSquared)){
+				if(testFace && (!bestFace || testNearestDistance < bestDistanceSquared)){
 					bestFace = testFace;
 					nearest = space.GetMatrix() * decDVector(testNearestPosition);
 					bestDistanceSquared = testNearestDistance;
@@ -381,7 +381,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 	
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -393,12 +393,12 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 		}
 		
 		dedaiSpaceMesh * const navmesh = space.GetMesh();
-		if(! navmesh){
+		if(!navmesh){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
 		
-		if(! (space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
+		if(!(space.GetMaximumExtends() >= testMinExtend && space.GetMinimumExtends() <= testMaxExtend)){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -406,7 +406,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 		const decVector testPoint((space.GetInverseMatrix() * point));
 		dedaiSpaceMeshFace * const testFace = navmesh->NearestPoint(testPoint, radius, testNearestPosition, testNearestDistance);
 		
-		if(testFace && (! bestFace || testNearestDistance < bestDistanceSquared)){
+		if(testFace && (!bestFace || testNearestDistance < bestDistanceSquared)){
 			bestFace = testFace;
 			nearest = space.GetMatrix() * decDVector(testNearestPosition);
 			bestDistanceSquared = testNearestDistance;
@@ -420,7 +420,7 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 
 bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &direction, float &distance){
 	dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo(origin, distance);
-	if(! curFace){
+	if(!curFace){
 		return false;
 	}
 	
@@ -435,7 +435,7 @@ bool dedaiLayer::NavMeshLineCollide(const decDVector &origin, const decVector &d
 		// edge. with the first found edge the test moves on to the neight face until no
 		// neighbor face exists or the direction is exhausted (no edge found)
 		const dedaiSpaceMesh * const navmesh = curFace->GetMesh();
-		if(! navmesh){
+		if(!navmesh){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -546,7 +546,7 @@ void dedaiLayer::InvalidateBlocking(){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -590,7 +590,7 @@ void dedaiLayer::InvalidateBlocking(deNavigationSpace::eSpaceTypes type){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -641,7 +641,7 @@ const decDVector &boxMin, const decDVector &boxMax){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -694,7 +694,7 @@ void dedaiLayer::InvalidateLinks(){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -738,7 +738,7 @@ void dedaiLayer::InvalidateLinks(deNavigationSpace::eSpaceTypes type){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -789,7 +789,7 @@ const decDVector &boxMin, const decDVector &boxMax){
 	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
 	while(engNavSpace){
 		dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
-		if(! navspace){
+		if(!navspace){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 			continue;
 		}
@@ -821,7 +821,7 @@ const decDVector &boxMin, const decDVector &boxMax){
 //////////////////////
 
 void dedaiLayer::pUpdateCostTable(){
-	if(! pCostTable.GetChanged()){
+	if(!pCostTable.GetChanged()){
 		return;
 	}
 	

@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Light resource. */
-	inline deLight *GetLight() const{return pLight;}
+	inline deLight *GetLight() const{ return pLight; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

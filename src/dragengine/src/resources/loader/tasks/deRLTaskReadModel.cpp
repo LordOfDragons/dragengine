@@ -82,7 +82,7 @@ void deRLTaskReadModel::Run(){
 	LogRunEnter();
 	deBaseModelModule * const module = (deBaseModelModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtModel, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void deRLTaskReadModel::Run(){
 	pModel->SetAsynchron(true);
 	module->LoadModel(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pModel);
 	
-	if(! pModel->Verify()){
+	if(!pModel->Verify()){
 		DETHROW(deeInvalidParam);
 	}
 	pModel->Prepare();
@@ -107,7 +107,7 @@ void deRLTaskReadModel::Run(){
 
 void deRLTaskReadModel::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pModel = NULL;
 		LogFinishedExit();

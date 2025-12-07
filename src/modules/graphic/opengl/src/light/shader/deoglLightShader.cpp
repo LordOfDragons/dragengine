@@ -715,7 +715,7 @@ void deoglLightShader::UpdateUniformTargets(){
 	// configurations for a specific light. thus only parameters which depend on the
 	// light configuration are used
 	
-	if(! modeParticle){
+	if(!modeParticle){
 		pLightUniformTargets[elutLightColor] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[elutLightRange] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[elutLightColorAmbient] = pUsedLightUniformTargetCount++;

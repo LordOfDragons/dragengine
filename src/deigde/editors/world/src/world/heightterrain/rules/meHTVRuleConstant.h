@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vector to output. */
-	inline const decVector &GetVector() const{return pVector;}
+	inline const decVector &GetVector() const{ return pVector; }
 	/** Sets the vector to output. */
 	void SetVector(const decVector &vector);
 	

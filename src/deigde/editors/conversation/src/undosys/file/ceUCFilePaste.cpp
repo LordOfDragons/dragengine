@@ -42,7 +42,7 @@
 
 ceUCFilePaste::ceUCFilePaste(ceConversation *conversation, const ceConversationFileList &files) :
 pConversation(NULL){
-	if(! conversation || files.GetCount() == 0){
+	if(!conversation || files.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

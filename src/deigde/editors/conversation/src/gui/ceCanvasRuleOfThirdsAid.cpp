@@ -61,7 +61,7 @@ ceCanvasRuleOfThirdsAid::~ceCanvasRuleOfThirdsAid(){
 
 void ceCanvasRuleOfThirdsAid::Resize(){
 	// simply copy of the size of the parent to our canvas since we fully fill it
-	if(! pCanvasView->GetParentView()){
+	if(!pCanvasView->GetParentView()){
 		return;
 	}
 	

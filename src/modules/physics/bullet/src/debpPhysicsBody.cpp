@@ -162,7 +162,7 @@ bool debpPhysicsBody::UpdateFromBody(){
 
 void debpPhysicsBody::CollisionFilteringChanged(){
 	// see debpCollisionDispatcher for the reason why this is required
-	if(! pRigidBody){
+	if(!pRigidBody){
 		return;
 	}
 	
@@ -184,11 +184,11 @@ void debpPhysicsBody::SetPosition(const decDVector &position){
 	
 	pPosition = position;
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		pMotionState->SetPosition(position);
 		
 		if(pRigidBody){
-			if(! pDynWorld->GetWorld().GetProcessingPhysics()){
+			if(!pDynWorld->GetWorld().GetProcessingPhysics()){
 				pUpdateTransform();
 			}
 			
@@ -210,11 +210,11 @@ void debpPhysicsBody::SetOrientation(const decQuaternion &orientation){
 	
 	pOrientation = orientation;
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		pMotionState->SetOrientation(orientation);
 		
 		if(pRigidBody){
-			if(! pDynWorld->GetWorld().GetProcessingPhysics()){
+			if(!pDynWorld->GetWorld().GetProcessingPhysics()){
 				pUpdateTransform();
 			}
 			
@@ -239,7 +239,7 @@ void debpPhysicsBody::SetLinearVelocity(const decVector &linVelo){
 	
 	pHasLinVelo = pLinVelo.LengthSquared() > 1e-6f;
 	
-	if(! pPreventUpdate && pRigidBody){
+	if(!pPreventUpdate && pRigidBody){
 		if(pResponseType == ertDynamic){
 			if(pHasLinVelo){
 				pRigidBody->activate();
@@ -267,7 +267,7 @@ void debpPhysicsBody::SetAngularVelocity(const decVector &angVelo){
 	
 	pHasAngVelo = pAngVelo.LengthSquared() > 0.0003046174f;
 	
-	if(! pPreventUpdate && pRigidBody){
+	if(!pPreventUpdate && pRigidBody){
 		if(pResponseType == ertDynamic){
 			if(pHasAngVelo){
 				pRigidBody->activate();
@@ -295,7 +295,7 @@ void debpPhysicsBody::SetGravity(const decVector &gravity){
 	
 	pHasGravity = gravity.LengthSquared() > 1e-6f;
 	
-	if(! pPreventUpdate && pRigidBody && pResponseType == ertDynamic){
+	if(!pPreventUpdate && pRigidBody && pResponseType == ertDynamic){
 		pRigidBody->setGravity(btVector3((btScalar)gravity.x, (btScalar)gravity.y, (btScalar)gravity.z));
 	}
 }
@@ -334,7 +334,7 @@ void debpPhysicsBody::SetResponseType(eResponseTypes responseType){
 }
 
 void debpPhysicsBody::ResetKinematicInterpolation(){
-	if(! pRigidBody /*|| pResponseType == ertDynamic*/){
+	if(!pRigidBody /*|| pResponseType == ertDynamic*/){
 		return;
 	}
 	
@@ -395,7 +395,7 @@ void debpPhysicsBody::UpdateAABB(){
 ///////////
 
 void debpPhysicsBody::ApplyImpuls(const decVector &impuls){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -408,7 +408,7 @@ void debpPhysicsBody::ApplyImpuls(const decVector &impuls){
 }
 
 void debpPhysicsBody::ApplyImpulsAt(const decVector &impuls, const decVector &position){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -422,7 +422,7 @@ void debpPhysicsBody::ApplyImpulsAt(const decVector &impuls, const decVector &po
 }
 
 void debpPhysicsBody::ApplyTorqueImpuls(const decVector &torqueImpuls){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -435,7 +435,7 @@ void debpPhysicsBody::ApplyTorqueImpuls(const decVector &torqueImpuls){
 }
 
 void debpPhysicsBody::ApplyForce(const decVector &force){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -448,7 +448,7 @@ void debpPhysicsBody::ApplyForce(const decVector &force){
 }
 
 void debpPhysicsBody::ApplyForceAt(const decVector &force, const decVector &position){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -462,7 +462,7 @@ void debpPhysicsBody::ApplyForceAt(const decVector &force, const decVector &posi
 }
 
 void debpPhysicsBody::ApplyTorque(const decVector &torque){
-	if(! pRigidBody || pResponseType != ertDynamic){
+	if(!pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
@@ -488,7 +488,7 @@ debpColliderConstraint *debpPhysicsBody::GetConstraintAt(int index) const{
 }
 
 int debpPhysicsBody::IndexOfConstraint(debpColliderConstraint *constraint) const{
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -503,7 +503,7 @@ int debpPhysicsBody::IndexOfConstraint(debpColliderConstraint *constraint) const
 }
 
 bool debpPhysicsBody::HasConstraint(debpColliderConstraint *constraint) const{
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	int i;
@@ -525,7 +525,7 @@ void debpPhysicsBody::AddConstraint(debpColliderConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
@@ -590,7 +590,7 @@ void debpPhysicsBody::pCleanUp(){
 }
 
 void debpPhysicsBody::pCreateRigidBody(){
-	if(pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape()){
+	if(pRigidBody || !pEnabled || !pDynWorld || !pShape || !pShape->GetShape()){
 		return;
 	}
 	
@@ -707,7 +707,7 @@ void debpPhysicsBody::pCreateRigidBody(){
 }
 
 void debpPhysicsBody::pFreeRigidBody(){
-	if(! pRigidBody){
+	if(!pRigidBody){
 		return;
 	}
 	
@@ -731,7 +731,7 @@ void debpPhysicsBody::pFreeRigidBody(){
 }
 
 void debpPhysicsBody::pUpdateTransform(){
-	if(! pRigidBody){
+	if(!pRigidBody){
 		return;
 	}
 	

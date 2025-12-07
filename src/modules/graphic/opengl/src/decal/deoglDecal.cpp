@@ -267,7 +267,7 @@ void deoglDecal::pCleanUp(){
 
 
 void deoglDecal::pSyncSkin(){
-	if(! pDirtySkin){
+	if(!pDirtySkin){
 		return;
 	}
 	

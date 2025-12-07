@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{return pRules;}
+	inline const aeRuleList &GetRules() const{ return pRules; }
 	/*@}*/
 };
 

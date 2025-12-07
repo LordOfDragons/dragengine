@@ -214,12 +214,12 @@ public:
 		pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSkin()){
+		if(!pPanel.GetSkin()){
 			return;
 		}
 		
 		decString name("Renderable");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Renderable", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Renderable", "Name:", name)){
 			return;
 		}
 		

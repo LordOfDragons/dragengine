@@ -42,7 +42,7 @@
 seUControllerToggleFrozen::seUControllerToggleFrozen(seController *controller) :
 pController(NULL)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -64,9 +64,9 @@ seUControllerToggleFrozen::~seUControllerToggleFrozen(){
 ///////////////
 
 void seUControllerToggleFrozen::Undo(){
-	pController->SetFrozen(! pController->GetFrozen());
+	pController->SetFrozen(!pController->GetFrozen());
 }
 
 void seUControllerToggleFrozen::Redo(){
-	pController->SetFrozen(! pController->GetFrozen());
+	pController->SetFrozen(!pController->GetFrozen());
 }

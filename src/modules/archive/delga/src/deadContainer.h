@@ -69,12 +69,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Archive filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	
 	
 	/** \brief Archive root directory. */
-	inline const deadArchiveDirectory::Ref &GetArchiveDirectory() const{return pArchiveDirectory;}
+	inline const deadArchiveDirectory::Ref &GetArchiveDirectory() const{ return pArchiveDirectory; }
 	
 	/** \brief Acquire next free unpacking context. */
 	deadContextUnpack *AcquireContextUnpack();

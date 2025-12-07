@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor){
-	if(! topic || ! action || ! hasActor) DETHROW(deeInvalidParam);
+	if(!topic || !action || !hasActor) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
@@ -79,11 +79,11 @@ ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
 ///////////////
 
 void ceUCCHasActorToggleNegate::Undo(){
-	pHasActor->SetNegate(! pHasActor->GetNegate());
+	pHasActor->SetNegate(!pHasActor->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }
 
 void ceUCCHasActorToggleNegate::Redo(){
-	pHasActor->SetNegate(! pHasActor->GetNegate());
+	pHasActor->SetNegate(!pHasActor->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }

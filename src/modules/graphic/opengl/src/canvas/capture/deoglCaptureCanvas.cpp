@@ -72,7 +72,7 @@ deoglCaptureCanvas::~deoglCaptureCanvas(){
 ///////////////
 
 void deoglCaptureCanvas::SyncToRender(){
-	if(! pRCaptureCanvas){
+	if(!pRCaptureCanvas){
 		pRCaptureCanvas = new deoglRCaptureCanvas(GetOgl().GetRenderThread());
 	}
 	
@@ -94,17 +94,17 @@ void deoglCaptureCanvas::SyncToRender(){
 	}
 	
 	// handle capturing if enabled
-	if(! pCaptureCanvas.GetCapture()){
+	if(!pCaptureCanvas.GetCapture()){
 		return;
 	}
 	
 	deImage * const image = pCaptureCanvas.GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	
 	if(pCapturePending){
-		if(! pRCaptureCanvas->GetCapturePending()){
+		if(!pRCaptureCanvas->GetCapturePending()){
 			if(image->GetData()){ // in case the user forgot to retain the image data
 				const deoglPixelBuffer &pixelBuffer = *pRCaptureCanvas->GetPixelBuffer();
 				memcpy(image->GetData(), pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());

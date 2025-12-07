@@ -60,11 +60,11 @@ pWrapY(link.GetWrapY())
 		}
 	}
 	
-	if(! pLink.GetBone().IsEmpty()){
+	if(!pLink.GetBone().IsEmpty()){
 		pBoneIndex = instance.GetBoneStateList().IndexOfStateNamed(pLink.GetBone());
 	}
 	
-	if(! pLink.GetVertexPositionSet().IsEmpty()){
+	if(!pLink.GetVertexPositionSet().IsEmpty()){
 		pVPSIndex = instance.GetVPSStateList().IndexOfStateNamed(pLink.GetVertexPositionSet());
 	}
 }

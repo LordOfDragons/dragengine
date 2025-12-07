@@ -78,7 +78,7 @@ void igdeWCoordSysArrows::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 
 
 void igdeWCoordSysArrows::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		pDDSAxisX.SetPosition(position);
@@ -88,7 +88,7 @@ void igdeWCoordSysArrows::SetPosition(const decVector &position){
 }
 
 void igdeWCoordSysArrows::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		pDDSAxisX.SetOrientation(orientation);
@@ -98,7 +98,7 @@ void igdeWCoordSysArrows::SetOrientation(const decQuaternion &orientation){
 }
 
 void igdeWCoordSysArrows::SetScale(const decVector &scale){
-	if(! scale.IsEqualTo(pScale)){
+	if(!scale.IsEqualTo(pScale)){
 		pScale = scale;
 		
 		pDDSAxisX.SetScale(scale);
@@ -110,7 +110,7 @@ void igdeWCoordSysArrows::SetScale(const decVector &scale){
 
 
 void igdeWCoordSysArrows::SetAxisXColor(const decColor &color){
-	if(! color.IsEqualTo(pColorAxisX)){
+	if(!color.IsEqualTo(pColorAxisX)){
 		pColorAxisX = color;
 		
 		pDDSAxisX.SetEdgeColor(pColorAxisX);
@@ -119,7 +119,7 @@ void igdeWCoordSysArrows::SetAxisXColor(const decColor &color){
 }
 
 void igdeWCoordSysArrows::SetAxisYColor(const decColor &color){
-	if(! color.IsEqualTo(pColorAxisY)){
+	if(!color.IsEqualTo(pColorAxisY)){
 		pColorAxisY = color;
 		
 		pDDSAxisY.SetEdgeColor(pColorAxisY);
@@ -128,7 +128,7 @@ void igdeWCoordSysArrows::SetAxisYColor(const decColor &color){
 }
 
 void igdeWCoordSysArrows::SetAxisZColor(const decColor &color){
-	if(! color.IsEqualTo(pColorAxisZ)){
+	if(!color.IsEqualTo(pColorAxisZ)){
 		pColorAxisZ = color;
 		
 		pDDSAxisZ.SetEdgeColor(pColorAxisZ);

@@ -84,28 +84,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Maximum material map size. */
-	inline int GetMaxMaterialMapSize() const{return pMaxMaterialMapSize;}
+	inline int GetMaxMaterialMapSize() const{ return pMaxMaterialMapSize; }
 	
 	/** Maximum count of materials per row. */
-	inline int GetMaxMaterialsPerRow() const{return pMaxMaterialsPerRow;}
+	inline int GetMaxMaterialsPerRow() const{ return pMaxMaterialsPerRow; }
 	
 	/** Maximum count of rows per image. */
-	inline int GetMaxRowsPerImage() const{return pMaxRowsPerImage;}
+	inline int GetMaxRowsPerImage() const{ return pMaxRowsPerImage; }
 	
 	/** Current material map size. */
-	inline int GetMaterialMapSize() const{return pMaterialMapSize;}
+	inline int GetMaterialMapSize() const{ return pMaterialMapSize; }
 	
 	/** Current count of materials per row. */
-	inline int GetMaterialsPerRow() const{return pMaterialsPerRow;}
+	inline int GetMaterialsPerRow() const{ return pMaterialsPerRow; }
 	
 	/** Current count of rows per image. */
-	inline int GetRowsPerImage() const{return pRowsPerImage;}
+	inline int GetRowsPerImage() const{ return pRowsPerImage; }
 	
 	/** Current maximum count of materials. */
-	inline int GetMaxMaterialCount() const{return pMaxMaterialCount;}
+	inline int GetMaxMaterialCount() const{ return pMaxMaterialCount; }
 	
 	
 	
@@ -124,16 +124,16 @@ public:
 	 * Color is combined with texture property "envroom" if present. For environment
 	 * rooms the back face is used as texture.
 	 */
-	inline deoglTexture &GetTextureDiffuse(){return *pTexDiffuse;}
-	inline const deoglTexture &GetTextureDiffuse() const{return *pTexDiffuse;}
+	inline deoglTexture &GetTextureDiffuse(){ return *pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return *pTexDiffuse; }
 	
 	/**
 	 * Reflectivity texture.
 	 * 
 	 * Stores texture property "reflectivity" as RGB and texture property "roughness" as A.
 	 */
-	inline deoglTexture &GetTextureReflectivity(){return *pTexReflectivity;}
-	inline const deoglTexture &GetTextureReflectivity() const{return *pTexReflectivity;}
+	inline deoglTexture &GetTextureReflectivity(){ return *pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return *pTexReflectivity; }
 	
 	/**
 	 * Emissivity texture.
@@ -142,11 +142,11 @@ public:
 	 * Emissivity is combined with "envroom.emissivity" if present. For environment
 	 * rooms the back face is used as texture.
 	 */
-	inline deoglTexture &GetTextureEmissivity(){return *pTexEmissivity;}
-	inline const deoglTexture &GetTextureEmissivity() const{return *pTexEmissivity;}
+	inline deoglTexture &GetTextureEmissivity(){ return *pTexEmissivity; }
+	inline const deoglTexture &GetTextureEmissivity() const{ return *pTexEmissivity; }
 	
 	/** Material FBO. */
-	inline const deoglFramebuffer::Ref &GetFBOMaterial(){return pFBOMaterial;}
+	inline const deoglFramebuffer::Ref &GetFBOMaterial(){ return pFBOMaterial; }
 	/*@}*/
 // 	void DEBUG();
 	

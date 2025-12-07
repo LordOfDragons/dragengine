@@ -53,7 +53,7 @@
 ////////////////////////////
 
 reRigPush::reRigPush(deEngine *engine){
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -55,7 +55,7 @@
 ////////////////////////////
 
 reCLSelect::reCLSelect(reRig *rig){
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -198,7 +198,7 @@ void reCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				if(bone){
 					try{
 						entry = new reCLHitListEntry;
-						if(! entry) DETHROW(deeOutOfMemory);
+						if(!entry) DETHROW(deeOutOfMemory);
 						
 						entry->SetBone(bone);
 						entry->SetDistance(info->GetDistance());
@@ -220,7 +220,7 @@ void reCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				if(shape){
 					try{
 						entry = new reCLHitListEntry;
-						if(! entry) DETHROW(deeOutOfMemory);
+						if(!entry) DETHROW(deeOutOfMemory);
 						
 						entry->SetShape(shape);
 						entry->SetDistance(info->GetDistance());
@@ -242,7 +242,7 @@ void reCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				if(push){
 					try{
 						entry = new reCLHitListEntry;
-						if(! entry) DETHROW(deeOutOfMemory);
+						if(!entry) DETHROW(deeOutOfMemory);
 						entry->SetPush(push);
 						entry->SetDistance(info->GetDistance());
 						entry->SetNormal(info->GetNormal());
@@ -263,7 +263,7 @@ void reCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				if(constraint){
 					try{
 						entry = new reCLHitListEntry;
-						if(! entry) DETHROW(deeOutOfMemory);
+						if(!entry) DETHROW(deeOutOfMemory);
 						entry->SetConstraint(constraint);
 						entry->SetDistance(info->GetDistance());
 						entry->SetNormal(info->GetNormal());

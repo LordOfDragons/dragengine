@@ -55,7 +55,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of child nodes. */
-	inline int GetNodeCount() const{return pNodeCount;}
+	inline int GetNodeCount() const{ return pNodeCount; }
 	/** Retrieves the child node at the given index. */
 	dedsStyledTextNode *GetNodeAt(int index) const;
 	/** Retrieves the index of a child node or -1 if not found. */

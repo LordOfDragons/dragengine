@@ -50,16 +50,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index colliderConstraintBroke(). */
-	inline int GetFuncIndexColliderConstraintBroke() const{return pFuncIndexColliderConstraintBroke;}
+	inline int GetFuncIndexColliderConstraintBroke() const{ return pFuncIndexColliderConstraintBroke; }
 	
 	/** \brief Function index rigConstraintBroke(). */
-	inline int GetFuncIndexRigConstraintBroke() const{return pFuncIndexRigConstraintBroke;}
+	inline int GetFuncIndexRigConstraintBroke() const{ return pFuncIndexRigConstraintBroke; }
 	/*@}*/
 	
 private:

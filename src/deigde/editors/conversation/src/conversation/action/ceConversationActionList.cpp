@@ -68,13 +68,13 @@ bool ceConversationActionList::Has(ceConversationAction *action) const{
 }
 
 void ceConversationActionList::Add(ceConversationAction *action){
-	if(! action) DETHROW(deeInvalidParam);
+	if(!action) DETHROW(deeInvalidParam);
 	
 	pActions.Add(action);
 }
 
 void ceConversationActionList::InsertAt(ceConversationAction *action, int index){
-	if(! action) DETHROW(deeInvalidParam);
+	if(!action) DETHROW(deeInvalidParam);
 	
 	pActions.Insert(action, index);
 }

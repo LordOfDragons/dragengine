@@ -56,7 +56,7 @@
 ////////////////////////////
 
 debpPropField::debpPropField(dePhysicsBullet *bullet, dePropField *propField){
-	if(! bullet || ! propField) DETHROW(deeInvalidParam);
+	if(!bullet || !propField) DETHROW(deeInvalidParam);
 	
 	int t, typeCount = propField->GetTypeCount();
 	
@@ -118,7 +118,7 @@ void debpPropField::TypeAdded(int index, dePropFieldType *type){
 	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
 		debpPropFieldType **newArray = new debpPropFieldType*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTypes){
 			memcpy(newArray, pTypes, sizeof(debpPropFieldType*) * pTypeSize);
 			delete [] pTypes;
@@ -128,7 +128,7 @@ void debpPropField::TypeAdded(int index, dePropFieldType *type){
 	}
 	
 	pTypes[pTypeCount] = new debpPropFieldType(this, type);
-	if(! pTypes[pTypeCount]) DETHROW(deeOutOfMemory);
+	if(!pTypes[pTypeCount]) DETHROW(deeOutOfMemory);
 	pTypeCount++;
 	
 	pDirty = true;
@@ -309,7 +309,7 @@ void debpPropField::pProjectInstancesDown(const dePropFieldGround &ground){
 							qpnormal.z = (qp3.x - qp1.x) * (qp2.y - qp3.y) - (qp3.y - qp1.y) * (qp2.x - qp3.x);
 						}
 						
-						if(! hasHit || qpheight > bestHeight){
+						if(!hasHit || qpheight > bestHeight){
 							hasHit = true;
 							bestHeight = qpheight;
 							bestNormal = qpnormal;

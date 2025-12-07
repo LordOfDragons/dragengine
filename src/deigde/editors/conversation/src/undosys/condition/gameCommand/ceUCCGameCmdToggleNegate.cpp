@@ -44,7 +44,7 @@
 
 ceUCCGameCmdToggleNegate::ceUCCGameCmdToggleNegate(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionGameCommand *gameCommand){
-	if(! topic || ! action || ! gameCommand){
+	if(!topic || !action || !gameCommand){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,11 +82,11 @@ ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
 ///////////////
 
 void ceUCCGameCmdToggleNegate::Undo(){
-	pGameCommand->SetNegate(! pGameCommand->GetNegate());
+	pGameCommand->SetNegate(!pGameCommand->GetNegate());
 	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCCGameCmdToggleNegate::Redo(){
-	pGameCommand->SetNegate(! pGameCommand->GetNegate());
+	pGameCommand->SetNegate(!pGameCommand->GetNegate());
 	pTopic->NotifyActionChanged(pAction);
 }

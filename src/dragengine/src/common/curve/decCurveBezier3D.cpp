@@ -166,7 +166,7 @@ decCurveBezier3D &decCurveBezier3D::operator=(const decCurveBezier3D &curve){
 	
 	if(pointCount > 0){
 		newArray = new decCurveBezier3DPoint[pointCount];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		for(p=0; p<pointCount; p++){
 			newArray[p] = curve.pPoints[p];

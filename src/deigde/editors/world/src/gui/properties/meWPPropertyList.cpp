@@ -138,7 +138,7 @@ public:
 	
 	virtual void OnAction(){
 		const decString key(pPanel.GetKey());
-		if(! pPanel.GetUndoSystem() || key.IsEmpty() || pPanel.GetProperties().Has(key)){
+		if(!pPanel.GetUndoSystem() || key.IsEmpty() || pPanel.GetProperties().Has(key)){
 			return;
 		}
 		
@@ -151,8 +151,8 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetUndoSystem() && ! pPanel.GetKey().IsEmpty()
-			&& ! pPanel.GetProperties().Has(pPanel.GetKey()));
+		SetEnabled(pPanel.GetUndoSystem() && !pPanel.GetKey().IsEmpty()
+			&& !pPanel.GetProperties().Has(pPanel.GetKey()));
 	}
 };
 
@@ -167,7 +167,7 @@ public:
 	
 	virtual void OnAction(){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetUndoSystem()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -178,7 +178,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
+		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
 	}
 };
 
@@ -192,7 +192,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetUndoSystem()){
+		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -217,12 +217,12 @@ public:
 	
 	virtual void OnAction(){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetUndoSystem()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		decString name(property);
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Property", "Name:", name) || name == property){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Property", "Name:", name) || name == property){
 			return;
 		}
 		
@@ -243,7 +243,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
+		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
 	}
 };
 
@@ -259,7 +259,7 @@ public:
 	
 	virtual void OnAction(){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetClipboard()){
+		if(property.IsEmpty() || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -269,7 +269,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard());
+		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard());
 	}
 };
 
@@ -284,7 +284,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetClipboard()){
+		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -306,7 +306,7 @@ public:
 	
 	virtual void OnAction(){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetUndoSystem() || ! pPanel.GetClipboard()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -319,7 +319,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
+		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
 	}
 };
 
@@ -332,7 +332,7 @@ public:
 	}
 	
 	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetUndoSystem() || ! pPanel.GetClipboard()){
+		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
 		}
 		
@@ -359,13 +359,13 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetClipboard() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetClipboard() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		const meCDProperties * const clip = (const meCDProperties *)
 			pPanel.GetClipboard()->GetWithTypeName(meCDProperties::TYPE_NAME);
-		if(! clip || clip->GetProperties().GetCount() == 0){
+		if(!clip || clip->GetProperties().GetCount() == 0){
 			return;
 		}
 		
@@ -435,7 +435,7 @@ public:
 	pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetUndoSystem()){
+		if(!pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -443,7 +443,7 @@ public:
 		decString text;
 		
 		while(true){
-			if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Import From Text", "Properties. One property per line in the form 'key=value'.", text)){
 				return;
 			}
@@ -504,12 +504,12 @@ public:
 	
 	virtual void OnPropertyValueChanged(igdeEditPropertyValue*){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetUndoSystem()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		const decString newValue(pPanel.GetEditPropertyValue());
-		if(! pUndo){
+		if(!pUndo){
 			pOldValue = pPanel.GetPropertyValue();
 			if(newValue == pOldValue){
 				return;
@@ -524,12 +524,12 @@ public:
 	
 	virtual void OnPropertyValueChanging(igdeEditPropertyValue*){
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || ! pPanel.GetUndoSystem()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		const decString newValue(pPanel.GetEditPropertyValue());
-		if(! pUndo){
+		if(!pUndo){
 			pOldValue = pPanel.GetPropertyValue();
 			if(newValue == pOldValue){
 				return;
@@ -693,7 +693,7 @@ void meWPPropertyList::UpdateList(){
 	
 	// remove no more existing items
 	for(i=pListProperties->GetItemCount() - 1; i>=0; i--){
-		if(! keys.Has(pListProperties->GetItemAt(i)->GetText())){
+		if(!keys.Has(pListProperties->GetItemAt(i)->GetText())){
 			pListProperties->RemoveItem(i);
 		}
 	}
@@ -762,14 +762,14 @@ void meWPPropertyList::SelectProperty(const char *property){
 
 void meWPPropertyList::EditPropertyValueInDialog(){
 	const igdeListItem * const selection = pListProperties->GetSelectedItem();
-	if(! selection || ! pUndoSystem){
+	if(!selection || !pUndoSystem){
 		return;
 	}
 	
 	const decString oldValue(selection->GetDetails().GetAt(0));
 	decString newValue(oldValue);
 	
-	if(! igdeCommonDialogs::GetMultilineString(this, "Edit Raw Property Value",
+	if(!igdeCommonDialogs::GetMultilineString(this, "Edit Raw Property Value",
 		"Raw property value. Values entered here can violate the\n"
 		"property type so be careful what you enter", newValue)){
 			return;

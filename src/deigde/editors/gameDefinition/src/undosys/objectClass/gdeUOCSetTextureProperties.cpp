@@ -43,7 +43,7 @@ gdeUOCSetTextureProperties::gdeUOCSetTextureProperties(
 gdeObjectClass *objectClass, const gdePropertyList &newValue) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

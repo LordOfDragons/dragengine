@@ -138,7 +138,7 @@ deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskInstance::AddSubI
 }
 
 void deoglPersistentRenderTaskInstance::RemoveSubInstance(deoglPersistentRenderTaskSubInstance *subInstance){
-	if(! subInstance){
+	if(!subInstance){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -162,7 +162,7 @@ deoglShaderParameterBlock *paramBlock, int firstIndex){
 }
 
 void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceInt(bool useFlags){
-	if(! pSIIndexInstanceSPB){
+	if(!pSIIndexInstanceSPB){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -199,7 +199,7 @@ void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceInt(bool useFlags){
 }
 
 void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceShort(bool useFlags){
-	if(! pSIIndexInstanceSPB){
+	if(!pSIIndexInstanceSPB){
 		DETHROW(deeInvalidParam);
 	}
 	

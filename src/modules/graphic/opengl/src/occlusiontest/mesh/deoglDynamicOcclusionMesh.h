@@ -83,12 +83,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the occlusion mesh. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{return pOcclusionMesh;}
+	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** VBO. */
-	inline GLuint GetVBO() const{return pVBO;}
+	inline GLuint GetVBO() const{ return pVBO; }
 	
 	/** VAO. */
 	deoglVAO *GetVAO() const;
@@ -106,12 +106,12 @@ public:
 	void PrepareForRender();
 	
 	/** Direct access to vertices. */
-	inline const decVector *GetVertices() const{return pVertices;}
+	inline const decVector *GetVertices() const{ return pVertices; }
 	
 	
 	
 	/** BVH or NULL. */
-	inline deoglBVH *GetBVH() const{return pBVH;}
+	inline deoglBVH *GetBVH() const{ return pBVH; }
 	
 	/** Build BVH if not build yet. */
 	void PrepareBVH();

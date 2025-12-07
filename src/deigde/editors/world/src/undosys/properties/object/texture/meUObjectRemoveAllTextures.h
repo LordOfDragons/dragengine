@@ -58,8 +58,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of textures to remove. */
-	inline meObjectTextureList &GetTextureList(){return pTextureList;}
-	inline const meObjectTextureList &GetTextureList() const{return pTextureList;}
+	inline meObjectTextureList &GetTextureList(){ return pTextureList; }
+	inline const meObjectTextureList &GetTextureList() const{ return pTextureList; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

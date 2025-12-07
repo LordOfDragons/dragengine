@@ -69,7 +69,7 @@ deForceField *deForceFieldManager::CreateForceField(){
 	
 	try{
 		field = new deForceField(this);
-		if(! field) DETHROW(deeOutOfMemory);
+		if(!field) DETHROW(deeOutOfMemory);
 		
 		GetPhysicsSystem()->LoadForceField(field);
 		
@@ -103,7 +103,7 @@ void deForceFieldManager::SystemPhysicsLoad(){
 	deForceField *field = (deForceField*)pFields.GetRoot();
 	
 	while(field){
-		if(! field->GetPeerPhysics()){
+		if(!field->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadForceField(field);
 		}
 		

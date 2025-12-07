@@ -65,7 +65,7 @@
 debpCollider::debpCollider(dePhysicsBullet *bullet, deCollider &collider, int type) :
 pCollider(collider)
 {
-	if(! bullet || type < ectVolume || type > ectRig) DETHROW(deeInvalidParam);
+	if(!bullet || type < ectVolume || type > ectRig) DETHROW(deeInvalidParam);
 	int i, count;
 	
 	pType = type;
@@ -284,8 +284,8 @@ void debpCollider::ClearRequiresUpdate(){
 bool debpCollider::Collides(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
 	return pCollider.GetCollisionFilter().Collides(engCollider.GetCollisionFilter())
-		&& ! pCollider.HasIgnoreCollider(&engCollider)
-		&& ! engCollider.HasIgnoreCollider(&pCollider);
+		&& !pCollider.HasIgnoreCollider(&engCollider)
+		&& !engCollider.HasIgnoreCollider(&pCollider);
 }
 
 bool debpCollider::CollidesNot(const debpCollider &collider) const{
@@ -422,14 +422,14 @@ void debpCollider::ProcessColliderCollisionTests(){
 
 
 void debpCollider::RegisterColDetPrepare(){
-	if(pColDetPrepareIndex != -1 || ! pParentWorld){
+	if(pColDetPrepareIndex != -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pColDetPrepareColliderAdd(this);
 }
 
 void debpCollider::UnregisterColDetPrepare(){
-	if(pColDetPrepareIndex == -1 || ! pParentWorld){
+	if(pColDetPrepareIndex == -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pColDetPrepareColliderRemove(this);
@@ -466,7 +466,7 @@ bool debpCollider::CalcAutoColDetPrepare(){
 
 
 void debpCollider::RegisterColDetFinish(){
-	if(pColDetFinishIndex != -1 || ! pParentWorld){
+	if(pColDetFinishIndex != -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pColDetFinishColliderAdd(this);
@@ -484,7 +484,7 @@ void debpCollider::RegisterColDetFinish(){
 }
 
 void debpCollider::UnregisterColDetFinish(){
-	if(pColDetFinishIndex == -1 || ! pParentWorld){
+	if(pColDetFinishIndex == -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pColDetFinishColliderRemove(this);
@@ -521,14 +521,14 @@ bool debpCollider::CalcAutoColDetFinish(){
 
 
 void debpCollider::RegisterPPCProcessing(){
-	if(pPPCTColliderIndex != -1 || ! pParentWorld){
+	if(pPPCTColliderIndex != -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pPPCTColliderAdd(this);
 }
 
 void debpCollider::UnregisterPPCProcessing(){
-	if(pPPCTColliderIndex == -1 || ! pParentWorld){
+	if(pPPCTColliderIndex == -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pPPCTColliderRemove(this);
@@ -541,14 +541,14 @@ void debpCollider::SetPPCProcessingIndex(int index){
 
 
 void debpCollider::RegisterUpdateOctree(){
-	if(pUpdateOctreeIndex != -1 || ! pParentWorld){
+	if(pUpdateOctreeIndex != -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pUpdateOctreeColliderAdd(this);
 }
 
 void debpCollider::UnregisterUpdateOctree(){
-	if(pUpdateOctreeIndex == -1 || ! pParentWorld){
+	if(pUpdateOctreeIndex == -1 || !pParentWorld){
 		return;
 	}
 	pParentWorld->pUpdateOctreeColliderRemove(this);
@@ -607,7 +607,7 @@ void debpCollider::UpdateDebugDrawer(){
 	&& devmode.GetShowCategory().IsNotEmpty()
 	&& devmode.GetShowCategory().Matches(pCollider.GetCollisionFilter().GetCategory())){
 		// ensure the debug drawer exists
-		if(! pDebugDrawer){
+		if(!pDebugDrawer){
 			pDebugDrawer = pBullet->GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			pDebugDrawer->SetPosition(pCollider.GetPosition());
@@ -620,7 +620,7 @@ void debpCollider::UpdateDebugDrawer(){
 		}
 		
 		// show shapes if layer mask matches
-		if(! pDDSShape){
+		if(!pDDSShape){
 			pDDSShape = new deDebugDrawerShape;
 			pDebugDrawer->AddShape(pDDSShape);
 			UpdateDDSShape();
@@ -655,7 +655,7 @@ void debpCollider::UpdateDebugDrawer(){
 			colorEdge = debpDebugDrawerColors::colliderEdge;
 		}
 		
-		if(! colorFill.IsEqualTo(pDDSShape->GetFillColor()) || ! colorEdge.IsEqualTo(pDDSShape->GetEdgeColor())){
+		if(!colorFill.IsEqualTo(pDDSShape->GetFillColor()) || !colorEdge.IsEqualTo(pDDSShape->GetEdgeColor())){
 			pDDSShape->SetFillColor(colorFill);
 			pDDSShape->SetEdgeColor(colorEdge);
 			pDebugDrawer->NotifyShapeColorChanged();
@@ -797,7 +797,7 @@ void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
@@ -807,7 +807,7 @@ void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
 	}
 	
 	pConstraints[pConstraintCount] = new debpColliderConstraint(*pBullet, *constraint);
-	if(! pConstraints[pConstraintCount]) DETHROW(deeOutOfMemory);
+	if(!pConstraints[pConstraintCount]) DETHROW(deeOutOfMemory);
 	pConstraintCount++;
 	
 	// see CheckColliderConstraintsBroke() for the reason to register

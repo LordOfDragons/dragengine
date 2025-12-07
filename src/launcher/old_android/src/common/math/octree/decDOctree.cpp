@@ -86,7 +86,7 @@ decDOctree *decDOctree::GetNodeAtBox(const decDVector &boxCenter, const decDVect
 	if(octant == eoNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if(! pNodes[octant]){
+	if(!pNodes[octant]){
 		pNodes[octant] = CreateOctree(octant);
 		pNodes[octant]->SetParent(this);
 	}
@@ -190,7 +190,7 @@ decDOctree *decDOctree::SearchTreeForPoint(const decDVector &point) const{
 }
 
 void decDOctree::VisitNodes(decDOctreeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i;
 	
 	// visit
@@ -203,12 +203,12 @@ void decDOctree::VisitNodes(decDOctreeVisitor *visitor){
 }
 
 void decDOctree::VisitNodesColliding(decDOctreeVisitor *visitor, decDCollisionVolume *volume){
-	if(! visitor || ! volume) DETHROW(deeInvalidParam);
+	if(!visitor || !volume) DETHROW(deeInvalidParam);
 	decDCollisionBox colBox(pCenter, pHalfSize);
 	int i;
 	
 	// exit if this node is not in the collision volume
-	if(! volume->BoxHitsVolume(&colBox)) return;
+	if(!volume->BoxHitsVolume(&colBox)) return;
 	
 	// visit
 	visitor->VisitNode(this, decDCollisionDetection::eirPartial);
@@ -220,7 +220,7 @@ void decDOctree::VisitNodesColliding(decDOctreeVisitor *visitor, decDCollisionVo
 }
 
 void decDOctree::VisitNodesColliding(decDOctreeVisitor *visitor, const decDVector &boxMinExtend, const decDVector &boxMaxExtend){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i, result;
 	
 	result = decDCollisionDetection::AABoxIntersectsAABox(pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend);

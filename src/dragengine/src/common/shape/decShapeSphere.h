@@ -67,13 +67,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Radius. */
-	inline float GetRadius() const{return pRadius;}
+	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set radius. */
 	void SetRadius(float radius);
 	
 	/** \brief Axis scaling. */
-	inline const decVector2 &GetAxisScaling() const{return pAxisScaling;}
+	inline const decVector2 &GetAxisScaling() const{ return pAxisScaling; }
 	
 	/** \brief Set axis scaling. */
 	void SetAxisScaling(const decVector2 &axisScaling);

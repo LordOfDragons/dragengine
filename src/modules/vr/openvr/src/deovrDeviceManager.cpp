@@ -84,7 +84,7 @@ void deovrDeviceManager::InitDevices(){
 	Clear();
 	
 	for(index=0; index<vr::k_unMaxTrackedDeviceCount; index++){
-		if(! pOvr.GetVRSystem().IsTrackedDeviceConnected(index)){
+		if(!pOvr.GetVRSystem().IsTrackedDeviceConnected(index)){
 			// openvr potentially reports previously attached devices which are no more
 			// attached right now. avoid listing them confusing the user
 			continue;
@@ -314,7 +314,7 @@ void deovrDeviceManager::LogDevices(){
 
 
 decString deovrDeviceManager::NormalizeID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	

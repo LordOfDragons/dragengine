@@ -143,19 +143,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Element type. */
-	inline eElementTypes GetType() const{return pType;}
+	inline eElementTypes GetType() const{ return pType; }
 	
 	/** Owner. */
-	inline const void *GetOwner() const{return pOwner;}
+	inline const void *GetOwner() const{ return pOwner; }
 	
 	/** World compute or nullptr if not added to one. */
-	inline deoglWorldCompute *GetWorldCompute() const{return pWorldCompute;}
+	inline deoglWorldCompute *GetWorldCompute() const{ return pWorldCompute; }
 	
 	/** World compute reference or throws exception if not added to one. */
 	deoglWorldCompute &GetWorldComputeRef() const;
 	
 	/** Index or -1 if not added to a world compute. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
@@ -209,20 +209,20 @@ public:
 	void SetIndex(int index);
 	
 	/** Update required. For use by deoglWorldCompute only. */
-	inline bool GetUpdateRequired() const{return pUpdateRequired;}
+	inline bool GetUpdateRequired() const{ return pUpdateRequired; }
 	
 	/** Set if update is required. For use by deoglWorldCompute only. */
 	void SetUpdateRequired(bool updateRequired);
 	
 	/** Update geometries required. For use by deoglWorldCompute only. */
-	inline bool GetUpdateGeometriesRequired() const{return pUpdateGeometriesRequired;}
+	inline bool GetUpdateGeometriesRequired() const{ return pUpdateGeometriesRequired; }
 	
 	/** Set if update geometries is required. For use by deoglWorldCompute only. */
 	void SetUpdateGeometriesRequired(bool updateRequired);
 	
 	/** Shader parameter block for geometries. For use by deoglWorldCompute only. */
-	inline deoglSharedBlockSPBElement::Ref &GetSPBGeometries(){return pSPBGeometries;}
-	inline const deoglSharedBlockSPBElement::Ref &GetSPBGeometries() const{return pSPBGeometries;}
+	inline deoglSharedBlockSPBElement::Ref &GetSPBGeometries(){ return pSPBGeometries; }
+	inline const deoglSharedBlockSPBElement::Ref &GetSPBGeometries() const{ return pSPBGeometries; }
 	/*@}*/
 };
 

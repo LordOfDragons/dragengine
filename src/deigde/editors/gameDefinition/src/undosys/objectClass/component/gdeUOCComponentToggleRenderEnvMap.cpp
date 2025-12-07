@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentToggleRenderEnvMap::~gdeUOCComponentToggleRenderEnvMap(){
 ///////////////
 
 void gdeUOCComponentToggleRenderEnvMap::Undo(){
-	pComponent->SetRenderEnvMap(! pComponent->GetRenderEnvMap());
+	pComponent->SetRenderEnvMap(!pComponent->GetRenderEnvMap());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

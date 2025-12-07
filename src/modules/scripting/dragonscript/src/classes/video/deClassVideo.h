@@ -60,7 +60,7 @@ public:
 	/** Pushes the video on the stack. Video can be NULL to push a null object. */
 	void PushVideo(dsRunTime *rt, deVideo *video);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/
 	
 private:

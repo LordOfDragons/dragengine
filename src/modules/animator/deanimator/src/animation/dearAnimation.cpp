@@ -43,7 +43,7 @@
 /////////////////////////////////
 
 dearAnimation::dearAnimation(deDEAnimator *module, deAnimation *animation){
-	if(! module || ! animation){
+	if(!module || !animation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -89,7 +89,7 @@ dearAnimationMove *dearAnimation::GetMoveAt(int index) const{
 }
 
 dearAnimationMove *dearAnimation::GetMoveNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

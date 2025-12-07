@@ -54,9 +54,9 @@ public:
 	
 	// Management
 	/** Retrieves the decal. */
-	inline meDecal *GetDecal() const{return pDecal;}
+	inline meDecal *GetDecal() const{ return pDecal; }
 	/** Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{return pParentObject;}
+	inline meObject *GetParentObject() const{ return pParentObject; }
 	
 	// undo and redo operations
 	virtual void Undo();

@@ -44,7 +44,7 @@ gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

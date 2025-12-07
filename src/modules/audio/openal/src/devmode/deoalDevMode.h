@@ -72,48 +72,48 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Developer mode is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Log calculation of environment probe calculation. */
-	inline bool GetLogCalcEnvProbe() const{return pLogCalcEnvProbe;}
+	inline bool GetLogCalcEnvProbe() const{ return pLogCalcEnvProbe; }
 	
 	/** Show module information. */
-	inline bool GetShowModuleInfo() const{return pShowModuleInfo;}
+	inline bool GetShowModuleInfo() const{ return pShowModuleInfo; }
 	
 	/** Show speaker environment overlay information. */
-	inline bool GetShowSpeakerEnvInfo() const{return pShowSpeakerEnvInfo;}
+	inline bool GetShowSpeakerEnvInfo() const{ return pShowSpeakerEnvInfo; }
 	
 	/** Show only speaker environment overlay information at position. */
-	inline bool GetShowSpeakerEnvInfoAt() const{return pShowSpeakerEnvInfoAt;}
+	inline bool GetShowSpeakerEnvInfoAt() const{ return pShowSpeakerEnvInfoAt; }
 	
 	/** Show environment overlay information position. */
-	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{return pShowSpeakerEnvInfoAtPosition;}
+	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{ return pShowSpeakerEnvInfoAtPosition; }
 	
 	/** Show closest speaker environment overlay information. */
-	inline int GetShowSpeakerEnvInfoClosest() const{return pShowSpeakerEnvInfoClosest;}
+	inline int GetShowSpeakerEnvInfoClosest() const{ return pShowSpeakerEnvInfoClosest; }
 	
 	/** Show active microphone information. */
-	inline bool GetShowActiveMicInfo() const{return pShowActiveMicInfo;}
+	inline bool GetShowActiveMicInfo() const{ return pShowActiveMicInfo; }
 	
 	/** Request capturing microphone sound rays once. */
-	inline bool GetCaptureMicRays() const{return pCaptureMicRays;}
+	inline bool GetCaptureMicRays() const{ return pCaptureMicRays; }
 	
 	/** Clear request capturing microphone sound rays once. */
 	void ClearCaptureMicRays();
 	
 	/** Capturing microphone sound rays using XRay . */
-	inline bool GetCaptureMicRaysXRay() const{return pCaptureMicRaysXRay;}
+	inline bool GetCaptureMicRaysXRay() const{ return pCaptureMicRaysXRay; }
 	
 	/** Capturing microphone sound rays using Volume. */
-	inline bool GetCaptureMicRaysVolume() const{return pCaptureMicRaysVolume;}
+	inline bool GetCaptureMicRaysVolume() const{ return pCaptureMicRaysVolume; }
 	
 	/** Show audio models . */
-	inline bool GetShowAudioModels() const{return pShowAudioModels;}
+	inline bool GetShowAudioModels() const{ return pShowAudioModels; }
 	
 	/** Capture speaker closest direct. */
-	inline int GetCaptureSpeakerClosestDirect() const{return pCaptureSpeakerDirectClosest;}
+	inline int GetCaptureSpeakerClosestDirect() const{ return pCaptureSpeakerDirectClosest; }
 	
-	inline int GetVisualizeAudibleSpeakers() const{return pVisualizeAudibleSpeakers;}
+	inline int GetVisualizeAudibleSpeakers() const{ return pVisualizeAudibleSpeakers; }
 	
 	/** Clear capture speaker closest direct. */
 	void ClearCaptureSpeakerClosestDirect();

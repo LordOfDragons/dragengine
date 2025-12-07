@@ -72,7 +72,7 @@ int debnMessageManager::IndexOfMessageWithNumber(int number) const{
 }
 
 int debnMessageManager::IndexOfMessage(debnMessage *message) const{
-	if(! message) DETHROW(deeInvalidParam);
+	if(!message) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pMessageCount; i++){
@@ -83,7 +83,7 @@ int debnMessageManager::IndexOfMessage(debnMessage *message) const{
 }
 
 bool debnMessageManager::HasMessage(debnMessage *message) const{
-	if(! message) DETHROW(deeInvalidParam);
+	if(!message) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pMessageCount; i++){
@@ -94,12 +94,12 @@ bool debnMessageManager::HasMessage(debnMessage *message) const{
 }
 
 void debnMessageManager::AddMessage(debnMessage *message){
-	if(! message) DETHROW(deeInvalidParam);
+	if(!message) DETHROW(deeInvalidParam);
 	
 	if(pMessageCount == pMessageSize){
 		int newSize = pMessageSize * 3 / 2 + 1;
 		debnMessage **newArray = new debnMessage*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pMessages){
 			memcpy(newArray, pMessages, sizeof(debnMessage*) * pMessageSize);
 			delete [] pMessages;

@@ -44,7 +44,7 @@ gdeUAddSkin::gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin) :
 pGameDefinition(NULL),
 pSkin(NULL)
 {
-	if(! gameDefinition || ! skin){
+	if(!gameDefinition || !skin){
 		DETHROW(deeInvalidParam);
 	}
 	

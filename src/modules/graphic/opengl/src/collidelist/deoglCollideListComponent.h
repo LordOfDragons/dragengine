@@ -68,7 +68,7 @@ public:
 	void Clear();
 	
 	/** Component. */
-	inline deoglRComponent *GetComponent() const{return pComponent;}
+	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/**
 	 * Set component.
@@ -77,7 +77,7 @@ public:
 	void SetComponent(deoglRComponent *component);
 	
 	/** LOD level to use. */
-	inline int GetLODLevel() const{return pLODLevel;}
+	inline int GetLODLevel() const{ return pLODLevel; }
 	
 	/** Set LOD level to use. */
 	void SetLODLevel(int lodLevel);
@@ -86,18 +86,18 @@ public:
 	void SetLODLevelMax();
 	
 	/** Component LOD. */
-	inline deoglRComponentLOD &GetComponentLOD() const{return *pComponentLOD;}
+	inline deoglRComponentLOD &GetComponentLOD() const{ return *pComponentLOD; }
 	
 	
 	
 	/** Component is culled. */
-	inline bool GetCulled() const{return pCulled;}
+	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set component is culled. */
 	void SetCulled(bool culled);
 	
 	/** Cascade mask. */
-	inline int GetCascadeMask() const{return pCascadeMask;}
+	inline int GetCascadeMask() const{ return pCascadeMask; }
 	
 	/** Set cascade mask. */
 	void SetCascadeMask(int mask);
@@ -109,13 +109,13 @@ public:
 	void UpdateCubeFaceMask(const decDVector &cubePosition);
 	
 	/** Component cube face mask. */
-	inline int GetCubeFaceMask() const{return pCubeFaceMask;}
+	inline int GetCubeFaceMask() const{ return pCubeFaceMask; }
 	
 	/** Component is visible on cube map face. Valid after calling UpdateCubeFaceVisibility() */
 	bool GetCubeFaceMaskAt(int face) const;
 	
 	/** Special flags. */
-	inline int GetSpecialFlags() const{return pSpecialFlags;}
+	inline int GetSpecialFlags() const{ return pSpecialFlags; }
 	
 	/** Set special flags. */
 	void SetSpecialFlags(int flags);

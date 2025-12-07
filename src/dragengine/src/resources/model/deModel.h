@@ -100,8 +100,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of texture coordinates sets names. */
-	inline decStringList &GetTextureCoordinatesSetList(){return pTextureCoordinatesSetList;}
-	inline const decStringList &GetTextureCoordinatesSetList() const{return pTextureCoordinatesSetList;}
+	inline decStringList &GetTextureCoordinatesSetList(){ return pTextureCoordinatesSetList; }
+	inline const decStringList &GetTextureCoordinatesSetList() const{ return pTextureCoordinatesSetList; }
 	/*@}*/
 	
 	
@@ -120,7 +120,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Bone at the given index. */
 	deModelBone *GetBoneAt(int index) const;
@@ -140,7 +140,7 @@ public:
 	/** \name Texture Management */
 	/*@{*/
 	/** \brief Count of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture at the given index. */
 	deModelTexture *GetTextureAt(int index) const;
@@ -160,7 +160,7 @@ public:
 	/** \name LOD Management */
 	/*@{*/
 	/** \brief Count of LOD meshes. */
-	inline int GetLODCount() const{return pLODCount;}
+	inline int GetLODCount() const{ return pLODCount; }
 	
 	/** \brief LOD mesh at the given index. */
 	deModelLOD *GetLODAt(int index) const;
@@ -174,7 +174,7 @@ public:
 	/** \name Vertex position set management */
 	/*@{*/
 	/** \brief Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{return pVertexPositionSetCount;}
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
 	
 	/** \brief Vertex position set at index. */
 	deModelVertexPositionSet *GetVertexPositionSetAt(int index) const;
@@ -194,19 +194,19 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicModel *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicModel *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
 	void SetPeerGraphic(deBaseGraphicModel *peer);
 	
 	/** \brief Physics system peer. */
-	inline deBaseAudioModel *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioModel *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set physics system peer. */
 	void SetPeerAudio (deBaseAudioModel *peer);
 	
 	/** \brief Physics system peer. */
-	inline deBasePhysicsModel *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsModel *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
 	void SetPeerPhysics(deBasePhysicsModel *peer);

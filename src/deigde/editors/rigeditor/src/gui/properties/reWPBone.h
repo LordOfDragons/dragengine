@@ -82,13 +82,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Bone. */
-	inline reRigBone *GetBone() const{return pBone;}
+	inline reRigBone *GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
 	void SetBone(reRigBone *bone);

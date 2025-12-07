@@ -77,7 +77,7 @@ void stClassGraphicSystem::SetUpLinks(){
 	OOP oopClass = NULL;
 	
 	oopClass = gst_class_name_to_oop("DEGraphicSystem");
-	if(! oopClass){
+	if(!oopClass){
 		DETHROW(deeInvalidParam); // GraphicSystem.st missing
 	}
 	

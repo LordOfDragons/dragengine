@@ -71,7 +71,7 @@ void gdeConfigurationXML::ReadFromFile(decBaseFileReader &reader, gdeConfigurati
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "gameDefinitionEditor") != 0){
+	if(!root || strcmp(root->GetName(), "gameDefinitionEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -105,7 +105,7 @@ void gdeConfigurationXML::pReadConfig(const decXmlElementTag &root, gdeConfigura
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

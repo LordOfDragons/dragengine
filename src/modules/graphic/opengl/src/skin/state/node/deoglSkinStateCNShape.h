@@ -85,16 +85,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shape type. */
-	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{return pShapeType;}
+	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{ return pShapeType; }
 	
 	/** Fill color. */
-	inline const decColor &GetFillColor() const{return pFillColor;}
+	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** Line color. */
-	inline const decColor &GetLineColor() const{return pLineColor;}
+	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** Thickness. */
-	inline float GetThickness() const{return pThickness;}
+	inline float GetThickness() const{ return pThickness; }
 	
 	/** Shape mapped for type. */
 	int GetShapeMappedFor(deSkinPropertyNodeShape::eShapeMapped type) const;
@@ -121,29 +121,29 @@ public:
 	/** \name Points */
 	/*@{*/
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{return pVBOBlock;}
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	
 	/** Fill draw mode. */
-	inline GLenum GetDrawModeFill() const{return pDrawModeFill;}
+	inline GLenum GetDrawModeFill() const{ return pDrawModeFill; }
 	
 	/** VBO fill offset. */
-	inline int GetDrawOffsetFill() const{return pDrawOffsetFill;}
+	inline int GetDrawOffsetFill() const{ return pDrawOffsetFill; }
 	
 	/** VBO fill count. */
-	inline int GetDrawCountFill() const{return pDrawCountFill;}
+	inline int GetDrawCountFill() const{ return pDrawCountFill; }
 	
 	
 	
 	/** Line draw mode. */
-	inline GLenum GetDrawModeLine() const{return pDrawModeLine;}
+	inline GLenum GetDrawModeLine() const{ return pDrawModeLine; }
 	
 	/** VBO line offset. */
-	inline int GetDrawOffsetLine() const{return pDrawOffsetLine;}
+	inline int GetDrawOffsetLine() const{ return pDrawOffsetLine; }
 	
 	/** VBO line count. */
-	inline int GetDrawCountLine() const{return pDrawCountLine;}
+	inline int GetDrawCountLine() const{ return pDrawCountLine; }
 	/*@}*/
 	
 	

@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of keyframes. */
-	inline int GetCount() const{return pKeyframeCount;}
+	inline int GetCount() const{ return pKeyframeCount; }
 	
 	/** Keyframe at index. */
 	dearAnimationKeyframeVPS &GetAt(int index) const;

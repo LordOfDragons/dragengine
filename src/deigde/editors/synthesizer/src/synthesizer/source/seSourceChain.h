@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path to sound files. */
-	inline const decStringList &GetPathSounds() const{return pPathSounds;}
+	inline const decStringList &GetPathSounds() const{ return pPathSounds; }
 	
 	/** \brief Set path to sound file. */
 	void SetPathSound(int index, const char *path);
@@ -105,7 +105,7 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	inline float GetMinSpeed() const{return pMinSpeed;}
+	inline float GetMinSpeed() const{ return pMinSpeed; }
 	
 	/**
 	 * \brief Set minimum play speed.
@@ -119,7 +119,7 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	inline float GetMaxSpeed() const{return pMaxSpeed;}
+	inline float GetMaxSpeed() const{ return pMaxSpeed; }
 	
 	/**
 	 * \brief Set maximum play speed.
@@ -131,12 +131,12 @@ public:
 	
 	
 	/** \brief Speed target. */
-	inline seControllerTarget &GetTargetSpeed(){return pTargetSpeed;}
-	inline const seControllerTarget &GetTargetSpeed() const{return pTargetSpeed;}
+	inline seControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
+	inline const seControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/** \brief Select sound target. */
-	inline seControllerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const seControllerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline seControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const seControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/**
 	 * \brief Play target.
@@ -148,8 +148,8 @@ public:
 	 *          sounds. A value of 1/3 pauses the playback freezing playback position. A value of 0
 	 *          stops playback and rewinds playback position to the beginning.
 	 */
-	inline seControllerTarget &GetTargetPlay(){return pTargetPlay;}
-	inline const seControllerTarget &GetTargetPlay() const{return pTargetPlay;}
+	inline seControllerTarget &GetTargetPlay(){ return pTargetPlay; }
+	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
 	virtual deSynthesizerSource *CreateEngineSource();

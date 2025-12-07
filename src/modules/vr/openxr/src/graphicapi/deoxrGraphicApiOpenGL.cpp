@@ -148,7 +148,7 @@ void deoxrGraphicApiOpenGL::Load(){
 }
 
 void deoxrGraphicApiOpenGL::Unload(){
-	if(! pLibHandle){
+	if(!pLibHandle){
 		return;
 	}
 	
@@ -168,14 +168,14 @@ void deoxrGraphicApiOpenGL::Unload(){
 
 #ifdef OS_UNIX_X11
 GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
-	if(! pFuncGetCurrentDrawable){
+	if(!pFuncGetCurrentDrawable){
 		DETHROW(deeInvalidParam);
 	}
 	return ((PFNGLXGETCURRENTDRAWABLE)pFuncGetCurrentDrawable)();
 }
 
 void deoxrGraphicApiOpenGL::MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx){
-	if(! pFuncMakeCurrent){
+	if(!pFuncMakeCurrent){
 		DETHROW(deeInvalidParam);
 	}
 	((PFNGLXMAKECURRENT)pFuncMakeCurrent)(dpy, drawable, ctx);
@@ -183,7 +183,7 @@ void deoxrGraphicApiOpenGL::MakeCurrent(Display *dpy, GLXDrawable drawable, GLXC
 
 #elif defined OS_W32
 void deoxrGraphicApiOpenGL::MakeCurrent(HDC hDc, HGLRC context){
-	if(! pFuncMakeCurrent){
+	if(!pFuncMakeCurrent){
 		DETHROW(deeInvalidParam);
 	}
 	((PFNWGLMAKECURRENTPROC)pFuncMakeCurrent)(hDc, context);
@@ -300,7 +300,7 @@ void *deoxrGraphicApiOpenGL::pGetFunction(const char *name){
 	func = (LPVOID)GetProcAddress(pLibHandle, name);
 #endif
 	
-	if(! func){
+	if(!func){
 		DETHROW_INFO(deeInvalidAction, decString("Function not found: ") + name);
 	}
 	
@@ -309,13 +309,13 @@ void *deoxrGraphicApiOpenGL::pGetFunction(const char *name){
 
 void deoxrGraphicApiOpenGL::pEnable(uint32_t capability, bool enable){
 	if(enable){
-		if(! pFuncEnable){
+		if(!pFuncEnable){
 			DETHROW(deeInvalidParam);
 		}
 		((PFNGLENABLE)pFuncEnable)(capability);
 		
 	}else{
-		if(! pFuncDisable){
+		if(!pFuncDisable){
 			DETHROW(deeInvalidParam);
 		}
 		((PFNGLDISABLE)pFuncDisable)(capability);

@@ -45,7 +45,7 @@
 ////////////////////////////
 
 meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
-	if(! world || ! sector || ! image) DETHROW(deeInvalidParam);
+	if(!world || !sector || !image) DETHROW(deeInvalidParam);
 	
 	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);
 	
@@ -67,10 +67,10 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	try{
 		// create arrays
 		pOldVis = new meBitArray(resolution, resolution);
-		if(! pOldVis) DETHROW(deeOutOfMemory);
+		if(!pOldVis) DETHROW(deeOutOfMemory);
 		
 		pNewVis = new meBitArray(resolution, resolution);
-		if(! pNewVis) DETHROW(deeOutOfMemory);
+		if(!pNewVis) DETHROW(deeOutOfMemory);
 		
 		// snapshot old heights
 		sector->GetVisibilityFaces()->CopyTo(*pOldVis);

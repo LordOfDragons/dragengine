@@ -88,11 +88,11 @@ public:
 	bool RotationZero() const;
 	
 	/** \brief Retrieves the move direction. */
-	inline const decDVector &GetMoveDirection() const{return pMoveDirection;}
+	inline const decDVector &GetMoveDirection() const{ return pMoveDirection; }
 	/** \brief Determines if a collision has been found for the current test collider. */
-	inline bool HasLocalCollision() const{return hasHit();}
+	inline bool HasLocalCollision() const{ return hasHit(); }
 	/** \brief Retrieves the hit distance. */
-	inline float GetHitDistance() const{return (float)m_closestHitFraction;}
+	inline float GetHitDistance() const{ return (float)m_closestHitFraction; }
 	
 	/** \brief Reset the visitor. */
 	void Reset();

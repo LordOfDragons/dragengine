@@ -84,8 +84,7 @@ pObjectMap(NULL),
 pConnectionMap(NULL)
 {
 	// header
-	char signature[21]; // 0-terminator at index 20 included !
-	reader.Read(signature, 21);
+	char signature[21]; // 0-terminator at index 20 included !	reader.Read(signature, 21);
 	if(strcmp("Kaydara FBX Binary  ", signature) != 0){ // compare including 0-terminator
 		DETHROW_INFO(deeInvalidFileFormat, "signature mismatch");
 	}
@@ -188,7 +187,7 @@ decMatrix fbxScene::TransformMatrix(const decMatrix &matrix) const{
 
 
 fbxNode *fbxScene::FirstNodeNamed(const char *name) const{
-	if(! pNodeObjects){
+	if(!pNodeObjects){
 		DETHROW_INFO(deeInvalidParam, "missing node 'Objects'");
 	}
 	return pNodeObjects->FirstNodeNamed(name);

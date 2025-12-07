@@ -213,27 +213,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	/** Retrieves the height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	/** Retrieves the depth. */
-	inline int GetDepth() const{return pDepth;}
+	inline int GetDepth() const{ return pDepth; }
 	/** Retrieves the pixel format. */
-	inline ePixelFormats GetFormat() const{return pFormat;}
+	inline ePixelFormats GetFormat() const{ return pFormat; }
 	
 	/** Retrieves the unit size in bytes which is the size of the matching pixel data struct. */
-	inline int GetUnitSize() const{return pUnitSize;}
+	inline int GetUnitSize() const{ return pUnitSize; }
 	/** Retrieves the stride of a unit line in bytes which can be a pixel line or a block line. */
-	inline int GetLineStride() const{return pStrideLine;}
+	inline int GetLineStride() const{ return pStrideLine; }
 	/** Retrieves the stride of a depth layer in bytes. */
-	inline int GetLayerStride() const{return pStrideLayer;}
+	inline int GetLayerStride() const{ return pStrideLayer; }
 	/** Retrieves the size of the image data in bytes. */
-	inline int GetImageSize() const{return pImageSize;}
+	inline int GetImageSize() const{ return pImageSize; }
 	/** Determines if the pixel buffer contains compressed data. */
-	inline bool GetCompressed() const{return pCompressed;}
+	inline bool GetCompressed() const{ return pCompressed; }
 	
 	/** Retrieves the bare data pointer. */
-	inline void *GetPointer() const{return pPixels;}
+	inline void *GetPointer() const{ return pPixels; }
 	/** Retrieves the sByte1 data pointer if the format is epfByte1 or otherwise throws an exception. */
 	sByte1 *GetPointerByte1() const;
 	/** Retrieves the sByte2 data pointer if the format is epfByte2 or otherwise throws an exception. */
@@ -273,9 +273,9 @@ public:
 	void SetToDepthStencil(float depth, int stencil);
 	
 	/** Retrieves the opengl pixel format required to exchange data with an opengl texture. */
-	inline GLenum GetGLPixelFormat() const{return pGLPixelFormat;}
+	inline GLenum GetGLPixelFormat() const{ return pGLPixelFormat; }
 	/** Retrieves the opengl pixel type required to exchange data with an opengl texture. */
-	inline GLenum GetGLPixelType() const{return pGLPixelType;}
+	inline GLenum GetGLPixelType() const{ return pGLPixelType; }
 	/*@}*/
 };
 

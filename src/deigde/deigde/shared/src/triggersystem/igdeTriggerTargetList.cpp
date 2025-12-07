@@ -59,7 +59,7 @@ igdeTriggerTarget *igdeTriggerTargetList::GetAt(int position) const{
 }
 
 igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -80,7 +80,7 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
 igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
 	igdeTriggerTarget *target = GetNamed(name);
 	
-	if(! target){
+	if(!target){
 		target = new igdeTriggerTarget(name);
 		pTargets.Add(target);
 		target->FreeReference();
@@ -98,7 +98,7 @@ bool igdeTriggerTargetList::Has(igdeTriggerTarget *target) const{
 }
 
 bool igdeTriggerTargetList::HasNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -115,7 +115,7 @@ bool igdeTriggerTargetList::HasNamed(const char *name) const{
 }
 
 void igdeTriggerTargetList::Add(igdeTriggerTarget *target){
-	if(! target || HasNamed(target->GetName().GetString())){
+	if(!target || HasNamed(target->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -123,7 +123,7 @@ void igdeTriggerTargetList::Add(igdeTriggerTarget *target){
 }
 
 void igdeTriggerTargetList::Remove(igdeTriggerTarget *target){
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	

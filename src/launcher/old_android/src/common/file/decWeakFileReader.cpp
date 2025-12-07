@@ -38,7 +38,7 @@
 decWeakFileReader::decWeakFileReader(decBaseFileReader *reader) :
 pReader(reader)
 {
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 }

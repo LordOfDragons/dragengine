@@ -239,7 +239,7 @@ deClassForceField::nfSetFieldType::nfSetFieldType(const sInitData &init) : dsFun
 }
 void deClassForceField::nfSetFieldType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(((sFFNatDat*)p_GetNativeData(myself))->forcefield);
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -265,7 +265,7 @@ deClassForceField::nfSetApplicationType::nfSetApplicationType(const sInitData &i
 }
 void deClassForceField::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(((sFFNatDat*)p_GetNativeData(myself))->forcefield);
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -445,7 +445,7 @@ void deClassForceField::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassForceField * const clsFF = (deClassForceField*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsFF)){
+	if(!p_IsObjOfType(obj, clsFF)){
 		rt->PushBool(false);
 		
 	}else{
@@ -546,7 +546,7 @@ void deClassForceField::CreateClassMembers(dsEngine *engine){
 }
 
 deForceField *deClassForceField::GetForceField(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -554,11 +554,11 @@ deForceField *deClassForceField::GetForceField(dsRealObject *myself) const{
 }
 
 void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! forcefield){
+	if(!forcefield){
 		rt->PushObject(NULL, this);
 		return;
 	}

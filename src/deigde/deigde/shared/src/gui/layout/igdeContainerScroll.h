@@ -68,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Can scroll X. */
-	inline bool GetCanScrollX() const{return pCanScrollX;}
+	inline bool GetCanScrollX() const{ return pCanScrollX; }
 	
 	/** \brief Can scroll Y. */
-	inline bool GetCanScrollY() const{return pCanScrollY;}
+	inline bool GetCanScrollY() const{ return pCanScrollY; }
 	
 	
 	

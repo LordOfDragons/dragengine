@@ -86,7 +86,7 @@ void deoglCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command,
 		}else if(command.MatchesArgumentAt(0, "fixNaN")){
 			pFixNaN(command, answer);
 			
-		}else if(pOgl.HasRenderThread() && ! pOgl.GetRenderThread().GetDebug().GetDeveloperMode().ExecuteCommand(command, answer)){
+		}else if(pOgl.HasRenderThread() && !pOgl.GetRenderThread().GetDebug().GetDeveloperMode().ExecuteCommand(command, answer)){
 			answer.SetFromUTF8("Unknown command '");
 			answer += *command.GetArgumentAt(0);
 			answer.AppendFromUTF8("'.");

@@ -62,21 +62,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of patterns to match. */
-	inline dePathList &GetPatterns(){return pPatterns;}
-	inline const dePathList &GetPatterns() const{return pPatterns;}
+	inline dePathList &GetPatterns(){ return pPatterns; }
+	inline const dePathList &GetPatterns() const{ return pPatterns; }
 	
 	/** \brief Add pattern. */
 	void AddPattern(const char *pattern);
 	
 	/** \brief Enable recursion. */
-	inline bool GetRecursive() const{return pRecursive;}
+	inline bool GetRecursive() const{ return pRecursive; }
 	
 	/** \brief Set if recursion is enabled. */
 	void SetRecursive(bool recursive);
 	
 	/** \brief Found files. */
-	inline dePathList &GetFiles(){return pFiles;}
-	inline const dePathList &GetFiles() const{return pFiles;}
+	inline dePathList &GetFiles(){ return pFiles; }
+	inline const dePathList &GetFiles() const{ return pFiles; }
 	/*@}*/
 	
 	

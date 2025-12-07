@@ -119,14 +119,14 @@ public:
 	
 	
 	/** \brief Source application type. */
-	inline eApplicationTypes GetApplicationType() const{return pApplicationType;}
+	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set source application type. */
 	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Select target. */
-	inline deSynthesizerControllerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const deSynthesizerControllerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline deSynthesizerControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const deSynthesizerControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	/*@}*/
 	
 	

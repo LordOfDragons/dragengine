@@ -115,22 +115,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Dope sheet. */
-	inline ceWindowDopeSheet &GetWindow() const{return pWindow;}
+	inline ceWindowDopeSheet &GetWindow() const{ return pWindow; }
 	
 	/** Index of lane in dope sheet. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Label. */
-	inline const decString &GetLabel() const{return pLabel;}
+	inline const decString &GetLabel() const{ return pLabel; }
 	
 	/** Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Canvas. */
-	inline deCanvasView *GetCanvas() const{return pCanvas;}
+	inline deCanvasView *GetCanvas() const{ return pCanvas; }
 	
 	/** Mouse listener. */
-	inline igdeMouseKeyListener *GetMouseKeyListener() const{return pMouseKeyListener;}
+	inline igdeMouseKeyListener *GetMouseKeyListener() const{ return pMouseKeyListener; }
 	
 	
 	
@@ -164,10 +164,10 @@ public:
 	float GetMaximumLineTime() const;
 	
 	/** Strip selection from index or -1 if no selection. */
-	inline int GetSelectionFrom() const{return pSelectionFrom;}
+	inline int GetSelectionFrom() const{ return pSelectionFrom; }
 	
 	/** Strip selection to index or -1 if no selection. */
-	inline int GetSelectionTo() const{return pSelectionTo;}
+	inline int GetSelectionTo() const{ return pSelectionTo; }
 	
 	/** Set strip selection. */
 	void SetSelection(int from, int to);
@@ -238,7 +238,7 @@ public:
 	
 	
 protected:
-	inline const ceStripList &GetEmptyList() const{return pEmptyList;}
+	inline const ceStripList &GetEmptyList() const{ return pEmptyList; }
 	void FillIDListLookAt(decStringList &list);
 	void CreateHandle(deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size);
 	/*@}*/

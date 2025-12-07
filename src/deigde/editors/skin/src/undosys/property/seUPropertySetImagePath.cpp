@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const char *newPath){
-	if(! property || ! newPath) DETHROW(deeInvalidParam);
+	if(!property || !newPath) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	

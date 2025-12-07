@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deVideoWebm &GetModule(){return pModule;}
+	inline deVideoWebm &GetModule(){ return pModule; }
 	
 	/** End parsing segment. */
 	virtual webm::Status OnSegmentEnd(const webm::ElementMetadata &metadata);
@@ -96,7 +96,7 @@ protected:
 	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	virtual void pProcessAdditional(const std::vector<unsigned char> &data);
 	
-	inline const std::uint8_t *pGetBuffer() const{return pBuffer;}
+	inline const std::uint8_t *pGetBuffer() const{ return pBuffer; }
 	
 	void pReadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	

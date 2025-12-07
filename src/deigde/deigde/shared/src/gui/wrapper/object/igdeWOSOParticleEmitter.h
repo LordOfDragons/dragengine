@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter resource. */
-	inline deParticleEmitterInstance *GetParticleEmitter() const{return pParticleEmitter;}
+	inline deParticleEmitterInstance *GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

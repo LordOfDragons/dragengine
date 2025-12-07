@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of indices. */
-	inline int GetIndexCount() const{return pIndexCount;}
+	inline int GetIndexCount() const{ return pIndexCount; }
 	/** Retrieves the index at the given position. */
 	int GetIndexAt(int position) const;
 	/** Adds an index. */

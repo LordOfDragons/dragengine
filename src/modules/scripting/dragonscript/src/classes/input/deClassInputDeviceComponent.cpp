@@ -202,7 +202,7 @@ void deClassInputDeviceComponent::nfGetLargestDisplayIconX::RunFunction(dsRunTim
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = component.GetDisplayIconAt(i);
-		if(icon->GetWidth() <= maxWidth && (! bestIcon || icon->GetWidth() >= bestWidth)){
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
@@ -229,7 +229,7 @@ void deClassInputDeviceComponent::nfGetLargestDisplayIconY::RunFunction(dsRunTim
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = component.GetDisplayIconAt(i);
-		if(icon->GetHeight() <= maxHeight && (! bestIcon || icon->GetHeight() >= bestHeight)){
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
@@ -262,7 +262,7 @@ void deClassInputDeviceComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *
 	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsIDComponent)){
+	if(!p_IsObjOfType(obj, clsIDComponent)){
 		rt->PushBool(false);
 		
 	}else{
@@ -335,7 +335,7 @@ void deClassInputDeviceComponent::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *device, int index){
-	if(! rt || ! device || index < 0 || index >= device->GetDevice()->GetComponentCount()){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetComponentCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

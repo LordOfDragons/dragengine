@@ -102,9 +102,9 @@ public:
 	/*@{*/
 	/** Launcher. */
 	
-	inline deglLauncher *GetLauncher() const{return pLauncher;}
+	inline deglLauncher *GetLauncher() const{ return pLauncher; }
 	/** GUI builder. */
-	inline deglGuiBuilder *GetGuiBuilder() const{return pGuiBuilder;}
+	inline deglGuiBuilder *GetGuiBuilder() const{ return pGuiBuilder; }
 	
 	/** Run command line actions. Returns true to start the application loop or false to exit. */
 	bool RunCommandLineActions();
@@ -113,13 +113,13 @@ public:
 	void DisplayException(const deException &exception);
 	
 	/** Menu bar. */
-	inline FXMenuBar *GetMenuBar() const{return pMenuBar;}
+	inline FXMenuBar *GetMenuBar() const{ return pMenuBar; }
 	
 	/** Games panel. */
-	inline deglPanelGames *GetPanelGames() const{return pPanelGames;}
+	inline deglPanelGames *GetPanelGames() const{ return pPanelGames; }
 	
 	/** Logger window or nullptr if not visible. */
-	inline deglWindowLogger *GetWindowLogger() const{return pWindowLogger;}
+	inline deglWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
 	
 	/**
 	 * Show logger window. If not existing yet it is created otherwise it is
@@ -143,13 +143,13 @@ public:
 	void ReloadGamesAndPatches();
 	
 	/** Small valid icon. */
-	inline FXIcon *GetIconValidSmall() const{return pIconValidSmall;}
+	inline FXIcon *GetIconValidSmall() const{ return pIconValidSmall; }
 	
 	/** Small invalid icon. */
-	inline FXIcon *GetIconInvalidSmall() const{return pIconInvalidSmall;}
+	inline FXIcon *GetIconInvalidSmall() const{ return pIconInvalidSmall; }
 	
 	/** Info button icon. */
-	inline FXIcon *GetIconButtonInfo() const{return pIconButtonInfo;}
+	inline FXIcon *GetIconButtonInfo() const{ return pIconButtonInfo; }
 	/*@}*/
 	
 	

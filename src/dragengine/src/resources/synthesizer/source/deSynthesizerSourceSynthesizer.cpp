@@ -88,7 +88,7 @@ void deSynthesizerSourceSynthesizer::UpdateConnectionCount(){
 		pConnectionCount = 0;
 	}
 	
-	if(! pSynthesizer){
+	if(!pSynthesizer){
 		return;
 	}
 	

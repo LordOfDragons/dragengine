@@ -42,7 +42,7 @@ pFilename(filename),
 pFile(NULL)
 {
 	pFile = fopen(filename, append ? "ab" : "wb");
-	if(! pFile){
+	if(!pFile){
 		DETHROW(deeFileNotFound);
 	}
 }

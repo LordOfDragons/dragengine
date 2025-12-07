@@ -42,7 +42,7 @@ gdeClipboardDataObjectClass::gdeClipboardDataObjectClass(gdeObjectClass *objectC
 igdeClipboardData(TYPE_NAME),
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

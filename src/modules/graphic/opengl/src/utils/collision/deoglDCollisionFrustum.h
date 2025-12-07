@@ -204,18 +204,18 @@ public:
 	
 	/** \name Collision Routines */
 	/*@{*/
-	inline const decDVector &GetLeftNormal() const{return pPlane[epLeft].normal;}
-	inline const decDVector &GetRightNormal() const{return pPlane[epRight].normal;}
-	inline const decDVector &GetTopNormal() const{return pPlane[epTop].normal;}
-	inline const decDVector &GetBottomNormal() const{return pPlane[epBottom].normal;}
-	inline const decDVector &GetNearNormal() const{return pPlane[epNear].normal;}
-	inline const decDVector &GetFarNormal() const{return pPlane[epFar].normal;}
-	inline double GetLeftDistance() const{return pPlane[epLeft].distance;}
-	inline double GetRightDistance() const{return pPlane[epRight].distance;}
-	inline double GetTopDistance() const{return pPlane[epTop].distance;}
-	inline double GetBottomDistance() const{return pPlane[epBottom].distance;}
-	inline double GetNearDistance() const{return pPlane[epNear].distance;}
-	inline double GetFarDistance() const{return pPlane[epFar].distance;}
+	inline const decDVector &GetLeftNormal() const{ return pPlane[epLeft].normal; }
+	inline const decDVector &GetRightNormal() const{ return pPlane[epRight].normal; }
+	inline const decDVector &GetTopNormal() const{ return pPlane[epTop].normal; }
+	inline const decDVector &GetBottomNormal() const{ return pPlane[epBottom].normal; }
+	inline const decDVector &GetNearNormal() const{ return pPlane[epNear].normal; }
+	inline const decDVector &GetFarNormal() const{ return pPlane[epFar].normal; }
+	inline double GetLeftDistance() const{ return pPlane[epLeft].distance; }
+	inline double GetRightDistance() const{ return pPlane[epRight].distance; }
+	inline double GetTopDistance() const{ return pPlane[epTop].distance; }
+	inline double GetBottomDistance() const{ return pPlane[epBottom].distance; }
+	inline double GetNearDistance() const{ return pPlane[epNear].distance; }
+	inline double GetFarDistance() const{ return pPlane[epFar].distance; }
 	void SetLeftPlane(const decDVector &normal, double dist);
 	void SetRightPlane(const decDVector &normal, double dist);
 	void SetTopPlane(const decDVector &normal, double dist);

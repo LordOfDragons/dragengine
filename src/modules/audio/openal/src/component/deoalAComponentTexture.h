@@ -77,15 +77,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline deoalAComponent &GetComponent() const{return pComponent;}
+	inline deoalAComponent &GetComponent() const{ return pComponent; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
 	/** \brief Skin. */
-	inline deoalASkin *GetSkin() const{return pSkin;}
+	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deoalASkin *skin);
@@ -93,33 +93,33 @@ public:
 	
 	
 	/** \brief Use skin or NULL. */
-	inline const deoalASkin *GetUseSkin() const{return pUseSkin;}
+	inline const deoalASkin *GetUseSkin() const{ return pUseSkin; }
 	
 	/** \brief Use texture or NULL. */
-	inline const deoalSkinTexture *GetUseTexture() const{return pUseTexture;}
+	inline const deoalSkinTexture *GetUseTexture() const{ return pUseTexture; }
 	
 	/** \brief Component texture affects sound. */
-	inline bool GetAffectsSound() const{return pAffectsSound;}
+	inline bool GetAffectsSound() const{ return pAffectsSound; }
 	
 	
 	
 	/** \brief Absorption for low frequencies. */
-	inline float GetAbsorptionLow() const{return pAbsorptionLow;}
+	inline float GetAbsorptionLow() const{ return pAbsorptionLow; }
 	
 	/** \brief Absorption for medium frequencies. */
-	inline float GetAbsorptionMedium() const{return pAbsorptionMedium;}
+	inline float GetAbsorptionMedium() const{ return pAbsorptionMedium; }
 	
 	/** \brief Absorption for high frequencies. */
-	inline float GetAbsorptionHigh() const{return pAbsorptionHigh;}
+	inline float GetAbsorptionHigh() const{ return pAbsorptionHigh; }
 	
 	/** \brief Transmission range for low frequencies. */
-	inline float GetTransmissionLow() const{return pTransmissionLow;}
+	inline float GetTransmissionLow() const{ return pTransmissionLow; }
 	
 	/** \brief Transmission range for medium frequencies. */
-	inline float GetTransmissionMedium() const{return pTransmissionMedium;}
+	inline float GetTransmissionMedium() const{ return pTransmissionMedium; }
 	
 	/** \brief Transmission range for high frequencies. */
-	inline float GetTransmissionHigh() const{return pTransmissionHigh;}
+	inline float GetTransmissionHigh() const{ return pTransmissionHigh; }
 	
 	
 	

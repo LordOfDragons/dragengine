@@ -588,7 +588,7 @@ void deoglRenderTask::pAssignSPBInstances(){
 					for(l=0; l<instanceCount; l++){
 						deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt(l);
 						
-						if(! paramBlock || firstIndex + rtinstance.GetSubInstanceCount() > pSPBInstanceMaxEntries){
+						if(!paramBlock || firstIndex + rtinstance.GetSubInstanceCount() > pSPBInstanceMaxEntries){
 							if(paramBlock){
 								const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
 								if(ecount > paramBlock->GetElementCount()){
@@ -730,7 +730,7 @@ void deoglRenderTask::pUpdateVBODrawIndirect(){
 		return;
 	}
 
-	if(! pVBODrawIndirect){
+	if(!pVBODrawIndirect){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBODrawIndirect));
 		DEASSERT_NOTNULL(pVBODrawIndirect);
 	}

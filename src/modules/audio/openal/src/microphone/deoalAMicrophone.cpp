@@ -271,7 +271,7 @@ void deoalAMicrophone::FindActiveSpeakers(){
 	// problem since we can reuse the information. only if the range becomes larger we need
 	// to extend the result. theoretically we could just extend the existing results but this
 	// is difficult to do and most probably not work the hazzle
-	if(pEnvProbeList && ! pDirtyEnvProbe){
+	if(pEnvProbeList && !pDirtyEnvProbe){
 		pDirtyEnvProbe = pMaxActiveSpeakerRange() > pEnvProbeList->GetRange();
 	}
 }
@@ -320,7 +320,7 @@ void deoalAMicrophone::SetOctreeNode(deoalWorldOctree *node){
 }
 
 void deoalAMicrophone::UpdateOctreeNode(){
-	if(pParentWorld && pActive && ! pMuted){
+	if(pParentWorld && pActive && !pMuted){
 		pParentWorld->GetOctree()->InsertMicrophoneIntoTree(this, 8);
 		
 	}else if(pOctreeNode){
@@ -349,14 +349,14 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 // 	}
 	// this check is disabled because with pDirtyEnvProbe is set to true for each frame update
 	
-	if(! pDirtyEnvProbe){
+	if(!pDirtyEnvProbe){
 		return pEnvProbe;
 	}
 	
 	pDirtyEnvProbe = false;
 	pEnvProbe = NULL;
 	
-	if(! pParentWorld || pActiveSpeakers.GetCount() == 0){
+	if(!pParentWorld || pActiveSpeakers.GetCount() == 0){
 		return NULL;
 	}
 	
@@ -364,7 +364,7 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	const float range = pMaxActiveSpeakerRange();
 // 	const float range = 200.0f; // debug
 	
-	if(! pEnvProbeList){
+	if(!pEnvProbeList){
 		const float reuseDistance = 0.25; // 1.0, 0.05
 		const int maxProbeCount = 100;
 		
@@ -462,7 +462,7 @@ void deoalAMicrophone::ProcessAudio(){
 }
 
 void deoalAMicrophone::ProcessAudioFast(){
-	if(! pActive){
+	if(!pActive){
 		return;
 	}
 	
@@ -764,8 +764,8 @@ void deoalAMicrophone::pProcessEffects(){
 		// pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
 	// }
 	
-	if(! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX()){
+	if(!pAudioThread.GetExtensions().GetHasEFX()
+	|| !pAudioThread.GetConfiguration().GetEnableEFX()){
 		pAudioThread.GetSharedEffectSlotManager().DropEffects();
 		
 	}else{
@@ -778,7 +778,7 @@ void deoalAMicrophone::pDebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, 
 	
 	deoalEnvProbe * const envProbe = GetEnvProbe();
 	
-	if(! envProbe){
+	if(!envProbe){
 		debugDrawer.SetVisible(false);
 		return;
 	}

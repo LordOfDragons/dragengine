@@ -63,7 +63,7 @@ deoglShape *deoglShapeManager::GetShapeAt(int index) const{
 }
 
 void deoglShapeManager::AddShape(deoglShape *shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	

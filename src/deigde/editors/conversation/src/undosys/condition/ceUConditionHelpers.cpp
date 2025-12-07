@@ -39,7 +39,7 @@
 
 ceConversationCondition *ceUConditionHelpers::ActivateConditionAfterRemove(
 const ceConversationConditionList& list, ceConversationCondition *removedCondition){
-	if(! removedCondition){
+	if(!removedCondition){
 		DETHROW(deeInvalidParam);
 	}
 	

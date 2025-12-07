@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of billboards. */
-	inline int GetCount() const{return pBillboardCount;}
+	inline int GetCount() const{ return pBillboardCount; }
 	/** Retrieves the index of the billboard or -1 if not in the list. */
 	int IndexOf(deoglRBillboard *billboard) const;
 	/** Determines if the billboard exists. */

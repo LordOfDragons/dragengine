@@ -104,16 +104,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Conversation. */
-	inline ceConversation &GetConversation(){return pConversation;}
-	inline const ceConversation &GetConversation() const{return pConversation;}
+	inline ceConversation &GetConversation(){ return pConversation; }
+	inline const ceConversation &GetConversation() const{ return pConversation; }
 	
 	/** Playback camera. */
-	inline cePlaybackCamera *GetCamera() const{return pCamera;}
+	inline cePlaybackCamera *GetCamera() const{ return pCamera; }
 	
 	
 	
 	/** Topic to play back. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
 	void SetTopic(ceConversationTopic *topic);
@@ -121,13 +121,13 @@ public:
 	
 	
 	/** Conversation is running. */
-	inline bool GetRunning() const{return pRunning;}
+	inline bool GetRunning() const{ return pRunning; }
 	
 	/** Set conversation is running. */
 	void SetRunning(bool running);
 	
 	/** Conversation is paused. */
-	inline bool GetPaused() const{return pPaused;}
+	inline bool GetPaused() const{ return pPaused; }
 	
 	/** Set conversation is paused. */
 	void SetPaused(bool paused);
@@ -139,13 +139,13 @@ public:
 	void ResetCamera();
 	
 	/** Camera handling. */
-	inline eCameraHandling GetCameraHandling() const{return pCameraHandling;}
+	inline eCameraHandling GetCameraHandling() const{ return pCameraHandling; }
 	
 	/** Set camera handling. */
 	void SetCameraHandling(eCameraHandling handling);
 	
 	/** Auto advance certain commands or wait for user. */
-	inline bool GetAutoAdvanceCommands() const{return pAutoAdvanceCommands;}
+	inline bool GetAutoAdvanceCommands() const{ return pAutoAdvanceCommands; }
 	
 	/** Set to auto advance certain commands or wait for user. */
 	void SetAutoAdvanceCommands(bool autoAdvance);
@@ -153,32 +153,32 @@ public:
 	
 	
 	/** Active action stack. */
-	inline const cePlaybackActionStack::Ref &GetActiveActionStack() const{return pActiveActionStack;}
+	inline const cePlaybackActionStack::Ref &GetActiveActionStack() const{ return pActiveActionStack; }
 	
 	/** Main action stack. */
-	inline const cePlaybackActionStack::Ref &GetMainActionStack() const{return pMainActionStack;}
+	inline const cePlaybackActionStack::Ref &GetMainActionStack() const{ return pMainActionStack; }
 	
 	/** Side action stacks. */
-	inline const decObjectOrderedSet &GetSideActionStacks() const{return pSideActionStacks;}
+	inline const decObjectOrderedSet &GetSideActionStacks() const{ return pSideActionStacks; }
 	
 	/** Add side action stack and run it once. */
 	void AddSideActionStack(const cePlaybackActionStack::Ref &stack);
 	
 	/** Command list. */
-	inline cePlaybackCommandList &GetCommands(){return pCommandList;}
-	inline const cePlaybackCommandList &GetCommandList() const{return pCommandList;}
+	inline cePlaybackCommandList &GetCommands(){ return pCommandList; }
+	inline const cePlaybackCommandList &GetCommandList() const{ return pCommandList; }
 	
 	/** Variable list. */
-	inline cePlaybackVariableList &GetVariables(){return pVariableList;}
-	inline const cePlaybackVariableList &GetVariableList() const{return pVariableList;}
+	inline cePlaybackVariableList &GetVariables(){ return pVariableList; }
+	inline const cePlaybackVariableList &GetVariableList() const{ return pVariableList; }
 	
 	/** List of missing words encountered so far. */
-	inline decStringSet &GetMissingWords(){return pMissingWords;}
-	inline const decStringSet &GetMissingWords() const{return pMissingWords;}
+	inline decStringSet &GetMissingWords(){ return pMissingWords; }
+	inline const decStringSet &GetMissingWords() const{ return pMissingWords; }
 	
 	/** Trigger table. */
-	inline igdeTriggerTargetList &GetTriggerTable(){return pTriggerTable;}
-	inline const igdeTriggerTargetList &GetTriggerTable() const{return pTriggerTable;}
+	inline igdeTriggerTargetList &GetTriggerTable(){ return pTriggerTable; }
+	inline const igdeTriggerTargetList &GetTriggerTable() const{ return pTriggerTable; }
 	
 	
 	
@@ -188,7 +188,7 @@ public:
 	
 	
 	/** Number of actors. */
-	inline int GetActorCount() const{return pActorCount;}
+	inline int GetActorCount() const{ return pActorCount; }
 	
 	/** Set number of actors. */
 	void SetActorCount(int count);
@@ -217,10 +217,10 @@ public:
 	void CancelLoopingLayer(int stackDepth);
 	
 	/** Last action played back or \em NULL if not set. */
-	inline ceConversationAction *GetLastPlayedAction() const{return pLastPlayedAction;}
+	inline ceConversationAction *GetLastPlayedAction() const{ return pLastPlayedAction; }
 	
 	/** Last action played back parent topic or \em NULL if not set. */
-	inline ceConversationTopic *GetLastPlayedActionTopic() const{return pLastPlayedActionTopic;}
+	inline ceConversationTopic *GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
 	
 	
 	

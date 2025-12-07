@@ -186,7 +186,7 @@ bool decIntSet::Equals(const decIntSet &set) const{
 	}
 	
 	for(p=0; p<pValueCount; p++){
-		if(! set.Has(pValues[p])){
+		if(!set.Has(pValues[p])){
 			return false;
 		}
 	}

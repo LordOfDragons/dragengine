@@ -125,14 +125,14 @@ public:
 	/** Ready occlusion render task. */
 	void ReadyRTOcclusion(const deoglRenderPlanMasked *mask);
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{return pUBOFindConfig;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{return pSSBOCounters;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{return pSSBOVisibleElements;}
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{return pSSBOVisibleElements2;}
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
 	
 	void SwapVisibleElements();
 	
-	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{return pRTOcclusion;}
+	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{ return pRTOcclusion; }
 	/*@}*/
 	
 	

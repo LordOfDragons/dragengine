@@ -99,13 +99,13 @@ pResizer(NULL)
 	(void)ListBoxPadBottom;
 	#endif
 	
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	pListBox->setFont((FXFont*)pFont->GetNativeFont());
 	
 	pListBox->setNumVisible(powner.GetRows());
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		pListBox->disable();
 	}
 	
@@ -124,12 +124,12 @@ igdeNativeFoxListBox::~igdeNativeFoxListBox(){
 }
 
 igdeNativeFoxListBox *igdeNativeFoxListBox::CreateNativeWidget(igdeListBox &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -331,7 +331,7 @@ int igdeNativeFoxListBox::ListBoxPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxListBox::onListCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled() || pOwner->GetSelection() == pListBox->getCurrentItem()){
+	if(!pOwner->GetEnabled() || pOwner->GetSelection() == pListBox->getCurrentItem()){
 		return 1;
 	}
 	
@@ -385,7 +385,7 @@ long igdeNativeFoxListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
 }
 
 long igdeNativeFoxListBox::onListRightMouseDown(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 1;
 	}
 	

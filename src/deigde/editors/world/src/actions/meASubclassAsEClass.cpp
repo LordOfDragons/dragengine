@@ -69,18 +69,18 @@ pWindow(window)
 ///////////////
 
 void meASubclassAsEClass::OnAction(){
-	if(! pWindow.GetWorld()){
+	if(!pWindow.GetWorld()){
 		return;
 	}
 	meWorld &world = *pWindow.GetWorld();
 	
-	if(! world.GetGameDefinition() || ! world.GetSelectionObject().HasActive()){
+	if(!world.GetGameDefinition() || !world.GetSelectionObject().HasActive()){
 		return;
 	}
 	const igdeGameDefinition &gamedefinition = *world.GetGameDefinition();
 	meObject &object = *world.GetSelectionObject().GetActive();
 	
-	if(! object.GetGDClass()){
+	if(!object.GetGDClass()){
 		return;
 	}
 	const igdeGDClass &gdclass = *object.GetGDClass();
@@ -88,7 +88,7 @@ void meASubclassAsEClass::OnAction(){
 	// ask for class name to use
 	const char * const dialogTitle = "Subclass As EClass";
 	decString classname(gdclass.GetName());
-	if(! igdeCommonDialogs::GetString(&pWindow, dialogTitle, "Object Class:", classname)){
+	if(!igdeCommonDialogs::GetString(&pWindow, dialogTitle, "Object Class:", classname)){
 		return;
 	}
 	
@@ -103,7 +103,7 @@ void meASubclassAsEClass::OnAction(){
 	
 	decString filename(classname + ".deeclass");
 	
-	if(! igdeCommonDialogs::GetFileSave(&pWindow, dialogTitle,
+	if(!igdeCommonDialogs::GetFileSave(&pWindow, dialogTitle,
 	*pWindow.GetEnvironment().GetFileSystemGame(), filePatterns, filename ) ){
 		return;
 	}
@@ -336,7 +336,7 @@ decXmlWriter &writer, const decString &basePath){
 	writer.WriteOpeningTagEnd();
 	
 	const decString &pathSkin = texture.GetSkinPath();
-	if(! pathSkin.IsEmpty()){
+	if(!pathSkin.IsEmpty()){
 		writer.WriteOpeningTagStart("string");
 		writer.WriteAttributeString("key", "skin");
 		writer.WriteOpeningTagEnd(false, false);
@@ -349,7 +349,7 @@ decXmlWriter &writer, const decString &basePath){
 	}
 	
 	const decColor &colorTint = texture.GetColorTint();
-	if(! colorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!colorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("color");
 		writer.WriteAttributeString("key", "tint");
 		writer.WriteAttributeFloat("r", colorTint.r);
@@ -361,9 +361,9 @@ decXmlWriter &writer, const decString &basePath){
 	const decVector2 &tcoffset = texture.GetTexCoordOffset();
 	const float tcrotation = texture.GetTexCoordRotation();
 	const decVector2 &tcscaling = texture.GetTexCoordScaling();
-	const bool hasTCOffset = ! tcoffset.IsEqualTo(decVector2());
+	const bool hasTCOffset = !tcoffset.IsEqualTo(decVector2());
 	const bool hasTCRotation = fabsf(tcrotation) > FLOAT_SAFE_EPSILON;
-	const bool hasTCScaling = ! tcscaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasTCScaling = !tcscaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	if(hasTCOffset || hasTCRotation || hasTCScaling){
 		writer.WriteOpeningTagStart("map");
 		writer.WriteAttributeString("key", "transform");

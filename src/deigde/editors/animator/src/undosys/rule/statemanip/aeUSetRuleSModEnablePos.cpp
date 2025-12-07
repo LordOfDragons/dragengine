@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSModEnablePos::aeUSetRuleSModEnablePos(aeRuleStateManipulator *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleSModEnablePos::~aeUSetRuleSModEnablePos(){
 ///////////////
 
 void aeUSetRuleSModEnablePos::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeUSetRuleSModEnablePos::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

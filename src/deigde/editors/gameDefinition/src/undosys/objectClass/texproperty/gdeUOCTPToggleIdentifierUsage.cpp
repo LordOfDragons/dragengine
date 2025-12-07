@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeProperty *property) :
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,11 +73,11 @@ gdeUOCTPToggleIdentifierUsage::~gdeUOCTPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUOCTPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
 	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

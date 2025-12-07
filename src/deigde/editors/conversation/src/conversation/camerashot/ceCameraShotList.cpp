@@ -110,7 +110,7 @@ bool ceCameraShotList::HasNamed(const char *name) const{
 }
 
 void ceCameraShotList::Add(ceCameraShot *cameraShot){
-	if(! cameraShot || HasNamed(cameraShot->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!cameraShot || HasNamed(cameraShot->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pShots.Add(cameraShot);
 }

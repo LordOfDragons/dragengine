@@ -90,7 +90,7 @@ deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 ///////////////
 
 void deoglRSkyInstanceLayer::Update(){
-	if(! pInstance.GetRSky()){
+	if(!pInstance.GetRSky()){
 		pSkyNeedsUpdate = false;
 		return;
 	}
@@ -148,7 +148,7 @@ deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetLightParameterBlock(){
-	if(! pParamBlockLight){
+	if(!pParamBlockLight){
 		pParamBlockLight = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBLightParam();
 	}
@@ -156,7 +156,7 @@ const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetLightParameterBlock(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
-	if(! pParamBlockInstance){
+	if(!pParamBlockInstance){
 		pParamBlockInstance = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBInstParam();
 	}
@@ -360,7 +360,7 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 void deoglRSkyInstanceLayer::pCheckTracker(){
 	pSkyNeedsUpdate = false;
 	
-	if(! pTrackerEnvMap){
+	if(!pTrackerEnvMap){
 		pTrackerEnvMap = new deoglSkyLayerTracker;
 		
 		pTrackerEnvMap->SetThresholdOrientation(

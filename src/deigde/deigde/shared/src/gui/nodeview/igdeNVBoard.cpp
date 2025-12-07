@@ -57,7 +57,7 @@ public:
 	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("Delete Link",
 		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete link"),
 	pBoard(board), pLink(link){
-		if(! link){
+		if(!link){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -135,7 +135,7 @@ void igdeNVBoard::SetEnabled(bool enabled){
 
 
 decPoint igdeNVBoard::GetSize() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -175,7 +175,7 @@ bool igdeNVBoard::HasNode(igdeNVNode *node) const{
 }
 
 void igdeNVBoard::AddNode(igdeNVNode *node){
-	if(! node || HasNode(node) || node->GetOwnerBoard()){
+	if(!node || HasNode(node) || node->GetOwnerBoard()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -188,7 +188,7 @@ void igdeNVBoard::AddNode(igdeNVNode *node){
 }
 
 void igdeNVBoard::RemoveNode(igdeNVNode *node){
-	if(! node || ! HasNode(node)){
+	if(!node || !HasNode(node)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -253,7 +253,7 @@ igdeNVLink *igdeNVBoard::GetLinkAt(int index) const{
 }
 
 igdeNVLink *igdeNVBoard::GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const{
-	if(! source || ! target){
+	if(!source || !target){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -279,22 +279,22 @@ bool igdeNVBoard::HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const{
 }
 
 bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
-	if(! source || ! target){
+	if(!source || !target){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(source->GetIsInput() || ! target->GetIsInput()
+	if(source->GetIsInput() || !target->GetIsInput()
 	|| source->GetOwnerNode() == target->GetOwnerNode()
 	|| HasLinkBetween(source, target)
-	|| ! HasNode(source->GetOwnerNode())
-	|| ! HasNode(target->GetOwnerNode())){
+	|| !HasNode(source->GetOwnerNode())
+	|| !HasNode(target->GetOwnerNode())){
 		return false;
 	}
 	
 	const int count = pListeners.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(! ((igdeNVBoardListener*)pListeners.GetAt(i))->CanLink(this, source, target)){
+		if(!((igdeNVBoardListener*)pListeners.GetAt(i))->CanLink(this, source, target)){
 			return false;
 		}
 	}
@@ -303,7 +303,7 @@ bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
 }
 
 igdeNVLink *igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
-	if(! CanLink(source, target)){
+	if(!CanLink(source, target)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -320,7 +320,7 @@ igdeNVLink *igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
 }
 
 void igdeNVBoard::RemoveLink(igdeNVLink *link){
-	if(! link || ! HasLink(link)){
+	if(!link || !HasLink(link)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -350,7 +350,7 @@ void igdeNVBoard::RemoveAllLinks(){
 }
 
 void igdeNVBoard::RemoveAllNodeLinks(igdeNVNode *node){
-	if(! node){
+	if(!node){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -364,7 +364,7 @@ void igdeNVBoard::RemoveAllNodeLinks(igdeNVNode *node){
 }
 
 igdeNVLink *igdeNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return NULL;
 	}
 	
@@ -372,7 +372,7 @@ igdeNVLink *igdeNVBoard::ClosestLinkNear(const decPoint &position, float range) 
 }
 
 void igdeNVBoard::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -402,7 +402,7 @@ void igdeNVBoard::ShowContextMenu(const decPoint &position){
 
 
 void igdeNVBoard::AddListener(igdeNVBoardListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -477,7 +477,7 @@ void igdeNVBoard::CreateNativeWidget(){
 }
 
 void igdeNVBoard::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -496,7 +496,7 @@ void igdeNVBoard::NotifyNodesOffsetChanged(){
 }
 
 void igdeNVBoard::OnColorsChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -504,7 +504,7 @@ void igdeNVBoard::OnColorsChanged(){
 }
 
 void igdeNVBoard::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -512,7 +512,7 @@ void igdeNVBoard::OnEnabledChanged(){
 }
 
 void igdeNVBoard::OnOffsetChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -520,7 +520,7 @@ void igdeNVBoard::OnOffsetChanged(){
 }
 
 void igdeNVBoard::OnNodesChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -529,7 +529,7 @@ void igdeNVBoard::OnNodesChanged(){
 
 
 void igdeNVBoard::OnLinksChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

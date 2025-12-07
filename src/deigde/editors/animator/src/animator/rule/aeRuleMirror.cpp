@@ -175,7 +175,7 @@ int aeRuleMirror::IndexOfMatchName(cMatchName *matchName) const{
 }
 
 void aeRuleMirror::AddMatchName(aeRuleMirror::cMatchName *matchName){
-	if(! matchName || pMatchNames.Has(matchName)){
+	if(!matchName || pMatchNames.Has(matchName)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -184,7 +184,7 @@ void aeRuleMirror::AddMatchName(aeRuleMirror::cMatchName *matchName){
 }
 
 void aeRuleMirror::InsertMatchName(cMatchName *matchName, int index){
-	if(! matchName || pMatchNames.Has(matchName)){
+	if(!matchName || pMatchNames.Has(matchName)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -193,7 +193,7 @@ void aeRuleMirror::InsertMatchName(cMatchName *matchName, int index){
 }
 
 void aeRuleMirror::SetMatchNameAt(int index, cMatchName *matchName){
-	if(! matchName || pMatchNames.Has(matchName)){
+	if(!matchName || pMatchNames.Has(matchName)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -265,7 +265,7 @@ aeRuleMirror &aeRuleMirror::operator=(const aeRuleMirror &copy){
 //////////////////////
 
 void aeRuleMirror::pUpdateMatchNames(){
-	if(! GetEngineRule()){
+	if(!GetEngineRule()){
 		return;
 	}
 	

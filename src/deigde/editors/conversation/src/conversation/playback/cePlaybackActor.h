@@ -59,17 +59,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the length of the speech. */
-	inline float GetSpeechLength() const{return pSpeechLength;}
+	inline float GetSpeechLength() const{ return pSpeechLength; }
 	/** Sets the speech length. */
 	void SetSpeechLength(float length);
 	/** Retrieves the elapsed time. */
-	inline float GetElapsedTime() const{return pElapsedTime;}
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	/** Sets the elapsed time. */
 	void SetElapsedTime(float elapsed);
 	/** Sets the text box. Used to handle text box text. */
 	void SetTextBox(ceTextBox *textBox);
 	/** Text box text or NULL if not owning one. */
-	inline ceTextBoxText *GetTextBoxText() const{return pTextBoxText;}
+	inline ceTextBoxText *GetTextBoxText() const{ return pTextBoxText; }
 	/** Sets the text box text or NULL if not owning one. */
 	void SetTextBoxText(ceTextBoxText *text);
 	

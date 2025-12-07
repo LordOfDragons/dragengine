@@ -114,13 +114,13 @@ bool lpeLangPackEntryList::HasNamed(const char *name) const{
 }
 
 void lpeLangPackEntryList::Add(lpeLangPackEntry *entry){
-	if(! entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pEntries.Add(entry);
 }
 
 void lpeLangPackEntryList::InsertAt(lpeLangPackEntry *entry, int index){
-	if(! entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pEntries.Insert(entry, index);
 }

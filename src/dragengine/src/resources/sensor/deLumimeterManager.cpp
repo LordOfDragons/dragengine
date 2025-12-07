@@ -66,7 +66,7 @@ deLumimeter *deLumimeterManager::CreateLumimeter(){
 	
 	try{
 		lumimeter = new deLumimeter(this);
-		if(! lumimeter) DETHROW(deeOutOfMemory);
+		if(!lumimeter) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadLumimeter(lumimeter);
 		
@@ -103,7 +103,7 @@ void deLumimeterManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(lumimeter){
-		if(! lumimeter->GetPeerGraphic()){
+		if(!lumimeter->GetPeerGraphic()){
 			graSys.LoadLumimeter(lumimeter);
 		}
 		

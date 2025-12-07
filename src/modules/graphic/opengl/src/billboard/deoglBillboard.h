@@ -92,20 +92,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Billboard. */
-	inline const deBillboard &GetBillboard() const{return pBillboard;}
+	inline const deBillboard &GetBillboard() const{ return pBillboard; }
 	
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{return pRBillboard;}
+	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
@@ -128,8 +128,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition){
-	if(! target) DETHROW(deeInvalidParam);
+	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	

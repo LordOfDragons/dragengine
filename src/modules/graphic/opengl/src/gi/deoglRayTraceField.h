@@ -92,28 +92,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Field origin. */
-	inline const decVector &GetOrigin() const{return pOrigin;}
+	inline const decVector &GetOrigin() const{ return pOrigin; }
 	
 	/** Field size. */
-	inline const decVector &GetSize() const{return pSize;}
+	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** Count of probes along each axis. */
-	inline const decPoint3 &GetResolution() const{return pResolution;}
+	inline const decPoint3 &GetResolution() const{ return pResolution; }
 	
 	/** Coordinate clamping. */
-	inline const decPoint3 &GetCoordClamp() const{return pCoordClamp;}
+	inline const decPoint3 &GetCoordClamp() const{ return pCoordClamp; }
 	
 	/** Spacing between probes in each direction. */
-	inline const decVector &GetSpacing() const{return pSpacing;}
+	inline const decVector &GetSpacing() const{ return pSpacing; }
 	
 	/** Size of single probe image. */
-	inline int GetProbeSize() const{return pProbeSize;}
+	inline int GetProbeSize() const{ return pProbeSize; }
 	
 	/** Count of probes per line. */
-	inline int GetProbesPerLine() const{return pProbesPerLine;}
+	inline int GetProbesPerLine() const{ return pProbesPerLine; }
 	
 	/**
 	 * Init field parameters.
@@ -134,14 +134,14 @@ public:
 	
 	
 	/** Ray texture. */
-	inline deoglTexture &GetTextureRays(){return pTexRays;}
-	inline const deoglTexture &GetTextureRays() const{return pTexRays;}
+	inline deoglTexture &GetTextureRays(){ return pTexRays; }
+	inline const deoglTexture &GetTextureRays() const{ return pTexRays; }
 	
 	/** Ray fbo or NULL. */
-	inline const deoglFramebuffer::Ref &GetFBORays(){return pFBORays;}
+	inline const deoglFramebuffer::Ref &GetFBORays(){ return pFBORays; }
 	
 	/** UBO. */
-	inline deoglSPBlockUBO &GetUBO() const{return pUBO;}
+	inline deoglSPBlockUBO &GetUBO() const{ return pUBO; }
 	
 	
 	

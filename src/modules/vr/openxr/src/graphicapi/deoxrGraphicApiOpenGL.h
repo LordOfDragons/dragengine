@@ -119,7 +119,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shared oxr. */
-	inline deVROpenXR &GetOxr() const{return pOxr;}
+	inline deVROpenXR &GetOxr() const{ return pOxr; }
 	
 	/** Load. */
 	void Load();

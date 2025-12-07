@@ -95,7 +95,7 @@ void deCaptureCanvasManager::SystemGraphicLoad(){
 	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 	
 	while(captureCanvas){
-		if(! captureCanvas->GetPeerGraphic()){
+		if(!captureCanvas->GetPeerGraphic()){
 			GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
 		}
 		

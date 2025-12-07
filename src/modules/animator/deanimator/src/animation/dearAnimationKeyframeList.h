@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of keyframes. */
-	inline int GetCount() const{return pKeyframeCount;}
+	inline int GetCount() const{ return pKeyframeCount; }
 	/** Retrieves a keyframe by index. */
 	dearAnimationKeyframe &GetAt(int index) const;
 	/**

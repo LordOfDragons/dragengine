@@ -89,7 +89,7 @@ void dewiDevice::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -123,7 +123,7 @@ int dewiDevice::GetButtonCount() const{
 }
 
 void dewiDevice::AddButton(dewiDeviceButton *button){
-	if(! button){
+	if(!button){
 		DETHROW(deeNullPointer);
 	}
 	pButtons.Add(button);
@@ -192,7 +192,7 @@ int dewiDevice::GetAxisCount() const{
 }
 
 void dewiDevice::AddAxis(dewiDeviceAxis *axis){
-	if(! axis){
+	if(!axis){
 		DETHROW(deeNullPointer);
 	}
 	pAxes.Add(axis);
@@ -261,7 +261,7 @@ int dewiDevice::GetFeedbackCount() const{
 }
 
 void dewiDevice::AddFeedback(dewiDeviceFeedback *feedback){
-	if(! feedback){
+	if(!feedback){
 		DETHROW(deeNullPointer);
 	}
 	pFeedbacks.Add(feedback);
@@ -343,7 +343,7 @@ void dewiDevice::Update(){
 }
 
 void dewiDevice::SendDirtyAxisEvents(){
-	if(! pDirtyAxesValues){
+	if(!pDirtyAxesValues){
 		return;
 	}
 	

@@ -64,7 +64,7 @@ void igdeMenuSeparator::CreateNativeWidget(){
 }
 
 void igdeMenuSeparator::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

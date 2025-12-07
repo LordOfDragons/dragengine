@@ -78,7 +78,7 @@ public:
 	static decrbCoreFault *GetGlobalCoreFault();
 	
 	/** Retrieves the module. */
-	inline deCRBasic *GetModule() const{return pModule;}
+	inline deCRBasic *GetModule() const{ return pModule; }
 	/** Handle a segmentation fault. */
 	void HandleSegFault(int error, void *memoryLocation, void *ptrContext);
 	/** Handle an unhandled exception. */

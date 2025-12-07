@@ -73,7 +73,7 @@ projTestRunCommandThread::~projTestRunCommandThread(){
 void projTestRunCommandThread::Run(){
 	int command;
 	
-	while(! pAbort){
+	while(!pAbort){
 		// read a command from the pipe. blocks the thread until the pipe has a command.
 		// in the unholy case of the game crashing an exception is thrown. in this case
 		// we just go home an leave the cleaning up to the parent process.
@@ -127,7 +127,7 @@ int projTestRunCommandThread::ReadCommandFromPipe(){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(! ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, NULL)){
+	if(!ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 	if(bytesRead < sizeof(command)){
@@ -135,7 +135,7 @@ int projTestRunCommandThread::ReadCommandFromPipe(){
 	}
 	
 	#else
-	while(! pAbort){
+	while(!pAbort){
 		const ssize_t bytes = read(pProcess.GetPipeIn(), &command, sizeof(command));
 		if(bytes == sizeof(command)){
 			break;

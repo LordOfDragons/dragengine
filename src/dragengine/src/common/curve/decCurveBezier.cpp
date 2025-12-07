@@ -171,13 +171,13 @@ bool decCurveBezier::operator==(const decCurveBezier &curve) const{
 	for(i=0; i<pPointCount; i++){
 		const decCurveBezierPoint &point = curve.GetPointAt(i);
 		
-		if(! pPoints[i].GetPoint().IsEqualTo(point.GetPoint())){
+		if(!pPoints[i].GetPoint().IsEqualTo(point.GetPoint())){
 			return false;
 		}
-		if(! pPoints[i].GetHandle1().IsEqualTo(point.GetHandle1())){
+		if(!pPoints[i].GetHandle1().IsEqualTo(point.GetHandle1())){
 			return false;
 		}
-		if(! pPoints[i].GetHandle2().IsEqualTo(point.GetHandle2())){
+		if(!pPoints[i].GetHandle2().IsEqualTo(point.GetHandle2())){
 			return false;
 		}
 	}
@@ -186,7 +186,7 @@ bool decCurveBezier::operator==(const decCurveBezier &curve) const{
 }
 
 bool decCurveBezier::operator!=(const decCurveBezier &curve) const{
-	return ! (*this == curve);
+	return !(*this == curve);
 }
 
 decCurveBezier &decCurveBezier::operator=(const decCurveBezier &curve){
@@ -195,7 +195,7 @@ decCurveBezier &decCurveBezier::operator=(const decCurveBezier &curve){
 	
 	if(pointCount > 0){
 		newArray = new decCurveBezierPoint[pointCount];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		for(p=0; p<pointCount; p++){
 			newArray[p] = curve.pPoints[p];

@@ -21,7 +21,7 @@ DumpChain::~DumpChain(){
 }
 
 void DumpChain::dump(DUContext *context, bool imported){
-	if(! context){
+	if(!context){
 		return;
 	}
 	
@@ -31,7 +31,7 @@ void DumpChain::dump(DUContext *context, bool imported){
 		<< context->transformFromLocalRevision(context->range()) << " " << context
 		<< " " << (dynamic_cast<TopDUContext*>(context) ? "top-context" : "");
 	
-	if(! imported)	{
+	if(!imported)	{
 		foreach(Declaration *dec, context->localDeclarations()){
 			const auto uses = dec->uses();
 			qDebug() << "KDevDScript: ContextBuilder" << QString((indent + 1) * 2, ' ')
@@ -54,7 +54,7 @@ void DumpChain::dump(DUContext *context, bool imported){
 	}
 	
 	++indent;
-	if(! imported){
+	if(!imported){
 		foreach(const DUContext::Import &parent, context->importedParentContexts()){
 			dump(parent.context(dynamic_cast<TopDUContext*>(context)), true);
 		}

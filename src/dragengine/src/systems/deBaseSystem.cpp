@@ -57,7 +57,7 @@ pRequiredModuleType(requiredModuleType),
 pRunning(false),
 pFailed(false)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -89,14 +89,14 @@ bool deBaseSystem::CanStart(){
 }
 
 void deBaseSystem::Start(){
-	if(pRunning || ! CanStart()){
+	if(pRunning || !CanStart()){
 		DETHROW(deeInvalidAction);
 	}
 	
 	LogInfoFormat("Starting %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
-	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
+	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
 	
 	if(resumeParallelProcessing){
 		parallelProcessing.Pause();
@@ -124,14 +124,14 @@ void deBaseSystem::Start(){
 }
 
 void deBaseSystem::Stop(){
-	if(! pRunning || ! pActiveLoadableModule){
+	if(!pRunning || !pActiveLoadableModule){
 		return;
 	}
 	
 	LogInfoFormat("Stopping %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
-	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
+	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
 	
 	if(resumeParallelProcessing){
 		parallelProcessing.Pause();
@@ -183,7 +183,7 @@ void deBaseSystem::ClearPermanents(){
 }
 
 void deBaseSystem::SetActiveModule(deLoadableModule *module){
-	if(! module || ! module->IsLoaded() || module->GetType() != pRequiredModuleType){
+	if(!module || !module->IsLoaded() || module->GetType() != pRequiredModuleType){
 		DETHROW(deeInvalidParam);
 	}
 	if(pRunning){

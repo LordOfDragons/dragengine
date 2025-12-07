@@ -51,7 +51,7 @@
 /////////////////
 
 debpRayResultCallback::debpRayResultCallback(deCollisionInfo *colinfo){
-	if(! colinfo){
+	if(!colinfo){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ void debpRayResultCallback::Reset(){
 
 void debpRayResultCallback::SetTestRay(const decDVector &rayOrigin, const decDVector &rayDirection,
 	const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -90,7 +90,7 @@ void debpRayResultCallback::SetTestRay(const decDVector &rayOrigin, const decDVe
 
 bool debpRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if(! RayResultCallback::needsCollision(proxy0)){
+	if(!RayResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
@@ -109,7 +109,7 @@ bool debpRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 		}
 		
 		// check if a collision is possible according to the collider listener
-		if(! pListener->CanHitCollider(NULL, engCollider)){
+		if(!pListener->CanHitCollider(NULL, engCollider)){
 			return false;
 		}
 		//printf( "needsCollision %p\n", colObj.GetOwnerCollider() );

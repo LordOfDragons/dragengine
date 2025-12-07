@@ -59,7 +59,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of names. */
-	inline int GetNameCount() const{return pNameCount;}
+	inline int GetNameCount() const{ return pNameCount; }
 
 	/** Retrieves the name at the given index. */
 	const decString &GetNameAt(int index) const;

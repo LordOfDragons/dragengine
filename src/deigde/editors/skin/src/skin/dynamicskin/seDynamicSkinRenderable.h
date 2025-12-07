@@ -105,24 +105,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** Retrieves the parent dynamic skin or NULL if there is none. */
-	inline seDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline seDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	/** Sets the parent dynamic skin or NULL if there is none. */
 	void SetDynamicSkin(seDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the renderable type. */
-	inline eRenderableTypes GetRenderableType() const{return pRenderableType;}
+	inline eRenderableTypes GetRenderableType() const{ return pRenderableType; }
 	/** Sets the renderable type. */
 	void SetRenderableType(eRenderableTypes type);
 	
 	/** Determines if the renderable is the active one. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	/** Sets if the renderable is the active one. */
 	void SetActive(bool active);
 	
@@ -151,18 +151,18 @@ public:
 	/** \name Value Renderable */
 	/*@{*/
 	/** Retrieves the value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	/** Sets the value. */
 	void SetValue(float value);
 	
 	/** \brief Slider lower range. */
-	inline float GetSliderValueLower() const{return pSliderValueLower;}
+	inline float GetSliderValueLower() const{ return pSliderValueLower; }
 	
 	/** \brief Set slider range. */
 	void SetSliderLowerRange(float range);
 	
 	/** \brief Slider upper range. */
-	inline float GetSliderValueUpper() const{return pSliderValueUpper;}
+	inline float GetSliderValueUpper() const{ return pSliderValueUpper; }
 	
 	/** \brief Set slider range. */
 	void SetSliderUpperRange(float range);
@@ -171,7 +171,7 @@ public:
 	/** \name Color Renderable */
 	/*@{*/
 	/** Retrieves the static color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	/** Sets the static color. */
 	void SetColor(const decColor &color);
 	/*@}*/
@@ -179,11 +179,11 @@ public:
 	/** \name Image Renderable */
 	/*@{*/
 	/** Retrieves the image path. */
-	inline const decString &GetImagePath() const{return pPathImage;}
+	inline const decString &GetImagePath() const{ return pPathImage; }
 	/** Sets the image path. */
 	void SetImagePath(const char *imagePath);
 	/** Retrieves the engine image or NULL if not set. */
-	inline deImage *GetEngineImage() const{return pEngImage;}
+	inline deImage *GetEngineImage() const{ return pEngImage; }
 	/** Update image. */
 	void UpdateImage();
 	
@@ -194,13 +194,13 @@ public:
 	/** \name Video Renderable */
 	/*@{*/
 	/** Retrieves the video path. */
-	inline const decString &GetVideoPath() const{return pPathVideo;}
+	inline const decString &GetVideoPath() const{ return pPathVideo; }
 	/** Sets the video path. */
 	void SetVideoPath(const char *videoPath);
 	/** Retrieves the engine video or NULL if not set. */
-	inline deVideo *GetEngineVideo() const{return pEngVideo;}
+	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
 	/** Retrieves the engine video player or NULL if not set. */
-	inline deVideoPlayer *GetEngineVideoPlayer() const{return pEngVideoPlayer;}
+	inline deVideoPlayer *GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
 	/** Update video. */
 	void UpdateVideo();
 	

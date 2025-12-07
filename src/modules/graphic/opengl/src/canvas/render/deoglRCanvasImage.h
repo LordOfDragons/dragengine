@@ -54,25 +54,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image or nullptr if not set. */
-	inline const deoglRImage::Ref &GetImage() const{return pImage;}
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image or nullptr if not set. */
 	void SetImage(deoglRImage *image);
 	
 	/** Texture coordinate transformation matrix. */
-	inline const decTexMatrix2 &GetTCTransform() const{return pTCTransform;}
+	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
 	void SetTCTransform(const decTexMatrix2 &transform);
 	
 	/** Texture coordinates clamp minimum. */
-	inline const decVector2 &GetTCClampMinimum() const{return pTCClampMin;}
+	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
 	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum(const decVector2 &clamp);
 	
 	/** Texture coordinates clamp maximum. */
-	inline const decVector2 &GetTCClampMaximum() const{return pTCClampMax;}
+	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
 	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum(const decVector2 &clamp);

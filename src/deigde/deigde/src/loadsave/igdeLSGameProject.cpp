@@ -58,7 +58,7 @@
 ////////////////////////////
 
 igdeLSGameProject::igdeLSGameProject(igdeLoadSaveSystem *lssys){
-	if(! lssys){
+	if(!lssys){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -78,7 +78,7 @@ igdeLSGameProject::~igdeLSGameProject(){
 ///////////////
 
 void igdeLSGameProject::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void igdeLSGameProject::SetName(const char *name){
 }
 
 void igdeLSGameProject::SetPattern(const char *pattern){
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ void igdeLSGameProject::SetPattern(const char *pattern){
 }
 
 void igdeLSGameProject::SetDefaultExtension(const char *extension){
-	if(! extension){
+	if(!extension){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void igdeLSGameProject::SetDefaultExtension(const char *extension){
 ///////////////////////
 
 void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, decBaseFileReader *file){
-	if(! project || ! file){
+	if(!project || !file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -174,7 +174,7 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 }
 
 void igdeLSGameProject::Save(igdeGameProject *project, decBaseFileWriter *file){
-	if(! project || ! file){
+	if(!project || !file){
 		DETHROW(deeInvalidParam);
 	}
 	

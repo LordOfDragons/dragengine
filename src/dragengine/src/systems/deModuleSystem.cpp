@@ -255,7 +255,7 @@ deLoadableModule *deModuleSystem::GetModuleAt(int index) const{
 }
 
 deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -265,7 +265,7 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
 	
 	for(i=0; i<count; i++){
 		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetName() != name || ! module->GetEnabled()){
+		if(module->GetName() != name || !module->GetEnabled()){
 			continue;
 		}
 		if(latestModule && CompareVersion(module->GetVersion(), latestModule->GetVersion()) <= 0){
@@ -279,7 +279,7 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
 }
 
 deLoadableModule *deModuleSystem::GetModuleNamed(const char *name, const char *version) const{
-	if(! name || ! version){
+	if(!name || !version){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -297,7 +297,7 @@ deLoadableModule *deModuleSystem::GetModuleNamed(const char *name, const char *v
 }
 
 deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const char *version) const{
-	if(! name || ! version){
+	if(!name || !version){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -307,7 +307,7 @@ deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const 
 	
 	for(i=0; i<count; i++){
 		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
-		if(module->GetName() != name || ! module->GetEnabled()
+		if(module->GetName() != name || !module->GetEnabled()
 		|| CompareVersion(module->GetVersion(), version) < 0){
 			continue;
 		}
@@ -329,7 +329,7 @@ deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) con
 		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
 		if(module->GetType() == type && module->IsLoaded() && module->GetEnabled()){
 			useModule = module;
-			if(! module->GetIsFallback()){
+			if(!module->GetIsFallback()){
 				break;
 			}
 		}
@@ -339,7 +339,7 @@ deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) con
 }
 
 void deModuleSystem::AddModule(deLoadableModule *module){
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	if(GetModuleNamed(module->GetName(), module->GetVersion())){
@@ -353,7 +353,7 @@ void deModuleSystem::AddModule(deLoadableModule *module){
 }
 
 deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *filename) const{
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -370,15 +370,15 @@ deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *fi
 		const int patternCount = patternList.GetCount();
 		
 		for(j=0; j<patternCount; j++){
-			if(! module->GetEnabled()){
+			if(!module->GetEnabled()){
 				continue;
 			}
-			if(! MatchesPattern(filename, patternList.GetAt(j))){
+			if(!MatchesPattern(filename, patternList.GetAt(j))){
 				continue;
 			}
 			
 			// no latest module found. use this module
-			if(! latestModule){
+			if(!latestModule){
 				latestModule = module;
 				
 			// latest module has been found and this module is fallback. skip module
@@ -405,13 +405,13 @@ deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *fi
 deBaseModule *deModuleSystem::GetModuleAbleToLoad(eModuleTypes type, const char *filename) const{
 	deLoadableModule * const module = FindMatching(type, filename);
 	
-	if(! module){
+	if(!module){
 		GetEngine()->GetLogger()->LogErrorFormat(LOGSOURCE, "No %s module found able to handle file '%s'",
 			GetTypeDirectory(type), filename);
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! module->IsLoaded()){
+	if(!module->IsLoaded()){
 		GetEngine()->GetLogger()->LogErrorFormat(LOGSOURCE, "Module %s would be able to handle file '%s' but is not loaded",
 			module->GetName().GetString(), filename);
 		DETHROW(deeInvalidParam);
@@ -428,7 +428,7 @@ void deModuleSystem::ServicesAddVFSContainers(deVirtualFileSystem &vfs, const ch
 	
 	for(i=0; i<pModules.GetCount(); i++){
 		const deLoadableModule &module = *((deLoadableModule*)pModules.GetAt(i));
-		if(module.GetType() == deModuleSystem::eModuleTypes::emtService && ! names.Has(module.GetName())){
+		if(module.GetType() == deModuleSystem::eModuleTypes::emtService && !names.Has(module.GetName())){
 			names.Add(module.GetName());
 		}
 	}
@@ -450,7 +450,7 @@ void deModuleSystem::ServicesAddVFSContainers(deVirtualFileSystem &vfs, const ch
 
 int deModuleSystem::CompareVersion(const char *version1, const char *version2)
 {
-    if(! version1 || ! version2){
+    if(!version1 || !version2){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -492,7 +492,7 @@ int deModuleSystem::CompareVersion(const char *version1, const char *version2)
 }
 
 bool deModuleSystem::MatchesPattern(const char *filename, const char *pattern) const{
-	if(! filename || ! pattern){
+	if(!filename || !pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -531,10 +531,10 @@ bool deModuleSystem::MatchesPattern(const char *filename, const char *pattern) c
 		while(*pattern && *pattern != '.'){
 			pattern++;
 		}
-		if(! *pattern) break;
+		if(!*pattern) break;
 		
 		deli = pattern;
-		while(*deli && ! isspace(*deli)){
+		while(*deli && !isspace(*deli)){
 			deli++;
 		}
 		
@@ -836,7 +836,7 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 				modulePath.AddUnixPath("module.xml");
 				
 				// test if module file exists and is a regular file
-				if(! vfs->ExistsFile(modulePath)
+				if(!vfs->ExistsFile(modulePath)
 				|| vfs->GetFileType(modulePath) != deVFSContainer::eftRegularFile){
 					continue;
 				}

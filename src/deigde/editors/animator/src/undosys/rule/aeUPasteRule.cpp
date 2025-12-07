@@ -47,7 +47,7 @@ pAnimator(NULL),
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();
 	
-	if(! animator || ruleCount == 0){
+	if(!animator || ruleCount == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -134,7 +134,7 @@ void aeUPasteRule::Redo(){
 			// added modify all links. this should be safe since only pasted links not present
 			// in the animator can be potentially modified
 			aeController * const controller = link->GetController();
-			if(controller && ! controllers.Has(controller)){
+			if(controller && !controllers.Has(controller)){
 				aeController * const sameNameController = controllers.GetNamed(controller->GetName());
 				
 				if(sameNameController){

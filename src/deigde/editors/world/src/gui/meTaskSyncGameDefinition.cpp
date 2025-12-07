@@ -71,7 +71,7 @@ meTaskSyncGameDefinition::~meTaskSyncGameDefinition(){
 ///////////////
 
 bool meTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetWorld()){
+	if(!pWindowMain.GetWorld()){
 		return false;
 	}
 	

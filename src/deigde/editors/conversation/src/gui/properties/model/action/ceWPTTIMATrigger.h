@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCATrigger *GetActionTrigger() const{return (ceCATrigger*)GetAction();}
+	inline ceCATrigger *GetActionTrigger() const{ return (ceCATrigger*)GetAction(); }
 	
 	/** \brief Text representation for action. */
 	static const char *GetActionText(ceCATrigger::eActions action);

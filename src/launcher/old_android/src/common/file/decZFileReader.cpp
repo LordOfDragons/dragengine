@@ -64,7 +64,7 @@ pContentSize(0),
 pContentCapacity(0),
 pContentPosition(0)
 {
-	if(! reader){
+	if(!reader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -168,7 +168,7 @@ void decZFileReader::SetPositionEnd(int position){
 ////////////
 
 void decZFileReader::Read(void *buffer, int size){
-	if(! buffer || size < 0){
+	if(!buffer || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -223,7 +223,7 @@ void decZFileReader::pSetContentPosition(int position){
 				}
 				
 				void * const content = realloc(pContent, newCapacity);
-				if(! content){
+				if(!content){
 					DETHROW(deeOutOfMemory);
 				}
 				pContent = content;
@@ -237,7 +237,7 @@ void decZFileReader::pSetContentPosition(int position){
 			const int newCapacity = pContentCapacity - (int)zstream->avail_out;
 			
 			void * const content = realloc(pContent, newCapacity); // reduce to used size
-			if(! content){
+			if(!content){
 				DETHROW(deeOutOfMemory);
 			}
 			

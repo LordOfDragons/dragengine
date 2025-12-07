@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the delegee or NULL. */
-	inline deBaseScriptingTouchSensor *GetDelegee() const{return pDelegee;}
+	inline deBaseScriptingTouchSensor *GetDelegee() const{ return pDelegee; }
 	/** Sets the delegee or NULL. */
 	void SetDelegee(deBaseScriptingTouchSensor *delegee);
 	/*@}*/

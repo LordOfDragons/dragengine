@@ -56,9 +56,9 @@ protected:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{return pLogger;}
+	inline deLogger *GetLogger() const{ return pLogger; }
 	/** Retrieves the logger source. */
-	inline const decString &GetLoggerSource() const{return pLoggerSource;}
+	inline const decString &GetLoggerSource() const{ return pLoggerSource; }
 	
 	bool pHasAttribute(const decXmlElementTag &tag, const char *name) const;
 	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name) const;

@@ -327,7 +327,7 @@ void deainpDevice::Update(){
 }
 
 void deainpDevice::SendDirtyAxisEvents(){
-	if(! pDirtyAxesValues){
+	if(!pDirtyAxesValues){
 		return;
 	}
 	

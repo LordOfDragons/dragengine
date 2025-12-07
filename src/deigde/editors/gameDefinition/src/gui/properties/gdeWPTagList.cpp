@@ -63,7 +63,7 @@ public:
 	pPanel(panel), pComboBox(comboBox), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -84,7 +84,7 @@ public:
 		"Remove tag"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	igdeAction("Clear", NULL, "Clear tag"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		

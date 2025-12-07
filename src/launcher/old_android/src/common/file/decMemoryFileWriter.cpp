@@ -42,13 +42,13 @@ decMemoryFileWriter::decMemoryFileWriter(decMemoryFile *memoryFile, bool append)
 pFile(NULL),
 pPosition(0)
 {
-	if(! memoryFile){
+	if(!memoryFile){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pFile = memoryFile;
 	
-	if(! append){
+	if(!append){
 		memoryFile->Resize(0, false);
 	}
 	
@@ -108,7 +108,7 @@ void decMemoryFileWriter::Write(const void *buffer, int size){
 		return;
 	}
 	
-	if(! buffer || size < 0){
+	if(!buffer || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 	

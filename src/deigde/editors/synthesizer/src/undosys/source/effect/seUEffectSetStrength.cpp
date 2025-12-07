@@ -43,7 +43,7 @@
 seUEffectSetStrength::seUEffectSetStrength(seEffect *effect, float newStrength) :
 pEffect(NULL)
 {
-	if(! effect){
+	if(!effect){
 		DETHROW(deeInvalidParam);
 	}
 	

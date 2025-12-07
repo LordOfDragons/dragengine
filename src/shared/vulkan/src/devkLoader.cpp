@@ -74,10 +74,10 @@ pLibHandle(NULL)
 		pvkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)GetProcAddress(pLibHandle, "vkGetDeviceProcAddr");
 		#endif
 		
-		if(! pvkGetInstanceProcAddr){
+		if(!pvkGetInstanceProcAddr){
 			DETHROW_INFO(deeInvalidAction, "Function vkGetInstanceProcAddr not found");
 		}
-		if(! pvkGetDeviceProcAddr){
+		if(!pvkGetDeviceProcAddr){
 			DETHROW_INFO(deeInvalidAction, "Function vkGetDeviceProcAddr not found");
 		}
 		
@@ -133,7 +133,7 @@ void devkLoader::pLoadVulkan(){
 	
 	#ifdef HAS_LIB_DL
 	pLibHandle = dlopen("libvulkan.so.1", RTLD_NOW);
-	if(! pLibHandle){
+	if(!pLibHandle){
 		pVulkan.GetModule().LogErrorFormat("dlerror: %s.", dlerror());
 		DETHROW_INFO(deeInvalidAction, "Load Vulkan library failed");
 	}
@@ -144,7 +144,7 @@ void devkLoader::pLoadVulkan(){
 	deOSWindows::Utf8ToWide("vulkan-1.dll", widePath, MAX_PATH);
 	pLibHandle = LoadLibrary(widePath);
 	
-	if(! pLibHandle){
+	if(!pLibHandle){
 		int err = GetLastError();
 		wchar_t messageBuffer[251];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,

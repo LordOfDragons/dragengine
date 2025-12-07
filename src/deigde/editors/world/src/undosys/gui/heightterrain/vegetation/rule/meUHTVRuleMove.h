@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the new position. */
-	inline const decVector2 &GetNewPosition() const{return pNewPosition;}
+	inline const decVector2 &GetNewPosition() const{ return pNewPosition; }
 	/** Sets the new position triggering. */
 	void SetNewPosition(const decVector2 &position);
 	

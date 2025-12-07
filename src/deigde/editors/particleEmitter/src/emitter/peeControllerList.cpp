@@ -110,13 +110,13 @@ bool peeControllerList::HasNamed(const char *name) const{
 }
 
 void peeControllerList::Add(peeController *controller){
-	if(! controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pControllers.Add(controller);
 }
 
 void peeControllerList::InsertAt(peeController *controller, int index){
-	if(! controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pControllers.Insert(controller, index);
 }

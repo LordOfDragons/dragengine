@@ -173,7 +173,7 @@ void deoglPropField::TestLODLevel(const decDVector &camera){
 	// lod level and is stored. otherwise the new lod level is compared
 	// against the best one. the real change is carried out during the update
 	// call later on
-	if(! pCheckLOD || lodLevel < pBestLOD){
+	if(!pCheckLOD || lodLevel < pBestLOD){
 		pBestLOD = lodLevel;
 		pCheckLOD = true;
 	}

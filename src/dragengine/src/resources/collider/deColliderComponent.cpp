@@ -78,7 +78,7 @@ void deColliderComponent::SetComponent(deComponent *component){
 
 
 void deColliderComponent::CopyStatesFromComponent(){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -112,7 +112,7 @@ void deColliderComponent::CopyStatesFromComponent(){
 }
 
 void deColliderComponent::CopyStateFromComponent(int bone){
-	if(! pComponent || bone < 0 || bone >= GetBoneCount()){
+	if(!pComponent || bone < 0 || bone >= GetBoneCount()){
 		return;
 	}
 	
@@ -142,7 +142,7 @@ void deColliderComponent::CopyStateFromComponent(int bone){
 }
 
 void deColliderComponent::CopyStatesToComponent() const{
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -157,7 +157,7 @@ void deColliderComponent::CopyStatesToComponent() const{
 	for(i=0; i<boneCount; i++){
 		deComponentBone &bone = pComponent->GetBoneAt(i);
 		if(rig){
-			if(! rig->GetBoneAt(i).GetDynamic()){
+			if(!rig->GetBoneAt(i).GetDynamic()){
 				pComponent->UpdateBoneAt(i);
 				continue; // state is not defined
 			}
@@ -188,7 +188,7 @@ void deColliderComponent::CopyStatesToComponent() const{
 }
 
 void deColliderComponent::CopyStateToComponent(int bone) const{
-	if(! pComponent || bone < 0 || bone >= GetBoneCount()){
+	if(!pComponent || bone < 0 || bone >= GetBoneCount()){
 		return;
 	}
 	
@@ -221,7 +221,7 @@ void deColliderComponent::CopyStateToComponent(int bone) const{
 
 void deColliderComponent::InitWeightAttachment(deColliderAttachment &attachment, int face){
 	deBasePhysicsCollider * const peer = GetPeerPhysics();
-	if(! peer){
+	if(!peer){
 		DETHROW(deeInvalidParam);
 	}
 	

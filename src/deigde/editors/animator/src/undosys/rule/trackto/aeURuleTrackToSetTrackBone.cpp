@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, const char *newName){
-	if(! rule || ! newName){
+	if(!rule || !newName){
 		DETHROW(deeInvalidParam);
 	}
 	

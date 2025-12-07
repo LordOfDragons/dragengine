@@ -74,7 +74,7 @@ deErrorTraceValue *deErrorTraceValue::GetSubValue(int index) const{
 }
 
 deErrorTraceValue *deErrorTraceValue::FindSubValue(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	for(i=0; i<pSubValueCount; i++){
 		if(strcmp(name, pSubValues[i]->GetName()) == 0) return pSubValues[i];
@@ -83,11 +83,11 @@ deErrorTraceValue *deErrorTraceValue::FindSubValue(const char *name) const{
 }
 
 void deErrorTraceValue::AddSubValue(deErrorTraceValue *value){
-	if(! value || FindSubValue(value->GetName())) DETHROW(deeInvalidParam);
+	if(!value || FindSubValue(value->GetName())) DETHROW(deeInvalidParam);
 	if(pSubValueCount == pSubValueSize){
 		int i, newSize = pSubValueSize * 3 / 2 + 1;
 		deErrorTraceValue **newArray = new deErrorTraceValue*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pSubValues){
 			for(i=0; i<pSubValueCount; i++) newArray[i] = pSubValues[i];
 			delete [] pSubValues;
@@ -116,7 +116,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValue(const char *name, const char *
 	deErrorTraceValue *newSubValue = NULL;
 	try{
 		newSubValue = new deErrorTraceValue(name, value);
-		if(! newSubValue) DETHROW(deeOutOfMemory);
+		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -135,7 +135,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);
-		if(! newSubValue) DETHROW(deeOutOfMemory);
+		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -154,7 +154,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float v
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);
-		if(! newSubValue) DETHROW(deeOutOfMemory);
+		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -171,7 +171,7 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueBool(const char *name, bool val
 		}else{
 			newSubValue = new deErrorTraceValue(name, "False");
 		}		
-		if(! newSubValue) DETHROW(deeOutOfMemory);
+		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;

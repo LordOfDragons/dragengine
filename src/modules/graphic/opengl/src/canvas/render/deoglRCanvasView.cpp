@@ -69,7 +69,7 @@ deoglRCanvasView::~deoglRCanvasView(){
 ///////////////
 
 void deoglRCanvasView::AddChild(deoglRCanvas *canvas){
-	if(! canvas){
+	if(!canvas){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -142,7 +142,7 @@ int componentCount, int bitCount){
 void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask){
 	PrepareForRenderRender(renderPlanMask);
 	
-	if(! pRenderTarget->GetTextureDirty()){
+	if(!pRenderTarget->GetTextureDirty()){
 		return;
 	}
 	

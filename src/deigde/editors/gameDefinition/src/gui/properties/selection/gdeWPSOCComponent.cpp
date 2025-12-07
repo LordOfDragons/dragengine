@@ -124,7 +124,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component){
+		if(!component){
 			return;
 		}
 		
@@ -148,7 +148,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component){
+		if(!component){
 			return;
 		}
 		
@@ -172,7 +172,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component){
+		if(!component){
 			return;
 		}
 		
@@ -200,7 +200,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component){
+		if(!component){
 			return;
 		}
 		
@@ -227,7 +227,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetModelPath() == editPath->GetPath()){
+		if(!component || component->GetModelPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -244,7 +244,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetSkinPath() == editPath->GetPath()){
+		if(!component || component->GetSkinPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -261,7 +261,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetRigPath() == editPath->GetPath()){
+		if(!component || component->GetRigPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -278,7 +278,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetAnimatorPath() == editPath->GetPath()){
+		if(!component || component->GetAnimatorPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -296,7 +296,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetAnimationPath() == editPath->GetPath()){
+		if(!component || component->GetAnimationPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -314,7 +314,7 @@ public:
 	
 	virtual void OnTextChanged (igdeTextField *textField) override{
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetMove() == textField->GetText()){
+		if(!component || component->GetMove() == textField->GetText()){
 			return;
 		}
 		
@@ -331,7 +331,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetOcclusionMeshPath() == editPath->GetPath()){
+		if(!component || component->GetOcclusionMeshPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -349,7 +349,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component || component->GetAudioModelPath() == editPath->GetPath()){
+		if(!component || component->GetAudioModelPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -381,7 +381,7 @@ public:
 		return new gdeUOCComponentToggleDoNotScale(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionStatic : public cBaseAction{
@@ -393,7 +393,7 @@ public:
 		return new gdeUOCComponentToggleStatic(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionRenderEnvMap : public cBaseAction{
@@ -405,7 +405,7 @@ public:
 		return new gdeUOCComponentToggleRenderEnvMap(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionAffectsAudio : public cBaseAction{
@@ -417,7 +417,7 @@ public:
 		return new gdeUOCComponentToggleAffectsAudio(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionLightShadowIgnore : public cBaseAction{
@@ -429,7 +429,7 @@ public:
 		return new gdeUOCComponentToggleLightShadowIgnore(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionPartialHide : public cBaseAction{
@@ -441,7 +441,7 @@ public:
 		return new gdeUOCComponentTogglePartialHide(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cActionAttachTarget : public cBaseAction{
@@ -453,7 +453,7 @@ public:
 		return new gdeUOCComponentToggleAttachTarget(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose! */}
+	virtual void Update(){/* empty on purpose!*/}
 };
 
 class cComboCollisionResponseType : public cBaseComboBoxListener{
@@ -532,7 +532,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCComponent * const component = pPanel.GetComponent();
-		if(! component){
+		if(!component){
 			return;
 		}
 		
@@ -606,7 +606,7 @@ public:
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture){
+		if(!texture){
 			return;
 		}
 		
@@ -654,7 +654,7 @@ public:
 			name = "Texture";
 			
 			while(true){
-				if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
+				if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
 					return NULL;
 				}
 				
@@ -679,7 +679,7 @@ public:
 	
 	virtual void Update(){
 		const gdeOCComponent * const component = pPanel.GetComponent();
-		SetEnabled(component && (pTextureName.IsEmpty() || ! component->GetTextures().HasNamed(pTextureName)));
+		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasNamed(pTextureName)));
 	}
 };
 
@@ -756,7 +756,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture || texture->GetPathSkin() == editPath->GetPath()){
+		if(!texture || texture->GetPathSkin() == editPath->GetPath()){
 			return;
 		}
 		
@@ -813,7 +813,7 @@ public:
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
+		if(!texture || texture->GetColorTint().IsEqualTo(colorBox->GetColor())){
 			return;
 		}
 		
@@ -831,7 +831,7 @@ public:
 	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
 		const decString &key = pPanel.GetTexturePropertyKey();
-		if(! texture || key.IsEmpty()){
+		if(!texture || key.IsEmpty()){
 			return NULL;
 		}
 		
@@ -843,7 +843,7 @@ public:
 			value = property->GetDefaultValue();
 		}
 		
-		if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
 			return NULL;
 		}
 		
@@ -853,7 +853,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetTexture() && ! pPanel.GetTexturePropertyKey().IsEmpty());
+		SetEnabled(pPanel.GetTexture() && !pPanel.GetTexturePropertyKey().IsEmpty());
 	}
 };
 
@@ -865,7 +865,7 @@ public:
 	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
 		const char * const key = pPanel.GetTexturePropertyValue();
-		if(! key || ! texture->GetProperties().Has(key)){
+		if(!key || !texture->GetProperties().Has(key)){
 			return NULL;
 		}
 		
@@ -908,17 +908,17 @@ public:
 	
 	virtual void OnDoubleClickItem(igdeIconListBox *listBox, int index){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		if(! texture){
+		if(!texture){
 			return;
 		}
 		
 		const decString &key = listBox->GetItemAt(index)->GetText();
-		if(! texture->GetProperties().Has(key)){
+		if(!texture->GetProperties().Has(key)){
 			return;
 		}
 		
 		decString value(texture->GetProperties().GetAt(key));
-		if(! igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value)){
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value)){
 			return;
 		}
 		
@@ -1387,7 +1387,7 @@ void gdeWPSOCComponent::SetEngineModelPath(const char *path){
 }
 
 void gdeWPSOCComponent::PrepareEngineModelPath(){
-	if(! pDirtyEngModelTexNames){
+	if(!pDirtyEngModelTexNames){
 		return;
 	}
 	

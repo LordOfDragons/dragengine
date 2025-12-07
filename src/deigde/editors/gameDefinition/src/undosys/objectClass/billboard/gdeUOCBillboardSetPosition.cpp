@@ -45,7 +45,7 @@ gdeOCBillboard *billboard, const decVector &newValue) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	

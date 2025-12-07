@@ -75,7 +75,7 @@ debnValueFloat::~debnValueFloat(){
 ///////////////
 
 bool debnValueFloat::UpdateValue(bool force){
-	if(! force && fabs(pValueFloat.GetFloat() - pLastValue) <= pValueFloat.GetPrecision()){
+	if(!force && fabs(pValueFloat.GetFloat() - pLastValue) <= pValueFloat.GetPrecision()){
 		return false;
 	}
 	

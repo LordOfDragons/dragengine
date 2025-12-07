@@ -42,7 +42,7 @@ gdeClipboardDataOCEnvMapProbe::gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *e
 igdeClipboardData(TYPE_NAME),
 pEnvMapProbe(NULL)
 {
-	if(! envMapProbe){
+	if(!envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

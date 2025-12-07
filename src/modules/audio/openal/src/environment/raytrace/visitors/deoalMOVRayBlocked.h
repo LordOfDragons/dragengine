@@ -77,19 +77,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decVector &GetRayOrigin() const{ return pRayOrigin; }
 	
 	/** \brief Ray direction. */
-	inline const decVector &GetRayDirection() const{return pRayDirection;}
+	inline const decVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Ray length. */
-	inline float GetRayLength() const{return pRayLength;}
+	inline float GetRayLength() const{ return pRayLength; }
 	
 	/** \brief Ray box minimum extend. */
-	inline const decVector &GetRayBoxMin() const{return pRayBoxMin;}
+	inline const decVector &GetRayBoxMin() const{ return pRayBoxMin; }
 	
 	/** \brief Ray box maximum extend. */
-	inline const decVector &GetRayBoxMax() const{return pRayBoxMax;}
+	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
 	void SetRay(const decVector &origin, const decVector &direction);
@@ -97,7 +97,7 @@ public:
 	
 	
 	/** \brief Ray is blocked. */
-	inline bool GetBlocked() const{return pBlocked;}
+	inline bool GetBlocked() const{ return pBlocked; }
 	
 	/** \brief Set if ray is blocked. */
 	void SetBlocked(bool blocked);

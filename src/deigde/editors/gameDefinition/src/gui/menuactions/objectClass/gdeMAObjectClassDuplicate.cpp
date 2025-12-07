@@ -60,7 +60,7 @@ gdeBaseAction(windowMain, "Duplicate Object Class...",
 
 igdeUndo *gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -82,7 +82,7 @@ igdeUndo *gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinition)
 
 void gdeMAObjectClassDuplicate::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

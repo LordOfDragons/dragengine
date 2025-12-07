@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -92,7 +92,7 @@ public:
 	/** \brief Pushes a source. */
 	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source);
 	
-	inline dsClass *GetClassSSChainTarget() const{return pClsSSChainTarget;}
+	inline dsClass *GetClassSSChainTarget() const{ return pClsSSChainTarget; }
 	/*@}*/
 	
 	

@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created effect or \em NULL if not present. */
-	inline desynSynthesizerEffect *GetEffect() const{return pEffect;}
+	inline desynSynthesizerEffect *GetEffect() const{ return pEffect; }
 	
 	/** \brief Reset. */
 	void Reset();

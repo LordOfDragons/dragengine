@@ -44,7 +44,7 @@
 
 ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *strip, float newDuration){
-	if(! topic || ! actorSpeak || ! strip){
+	if(!topic || !actorSpeak || !strip){
 		DETHROW(deeInvalidParam);
 	}
 	

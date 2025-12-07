@@ -67,7 +67,7 @@ public:
 	/** \brief Sets the string to the empty string. */
 	void Empty();
 	/** \brief Retrieves the count of characters in the unicode string. */
-	inline int GetLength() const{return pLength;}
+	inline int GetLength() const{ return pLength; }
 	/** \brief Retrieves the unicode character at the given location. */
 	int GetAt(int position) const;
 	/** \brief Sets the unicode character at the given location. */

@@ -138,7 +138,7 @@ const ceCConditionLogic &condition){
 		
 	case ceCConditionLogic::eopAll:
 		for(i=0; i<count; i++){
-			if(! EvaluateCondition(conversation, *list.GetAt(i))){
+			if(!EvaluateCondition(conversation, *list.GetAt(i))){
 				return false;
 			}
 		}
@@ -153,7 +153,7 @@ const ceCConditionHasActor &condition){
 	const bool result = conversation.GetActorList().HasWithIDOrAliasID(condition.GetActor());
 	
 	if(condition.GetNegate()){
-		return ! result;
+		return !result;
 		
 	}else{
 		return result;
@@ -165,7 +165,7 @@ const ceCConditionActorInConversation &condition){
 	const bool result = conversation.GetActorList().HasWithIDOrAliasID(condition.GetActor());
 	
 	if(condition.GetNegate()){
-		return ! result;
+		return !result;
 		
 	}else{
 		return result;
@@ -177,7 +177,7 @@ const ceCConditionVariable &condition){
 	cePlaybackVariableList &variableList = conversation.GetPlayback()->GetVariables();
 	
 	int testValue = condition.GetTestValue();
-	if(! condition.GetTestVariable().IsEmpty()){
+	if(!condition.GetTestVariable().IsEmpty()){
 		const cePlaybackVariable * const variable = variableList.GetNamed(condition.GetTestVariable());
 		if(variable){
 			testValue = variable->GetValue();
@@ -221,7 +221,7 @@ const ceCConditionActorParameter &condition){
 	int paramValue = 0;
 	
 	int testValue = condition.GetTestValue();
-	if(! condition.GetTestVariable().IsEmpty()){
+	if(!condition.GetTestVariable().IsEmpty()){
 		const cePlaybackVariable * const variable =
 			playback.GetVariables().GetNamed(condition.GetTestVariable());
 		if(variable){
@@ -266,18 +266,18 @@ const ceCConditionActorCommand &condition){
 	const decString &actorID = condition.GetActor();
 	
 	ceConversationActor const * conversationActor = conversation.GetActorList().GetWithIDOrAliasID(actorID);
-	if(! conversationActor){
+	if(!conversationActor){
 		return condition.GetNegate();
 	}
 	
 	const cePlaybackCommandList &list = conversationActor->GetCommands();
 	const cePlaybackCommand * const pcommand = list.GetWith(condition.GetCommand());
-	if(! pcommand){
+	if(!pcommand){
 		return condition.GetNegate();
 	}
 	
 	if(condition.GetNegate()){
-		return ! pcommand->GetValue();
+		return !pcommand->GetValue();
 		
 	}else{
 		return pcommand->GetValue();
@@ -295,7 +295,7 @@ const ceCConditionGameCommand &condition){
 	}
 	
 	if(condition.GetNegate()){
-		return ! result;
+		return !result;
 		
 	}else{
 		return result;
@@ -311,13 +311,13 @@ const ceCConditionTrigger &condition){
 		return target && target->GetFired();
 		
 	case ceCConditionTrigger::etmNotFired:
-		return ! target || ! target->GetFired();
+		return !target || !target->GetFired();
 		
 	case ceCConditionTrigger::etmEverFired:
 		return target && target->GetHasFired();
 		
 	case ceCConditionTrigger::etmNeverFired:
-		return ! target || ! target->GetHasFired();
+		return !target || !target->GetHasFired();
 	}
 	
 	return false;

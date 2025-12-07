@@ -101,7 +101,7 @@ bool deglUninstall::UninstallGame(delGame &game){
 			pgame ? pgame->GetTitle().ToUTF8().GetString() : "?");
 	}
 	
-	if(! text.IsEmpty()){
+	if(!text.IsEmpty()){
 		text += "\nUninstalling these games/patches too?";
 		if(FXMessageBox::question(&pWindow, MBOX_YES_NO, "Uninstall Game",
 		"%s", text.GetString()) != MBOX_CLICKED_YES){
@@ -161,7 +161,7 @@ bool deglUninstall::UninstallPatch(delPatch &patch){
 			game ? game->GetTitle().ToUTF8().GetString() : "?");
 	}
 	
-	if(! text.IsEmpty()){
+	if(!text.IsEmpty()){
 		text += "\nUninstalling these games/patches too?";
 		if(FXMessageBox::question(&pWindow, MBOX_YES_NO, "Uninstall Patch",
 		"%s", text.GetString()) != MBOX_CLICKED_YES){

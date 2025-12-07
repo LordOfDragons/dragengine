@@ -114,13 +114,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
-	inline debpOctree *GetParent() const{return pParent;}
+	inline debpOctree *GetParent() const{ return pParent; }
 	/** Sets the parent of the octree or NULL if a root octree. */
 	void SetParent(debpOctree *parent);
 	/** Retrieves the center of the octree. */
-	inline const decVector &GetCenter() const{return pCenter;}
+	inline const decVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the octree. */
-	inline const decVector &GetHalfSize() const{return pHalfSize;}
+	inline const decVector &GetHalfSize() const{ return pHalfSize; }
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0

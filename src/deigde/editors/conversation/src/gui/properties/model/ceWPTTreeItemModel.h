@@ -133,18 +133,18 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Window selection. */
-	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Game definition. */
-	inline ceConversation &GetConversation() const{return pConversation;}
+	inline ceConversation &GetConversation() const{ return pConversation; }
 	
 	/** \brief Tree item type. */
-	inline eTypes GetType() const{return pType;}
+	inline eTypes GetType() const{ return pType; }
 	
 	
 	
 	/** \brief Tree item text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/**
 	 * \brief Set tree item text.
@@ -154,7 +154,7 @@ public:
 	void SetText(const char *text);
 	
 	/** \brief Tree item description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/**
 	 * \brief Set tree item description.
@@ -164,7 +164,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Tree item icon. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/**
 	 * \brief Set tree item icon.
@@ -174,7 +174,7 @@ public:
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Expanded. */
-	inline bool GetExpanded() const{return pExpanded;}
+	inline bool GetExpanded() const{ return pExpanded; }
 	
 	/** \brief Set expanded. */
 	void SetExpanded(bool expanded);
@@ -212,7 +212,7 @@ public:
 	
 	
 	/** \brief Tree or \em NULL if not top level. */
-	inline ceWPTTreeModel *GetTree() const{return pTree;}
+	inline ceWPTTreeModel *GetTree() const{ return pTree; }
 	
 	/** \brief Set tree or \em NULL if not top level. */
 	void SetTree(ceWPTTreeModel *tree);
@@ -221,13 +221,13 @@ public:
 	ceWPTTreeModel *GetFirstTree() const;
 	
 	/** \brief Parent or \em NULL. */
-	inline ceWPTTreeItemModel *GetParent() const{return pParent;}
+	inline ceWPTTreeItemModel *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent or \em NULL. */
 	void SetParent(ceWPTTreeItemModel *parent);
 	
 	/** \brief Assigned tree item or \em NULL. */
-	inline ceWPTTreeItem *GetTreeItem() const{return pTreeItem;}
+	inline ceWPTTreeItem *GetTreeItem() const{ return pTreeItem; }
 	
 	/**
 	 * \brief Assign tree item or \em NULL.

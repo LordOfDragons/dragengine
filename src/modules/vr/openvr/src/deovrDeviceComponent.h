@@ -74,10 +74,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Device. */
-	inline deovrDevice &GetDevice() const{return pDevice;}
+	inline deovrDevice &GetDevice() const{ return pDevice; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
@@ -85,19 +85,19 @@ public:
 	
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Type. */
-	inline deInputDeviceComponent::eComponentTypes GetType() const{return pType;}
+	inline deInputDeviceComponent::eComponentTypes GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deInputDeviceComponent::eComponentTypes type);
@@ -105,10 +105,10 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -117,7 +117,7 @@ public:
 	void SetDisplayImages(const deovrDeviceComponent &component);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);

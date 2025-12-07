@@ -63,15 +63,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of options. */
-	inline ceCAPlayerChoiceOptionList &GetOptions(){return pOptions;}
-	inline const ceCAPlayerChoiceOptionList &GetOptions() const{return pOptions;}
+	inline ceCAPlayerChoiceOptionList &GetOptions(){ return pOptions; }
+	inline const ceCAPlayerChoiceOptionList &GetOptions() const{ return pOptions; }
 	/** Retrieves the list of actions. */
-	inline ceConversationActionList &GetActions(){return pActions;}
-	inline const ceConversationActionList &GetActions() const{return pActions;}
+	inline ceConversationActionList &GetActions(){ return pActions; }
+	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	/** Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;
 	/** Retrieves the variable name. */
-	inline const decString &GetVariableName() const{return pVariableName;}
+	inline const decString &GetVariableName() const{ return pVariableName; }
 	/** Sets the variable name. */
 	void SetVariableName(const char *name);
 	/*@}*/
@@ -81,13 +81,13 @@ public:
 	/** \name UI */
 	/*@{*/
 	/** \brief Tree list item expanded state. */
-	inline bool GetTIMExpanded() const{return pTIMExpanded;}
+	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
 	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
-	inline bool GetTIMActionsExpanded() const{return pTIMActionsExpanded;}
+	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
 	void SetTIMActionsExpanded(bool expanded);

@@ -68,13 +68,13 @@ public:
 	void FindDirectionalSilhouette(const decVector &lightDir, deoglMeshData *mesh);
 	void RenderShadows(deoglMeshData *mesh, bool renderCaps);
 	// faces
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	const sFace &GetFace(int index) const;
 	void AddFace(int vertex1, int vertex2, int vertex3, int vertex4);
 	int GetOpenFaceCount() const;
 	void CloseVolume();
 	// edges
-	inline int GetEdgeCount() const{return pEdgeCount;}
+	inline int GetEdgeCount() const{ return pEdgeCount; }
 	const sEdge &GetEdge(int index) const;
 private:
 	void pAddFace(int vertex1, int vertex2, int vertex3, int vertex4);

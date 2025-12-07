@@ -99,9 +99,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the main window. */
-	inline igdeWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline igdeWindowMain *GetWindowMain() const{ return pWindowMain; }
 	/** \brief Retrieves the load save game project. */
-	inline igdeLSGameProject *GetLSGameProject() const{return pLSGameProject;}
+	inline igdeLSGameProject *GetLSGameProject() const{ return pLSGameProject; }
 	
 	/** \brief Loads a game project. */
 	igdeGameProject *LoadGameProject(const char *filename);

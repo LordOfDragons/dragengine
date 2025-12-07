@@ -73,7 +73,7 @@ void deClassFileReader::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	// create file reader
 	path.SetFromUnix(filename);
 	nd.fileReader = vfs.OpenFileForReading(path);
-	if(! nd.fileReader){
+	if(!nd.fileReader){
 		DSTHROW(dueOutOfMemory);
 	}
 }
@@ -428,7 +428,7 @@ void deClassFileReader::nfReadTimeDate::RunFunction(dsRunTime *rt, dsValue *myse
 
 deClassFileReader::deClassFileReader(deScriptingDragonScript *ds) :
 dsClass("FileReader", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -496,7 +496,7 @@ void deClassFileReader::CreateClassMembers(dsEngine *engine){
 }
 
 decBaseFileReader *deClassFileReader::GetFileReader(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -504,7 +504,7 @@ decBaseFileReader *deClassFileReader::GetFileReader(dsRealObject *myself) const{
 }
 
 int deClassFileReader::GetStreamVersion(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -512,11 +512,11 @@ int deClassFileReader::GetStreamVersion(dsRealObject *myself) const{
 }
 
 void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileReader){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! fileReader){
+	if(!fileReader){
 		rt->PushObject(NULL, this);
 		return;
 	}

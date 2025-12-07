@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Load/save synthesizer. */
-	inline seLoadSaveSynthesizer *GetLSSynthesizer(){return pLSSynthesizer;}
+	inline seLoadSaveSynthesizer *GetLSSynthesizer(){ return pLSSynthesizer; }
 	
 	/** \brief Load synthesizer from file. */
 	seSynthesizer *LoadSynthesizer(const char *filename, const char *basePath = "/");
@@ -74,7 +74,7 @@ public:
 	void SaveSynthesizer(seSynthesizer *synthesizer, const char *filename);
 	
 	/** \brief Synthesizer file pattern list. */
-	inline const igdeFilePatternList &GetSynthesizerFilePatterns() const{return pFPSynthesizer;}
+	inline const igdeFilePatternList &GetSynthesizerFilePatterns() const{ return pFPSynthesizer; }
 	/*@}*/
 	
 	

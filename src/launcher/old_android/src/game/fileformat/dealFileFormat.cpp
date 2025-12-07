@@ -56,7 +56,7 @@ void dealFileFormat::SetType(dealEngineModule::eModuleTypes type){
 }
 
 void dealFileFormat::SetPattern(const char *pattern){
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	pPattern = pattern;

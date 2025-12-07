@@ -154,13 +154,13 @@ bool delLoggerHistory::CanAddMessage(int type, const char *source){
 	if(pHistorySize == 0){
 		return false;
 	}
-	if(type == delLoggerHistoryEntry::emtInfo && ! pLogInfo){
+	if(type == delLoggerHistoryEntry::emtInfo && !pLogInfo){
 		return false;
 	}
-	if(type == delLoggerHistoryEntry::emtWarn && ! pLogWarn){
+	if(type == delLoggerHistoryEntry::emtWarn && !pLogWarn){
 		return false;
 	}
-	if(type == delLoggerHistoryEntry::emtError && ! pLogError){
+	if(type == delLoggerHistoryEntry::emtError && !pLogError){
 		return false;
 	}
 	return true;
@@ -169,7 +169,7 @@ bool delLoggerHistory::CanAddMessage(int type, const char *source){
 
 
 void delLoggerHistory::AddListener(delLoggerHistoryListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW_INFO(deeNullPointer, "listener");
 	}
 	
@@ -178,7 +178,7 @@ void delLoggerHistory::AddListener(delLoggerHistoryListener *listener){
 }
 
 void delLoggerHistory::RemoveListener(delLoggerHistoryListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW_INFO(deeNullPointer, "listener");
 	}
 	
@@ -197,16 +197,16 @@ void delLoggerHistory::NotifyMessageAdded(const delLoggerHistoryEntry &entry){
 
 
 void delLoggerHistory::LogInfo(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
 	const deMutexGuard guard(pMutex);
 	
-	if(! CanAddMessage(delLoggerHistoryEntry::emtInfo, source)){
+	if(!CanAddMessage(delLoggerHistoryEntry::emtInfo, source)){
 		return;
 	}
 	
@@ -220,16 +220,16 @@ void delLoggerHistory::LogInfo(const char *source, const char *message){
 }
 
 void delLoggerHistory::LogWarn(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
 	const deMutexGuard guard(pMutex);
 	
-	if(! CanAddMessage(delLoggerHistoryEntry::emtWarn, source)){
+	if(!CanAddMessage(delLoggerHistoryEntry::emtWarn, source)){
 		return;
 	}
 	
@@ -243,16 +243,16 @@ void delLoggerHistory::LogWarn(const char *source, const char *message){
 }
 
 void delLoggerHistory::LogError(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
 	const deMutexGuard guard(pMutex);
 	
-	if(! CanAddMessage(delLoggerHistoryEntry::emtError, source)){
+	if(!CanAddMessage(delLoggerHistoryEntry::emtError, source)){
 		return;
 	}
 	

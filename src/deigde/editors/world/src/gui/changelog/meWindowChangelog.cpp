@@ -62,10 +62,10 @@ public:
 		const bool worldType1 = entry1.GetType() == meWCEntry::eetWorld;
 		const bool worldType2 = entry2.GetType() == meWCEntry::eetWorld;
 		
-		if(worldType1 && ! worldType2){
+		if(worldType1 && !worldType2){
 			return true;
 		}
-		if(worldType2 && ! worldType1){
+		if(worldType2 && !worldType1){
 			return false;
 		}
 		
@@ -175,7 +175,7 @@ void meWindowChangelog::SetWorld(meWorld *world){
 void meWindowChangelog::UpdateChangelog(){
 	pListChanges->RemoveAllItems();
 	
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -240,7 +240,7 @@ void meWindowChangelog::UpdateChangelog(){
 					
 					for(j=0; j<httextureCount; j++){
 						meHeightTerrainTexture &httexture = *htsector.GetTextureAt(j);
-						if(! httexture.GetMaskChanged()){
+						if(!httexture.GetMaskChanged()){
 							continue;
 						}
 						
@@ -256,7 +256,7 @@ void meWindowChangelog::UpdateChangelog(){
 				const int navSpaceCount = htsector.GetNavSpaceCount();
 				for(j=0; j<navSpaceCount; j++){
 					meHeightTerrainNavSpace * const navspace = htsector.GetNavSpaceAt(j);
-					if(! navspace->GetNavSpaceChanged()){
+					if(!navspace->GetNavSpaceChanged()){
 						continue;
 					}
 					

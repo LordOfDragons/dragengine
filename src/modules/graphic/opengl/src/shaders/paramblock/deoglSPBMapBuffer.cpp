@@ -83,7 +83,7 @@ void deoglSPBMapBuffer::Map(){
 }
 
 void deoglSPBMapBuffer::Unmap(){
-	if(! pMapped){
+	if(!pMapped){
 		return;
 	}
 	

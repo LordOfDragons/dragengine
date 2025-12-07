@@ -45,11 +45,11 @@ gdeUOCRemoveBillboard::gdeUOCRemoveBillboard(gdeObjectClass *objectClass, gdeOCB
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetBillboards().Has(billboard)){
+	if(!objectClass->GetBillboards().Has(billboard)){
 		DETHROW(deeInvalidParam);
 	}
 	

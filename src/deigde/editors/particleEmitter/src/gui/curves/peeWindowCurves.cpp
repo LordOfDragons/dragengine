@@ -88,7 +88,7 @@ public:
 	virtual void OnCurveChanging(igdeViewCurveBezier *view){
 		peeType * const type = pPanel.GetType();
 		peeParameter * const parameter = pPanel.GetParameter();
-		if(! type || ! parameter){
+		if(!type || !parameter){
 			pUndo = NULL;
 			return;
 		}

@@ -53,7 +53,7 @@ pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionCopy::OnAction(){
-	if(! pColorBox.GetNativeWidget()){
+	if(!pColorBox.GetNativeWidget()){
 		DETHROW(deeInvalidParam);
 	}
 	((igdeNativeColorBox*)pColorBox.GetNativeWidget())->ClipboardPutColor(pColorBox.GetColor());
@@ -83,7 +83,7 @@ void igdeColorBox::cActionPaste::OnAction(){
 		return;
 	}
 	
-	if(! pColorBox.GetNativeWidget()){
+	if(!pColorBox.GetNativeWidget()){
 		DETHROW(deeInvalidParam);
 	}
 	pColorBox.SetColor(color);
@@ -123,7 +123,7 @@ void igdeColorBox::cActionEditValues::OnAction(){
 	
 	codec.EncodeColor4(pColorBox.GetColor(), value);
 	
-	if(! igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void igdeColorBox::cActionEditHex::OnAction(){
 		decMath::clamp((int)(color.b * 255.0f), 0, 255),
 		decMath::clamp((int)(color.a * 255.0f), 0, 255));
 	
-	if(! igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
+	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
@@ -251,7 +251,7 @@ void igdeColorBox::Focus(){
 
 
 void igdeColorBox::AddListener(igdeColorBoxListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -272,7 +272,7 @@ void igdeColorBox::NotifyColorChanged(){
 }
 
 void igdeColorBox::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -302,7 +302,7 @@ void igdeColorBox::CreateNativeWidget(){
 }
 
 void igdeColorBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

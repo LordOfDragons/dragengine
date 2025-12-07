@@ -73,20 +73,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{return pTBONodeBox;}
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{return pTBOVertex;}
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** Local BVH. */
-	inline deoglGIBVHLocal &GetGIBVHLocal(){return pGIBVHLocal;}
-	inline const deoglGIBVHLocal &GetGIBVHLocal() const{return pGIBVHLocal;}
+	inline deoglGIBVHLocal &GetGIBVHLocal(){ return pGIBVHLocal; }
+	inline const deoglGIBVHLocal &GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
 	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/**
 	 * Recalculate BVH node extends. Keeps the BVH structure but adjusts to changing vertex

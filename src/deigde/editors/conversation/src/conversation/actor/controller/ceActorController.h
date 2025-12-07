@@ -92,25 +92,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Update type. */
-	inline eUpdateTypes GetUpdateType() const{return pUpdateType;}
+	inline eUpdateTypes GetUpdateType() const{ return pUpdateType; }
 	
 	/** \brief Set update type. */
 	void SetUpdateType(eUpdateTypes type);
 	
 	/** \brief Constant value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set constant value. */
 	void SetValue(float value);
 	
 	/** \brief Constant vector. */
-	inline const decVector &GetVector() const{return pVector;}
+	inline const decVector &GetVector() const{ return pVector; }
 	
 	/** \brief Set constant vector. */
 	void SetVector(const decVector &vector);

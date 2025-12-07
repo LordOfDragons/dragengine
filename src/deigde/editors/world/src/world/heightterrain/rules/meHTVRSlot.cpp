@@ -75,7 +75,7 @@ bool meHTVRSlot::HasLink(meHTVRLink *link) const{
 }
 
 void meHTVRSlot::AddLink(meHTVRLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);

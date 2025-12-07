@@ -109,7 +109,7 @@ deSynthesizerEffect *deSynthesizerSource::GetEffectAt(int index) const{
 }
 
 void deSynthesizerSource::AddEffect(deSynthesizerEffect *effect){
-	if(! effect){
+	if(!effect){
 		DETHROW(deeInvalidParam);
 	}
 	pEffects.Add(effect);

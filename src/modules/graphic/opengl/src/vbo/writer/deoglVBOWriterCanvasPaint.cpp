@@ -64,7 +64,7 @@ void deoglVBOWriterCanvasPaint::Reset(deoglSharedVBOBlock *vboBlock){
 
 
 void deoglVBOWriterCanvasPaint::WritePoint(const decVector2 &position){
-	if(! pDataPoints){
+	if(!pDataPoints){
 		DETHROW(deeInvalidParam);
 	}
 	

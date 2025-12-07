@@ -34,7 +34,7 @@
 ////////////////////////////
 
 reUSetShapeCapsuleTopRadius::reUSetShapeCapsuleTopRadius(reRigShapeCapsule *shape, float topRadius){
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	

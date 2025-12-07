@@ -42,7 +42,7 @@
 meUHTVRuleMultiMathSetOp::meUHTVRuleMultiMathSetOp(meHTVegetationLayer *vlayer,
 	meHTVRuleMultiMath *rule, meHTVRuleMultiMath::eOperators nop)
 {
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

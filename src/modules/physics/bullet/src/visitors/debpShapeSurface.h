@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Direction. */
-	inline const decVector &GetDirection() const{return pDirection;}
+	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set direction or zero vector to disable. */
 	void SetDirection(const decVector &direction);
@@ -71,7 +71,7 @@ public:
 	
 	
 	/** \brief Surface. */
-	inline float GetSurface() const{return pSurface;}
+	inline float GetSurface() const{ return pSurface; }
 	
 	
 	

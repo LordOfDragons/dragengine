@@ -43,7 +43,7 @@ gdeUCategoryBase::gdeUCategoryBase(gdeGameDefinition *gameDefinition, eCategoryT
 pGameDefinition(gameDefinition),
 pType(type)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 }

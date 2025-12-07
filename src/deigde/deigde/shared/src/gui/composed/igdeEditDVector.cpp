@@ -164,7 +164,7 @@ void igdeEditDVector::Focus(){
 
 
 void igdeEditDVector::AddListener(igdeEditDVectorListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

@@ -64,10 +64,10 @@ delLoggerWritePipe::~delLoggerWritePipe(){
 ///////////////
 
 void delLoggerWritePipe::LogInfo(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
@@ -75,10 +75,10 @@ void delLoggerWritePipe::LogInfo(const char *source, const char *message){
 }
 
 void delLoggerWritePipe::LogWarn(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
@@ -86,10 +86,10 @@ void delLoggerWritePipe::LogWarn(const char *source, const char *message){
 }
 
 void delLoggerWritePipe::LogError(const char *source, const char *message){
-	if(! source){
+	if(!source){
 		DETHROW_INFO(deeNullPointer, "source");
 	}
-	if(! message){
+	if(!message){
 		DETHROW_INFO(deeNullPointer, "message");
 	}
 	
@@ -152,7 +152,7 @@ void delLoggerWritePipe::WriteToPipe(const void *data, int length){
 #ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(! WriteFile(pPipe, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipe, data, length, &bytesWritten, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){

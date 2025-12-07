@@ -70,7 +70,7 @@ bool deSynthesizerSourceGroup::HasSource(deSynthesizerSource *source) const{
 }
 
 void deSynthesizerSourceGroup::AddSource(deSynthesizerSource *source){
-	if(! source){
+	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	pSources.Add(source);

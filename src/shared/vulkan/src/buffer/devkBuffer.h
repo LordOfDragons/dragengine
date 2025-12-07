@@ -89,19 +89,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{return pDevice;}
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Buffer. */
-	inline VkBuffer GetBuffer() const{return pBuffer;}
+	inline VkBuffer GetBuffer() const{ return pBuffer; }
 	
 	/** Host buffer. */
-	inline VkBuffer GetBufferHost() const{return pBufferHost;}
+	inline VkBuffer GetBufferHost() const{ return pBufferHost; }
 	
 	/** Size. */
-	inline uint32_t GetSize() const{return pSize;}
+	inline uint32_t GetSize() const{ return pSize; }
 	
 	/** Usage. */
-	inline VkBufferUsageFlagBits GetUsage() const{return pUsage;}
+	inline VkBufferUsageFlagBits GetUsage() const{ return pUsage; }
 	
 	/** Copy data to host memory. */
 	void SetData(const void *data);

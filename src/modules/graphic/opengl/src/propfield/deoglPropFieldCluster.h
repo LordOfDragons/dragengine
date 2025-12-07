@@ -114,15 +114,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Prop field type. */
-	inline deoglRPropFieldType &GetPropFieldType() const{return pPropFieldType;}
+	inline deoglRPropFieldType &GetPropFieldType() const{ return pPropFieldType; }
 	
 	
 	
 	/** Minimum extend. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
 	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
@@ -130,25 +130,25 @@ public:
 	
 	
 	/** Count of instances. */
-	inline int GetInstanceCount() const{return pInstanceCount;}
+	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** Set number of instances. */
 	void SetInstanceCount(int count);
 	
 	/** Instances. */
-	inline sInstance *GetInstances() const{return pInstances;}
+	inline sInstance *GetInstances() const{ return pInstances; }
 	
 	/** Instances TBO. */
-	inline GLuint GetTBOInstances() const{return pTBOInstances;}
+	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
 	/** Bend states TBO. */
-	inline GLuint GetTBOBendStates() const{return pTBOBendStates;}
+	inline GLuint GetTBOBendStates() const{ return pTBOBendStates; }
 	
 	/** Instance VBO. */
-	inline GLuint GetVBOInstances() const{return pVBOInstances;}
+	inline GLuint GetVBOInstances() const{ return pVBOInstances; }
 	
 	/** Bend states VBO. */
-	inline GLuint GetVBOBendStates() const{return pVBOBendStates;}
+	inline GLuint GetVBOBendStates() const{ return pVBOBendStates; }
 	
 	
 	
@@ -172,14 +172,14 @@ public:
 	 * - estComponentCounter
 	 * - estComponentCounterClipPlane
 	 */
-	inline deoglTexUnitsConfig *GetTUCDepth() const{return pTUCDepth;}
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * Works for these shader types:
 	 * - estComponentGeometry
 	 */
-	inline deoglTexUnitsConfig *GetTUCGeometry() const{return pTUCGeometry;}
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
 	
 	/**
 	 * Texture units configuration for shadow type shaders or NULL if empty.
@@ -189,14 +189,14 @@ public:
 	 * - estComponentShadowOrthogonalCascaded
 	 * - estComponentShadowDistance
 	 */
-	inline deoglTexUnitsConfig *GetTUCShadow() const{return pTUCShadow;}
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
 	
 	/**
 	 * Texture units configuration for the environment map shader or NULL if empty.
 	 * Works for these shader type:
 	 * - estEnvMap
 	 */
-	inline deoglTexUnitsConfig *GetTUCEnvMap() const{return pTUCEnvMap;}
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
 	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
@@ -205,7 +205,7 @@ public:
 	void MarkTUCsDirty();
 	
 	/** Render task shared instance. */
-	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{return pRTSInstance;}
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Mark render task shared instance dirty. */
 	void DirtyRTSInstance();

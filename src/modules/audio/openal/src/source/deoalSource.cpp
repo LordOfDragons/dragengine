@@ -191,7 +191,7 @@ void deoalSource::Stop(){
 
 
 ALuint deoalSource::GetFilter(){
-	if(! pFilter){
+	if(!pFilter){
 		OAL_CHECK(pAudioThread, palGenFilters(1, &pFilter));
 	}
 	return pFilter;
@@ -219,7 +219,7 @@ deoalEffectSlot *deoalSource::GetEffectSlot(){
 	}
 	
 	// try to obtain effect slot if we have none so far
-	if(! pEffectSlot){
+	if(!pEffectSlot){
 		pEffectSlot = pAudioThread.GetEffectSlotManager().Bind(this, pImportance);
 		
 		if(pEffectSlot){
@@ -232,7 +232,7 @@ deoalEffectSlot *deoalSource::GetEffectSlot(){
 }
 
 void deoalSource::DropEffectSlot(){
-	if(! pEffectSlot){
+	if(!pEffectSlot){
 		return;
 	}
 	
@@ -247,7 +247,7 @@ void deoalSource::DropEffectSlot(){
 }
 
 ALuint deoalSource::GetEffectSlotFilter(){
-	if(! pEffectSlotFilter){
+	if(!pEffectSlotFilter){
 		OAL_CHECK(pAudioThread, palGenFilters(1, &pEffectSlotFilter));
 	}
 	return pEffectSlotFilter;

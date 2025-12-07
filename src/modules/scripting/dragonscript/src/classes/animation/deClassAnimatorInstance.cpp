@@ -214,7 +214,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsAnimatorRuleBlendMode); // mode
 }
 void deClassAnimatorInstance::nfSetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -375,7 +375,7 @@ void deClassAnimatorInstance::nfCopyControllerStates::RunFunction(dsRunTime *rt,
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -422,7 +422,7 @@ void deClassAnimatorInstance::nfCopyControllerStates2::RunFunction(dsRunTime *rt
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -457,7 +457,7 @@ void deClassAnimatorInstance::nfCopyNamedControllerStates::RunFunction(dsRunTime
 	const deClassAnimatorInstance &clsAr = *((deClassAnimatorInstance*)GetOwnerClass());
 	
 	const deAnimatorInstance * const sourceInstance = clsAr.GetAnimatorInstance(rt->GetValue(0)->GetRealObject());
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -555,7 +555,7 @@ void deClassAnimatorInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myse
 	deClassAnimatorInstance *clsAr = (deClassAnimatorInstance*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsAr)){
+	if(!p_IsObjOfType(obj, clsAr)){
 		rt->PushBool(false);
 		
 	}else{
@@ -649,7 +649,7 @@ void deClassAnimatorInstance::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorInstance *deClassAnimatorInstance::GetAnimatorInstance(dsRealObject *object) const{
-	if(! object){
+	if(!object){
 		return NULL;
 	}
 	
@@ -657,11 +657,11 @@ deAnimatorInstance *deClassAnimatorInstance::GetAnimatorInstance(dsRealObject *o
 }
 
 void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! instance){
+	if(!instance){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -90,7 +90,7 @@ void dealWidgetLayoutStack::LayoutWidgets(){
 		
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			
@@ -103,7 +103,7 @@ void dealWidgetLayoutStack::LayoutWidgets(){
 		
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			
@@ -126,7 +126,7 @@ decPoint dealWidgetLayoutStack::GetRealMinimumSize(){
 	
 	for(i=0; i<count; i++){
 		dealWidget &widget = *GetWidgetAt(i);
-		if(! widget.GetVisible()){
+		if(!widget.GetVisible()){
 			continue;
 		}
 		

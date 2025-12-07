@@ -33,7 +33,7 @@
 #include "../renderthread/deoglRTContext.h"
 #include "../renderthread/deoglRTLogger.h"
 
-#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 #include <GL/glx.h>
 #include "deoglXExtResult.h"
 #endif
@@ -260,7 +260,7 @@ void deoglExtensions::Initialize(){
 	pScanExtensions();
 	pDisableExtensions();
 	
-	if(! pInitialized){
+	if(!pInitialized){
 		pFetchRequiredFunctions();
 		pFetchOptionalFunctions();
 		pOptionalDisableExtensions();
@@ -572,13 +572,13 @@ void deoglExtensions::pScanVersion(){
 void deoglExtensions::pScanExtensions(){
 #ifdef OS_UNIX_X11
 	const char *strXExtensions = (const char *)glXGetClientString(pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS);
-	if(! strXExtensions){
+	if(!strXExtensions){
 		strXExtensions = "";
 	}
 	
 #elif defined OS_ANDROID
 	const char *strAExtensions = (const char *)eglQueryString(pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS);
-	if(! strAExtensions){
+	if(!strAExtensions){
 		strAExtensions = "";
 	}
 #endif
@@ -977,7 +977,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	/*
 	#ifdef OS_W32
 	pglTexSubImage1D = &glTexSubImage1D;
-	#elif ! defined WITH_OPENGLES
+	#elif !defined WITH_OPENGLES
 	pGetRequiredFunction((void**)&pglTexSubImage1D, "glTexSubImage1D");
 	#endif
 	*/
@@ -1349,7 +1349,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction((void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture);
 	}
 	
-#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 	// GLX_EXT_swap_control
 	if(pHasExtension[ext_GLX_EXT_swap_control]){
 		pGetOptionalFunction((void**)&pglXSwapInterval, "glXSwapInterval", "glXSwapIntervalEXT", ext_GLX_EXT_swap_control);
@@ -1405,13 +1405,13 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcName);
 	
-	if(! fp){
+	if(!fp){
 		pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcName);
 		pHasRequiredFunctions = false;
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1420,17 +1420,17 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
 	
-	if(! fp){
+	if(!fp){
 		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension);
 		
-		if(! fp){
+		if(!fp){
 			pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcNameBase);
 			pHasRequiredFunctions = false;
 		}
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1439,13 +1439,13 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
 	
-	if(! fp){
+	if(!fp){
 		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension1);
 		
-		if(! fp){
+		if(!fp){
 			fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension2);
 			
-			if(! fp){
+			if(!fp){
 				pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcNameBase);
 				pHasRequiredFunctions = false;
 			}
@@ -1453,7 +1453,7 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1475,14 +1475,14 @@ void deoglExtensions::pGetOptionalFunction(void **funcPointer, const char *funcN
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcName);
 	
-	if(! fp){
+	if(!fp){
 		pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s although extension %s is listed. This is a driver bug!",
 			funcName, vExtensionNames[extensionIndex]);
 		pHasExtension[extensionIndex] = false;
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1492,10 +1492,10 @@ const char *funcNameExtension, int extensionIndex){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
 	
-	if(! fp){
+	if(!fp){
 		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension);
 		
-		if(! fp){
+		if(!fp){
 			pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function "
 				"address for %s although extension %s is listed. This is a driver bug!",
 					funcNameBase, vExtensionNames[extensionIndex]);
@@ -1504,7 +1504,7 @@ const char *funcNameExtension, int extensionIndex){
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1514,13 +1514,13 @@ const char *funcNameExtension1, const char *funcNameExtension2, int extensionInd
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
 	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
 	
-	if(! fp){
+	if(!fp){
 		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension1);
 		
-		if(! fp){
+		if(!fp){
 			fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension2);
 			
-			if(! fp){
+			if(!fp){
 				pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function "
 					"address for %s although extension %s is listed. This is a driver bug!",
 						funcNameBase, vExtensionNames[extensionIndex]);
@@ -1530,7 +1530,7 @@ const char *funcNameExtension1, const char *funcNameExtension2, int extensionInd
 	}
 	
 	// set the function pointer only if not found already. avoids replacing better versions wtih inferior ones
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -1547,14 +1547,14 @@ void deoglExtensions::pGetOptionalFunctionArbExt(void **funcPointer, const char 
 }
 
 bool deoglExtensions::pVerifyExtensionPresent(eExtensions extension) const{
-	if(! pHasExtension[extension]){
+	if(!pHasExtension[extension]){
 		pRenderThread.GetLogger().LogErrorFormat("Missing required extension: %s", vExtensionNames[extension]);
 	}
 	return pHasExtension[extension];
 }
 
 bool deoglExtensions::pVerifyExtensionPresent(eExtensions extension1, eExtensions extension2) const{
-	if(! pHasExtension[extension1] && ! pHasExtension[extension2]){
+	if(!pHasExtension[extension1] && !pHasExtension[extension2]){
 		pRenderThread.GetLogger().LogErrorFormat("Missing required extension: %s or %s",
 			vExtensionNames[extension1], vExtensionNames[extension2]);
 	}

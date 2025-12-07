@@ -64,7 +64,7 @@ public:
 	void Finish();
 	void Abandon();
 	
-	inline bool HasFailed() const{return pHasFailed;}
+	inline bool HasFailed() const{ return pHasFailed; }
 	/*@}*/
 	
 	

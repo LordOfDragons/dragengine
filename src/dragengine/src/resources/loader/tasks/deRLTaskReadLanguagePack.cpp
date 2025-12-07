@@ -83,7 +83,7 @@ void deRLTaskReadLanguagePack::Run(){
 	
 	deBaseLanguagePackModule * const module = (deBaseLanguagePackModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtLanguagePack, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ void deRLTaskReadLanguagePack::Run(){
 	module->LoadLanguagePack(decBaseFileReader::Ref::New(
 		GetVFS()->OpenFileForReading(vfsPath)), pLanguagePack);
 	
-	if(! pLanguagePack->Verify()){
+	if(!pLanguagePack->Verify()){
 		DETHROW(deeInvalidParam);
 	}
 	pLanguagePack->BuildLookupTable();
@@ -106,7 +106,7 @@ void deRLTaskReadLanguagePack::Run(){
 void deRLTaskReadLanguagePack::Finished(){
 	LogFinishedEnter();
 	
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pLanguagePack = NULL;
 		LogFinishedExit();

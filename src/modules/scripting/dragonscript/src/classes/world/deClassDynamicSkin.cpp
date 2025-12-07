@@ -86,7 +86,7 @@ void deClassDynamicSkin::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	
 	// create dynamic skin
 	nd.dynamicSkin = dskinmgr.CreateDynamicSkin();
-	if(! nd.dynamicSkin) DSTHROW(dueOutOfMemory);
+	if(!nd.dynamicSkin) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -156,7 +156,7 @@ void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *my
 	if(dynamicSkin.HasRenderableNamed(name)){
 		DSTHROW(dueInvalidParam);
 	}
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -257,7 +257,7 @@ void deClassDynamicSkin::nfGetValueAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsValue()){
+	if(!identify.IsValue()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -278,7 +278,7 @@ void deClassDynamicSkin::nfSetValueAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsValue()) DSTHROW(dueInvalidParam);
+	if(!identify.IsValue()) DSTHROW(dueInvalidParam);
 	
 	identify.CastToValue().SetValue(value);
 	dynamicSkin.NotifyRenderableChanged(renderable);
@@ -297,7 +297,7 @@ void deClassDynamicSkin::nfGetColorAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsColor()){
+	if(!identify.IsColor()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -317,12 +317,12 @@ void deClassDynamicSkin::nfSetColorAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	int renderable = rt->GetValue(0)->GetInt();
 	dsRealObject *objColor = rt->GetValue(1)->GetRealObject();
 	
-	if(! objColor) DSTHROW(dueNullPointer);
+	if(!objColor) DSTHROW(dueNullPointer);
 	
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsColor()) DSTHROW(dueInvalidParam);
+	if(!identify.IsColor()) DSTHROW(dueInvalidParam);
 	
 	identify.CastToColor().SetColor(clsClr.GetColor(objColor));
 	dynamicSkin.NotifyRenderableChanged(renderable);
@@ -341,7 +341,7 @@ void deClassDynamicSkin::nfGetImageAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsImage()){
+	if(!identify.IsImage()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -364,7 +364,7 @@ void deClassDynamicSkin::nfSetImageAt::RunFunction(dsRunTime *rt, dsValue *mysel
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsImage()) DSTHROW(dueInvalidParam);
+	if(!identify.IsImage()) DSTHROW(dueInvalidParam);
 	
 	identify.CastToImage().SetImage(clsImg.GetImage(objImage));
 	dynamicSkin.NotifyRenderableChanged(renderable);
@@ -383,7 +383,7 @@ void deClassDynamicSkin::nfGetCanvasAt::RunFunction(dsRunTime *rt, dsValue *myse
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCanvas()){
+	if(!identify.IsCanvas()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -405,7 +405,7 @@ void deClassDynamicSkin::nfSetCanvasAt::RunFunction(dsRunTime *rt, dsValue *myse
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCanvas()){
+	if(!identify.IsCanvas()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -431,7 +431,7 @@ void deClassDynamicSkin::nfSetCanvasAt2::RunFunction(dsRunTime *rt, dsValue *mys
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCanvas()){
+	if(!identify.IsCanvas()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -461,7 +461,7 @@ void deClassDynamicSkin::nfSetCanvasAt3::RunFunction(dsRunTime *rt, dsValue *mys
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCanvas()){
+	if(!identify.IsCanvas()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -486,7 +486,7 @@ void deClassDynamicSkin::nfGetCameraAt::RunFunction(dsRunTime *rt, dsValue *myse
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCamera()){
+	if(!identify.IsCamera()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -509,7 +509,7 @@ void deClassDynamicSkin::nfSetCameraAt::RunFunction(dsRunTime *rt, dsValue *myse
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsCamera()) DSTHROW(dueInvalidParam);
+	if(!identify.IsCamera()) DSTHROW(dueInvalidParam);
 	
 	identify.CastToCamera().SetCamera(clsCam.GetCamera(objCamera));
 	dynamicSkin.NotifyRenderableChanged(renderable);
@@ -528,7 +528,7 @@ void deClassDynamicSkin::nfGetVideoPlayerAt::RunFunction(dsRunTime *rt, dsValue 
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsVideoFrame()){
+	if(!identify.IsVideoFrame()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -551,7 +551,7 @@ void deClassDynamicSkin::nfSetVideoPlayerAt::RunFunction(dsRunTime *rt, dsValue 
 	deDSRenderableVisitorIdentify identify;
 	
 	dynamicSkin.GetRenderableAt(renderable)->Visit(identify);
-	if(! identify.IsVideoFrame()) DSTHROW(dueInvalidParam);
+	if(!identify.IsVideoFrame()) DSTHROW(dueInvalidParam);
 	
 	identify.CastToVideoFrame().SetVideoPlayer(clsVP.GetVideoPlayer(objVideoPlayer));
 	dynamicSkin.NotifyRenderableChanged(renderable);
@@ -580,7 +580,7 @@ void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDynamicSkin *clsDSkin = (deClassDynamicSkin*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsDSkin)){
+	if(!p_IsObjOfType(obj, clsDSkin)){
 		rt->PushBool(false);
 		
 	}else{
@@ -600,7 +600,7 @@ void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassDynamicSkin::deClassDynamicSkin(deScriptingDragonScript *ds) :
 dsClass("DynamicSkin", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
@@ -674,7 +674,7 @@ void deClassDynamicSkin::CreateClassMembers(dsEngine *engine){
 }
 
 deDynamicSkin *deClassDynamicSkin::GetDynamicSkin(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -682,11 +682,11 @@ deDynamicSkin *deClassDynamicSkin::GetDynamicSkin(dsRealObject *myself) const{
 }
 
 void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! dynamicSkin){
+	if(!dynamicSkin){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -134,10 +134,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -179,7 +179,7 @@ public:
 	void SelectCategory(igdeGDCategory *category);
 	
 	/** \brief Selection mode. */
-	inline eSelectionMode GetSelectionMode() const{return pSelectionMode;}
+	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
 	void SetSelectionMode(eSelectionMode mode);
@@ -197,13 +197,13 @@ public:
 	igdeGDSky *GetSelectedSky() const;
 	
 	/** \brief Preview size. */
-	inline ePreviewSize GetPreviewSize() const{return pPreviewSize;}
+	inline ePreviewSize GetPreviewSize() const{ return pPreviewSize; }
 	
 	/** \brief Set preview size. */
 	void SetPreviewSize(ePreviewSize size);
 	
 	/** \brief View mode. */
-	inline eViewModes GetViewMode() const{return pViewMode;}
+	inline eViewModes GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
 	void SetViewMode(eViewModes viewMode);
@@ -223,19 +223,19 @@ public:
 	void SelectSky(igdeGDSky *gdsky);
 	
 	
-	inline igdeAction *GetActionSetClass() const{return pActionSetClass;}
-	inline igdeAction *GetActionSetSkin() const{return pActionSetSkin;}
-	inline igdeAction *GetActionSetDecal() const{return pActionSetDecal;}
-	inline igdeAction *GetActionSetSky() const{return pActionSetSky;}
+	inline igdeAction *GetActionSetClass() const{ return pActionSetClass; }
+	inline igdeAction *GetActionSetSkin() const{ return pActionSetSkin; }
+	inline igdeAction *GetActionSetDecal() const{ return pActionSetDecal; }
+	inline igdeAction *GetActionSetSky() const{ return pActionSetSky; }
 	
-	inline igdeAction *GetActionPISizeSmall() const{return pActionPISizeSmall;}
-	inline igdeAction *GetActionPISizeMedium() const{return pActionPISizeMedium;}
-	inline igdeAction *GetActionPISizeLarge() const{return pActionPISizeLarge;}
+	inline igdeAction *GetActionPISizeSmall() const{ return pActionPISizeSmall; }
+	inline igdeAction *GetActionPISizeMedium() const{ return pActionPISizeMedium; }
+	inline igdeAction *GetActionPISizeLarge() const{ return pActionPISizeLarge; }
 	
-	inline igdeAction *GetActionPIViewList() const{return pActionPIViewList;}
-	inline igdeAction *GetActionPIViewPreview() const{return pActionPIViewPreview;}
+	inline igdeAction *GetActionPIViewList() const{ return pActionPIViewList; }
+	inline igdeAction *GetActionPIViewPreview() const{ return pActionPIViewPreview; }
 	
-	inline igdeAction *GetActionPIRebuild() const{return pActionPIRebuild;}
+	inline igdeAction *GetActionPIRebuild() const{ return pActionPIRebuild; }
 	/*@}*/
 	
 	

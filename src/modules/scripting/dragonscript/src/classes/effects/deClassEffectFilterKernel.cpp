@@ -167,7 +167,7 @@ void deClassEffectFilterKernel::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 	deClassEffectFilterKernel * const clsEffFilKer = (deClassEffectFilterKernel*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsEffFilKer)){
+	if(!p_IsObjOfType(obj, clsEffFilKer)){
 		rt->PushBool(false);
 		
 	}else{
@@ -232,7 +232,7 @@ void deClassEffectFilterKernel::CreateClassMembers(dsEngine *engine){
 
 
 deEffectFilterKernel *deClassEffectFilterKernel::GetEffect(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -240,11 +240,11 @@ deEffectFilterKernel *deClassEffectFilterKernel::GetEffect(dsRealObject *myself)
 }
 
 void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

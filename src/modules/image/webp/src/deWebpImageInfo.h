@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Data. */
-	inline const decMemoryFile &GetData() const{return pData;}
+	inline const decMemoryFile &GetData() const{ return pData; }
 	
 	/** Has alpha. */
-	inline bool GetHasAlpha() const{return pHasAlpha;}
+	inline bool GetHasAlpha() const{ return pHasAlpha; }
 	
 	/** Use grayscale. */
-	inline bool GetIsGrayscale() const{return pIsGrayscale;}
+	inline bool GetIsGrayscale() const{ return pIsGrayscale; }
 	
 	/** Image width in pixels. */
 	virtual int GetWidth();

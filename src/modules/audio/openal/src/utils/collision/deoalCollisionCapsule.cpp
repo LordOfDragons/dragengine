@@ -156,7 +156,7 @@ float deoalCollisionCapsule::PointMoveHitsVolume(const decVector &point, const d
 //////////////////////
 
 void deoalCollisionCapsule::GetEnclosingSphere(deoalCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	
 	// TODO: this is cylinder code => convert to capsule code
 	
@@ -171,7 +171,7 @@ void deoalCollisionCapsule::GetEnclosingSphere(deoalCollisionSphere *sphere){
 }
 
 void deoalCollisionCapsule::GetEnclosingBox(deoalCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	float size;
 	
 	// TODO: this is cylinder code => convert to capsule code
@@ -258,7 +258,7 @@ bool deoalCollisionCapsule::RayHitsVolume(const decVector &rayOrigin, const decV
 /////////////
 
 void deoalCollisionCapsule::Visit(deoalCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitCapsule(this);
 }
 
@@ -328,7 +328,7 @@ void deoalCollisionCapsule::SetOrientation(const decQuaternion &orientation){
 	pAxisY.Set(matrix.TransformUp());
 	pAxisZ.Set(matrix.TransformView());
 	
-	pOriented = ! pOrientation.IsEqualTo(decQuaternion());
+	pOriented = !pOrientation.IsEqualTo(decQuaternion());
 }
 
 void deoalCollisionCapsule::ClearOrientation(){

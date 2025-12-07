@@ -44,7 +44,7 @@ seULayerAdd::seULayerAdd(seSky *sky, seLayer *layer) :
 pSky(NULL),
 pLayer(NULL)
 {
-	if(! sky || ! layer){
+	if(!sky || !layer){
 		DETHROW(deeInvalidParam);
 	}
 	

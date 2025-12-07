@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the condition. */
-	inline const ceConversationConditionList &GetConditions() const{return pConditions;}
+	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
 	/*@}*/
 };
 

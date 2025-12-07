@@ -113,7 +113,7 @@ void deoglSTPipelinesOutline::pPipelineConfigDepthReversed(deoglPipelineConfigur
 	
 	deoglSkinTexturePipelines::pPipelineConfigDepthReversed(config);
 	
-	if(! pTexture.GetIsOutlineSolid()){
+	if(!pTexture.GetIsOutlineSolid()){
 		config.EnableDepthTest(choices.GetDepthCompareFuncRegular());
 	}
 	
@@ -143,7 +143,7 @@ void deoglSTPipelinesOutline::pSetGeometry(deoglSkinShaderConfig &config, const 
 	
 	config.SetTextureNormal(HASCHANTEX(ectNormal));
 	config.SetTextureHeight(HASCHANTEX(ectHeight));
-	config.SetTextureRenderColor(! pTexture.GetIsOutlineSolid());
+	config.SetTextureRenderColor(!pTexture.GetIsOutlineSolid());
 	
 	config.SetDynamicHeightRemap(ISPROPDYN(empHeightScale) || ISPROPDYN(empHeightOffset));
 	config.SetDynamicNormalStrength(ISPROPDYN(empNormalStrength));

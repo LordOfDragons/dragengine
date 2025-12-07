@@ -72,7 +72,7 @@ bool gdeOCSnapPointList::Has(gdeOCSnapPoint *snapPoint) const{
 }
 
 void gdeOCSnapPointList::Add(gdeOCSnapPoint *snapPoint){
-	if(! snapPoint || Has(snapPoint)){
+	if(!snapPoint || Has(snapPoint)){
 		DETHROW(deeInvalidParam);
 	}
 	pSnapPoints.Add(snapPoint);

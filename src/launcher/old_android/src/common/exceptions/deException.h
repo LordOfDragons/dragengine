@@ -54,19 +54,19 @@ public:
 	/** \name Accessors */
 	/*@{*/
 	/** \brief Unique name to identify the exception. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Description of the reason for the exception. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Name of the source file where the exception occurred. */
-	inline const decString &GetFile() const{return pFile;}
+	inline const decString &GetFile() const{ return pFile; }
 	
 	/** \brief Line number in file where the exception occurred. */
-	inline int GetLine() const{return pLine;}
+	inline int GetLine() const{ return pLine; }
 	
 	/** \brief Backtrace. */
-	inline const decStringList &GetBacktrace() const{return pBacktrace;}
+	inline const decStringList &GetBacktrace() const{ return pBacktrace; }
 	/*@}*/
 	
 	/** \name Tests */

@@ -51,7 +51,7 @@ reIGDEModule::~reIGDEModule(){
 ///////////////
 
 void reIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new reWindowMain(*this));
 	}
 }

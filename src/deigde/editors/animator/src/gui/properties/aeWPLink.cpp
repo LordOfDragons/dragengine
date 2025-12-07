@@ -103,7 +103,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeLink * const link = pPanel.GetLink();
-		if(! animator || ! link){
+		if(!animator || !link){
 			return;
 		}
 		
@@ -170,13 +170,13 @@ public:
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator){
+		if(!animator){
 			return;
 		}
 		
 		aeClipboardDataLink * const cdata = (aeClipboardDataLink*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataLink::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -227,7 +227,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const decString value = textField->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetName() == value){
+		if(!link || link->GetName() == value){
 			return;
 		}
 		
@@ -253,7 +253,7 @@ public:
 		
 		const decString &bone = comboBox->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetBone() == bone){
+		if(!link || link->GetBone() == bone){
 			return;
 		}
 		
@@ -280,7 +280,7 @@ public:
 		aeController * const controller = comboBox->GetSelectedItem()
 			? (aeController*)comboBox->GetSelectedItem()->GetData() : NULL;
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetController() == controller){
+		if(!link || link->GetController() == controller){
 			return;
 		}
 		
@@ -300,7 +300,7 @@ public:
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		const int value = textField->GetValue();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetRepeat() == value){
+		if(!link || link->GetRepeat() == value){
 			return;
 		}
 		
@@ -318,7 +318,7 @@ public:
 		"Insert value at X coordinate matching linked controller value"){}
 	
 	virtual igdeUndo *OnAction(aeAnimator*, aeLink *link){
-		if(! link->GetController()){
+		if(!link->GetController()){
 			return NULL;
 		}
 		
@@ -326,7 +326,7 @@ public:
 		const float x = decMath::linearStep(controller.GetCurrentValue(),
 			controller.GetMinimumValue(), controller.GetMaximumValue());
 		float y = 0.0f;
-		if(! igdeCommonDialogs::GetFloat(&pPanel, "Insert Curve Value", "Y Value:", y)){
+		if(!igdeCommonDialogs::GetFloat(&pPanel, "Insert Curve Value", "Y Value:", y)){
 			return NULL;
 		}
 		
@@ -347,7 +347,7 @@ public:
 		if(pUndo){
 			((aeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
-		}else if(! pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
+		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{
@@ -385,7 +385,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetBone() == value){
+		if(!link || link->GetBone() == value){
 			return;
 		}
 		
@@ -407,7 +407,7 @@ public:
 			? (deAnimatorLink::eBoneParameter)(intptr_t)comboBox->GetSelectedItem()->GetData()
 			: deAnimatorLink::ebpPositionZ;
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetBoneParameter() == parameter){
+		if(!link || link->GetBoneParameter() == parameter){
 			return;
 		}
 		
@@ -427,7 +427,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || fabsf(link->GetBoneMinimum() - value) < FLOAT_SAFE_EPSILON){
+		if(!link || fabsf(link->GetBoneMinimum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -447,7 +447,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || fabsf(link->GetBoneMaximum() - value) < FLOAT_SAFE_EPSILON){
+		if(!link || fabsf(link->GetBoneMaximum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -474,7 +474,7 @@ public:
 		
 		const decString &vps = comboBox->GetText();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetVertexPositionSet() == vps){
+		if(!link || link->GetVertexPositionSet() == vps){
 			return;
 		}
 		
@@ -494,7 +494,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const decString value(textField->GetText());
 		aeLink * const link = pPanel.GetLink();
-		if(! link || link->GetVertexPositionSet() == value){
+		if(!link || link->GetVertexPositionSet() == value){
 			return;
 		}
 		
@@ -514,7 +514,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || fabsf(link->GetVertexPositionSetMinimum() - value) < FLOAT_SAFE_EPSILON){
+		if(!link || fabsf(link->GetVertexPositionSetMinimum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -535,7 +535,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
 		aeLink * const link = pPanel.GetLink();
-		if(! link || fabsf(link->GetVertexPositionSetMaximum() - value) < FLOAT_SAFE_EPSILON){
+		if(!link || fabsf(link->GetVertexPositionSetMaximum() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -713,7 +713,7 @@ void aeWPLink::UpdateLinkList(){
 	}
 	
 	pListLink->SetSelectionWithData(selection);
-	if(! pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
+	if(!pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
 		pListLink->SetSelection(0);
 	}
 	

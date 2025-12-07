@@ -286,7 +286,7 @@ dedaiSpaceMeshFace *dedaiSpaceMesh::GetFaceClosestTo(const decVector &position, 
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
 		
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 // 		if( ! ( face.GetMaximumExtend() >= testMinExtend && face.GetMinimumExtend() <= testMaxExtend ) ){
@@ -317,7 +317,7 @@ dedaiSpaceMeshFace *dedaiSpaceMesh::GetFaceClosestTo(const decVector &position, 
 		
 		const float testDistSquared = (testPos - position).LengthSquared();
 		
-		if(! bestFace || testDistSquared < bestDistSquared){
+		if(!bestFace || testDistSquared < bestDistSquared){
 			bestFace = pFaces + f;
 			bestDistSquared = testDistSquared;
 		}
@@ -344,10 +344,10 @@ decVector &nearestPosition, float &nearestDistSquared) const{
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
 		
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
-		if(! (face.GetMaximumExtend() >= testMinExtend && face.GetMinimumExtend() <= testMaxExtend)){
+		if(!(face.GetMaximumExtend() >= testMinExtend && face.GetMinimumExtend() <= testMaxExtend)){
 			continue;
 		}
 		
@@ -375,7 +375,7 @@ decVector &nearestPosition, float &nearestDistSquared) const{
 		
 		const float testDistSquared = (testPos - point).LengthSquared();
 		
-		if(testDistSquared <= radiusSquared && (! nearestFace || testDistSquared < nearestDistSquared)){
+		if(testDistSquared <= radiusSquared && (!nearestFace || testDistSquared < nearestDistSquared)){
 			nearestFace = pFaces + f;
 			nearestDistSquared = testDistSquared;
 			nearestPosition = testPos;
@@ -521,7 +521,7 @@ void dedaiSpaceMesh::LinkToOtherMeshes(){
 				
 				dedaiSpace &space = *navspace->GetSpace();
 				dedaiSpaceMesh * const mesh = space.GetMesh();
-				if(! mesh){
+				if(!mesh){
 					continue;
 				}
 				
@@ -565,7 +565,7 @@ void dedaiSpaceMesh::UpdateBlocking(){
 	pVertexCount = pBlockerBaseVertex;
 	
 	// process overlapping blockers
-	if(! pSpace.GetParentWorld()){
+	if(!pSpace.GetParentWorld()){
 		return;
 	}
 	
@@ -676,7 +676,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 	
 	try{
 		for(f=0; f<pFaceCount; f++){
-			if(! pFaces[f].GetEnabled()){
+			if(!pFaces[f].GetEnabled()){
 				continue;
 			}
 			
@@ -745,7 +745,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 						const unsigned short ei = pCorners[firstCorner + c].GetEdge();
 						const dedaiSpaceMeshEdge &edge = pEdges[ei];
 						const bool winding1 = (edge.GetVertex1() == pCorners[firstCorner + c].GetVertex());
-						bool winding2 = ! winding1;
+						bool winding2 = !winding1;
 						
 						const short linkIndex = pCorners[firstCorner + c].GetLink();
 						
@@ -775,7 +775,7 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 							const dedaiSpaceMeshFace &f2 = nm2.GetFaces()[fi2];
 							
 							if(f2.GetCornerCount() < 3){
-								winding2 = ! winding1;
+								winding2 = !winding1;
 								
 							}else{
 								const decVector &f2v1 = nm2Vertices[nm2Corners[f2.GetFirstCorner()].GetVertex()];
@@ -953,7 +953,7 @@ void dedaiSpaceMesh::pInitFromNavSpace(){
 		// ensures we do not have to deal with fudge factors for the smallest angle to allow.
 		const decVector &p1 = vertices[corners[firstCorner].GetVertex()];
 		const decVector &p2 = vertices[corners[firstCorner + 1].GetVertex()];
-		if(! p1.IsEqualTo(p2)){
+		if(!p1.IsEqualTo(p2)){
 			const decVector edge1((p2 - p1).Normalized());
 			float bestAbsDot = 1.0f;
 			decVector bestEdge2;
@@ -1020,7 +1020,7 @@ void dedaiSpaceMesh::pInitFromHTNavSpace(){
 	int i, j, edgeIndex;
 	
 	// check for obvious bugs
-	if(! corners || ! vertices){
+	if(!corners || !vertices){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1145,7 +1145,7 @@ void dedaiSpaceMesh::pInitFromHTNavSpace(){
 		// ensures we do not have to deal with fudge factors for the smallest angle to allow.
 		const decVector &p1 = pVertices[corners[firstCorner]];
 		const decVector &p2 = pVertices[corners[firstCorner + 1]];
-		if(! p1.IsEqualTo(p2)){
+		if(!p1.IsEqualTo(p2)){
 			const decVector edge1((p2 - p1).Normalized());
 			float bestAbsDot = 1.0f;
 			decVector bestEdge2;
@@ -1234,7 +1234,7 @@ bool dedaiSpaceMesh::pMatchesConvexFaceListMeshFace(dedaiConvexFaceList &list, c
 				const decVector &correctPosition = pVertices[pCorners[firstCorner + i].GetVertex()];
 				const decVector &testPosition = list.GetVertexAt(convexFace.GetVertexAt(i));
 				
-				if(! testPosition.IsEqualTo(correctPosition, THRESHOLD_EQUAL)){
+				if(!testPosition.IsEqualTo(correctPosition, THRESHOLD_EQUAL)){
 					break;
 				}
 			}
@@ -1561,7 +1561,7 @@ void dedaiSpaceMesh::pLinkToMesh(dedaiSpaceMesh *mesh, float snapDistance, float
 	// test which is slow but this could be later on improved by using an octree or some other
 	// kind of data structure
 	for(i=0; i<pCornerCount; i++){
-		if(! pCorners[i].GetEnabled()){
+		if(!pCorners[i].GetEnabled()){
 			continue;
 		}
 		if(pCorners[i].GetLink() != CORNER_NO_LINK){
@@ -1621,7 +1621,7 @@ void dedaiSpaceMesh::pLinkToMesh(dedaiSpaceMesh *mesh, float snapDistance, float
 			}
 			
 			// if splitting is possible for this mesh is possible
-			if(! useSplitting){
+			if(!useSplitting){
 				continue;
 			}
 			
@@ -1819,7 +1819,7 @@ void dedaiSpaceMesh::pSplitEdge(int edgeIndex, const decVector &splitVertex){
 	int i;
 	for(i=0; i<pFaceCount; i++){
 		const dedaiSpaceMeshFace &testFace = pFaces[i];
-		if(! testFace.GetEnabled()){
+		if(!testFace.GetEnabled()){
 			continue;
 		}
 		
@@ -1914,12 +1914,12 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all corners belonging to enabled faces have to be enabled
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		for(c=0; c<face.GetCornerCount(); c++){
 			const dedaiSpaceMeshCorner &corner = pCorners[face.GetFirstCorner() + c];
-			if(! corner.GetEnabled()){
+			if(!corner.GetEnabled()){
 				pSpace.GetDEAI().LogErrorFormat("Space (%g,%g,%g): Corner %i not enabled although used in face %i",
 					pSpace.GetPosition().x, pSpace.GetPosition().y, pSpace.GetPosition().z, c, f);
 				pDebugPrint();
@@ -1931,13 +1931,13 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all corners not belonging to enabled faces have to be disabled
 	for(c=0; c<pCornerCount; c++){
 		const dedaiSpaceMeshCorner &corner = pCorners[c];
-		if(! corner.GetEnabled()){
+		if(!corner.GetEnabled()){
 			continue;
 		}
 		
 		for(f=0; f<pFaceCount; f++){
 			const dedaiSpaceMeshFace &face = pFaces[f];
-			if(! face.GetEnabled()){
+			if(!face.GetEnabled()){
 				continue;
 			}
 			
@@ -1957,7 +1957,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all edges on enabled faces have to belong to the face
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		
@@ -1986,7 +1986,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 		
 		for(c=0; c<pCornerCount; c++){
 			const dedaiSpaceMeshCorner &corner = pCorners[c];
-			if(! corner.GetEnabled()){
+			if(!corner.GetEnabled()){
 				continue;
 			}
 			if(corner.GetEdge() == e){
@@ -2031,13 +2031,13 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all enabled faces have unique corner ranges
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		
 		for(f2=f+1; f2<pFaceCount; f2++){
 			const dedaiSpaceMeshFace &face2 = pFaces[f2];
-			if(! face2.GetEnabled()){
+			if(!face2.GetEnabled()){
 				continue;
 			}
 			
@@ -2058,7 +2058,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all enabled faces have no duplicate vertices
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		
@@ -2079,7 +2079,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// edge loop in all enabled edges is correct
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		
@@ -2129,7 +2129,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all links are valid
 	for(l=0; l<pLinkCount; l++){
 		const dedaiSpaceMeshLink &link = pLinks[l];
-		if(! link.GetMesh()){
+		if(!link.GetMesh()){
 			pSpace.GetDEAI().LogErrorFormat("Space (%g,%g,%g): Link %i has NULL partner mesh",
 				pSpace.GetPosition().x, pSpace.GetPosition().y, pSpace.GetPosition().z, l);
 			pDebugPrint();
@@ -2145,7 +2145,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 		}
 		
 		const dedaiSpaceMeshFace &face = mesh.GetFaceAt(link.GetFace());
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			pSpace.GetDEAI().LogErrorFormat("Space (%g,%g,%g): Link %i face %i is disabled",
 				pSpace.GetPosition().x, pSpace.GetPosition().y, pSpace.GetPosition().z, l, link.GetFace());
 			pDebugPrint();
@@ -2163,7 +2163,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 	// all enabled corners have valid links
 	for(f=0; f<pFaceCount; f++){
 		const dedaiSpaceMeshFace &face = pFaces[f];
-		if(! face.GetEnabled()){
+		if(!face.GetEnabled()){
 			continue;
 		}
 		
@@ -2181,7 +2181,7 @@ void dedaiSpaceMesh::pVerifyInvariants() const{
 			
 			const dedaiSpaceMesh &mesh = *pLinks[corner.GetLink()].GetMesh();
 			
-			if(! mesh.HasLinkWith((dedaiSpaceMesh*)this, (unsigned short)f, (unsigned short)c)){
+			if(!mesh.HasLinkWith((dedaiSpaceMesh*)this, (unsigned short)f, (unsigned short)c)){
 				pSpace.GetDEAI().LogErrorFormat("Space (%g,%g,%g): Face %i corner %i link has no partner link",
 					pSpace.GetPosition().x, pSpace.GetPosition().y, pSpace.GetPosition().z, f, c);
 				pDebugPrint();

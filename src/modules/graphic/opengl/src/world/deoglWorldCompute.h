@@ -148,7 +148,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World. */
-	inline deoglRWorld &GetWorld() const{return pWorld;}
+	inline deoglRWorld &GetWorld() const{ return pWorld; }
 	
 	
 	
@@ -159,7 +159,7 @@ public:
 	
 	
 	/** SSBO elements. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElements() const{return pSSBOElements;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElements() const{ return pSSBOElements; }
 	
 	/** Count of elements. */
 	int GetElementCount() const;
@@ -177,7 +177,7 @@ public:
 	void RemoveElement(deoglWorldComputeElement *element);
 	
 	/** Update element count. */
-	inline int GetUpdateElementCount() const{return pUpdateElementCount;}
+	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
 	
 	/** Count of element geometries. */
 	int GetElementGeometryCount() const;
@@ -186,18 +186,18 @@ public:
 	void UpdateElementGeometries(deoglWorldComputeElement *element);
 	
 	/** Update element geometry count. */
-	inline int GetUpdateElementGeometryCount() const{return pUpdateElementGeometryCount;}
+	inline int GetUpdateElementGeometryCount() const{ return pUpdateElementGeometryCount; }
 	
 	/** Clear element geometry count. */
-	inline int GetClearGeometryCount() const{return pClearGeometryCount;}
+	inline int GetClearGeometryCount() const{ return pClearGeometryCount; }
 	
 	
 	
 	/** SSBO element geometries. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElementGeometries() const{return pSSBOElementGeometries;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementGeometries() const{ return pSSBOElementGeometries; }
 	
 	/** Shared SPB element geometries. */
-	inline const deoglSharedBlockSPB::Ref &GetSharedSPBGeometries() const{return pSharedSPBGeometries;}
+	inline const deoglSharedBlockSPB::Ref &GetSharedSPBGeometries() const{ return pSharedSPBGeometries; }
 	/*@}*/
 	
 	

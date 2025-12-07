@@ -80,7 +80,7 @@ void igdeWOSubObject::SetBoxExtends(const decVector &boxMinExtends, const decVec
 }
 
 void igdeWOSubObject::ClearBoxExtends(){
-	if(! pHasBoxExtends){
+	if(!pHasBoxExtends){
 		return;
 	}
 	
@@ -306,7 +306,7 @@ void igdeWOSubObject::pInitTrigger(igdeTriggerExpression::Ref &trigger, const de
 	}
 	
 	decString value;
-	if(pWrapper.GetTriggerTable() && GetPropertyValue(propertyName, value) && ! value.IsEmpty()){
+	if(pWrapper.GetTriggerTable() && GetPropertyValue(propertyName, value) && !value.IsEmpty()){
 		try{
 			const igdeTriggerExpressionParser parser;
 			trigger = parser.StringToExpression(value);
@@ -337,12 +337,12 @@ deColliderComponent *igdeWOSubObject::GetAttachableColliderComponent() const{
 }
 
 decDMatrix igdeWOSubObject::GetBoneMatrix(const decString &name) const{
-	if(! pWrapper.GetComponent()){
+	if(!pWrapper.GetComponent()){
 		return decDMatrix();
 	}
 	const deComponent &component = *pWrapper.GetComponent();
 	
-	if(! component.GetRig()){
+	if(!component.GetRig()){
 		return decDMatrix();
 	}
 	

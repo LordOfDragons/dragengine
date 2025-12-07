@@ -92,22 +92,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{return pSession;}
+	inline deoxrSession &GetSession() const{ return pSession; }
 	
 	/** Type. */
-	inline eType GetType() const{return pType;}
+	inline eType GetType() const{ return pType; }
 	
 	/** Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** Swapchain. */
-	inline XrSwapchain GetSwapchain() const{return pSwapchain;}
+	inline XrSwapchain GetSwapchain() const{ return pSwapchain; }
 	
 	/** Image format. */
-	inline int64_t GetImageFormat() const{return pImageFormat;}
+	inline int64_t GetImageFormat() const{ return pImageFormat; }
 	
 	/** Count of images. */
-	inline int GetImageCount() const{return pImageCount;}
+	inline int GetImageCount() const{ return pImageCount; }
 	
 	/** Image at index. */
 	const sImage &GetImageAt(int index) const;
@@ -119,10 +119,10 @@ public:
 	void ReleaseImage();
 	
 	/** Acquired image. */
-	inline uint32_t GetAcquiredImage() const{return pAcquiredImage;}
+	inline uint32_t GetAcquiredImage() const{ return pAcquiredImage; }
 	
 	/** VR Render format. */
-	inline deBaseVRModule::eVRRenderFormat GetVRRenderFormat() const{return pVRRenderFormat;}
+	inline deBaseVRModule::eVRRenderFormat GetVRRenderFormat() const{ return pVRRenderFormat; }
 	/*@}*/
 	
 	

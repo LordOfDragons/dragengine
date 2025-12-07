@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	

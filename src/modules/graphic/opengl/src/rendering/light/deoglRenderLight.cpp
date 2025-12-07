@@ -181,7 +181,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen ScreenSpace SubSurface Scattering Stereo");
 	}
 	pAsyncGetPipeline(pPipelineSSSSSStereo, pipconf, sources, defines);
@@ -205,7 +205,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen AmbientOcclusion Local Stereo");
 	}
 	pAsyncGetPipeline(pPipelineAOLocalStereo, pipconf, sources, defines);
@@ -230,7 +230,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("Gauss Separable Fixed Stereo");
 	}
 	pAsyncGetPipeline(pPipelineAOBlur1Stereo, pipconf, sources, defines);
@@ -254,7 +254,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("Gauss Separable Fixed Stereo");
 	}
 	pAsyncGetPipeline(pPipelineAOBlur2Stereo, pipconf, sources, defines);
@@ -308,7 +308,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen SSAO Upscale Stereo");
 	}
 	pAsyncGetPipeline(pPipelineSSAOUpscaleStereo, pipconf, sources, defines);
@@ -329,7 +329,7 @@ pAddToRenderTask(NULL)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Copy Depth Stereo");
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthStereo, pipconf, sources, defines);
@@ -431,7 +431,7 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
 	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
 	
-	if(solid && ! mask && ! xray && hasGIStateUpdate){
+	if(solid && !mask && !xray && hasGIStateUpdate){
 		pRenderGI->ClearProbes(plan);
 	}
 	
@@ -458,7 +458,7 @@ void deoglRenderLight::RenderLights(deoglRenderPlan &plan, bool solid, const deo
 	// tasks to finish
 	pRenderLightSky->RenderLights(plan, solid, mask, xray);
 	
-	if(solid && ! mask && hasGIStateUpdate){
+	if(solid && !mask && hasGIStateUpdate){
 		if(hasGIStateRender){
 			pRenderGI->RenderLightGIRay(plan);
 		}
@@ -517,7 +517,7 @@ void deoglRenderLight::RenderAO(deoglRenderPlan &plan, bool solid){
 	const deoglDebugTraceGroup debugTrace(renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)");
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
-	if(! config.GetSSAOEnable() || plan.GetDisableLights()){
+	if(!config.GetSSAOEnable() || plan.GetDisableLights()){
 		return;
 	}
 	

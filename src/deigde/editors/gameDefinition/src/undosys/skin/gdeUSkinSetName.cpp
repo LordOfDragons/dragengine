@@ -43,7 +43,7 @@ gdeUSkinSetName::gdeUSkinSetName(
 gdeSkin *skin, const char *newValue) :
 pSkin(NULL)
 {
-	if(! skin){
+	if(!skin){
 		DETHROW(deeInvalidParam);
 	}
 	

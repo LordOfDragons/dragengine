@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/** Link at index. */
 	int GetLinkAt(int index) const;

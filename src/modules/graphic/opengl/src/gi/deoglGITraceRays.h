@@ -72,16 +72,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Rays per probe. */
-	inline int GetRaysPerProbe() const{return pRaysPerProbe;}
+	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
 	
 	/** Probes per line in result textures. */
-	inline int GetProbesPerLine() const{return pProbesPerLine;}
+	inline int GetProbesPerLine() const{ return pProbesPerLine; }
 	
 	/** Probe count in result textures. */
-	inline int GetProbeCount() const{return pProbeCount;}
+	inline int GetProbeCount() const{ return pProbeCount; }
 	
 	/** Get rays per probe matching configuration quality. */
 	static int ConfigRaysPerProbe(const deoglConfiguration &config);
@@ -95,27 +95,27 @@ public:
 	
 	
 	/** Position texture (also used for distance using a component only). */
-	inline deoglTexture &GetTexturePosition(){return pTexPosition;}
-	inline const deoglTexture &GetTexturePosition() const{return pTexPosition;}
+	inline deoglTexture &GetTexturePosition(){ return pTexPosition; }
+	inline const deoglTexture &GetTexturePosition() const{ return pTexPosition; }
 	
 	/** Normal texture. */
-	inline deoglTexture &GetTextureNormal(){return pTexNormal;}
-	inline const deoglTexture &GetTextureNormal() const{return pTexNormal;}
+	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
+	inline const deoglTexture &GetTextureNormal() const{ return pTexNormal; }
 	
 	/** Diffuse/TintMask texture. */
-	inline deoglTexture &GetTextureDiffuse(){return pTexDiffuse;}
-	inline const deoglTexture &GetTextureDiffuse() const{return pTexDiffuse;}
+	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
 	/** Reflectivity/Roughness texture. */
-	inline deoglTexture &GetTextureReflectivity(){return pTexReflectivity;}
-	inline const deoglTexture &GetTextureReflectivity() const{return pTexReflectivity;}
+	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
 	/** Light texture. */
-	inline deoglTexture &GetTextureLight(){return pTexLight;}
-	inline const deoglTexture &GetTextureLight() const{return pTexLight;}
+	inline deoglTexture &GetTextureLight(){ return pTexLight; }
+	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
 	
 	/** Light FBO. */
-	inline const deoglFramebuffer::Ref &GetFBOLight(){return pFBOLight;}
+	inline const deoglFramebuffer::Ref &GetFBOLight(){ return pFBOLight; }
 	/*@}*/
 	
 	

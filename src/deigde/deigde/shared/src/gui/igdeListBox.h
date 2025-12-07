@@ -97,19 +97,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ListBox is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible rows. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Set visible rows. */
 	void SetRows(int rows);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
@@ -178,7 +178,7 @@ public:
 	
 	
 	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{return pSorter;}
+	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
 	void SetSorter(igdeListItemSorter *sorter);
@@ -192,13 +192,13 @@ public:
 	
 	
 	/** \brief Selection mode. */
-	inline eSelectionMode GetSelectionMode() const{return pSelectionMode;}
+	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
 	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Index of selected item or -1. */
-	inline int GetSelection() const{return pSelection;}
+	inline int GetSelection() const{ return pSelection; }
 	
 	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;

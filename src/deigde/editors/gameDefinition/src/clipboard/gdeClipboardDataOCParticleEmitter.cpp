@@ -43,7 +43,7 @@ gdeOCParticleEmitter *particleEmitter) :
 igdeClipboardData(TYPE_NAME),
 pParticleEmitter(NULL)
 {
-	if(! particleEmitter){
+	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

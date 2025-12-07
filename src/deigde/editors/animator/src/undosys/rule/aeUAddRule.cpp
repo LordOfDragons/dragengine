@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
-	if(! animator || ! rule){
+	if(!animator || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	

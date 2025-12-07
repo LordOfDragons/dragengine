@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the comment. */
-	inline const decString &GetComment() const{return pComment;}
+	inline const decString &GetComment() const{ return pComment; }
 	/** \brief Sets the comment. */
 	void SetComment(const char *comment);
 	

@@ -100,7 +100,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Spacing. */
-	inline int GetSpacing() const{return pSpacing;}
+	inline int GetSpacing() const{ return pSpacing; }
 	
 	/** \brief Add child to area. */
 	virtual void AddChild(igdeWidget *child, eArea area);

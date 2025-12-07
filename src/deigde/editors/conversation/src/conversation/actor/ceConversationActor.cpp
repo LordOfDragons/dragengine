@@ -254,9 +254,9 @@ void ceConversationActor::Update(cePlayback &playback, float elapsed){
 
 
 void ceConversationActor::SetPathModel(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathModel.Equals(path)){
+	if(!pPathModel.Equals(path)){
 		pPathModel = path;
 		pUpdateComponent();
 		NotifyActorChanged();
@@ -264,9 +264,9 @@ void ceConversationActor::SetPathModel(const char *path){
 }
 
 void ceConversationActor::SetPathSkin(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathSkin.Equals(path)){
+	if(!pPathSkin.Equals(path)){
 		pPathSkin = path;
 		pUpdateComponent();
 		NotifyActorChanged();
@@ -274,9 +274,9 @@ void ceConversationActor::SetPathSkin(const char *path){
 }
 
 void ceConversationActor::SetPathRig(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathRig.Equals(path)){
+	if(!pPathRig.Equals(path)){
 		pPathRig = path;
 		pUpdateComponent();
 		NotifyActorChanged();
@@ -284,9 +284,9 @@ void ceConversationActor::SetPathRig(const char *path){
 }
 
 void ceConversationActor::SetPathSpeechAnimation(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathSpeechAnimation.Equals(path)){
+	if(!pPathSpeechAnimation.Equals(path)){
 		pPathSpeechAnimation = path;
 		pUpdateSpeechAnimation();
 		NotifyActorChanged();
@@ -294,9 +294,9 @@ void ceConversationActor::SetPathSpeechAnimation(const char *path){
 }
 
 void ceConversationActor::SetPathFacePoseAnimator(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathFacePoseAnimator.Equals(path)){
+	if(!pPathFacePoseAnimator.Equals(path)){
 		pPathFacePoseAnimator = path;
 		pUpdateFacePoseAnimator();
 		NotifyActorChanged();
@@ -304,9 +304,9 @@ void ceConversationActor::SetPathFacePoseAnimator(const char *path){
 }
 
 void ceConversationActor::SetPathEyesAnimator(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if(! pPathEyesAnimator.Equals(path)){
+	if(!pPathEyesAnimator.Equals(path)){
 		pPathEyesAnimator = path;
 		pUpdateEyesAnimator();
 		NotifyActorChanged();
@@ -314,22 +314,22 @@ void ceConversationActor::SetPathEyesAnimator(const char *path){
 }
 
 void ceConversationActor::SetID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pID.Equals(id)){
+	if(!pID.Equals(id)){
 		pID = id;
 		NotifyActorChanged();
 	}
 }
 
 void ceConversationActor::SetAliasID(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pAliasID.Equals(id)){
+	if(!pAliasID.Equals(id)){
 		pAliasID = id;
 		NotifyActorChanged();
 	}
@@ -345,7 +345,7 @@ void ceConversationActor::SetTextBoxName(const decUnicodeString &name){
 
 
 void ceConversationActor::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		pRepositionComponent();
 		pRepositionSpeaker();
@@ -354,7 +354,7 @@ void ceConversationActor::SetPosition(const decVector &position){
 }
 
 void ceConversationActor::SetOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		pRepositionComponent();
 		pRepositionSpeaker();
@@ -610,7 +610,7 @@ void ceConversationActor::SetWaiting(bool waiting){
 
 
 decMatrix ceConversationActor::GetBoneMatrix(const char *bone) const{
-	if(! bone){
+	if(!bone){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -770,13 +770,13 @@ void ceConversationActor::pUpdateComponent(){
 	
 	// try to load the resources if possible
 	try{
-		if(! pPathModel.IsEmpty()){
+		if(!pPathModel.IsEmpty()){
 			model = engine.GetModelManager()->LoadModel(pPathModel, "/");
 		}
-		if(! pPathSkin.IsEmpty()){
+		if(!pPathSkin.IsEmpty()){
 			skin = engine.GetSkinManager()->LoadSkin(pPathSkin, "/");
 		}
-		if(! pPathRig.IsEmpty()){
+		if(!pPathRig.IsEmpty()){
 			rig = engine.GetRigManager()->LoadRig(pPathRig, "/");
 		}
 		
@@ -796,7 +796,7 @@ void ceConversationActor::pUpdateComponent(){
 	// protect the loaded parts
 	try{
 		// if the skin is missing use the default one
-		if(! skin && gamedef){
+		if(!skin && gamedef){
 			skin = pEnvironment.GetStockSkin(igdeEnvironment::essError);
 			skin->AddReference();
 		}
@@ -875,7 +875,7 @@ void ceConversationActor::pUpdateSpeechAnimation(){
 	
 	pSpeechAnimation->Clear();
 	
-	if(! pPathSpeechAnimation.IsEmpty()){
+	if(!pPathSpeechAnimation.IsEmpty()){
 		try{
 			pathFile.SetFromUnix(pPathSpeechAnimation);
 			
@@ -915,7 +915,7 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 	deAnimator *animator = nullptr;
 	decPath pathFile;
 	
-	if(! pPathFacePoseAnimator.IsEmpty()){
+	if(!pPathFacePoseAnimator.IsEmpty()){
 		try{
 			pathFile.SetFromUnix(pPathFacePoseAnimator);
 			
@@ -952,7 +952,7 @@ void ceConversationActor::pUpdateEyesAnimator(){
 	deAnimator *animator = nullptr;
 	decPath pathFile;
 	
-	if(! pPathEyesAnimator.IsEmpty()){
+	if(!pPathEyesAnimator.IsEmpty()){
 		try{
 			pathFile.SetFromUnix(pPathEyesAnimator);
 			
@@ -1009,7 +1009,7 @@ void ceConversationActor::pRepositionSpeaker(){
 
 
 void ceConversationActor::pUpdateAnimatorInstance(float elapsed){
-	if(! pActivePose){
+	if(!pActivePose){
 		return;
 	}
 	
@@ -1062,7 +1062,7 @@ void ceConversationActor::pUpdateAnimatorInstance(float elapsed){
 }
 
 void ceConversationActor::pUpdatePlayGesture(float elapsed){
-	if(! pPlayGestureRunning || pPlayGestureCount == 0){
+	if(!pPlayGestureRunning || pPlayGestureCount == 0){
 		return;
 	}
 	
@@ -1091,14 +1091,14 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 				break; // use actorGesturePose = nullptr during pause
 			}
 			
-			if(! pPlayGestures[pPlayGesturePos].gesture || ! pActivePose){
+			if(!pPlayGestures[pPlayGesturePos].gesture || !pActivePose){
 				break;
 			}
 			
 			actorGesture = pActivePose->GetGestures().GetNamed(
 				pPlayGestures[pPlayGesturePos].gesture->GetAnimator());
 			
-			if(! actorGesture){
+			if(!actorGesture){
 				break;
 			}
 			
@@ -1360,7 +1360,7 @@ void ceConversationActor::pUpdatePlayHeadLookAt(cePlayback &playback, float elap
 	decMatrix targetMatrix;
 	
 	invActorMatrix = decMatrix::CreateRT(pOrientation * DEG2RAD, pPosition).Invert();
-	if(pEngComponent && pEngComponent->GetRig() && ! pBoneHeadRotator.IsEmpty()){
+	if(pEngComponent && pEngComponent->GetRig() && !pBoneHeadRotator.IsEmpty()){
 		const int index = pEngComponent->GetRig()->IndexOfBoneNamed(pBoneHeadRotator);
 		
 		if(index != -1){

@@ -71,7 +71,7 @@ pFont(SpinTextFieldFont(powner, guitheme))
 {
 	setFont((FXFont*)pFont->GetNativeFont());
 	
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
@@ -85,12 +85,12 @@ igdeNativeFoxSpinTextField::~igdeNativeFoxSpinTextField(){
 }
 
 igdeNativeFoxSpinTextField *igdeNativeFoxSpinTextField::CreateNativeWidget(igdeSpinTextField &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -194,7 +194,7 @@ int igdeNativeFoxSpinTextField::SpinTextFieldPadBottom(const igdeGuiTheme &guith
 ///////////
 
 long igdeNativeFoxSpinTextField::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

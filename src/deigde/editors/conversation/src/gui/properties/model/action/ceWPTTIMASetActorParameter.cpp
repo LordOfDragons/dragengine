@@ -86,7 +86,7 @@ void ceWPTTIMASetActorParameter::Update(){
 	text.Format("Set Actor Parameter (%s): '%s' %s", action.GetActor().GetString(),
 		action.GetName().GetString(), textOperator);
 	
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		text.AppendFormat("'%s'", action.GetValueVariable().GetString());
 		
 	}else{

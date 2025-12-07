@@ -84,7 +84,7 @@ void igdeResourceLoader::Update(){
 
 void igdeResourceLoader::RequestResource(const char *filename,
 deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listener){
-	if(! filename || ! listener){
+	if(!filename || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	

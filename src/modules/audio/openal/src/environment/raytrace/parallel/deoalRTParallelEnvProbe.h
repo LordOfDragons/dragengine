@@ -152,7 +152,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
@@ -191,31 +191,31 @@ public:
 	
 	
 	/** \brief Time history of trace sound rays calls. */
-	inline decTimeHistory &GetTimeHistoryTraceSoundRays(){return pTimeHistoryTraceSoundRays;}
-	inline const decTimeHistory &GetTimeHistoryTraceSoundRays() const{return pTimeHistoryTraceSoundRays;}
+	inline decTimeHistory &GetTimeHistoryTraceSoundRays(){ return pTimeHistoryTraceSoundRays; }
+	inline const decTimeHistory &GetTimeHistoryTraceSoundRays() const{ return pTimeHistoryTraceSoundRays; }
 	
 	/** \brief Time history of estimate room calls. */
-	inline decTimeHistory &GetTimeHistoryEstimateRoom(){return pTimeHistoryEstimateRoom;}
-	inline const decTimeHistory &GetTimeHistoryEstimateRoom() const{return pTimeHistoryEstimateRoom;}
+	inline decTimeHistory &GetTimeHistoryEstimateRoom(){ return pTimeHistoryEstimateRoom; }
+	inline const decTimeHistory &GetTimeHistoryEstimateRoom() const{ return pTimeHistoryEstimateRoom; }
 	
 	/** \brief Time history of listen calls. */
-	inline decTimeHistory &GetTimeHistoryListen(){return pTimeHistoryListen;}
-	inline const decTimeHistory &GetTimeHistoryListen() const{return pTimeHistoryListen;}
+	inline decTimeHistory &GetTimeHistoryListen(){ return pTimeHistoryListen; }
+	inline const decTimeHistory &GetTimeHistoryListen() const{ return pTimeHistoryListen; }
 	
 	/** \brief Number of trace sound rays calls this frame update. */
-	inline int GetCounterTraceSoundRays() const{return pCounterTraceSoundRays;}
+	inline int GetCounterTraceSoundRays() const{ return pCounterTraceSoundRays; }
 	
 	/** \brief Number of estimate room calls this frame update. */
-	inline int GetCounterEstimateRoom() const{return pCounterEstimateRoom;}
+	inline int GetCounterEstimateRoom() const{ return pCounterEstimateRoom; }
 	
 	/** \brief Number of trace sound rays calls this frame update. */
-	inline int GetCounterListen() const{return pCounterListen;}
+	inline int GetCounterListen() const{ return pCounterListen; }
 	
 	/** \brief Reset counters. */
 	void ResetCounters();
 	
 	/** \brief Elapsed ray tracing times for since the last reset. */
-	inline float GetElapsedRTTime() const{return pElapsedRTTime;}
+	inline float GetElapsedRTTime() const{ return pElapsedRTTime; }
 	
 	/** \brief Reset elapsed ray tracing times. */
 	void ResetElapsedRTTime();

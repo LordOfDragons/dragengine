@@ -48,7 +48,7 @@
 ////////////////////////////
 
 debpParticleEmitter::debpParticleEmitter(dePhysicsBullet *bullet, deParticleEmitter *emitter){
-	if(! bullet || ! emitter){
+	if(!bullet || !emitter){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief File pattern. */
-	inline const decString &GetPattern() const{return pPattern;}
+	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Default extension. */
-	inline const decString &GetDefaultExtension() const{return pDefExtension;}
+	inline const decString &GetDefaultExtension() const{ return pDefExtension; }
 	/*@}*/
 };
 

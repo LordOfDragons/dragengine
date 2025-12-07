@@ -45,7 +45,7 @@ gdeUOCAddBillboard::gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboa
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	

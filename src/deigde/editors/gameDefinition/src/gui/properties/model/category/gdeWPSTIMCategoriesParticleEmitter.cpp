@@ -110,7 +110,7 @@ void gdeWPSTIMCategoriesParticleEmitter::CategoriesChanged(){
 		gdeWPSTIMCategoryParticleEmitter * const modelCategory = (gdeWPSTIMCategoryParticleEmitter*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelCategory->GetCategory())){
+		if(!list.Has(modelCategory->GetCategory())){
 			RemoveModel(modelCategory);
 		}
 	}
@@ -143,7 +143,7 @@ void gdeWPSTIMCategoriesParticleEmitter::OnContextMenu(igdeMenuCascade &contextM
 }
 
 void gdeWPSTIMCategoriesParticleEmitter::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

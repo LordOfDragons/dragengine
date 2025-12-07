@@ -56,25 +56,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Index of the parent bone or -1 if a top level bone. */
-	inline int GetParent() const{return pParent;}
+	inline int GetParent() const{ return pParent; }
 	
 	/** \brief Set index of the parent bone or -1 if a top level bone. */
 	void SetParent(int bone);
 	
 	/** \brief Position relative to the parent or the mesh if there is no parent. */
-	inline decVector GetPosition() const{return pPosition;}
+	inline decVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position relative to the parent or the mesh if there is no parent. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation relative to the parent or the mesh if there is no parent. */
-	inline decQuaternion GetOrientation() const{return pOrientation;}
+	inline decQuaternion GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation relative to the parent or the mesh if there is no parent. */
 	void SetOrientation(const decQuaternion &orientation);

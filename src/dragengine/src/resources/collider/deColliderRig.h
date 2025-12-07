@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig or NULL if not set. */
-	inline deRig *GetRig() const{return pRig;}
+	inline deRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL if not set. */
 	void SetRig(deRig *rig);
@@ -91,7 +91,7 @@ public:
 	
 	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/**
 	 * \brief Bone at index.

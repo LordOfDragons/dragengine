@@ -51,7 +51,7 @@ deoglCollideListManager::~deoglCollideListManager(){
 		if(pLists[i].inUse) inUseCount++;
 	}
 	if(inUseCount > 0){
-		printf("[OPENGL] WARNING! %i collide lists have not been released!\n", inUseCount);
+		printf("[OPENGL] WARNING!%i collide lists have not been released!\n", inUseCount);
 	}
 	if(pLists){
 		for(i=0; i<pListCount; i++){
@@ -72,7 +72,7 @@ deoglCollideList *deoglCollideListManager::GetList(){
 		if(pListCount == pListSize){
 			int i, newSize = pListSize * 3 / 2 + 1;
 			sList *newArray = new sList[newSize];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 			for(i=pListSize; i<newSize; i++){
 				newArray[i].list = NULL;
 				newArray[i].inUse = false;
@@ -88,7 +88,7 @@ deoglCollideList *deoglCollideListManager::GetList(){
 			pListSize = newSize;
 		}
 		pLists[pListCount].list = new deoglCollideList;
-		if(! pLists[pListCount].list) DETHROW(deeOutOfMemory);
+		if(!pLists[pListCount].list) DETHROW(deeOutOfMemory);
 		index = pListCount;
 		pListCount++;
 	}
@@ -97,11 +97,11 @@ deoglCollideList *deoglCollideListManager::GetList(){
 }
 
 void deoglCollideListManager::ReleaseList(deoglCollideList *list){
-	if(! list) DETHROW(deeInvalidParam);
+	if(!list) DETHROW(deeInvalidParam);
 	int i;
 	for(i=0; i<pListCount; i++){
 		if(pLists[i].list == list){
-			if(! pLists[i].inUse) DETHROW(deeInvalidParam);
+			if(!pLists[i].inUse) DETHROW(deeInvalidParam);
 			pLists[i].inUse = false;
 			break;
 		}
@@ -116,7 +116,7 @@ void deoglCollideListManager::ReleaseList(deoglCollideList *list){
 int deoglCollideListManager::pFindNextList() const{
 	int i;
 	for(i=0; i<pListCount; i++){
-		if(! pLists[i].inUse) return i;
+		if(!pLists[i].inUse) return i;
 	}
 	return -1;
 }

@@ -65,13 +65,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Prop field. */
-	inline deoglPropField &GetPropField() const{return pPropField;}
+	inline deoglPropField &GetPropField() const{ return pPropField; }
 	
 	/** Prop field type. */
-	inline const dePropFieldType &GetType() const{return pType;}
+	inline const dePropFieldType &GetType() const{ return pType; }
 	
 	/** Render prop field type. */
-	inline deoglRPropFieldType *GetRType() const{return pRType;}
+	inline deoglRPropFieldType *GetRType() const{ return pRType; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

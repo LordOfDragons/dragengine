@@ -43,7 +43,7 @@ seULayerSetIntensity::seULayerSetIntensity(seLayer *layer, float newIntensity) :
 pLayer(NULL),
 pNewIntensity(newIntensity)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

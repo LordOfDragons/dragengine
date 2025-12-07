@@ -63,7 +63,7 @@ void deoxrDebug::SetEnabled(bool enabled){
 	}
 	
 	if(enabled){
-		if(! pInstance.SupportsExtension(deoxrInstance::extEXTDebugUtils)){
+		if(!pInstance.SupportsExtension(deoxrInstance::extEXTDebugUtils)){
 			return;
 		}
 		
@@ -78,7 +78,7 @@ void deoxrDebug::SetEnabled(bool enabled){
 //////////////////////
 
 void deoxrDebug::pRegisterReportCallback(){
-	if(! pInstance.xrCreateDebugUtilsMessengerEXT || ! pInstance.xrDestroyDebugUtilsMessengerEXT){
+	if(!pInstance.xrCreateDebugUtilsMessengerEXT || !pInstance.xrDestroyDebugUtilsMessengerEXT){
 		return;
 	}
 	
@@ -100,7 +100,7 @@ void deoxrDebug::pRegisterReportCallback(){
 }
 
 void deoxrDebug::pUnregisterReportCallback(){
-	if(! pMessenger){
+	if(!pMessenger){
 		return;
 	}
 	

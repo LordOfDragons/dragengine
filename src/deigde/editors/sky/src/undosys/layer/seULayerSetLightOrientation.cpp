@@ -44,7 +44,7 @@ const decVector &newOrientation) :
 pLayer(NULL),
 pNewOrientation(newOrientation)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

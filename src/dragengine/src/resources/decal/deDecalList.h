@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of decals. */
-	inline int GetDecalCount() const{return pDecalCount;}
+	inline int GetDecalCount() const{ return pDecalCount; }
 	
 	/** \brief Decal at the given index. */
 	deDecal *GetDecalAt(int index) const;

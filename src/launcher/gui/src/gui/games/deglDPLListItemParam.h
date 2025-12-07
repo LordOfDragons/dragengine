@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter name. */
-	inline const FXString &GetParameterName() const{return pParameterName;}
+	inline const FXString &GetParameterName() const{ return pParameterName; }
 	
 	/** Set font. */
 	void SetFont(FXFont *font);

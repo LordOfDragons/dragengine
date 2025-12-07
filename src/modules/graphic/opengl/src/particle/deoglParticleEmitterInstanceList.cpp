@@ -65,7 +65,7 @@ deoglRParticleEmitterInstance *deoglParticleEmitterInstanceList::GetAt(int index
 }
 
 int deoglParticleEmitterInstanceList::IndexOf(deoglRParticleEmitterInstance *instance) const{
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -81,7 +81,7 @@ int deoglParticleEmitterInstanceList::IndexOf(deoglRParticleEmitterInstance *ins
 }
 
 bool deoglParticleEmitterInstanceList::Has(deoglRParticleEmitterInstance *instance) const{
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	

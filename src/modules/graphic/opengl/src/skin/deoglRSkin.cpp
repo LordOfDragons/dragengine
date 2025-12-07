@@ -122,7 +122,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			const deSkinMapped &mapped = *skin.GetMappedAt(i);
 			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::NewWith(mapped));
 			
-			if(mapped.GetInputType() == deSkinMapped::eitRenderable && ! mapped.GetRenderable().IsEmpty()){
+			if(mapped.GetInputType() == deSkinMapped::eitRenderable && !mapped.GetRenderable().IsEmpty()){
 				oglMapped->SetRenderable(AddRenderable(mapped.GetRenderable()));
 			}
 			
@@ -191,11 +191,11 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			// TODO add the real test. this one just assumes all transparent
 			// textures can be used in a quick transparent way. the real way
 			// is to look if ambient, diffuse and specular are black/0.
-			if(! pTextures[i]->GetSolid() && ! pTextures[i]->GetHasHoles()){
+			if(!pTextures[i]->GetSolid() && !pTextures[i]->GetHasHoles()){
 				pTextures[i]->SetQuickTransparency(true);
 			}
 			
-			if(! pTextures[i]->GetSolid()){
+			if(!pTextures[i]->GetSolid()){
 				pIsSolid = false;
 			}
 			if(pTextures[i]->GetHasHoles()){
@@ -216,12 +216,12 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			
 			// shadow states
 			if(pTextures[i]->GetSolid()){
-				if(! pTextures[i]->GetShadowNone()){
+				if(!pTextures[i]->GetShadowNone()){
 					pCastSolidShadow = true;
 				}
 				
 			}else{
-				if(! pTextures[i]->GetShadowNone()){
+				if(!pTextures[i]->GetShadowNone()){
 					pCastTranspShadow = true;
 				}
 			}
@@ -389,7 +389,7 @@ int deoglRSkin::AddRenderable(const char *name){
 }
 
 int deoglRSkin::IndexOfRenderableNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -428,7 +428,7 @@ deoglSkinCalculatedProperty *deoglRSkin::GetCalculatedPropertyAt(int index) cons
 }
 
 int deoglRSkin::AddCalculatedProperty(deoglSkinCalculatedProperty *calculated){
-	if(! calculated){
+	if(!calculated){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -547,12 +547,12 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 			const deoglSkinPropertyMap::ePropertyTypes propertyType =
 				deoglSkinPropertyMap::GetTypeFor(property.GetType());
 			
-			if(! deoglSkinChannel::ChannelTypeMatchingPropertyType(propertyType, channelType)){
+			if(!deoglSkinChannel::ChannelTypeMatchingPropertyType(propertyType, channelType)){
 				continue;
 			}
 			
 			deoglSkinChannel * const channel = pTextures[i]->GetChannelAt(channelType);
-			if(! channel){
+			if(!channel){
 				continue;
 			}
 			
@@ -578,7 +578,7 @@ void deoglRSkin::pRetainImageData(const deSkin &skin){
 				}
 			}
 			
-			if(! pVSRetainImageData){
+			if(!pVSRetainImageData){
 				pVSRetainImageData = new deoglVSRetainImageData;
 			}
 			

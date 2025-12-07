@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRulePropCount *GetRulePropCount() const{return pRulePC;}
+	inline meHTVRulePropCount *GetRulePropCount() const{ return pRulePC; }
 	
 	/** \brief Update node. */
 	virtual void Update();

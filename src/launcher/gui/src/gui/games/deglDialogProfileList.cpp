@@ -632,7 +632,7 @@ void deglDialogProfileList::UpdateSystem(sSystem &system, const char *moduleName
 	system.combobox->setText(moduleName);
 	module = moduleList.GetNamed(moduleName);
 	
-	if(! module){
+	if(!module){
 		system.problem->setText("No module exists with the given name.");
 		working = false;
 		
@@ -730,14 +730,14 @@ void deglDialogProfileList::UpdateMPParameterList(){
 	pMPParameters.RemoveAll();
 	
 	FXString moduleName;
-	if(! GetSelectedMPModuleName(moduleName) || ! pGetSelectedProfile()){
+	if(!GetSelectedMPModuleName(moduleName) || !pGetSelectedProfile()){
 		return;
 	}
 	
 	// add parameters defined by the engine module
 	const delEngineModule * const engineModule = pWindowMain->GetLauncher()->
 		GetEngine().GetModules().GetNamed(moduleName.text());
-	if(! engineModule){
+	if(!engineModule){
 		return;
 	}
 	
@@ -844,7 +844,7 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsVersion(){
 FXuint deglDialogProfileList::execute(FXuint placement){
 	UpdateSystemModuleLists();
 	
-	if(! FXDialogBox::execute(placement)){
+	if(!FXDialogBox::execute(placement)){
 		return 0;
 	}
 	
@@ -921,7 +921,7 @@ long deglDialogProfileList::onBtnProfAdd(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onBtnProfDup(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -953,7 +953,7 @@ long deglDialogProfileList::onBtnProfDup(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onBtnProfDel(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -973,7 +973,7 @@ long deglDialogProfileList::updateBtnProfDel(FXObject *sender, FXSelector, void*
 }
 
 long deglDialogProfileList::onBtnProfRename(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile() || pGetSelectedProfile()->GetGameCustom()){
+	if(!pGetSelectedProfile() || pGetSelectedProfile()->GetGameCustom()){
 		return 1;
 	}
 	
@@ -1001,13 +1001,13 @@ long deglDialogProfileList::onBtnProfRename(FXObject*, FXSelector, void*){
 
 long deglDialogProfileList::updateBtnProfRename(FXObject *sender, FXSelector, void*){
 	return sender->tryHandle(sender, FXSEL(SEL_COMMAND, pGetSelectedProfile()
-		&& ! pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE), nullptr);
+		&& !pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE), nullptr);
 }
 
 
 
 long deglDialogProfileList::onCBModGraChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1023,7 +1023,7 @@ long deglDialogProfileList::onCBModGraChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModGraVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1059,7 +1059,7 @@ long deglDialogProfileList::onBtnGraModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModInpChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1075,7 +1075,7 @@ long deglDialogProfileList::onCBModInpChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModInpVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1111,7 +1111,7 @@ long deglDialogProfileList::onBtnInpModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModPhyChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1127,7 +1127,7 @@ long deglDialogProfileList::onCBModPhyChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModPhyVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1163,7 +1163,7 @@ long deglDialogProfileList::onBtnPhyModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAmrChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1179,7 +1179,7 @@ long deglDialogProfileList::onCBModAmrChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAmrVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1215,7 +1215,7 @@ long deglDialogProfileList::onBtnAmrModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAIChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1231,7 +1231,7 @@ long deglDialogProfileList::onCBModAIChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAIVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1267,7 +1267,7 @@ long deglDialogProfileList::onBtnAIModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModCRChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1283,7 +1283,7 @@ long deglDialogProfileList::onCBModCRChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModCRVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1319,7 +1319,7 @@ long deglDialogProfileList::onBtnCRModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAudChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1335,7 +1335,7 @@ long deglDialogProfileList::onCBModAudChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModAudVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1371,7 +1371,7 @@ long deglDialogProfileList::onBtnAudModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModNetChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1387,7 +1387,7 @@ long deglDialogProfileList::onCBModNetChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModNetVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1423,7 +1423,7 @@ long deglDialogProfileList::onBtnNetModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModSynChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1439,7 +1439,7 @@ long deglDialogProfileList::onCBModSynChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModSynVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1475,7 +1475,7 @@ long deglDialogProfileList::onBtnSynModInfo(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModVRChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1491,7 +1491,7 @@ long deglDialogProfileList::onCBModVRChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBModVRVersionChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1599,7 +1599,7 @@ long deglDialogProfileList::onMPParameterLabelRMPress(FXObject *sender, FXSelect
 	
 	for(i=0; i<count; i++){
 		deglDialogProfileListParameter * const parameter = (deglDialogProfileListParameter*)pMPParameters.GetAt(i);
-		if(! parameter->SenderMatchesLabel(sender)){
+		if(!parameter->SenderMatchesLabel(sender)){
 			continue;
 		}
 		
@@ -1662,7 +1662,7 @@ long deglDialogProfileList::updateMPParameterOptAdvanced(FXObject *sender, FXSel
 }
 
 long deglDialogProfileList::onMPParameterOptExpert(FXObject*, FXSelector, void*){
-	if(pMPParameterCategory != deModuleParameter::ecExpert && ! pAllowExpertMode){
+	if(pMPParameterCategory != deModuleParameter::ecExpert && !pAllowExpertMode){
 		if(FXMessageBox::warning(this, MBOX_YES_NO, "Enable Expert Parameters",
 		"Do you really want to enable expert parameters?\n\nYou can easily break modules with them!")
 		!= MBOX_CLICKED_YES){
@@ -1711,7 +1711,7 @@ long deglDialogProfileList::onEditWidthChanged(FXObject*, FXSelector, void*){
 }
 
 long deglDialogProfileList::onCBFullScreenResolutionsChanged(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1748,7 +1748,7 @@ long deglDialogProfileList::onCBDisableModuleVersionModuleChanged(FXObject*, FXS
 }
 
 long deglDialogProfileList::onBtnDisableModuleVersionAdd(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1763,7 +1763,7 @@ long deglDialogProfileList::onBtnDisableModuleVersionAdd(FXObject*, FXSelector, 
 	}
 	
 	delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
-	if(! list.HasWith(selectedModule.text(), selectedVersion.text())){
+	if(!list.HasWith(selectedModule.text(), selectedVersion.text())){
 		try{
 			list.Add(delGPDisableModuleVersion::Ref::NewWith(selectedModule.text(), selectedVersion.text()));
 		}catch(const deException &e){
@@ -1776,7 +1776,7 @@ long deglDialogProfileList::onBtnDisableModuleVersionAdd(FXObject*, FXSelector, 
 }
 
 long deglDialogProfileList::onBtnDisableModuleVersionRemove(FXObject*, FXSelector, void*){
-	if(! pGetSelectedProfile()){
+	if(!pGetSelectedProfile()){
 		return 1;
 	}
 	
@@ -1885,7 +1885,7 @@ deglDialogProfileList::cEditProfile *deglDialogProfileList::pGetProfileNamed(con
 	int i;
 	for(i=0; i<count; i++){
 		cEditProfile * const profile = (cEditProfile*)pProfiles.GetAt(i);
-		if(! profile->GetGameCustom() && profile->GetEdit()->GetName() == name){
+		if(!profile->GetGameCustom() && profile->GetEdit()->GetName() == name){
 			return profile;
 		}
 	}

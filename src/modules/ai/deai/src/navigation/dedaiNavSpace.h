@@ -64,15 +64,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief AI module. */
-	inline deDEAIModule &GetDEAI() const{return pDEAI;}
+	inline deDEAIModule &GetDEAI() const{ return pDEAI; }
 	
 	/** \brief Navigation space. */
-	inline const deNavigationSpace &GetNavigationSpace() const{return pNavigationSpace;}
+	inline const deNavigationSpace &GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	
 	
 	/** \brief Parent world or \em NULL. */
-	inline dedaiWorld *GetParentWorld() const{return pParentWorld;}
+	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
 	void SetParentWorld(dedaiWorld *world);
@@ -80,7 +80,7 @@ public:
 	
 	
 	/** \brief Space. */
-	inline dedaiSpace *GetSpace() const{return pSpace;}
+	inline dedaiSpace *GetSpace() const{ return pSpace; }
 	/*@}*/
 	
 	

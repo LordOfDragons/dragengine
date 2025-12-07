@@ -74,7 +74,7 @@ public:
 	
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{return pFont;}
+	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
@@ -82,13 +82,13 @@ public:
 	
 	
 	/** \brief Zoom factor in percentage. */
-	inline int GetZoom() const{return pZoom;}
+	inline int GetZoom() const{ return pZoom; }
 	
 	/** \brief Set zoom factor in percentage. */
 	void SetZoom(int zoom);
 	
 	/** \brief Offset in pixels. */
-	inline const decPoint &GetOffset() const{return pOffset;}
+	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset in pixels. */
 	void SetOffset(const decPoint &offset);

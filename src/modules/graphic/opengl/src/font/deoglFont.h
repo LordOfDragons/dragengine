@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Font resource. */
-	inline deFont &GetFont() const{return pFont;}
+	inline deFont &GetFont() const{ return pFont; }
 	
 	/** Render font. */
-	inline const deoglRFont::Ref &GetRFont() const{return pRFont;}
+	inline const deoglRFont::Ref &GetRFont() const{ return pRFont; }
 	
 	/**
 	 * Get font size if present in font resource. If not present returns nullptr. Otherwise

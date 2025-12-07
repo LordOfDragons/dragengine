@@ -54,7 +54,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertAni
 pAnimation(animation),
 pSucceeded(false)
 {
-	if(! animation){
+	if(!animation){
 		DETHROW(deeInvalidParam);
 	}
 	SetType(etWrite);
@@ -72,7 +72,7 @@ void deRLTaskWriteAnimation::Run(){
 	LogRunEnter();
 	deBaseAnimationModule * const module = (deBaseAnimationModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -70,10 +70,10 @@ public:
 	void visitExpressionConstant(ExpressionConstantAst *node) override;
 	void visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node) override;
 	
-	inline bool isAlias() const {return m_isAlias;}
+	inline bool isAlias() const { return m_isAlias; }
 	
 	/** \brief Void type is allowed. */
-	inline bool getAllowVoid() const{return pAllowVoid;}
+	inline bool getAllowVoid() const{ return pAllowVoid; }
 	
 	/** \brief Set if void type is allowed. */
 	void setAllowVoid(bool allowVoid);

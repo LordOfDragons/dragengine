@@ -62,7 +62,7 @@ ceDialogPasteSnippet::ceDialogPasteSnippet(igdeEnvironment &environment, ceConve
 igdeDialog(environment, "Paste Conversation Snippet"),
 pConversation(conversation)
 {
-	if(! conversation){
+	if(!conversation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -189,8 +189,8 @@ void ceDialogPasteSnippet::GenerateActions(){
 	const decString &cameraShot2 = pCBCameraShot2->GetText();
 	const decString &target1 = pCBTarget1->GetText();
 	const decString &target2 = pCBTarget2->GetText();
-	const bool hasCameraShot1 = ! cameraShot1.IsEmpty();
-	const bool hasCameraShot2 = ! cameraShot2.IsEmpty();
+	const bool hasCameraShot1 = !cameraShot1.IsEmpty();
+	const bool hasCameraShot2 = !cameraShot2.IsEmpty();
 	const float delayCameraShots = pEditDelayCameraShot->GetFloat();
 	const float delayActorSpeak = pEditDelayActorSpeak->GetFloat();
 	const float scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
@@ -259,7 +259,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 				action->SetDelay(delayCameraShots);
 				pActions.Add(action);
 			}
-			firstActor = ! firstActor;
+			firstActor = !firstActor;
 		}
 		
 		// add action speak for the actor

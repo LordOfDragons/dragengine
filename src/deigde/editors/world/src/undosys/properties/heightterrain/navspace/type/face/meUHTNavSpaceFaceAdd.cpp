@@ -44,7 +44,7 @@ meUHTNavSpaceFaceAdd::meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType *type, me
 pType(NULL),
 pFace(NULL)
 {
-	if(! type || ! face){
+	if(!type || !face){
 		DETHROW(deeInvalidParam);
 	}
 	

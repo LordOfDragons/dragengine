@@ -71,19 +71,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Parent category or \em NULL if top level. */
-	inline gdeCategory *GetParent() const{return pParent;}
+	inline gdeCategory *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent category or \em NULL if top level. */
 	void SetParent(gdeCategory *parent);
@@ -92,13 +92,13 @@ public:
 	decString GetPath() const;
 	
 	/** \brief List of patterns to match to add. */
-	inline const decStringSet &GetAutoCategorizePattern() const{return pAutoCategorizePattern;}
+	inline const decStringSet &GetAutoCategorizePattern() const{ return pAutoCategorizePattern; }
 	
 	/** \brief Set list of patterns to match to add. */
 	void SetAutoCategorizePattern(const decStringSet &patternList);
 	
 	/** \brief Hidden in browser. */
-	inline bool GetHidden() const{return pHidden;}
+	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if hidden in browser. */
 	void SetHidden(bool hidden);
@@ -106,7 +106,7 @@ public:
 	
 	
 	/** \brief Sub categories. */
-	inline const gdeCategoryList &GetCategories() const{return pCategories;}
+	inline const gdeCategoryList &GetCategories() const{ return pCategories; }
 	
 	/** \brief Add category. */
 	void AddCategory(gdeCategory *category);

@@ -54,9 +54,9 @@ aeUToggleRuleInvertBlendFactor::~aeUToggleRuleInvertBlendFactor(){
 ///////////////
 
 void aeUToggleRuleInvertBlendFactor::Undo(){
-	pRule->SetInvertBlendFactor(! pRule->GetInvertBlendFactor());
+	pRule->SetInvertBlendFactor(!pRule->GetInvertBlendFactor());
 }
 
 void aeUToggleRuleInvertBlendFactor::Redo(){
-	pRule->SetInvertBlendFactor(! pRule->GetInvertBlendFactor());
+	pRule->SetInvertBlendFactor(!pRule->GetInvertBlendFactor());
 }

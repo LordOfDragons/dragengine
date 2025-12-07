@@ -107,7 +107,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent animator. */
-	inline deAnimator *GetAnimator() const{return pAnimator;}
+	inline deAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/**
 	 * \brief Set parent animator.
@@ -118,19 +118,19 @@ public:
 	void SetAnimator(deAnimator *animator);
 	
 	/** \brief Rule is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if rule is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Blend mode. */
-	inline eBlendModes GetBlendMode() const{return pBlendMode;}
+	inline eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** \brief Set blend mode. */
 	void SetBlendMode(eBlendModes mode);
 	
 	/** \brief Blend factor. */
-	inline float GetBlendFactor() const{return pBlendFactor;}
+	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set source blend factor. */
 	void SetBlendFactor(float factor);
@@ -139,7 +139,7 @@ public:
 	 * \brief Invert blend factor (1 - factor).
 	 * \version 1.13
 	 */
-	inline bool GetInvertBlendFactor() const{return pInvertBlendFactor;}
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
 	
 	/**
 	 * \brief Set to invert blend factor (1 - factor).
@@ -148,19 +148,19 @@ public:
 	void SetInvertBlendFactor(bool invert);
 	
 	/** \brief List of bones. */
-	inline decStringSet &GetListBones(){return pListBones;}
-	inline const decStringSet &GetListBones() const{return pListBones;}
+	inline decStringSet &GetListBones(){ return pListBones; }
+	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
 	/**
 	 * \brief List of vertex position sets.
 	 * \version 1.17
 	 */
-	inline decStringSet &GetListVertexPositionSets(){return pListVertexPositionSets;}
-	inline const decStringSet &GetListVertexPositionSets() const{return pListVertexPositionSets;}
+	inline decStringSet &GetListVertexPositionSets(){ return pListVertexPositionSets; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
 	
 	/** \brief Blend factor target. */
-	inline deAnimatorControllerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
-	inline const deAnimatorControllerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
+	inline deAnimatorControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const deAnimatorControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	/*@}*/
 	
 	

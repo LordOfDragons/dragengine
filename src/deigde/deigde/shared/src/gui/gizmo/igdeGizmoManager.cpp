@@ -64,17 +64,17 @@ public:
 	}
 	
 	virtual void CollisionResponse(deCollider*, deCollisionInfo *info) override{
-		if(! info->GetCollider()){
+		if(!info->GetCollider()){
 			return;
 		}
 		
 		void * const userPointer = pEnvironment.GetColliderUserPointer(info->GetCollider());
-		if(! userPointer){
+		if(!userPointer){
 			return;
 		}
 		
 		igdeGizmo * const hitGizmo = pManager.GizmoFromColliderUserPointer(userPointer);
-		if(! hitGizmo){
+		if(!hitGizmo){
 			return;
 		}
 		
@@ -191,12 +191,12 @@ void igdeGizmoManager::OnFrameUpdate(float elapsed){
 
 void igdeGizmoManager::OnButtonPress(const igdeViewRenderWindow &view,
 const igdeCamera &camera, int button, const decPoint &position, int modifiers){
-	if(button != deInputEvent::embcLeft || ! camera.GetEngineWorld()){
+	if(button != deInputEvent::embcLeft || !camera.GetEngineWorld()){
 		return;
 	}
 	
 	deBasePhysicsWorld * const peer = camera.GetEngineWorld()->GetPeerPhysics();
-	if(! peer){
+	if(!peer){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ const igdeCamera &camera, int button, const decPoint &position, int modifiers){
 
 void igdeGizmoManager::OnButtonRelease(const igdeViewRenderWindow &view,
 const igdeCamera &camera, int button, const decPoint &position, int modifiers){
-	if(! pEditingGizmo || button != deInputEvent::embcLeft){
+	if(!pEditingGizmo || button != deInputEvent::embcLeft){
 		return;
 	}
 	
@@ -239,13 +239,13 @@ const igdeCamera &camera, const decPoint &position, int modifiers){
 		return;
 	}
 	
-	if(! camera.GetEngineWorld()){
+	if(!camera.GetEngineWorld()){
 		ClearHover();
 		return;
 	}
 	
 	deBasePhysicsWorld * const peer = camera.GetEngineWorld()->GetPeerPhysics();
-	if(! peer){
+	if(!peer){
 		ClearHover();
 		return;
 	}

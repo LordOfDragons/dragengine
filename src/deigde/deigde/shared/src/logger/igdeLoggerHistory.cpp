@@ -156,13 +156,13 @@ bool igdeLoggerHistory::CanAddMessage(int type, const char *source){
 		return false;
 	}
 	
-	if(type == igdeLoggerHistoryEntry::emtInfo && ! pLogInfo){
+	if(type == igdeLoggerHistoryEntry::emtInfo && !pLogInfo){
 		return false;
 	}
-	if(type == igdeLoggerHistoryEntry::emtWarn && ! pLogWarn){
+	if(type == igdeLoggerHistoryEntry::emtWarn && !pLogWarn){
 		return false;
 	}
-	if(type == igdeLoggerHistoryEntry::emtError && ! pLogError){
+	if(type == igdeLoggerHistoryEntry::emtError && !pLogError){
 		return false;
 	}
 	
@@ -172,7 +172,7 @@ bool igdeLoggerHistory::CanAddMessage(int type, const char *source){
 
 
 void igdeLoggerHistory::AddListener(igdeLoggerHistoryListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -180,7 +180,7 @@ void igdeLoggerHistory::AddListener(igdeLoggerHistoryListener *listener){
 }
 
 void igdeLoggerHistory::RemoveListener(igdeLoggerHistoryListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -199,7 +199,7 @@ void igdeLoggerHistory::NotifyMessageAdded(igdeLoggerHistoryEntry &entry){
 
 
 void igdeLoggerHistory::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -225,7 +225,7 @@ void igdeLoggerHistory::LogInfo(const char *source, const char *message){
 }
 
 void igdeLoggerHistory::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -251,7 +251,7 @@ void igdeLoggerHistory::LogWarn(const char *source, const char *message){
 }
 
 void igdeLoggerHistory::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -104,25 +104,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Initial timeout. */
-	inline float GetInitialTimeout() const{return pInitialTimeout;}
+	inline float GetInitialTimeout() const{ return pInitialTimeout; }
 	
 	/** Remaining timeout. */
-	inline float GetTimeout() const{return pTimeout;}
+	inline float GetTimeout() const{ return pTimeout; }
 	
 	/** Timeout elapsed. */
-	inline bool TimedOut() const{return pTimedOut;}
+	inline bool TimedOut() const{ return pTimedOut; }
 	
 	/** Timeout not elapsed. */
-	inline bool NotTimedOut() const{return !pTimedOut;}
+	inline bool NotTimedOut() const{ return !pTimedOut; }
 	
 	/** Use asynchronous compile. */
-	inline bool GetAsyncCompile() const{return pAsyncCompile;}
+	inline bool GetAsyncCompile() const{ return pAsyncCompile; }
 	
 	/** First. */
-	inline bool First() const{return pFirst;}
+	inline bool First() const{ return pFirst; }
 	
 	/** Check if shader can be loaded. If false is returned exit. */
 	bool CanLoad();

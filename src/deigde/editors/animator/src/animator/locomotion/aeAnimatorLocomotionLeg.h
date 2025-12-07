@@ -91,46 +91,46 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	
 	/** Retrieves the stand put down position. */
-	inline const decVector &GetPutDownPositionStand() const{return pPutDownPosStand;}
+	inline const decVector &GetPutDownPositionStand() const{ return pPutDownPosStand; }
 	/** Sets the stand put down position. */
 	void SetPutDownPositionStand(const decVector &position);
 	/** Retrieves the walk put down position. */
-	inline const decVector &GetPutDownPositionWalk() const{return pPutDownPosWalk;}
+	inline const decVector &GetPutDownPositionWalk() const{ return pPutDownPosWalk; }
 	/** Sets the walk put down position. */
 	void SetPutDownPositionWalk(const decVector &position);
 	/** Retrieves the run put down position. */
-	inline const decVector &GetPutDownPositionRun() const{return pPutDownPosRun;}
+	inline const decVector &GetPutDownPositionRun() const{ return pPutDownPosRun; }
 	/** Sets the run put down position. */
 	void SetPutDownPositionRun(const decVector &position);
 	
 	/** Retrieves the lift off time. */
-	inline float GetLiftOffTime() const{return pLiftOffTime;}
+	inline float GetLiftOffTime() const{ return pLiftOffTime; }
 	/** Sets the lift off time. */
 	void SetLiftOffTime(float time);
 	/** Retrieves the put down time. */
-	inline float GetPutDownTime() const{return pPutDownTime;}
+	inline float GetPutDownTime() const{ return pPutDownTime; }
 	/** Sets the put down time. */
 	void SetPutDownTime(float time);
 	
 	/** Retrieves the ground position. */
-	inline const decVector &GetGroundPosition() const{return pGroundPosition;}
+	inline const decVector &GetGroundPosition() const{ return pGroundPosition; }
 	/** Retrieves the ground normal. */
-	inline const decVector &GetGroundNormal() const{return pGroundNormal;}
+	inline const decVector &GetGroundNormal() const{ return pGroundNormal; }
 	
 	/** Retrieves the ik influence value. */
-	inline float GetIKInfluence() const{return pIKInfluence;}
+	inline float GetIKInfluence() const{ return pIKInfluence; }
 	/** Retrieves the ik position. */
-	inline const decVector &GetIKPosition() const{return pIKPosition;}
+	inline const decVector &GetIKPosition() const{ return pIKPosition; }
 	/** Retrieves the ik orientation. */
-	inline const decVector &GetIKOrientation() const{return pIKOrientation;}
+	inline const decVector &GetIKOrientation() const{ return pIKOrientation; }
 	
 	/** Retrieves the name of the visualization bone. */
-	inline const decString &GetVisBoneName() const{return pVisBoneName;}
+	inline const decString &GetVisBoneName() const{ return pVisBoneName; }
 	/** Sets the name of the visualization bone. */
 	void SetVisBoneName(const char *name);
 	

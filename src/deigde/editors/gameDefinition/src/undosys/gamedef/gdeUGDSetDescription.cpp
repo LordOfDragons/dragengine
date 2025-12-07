@@ -43,7 +43,7 @@ gdeUGDSetDescription::gdeUGDSetDescription(gdeGameDefinition *gameDefinition,
 const char *newValue) :
 pGameDefinition(NULL)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

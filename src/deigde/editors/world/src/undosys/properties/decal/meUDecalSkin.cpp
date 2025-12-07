@@ -43,12 +43,12 @@
 ////////////////////////////
 
 meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
-	if(! decal || ! newskin){
+	if(!decal || !newskin){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -77,7 +77,7 @@ meUDecalSkin::meUDecalSkin(meDecalList &decals, const char *newskin){
 	const int count = decals.GetCount();
 	meDecal *decal;
 	
-	if(count == 0 || ! newskin){
+	if(count == 0 || !newskin){
 		DETHROW(deeInvalidParam);
 	}
 	

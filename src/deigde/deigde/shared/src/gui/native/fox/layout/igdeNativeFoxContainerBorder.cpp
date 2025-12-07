@@ -62,12 +62,12 @@ igdeNativeFoxContainerBorder::~igdeNativeFoxContainerBorder(){
 }
 
 igdeNativeFoxContainerBorder *igdeNativeFoxContainerBorder::CreateNativeWidget(igdeContainerBorder &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -124,16 +124,16 @@ void igdeNativeFoxContainerBorder::layout(){
 	int i;
 	
 	for(i=0; i<5; i++){
-		if(! children[i]){
+		if(!children[i]){
 			continue;
 		}
 		
 		FXWindow * const child = (FXWindow*)children[i]->GetNativeWidget();
-		if(! child){
+		if(!child){
 			continue;
 		}
 		
-		if(! child->shown()){
+		if(!child->shown()){
 			continue;
 		}
 		

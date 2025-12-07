@@ -82,7 +82,7 @@ pWeightsCount(0),
 
 pLinkedCollider(NULL)
 {
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -255,10 +255,10 @@ void debpComponent::FindDecalsTouching(decShape *shape, deDecalList &list){
 
 
 void debpComponent::PrepareMesh(){
-	if(! pDirtyMesh){
+	if(!pDirtyMesh){
 		return;
 	}
-	if(! pComponent->GetModel() || ! pComponent->GetRig()){
+	if(!pComponent->GetModel() || !pComponent->GetRig()){
 		pDirtyMesh = false;
 		return;
 	}
@@ -284,11 +284,11 @@ void debpComponent::PrepareMesh(){
 }
 
 void debpComponent::PrepareExtends(){
-	if(! pDirtyExtends){
+	if(!pDirtyExtends){
 		return;
 	}
 	
-	if(! pModel){
+	if(!pModel){
 		pMinExtend.SetZero();
 		pMaxExtend.SetZero();
 		pDirtyExtends = false;
@@ -386,12 +386,12 @@ void debpComponent::PrepareExtends(){
 }
 
 void debpComponent::PrepareWeights(){
-	if(! pDirtyWeights){
+	if(!pDirtyWeights){
 		return;
 	}
 	
 	const deRig * const rig = pComponent->GetRig();
-	if(! rig){
+	if(!rig){
 		pDirtyWeights = false;
 		return;
 	}
@@ -449,12 +449,12 @@ void debpComponent::PrepareWeights(){
 }
 
 void debpComponent::PrepareBoneWeights(){
-	if(! pDirtyBoneWeights){
+	if(!pDirtyBoneWeights){
 		return;
 	}
 	
 	const deRig * const rig = pComponent->GetRig();
-	if(! rig){
+	if(!rig){
 		pDirtyBoneWeights = false;
 		return;
 	}
@@ -543,7 +543,7 @@ void debpComponent::pChangeModel(){
 	pMaxExtend.SetZero();
 	
 	const deModel * const model = pComponent->GetModel();
-	if(! model){
+	if(!model){
 		return;
 	}
 	
@@ -574,7 +574,7 @@ void debpComponent::pUpdateModelRigMappings(){
 	const int count = pModelRigMappings.GetCount();
 	int i;
 	
-	if(! rig || ! model){
+	if(!rig || !model){
 		for(i=0; i<count; i++){
 			pModelRigMappings.SetAt(i, -1);
 		}
@@ -587,7 +587,7 @@ void debpComponent::pUpdateModelRigMappings(){
 }
 
 void debpComponent::pPrepareBone(int index){
-	if(! pBones[index].dirty){
+	if(!pBones[index].dirty){
 		return;
 	}
 	

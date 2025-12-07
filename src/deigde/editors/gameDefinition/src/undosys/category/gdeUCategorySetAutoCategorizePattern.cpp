@@ -47,7 +47,7 @@ gdeUCategoryBase(gameDefinition, type),
 pCategory(NULL),
 pNewValue(newValue)
 {
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	

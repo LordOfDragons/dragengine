@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
-	if(! topic){
+	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
 	

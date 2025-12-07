@@ -67,7 +67,7 @@ deoglShaderSources::deoglShaderSources(deLogger &logger, decBaseFileReader &read
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "shader") != 0){
+	if(!root || strcmp(root->GetName(), "shader") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	pParseShader(logger, *root);
@@ -150,14 +150,14 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = pGetTagAt(root, i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
 		if(strcmp(tag->GetName(), "name") == 0){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				if(! pName.IsEmpty()){
+				if(!pName.IsEmpty()){
 					logger.LogWarnFormat(LOGGING_SOURCE, "shader.name(%i:%i): Duplicate Shader Name, ignored.",
 						tag->GetLineNumber(), tag->GetPositionNumber());
 					
@@ -173,7 +173,7 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 			
 		}else if(strcmp(tag->GetName(), "texture") == 0){
 			const decXmlAttValue *attribute = pFindAttribute(*tag, "name");
-			if(! attribute){
+			if(!attribute){
 				logger.LogErrorFormat(LOGGING_SOURCE, "shader.texture(%i:%i): Missing attribute 'name'!",
 					tag->GetLineNumber(), tag->GetPositionNumber());
 				DETHROW(deeInvalidParam);
@@ -181,7 +181,7 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 			const decString &attrName = attribute->GetValue();
 			
 			attribute = pFindAttribute(*tag, "target");
-			if(! attribute){
+			if(!attribute){
 				logger.LogErrorFormat(LOGGING_SOURCE, "shader.texture(%i:%i): Missing attribute 'target'!",
 					tag->GetLineNumber(), tag->GetPositionNumber());
 				DETHROW(deeInvalidParam);
@@ -191,7 +191,7 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 			
 		}else if(strcmp(tag->GetName(), "parameter") == 0){
 			const decXmlAttValue * const attribute = pFindAttribute(*tag, "name");
-			if(! attribute){
+			if(!attribute){
 				logger.LogErrorFormat(LOGGING_SOURCE, "shader.parameter(%i:%i): Missing attribute 'name'!",
 					tag->GetLineNumber(), tag->GetPositionNumber());
 				DETHROW(deeInvalidParam);
@@ -208,7 +208,7 @@ void deoglShaderSources::pParseShader(deLogger &logger, const decXmlElementTag &
 			
 		}else if(strcmp(tag->GetName(), "sourceCode") == 0){
 			const decXmlAttValue *attribute = pFindAttribute(*tag, "unit");
-			if(! attribute){
+			if(!attribute){
 				logger.LogErrorFormat(LOGGING_SOURCE, "sourceCode(%i:%i): Missing attribute 'unit'!",
 					tag->GetLineNumber(), tag->GetPositionNumber());
 				DETHROW(deeInvalidParam);

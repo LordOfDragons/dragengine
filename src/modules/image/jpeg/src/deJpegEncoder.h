@@ -60,25 +60,25 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deJpegModule *GetModule() const{return pModule;}
+	inline deJpegModule *GetModule() const{ return pModule; }
 	
 	/** Retrieves the encode structure. */
-	inline jpeg_compress_struct &GetEncode(){return pEncode;}
-	inline jpeg_compress_struct *GetEncodePtr(){return &pEncode;}
+	inline jpeg_compress_struct &GetEncode(){ return pEncode; }
+	inline jpeg_compress_struct *GetEncodePtr(){ return &pEncode; }
 	
 	/** Retrieves the error manager structure. */
-	inline jpeg_error_mgr &GetErrorMgr(){return pErrorMgr;}
-	inline jpeg_error_mgr *GetErrorMgrPtr(){return &pErrorMgr;}
+	inline jpeg_error_mgr &GetErrorMgr(){ return pErrorMgr; }
+	inline jpeg_error_mgr *GetErrorMgrPtr(){ return &pErrorMgr; }
 	
 	/** Retrieves the destination manager structure. */
-	inline jpeg_destination_mgr &GetDestinationMgr(){return pDestMgr;}
-	inline jpeg_destination_mgr *GetDestinationMgrPtr(){return &pDestMgr;}
+	inline jpeg_destination_mgr &GetDestinationMgr(){ return pDestMgr; }
+	inline jpeg_destination_mgr *GetDestinationMgrPtr(){ return &pDestMgr; }
 	/*@}*/
 	
 	/** @name Data Buffer */
 	/*@{*/
 	/** Retrieves the data buffer. */
-	inline JOCTET *GetDataBuffer() const{return pDataBuffer;}
+	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
 	
 	/** Init writing into data buffer. */
 	void InitWrite(decBaseFileWriter *writer);

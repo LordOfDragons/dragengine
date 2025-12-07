@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reSelectionBones::reSelectionBones(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -68,7 +68,7 @@ reRigBone *reSelectionBones::GetBoneAt(int index) const{
 }
 
 bool reSelectionBones::HasBone(reRigBone *bone) const{
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -81,7 +81,7 @@ bool reSelectionBones::HasBone(reRigBone *bone) const{
 }
 	
 int reSelectionBones::IndexOfBone(reRigBone *bone) const{
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -94,7 +94,7 @@ int reSelectionBones::IndexOfBone(reRigBone *bone) const{
 }
 
 int reSelectionBones::IndexOfBoneWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -112,7 +112,7 @@ void reSelectionBones::AddBone(reRigBone *bone){
 	if(pBoneCount == pBoneSize){
 		int newSize = pBoneSize * 3 / 2 + 1;
 		reRigBone **newArray = new reRigBone*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBones){
 			memcpy(newArray, pBones, sizeof(reRigBone*) * pBoneSize);
 			delete [] pBones;
@@ -130,7 +130,7 @@ void reSelectionBones::AddBone(reRigBone *bone){
 	
 	pRig->NotifyBoneSelectedChanged(bone);
 	
-	if(! pActiveBone){
+	if(!pActiveBone){
 		SetActiveBone(bone);
 	}
 }
@@ -182,7 +182,7 @@ bool reSelectionBones::HasActiveBone() const{
 
 void reSelectionBones::SetActiveBone(reRigBone *bone){
 	if(bone != pActiveBone){
-		if(bone && ! HasBone(bone)) DETHROW(deeInvalidParam);
+		if(bone && !HasBone(bone)) DETHROW(deeInvalidParam);
 		
 		if(pActiveBone){
 			pActiveBone->SetActive(false);

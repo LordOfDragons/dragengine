@@ -43,7 +43,7 @@ seUControllerSetName::seUControllerSetName(seController *controller, const char 
 pController(NULL),
 pNewName(newName)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	

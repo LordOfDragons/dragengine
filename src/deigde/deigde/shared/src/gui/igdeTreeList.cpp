@@ -152,14 +152,14 @@ bool igdeTreeList::HasItemWithData(void *data) const{
 }
 
 void igdeTreeList::AppendItem(igdeTreeItem *parent, igdeTreeItem *item){
-	if(! item || item->GetParent() || item->GetPrevious() || item->GetNext()){
+	if(!item || item->GetParent() || item->GetPrevious() || item->GetNext()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pAppendItem(parent, item);
 	OnItemAdded(item);
 	
-	if(! pSelection){
+	if(!pSelection){
 		SetSelection(item);
 	}
 }
@@ -177,14 +177,14 @@ const char *text, igdeIcon *icon, void *data){
 }
 
 void igdeTreeList::InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem *item){
-	if(! item || item->GetParent() || item->GetPrevious() || item->GetNext() || ! beforeItem){
+	if(!item || item->GetParent() || item->GetPrevious() || item->GetNext() || !beforeItem){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pInsertItemBefore(item, beforeItem);
 	OnItemAdded(item);
 	
-	if(! pSelection){
+	if(!pSelection){
 		SetSelection(item);
 	}
 }
@@ -203,14 +203,14 @@ const char *text, igdeIcon *icon, void *data){
 }
 
 void igdeTreeList::InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem *item){
-	if(! item || item->GetParent() || item->GetPrevious() || item->GetNext() || ! afterItem){
+	if(!item || item->GetParent() || item->GetPrevious() || item->GetNext() || !afterItem){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pInsertItemAfter(item, afterItem);
 	OnItemAdded(item);
 	
-	if(! pSelection){
+	if(!pSelection){
 		SetSelection(item);
 	}
 }
@@ -229,7 +229,7 @@ const char *text, igdeIcon *icon, void *data){
 }
 
 void igdeTreeList::MoveItemBefore(igdeTreeItem *item, igdeTreeItem *beforeItem){
-	if(! item || ! beforeItem){
+	if(!item || !beforeItem){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -240,7 +240,7 @@ void igdeTreeList::MoveItemBefore(igdeTreeItem *item, igdeTreeItem *beforeItem){
 }
 
 void igdeTreeList::MoveItemAfter(igdeTreeItem *item, igdeTreeItem *afterItem){
-	if(! item || ! afterItem){
+	if(!item || !afterItem){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -252,7 +252,7 @@ void igdeTreeList::MoveItemAfter(igdeTreeItem *item, igdeTreeItem *afterItem){
 }
 
 void igdeTreeList::RemoveItem(igdeTreeItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -294,7 +294,7 @@ void igdeTreeList::RemoveItem(igdeTreeItem *item){
 }
 
 void igdeTreeList::RemoveAllItems(){
-	if(! pFirstChild){
+	if(!pFirstChild){
 		return;
 	}
 	
@@ -311,7 +311,7 @@ void igdeTreeList::RemoveAllItems(){
 }
 
 void igdeTreeList::RemoveAllItems(igdeTreeItem *parent){
-	if(! parent){
+	if(!parent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -342,7 +342,7 @@ void igdeTreeList::RemoveAllItems(igdeTreeItem *parent){
 }
 
 void igdeTreeList::ItemChanged(igdeTreeItem *item){
-	if(! item){
+	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -391,7 +391,7 @@ static void igdeTreeList_Sort(decObjectList &items, igdeTreeItemSorter &sorter, 
 }
 
 void igdeTreeList::SortItems(igdeTreeItem *item){
-	if(! pSorter){
+	if(!pSorter){
 		return;
 	}
 	
@@ -433,7 +433,7 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 }
 
 void igdeTreeList::SortAllItems(){
-	if(! pSorter){
+	if(!pSorter){
 		return;
 	}
 	
@@ -476,7 +476,7 @@ void igdeTreeList::MakeSelectionVisible(){
 }
 
 void igdeTreeList::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -496,7 +496,7 @@ void igdeTreeList::ShowContextMenu(const decPoint &position){
 
 
 void igdeTreeList::AddListener(igdeTreeListListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -559,7 +559,7 @@ void igdeTreeList::CreateNativeWidget(){
 }
 
 void igdeTreeList::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

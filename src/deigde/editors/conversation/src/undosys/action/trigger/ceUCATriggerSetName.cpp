@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName){
-	if(! topic || ! action || ! newName){
+	if(!topic || !action || !newName){
 		DETHROW(deeInvalidParam);
 	}
 	

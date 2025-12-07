@@ -43,7 +43,7 @@
 gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
-	if(! objectClass || objectClass->GetInherits().GetCount() == 0){
+	if(!objectClass || objectClass->GetInherits().GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

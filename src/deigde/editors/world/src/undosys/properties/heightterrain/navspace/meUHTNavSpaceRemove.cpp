@@ -44,7 +44,7 @@ meUHTNavSpaceRemove::meUHTNavSpaceRemove(meHeightTerrainSector *sector, meHeight
 pSector(NULL),
 pNavSpace(NULL)
 {
-	if(! sector || ! navspace){
+	if(!sector || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

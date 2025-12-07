@@ -72,7 +72,7 @@ deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
 	
 	try{
 		psys = new deParticleEmitter(this);
-		if(! psys) DETHROW(deeOutOfMemory);
+		if(!psys) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadParticleEmitter(psys);
 		GetPhysicsSystem()->LoadParticleEmitter(psys);
@@ -107,7 +107,7 @@ void deParticleEmitterManager::SystemGraphicLoad(){
 	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
-		if(! psys->GetPeerGraphic()){
+		if(!psys->GetPeerGraphic()){
 			GetGraphicSystem()->LoadParticleEmitter(psys);
 		}
 		
@@ -128,7 +128,7 @@ void deParticleEmitterManager::SystemPhysicsLoad(){
 	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
-		if(! psys->GetPeerPhysics()){
+		if(!psys->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadParticleEmitter(psys);
 		}
 		

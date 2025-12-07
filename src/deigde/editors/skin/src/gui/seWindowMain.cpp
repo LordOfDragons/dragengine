@@ -242,7 +242,7 @@ void seWindowMain::CreateNewSkin(){
 }
 
 void seWindowMain::LoadSkin(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -310,7 +310,7 @@ void seWindowMain::LoadSkin(const char *filename){
 }
 
 void seWindowMain::SaveSkin(const char *filename){
-	if(! pSkin){
+	if(!pSkin){
 		return;
 	}
 	
@@ -370,7 +370,7 @@ void seWindowMain::OnDeactivate(){
 
 
 void seWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -442,7 +442,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetSkin()){
+		if(!pWindow.GetSkin()){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetSkin())));
@@ -480,7 +480,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetSkin() || ! pWindow.GetSkin()->GetChanged()
+		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
 		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSkin();
@@ -497,7 +497,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetSkin() || ! pWindow.GetSkin()->GetChanged()
+		if(!pWindow.GetSkin() || !pWindow.GetSkin()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Skin",
 		"Creating a new skin discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			CreateSkinFromModel();
@@ -511,7 +511,7 @@ public:
 		// query for the model
 		decString filename(pWindow.GetSkin() ? decPath::AbsolutePathUnix(
 			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath()).GetPathUnix() : decString());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "New From Model", *environment.GetFileSystemGame(),
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "New From Model", *environment.GetFileSystemGame(),
 			*environment.GetOpenFilePatternList( igdeEnvironment::efpltModel ), filename ) ){
 				return;
 		}
@@ -525,7 +525,7 @@ public:
 		
 		// if the engine component does not exist something went wrong.
 		// if the engine component does not have a model something went wrong.
-		if(! skin->GetEngineComponent() || ! skin->GetEngineComponent()->GetModel()){
+		if(!skin->GetEngineComponent() || !skin->GetEngineComponent()->GetModel()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -780,7 +780,7 @@ public:
 	
 	virtual igdeUndo *OnAction(seSkin *skin){
 		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::NewWith(pWindow));
-		if(! dialog->Run(&pWindow)){
+		if(!dialog->Run(&pWindow)){
 			return NULL;
 		}
 		
@@ -842,7 +842,7 @@ public:
 			names.SortAscending();
 			
 			int selection = 0;
-			if(! igdeCommonDialogs::SelectString(&pWindow, "Import skin texture",
+			if(!igdeCommonDialogs::SelectString(&pWindow, "Import skin texture",
 			"Select texture to use", names, selection)){
 				return NULL;
 			}
@@ -892,15 +892,15 @@ public:
 		for(i=0; i<importPropertyCount; i++){
 			seProperty &importProperty = *importProperties.GetAt(i);
 			
-			if(! importProperty.GetImagePath().IsEmpty()
-			&& ! decPath::IsUnixPathAbsolute(importProperty.GetImagePath())){
+			if(!importProperty.GetImagePath().IsEmpty()
+			&& !decPath::IsUnixPathAbsolute(importProperty.GetImagePath())){
 				decPath modifiedPath(pathChange);
 				modifiedPath.AddUnixPath(importProperty.GetImagePath());
 				importProperty.SetImagePath(modifiedPath.GetPathUnix());
 			}
 			
-			if(! importProperty.GetVideoPath().IsEmpty()
-			&& ! decPath::IsUnixPathAbsolute(importProperty.GetVideoPath())){
+			if(!importProperty.GetVideoPath().IsEmpty()
+			&& !decPath::IsUnixPathAbsolute(importProperty.GetVideoPath())){
 				decPath modifiedPath(pathChange);
 				modifiedPath.AddUnixPath(importProperty.GetVideoPath());
 				importProperty.SetVideoPath(modifiedPath.GetPathUnix());
@@ -989,7 +989,7 @@ public:
 	
 	virtual igdeUndo *OnActionTexture(seSkin*, seTexture *texture){
 		seDialogAddProperty::Ref dialog(seDialogAddProperty::Ref::NewWith(pWindow));
-		if(! dialog->Run(&pWindow)){
+		if(!dialog->Run(&pWindow)){
 			return NULL;
 		}
 		
@@ -1015,7 +1015,7 @@ public:
 				addPropertyList.Add(property);
 			}
 			
-		}else if(! propertyList.HasNamed(customName)){
+		}else if(!propertyList.HasNamed(customName)){
 			property.TakeOverWith(pWindow.GetEngine(), customName);
 			property->InitDefaults(knownPropertyList);
 			addPropertyList.Add(property);

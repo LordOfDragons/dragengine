@@ -53,7 +53,7 @@ ceConversationFile *file, const char *newID) :
 pFile(NULL),
 pNewID(newID)
 {
-	if(! file || ! newID){
+	if(!file || !newID){
 		DETHROW(deeInvalidParam);
 	}
 	

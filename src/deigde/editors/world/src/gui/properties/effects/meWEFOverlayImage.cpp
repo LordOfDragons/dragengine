@@ -75,7 +75,7 @@ meWEFOverlayImage::meWEFOverlayImage(){}
 meWEFOverlayImage::meWEFOverlayImage(deEffectOverlayImage *effectOverlay, meWindowEffects *windowEffects, FXComposite *container) :
 FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT,
 0, 0, 0, 0, 0, 0, 0, 0){
-	if(! effectOverlay || ! windowEffects) DETHROW(deeInvalidParam);
+	if(!effectOverlay || !windowEffects) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	FXString text;

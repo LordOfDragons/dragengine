@@ -59,13 +59,13 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deMicrophone *GetMicrophone(dsRealObject *myself) const;
 	void PushMicrophone(dsRunTime *rt, deMicrophone *camera);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassSpeaker *GetClassSpeaker() const{return pClsSpk;}
-	inline dsClass *GetClassMicrophoneType() const{return pClsMicrophoneType;}
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassSpeaker *GetClassSpeaker() const{ return pClsSpk; }
+	inline dsClass *GetClassMicrophoneType() const{ return pClsMicrophoneType; }
 	
 private:
 	struct sInitData{

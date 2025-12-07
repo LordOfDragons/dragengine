@@ -75,19 +75,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound level meter. */
-	inline deoalASoundLevelMeter &GetSoundLevelMeter() const{return pSoundLevelMeter;}
+	inline deoalASoundLevelMeter &GetSoundLevelMeter() const{ return pSoundLevelMeter; }
 	
 	/** \brief Speaker. */
-	inline deoalASpeaker *GetSpeaker() const{return pSpeaker;}
+	inline deoalASpeaker *GetSpeaker() const{ return pSpeaker; }
 	
 	/** \brief Volume. */
-	inline float GetVolume() const{return pVolume;}
+	inline float GetVolume() const{ return pVolume; }
 	
 	/** \brief Set volume. */
 	void SetVolume(float volume);
 	
 	/** \brief Env probe of \em NULL if not present. */
-	inline deoalEnvProbe *GetEnvProbe() const{return pEnvProbe;}
+	inline deoalEnvProbe *GetEnvProbe() const{ return pEnvProbe; }
 	
 	/** \brief Drop env probe from world octree if present. */
 	void EnvProbeDropOctreeNode();

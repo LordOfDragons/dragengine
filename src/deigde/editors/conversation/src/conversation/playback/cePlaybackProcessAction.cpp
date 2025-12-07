@@ -176,7 +176,7 @@ void cePlaybackProcessAction::ProcessCameraShot(ceConversation &conversation, co
 		int lookAtActor = -1;
 		
 		// determine targets
-		if(! action.GetCameraTarget().IsEmpty()){
+		if(!action.GetCameraTarget().IsEmpty()){
 			cameraTarget = conversation.GetTargetNamed(action.GetCameraTarget());
 			
 			if(cameraTarget){
@@ -192,7 +192,7 @@ void cePlaybackProcessAction::ProcessCameraShot(ceConversation &conversation, co
 			}
 		}
 		
-		if(! action.GetLookAtTarget().IsEmpty()){
+		if(!action.GetLookAtTarget().IsEmpty()){
 			lookAtTarget = conversation.GetTargetNamed(action.GetLookAtTarget());
 			
 			if(lookAtTarget){
@@ -392,7 +392,7 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 					}
 					
 				}else{
-					if(useSpeechAnimation && ! word.GetID().IsEmpty()){
+					if(useSpeechAnimation && !word.GetID().IsEmpty()){
 						playback.GetMissingWords().Add(word.GetID());
 						conversation.NotifyPlaybackMissingWordsChanged();
 					}
@@ -408,7 +408,7 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 			// remove speech animation if requested. this is done instead of avoiding adding the speech
 			// animation in the first place since we need the speech animation to be set to know how
 			// long the speaking takes. thus the actual speech animation is cleared afterwards
-			if(! useSpeechAnimation){
+			if(!useSpeechAnimation){
 				speechAnimation.RemoveAllSpeakPhonemes();
 			}
 			
@@ -563,7 +563,7 @@ void cePlaybackProcessAction::ProcessStopTopic(ceConversation& conversation){
 	cePlayback &playback = *conversation.GetPlayback();
 	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	
-	while(actionStack.GetCount() > 0 && ! actionStack.GetTop().GetParentTopic()){
+	while(actionStack.GetCount() > 0 && !actionStack.GetTop().GetParentTopic()){
 		actionStack.Pop();
 	}
 	
@@ -634,7 +634,7 @@ void cePlaybackProcessAction::ProcessPlayerChoice(ceConversation &conversation, 
 			option = optionList.GetAt(i);
 			
 			if(option->GetCondition()
-			&& ! evalCondition.EvaluateCondition(conversation, *option->GetCondition())){
+			&& !evalCondition.EvaluateCondition(conversation, *option->GetCondition())){
 				continue;
 			}
 			
@@ -673,7 +673,7 @@ void cePlaybackProcessAction::ProcessSetVariable(ceConversation &conversation, c
 	const ceCASetVariable::eOperators op = action.GetOperator();
 	
 	int value = action.GetValue();
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		cePlaybackVariable * const variable = variableList.GetNamed(action.GetValueVariable());
 		if(variable){
 			value = variable->GetValue();
@@ -720,7 +720,7 @@ const ceCASetActorParameter &action){
 	
 	ceConversationActor * const conversationActor = conversation.GetActorList().GetWithAliasID(actorID);
 	const decString &name = action.GetName();
-	if(name.IsEmpty() || ! conversationActor){
+	if(name.IsEmpty() || !conversationActor){
 		conversation.GetPlayback()->AdvanceToNextAction();
 		return;
 	}
@@ -729,7 +729,7 @@ const ceCASetActorParameter &action){
 	const ceCASetActorParameter::eOperators op = action.GetOperator();
 	
 	int value = action.GetValue();
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		cePlaybackVariable * const variable = playback.GetVariables().GetNamed(action.GetValueVariable());
 		if(variable){
 			value = variable->GetValue();
@@ -932,7 +932,7 @@ void cePlaybackProcessAction::ProcessCoordSystemRemove(ceConversation &conversat
 int cePlaybackProcessAction::GetTargetActor(ceConversation &conversation, const decString &targetName){
 	int actor = -1;
 	
-	if(! targetName.IsEmpty()){
+	if(!targetName.IsEmpty()){
 		const ceTarget * const target = conversation.GetTargetNamed(targetName);
 		cePlayback &playback = *conversation.GetPlayback();
 		

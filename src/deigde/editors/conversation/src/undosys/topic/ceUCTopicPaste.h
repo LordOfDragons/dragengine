@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of topics. */
-	inline const ceConversationTopicList &GetTopics() const{return pTopics;}
+	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Skin rendered. */
-	inline deoglSkinRendered &GetSkinRendered() const{return pSkinRendered;}
+	inline deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
 	/** Add render plans. */
 	void AddRenderPlans(deoglRenderPlan &plan);

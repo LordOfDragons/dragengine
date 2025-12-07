@@ -90,7 +90,7 @@ void igdeStatusBar::CreateNativeWidget(){
 }
 
 void igdeStatusBar::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

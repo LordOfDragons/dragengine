@@ -66,7 +66,7 @@ pOCNavSpace(ocnavspace),
 pDDSSpace(NULL),
 pDDSBlocker(NULL)
 {
-	if(! ocnavspace){
+	if(!ocnavspace){
 		DETHROW(deeInvalidParam);
 	}
 	ocnavspace->AddReference();

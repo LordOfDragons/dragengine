@@ -57,25 +57,25 @@ public:
 	int GetPointAt(int index) const;
 	
 	/** First point. */
-	inline int GetPoint1() const{return pPoints[0];}
+	inline int GetPoint1() const{ return pPoints[0]; }
 	
 	/** Set first point. */
 	void SetPoint1(int point);
 	
 	/** Second point. */
-	inline int GetPoint2() const{return pPoints[1];}
+	inline int GetPoint2() const{ return pPoints[1]; }
 	
 	/** Set second point. */
 	void SetPoint2(int point);
 	
 	/** Third point. */
-	inline int GetPoint3() const{return pPoints[2];}
+	inline int GetPoint3() const{ return pPoints[2]; }
 	
 	/** Set third point. */
 	void SetPoint3(int point);
 	
 	/** Face normal. */
-	inline const decVector &GetFaceNormal() const{return pNormal;}
+	inline const decVector &GetFaceNormal() const{ return pNormal; }
 	
 	/** Set face normal. */
 	void SetFaceNormal(const decVector &normal);

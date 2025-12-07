@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTAddTexture::meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
-	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;

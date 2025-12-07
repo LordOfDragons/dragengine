@@ -98,10 +98,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent dialog. */
-	inline deglDialogGameProblems *GetParentDialog() const{return pParentDialog;}
+	inline deglDialogGameProblems *GetParentDialog() const{ return pParentDialog; }
 	
 	/** System is working. */
-	inline bool GetStatusWorking() const{return pStatusWorking;}
+	inline bool GetStatusWorking() const{ return pStatusWorking; }
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();

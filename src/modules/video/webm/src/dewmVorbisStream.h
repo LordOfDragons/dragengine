@@ -72,16 +72,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** Channel count. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** Buffer sample size. */
-	inline int GetBufferSampleSize() const{return pBufferSampleSize;}
+	inline int GetBufferSampleSize() const{ return pBufferSampleSize; }
 	
 	/** Open track. */
 	bool OpenTrack(const webm::TrackEntry &track);

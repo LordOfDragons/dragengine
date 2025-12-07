@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Text area. */
-	inline FXText &GetTextArea() const{return *pTextArea;}
+	inline FXText &GetTextArea() const{ return *pTextArea; }
 	
 	/** \brief Resizer or \em NULL. */
-	inline igdeNativeFoxResizer *GetResizser() const{return pResizer;}
+	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	void UpdateStyles();
 	void ApplyStyles();

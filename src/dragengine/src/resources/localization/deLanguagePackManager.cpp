@@ -76,7 +76,7 @@ deLanguagePack *deLanguagePackManager::GetLanguagePackWith(const char *filename)
 deLanguagePack *deLanguagePackManager::GetLanguagePackWith(deVirtualFileSystem *vfs,
 const char *filename) const{
 	deLanguagePack * const langpack = (deLanguagePack*)pLangPacks.GetWithFilename(vfs, filename);
-	return langpack && ! langpack->GetOutdated() ? langpack : NULL;
+	return langpack && !langpack->GetOutdated() ? langpack : NULL;
 }
 
 deLanguagePack *deLanguagePackManager::CreateLanguagePack(
@@ -86,7 +86,7 @@ const char *filename, deLanguagePackBuilder &builder){
 
 deLanguagePack *deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, deLanguagePackBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	deLanguagePack *langPack = NULL;
@@ -101,7 +101,7 @@ const char *filename, deLanguagePackBuilder &builder){
 		langPack = new deLanguagePack(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildLanguagePack(*langPack);
 		
-		if(! langPack->Verify()){
+		if(!langPack->Verify()){
 			DETHROW(deeInvalidParam);
 		}
 		langPack->BuildLookupTable();
@@ -126,7 +126,7 @@ const char *filename, const char *basePath){
 
 deLanguagePack *deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -136,7 +136,7 @@ const char *filename, const char *basePath){
 	decPath path;
 	
 	try{
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -167,7 +167,7 @@ const char *filename, const char *basePath){
 			fileReader->FreeReference();
 			fileReader = NULL;
 			
-			if(! langPack->Verify()){
+			if(!langPack->Verify()){
 				DETHROW(deeInvalidParam);
 			}
 			langPack->BuildLookupTable();
@@ -193,7 +193,7 @@ const char *filename, const char *basePath){
 
 
 void deLanguagePackManager::AddLoadedLanguagePack(deLanguagePack *languagePack){
-	if(! languagePack){
+	if(!languagePack){
 		DETHROW(deeInvalidParam);
 	}
 	pLangPacks.Add(languagePack);

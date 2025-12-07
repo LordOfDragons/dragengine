@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Has alpha. */
-	inline bool GetHasAlpha() const{return hasAlpha;}
+	inline bool GetHasAlpha() const{ return hasAlpha; }
 	
 	/** Image width in pixels. */
 	virtual int GetWidth();

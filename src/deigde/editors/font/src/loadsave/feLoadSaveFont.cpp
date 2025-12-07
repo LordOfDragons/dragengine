@@ -62,7 +62,7 @@
 feLoadSaveFont::feLoadSaveFont(deBaseFontModule *module) :
 pModule(module)
 {
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -145,7 +145,7 @@ public:
 };
 
 void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFileReader *file){
-	if(! font || ! file) DETHROW(deeInvalidParam);
+	if(!font || !file) DETHROW(deeInvalidParam);
 	
 	feFontImage &fontImage = *font->GetFontImage();
 	deEngine *engine = pModule->GetGameEngine();
@@ -208,7 +208,7 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 }
 
 void feLoadSaveFont::SaveFont(const char *virtualPath, feFont *font, decBaseFileWriter *file){
-	if(! font || ! file) DETHROW(deeInvalidParam);
+	if(!font || !file) DETHROW(deeInvalidParam);
 	
 	deEngine &engine = *pModule->GetGameEngine();
 	deImageManager &imgmgr = *engine.GetImageManager();
@@ -219,7 +219,7 @@ void feLoadSaveFont::SaveFont(const char *virtualPath, feFont *font, decBaseFile
 	font->Rebuild();
 	
 	// if nothing went wrong we have now a font to save
-	if(! font->GetEngineFont()) DETHROW(deeInvalidParam);
+	if(!font->GetEngineFont()) DETHROW(deeInvalidParam);
 	
 	pModule->SaveFont(*file, *font->GetEngineFont());
 	font->SetFilePath(virtualPath);

@@ -67,14 +67,14 @@ bool deoglEnvironmentMapList::Has(deoglEnvironmentMap *envmap) const{
 }
 
 void deoglEnvironmentMapList::Add(deoglEnvironmentMap *envmap){
-	if(! envmap || pEnvMaps.Has(envmap)){
+	if(!envmap || pEnvMaps.Has(envmap)){
 		DETHROW(deeInvalidParam);
 	}
 	pEnvMaps.Add(envmap);
 }
 
 bool deoglEnvironmentMapList::AddIfMissing(deoglEnvironmentMap *envmap){
-	if(! envmap){
+	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -88,7 +88,7 @@ bool deoglEnvironmentMapList::AddIfMissing(deoglEnvironmentMap *envmap){
 }
 
 void deoglEnvironmentMapList::Remove(deoglEnvironmentMap *envmap){
-	if(! RemoveIfExisting(envmap)){
+	if(!RemoveIfExisting(envmap)){
 		DETHROW(deeInvalidParam);
 	}
 }

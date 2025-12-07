@@ -114,16 +114,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Faces. */
-	inline const sFace *GetFaces() const{return pFaces;}
+	inline const sFace *GetFaces() const{ return pFaces; }
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Nodes. */
-	inline const sNode *GetNodes() const{return pNodes;}
+	inline const sNode *GetNodes() const{ return pNodes; }
 	
 	/** \brief Node count. */
-	inline int GetNodeCount() const{return pNodeCount;}
+	inline int GetNodeCount() const{ return pNodeCount; }
 	
 	
 	

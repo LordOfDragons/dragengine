@@ -72,7 +72,7 @@ void meMusic::SetPath(const char *path){
 	
 	pPath = path;
 	
-	if(! pPath.IsEmpty()){
+	if(!pPath.IsEmpty()){
 		try{
 			pSpeaker->SetSound(pWorld.GetEngine()->GetSoundManager()->LoadSound(path, "/", false));
 			

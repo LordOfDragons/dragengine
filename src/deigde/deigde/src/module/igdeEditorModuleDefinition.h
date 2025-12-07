@@ -143,58 +143,58 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Ffile path. */
-	inline const decString &GetFilePath() const{return pFilePath;}
+	inline const decString &GetFilePath() const{ return pFilePath; }
 	
 	/** \brief Path of library file. */
-	inline const decString &GetLibraryPath() const{return pLibPath;}
+	inline const decString &GetLibraryPath() const{ return pLibPath; }
 	
 	/** \brief Library file size. */
-	inline int GetLibrarySize() const{return pLibSize;}
+	inline int GetLibrarySize() const{ return pLibSize; }
 	
 	/** \brief Library file hash. */
-	inline const decString &GetLibraryHash() const{return pLibHash;}
+	inline const decString &GetLibraryHash() const{ return pLibHash; }
 	
 	/** \brief Name of the entry point function. */
-	inline const decString &GetEntryPoint() const{return pEntryPoint;}
+	inline const decString &GetEntryPoint() const{ return pEntryPoint; }
 	
 	/** \brief ID. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Author. */
-	inline const decString &GetAuthor() const{return pAuthor;}
+	inline const decString &GetAuthor() const{ return pAuthor; }
 	
 	/** \brief Version. */
-	inline const decString &GetVersion() const{return pVersion;}
+	inline const decString &GetVersion() const{ return pVersion; }
 	
 	/** \brief Directory name for this module. */
-	inline const decString &GetDirectoryName() const{return pDirectoryName;}
+	inline const decString &GetDirectoryName() const{ return pDirectoryName; }
 	
 	/** \brief Set directory name for this module. */
 	void SetDirectoryName(const char *directoryName);
 	
 	/** \brief Icon to represent editor with. */
-	inline const decString &GetIconSmall() const{return pIconSmall;}
+	inline const decString &GetIconSmall() const{ return pIconSmall; }
 	
 	/** \brief Icon to represent editor with. */
-	inline const decString &GetIconLarge() const{return pIconLarge;}
+	inline const decString &GetIconLarge() const{ return pIconLarge; }
 	
 	/** \brief Error code. */
-	inline int GetErrorCode() const{return pErrorCode;}
+	inline int GetErrorCode() const{ return pErrorCode; }
 	
 	/** \brief Module can be loaded. */
-	inline bool CanLoad() const{return pCanLoad;}
+	inline bool CanLoad() const{ return pCanLoad; }
 	
 	/** \brief Module is running. */
 	bool IsModuleRunning() const;
 	
 	/** \brief Editor module or NULL if not running. */
-	inline igdeEditorModule *GetModule() const{return pModule;}
+	inline igdeEditorModule *GetModule() const{ return pModule; }
 	
 	/**
 	 * \brief Load module.

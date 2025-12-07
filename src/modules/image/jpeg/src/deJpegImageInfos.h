@@ -70,32 +70,32 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deJpegModule *GetModule() const{return pModule;}
+	inline deJpegModule *GetModule() const{ return pModule; }
 	
 	/** Retrieves the filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Retrieves the decompress structure. */
-	inline jpeg_decompress_struct &GetDecompress(){return pDecompress;}
-	inline jpeg_decompress_struct *GetDecompressPtr(){return &pDecompress;}
+	inline jpeg_decompress_struct &GetDecompress(){ return pDecompress; }
+	inline jpeg_decompress_struct *GetDecompressPtr(){ return &pDecompress; }
 	
 	/** Retrieves the error manager structure. */
-	inline jpeg_error_mgr &GetErrorMgr(){return pErrorMgr;}
-	inline jpeg_error_mgr *GetErrorMgrPtr(){return &pErrorMgr;}
+	inline jpeg_error_mgr &GetErrorMgr(){ return pErrorMgr; }
+	inline jpeg_error_mgr *GetErrorMgrPtr(){ return &pErrorMgr; }
 	
 	/** Retrieves the source manager structure. */
-	inline jpeg_source_mgr &GetSourceMgr(){return pSourceMgr;}
-	inline jpeg_source_mgr *GetSourceMgrPtr(){return &pSourceMgr;}
+	inline jpeg_source_mgr &GetSourceMgr(){ return pSourceMgr; }
+	inline jpeg_source_mgr *GetSourceMgrPtr(){ return &pSourceMgr; }
 	/*@}*/
 	
 	/** @name Data Buffer */
 	/*@{*/
 	/** Retrieves the data buffer. */
-	inline JOCTET *GetDataBuffer() const{return pDataBuffer;}
+	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
 	/** Retrieves the file size. */
-	inline int GetFileSize() const{return pFileSize;}
+	inline int GetFileSize() const{ return pFileSize; }
 	/** Retrieves the file position. */
-	inline int GetFilePosition() const{return pFilePosition;}
+	inline int GetFilePosition() const{ return pFilePosition; }
 	
 	/** Init reading into data buffer. */
 	void InitRead(decBaseFileReader *reader);

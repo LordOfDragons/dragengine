@@ -142,16 +142,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline ceWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Action tree model. */
-	inline ceWPTTreeModel *GetActionTreeModel() const{return pModelTreeActions;}
+	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }
 	
 	/** Active action tree item model. */
 	ceWPTTreeItemModel *GetActionTreeItem();

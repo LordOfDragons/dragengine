@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCWorld *GetOCWorld() const{return pWorld;}
+	inline gdeOCWorld *GetOCWorld() const{ return pWorld; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

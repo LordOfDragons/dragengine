@@ -65,7 +65,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
-	if(! speaker){
+	if(!speaker){
 		return NULL;
 	}
 	

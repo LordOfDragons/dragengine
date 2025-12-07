@@ -83,18 +83,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Command pool. */
-	inline devkCommandPool &GetPool() const{return pPool;}
+	inline devkCommandPool &GetPool() const{ return pPool; }
 	
 	/** Command buffer. */
-	inline VkCommandBuffer GetBuffer() const{return pBuffer;}
-	inline operator VkCommandBuffer() const{return pBuffer;}
+	inline VkCommandBuffer GetBuffer() const{ return pBuffer; }
+	inline operator VkCommandBuffer() const{ return pBuffer; }
 	
 	
 	/** Begin recording command buffer. */
 	void Begin();
 	
 	/** Command buffer is recording. */
-	inline bool GetRecording() const{return pRecording;}
+	inline bool GetRecording() const{ return pRecording; }
 	
 	/** Add buffer memory barrier. */
 	void Barrier(const devkBuffer &buffer, bool useDeviceBuffer, VkAccessFlags sourceAccessMask,
@@ -174,7 +174,7 @@ public:
 	void ReturnToPool();
 	
 	/** Command pool linked list. */
-	inline decObjectLinkedList::cListEntry &GetLLPool(){return pLLPool;}
+	inline decObjectLinkedList::cListEntry &GetLLPool(){ return pLLPool; }
 	/*@}*/
 	
 	

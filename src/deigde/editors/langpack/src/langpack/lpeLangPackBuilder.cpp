@@ -43,7 +43,7 @@
 ////////////////////////////
 
 lpeLangPackBuilder::lpeLangPackBuilder(lpeLangPack *langpack){
-	if(! langpack){
+	if(!langpack){
 		DETHROW(deeInvalidParam);
 	}
 	

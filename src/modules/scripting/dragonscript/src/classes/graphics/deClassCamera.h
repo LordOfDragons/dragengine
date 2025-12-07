@@ -63,7 +63,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Get camera from real object. */
 	deCamera *GetCamera(dsRealObject *myself) const;

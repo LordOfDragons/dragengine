@@ -68,7 +68,7 @@ pOCForceField(ocfield),
 pDDSCenter(NULL),
 pDDSCoordSystem(NULL)
 {
-	if(! ocfield){
+	if(!ocfield){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -109,12 +109,12 @@ void gdeVAOForceField::RebuildResources(){
 }
 
 void gdeVAOForceField::AttachResources(){
-	if(! pForceField){
+	if(!pForceField){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	
@@ -151,12 +151,12 @@ void gdeVAOForceField::AttachResources(){
 }
 
 void gdeVAOForceField::DetachResources(){
-	if(! pForceField){
+	if(!pForceField){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if(! attachCollider){
+	if(!attachCollider){
 		return;
 	}
 	

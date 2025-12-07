@@ -74,7 +74,7 @@ deBaseModule *SsdkCreateModule(deLoadableModule *loadableModule){
 // SteamSDK requires the logger function to be extern. who had that strange idead?
 extern "C" void __cdecl fSteamSdkDebugCallback(int severity, const char *debugText) {
 	deSteamSdk * const module = deSteamSdk::globalModule;
-	if(! module){
+	if(!module){
 		return;
 	}
 	
@@ -134,7 +134,7 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 		return;
 	}
 	
-	if(! SteamAPI_IsSteamRunning()){
+	if(!SteamAPI_IsSteamRunning()){
 		LogError("Steam is not running.");
 		DETHROW_INFO(deeInvalidAction, "Steam is not running");
 	}
@@ -175,7 +175,7 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 			
 			#ifdef OS_UNIX
 			char workDir[PATH_MAX];
-			if(! getcwd(workDir, sizeof(workDir))){
+			if(!getcwd(workDir, sizeof(workDir))){
 				DETHROW_INFO(deeInvalidAction, "Failed getting working directory");
 			}
 			if(chdir(pathCache.GetPathNative())){
@@ -187,13 +187,13 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 			
 			#elif defined OS_W32
 			TCHAR workDir[MAX_PATH];
-			if(! GetCurrentDirectory(MAX_PATH, workDir)){
+			if(!GetCurrentDirectory(MAX_PATH, workDir)){
 				DETHROW_INFO(deeInvalidAction, "Failed getting working directory");
 			}
 
 			TCHAR targetDir[MAX_PATH];
 			deOSWindows::Utf8ToWide(pathCache.GetPathNative(), targetDir, MAX_PATH);
-			if(! SetCurrentDirectory(targetDir)){
+			if(!SetCurrentDirectory(targetDir)){
 				DETHROW_INFO(deeInvalidAction, "Failed changing working directory");
 			}
 			

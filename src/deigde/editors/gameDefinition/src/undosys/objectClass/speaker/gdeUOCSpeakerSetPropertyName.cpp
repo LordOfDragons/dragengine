@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pSpeaker(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

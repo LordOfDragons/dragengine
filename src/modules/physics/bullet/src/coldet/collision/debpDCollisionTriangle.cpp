@@ -159,7 +159,7 @@ double debpDCollisionTriangle::PointMoveHitsVolume(const decDVector &point, cons
 //////////////////////
 
 void debpDCollisionTriangle::GetEnclosingSphere(debpDCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	decDVector center = (pCorners[0] + pCorners[1] + pCorners[2]) / 3.0;
 	decDVector distVector = pCorners[0] - center;
 	double radiusSquared = distVector * distVector;
@@ -173,7 +173,7 @@ void debpDCollisionTriangle::GetEnclosingSphere(debpDCollisionSphere *sphere){
 }
 
 void debpDCollisionTriangle::GetEnclosingBox(debpDCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	decDVector minExtend = pCorners[0];
 	decDVector maxExtend = minExtend;
 	if(pCorners[1].x < minExtend.x){
@@ -233,7 +233,7 @@ decDVector debpDCollisionTriangle::ClosestPointTo(const decDVector &point){
 /////////////
 
 void debpDCollisionTriangle::Visit(debpDCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitTriangle(this);
 }
 
@@ -251,7 +251,7 @@ bool debpDCollisionTriangle::SphereHitsTriangle(debpDCollisionSphere *sphere){
 	hitPoint = sc + pNormal * lambda;
 	// if the point is not inside the triangle calculate the point on the
 	// triangle closest to the hitpoint
-	if(! debpDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!debpDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = debpDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	// we need to compare the distance of the hitpoint to the sphere center
@@ -383,7 +383,7 @@ double debpDCollisionTriangle::SphereMoveHitsTriangle(debpDCollisionSphere *sphe
 	}
 	
 	// if the point is not inside the triangle calculate the point on the triangle closest to the hitpoint
-	if(! debpDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!debpDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = debpDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	

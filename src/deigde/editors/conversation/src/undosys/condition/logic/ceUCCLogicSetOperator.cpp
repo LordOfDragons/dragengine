@@ -44,7 +44,7 @@
 ceUCCLogicSetOperator::ceUCCLogicSetOperator(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionLogic *logic,
 ceCConditionLogic::eOperators newOperator){
-	if(! topic || ! action || ! logic) DETHROW(deeInvalidParam);
+	if(!topic || !action || !logic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

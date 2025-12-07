@@ -119,39 +119,39 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine font. */
-	inline deFont *GetEngineFont() const{return pEngFont;}
+	inline deFont *GetEngineFont() const{ return pEngFont; }
 	
 	/** \brief Height of a line of text. */
-	inline int GetLineHeight() const{return pLineHeight;}
+	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** \brief Set height of a line of text. */
 	void SetLineHeight(int lineHeight);
 	
 	/** \brief Font is a color font. */
-	inline bool GetColorFont() const{return pColorFont;}
+	inline bool GetColorFont() const{ return pColorFont; }
 	
 	/** \brief Set if font is a color font. */
 	void SetColorFont(bool colorFont);
 	
 	/** \brief Base line. */
-	inline int GetBaseLine() const{return pBaseLine;}
+	inline int GetBaseLine() const{ return pBaseLine; }
 	
 	/** \brief Set base line. */
 	void SetBaseLine(int baseLine);
 	
 	/** \brief Font image. */
-	inline feFontImage *GetFontImage() const{return pFontImage;}
+	inline feFontImage *GetFontImage() const{ return pFontImage; }
 	
 	
 	
 	/** \brief Element mode indicating which type of element to edit. */
-	inline int GetElementMode() const{return pElementMode;}
+	inline int GetElementMode() const{ return pElementMode; }
 	
 	/** \brief Set element mode indicating which type of element to edit. */
 	void SetElementMode(int mode);
 	
 	/** \brief Work mode. */
-	inline int GetWorkMode() const{return pWorkMode;}
+	inline int GetWorkMode() const{ return pWorkMode; }
 	
 	/** \brief Set work mode. */
 	void SetWorkMode(int mode);
@@ -212,8 +212,8 @@ public:
 	void RemoveAllGlyphs();
 	
 	/** \brief Glyph selection. */
-	inline feFontGlyphSelection &GetGlyphSelection(){return *pGlyphSelection;}
-	inline const feFontGlyphSelection &GetGlyphSelection() const{return *pGlyphSelection;}
+	inline feFontGlyphSelection &GetGlyphSelection(){ return *pGlyphSelection; }
+	inline const feFontGlyphSelection &GetGlyphSelection() const{ return *pGlyphSelection; }
 	/*@}*/
 	
 	

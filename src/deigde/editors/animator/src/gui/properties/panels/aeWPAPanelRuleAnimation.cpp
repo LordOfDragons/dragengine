@@ -81,7 +81,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -120,7 +120,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
-		if(! rule || rule->GetMoveName() == comboBox->GetText()){
+		if(!rule || rule->GetMoveName() == comboBox->GetText()){
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
 		const float value = textField->GetFloat();
-		if(! rule || fabsf(rule->GetMoveTime() - value) < FLOAT_SAFE_EPSILON){
+		if(!rule || fabsf(rule->GetMoveTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		

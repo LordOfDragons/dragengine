@@ -40,9 +40,9 @@ public:
     JniClass(JNIEnv *env, const char *name, bool globalRef = false);
     void Dispose(JNIEnv *env);
 
-    inline operator jclass() const{return pClass;}
-    [[nodiscard]] inline JNIEnv *GetEnv() const{return pEnv;}
-    [[nodiscard]] inline const decString &GetName() const{return pName;}
+    inline operator jclass() const{ return pClass; }
+    [[nodiscard]] inline JNIEnv *GetEnv() const{ return pEnv; }
+    [[nodiscard]] inline const decString &GetName() const{ return pName; }
 
     JniFieldString GetFieldString(const char *name) const;
     JniFieldInt GetFieldInt(const char *name) const;
@@ -83,7 +83,7 @@ protected:
 public:
     JniField(JNIEnv *env, jclass clazz, const char *name, const char *signature);
 
-    inline operator jfieldID() const{return pId;}
+    inline operator jfieldID() const{ return pId; }
 };
 
 /**
@@ -193,10 +193,10 @@ public:
     virtual ~JniObject();
     void Dispose(JNIEnv *env);
 
-    [[nodiscard]] inline JNIEnv *GetEnv() const{return pEnv;}
-    inline operator jobject() const{return pObject;}
+    [[nodiscard]] inline JNIEnv *GetEnv() const{ return pEnv; }
+    inline operator jobject() const{ return pObject; }
     jobject ReturnValue();
-    [[nodiscard]] inline jobject CallArgument() const{return pObject;}
+    [[nodiscard]] inline jobject CallArgument() const{ return pObject; }
 };
 
 /**
@@ -211,9 +211,9 @@ public:
     JniObjectArray(JNIEnv *env, jobjectArray object);
     JniObjectArray(const JniObjectArray &object);
 
-    inline operator jobjectArray() const{return reinterpret_cast<jobjectArray>(pObject);}
+    inline operator jobjectArray() const{ return reinterpret_cast<jobjectArray>(pObject); }
 
-    [[nodiscard]] inline int GetCount() const{return pCount;}
+    [[nodiscard]] inline int GetCount() const{ return pCount; }
     [[nodiscard]] jobject GetAt(int index) const;
     void SetAt(int index, jobject object) const;
     jobjectArray ReturnArray();
@@ -230,7 +230,7 @@ public:
     JniByteArray(JNIEnv *env, int size);
     JniByteArray(const JniByteArray &object);
 
-    inline operator jbyteArray() const{return reinterpret_cast<jbyteArray>(pObject);}
+    inline operator jbyteArray() const{ return reinterpret_cast<jbyteArray>(pObject); }
 
     void Set(const void *data) const;
     jbyteArray ReturnArray();
@@ -247,7 +247,7 @@ public:
     JniLongArray(JNIEnv *env, int size);
     JniLongArray(const JniLongArray &object);
 
-    inline operator jlongArray() const{return reinterpret_cast<jlongArray>(pObject);}
+    inline operator jlongArray() const{ return reinterpret_cast<jlongArray>(pObject); }
 
     void SetAt(int index, jlong value) const;
     jlongArray ReturnArray();

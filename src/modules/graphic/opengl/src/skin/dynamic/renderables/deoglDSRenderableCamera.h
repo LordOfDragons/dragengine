@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableCamera &GetRenderableCamera() const{return pRenderableCamera;}
+	inline const deDSRenderableCamera &GetRenderableCamera() const{ return pRenderableCamera; }
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

@@ -69,21 +69,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Identifier. */
-	inline const decString &GetIdentifier() const{return pIdentifier;}
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
 	/** Sets identifier. */
 	void SetIdentifier(const char *identifier);
 	
 	/** Retrieves the name in the native language. */
-	inline const decUnicodeString &GetName() const{return pName;}
+	inline const decUnicodeString &GetName() const{ return pName; }
 	/** Sets the name in the native language. */
 	void SetName(const decUnicodeString &name);
 	/** Retrieves the description in the native language. */
-	inline const decUnicodeString &GetDescription() const{return pDescription;}
+	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	/** Sets the description in the native language. */
 	void SetDescription(const decUnicodeString &description);
 	/** Retrieves the missing text in the native language. */
-	inline const decUnicodeString &GetMissingText() const{return pMissingText;}
+	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
 	/** Sets the description in the native language. */
 	void SetMissingText(const decUnicodeString &missingText);
 	/*@}*/
@@ -91,10 +91,10 @@ public:
 	/** \name Entries */
 	/*@{*/
 	/** Retrieves the entry list read-only. */
-	inline const lpeLangPackEntryList &GetEntryList() const{return pEntryList;}
+	inline const lpeLangPackEntryList &GetEntryList() const{ return pEntryList; }
 	/** Retrieves the entry selection. */
-	inline lpeLangPackEntrySelection &GetEntrySelection(){return pEntrySelection;}
-	inline const lpeLangPackEntrySelection &GetEntrySelection() const{return pEntrySelection;}
+	inline lpeLangPackEntrySelection &GetEntrySelection(){ return pEntrySelection; }
+	inline const lpeLangPackEntrySelection &GetEntrySelection() const{ return pEntrySelection; }
 	/** Adds a new entry. */
 	void AddEntry(lpeLangPackEntry *entry);
 	/** Removes a entry. */

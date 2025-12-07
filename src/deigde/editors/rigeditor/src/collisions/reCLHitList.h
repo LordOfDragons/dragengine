@@ -51,7 +51,7 @@ public:
 	/** @name Entries */
 	/*@{*/
 	/** Retrieves the number of entries. */
-	inline int GetEntryCount() const{return pEntryCount;}
+	inline int GetEntryCount() const{ return pEntryCount; }
 	/** Retrieves the entry at the given index. */
 	reCLHitListEntry *GetEntryAt(int index) const;
 	/** Retrieves the index of the entry of -1 if not found. */

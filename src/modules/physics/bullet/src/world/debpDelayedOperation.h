@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World is locked. */
-	inline bool IsLocked() const{return pLockCount > 0;}
+	inline bool IsLocked() const{ return pLockCount > 0; }
 	
 	/**
 	 * \brief Lock parent world.

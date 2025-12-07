@@ -187,7 +187,7 @@ struct LocalInfoAdder2 : public btCollisionWorld::RayResultCallback{
 		
 		shapeInfo.m_shapePart = -1;
 		shapeInfo.m_triangleIndex = pI;
-		if(! r.m_localShapeInfo){
+		if(!r.m_localShapeInfo){
 			r.m_localShapeInfo = &shapeInfo;
 		}
 		
@@ -492,7 +492,7 @@ void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 			collider1 = colObj1.GetOwnerCollider();
 		}
 		
-		if(! collider0 && ! collider1){
+		if(!collider0 && !collider1){
 			continue; // no colliders
 		}
 		
@@ -800,7 +800,7 @@ btCollisionObject *colObjA, btCollisionObject *colObjB){
 		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
 			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
 		
-		if(! algorithm){
+		if(!algorithm){
 			return false;
 		}
 		

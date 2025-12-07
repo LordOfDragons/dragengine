@@ -101,45 +101,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load save system. */
-	inline seLoadSaveSystem &GetLoadSaveSystem() const{return pLoadSaveSystem;}
+	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine synthesizer. */
-	inline deSynthesizer *GetEngineSynthesizer() const{return pEngSynthesizer;}
+	inline deSynthesizer *GetEngineSynthesizer() const{ return pEngSynthesizer; }
 	
 	/** \brief Engine synthesizer instance. */
-	inline deSynthesizerInstance *GetEngineSynthesizerInstance() const{return pEngSynthesizerInstance;}
+	inline deSynthesizerInstance *GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
 	
 	
 	
 	/** \brief Number of channels. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
 	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
 	void SetSampleRate(int sampleRate);
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
 	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples to create. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
 	void SetSampleCount(int sampleCount);
 	
 	/** \brief Play time in seconds. */
-	inline float GetPlayTime() const{return pPlayTime;}
+	inline float GetPlayTime() const{ return pPlayTime; }
 	
 	
 	
@@ -199,7 +199,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	inline const seControllerList &GetControllers() const{return pControllers;}
+	inline const seControllerList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(seController *controller);
@@ -217,7 +217,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** \brief Active controller or \em NULL if not set. */
-	inline seController *GetActiveController() const{return pActiveController;}
+	inline seController *GetActiveController() const{ return pActiveController; }
 	
 	/** \brief Set active controller or \em NULL if not set. */
 	void SetActiveController(seController *controller);
@@ -228,7 +228,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** \brief Links. */
-	inline const seLinkList &GetLinks() const{return pLinks;}
+	inline const seLinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);
@@ -246,7 +246,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** \brief Active link or \em NULL if not set. */
-	inline seLink *GetActiveLink() const{return pActiveLink;}
+	inline seLink *GetActiveLink() const{ return pActiveLink; }
 	
 	/** \brief Set active link or \em NULL if not set. */
 	void SetActiveLink(seLink *link);
@@ -260,7 +260,7 @@ public:
 	/** \name Sources */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{return pSources;}
+	inline const seSourceList &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(seSource *source);
@@ -278,7 +278,7 @@ public:
 	void RemoveAllSources();
 	
 	/** \brief Active source or \em NULL if not set. */
-	inline seSource *GetActiveSource() const{return pActiveSource;}
+	inline seSource *GetActiveSource() const{ return pActiveSource; }
 	
 	/** \brief Set active source or \em NULL if not set. */
 	void SetActiveSource(seSource *source);

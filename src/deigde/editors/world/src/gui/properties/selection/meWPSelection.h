@@ -68,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

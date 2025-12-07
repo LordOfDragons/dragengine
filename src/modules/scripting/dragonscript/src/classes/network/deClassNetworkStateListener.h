@@ -46,9 +46,9 @@ public:
 	deClassNetworkStateListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassNetworkStateListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 private:
 	struct sInitData{

@@ -80,7 +80,7 @@ void dealEngineConfigXML::ReadFromFile(decBaseFileReader &reader, dealLauncher &
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "engineConfig") != 0) DETHROW(deeInvalidParam);
+	if(!root || strcmp(root->GetName(), "engineConfig") != 0) DETHROW(deeInvalidParam);
 	
 	pReadConfig(*root, launcher);
 }
@@ -253,7 +253,7 @@ void dealEngineConfigXML::pReadConfig(const decXmlElementTag &root, dealLauncher
 					
 				}else{
 					gameManager.SetActiveProfile(gameManager.GetProfileList().GetNamed(profileName));
-					if(! gameManager.GetActiveProfile()){
+					if(!gameManager.GetActiveProfile()){
 						GetLogger()->LogWarnFormat(GetLoggerSource().GetString(),
 							"%s(%i:%i): Profile '%s' does not exist", tag->GetName().GetString(),
 							tag->GetLineNumber(), tag->GetPositionNumber(), profileName);
@@ -296,7 +296,7 @@ void dealEngineConfigXML::pReadProfile(const decXmlElementTag &root, dealLaunche
 	
 	try{
 		profile = new dealGameProfile;
-		if(! profile) DETHROW(deeOutOfMemory);
+		if(!profile) DETHROW(deeOutOfMemory);
 		
 		profile->SetName(profileName.GetString());
 		
@@ -438,7 +438,7 @@ void dealEngineConfigXML::pReadProfileModule(const decXmlElementTag &root, dealG
 	
 	try{
 		module = new dealGPModule;
-		if(! module) DETHROW(deeOutOfMemory);
+		if(!module) DETHROW(deeOutOfMemory);
 		
 		module->SetName(moduleName.GetString());
 		
@@ -478,7 +478,7 @@ void dealEngineConfigXML::pReadProfileModuleParameters(const decXmlElementTag &r
 				
 				try{
 					parameters = new dealGPMParameter;
-					if(! parameters) DETHROW(deeOutOfMemory);
+					if(!parameters) DETHROW(deeOutOfMemory);
 					
 					parameters->SetName(pGetAttributeString(*tag, "name"));
 					parameters->SetValue(pGetCDataString(*tag));

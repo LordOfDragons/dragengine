@@ -93,16 +93,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline eOrientation GetOrientation() const{return pOrientation;}
+	inline eOrientation GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Range lower value. */
-	inline int GetLower() const{return pLower;}
+	inline int GetLower() const{ return pLower; }
 	
 	/** \brief Set range lower value. */
 	void SetLower(int lower);
 	
 	/** \brief Range upper value. */
-	inline int GetUpper() const{return pUpper;}
+	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range upper value. */
 	void SetUpper(int upper);
@@ -111,19 +111,19 @@ public:
 	void SetRange(int lower, int upper);
 	
 	/** \brief Page size. */
-	inline int GetPageSize() const{return pPageSize;}
+	inline int GetPageSize() const{ return pPageSize; }
 	
 	/** \brief Set page size. */
 	void SetPageSize(int pageSize);
 	
 	/** \brief Value. */
-	inline int GetValue() const{return pValue;}
+	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(int value);
 	
 	/** \brief ScrollBar is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);

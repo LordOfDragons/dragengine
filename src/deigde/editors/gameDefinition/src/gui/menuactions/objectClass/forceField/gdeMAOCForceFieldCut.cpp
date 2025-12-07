@@ -67,7 +67,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
-	if(! forceField){
+	if(!forceField){
 		return NULL;
 	}
 	

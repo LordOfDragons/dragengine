@@ -89,10 +89,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Device. */
-	inline deovrDevice &GetDevice() const{return pDevice;}
+	inline deovrDevice &GetDevice() const{ return pDevice; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
@@ -100,13 +100,13 @@ public:
 	
 	
 	/** Press button action handle. */
-	inline vr::VRActionHandle_t GetActionPressHandle() const{return pActionPressHandle;}
+	inline vr::VRActionHandle_t GetActionPressHandle() const{ return pActionPressHandle; }
 	
 	/** Set press button action handle. */
 	void SetActionPressHandle(vr::VRActionHandle_t handle);
 	
 	/** Touch button action handle. */
-	inline vr::VRActionHandle_t GetActionTouchHandle() const{return pActionTouchHandle;}
+	inline vr::VRActionHandle_t GetActionTouchHandle() const{ return pActionTouchHandle; }
 	
 	/** Set touch button action handle. */
 	void SetActionTouchHandle(vr::VRActionHandle_t handle);
@@ -114,31 +114,31 @@ public:
 	
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Type. */
-	inline deInputDeviceButton::eButtonTypes GetType() const{return pType;}
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deInputDeviceButton::eButtonTypes type);
 	
 	/** Input device component. */
-	inline deovrDeviceComponent *GetInputDeviceComponent() const{return pInputDeviceComponent;}
+	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
 	void SetInputDeviceComponent(deovrDeviceComponent *component);
 	
 	/** Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is pressed. */
 	void SetPressed(bool pressed);
@@ -147,7 +147,7 @@ public:
 	void UpdatePressed(bool pressed);
 	
 	/** Button is touched. */
-	inline bool GetTouched() const{return pTouched;}
+	inline bool GetTouched() const{ return pTouched; }
 	
 	/** Set if button is touched. */
 	void SetTouched(bool touched);
@@ -158,10 +158,10 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -170,7 +170,7 @@ public:
 	void SetDisplayImages(const deovrDeviceButton &button);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);

@@ -61,13 +61,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return *pConversation;}
+	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{return *pTopic;}
+	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
 	
 	/** \brief Player choice action. */
-	inline ceCAPlayerChoice &GetIfElse() const{return *pPlayerChoice;}
+	inline ceCAPlayerChoice &GetIfElse() const{ return *pPlayerChoice; }
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

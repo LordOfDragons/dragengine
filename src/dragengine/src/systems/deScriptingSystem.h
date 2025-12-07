@@ -89,10 +89,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active module. */
-	inline deBaseScriptingModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseScriptingModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Directory relative to the game directory where the scripts are located. */
-	inline const decString &GetScriptDirectory() const{return pScriptDirectory;}
+	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
 	
 	/** \brief Set directory relative to the game directory where the scripts are located. */
 	void SetScriptDirectory(const char *scriptDirectory);
@@ -101,7 +101,7 @@ public:
 	 * \brief Script version for compatibility.
 	 * \version 1.9
 	 */
-	inline const decString &GetScriptVersion() const{return pScriptVersion;}
+	inline const decString &GetScriptVersion() const{ return pScriptVersion; }
 	
 	/**
 	 * \brief Set script version for compatibility.
@@ -110,7 +110,7 @@ public:
 	void SetScriptVersion(const char *scriptVersion);
 	
 	/** \brief Initial game object to create. */
-	inline const decString &GetGameObject() const{return pGameObject;}
+	inline const decString &GetGameObject() const{ return pGameObject; }
 	
 	/** \brief Set initial game object to create. */
 	void SetGameObject(const char *gameObject);
@@ -153,7 +153,7 @@ public:
 	 * In this mode the scripts are reduced to what is required by an editing application.
 	 * The edit mode can only be changed while the system is not running.
 	 */
-	inline bool GetEditMode() const{return pEditMode;}
+	inline bool GetEditMode() const{ return pEditMode; }
 	
 	/**
 	 * \brief Set if scripts are executed in edit mode.

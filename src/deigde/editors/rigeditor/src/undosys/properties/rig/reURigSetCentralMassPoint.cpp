@@ -41,7 +41,7 @@
 reURigSetCentralMassPoint::reURigSetCentralMassPoint(reRig *rig, const decVector &newCMP) :
 pRig(NULL)
 {
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	

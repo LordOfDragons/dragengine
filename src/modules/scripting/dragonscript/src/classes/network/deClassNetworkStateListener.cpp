@@ -56,7 +56,7 @@ void deClassNetworkStateListener::nfStateValueChanged::RunFunction(dsRunTime *rt
 // constructor
 deClassNetworkStateListener::deClassNetworkStateListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("NetworkStateListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;

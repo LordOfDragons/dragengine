@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the array texture for a skin texture channel. */
 	deoglArrayTexture *GetChannelTextureAt(int channel) const;
@@ -74,9 +74,9 @@ public:
 	bool IsChannelTextureEnabled(int channel) const;
 	
 	/** Retrieves the minimum extend. */
-	inline const decVector2 &GetMinExtend() const{return pMinExtend;}
+	inline const decVector2 &GetMinExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decVector2 &GetMaxExtend() const{return pMaxExtend;}
+	inline const decVector2 &GetMaxExtend() const{ return pMaxExtend; }
 	/** Sets the minimum and maximum extend. */
 	void SetExtends(const decVector2 &minExtend, const decVector2 &maxExtend);
 	/*@}*/

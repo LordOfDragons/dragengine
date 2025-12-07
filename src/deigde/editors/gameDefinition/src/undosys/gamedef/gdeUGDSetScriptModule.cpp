@@ -44,7 +44,7 @@ gdeGameDefinition *gameDefinition, const char *newValue) :
 pGameDefinition(NULL),
 pNewValue(newValue)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -85,7 +85,7 @@ decQuadtree *decQuadtree::GetNodeAtBox(const decVector2 &boxCenter, const decVec
 	if(quadrant == eqNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if(! pNodes[quadrant]){
+	if(!pNodes[quadrant]){
 		pNodes[quadrant] = CreateQuadtree(quadrant);
 		pNodes[quadrant]->SetParent(this);
 	}
@@ -101,7 +101,7 @@ decQuadtree *decQuadtree::GetNodeAtPoint(const decVector2 &point){
 	if(quadrant == eqNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if(! pNodes[quadrant]){
+	if(!pNodes[quadrant]){
 		pNodes[quadrant] = CreateQuadtree(quadrant);
 		pNodes[quadrant]->SetParent(this);
 	}
@@ -199,7 +199,7 @@ decQuadtree *decQuadtree::SearchTreeForPoint(const decVector2 &point) const{
 }
 
 void decQuadtree::VisitNodes(decQuadtreeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i;
 	
 	// visit
@@ -212,12 +212,12 @@ void decQuadtree::VisitNodes(decQuadtreeVisitor *visitor){
 }
 
 void decQuadtree::VisitNodesColliding(decQuadtreeVisitor *visitor, decCollisionVolume *volume){
-	if(! visitor || ! volume) DETHROW(deeInvalidParam);
+	if(!visitor || !volume) DETHROW(deeInvalidParam);
 	decCollisionBox colBox(decVector(pCenter.x, 0.0, pCenter.y), decVector(pHalfSize.x, 250.0, pHalfSize.y));
 	int i;
 	
 	// exit if this node is not in the collision volume
-	if(! volume->BoxHitsVolume(&colBox)) return;
+	if(!volume->BoxHitsVolume(&colBox)) return;
 	
 	// visit
 	visitor->VisitNode(this);

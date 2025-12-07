@@ -60,7 +60,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief synthesizer or \em NULL if object is \em NULL. */
 	deSynthesizer *GetSynthesizer(dsRealObject *object) const;

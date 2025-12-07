@@ -41,7 +41,7 @@
 ////////////////////////////
 
 reUConstraintSetOffset::reUConstraintSetOffset(reRigConstraint *constraint, const decVector &newOffset){
-	if(! constraint || ! constraint->GetRig()){
+	if(!constraint || !constraint->GetRig()){
 		DETHROW(deeInvalidParam);
 	}
 	

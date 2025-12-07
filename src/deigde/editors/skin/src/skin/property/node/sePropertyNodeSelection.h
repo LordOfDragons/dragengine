@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of selected nodes. */
-	inline const sePropertyNodeList &GetSelected() const{return pSelection;}
+	inline const sePropertyNodeList &GetSelected() const{ return pSelection; }
 	
 	/** \brief Add node to selection if absent. */
 	void Add(sePropertyNode *node);
@@ -74,7 +74,7 @@ public:
 	
 	
 	/** \brief Active node or \em NULL if absent. */
-	inline sePropertyNode *GetActive() const{return pActive;}
+	inline sePropertyNode *GetActive() const{ return pActive; }
 	
 	/** \brief Active node is present. */
 	bool HasActive() const;

@@ -75,18 +75,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** Slot. */
-	inline ALuint GetSlot() const{return pSlot;}
+	inline ALuint GetSlot() const{ return pSlot; }
 	
 	/** Effect. */
-	inline ALuint GetEffect() const{return pEffect;}
+	inline ALuint GetEffect() const{ return pEffect; }
 	
 	
 	
 	/** Owner or nullptr if not bound. */
-	inline void *GetOwner() const{return pOwner;}
+	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Assign owner and clear effect. */
 	void AssignOwner(void *owner, float importance);
@@ -95,7 +95,7 @@ public:
 	void ClearOwner();
 	
 	/** Importance. */
-	inline float GetImportance() const{return pImportance;}
+	inline float GetImportance() const{ return pImportance; }
 	
 	/** Set importance. */
 	void SetImportance(float importance);
@@ -118,16 +118,16 @@ public:
 	
 	
 	/** Bound. */
-	inline bool IsBound() const{return pOwner != nullptr;}
+	inline bool IsBound() const{ return pOwner != nullptr; }
 	
 	/** Not bound. */
-	inline bool IsUnbound() const{return pOwner == nullptr;}
+	inline bool IsUnbound() const{ return pOwner == nullptr; }
 	
 	/** Is kept alive. */
-	inline bool IsKeptAlive() const{return IsUnbound() && pEffectType != AL_EFFECT_NULL;}
+	inline bool IsKeptAlive() const{ return IsUnbound() && pEffectType != AL_EFFECT_NULL; }
 	
 	/** Elapsed keep-alive time. */
-	inline float GetElapsedKeepAliveTime() const{return pKeepAliveElapsed;}
+	inline float GetElapsedKeepAliveTime() const{ return pKeepAliveElapsed; }
 	/*@}*/
 	
 	

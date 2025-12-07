@@ -64,8 +64,8 @@ public:
 	igdeNativeFoxIconListBoxItem(igdeIconListBox &list, igdeListItem &listItem);
 	virtual ~igdeNativeFoxIconListBoxItem();
 	
-	inline igdeIconListBox &GetList() const{return *pList;}
-	inline igdeListItem &GetItem() const{return *pListItem;}
+	inline igdeIconListBox &GetList() const{ return *pList; }
+	inline igdeListItem &GetItem() const{ return *pListItem; }
 	
 	virtual FXString getTipText() const;
 	void UpdateFromItem();
@@ -87,7 +87,7 @@ igdeNativeFoxIconListBoxItem::~igdeNativeFoxIconListBoxItem(){
 }
 
 FXString igdeNativeFoxIconListBoxItem::getTipText() const{
-	if(! pListItem->GetDescription().IsEmpty()){
+	if(!pListItem->GetDescription().IsEmpty()){
 		return pListItem->GetDescription().GetString();
 		
 	}else{
@@ -170,12 +170,12 @@ pResizer(NULL)
 	(void)IconListBoxPadBottom;
 	#endif
 
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	pListBox->setFont((FXFont*)pFont->GetNativeFont());
 	
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		pListBox->disable();
 	}
 	
@@ -197,12 +197,12 @@ igdeNativeFoxIconListBox::~igdeNativeFoxIconListBox(){
 }
 
 igdeNativeFoxIconListBox *igdeNativeFoxIconListBox::CreateNativeWidget(igdeIconListBox &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -462,7 +462,7 @@ long igdeNativeFoxIconListBox::onListCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxIconListBox::onListChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 1;
 	}
 	
@@ -511,7 +511,7 @@ long igdeNativeFoxIconListBox::onListHeaderClicked(FXObject *sender, FXSelector 
 }
 
 long igdeNativeFoxIconListBox::onListRightMouseDown(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 1;
 	}
 	

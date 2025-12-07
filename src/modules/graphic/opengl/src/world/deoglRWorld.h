@@ -137,10 +137,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Size. */
-	inline const decDVector &GetSize() const{return pSize;}
+	inline const decDVector &GetSize() const{ return pSize; }
 	
 	/** Set size. */
 	void SetSize(const decDVector &size);
@@ -152,12 +152,12 @@ public:
 	void MarkSkyOrderDirty();
 	
 	/** Sky environment map or \em NULL if not existing. */
-	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{return pSkyEnvMap;}
+	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
 	
 	
 	
 	/** Height terrain or \em NULL if not set. */
-	inline deoglRHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
 	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);
@@ -166,19 +166,19 @@ public:
 	
 	
 	/** All lights are disabled. */
-	inline bool GetDisableLights() const{return pDisableLights;}
+	inline bool GetDisableLights() const{ return pDisableLights; }
 	
 	/** Set if all lights are disabled. */
 	void SetDisableLights(bool disable);
 	
 	/** Ambient light color. */
-	inline const decColor &GetAmbientLight() const{return pAmbientLight;}
+	inline const decColor &GetAmbientLight() const{ return pAmbientLight; }
 	
 	/** Set ambient light color. */
 	void SetAmbientLight(const decColor &color);
 	
 	/** Light color matrix. */
-	inline const decMatrix &GetLightColorMatrix() const{return pLightColorMatrix;}
+	inline const decMatrix &GetLightColorMatrix() const{ return pLightColorMatrix; }
 	
 	/** Set light color matrix. */
 	void SetLightColorMatrix(const decMatrix &matrix);
@@ -186,7 +186,7 @@ public:
 	
 	
 	/** Octree. */
-	inline deoglWorldOctree &GetOctree() const{return *pOctree;}
+	inline deoglWorldOctree &GetOctree() const{ return *pOctree; }
 	
 	/** Visit entire content of the world. */
 	void VisitAll(deoglWorldOctreeVisitor &visitor);
@@ -198,7 +198,7 @@ public:
 	
 	
 	/** Compute. */
-	inline deoglWorldCompute &GetCompute() const{return pCompute;}
+	inline deoglWorldCompute &GetCompute() const{ return pCompute; }
 	
 	
 	
@@ -234,7 +234,7 @@ public:
 	void NotifyAllReferencePositionChanged();
 	
 	/** Reference position for world matrices and positions used directly in shaders. */
-	inline const decDVector &GetReferencePosition() const{return pReferencePosition;}
+	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
 	
 	/**
 	 * Set reference position for world matrices and positions used directly in shaders.
@@ -251,7 +251,7 @@ public:
 	void CheckReferencePosition(const decDVector &position);
 	
 	/** Validity distance for reference position checks. */
-	inline double GetValidReferenceDistance() const{return pValidReferenceDistance;}
+	inline double GetValidReferenceDistance() const{ return pValidReferenceDistance; }
 	
 	/** Set validity distance for reference position checks. */
 	void SetValidReferenceDistance(double distance);
@@ -308,10 +308,10 @@ public:
 	/** \name Components. */
 	/*@{*/
 	/** Number of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Root component. */
-	inline deoglRComponent *GetRootComponent() const{return pRootComponent;}
+	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
 	void AddComponent(deoglRComponent *component);
@@ -383,7 +383,7 @@ public:
 	/** \name Environment maps */
 	/*@{*/
 	/** Environment map list. */
-	inline const deoglEnvironmentMapList &GetEnvMapList() const{return pEnvMapList;}
+	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMapList; }
 	
 	/** Add environment map. */
 	void AddEnvMap(deoglEnvironmentMap *envmap);
@@ -395,7 +395,7 @@ public:
 	void RemoveAllEnvMaps();
 	
 	/** Number of environment maps that can be updated this frame. */
-	inline int GetEnvMapUpdateCount() const{return pEnvMapUpdateCount;}
+	inline int GetEnvMapUpdateCount() const{ return pEnvMapUpdateCount; }
 	
 	/** Reset env maps update count. */
 	void ResetEnvMapUpdateCount();
@@ -407,7 +407,7 @@ public:
 	void EnvMapsNotifySkyChanged();
 	
 	/** Shared environment map render plan. */
-	inline deoglRenderPlan *GetEnvMapRenderPlan() const{return pEnvMapRenderPlan;}
+	inline deoglRenderPlan *GetEnvMapRenderPlan() const{ return pEnvMapRenderPlan; }
 	
 	/**
 	 * Mark environment map layout dirty.
@@ -444,10 +444,10 @@ public:
 	/** \name Billboards. */
 	/*@{*/
 	/** Number of billboards. */
-	inline int GetBillboardCount() const{return pBillboardCount;}
+	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
 	/** Root billboard. */
-	inline deoglRBillboard *GetRootBillboard() const{return pRootBillboard;}
+	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
 	
 	/** Add billboard. */
 	void AddBillboard(deoglRBillboard *billboard);

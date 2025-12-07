@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decPoint &GetPosition() const{return pPosition;}
+	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decPoint &position);
 	
 	/** \brief Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
 	void SetSize(const decPoint &size);

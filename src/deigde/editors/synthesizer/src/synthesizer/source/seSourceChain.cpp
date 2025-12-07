@@ -129,7 +129,7 @@ void seSourceChain::UpdateSounds(){
 		const decString &path = pPathSounds.GetAt(i);
 		deSound * sound = NULL;
 		
-		if(! path.IsEmpty() && GetSynthesizer()){
+		if(!path.IsEmpty() && GetSynthesizer()){
 			const decString &basePath = GetSynthesizer()->GetDirectoryPath();
 			
 			try{

@@ -86,7 +86,7 @@ void deClassInputDevice::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 	}
 	
 	sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	if(! nd.device){
+	if(!nd.device){
 		return;
 	}
 	
@@ -226,7 +226,7 @@ void deClassInputDevice::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, ds
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = device.GetDevice()->GetDisplayIconAt(i);
-		if(icon->GetWidth() <= maxWidth && (! bestIcon || icon->GetWidth() >= bestWidth)){
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
@@ -252,7 +252,7 @@ void deClassInputDevice::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, ds
 	
 	for(i=0; i<count; i++){
 		deImage * const icon = device.GetDevice()->GetDisplayIconAt(i);
-		if(icon->GetHeight() <= maxHeight && (! bestIcon || icon->GetHeight() >= bestHeight)){
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
@@ -740,7 +740,7 @@ void deClassInputDevice::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassInputDevice * const clsInputDevice = (deClassInputDevice*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsInputDevice)){
+	if(!p_IsObjOfType(obj, clsInputDevice)){
 		rt->PushBool(false);
 		
 	}else{
@@ -870,7 +870,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 }
 
 dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -878,11 +878,11 @@ dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
 }
 
 void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! device){
+	if(!device){
 		rt->PushObject(nullptr, this);
 		return;
 	}

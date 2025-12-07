@@ -73,7 +73,7 @@ fbxPropertyBinary::~fbxPropertyBinary(){
 ///////////////////////
 
 void fbxPropertyBinary::SetValue(const uint8_t *value, int length){
-	if(length < 0 || (length > 0 && ! value)){
+	if(length < 0 || (length > 0 && !value)){
 		DETHROW(deeInvalidParam);
 	}
 	

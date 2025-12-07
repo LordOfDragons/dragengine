@@ -73,9 +73,9 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** \brief Retrieves the convex shape. */
-		inline const btConvexShape *GetShape() const{return pShape;}
+		inline const btConvexShape *GetShape() const{ return pShape; }
 		/** \brief Retrieves the transform. */
-		inline const btTransform &GetTransform() const{return pTransform;}
+		inline const btTransform &GetTransform() const{ return pTransform; }
 		/*@}*/
 	};
 	
@@ -99,7 +99,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of cShape pointers. */
-	inline const decPointerList &GetShapeList() const{return pShapeList;}
+	inline const decPointerList &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Add a shape from a decShape. */
 	void AddShape(decShape &shape, const decVector &scale);

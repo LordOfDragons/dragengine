@@ -89,13 +89,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Left-right axis. */
-	inline const deainpInputBinding &GetAxisLeftRight() const{return pAxisLeftRight;}
+	inline const deainpInputBinding &GetAxisLeftRight() const{ return pAxisLeftRight; }
 	
 	/** \brief Set left-right axis. */
 	void SetAxisLeftRight(const deainpInputBinding &axis);
 	
 	/** \brief Up-down axis. */
-	inline const deainpInputBinding &GetAxisUpDown() const{return pAxisUpDown;}
+	inline const deainpInputBinding &GetAxisUpDown() const{ return pAxisUpDown; }
 	
 	/** \brief Set up-down axis. */
 	void SetAxisUpDown(const deainpInputBinding &axis);
@@ -103,25 +103,25 @@ public:
 	
 	
 	/** \brief Key binding for left pad press. */
-	inline const deainpInputBinding &GetKeyCodeLeft() const{return pKeyCodeLeft;}
+	inline const deainpInputBinding &GetKeyCodeLeft() const{ return pKeyCodeLeft; }
 	
 	/** \brief Set key binding for left pad press. */
 	void SetKeyCodeLeft(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for up pad press. */
-	inline const deainpInputBinding &GetKeyCodeUp() const{return pKeyCodeUp;}
+	inline const deainpInputBinding &GetKeyCodeUp() const{ return pKeyCodeUp; }
 	
 	/** \brief Set key binding for up pad press. */
 	void SetKeyCodeUp(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for right pad press. */
-	inline const deainpInputBinding &GetKeyCodeRight() const{return pKeyCodeRight;}
+	inline const deainpInputBinding &GetKeyCodeRight() const{ return pKeyCodeRight; }
 	
 	/** \brief Set key binding for right pad press. */
 	void SetKeyCodeRight(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for down pad press. */
-	inline const deainpInputBinding &GetKeyCodeDown() const{return pKeyCodeDown;}
+	inline const deainpInputBinding &GetKeyCodeDown() const{ return pKeyCodeDown; }
 	
 	/** \brief Set key binding for down pad press. */
 	void SetKeyCodeDown(const deainpInputBinding &binding);
@@ -129,25 +129,25 @@ public:
 	
 	
 	/** \brief Key binding for up-left pad press or empty to activate up and left binding together. */
-	inline const deainpInputBinding &GetKeyCodeUpLeft() const{return pKeyCodeUpLeft;}
+	inline const deainpInputBinding &GetKeyCodeUpLeft() const{ return pKeyCodeUpLeft; }
 	
 	/** \brief Set key binding for up-left pad press or empty to activate up and left binding together. */
 	void SetKeyCodeUpLeft(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for up-right pad press or empty to activate up and right binding together. */
-	inline const deainpInputBinding &GetKeyCodeUpRight() const{return pKeyCodeUpRight;}
+	inline const deainpInputBinding &GetKeyCodeUpRight() const{ return pKeyCodeUpRight; }
 	
 	/** \brief Set key binding for up-right pad press or empty to activate up and right binding together. */
 	void SetKeyCodeUpRight(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for down-left pad press or empty to activate down and left binding together. */
-	inline const deainpInputBinding &GetKeyCodeDownLeft() const{return pKeyCodeDownLeft;}
+	inline const deainpInputBinding &GetKeyCodeDownLeft() const{ return pKeyCodeDownLeft; }
 	
 	/** \brief Set key binding for down-left pad press or empty to activate down and left binding together. */
 	void SetKeyCodeDownLeft(const deainpInputBinding &binding);
 	
 	/** \brief Key binding for down-right pad press or empty to activate down and right binding together. */
-	inline const deainpInputBinding &GetKeyCodeDownRight() const{return pKeyCodeDownRight;}
+	inline const deainpInputBinding &GetKeyCodeDownRight() const{ return pKeyCodeDownRight; }
 	
 	/** \brief Set key binding for down-right pad press or empty to activate down and right binding together. */
 	void SetKeyCodeDownRight(const deainpInputBinding &binding);
@@ -155,25 +155,25 @@ public:
 	
 	
 	/** \brief Left button is pressed. */
-	inline bool GetPressedLeft() const{return pPressedLeft;}
+	inline bool GetPressedLeft() const{ return pPressedLeft; }
 	
 	/** \brief Set if left button is pressed. */
 	void SetPressedLeft(bool pressed);
 	
 	/** \brief Up button is pressed. */
-	inline bool GetPressedUp() const{return pPressedUp;}
+	inline bool GetPressedUp() const{ return pPressedUp; }
 	
 	/** \brief Set if up button is pressed. */
 	void SetPressedUp(bool pressed);
 	
 	/** \brief Right button is pressed. */
-	inline bool GetPressedRight() const{return pPressedRight;}
+	inline bool GetPressedRight() const{ return pPressedRight; }
 	
 	/** \brief Set if right button is pressed. */
 	void SetPressedRight(bool pressed);
 	
 	/** \brief Down button is pressed. */
-	inline bool GetPressedDown() const{return pPressedDown;}
+	inline bool GetPressedDown() const{ return pPressedDown; }
 	
 	/** \brief Set if down button is pressed. */
 	void SetPressedDown(bool pressed);
@@ -181,25 +181,25 @@ public:
 	
 	
 	/** \brief Up-left button is pressed. */
-	inline bool GetPressedUpLeft() const{return pPressedUpLeft;}
+	inline bool GetPressedUpLeft() const{ return pPressedUpLeft; }
 	
 	/** \brief Set up-left button is pressed. */
 	void SetPressedUpLeft(bool pressed);
 	
 	/** \brief Up-right button is pressed. */
-	inline bool GetPressedUpRight() const{return pPressedUpRight;}
+	inline bool GetPressedUpRight() const{ return pPressedUpRight; }
 	
 	/** \brief Set up-right button is pressed. */
 	void SetPressedUpRight(bool pressed);
 	
 	/** \brief Down-left button is pressed. */
-	inline bool GetPressedDownLeft() const{return pPressedDownLeft;}
+	inline bool GetPressedDownLeft() const{ return pPressedDownLeft; }
 	
 	/** \brief Set down-left button is pressed. */
 	void SetPressedDownLeft(bool pressed);
 	
 	/** \brief Down-right button is pressed. */
-	inline bool GetPressedDownRight() const{return pPressedDownRight;}
+	inline bool GetPressedDownRight() const{ return pPressedDownRight; }
 	
 	/** \brief Set down-right button is pressed. */
 	void SetPressedDownRight(bool pressed);
@@ -212,25 +212,25 @@ public:
 	
 	
 	/** \brief Pad radius in pixels. */
-	inline int GetPadRadius() const{return pPadRadius;}
+	inline int GetPadRadius() const{ return pPadRadius; }
 	
 	/** \brief Set pad radius in pixels. */
 	void SetPadRadius(int radius);
 	
 	/** \brief Outer radius in percentage of pad radius. */
-	inline float GetOuterRadius() const{return pOuterRadius;}
+	inline float GetOuterRadius() const{ return pOuterRadius; }
 	
 	/** \brief Set outer radius in percentage of pad radius. */
 	void SetOuterRadius(float radius);
 	
 	/** \brief Inner radius in percentage of pad radius. */
-	inline float GetInnerRadius() const{return pInnerRadius;}
+	inline float GetInnerRadius() const{ return pInnerRadius; }
 	
 	/** \brief Set inner radius in percentage of pad radius. */
 	void SetInnerRadius(float radius);
 	
 	/** \brief Center of pad. */
-	inline const decPoint &GetCenter() const{return pCenter;}
+	inline const decPoint &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set center of pad. */
 	void SetCenter(const decPoint &center);
@@ -238,13 +238,13 @@ public:
 	
 	
 	/** \brief Axis unit per second to move for left-right axis. */
-	inline float GetLeftRightPerSecond() const{return pLeftRightPerSecond;}
+	inline float GetLeftRightPerSecond() const{ return pLeftRightPerSecond; }
 	
 	/** \brief Set axis unit per second to move for left-right axis. */
 	void SetLeftRightPerSecond(float unitsPerSecond);
 	
 	/** \brief Axis unit per second to move for up-down axis. */
-	inline float GetUpDownPerSecond() const{return pUpDownPerSecond;}
+	inline float GetUpDownPerSecond() const{ return pUpDownPerSecond; }
 	
 	/** \brief Set axis unit per second to move for up-down axis. */
 	void SetUpDownPerSecond(float unitsPerSecond);

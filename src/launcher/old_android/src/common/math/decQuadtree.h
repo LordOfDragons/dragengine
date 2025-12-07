@@ -102,13 +102,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the quadtree or NULL if a root quadtree. */
-	inline decQuadtree *GetParent() const{return pParent;}
+	inline decQuadtree *GetParent() const{ return pParent; }
 	/** Sets the parent of the quadtree or NULL if a root quadtree. */
 	void SetParent(decQuadtree *parent);
 	/** Retrieves the center of the quadtree. */
-	inline const decVector2 &GetCenter() const{return pCenter;}
+	inline const decVector2 &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the quadtree. */
-	inline const decVector2 &GetHalfSize() const{return pHalfSize;}
+	inline const decVector2 &GetHalfSize() const{ return pHalfSize; }
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0

@@ -147,7 +147,7 @@ void deLoggerBuffer::SendToLogger(deLogger &logger){
 
 
 void deLoggerBuffer::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -164,7 +164,7 @@ void deLoggerBuffer::LogInfo(const char *source, const char *message){
 }
 
 void deLoggerBuffer::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -181,7 +181,7 @@ void deLoggerBuffer::LogWarn(const char *source, const char *message){
 }
 
 void deLoggerBuffer::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

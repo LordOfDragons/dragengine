@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTSetPathHT::meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, const char *newPath){
-	if(! world || ! heightTerrain || ! newPath){
+	if(!world || !heightTerrain || !newPath){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -107,7 +107,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Disable updating during modal dialogs to about GDB lockups. */
-	inline bool GetDisableModalUpdating() const{return pDisableModalUpdating;}
+	inline bool GetDisableModalUpdating() const{ return pDisableModalUpdating; }
 	/*@}*/
 	
 	

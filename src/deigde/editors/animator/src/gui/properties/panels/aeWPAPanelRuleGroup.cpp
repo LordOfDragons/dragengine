@@ -75,7 +75,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleGroup * const rule = (aeRuleGroup*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleGroup * const rule = (aeRuleGroup*)pPanel.GetRule();
-		if(! animator || ! rule || ! comboBox->GetSelectedItem()){
+		if(!animator || !rule || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{return pOCNavBlocker;}
+	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

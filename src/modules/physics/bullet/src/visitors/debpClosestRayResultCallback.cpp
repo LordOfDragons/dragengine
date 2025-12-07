@@ -57,7 +57,7 @@ pCollisionFilter(collisionFilter){
 ////////////////
 
 bool debpClosestRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
-	if(! btCollisionWorld::RayResultCallback::needsCollision(proxy0)){
+	if(!btCollisionWorld::RayResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	

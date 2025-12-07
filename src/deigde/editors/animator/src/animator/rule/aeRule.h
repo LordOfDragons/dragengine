@@ -87,7 +87,7 @@ public:
 	void SetAnimator(aeAnimator *animator);
 	
 	/** Retrieve the engine animator rule or NULL. */
-	inline deAnimatorRule *GetEngineRule() const{return pEngRule;}
+	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
 	/** Set the engine animator rule or NULL. */
 	void SetEngineRule(deAnimatorRule *rule);
 	/** Create an engine animator rule. */
@@ -96,32 +96,32 @@ public:
 	void InitEngineRule(deAnimatorRule *engRule) const;
 	
 	/** Retrieve the rule type. */
-	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{return pType;}
+	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
 	/** Retrieve the parent group or NULL if there is none. */
-	inline aeRuleGroup *GetParentGroup() const{return pParentGroup;}
+	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
 	/** Set the parent group or NULL if there is none. */
 	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Set the name. */
 	void SetName(const char *filename);
 	
 	/** Determine if the rule is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	/** Set if the rule is enabled. */
 	void SetEnabled(bool enabled);
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{return pBlendMode;}
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	/** Set the blend mode. */
 	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	/** Retrieve the blend factor. */
-	inline float GetBlendFactor() const{return pBlendFactor;}
+	inline float GetBlendFactor() const{ return pBlendFactor; }
 	/** Set the source blend factor. */
 	void SetBlendFactor(float factor);
 	
 	/** Invert blend factor. */
-	inline bool GetInvertBlendFactor() const{return pInvertBlendFactor;}
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
 	
 	/** Set invert blend factor. */
 	void SetInvertBlendFactor(bool invert);
@@ -138,8 +138,8 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** Retrieve the source factor target. */
-	inline aeControllerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
-	inline const aeControllerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
+	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** List all links of all rule targets. */
 	virtual void ListLinks(aeLinkList& list);
@@ -159,7 +159,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** Retrieve the list of bones. */
-	inline const decStringSet &GetListBones() const{return pListBones;}
+	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -179,7 +179,7 @@ public:
 	/** \name Vertex position set management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{return pListVertexPositionSets;}
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);

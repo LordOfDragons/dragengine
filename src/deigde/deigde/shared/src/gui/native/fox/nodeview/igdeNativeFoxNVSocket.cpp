@@ -191,7 +191,7 @@ void igdeNativeFoxNVSocket::pUpdateWindowShape(){
 	// make sure the window shape exists and is created. should this fail for some reason we
 	// simply ignore the shape which causes garbage to show around the node but it would not
 	// prevent usage of the editor
-	if(! pWindowShape){
+	if(!pWindowShape){
 		pWindowShape = new FXBitmap(getApp());
 		if(pWindowShape){
 			pWindowShape->create();
@@ -200,7 +200,7 @@ void igdeNativeFoxNVSocket::pUpdateWindowShape(){
 	}
 	
 	// if the window shape exists update it by drawing the node frame ontop of it
-	if(! pWindowShape){
+	if(!pWindowShape){
 		return;
 	}
 	

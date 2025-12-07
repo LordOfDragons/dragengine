@@ -429,7 +429,7 @@ void deClassLayerMask::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassLayerMask *clsLyM = (deClassLayerMask*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsLyM)){
+	if(!p_IsObjOfType(object, clsLyM)){
 		rt->PushBool(false);
 		
 	}else{
@@ -458,7 +458,7 @@ void deClassLayerMask::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassLayerMask::deClassLayerMask(deScriptingDragonScript *ds) :
 dsClass("LayerMask", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -531,7 +531,7 @@ void deClassLayerMask::CreateClassMembers(dsEngine *engine){
 }
 
 const decLayerMask &deClassLayerMask::GetLayerMask(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -539,7 +539,7 @@ const decLayerMask &deClassLayerMask::GetLayerMask(dsRealObject *myself) const{
 }
 
 void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermask){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

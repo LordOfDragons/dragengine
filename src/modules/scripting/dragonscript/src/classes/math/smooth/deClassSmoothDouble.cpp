@@ -249,7 +249,7 @@ void deClassSmoothDouble::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *my
 	const deClassFileReader &clsFileReader = *clsSmoothDouble.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -283,7 +283,7 @@ void deClassSmoothDouble::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *mys
 	const deClassFileWriter &clsFileWriter = *clsSmoothDouble.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -310,7 +310,7 @@ void deClassSmoothDouble::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSmoothDouble * const clsSmoothDouble = (deClassSmoothDouble*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSmoothDouble)){
+	if(!p_IsObjOfType(obj, clsSmoothDouble)){
 		rt->PushBool(false);
 		
 	}else{
@@ -398,7 +398,7 @@ void deClassSmoothDouble::CreateClassMembers(dsEngine *engine){
 }
 
 const decSmoothDouble &deClassSmoothDouble::GetSmoothDouble(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -406,7 +406,7 @@ const decSmoothDouble &deClassSmoothDouble::GetSmoothDouble(dsRealObject *myself
 }
 
 void deClassSmoothDouble::PushSmoothDouble(dsRunTime *rt, const decSmoothDouble &smoothDouble){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

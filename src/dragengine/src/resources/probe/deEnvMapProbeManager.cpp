@@ -102,7 +102,7 @@ void deEnvMapProbeManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(envMapProbe){
-		if(! envMapProbe->GetPeerGraphic()){
+		if(!envMapProbe->GetPeerGraphic()){
 			grasys.LoadEnvMapProbe(envMapProbe);
 		}
 		

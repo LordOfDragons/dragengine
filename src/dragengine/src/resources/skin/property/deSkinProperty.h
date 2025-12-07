@@ -108,22 +108,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline const decString &GetType() const{return pType;}
+	inline const decString &GetType() const{ return pType; }
 	
 	/** \brief Texture coordinate set name or an empty string to use the default one. */
-	inline const decString &GetTexCoordSet() const{return pTexCoordSet;}
+	inline const decString &GetTexCoordSet() const{ return pTexCoordSet; }
 	
 	/** \brief Set texture coordinate set name or an empty string to use the default one. */
 	void SetTexCoordSet(const char *name);
 	
 	/** \brief Renderable name or empty string to use none. */
-	inline const decString &GetRenderable() const{return pRenderable;}
+	inline const decString &GetRenderable() const{ return pRenderable; }
 	
 	/** \brief Set renderable name or empty string to use none. */
 	void SetRenderable(const char *renderable);
 	
 	/** \brief Bone name or empty string. */
-	inline const decString &GetBone() const{return pBone;}
+	inline const decString &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone name or empty string. */
 	void SetBone(const char *bone);

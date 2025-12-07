@@ -44,7 +44,7 @@
 
 ceUCAIfElseMove::ceUCAIfElseMove(ceConversationTopic *topic, ceCAIfElse *ifElse,
 ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
-	if(! topic || ! ifElse || ! action){
+	if(!topic || !ifElse || !action){
 		DETHROW(deeInvalidParam);
 	}
 	

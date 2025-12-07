@@ -66,7 +66,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{return pRayCount;}
+	inline int GetRayCount() const{ return pRayCount; }
 	
 	/** \brief Ray at index. */
 	deoalSoundRay &GetRayAt(int index);
@@ -76,7 +76,7 @@ public:
 	int AddRay();
 	
 	/** \brief Number of segments. */
-	inline int GetSegmentCount() const{return pSegmentCount;}
+	inline int GetSegmentCount() const{ return pSegmentCount; }
 	
 	/** \brief Segment at index. */
 	deoalSoundRaySegment &GetSegmentAt(int index);
@@ -86,7 +86,7 @@ public:
 	int AddSegment();
 	
 	/** \brief Number of transmitted rays. */
-	inline int GetTransmittedRayCount() const{return pTransmittedRayCount;}
+	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
 	
 	/** \brief Transmitted ray at index. */
 	deoalSoundRay &GetTransmittedRayAt(int index);

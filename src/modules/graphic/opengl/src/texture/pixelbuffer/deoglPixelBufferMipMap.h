@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of pixel buffers which is the mip map level count. */
-	inline int GetPixelBufferCount() const{return pPixelBufferCount;}
+	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
 	/** Retrieves the pixel buffer for a mip map level. */
 	const deoglPixelBuffer::Ref &GetPixelBuffer(int level) const;
 	

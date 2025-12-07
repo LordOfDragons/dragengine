@@ -103,22 +103,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Owner component or NULL. */
-	inline deoglRComponent *GetOwnerComponent() const{return pOwnerComponent;}
+	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
 	/** Owner component texture. */
-	inline int GetOwnerComponentTexture() const{return pOwnerComponentTexture;}
+	inline int GetOwnerComponentTexture() const{ return pOwnerComponentTexture; }
 	
 	/** Owner billboard or NULL. */
-	inline deoglRBillboard *GetOwnerBillboard() const{return pOwnerBillboard;}
+	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
 	/** Owner decal or NULL. */
-	inline deoglRDecal *GetOwnerDecal() const{return pOwnerDecal;}
+	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
 	/** Owner light or NULL. */
-	inline deoglRLight *GetOwnerLight() const{return pOwnerLight;}
+	inline deoglRLight *GetOwnerLight() const{ return pOwnerLight; }
 	
 	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
@@ -129,7 +129,7 @@ public:
 	
 	
 	/** Time value. */
-	inline float GetTime() const{return pTime;}
+	inline float GetTime() const{ return pTime; }
 	
 	/** Set time value. */
 	void SetTime(float time);
@@ -167,7 +167,7 @@ public:
 	
 	
 	/** Number of renderables. */
-	inline int GetRenderableCount() const{return pRenderableCount;}
+	inline int GetRenderableCount() const{ return pRenderableCount; }
 	
 	/** Renderable at the given index. */
 	deoglSkinStateRenderable *GetRenderableAt(int index) const;
@@ -184,7 +184,7 @@ public:
 	
 	
 	/** Count of mapped. */
-	inline int GetMappedCount() const{return pMappedCount;}
+	inline int GetMappedCount() const{ return pMappedCount; }
 	
 	/** Set mapped count. */
 	void SetMappedCount(int count);
@@ -195,7 +195,7 @@ public:
 	
 	
 	/** Number of calculated properties. */
-	inline int GetCalculatedPropertyCount() const{return pCalculatedPropertyCount;}
+	inline int GetCalculatedPropertyCount() const{ return pCalculatedPropertyCount; }
 	
 	/** Set calculated property count. */
 	void SetCalculatedPropertyCount(int count);
@@ -206,7 +206,7 @@ public:
 	
 	
 	/** Number of constructed properties. */
-	inline int GetConstructedPropertyCount() const{return pConstructedPropertyCount;}
+	inline int GetConstructedPropertyCount() const{ return pConstructedPropertyCount; }
 	
 	/** Set constructed property count. */
 	void SetConstructedPropertyCount(int count);
@@ -220,7 +220,7 @@ public:
 	
 	
 	/** Count of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** Set bones count. */
 	void SetBoneCount(int count);
@@ -245,7 +245,7 @@ public:
 	
 	
 	/** Variation seed. */
-	inline const decPoint &GetVariationSeed() const{return pVariationSeed;}
+	inline const decPoint &GetVariationSeed() const{ return pVariationSeed; }
 	
 	/** Set variation seed. */
 	void SetVariationSeed(const decPoint &seed);

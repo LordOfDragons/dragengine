@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{return pSources;}
+	inline const seSourceList &GetSources() const{ return pSources; }
 	/*@}*/
 };
 

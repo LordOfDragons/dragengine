@@ -115,24 +115,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline const projProject &GetProject() const{return pProject;}
+	inline const projProject &GetProject() const{ return pProject; }
 	
 	/** \brief Profile. */
-	inline const projProfile &GetProfile() const{return pProfile;}
+	inline const projProfile &GetProfile() const{ return pProfile; }
 	
 	
 	
 	/** \brief Delga file size. */
-	inline long GetDelgaSize() const{return pDelgaSize;}
+	inline long GetDelgaSize() const{ return pDelgaSize; }
 	
 	/** \brief Number of directories in delga file. */
-	inline int GetDelgaDirectoryCount() const{return pDelgaDirectoryCount;}
+	inline int GetDelgaDirectoryCount() const{ return pDelgaDirectoryCount; }
 	
 	/** \brief Number of files in delga file. */
-	inline int GetDelgaFileCount() const{return pDelgaFileCount;}
+	inline int GetDelgaFileCount() const{ return pDelgaFileCount; }
 	
 	
 	
@@ -153,7 +153,7 @@ public:
 	void WriteToDelga(const void *buffer, long length);
 	
 	/** \brief Get delga file position for internal use only. */
-	inline long GetDelgaPosition() const{return pDelgaPosition;}
+	inline long GetDelgaPosition() const{ return pDelgaPosition; }
 	
 	/** \brief Seek delga file for internal use only. */
 	void SeekDelgaFile(long offset, int zlibOrigin);

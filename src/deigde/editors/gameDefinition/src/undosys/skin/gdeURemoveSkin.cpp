@@ -45,11 +45,11 @@ gdeGameDefinition *gameDefinition, gdeSkin *skin) :
 pGameDefinition(NULL),
 pSkin(NULL)
 {
-	if(! gameDefinition || ! skin){
+	if(!gameDefinition || !skin){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! gameDefinition->GetSkins().Has(skin)){
+	if(!gameDefinition->GetSkins().Has(skin)){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -98,7 +98,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -161,7 +161,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -184,7 +184,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleBoneTransformator * const rule = (aeRuleBoneTransformator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -203,7 +203,7 @@ public:
 	cEditTranslationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumTranslation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumTranslation())
 			? new aeURuleBTransSetTransMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -213,7 +213,7 @@ public:
 	cEditTranslationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumTranslation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumTranslation())
 			? new aeURuleBTransSetTransMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -223,7 +223,7 @@ public:
 	cEditRotationMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
 			? new aeURuleBTransSetRotMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -233,7 +233,7 @@ public:
 	cEditRotationMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
 			? new aeURuleBTransSetRotMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -243,7 +243,7 @@ public:
 	cEditScalingMinimum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
 			? new aeURuleBTransSetScaleMin(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -253,7 +253,7 @@ public:
 	cEditScalingMaximum(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
 			? new aeURuleBTransSetScaleMax(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -263,7 +263,7 @@ public:
 	cEditAxis(aeWPAPanelRuleBoneTransformator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetAxis())
+		return !editVector->GetVector().IsEqualTo(rule->GetAxis())
 			? new aeURuleBTransSetAxis(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -295,7 +295,7 @@ public:
 	cComboCoordFrame(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		

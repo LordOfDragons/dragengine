@@ -204,11 +204,11 @@ int deoglRenderLightBase::pPipelineModifiers(const deoglRenderPlanLight &planLig
 bool solid, bool hasAmbient) const{
 	int modifiers = 0;
 	
-	if(! hasAmbient){
+	if(!hasAmbient){
 		modifiers |= deoglLightPipelines::emNoAmbient;
 	}
 	
-	if(! solid){
+	if(!solid){
 		modifiers |= deoglLightPipelines::emTransparent;
 	}
 	
@@ -247,7 +247,7 @@ bool solid, bool hasAmbient) const{
 		//      
 		modifiers |= deoglLightPipelines::emCameraInside;
 		
-		if(! planLight.GetPlan().GetFlipCulling()){
+		if(!planLight.GetPlan().GetFlipCulling()){
 			modifiers |= deoglLightPipelines::emFlipCullFace;
 		}
 		

@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of bindings. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** Named binding is present. */
 	bool HasNamed(const char *name);

@@ -259,7 +259,7 @@ public:
 		
 		efeCheekPuffRight,
 		efeCheekPuffLeft,
-		efeCheekSuck, //<! Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
+		efeCheekSuck, //<!Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
 		
 		efeMouthApeShape,
 		efeMouthUpperRight,
@@ -275,7 +275,7 @@ public:
 		efeMouthLowerOverturn,
 		efeMouthLowerInside,
 		efeMouthLowerOverlay,
-		efeMouthPout, //<! Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
+		efeMouthPout, //<!Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
 		efeMouthSmileRight,
 		efeMouthSmileLeft,
 		efeMouthSadRight,
@@ -311,8 +311,8 @@ public:
 		
 		efeCheekUpRight,
 		efeCheekUpLeft,
-		efeCheekSuckRight, //<! Detail expression of efeCheekSuck
-		efeCheekSuckLeft, //<! Detail expression of efeCheekSuck
+		efeCheekSuckRight, //<!Detail expression of efeCheekSuck
+		efeCheekSuckLeft, //<!Detail expression of efeCheekSuck
 		
 		efeChinUpperUp,
 		efeChinLowerUp,
@@ -321,8 +321,8 @@ public:
 		efeMouthDimpleLeft,
 		efeMouthPressRight,
 		efeMouthPressLeft,
-		efeMouthPoutRight, //<! Detail expression of efeCMouthPout
-		efeMouthPoutLeft, //<! Detail expression of efeCMouthPout
+		efeMouthPoutRight, //<!Detail expression of efeCMouthPout
+		efeMouthPoutLeft, //<!Detail expression of efeCMouthPout
 		efeMouthStretchRight,
 		efeMouthStretchLeft,
 		efeMouthRight,
@@ -462,7 +462,7 @@ public:
 	 * only letters, numbers and underscores. It is suitable to be combined with
 	 * button or axis identifiers to store them in config files as key bindings.
 	 */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
@@ -474,25 +474,25 @@ public:
 	 * name is unique but not guaranteed to stay the same across restarting
 	 * the input module or game engine.
 	 */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
 	void SetName(const char *name);
 	
 	/** \brief Device type. */
-	inline eDeviceTypes GetType() const{return pType;}
+	inline eDeviceTypes GetType() const{ return pType; }
 	
 	/** \brief Device type. */
 	void SetType(eDeviceTypes type);
 	
 	/** \brief Model to represent the device in 3D user interfaces or NULL if not set. */
-	inline const deModel::Ref &GetDisplayModel() const{return pDisplayModel;}
+	inline const deModel::Ref &GetDisplayModel() const{ return pDisplayModel; }
 	
 	/** \brief Set model to represent the device in 3D user interfaces or NULL if not set. */
 	void SetDisplayModel(const deModel::Ref &model);
 	
 	/** \brief Skin for display model or NULL if not set. */
-	inline const deSkin::Ref &GetDisplaySkin() const{return pDisplaySkin;}
+	inline const deSkin::Ref &GetDisplaySkin() const{ return pDisplaySkin; }
 	
 	/** \brief Set skin for display model or NULL if not set. */
 	void SetDisplaySkin(const deSkin::Ref &skin);
@@ -502,7 +502,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline const deImage::Ref &GetDisplayImage() const{return pDisplayImage;}
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
 	 * \brief Set image to represent the device in 2D user interfaces or NULL if not set.
@@ -529,7 +529,7 @@ public:
 	void AddDisplayIcon(const deImage::Ref &image);
 	
 	/** \brief Text to display centered across display image or icon. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
 	void SetDisplayText(const char *text);
@@ -538,7 +538,7 @@ public:
 	 * \brief Bone configuration.
 	 * \version 1.6
 	 */
-	inline eBoneConfigurations GetBoneConfiguration() const{return pBoneConfiguration;}
+	inline eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
 	
 	/**
 	 * \brief Set bone configuration.
@@ -570,7 +570,7 @@ public:
 	 * \brief Hand rig if ebcHand is used.
 	 * \version 1.6
 	 */
-	inline const deRig::Ref &GetHandRig() const{return pHandRig;}
+	inline const deRig::Ref &GetHandRig() const{ return pHandRig; }
 	
 	/**
 	 * \brief Set hand rig if ebcHand is used.
@@ -582,7 +582,7 @@ public:
 	 * \brief Device supports face eye expressions.
 	 * \version 1.12
 	 */
-	inline bool GetSupportsFaceEyeExpressions() const{return pSupportsFaceEyeExpressions;}
+	inline bool GetSupportsFaceEyeExpressions() const{ return pSupportsFaceEyeExpressions; }
 	
 	/**
 	 * \brief Set if device supports face eye expressions.
@@ -594,7 +594,7 @@ public:
 	 * \brief Device supports face mouth expressions.
 	 * \version 1.12
 	 */
-	inline bool GetSupportsFaceMouthExpressions() const{return pSupportsFaceMouthExpressions;}
+	inline bool GetSupportsFaceMouthExpressions() const{ return pSupportsFaceMouthExpressions; }
 	
 	/**
 	 * \brief Set if device supports face mouth expressions.
@@ -606,7 +606,7 @@ public:
 	 * \brief Device is using hand interaction.
 	 * \version 1.28
 	 */
-	inline bool GetUsingHandInteraction() const{return pUsingHandInteraction;}
+	inline bool GetUsingHandInteraction() const{ return pUsingHandInteraction; }
 	
 	/**
 	 * \brief Set if device is using hand interaction.
@@ -618,7 +618,7 @@ public:
 	 * \brief Model to represent the device in VR environments or NULL if not set.
 	 * \version 1.6
 	 */
-	inline const deModel::Ref &GetVRModel() const{return pVRModel;}
+	inline const deModel::Ref &GetVRModel() const{ return pVRModel; }
 	
 	/**
 	 * \brief Set model to represent the device in VR environments or NULL if not set.
@@ -630,7 +630,7 @@ public:
 	 * \brief Skin for VR model or NULL if not set.
 	 * \version 1.6
 	 */
-	inline const deSkin::Ref &GetVRSkin() const{return pVRSkin;}
+	inline const deSkin::Ref &GetVRSkin() const{ return pVRSkin; }
 	
 	/**
 	 * \brief Skin for VR model or NULL if not set.
@@ -644,7 +644,7 @@ public:
 	/** \name Buttons */
 	/*@{*/
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{return pButtonCount;}
+	inline int GetButtonCount() const{ return pButtonCount; }
 	
 	/**
 	 * \brief Set number of buttons.
@@ -665,7 +665,7 @@ public:
 	/** \name Axes */
 	/*@{*/
 	/** \brief Number of axes. */
-	inline int GetAxisCount() const{return pAxisCount;}
+	inline int GetAxisCount() const{ return pAxisCount; }
 	
 	/**
 	 * \brief Set number of axes.
@@ -686,7 +686,7 @@ public:
 	/** \name Feedbacks */
 	/*@{*/
 	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{return pFeedbackCount;}
+	inline int GetFeedbackCount() const{ return pFeedbackCount; }
 	
 	/**
 	 * \brief Set number of feedbacks.
@@ -710,7 +710,7 @@ public:
 	 * \brief Number of components.
 	 * \version 1.6
 	 */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/**
 	 * \brief Set number of components.

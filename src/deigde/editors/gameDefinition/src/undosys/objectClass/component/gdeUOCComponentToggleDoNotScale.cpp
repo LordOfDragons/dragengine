@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
 ///////////////
 
 void gdeUOCComponentToggleDoNotScale::Undo(){
-	pComponent->SetDoNotScale(! pComponent->GetDoNotScale());
+	pComponent->SetDoNotScale(!pComponent->GetDoNotScale());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

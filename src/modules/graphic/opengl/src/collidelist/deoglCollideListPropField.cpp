@@ -67,7 +67,7 @@ void deoglCollideListPropField::Clear(){
 
 void deoglCollideListPropField::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
 const decDVector &referencePosition){
-	if(! pPropField){
+	if(!pPropField){
 		DETHROW(deeInvalidParam);
 	}
 	

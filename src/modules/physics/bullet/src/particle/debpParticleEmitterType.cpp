@@ -143,13 +143,13 @@ void debpParticleEmitterType::UpdateParameters(){
 	// 11 parameter curves sampled at 256 positions. this is enough since the
 	// particles do not life for long so precise sampling does not yield much
 	// more accuracy than this pre-sampling does
-	if(! pParameterValueSamples){
+	if(!pParameterValueSamples){
 		pParameterValueSamples = new float[ESC_COUNT_CAST * 256]; // 21 curves: 5376 entries = 21504 bytes
 	}
-	if(! pParameterSpreadSamples){
+	if(!pParameterSpreadSamples){
 		pParameterSpreadSamples = new float[ESC_COUNT_CAST * 256]; // 21 curves: 5376 entries = 21504 bytes
 	}
-	if(! pParameterProgressSamples){
+	if(!pParameterProgressSamples){
 		pParameterProgressSamples = new float[ESC_COUNT_PROGRESS * 256]; // 13 curves: 3328 entries = 13312 bytes
 	}
 	

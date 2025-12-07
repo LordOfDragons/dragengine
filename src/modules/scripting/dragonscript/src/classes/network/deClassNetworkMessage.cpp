@@ -168,7 +168,7 @@ void deClassNetworkMessage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassNetworkMessage *clsNetworkMessage = (deClassNetworkMessage*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNetworkMessage)){
+	if(!p_IsObjOfType(object, clsNetworkMessage)){
 		rt->PushBool(false);
 		
 	}else{
@@ -232,7 +232,7 @@ void deClassNetworkMessage::CreateClassMembers(dsEngine *engine){
 }
 
 deNetworkMessage *deClassNetworkMessage::GetNetworkMessage(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -240,11 +240,11 @@ deNetworkMessage *deClassNetworkMessage::GetNetworkMessage(dsRealObject *myself)
 }
 
 void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *message){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! message){
+	if(!message){
 		rt->PushObject(NULL, this);
 		return;
 	}

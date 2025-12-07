@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment){
-	if(! topic || ! newComment){
+	if(!topic || !newComment){
 		DETHROW(deeInvalidParam);
 	}
 	

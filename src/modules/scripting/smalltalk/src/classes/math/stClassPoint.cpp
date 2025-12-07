@@ -77,7 +77,7 @@ stClassPoint::~stClassPoint(){
 
 void stClassPoint::SetUpLinks(){
 	pOOPClass = gst_class_name_to_oop("DEPoint");
-	if(! pOOPClass){
+	if(!pOOPClass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,7 +100,7 @@ OOP stClassPoint::PointToOOP(const decPoint &vector){
 	OOP oopVector = NULL;
 	
 	oopVector = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csPoint) - sizeof(csObject));
-	if(! oopVector || oopVector == pST.GetNil()){
+	if(!oopVector || oopVector == pST.GetNil()){
 		DETHROW(deeOutOfMemory);
 	}
 	

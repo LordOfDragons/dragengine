@@ -36,7 +36,7 @@
 ////////////////////////////
 
 reUSetBoneOrientation::reUSetBoneOrientation(reRigBone *bone, const decVector &orientation){
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();

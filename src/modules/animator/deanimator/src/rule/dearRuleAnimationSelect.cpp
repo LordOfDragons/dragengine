@@ -105,7 +105,7 @@ dearRuleAnimationSelect::~dearRuleAnimationSelect(){
 
 void dearRuleAnimationSelect::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	
@@ -144,7 +144,7 @@ DEBUG_RESET_TIMERS;
 		
 		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
 		
-		if(! move){
+		if(!move){
 			boneState.BlendWithDefault(blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			continue;
 		}
@@ -161,7 +161,7 @@ DEBUG_RESET_TIMERS;
 		const dearAnimationKeyframe * const keyframe = kflist.GetWithTime(moveTime);
 		
 		// if there are no keyframes use the default state
-		if(! keyframe){
+		if(!keyframe){
 			boneState.BlendWithDefault(blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			continue;
 		}
@@ -196,7 +196,7 @@ DEBUG_RESET_TIMERS;
 		
 		dearVPSState &vpsState = vpsstalist.GetStateAt(animatorVps);
 		
-		if(! move){
+		if(!move){
 			vpsState.BlendWithDefault(blendMode, blendFactor, pEnableVPS);
 			continue;
 		}
@@ -213,7 +213,7 @@ DEBUG_RESET_TIMERS;
 		const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime(moveTime);
 		
 		// if there are no keyframes use the default state
-		if(! keyframe){
+		if(!keyframe){
 			vpsState.BlendWithDefault(blendMode, blendFactor, pEnableVPS);
 			continue;
 		}
@@ -244,7 +244,7 @@ void dearRuleAnimationSelect::pUpdateMoves(){
 	pMoves.RemoveAll();
 	
 	const dearAnimation * const animation = GetUseAnimation();
-	if(! animation){
+	if(!animation){
 		return;
 	}
 	

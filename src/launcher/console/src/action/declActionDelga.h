@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline declLauncher &GetLauncher() const{return pLauncher;}
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Print syntax. */
 	void PrintSyntax();

@@ -49,7 +49,7 @@ gdeWPSTIMSkin::gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin) :
 gdeWPSTreeItemModel(tree, etSkin),
 pSkin(NULL)
 {
-	if(! skin){
+	if(!skin){
 		DETHROW(deeInvalidParam);
 	}
 	

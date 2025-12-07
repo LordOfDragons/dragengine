@@ -63,7 +63,7 @@ igdeGameDefinition *igdeGameDefinitionList::GetAt(int index) const{
 }
 
 igdeGameDefinition *igdeGameDefinitionList::GetWithID(const char *id) const{
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -89,7 +89,7 @@ bool igdeGameDefinitionList::Has(igdeGameDefinition *gameDefinition) const{
 }
 
 bool igdeGameDefinitionList::HasWithID(const char *id) const{
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -106,7 +106,7 @@ bool igdeGameDefinitionList::HasWithID(const char *id) const{
 }
 
 void igdeGameDefinitionList::Add(igdeGameDefinition *gameDefinition){
-	if(! gameDefinition || HasWithID(gameDefinition->GetID())){
+	if(!gameDefinition || HasWithID(gameDefinition->GetID())){
 		DETHROW(deeInvalidParam);
 	}
 	pGameDefinitions.Add(gameDefinition);

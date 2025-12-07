@@ -87,12 +87,12 @@ igdeNativeFoxColorBox::~igdeNativeFoxColorBox(){
 }
 
 igdeNativeFoxColorBox *igdeNativeFoxColorBox::CreateNativeWidget(igdeColorBox &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -218,7 +218,7 @@ long igdeNativeFoxColorBox::onPaint(FXObject*, FXSelector, void *pdata){
 }
 
 long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -227,7 +227,7 @@ long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
 	dialog.setOpaqueOnly(false);
 	dialog.setRGBA(pColor);
 	
-	if(! dialog.execute(PLACEMENT_OWNER)){
+	if(!dialog.execute(PLACEMENT_OWNER)){
 		return 0;
 	}
 	
@@ -250,7 +250,7 @@ long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxColorBox::onRClicked(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

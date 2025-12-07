@@ -110,7 +110,7 @@ bool saePhonemeList::HasIPA(int ipa) const{
 }
 
 void saePhonemeList::Add(saePhoneme *phoneme){
-	if(! phoneme || HasIPA(phoneme->GetIPA())) DETHROW(deeInvalidParam);
+	if(!phoneme || HasIPA(phoneme->GetIPA())) DETHROW(deeInvalidParam);
 	
 	pPhonemes.Add(phoneme);
 }

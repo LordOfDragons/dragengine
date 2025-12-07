@@ -70,7 +70,7 @@ meHTVRuleClosestProp::~meHTVRuleClosestProp(){
 ///////////////
 
 void meHTVRuleClosestProp::SetPropClass(const char *propClass){
-	if(! propClass) DETHROW(deeInvalidParam);
+	if(!propClass) DETHROW(deeInvalidParam);
 	
 	pPropClass = propClass;
 	
@@ -98,7 +98,7 @@ void meHTVRuleClosestProp::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
 				direction = (object->GetPosition() - ipos).ToVector();
 				distance = direction.Length();
 				if(distance <= pSearchRadius){
-					if(! bestObject || distance < bestDistance){
+					if(!bestObject || distance < bestDistance){
 						bestObject = object;
 						bestDistance = distance;
 						bestDireciton = direction;

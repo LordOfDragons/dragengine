@@ -87,7 +87,7 @@ float dearControllerTarget::GetValue(const dearAnimatorInstance &instance, float
 		}
 		
 		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
-		if(! link.HasController() && ! link.HasBone()){
+		if(!link.HasController() && !link.HasBone()){
 			continue;
 		}
 		
@@ -112,7 +112,7 @@ void dearControllerTarget::GetVector(const dearAnimatorInstance &instance, decVe
 		}
 		
 		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
-		if(! link.HasController()){
+		if(!link.HasController()){
 			continue;
 		}
 		
@@ -130,7 +130,7 @@ void dearControllerTarget::GetQuaternion(const dearAnimatorInstance &instance, d
 		}
 		
 		const dearLink &link = *instance.GetLinkAt(pLinks[i]);
-		if(! link.HasController()){
+		if(!link.HasController()){
 			continue;
 		}
 		

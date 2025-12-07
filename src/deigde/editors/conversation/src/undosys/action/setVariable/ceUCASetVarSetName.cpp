@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCASetVarSetName::ceUCASetVarSetName(ceConversationTopic *topic, ceCASetVariable *action, const char *newName){
-	if(! topic || ! action || ! newName) DETHROW(deeInvalidParam);
+	if(!topic || !action || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

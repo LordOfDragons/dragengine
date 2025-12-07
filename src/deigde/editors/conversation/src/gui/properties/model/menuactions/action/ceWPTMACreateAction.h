@@ -61,10 +61,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return *pConversation;}
+	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	/** \brief Type of action to create. */
-	inline ceConversationAction::eActionTypes GetActionType() const{return pActionType;}
+	inline ceConversationAction::eActionTypes GetActionType() const{ return pActionType; }
 	
 	
 	

@@ -75,7 +75,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetName()){
+		if(!topic || !action || textField->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -93,7 +93,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if(! topic || ! action || ! comboBox->GetSelectedItem()){
+		if(!topic || !action || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -118,7 +118,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		const int value = textField->GetInteger();
-		if(! topic || ! action || value == action->GetValue()){
+		if(!topic || !action || value == action->GetValue()){
 			return;
 		}
 		
@@ -136,7 +136,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetValueVariable()){
+		if(!topic || !action || textField->GetText() == action->GetValueVariable()){
 			return;
 		}
 		

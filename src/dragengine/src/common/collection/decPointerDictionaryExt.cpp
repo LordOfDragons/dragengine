@@ -147,7 +147,7 @@ decPointerDictionaryExt::~decPointerDictionaryExt(){
 ///////////////
 
 bool decPointerDictionaryExt::Has(const void *key, unsigned int hash) const{
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -166,7 +166,7 @@ bool decPointerDictionaryExt::Has(const void *key, unsigned int hash) const{
 void *decPointerDictionaryExt::GetAt(const void *key, unsigned int hash) const{
 	void *pointer;
 	
-	if(! GetAt(key, hash, &pointer)){
+	if(!GetAt(key, hash, &pointer)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -174,7 +174,7 @@ void *decPointerDictionaryExt::GetAt(const void *key, unsigned int hash) const{
 }
 
 bool decPointerDictionaryExt::GetAt(const void *key, unsigned int hash, void **pointer) const{
-	if(! key || ! pointer){
+	if(!key || !pointer){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -192,7 +192,7 @@ bool decPointerDictionaryExt::GetAt(const void *key, unsigned int hash, void **p
 }
 
 void decPointerDictionaryExt::SetAt(const void *key, unsigned int hash, void *value){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -235,7 +235,7 @@ void decPointerDictionaryExt::SetAt(const void *key, unsigned int hash, void *va
 }
 
 void decPointerDictionaryExt::Remove(const void *key, unsigned int hash){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -267,7 +267,7 @@ void decPointerDictionaryExt::Remove(const void *key, unsigned int hash){
 }
 
 void decPointerDictionaryExt::RemoveIfPresent(const void *key, unsigned int hash){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -365,7 +365,7 @@ bool decPointerDictionaryExt::Equals(const decPointerDictionaryExt &dict) const{
 		sDictEntry *iterEntry = pBuckets[i];
 		
 		while(iterEntry){
-			if(! dict.GetAt(iterEntry->key, iterEntry->hash, &object) || object != iterEntry->value){
+			if(!dict.GetAt(iterEntry->key, iterEntry->hash, &object) || object != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -383,7 +383,7 @@ void decPointerDictionaryExt::CheckLoad(){
 		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if(! newBuckets){
+		if(!newBuckets){
 			DETHROW(deeInvalidParam);
 		}
 		for(i=0; i<newBucketCount; i++){

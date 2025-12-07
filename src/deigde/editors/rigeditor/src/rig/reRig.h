@@ -231,153 +231,153 @@ public:
 	/** Updates the pose matrix from the rest pose. */
 	void SetPoseFromRest();
 	/** Retrieves the model path. */
-	inline const decString &GetModelPath() const{return pModelPath;}
+	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
 	void SetModelPath(const char *path);
 	/** Retrieves the skin path. */
-	inline const decString &GetSkinPath() const{return pSkinPath;}
+	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	/** Sets the skin path. */
 	void SetSkinPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{return pAnimationPath;}
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the rig path. */
 	void SetAnimationPath(const char *path);
 	
 	/** \brief Central mass point position. */
-	inline const decVector &GetCentralMassPoint() const{return pCMP;}
+	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
 	
 	/** \brief Set central mass point position. */
 	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Use component model for collision instead of shapes if present. */
-	inline bool GetModelCollision() const{return pModelCollision;}
+	inline bool GetModelCollision() const{ return pModelCollision; }
 	
 	/** \brief Set if component model is used for collision instead of shapes if present. */
 	void SetModelCollision(bool modelCollision);
 	
 	/** Retrieves the name of the move to display. */
-	inline const decString &GetMoveName() const{return pMoveName;}
+	inline const decString &GetMoveName() const{ return pMoveName; }
 	/** Sets the move name to display. */
 	void SetMoveName(const char *moveName);
 	/** Retrieves the move time to display. */
-	inline float GetMoveTime() const{return pMoveTime;}
+	inline float GetMoveTime() const{ return pMoveTime; }
 	/** Sets the move time to display. */
 	void SetMoveTime(float moveTime);
 	/** Retrieves the play time. */
-	inline float GetPlayTime() const{return pPlayTime;}
+	inline float GetPlayTime() const{ return pPlayTime; }
 	/** Determines if the rest pose is used or the animation pose. */
-	inline bool GetUseRestPose() const{return pUseRestPose;}
+	inline bool GetUseRestPose() const{ return pUseRestPose; }
 	/** Sets if the rest pose is used. */
 	void SetUseRestPose(bool useRestPose);
 	/** Determines if the animation move is played back. */
-	inline bool GetPlaybackMove() const{return pPlaybackMove;}
+	inline bool GetPlaybackMove() const{ return pPlaybackMove; }
 	/** Sets if the animation move is played back. */
 	void SetPlaybackMove(bool playbackMove);
 	
 	/** Determines if rig bones are shown. */
-	inline bool GetShowBones() const{return pShowBones;}
+	inline bool GetShowBones() const{ return pShowBones; }
 	/** Sets if rig bones are shown. */
 	void SetShowBones(bool showBones);
 	
 	/** Determines if rig shapes are shown. */
-	inline bool GetShowRigShapes() const{return pShowRigShapes;}
+	inline bool GetShowRigShapes() const{ return pShowRigShapes; }
 	/** Sets if rig shapes are shown. */
 	void SetShowRigShapes(bool showShapes);
 	/** Determines if all bone shapes are shown. */
-	inline bool GetShowAllBoneShapes() const{return pShowAllBoneShapes;}
+	inline bool GetShowAllBoneShapes() const{ return pShowAllBoneShapes; }
 	/** Sets if all bone shapes are shown. */
 	void SetShowAllBoneShapes(bool showShapes);
 	/** Determines if shapes are rendered using x-ray. */
-	inline bool GetShapeXRay() const{return pShowShapeXRay;}
+	inline bool GetShapeXRay() const{ return pShowShapeXRay; }
 	/** Sets of shapes are rendered using x-ray. */
 	void SetShapeXRay(bool xray);
 	
 	/** Determines if rig constraints are shown. */
-	inline bool GetShowRigConstraints() const{return pShowRigConstraints;}
+	inline bool GetShowRigConstraints() const{ return pShowRigConstraints; }
 	/** Sets if rig constraints are shown. */
 	void SetShowRigConstraints(bool showConstraints);
 	/** Determines if all bone constraints are shown. */
-	inline bool GetShowAllBoneConstraints() const{return pShowAllBoneConstraints;}
+	inline bool GetShowAllBoneConstraints() const{ return pShowAllBoneConstraints; }
 	/** Sets if all bone constraints are shown. */
 	void SetShowAllBoneConstraints(bool showConstraints);
 	
 	/** Determines if rig push are shown. */
-	inline bool GetShowRigPushes() const{return pShowRigPushes;}
+	inline bool GetShowRigPushes() const{ return pShowRigPushes; }
 	/** Sets if rig push are shown. */
 	void SetShowRigPushes(bool showPushes);
 	
 	/** Retrieves the element mode indicating which type of element to edit. */
-	inline eElementModes GetElementMode() const{return pElementMode;}
+	inline eElementModes GetElementMode() const{ return pElementMode; }
 	/** Sets the element mode indicating which type of element to edit. */
 	void SetElementMode(eElementModes mode);
 	/** Retrieves the work mode. */
-	inline eWorkModes GetWorkMode() const{return pWorkMode;}
+	inline eWorkModes GetWorkMode() const{ return pWorkMode; }
 	/** Sets the work mode. */
 	void SetWorkMode(eWorkModes mode);
 	
 	/** Determines if the simulation is running. */
-	inline bool GetSimulationRunning() const{return pSimulationRunning;}
+	inline bool GetSimulationRunning() const{ return pSimulationRunning; }
 	/** Sets if the simulation is running. */
 	void SetSimulationRunning(bool simulationRunning);
 	/** Retrieves the gravity. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	/** Sets the gravity. */
 	void SetGravity(const decVector &gravity);
 	/** Retrieves the local gravity. */
-	inline const decVector &GetLocalGravity() const{return pLocalGravity;}
+	inline const decVector &GetLocalGravity() const{ return pLocalGravity; }
 	/** Sets the local gravity. */
 	void SetLocalGravity(const decVector &gravity);
 	/** \brief Retrieves the slowmotion factor. */
-	inline float GetSlowmotion() const{return pSlowmotion;}
+	inline float GetSlowmotion() const{ return pSlowmotion; }
 	/** \brief Sets the slowmotion factor. */
 	void SetSlowmotion(float slowmotion);
 	/** Determines if dynamic mode has to be used. */
-	inline bool GetDynamic() const{return pDynamic;}
+	inline bool GetDynamic() const{ return pDynamic; }
 	/** Sets if dynamic mode has to be used. */
 	void SetDynamic(bool dynamic);
 	
 	/** Mass. */
-	inline float GetMass() const{return pMass;}
+	inline float GetMass() const{ return pMass; }
 	
 	/** Set mass. */
 	void SetMass(float mass);
 	
 	/** Retrieves the current pose matrix. */
-	inline const decDMatrix &GetPoseMatrix() const{return pPoseMatrix;}
+	inline const decDMatrix &GetPoseMatrix() const{ return pPoseMatrix; }
 	/** Updates from the simulation. */
 	void UpdateFromSimulation();
 	
 	/** Retrieves the bone selection. */
-	inline reSelectionBones *GetSelectionBones() const{return pSelectionBones;}
+	inline reSelectionBones *GetSelectionBones() const{ return pSelectionBones; }
 	/** Retrieves the shape selection. */
-	inline reSelectionShapes *GetSelectionShapes() const{return pSelectionShapes;}
+	inline reSelectionShapes *GetSelectionShapes() const{ return pSelectionShapes; }
 	/** Retrieves the push selection. */
-	inline reSelectionPushes *GetSelectionPushes() const{return pSelectionPushes;}
+	inline reSelectionPushes *GetSelectionPushes() const{ return pSelectionPushes; }
 	/** Retrieves the constraint selection. */
-	inline reSelectionConstraints *GetSelectionConstraints() const{return pSelectionConstraints;}
+	inline reSelectionConstraints *GetSelectionConstraints() const{ return pSelectionConstraints; }
 	/*@}*/
 	
 	/** @name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{return pEngComponent;}
+	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the simulation collider. */
-	inline deColliderComponent *GetEngineSimulationCollider() const{return pEngSimCollider;}
+	inline deColliderComponent *GetEngineSimulationCollider() const{ return pEngSimCollider; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{return pEngLight;}
+	inline deLight *GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine rig. */
-	inline deRig *GetEngineRig() const{return pEngRig;}
+	inline deRig *GetEngineRig() const{ return pEngRig; }
 	/** Retrieves the camera. */
-	inline reCamera *GetCamera() const{return pCamera;}
+	inline reCamera *GetCamera() const{ return pCamera; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	
 	/** Retrieves the number of component textures. */
-	inline int GetComponentTextureCount() const{return pComponentTextureCount;}
+	inline int GetComponentTextureCount() const{ return pComponentTextureCount; }
 	/** Retrieves a component texture. */
 	reRigTexture *GetComponentTextureAt(int index) const;
 	/** Updates component textures. */
@@ -396,27 +396,27 @@ public:
 	void InitDelegates();
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	/*@}*/
 	
 	/** @name Editing */
 	/*@{*/
 	/** Determines if the x axis is locked during editing. */
-	inline bool GetLockAxisX() const{return pLockAxisX;}
+	inline bool GetLockAxisX() const{ return pLockAxisX; }
 	/** Sets if the x axis is locked during editing. */
 	void SetLockAxisX(bool lock);
 	/** Determines if the y axis is locked during editing. */
-	inline bool GetLockAxisY() const{return pLockAxisY;}
+	inline bool GetLockAxisY() const{ return pLockAxisY; }
 	/** Sets if the y axis is locked during editing. */
 	void SetLockAxisY(bool lock);
 	/** Determines if the z axis is locked during editing. */
-	inline bool GetLockAxisZ() const{return pLockAxisZ;}
+	inline bool GetLockAxisZ() const{ return pLockAxisZ; }
 	/** Sets if the z axis is locked during editing. */
 	void SetLockAxisZ(bool lock);
 	/** Determines if the object local coordinates are used during editing. */
-	inline bool GetUseLocal() const{return pUseLocal;}
+	inline bool GetUseLocal() const{ return pUseLocal; }
 	/** Sets if the object local coordinates are used during editing. */
 	void SetUseLocal(bool useLocal);
 	/*@}*/
@@ -424,7 +424,7 @@ public:
 	/** @name Bones */
 	/*@{*/
 	/** Retrieves the number of bones. */
-	inline int GetBoneCount() const{return pBoneCount;}
+	inline int GetBoneCount() const{ return pBoneCount; }
 	/** Retrieves the bone at the given index. */
 	reRigBone *GetBoneAt(int index) const;
 	/** Retrieves the bone with the given name or NULL if not found. */
@@ -450,7 +450,7 @@ public:
 	void SetAllBonesVisited(bool visited);
 	
 	/** Retrieves the root bone or NULL if not set. */
-	inline reRigBone *GetRootBone() const{return pRootBone;}
+	inline reRigBone *GetRootBone() const{ return pRootBone; }
 	/** Sets the root bone or NULL if not set. */
 	void SetRootBone(reRigBone *rootBone);
 	/*@}*/
@@ -458,7 +458,7 @@ public:
 	/** @name Shapes */
 	/*@{*/
 	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{return pShapeCount;}
+	inline int GetShapeCount() const{ return pShapeCount; }
 	/** Retrieves the shape at the given index. */
 	reRigShape *GetShapeAt(int index) const;
 	/** Retrieves the shape with the given collider or NULL if not found. */
@@ -478,7 +478,7 @@ public:
 	/** @name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	/** Retrieves the constraint at the given index. */
 	reRigConstraint *GetConstraintAt(int index) const;
 	/** Retrieves the constraint with the given collider or NULL if not found. */
@@ -498,7 +498,7 @@ public:
 	/** @name Pushes */
 	/*@{*/
 	/** Retrieves the number of pushs. */
-	inline int GetPushCount() const{return pPushCount;}
+	inline int GetPushCount() const{ return pPushCount; }
 	/** Retrieves the push at the given index. */
 	reRigPush *GetPushAt(int index) const;
 	/** Retrieves the push with the given collider or NULL if not found. */
@@ -518,7 +518,7 @@ public:
 	/** @name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{return pNotifierCount;}
+	inline int GetNotifierCount() const{ return pNotifierCount; }
 	/** Retrieves the notifier at the given index. */
 	reRigNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */

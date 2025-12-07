@@ -64,14 +64,14 @@ public:
 	/** Creates the class members. */
 	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** Retrieves the animator or NULL if object is NULL. */
 	deAnimator *GetAnimator(dsRealObject *object) const;
 	/** Pushes an animator on the stack (pushes nil if instance is NULL). */
 	void PushAnimator(dsRunTime *rt, deAnimator *animator);
 	
-	inline dsClass *GetClassAnimatorLinkBoneParameter() const{return pClsAnimatorLinkBoneParameter;}
+	inline dsClass *GetClassAnimatorLinkBoneParameter() const{ return pClsAnimatorLinkBoneParameter; }
 	/*@}*/
 	
 private:

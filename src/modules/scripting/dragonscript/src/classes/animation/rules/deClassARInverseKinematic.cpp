@@ -117,7 +117,7 @@ deClassARInverseKinematic::nfTargetAddLink::nfTargetAddLink(const sInitData &ini
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARInverseKinematic::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -171,7 +171,7 @@ deClassARInverseKinematic::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const 
 	p_AddParameter(init.clsARInverseKinematicTarget); // target
 }
 void deClassARInverseKinematic::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -231,7 +231,7 @@ void deClassARInverseKinematic::nfSetGoalPosition::RunFunction(dsRunTime *rt, ds
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec){
+	if(!objVec){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -253,7 +253,7 @@ void deClassARInverseKinematic::nfSetGoalOrientation::RunFunction(dsRunTime *rt,
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec){
+	if(!objVec){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -275,7 +275,7 @@ void deClassARInverseKinematic::nfSetLocalPosition::RunFunction(dsRunTime *rt, d
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec){
+	if(!objVec){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -297,7 +297,7 @@ void deClassARInverseKinematic::nfSetLocalOrientation::RunFunction(dsRunTime *rt
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec){
+	if(!objVec){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -483,7 +483,7 @@ void deClassARInverseKinematic::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -491,7 +491,7 @@ deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject 
 }
 
 void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -515,11 +515,11 @@ void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator 
 }
 
 void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

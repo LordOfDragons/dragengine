@@ -111,7 +111,7 @@ igdeGuiTheme *igdeWidget::GetGuiTheme() const{
 	if(pGuiTheme){
 		return pGuiTheme;
 		
-	}else if(! pGuiThemeName.IsEmpty()){
+	}else if(!pGuiThemeName.IsEmpty()){
 		return pEnvironment.GetGuiThemeNamed(pGuiThemeName);
 		
 	}else if(pParent){

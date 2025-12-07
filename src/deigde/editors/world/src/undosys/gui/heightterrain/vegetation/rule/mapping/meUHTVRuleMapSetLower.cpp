@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTVRuleMapSetLower::meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower){
-	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;

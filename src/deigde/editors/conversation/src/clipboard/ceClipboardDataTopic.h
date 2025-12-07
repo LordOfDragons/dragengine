@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopics() const{return pTopics;}
+	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
 	/*@}*/
 };
 

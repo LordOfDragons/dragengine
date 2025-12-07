@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -69,7 +69,7 @@ public:
 	/** \brief Pushe skin. */
 	void PushSkin(dsRunTime *rt, deSkin *skin);
 	
-	inline dsClass *GetClassSkinPropertyType() const{return pClsSkinPropertyType;}
+	inline dsClass *GetClassSkinPropertyType() const{ return pClsSkinPropertyType; }
 	/*@}*/
 	
 	

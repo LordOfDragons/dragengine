@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Stretch widgets with odd indices. */
-	inline bool GetStretchOdd() const{return pStretchOdd;}
+	inline bool GetStretchOdd() const{ return pStretchOdd; }
 	/*@}*/
 	
 	

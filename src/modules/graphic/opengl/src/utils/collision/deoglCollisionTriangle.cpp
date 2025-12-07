@@ -158,7 +158,7 @@ float deoglCollisionTriangle::PointMoveHitsVolume(const decVector &point, const 
 //////////////////////
 
 void deoglCollisionTriangle::GetEnclosingSphere(deoglCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	decVector center = (pCorners[0] + pCorners[1] + pCorners[2]) / 3.0f;
 	decVector distVector = pCorners[0] - center;
 	float radiusSquared = distVector * distVector;
@@ -172,7 +172,7 @@ void deoglCollisionTriangle::GetEnclosingSphere(deoglCollisionSphere *sphere){
 }
 
 void deoglCollisionTriangle::GetEnclosingBox(deoglCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	decVector minExtend = pCorners[0];
 	decVector maxExtend = minExtend;
 	if(pCorners[1].x < minExtend.x){
@@ -232,7 +232,7 @@ decVector deoglCollisionTriangle::ClosestPointTo(const decVector &point){
 /////////////
 
 void deoglCollisionTriangle::Visit(deoglCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitTriangle(this);
 }
 
@@ -250,7 +250,7 @@ bool deoglCollisionTriangle::SphereHitsTriangle(deoglCollisionSphere *sphere){
 	hitPoint = sc + pNormal * lambda;
 	// if the point is not inside the triangle calculate the point on the
 	// triangle closest to the hitpoint
-	if(! deoglCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!deoglCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = deoglCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	// we need to compare the distance of the hitpoint to the sphere center
@@ -316,7 +316,7 @@ bool deoglCollisionTriangle::BoxHitsTriangle(deoglCollisionBox *box){
 		
 		// cross axes[ i ] with box x-axis
 		normal = pEdges[i] % bax;
-		if(! normal.IsZero()){
+		if(!normal.IsZero()){
 			normal.Normalize();
 			projBox = box->ProjectExtends(normal);
 			projTri[0] = corners[id1] * normal;
@@ -327,7 +327,7 @@ bool deoglCollisionTriangle::BoxHitsTriangle(deoglCollisionBox *box){
 		
 		// cross axes[ i ] with box y-axis
 		normal = pEdges[i] % bay;
-		if(! normal.IsZero()){
+		if(!normal.IsZero()){
 			normal.Normalize();
 			projBox = box->ProjectExtends(normal);
 			projTri[0] = corners[id1] * normal;
@@ -338,7 +338,7 @@ bool deoglCollisionTriangle::BoxHitsTriangle(deoglCollisionBox *box){
 		
 		// cross axes[ i ] with box z-axis
 		normal = pEdges[i] % baz;
-		if(! normal.IsZero()){
+		if(!normal.IsZero()){
 			normal.Normalize();
 			projBox = box->ProjectExtends(normal);
 			projTri[0] = corners[id1] * normal;
@@ -386,7 +386,7 @@ float deoglCollisionTriangle::SphereMoveHitsTriangle(deoglCollisionSphere *spher
 	}
 	
 	// if the point is not inside the triangle calculate the point on the triangle closest to the hitpoint
-	if(! deoglCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+	if(!deoglCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		hitPoint = deoglCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	
@@ -646,7 +646,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle(deoglCollisionBox *box, const 
 		
 		// cross axes[ i ] with box x-axis
 		tnormal = pEdges[i] % bax;
-		if(! tnormal.IsZero()){
+		if(!tnormal.IsZero()){
 			tnormal.Normalize();
 			projBox = fabsf(tnormal * bay) * bhs.y + fabsf(tnormal * baz) * bhs.z;
 			dot1 = corners[id1] * tnormal;
@@ -687,7 +687,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle(deoglCollisionBox *box, const 
 
 		// cross axes[ i ] with box y-axis
 		tnormal = pEdges[i] % bay;
-		if(! tnormal.IsZero()){
+		if(!tnormal.IsZero()){
 			tnormal.Normalize();
 			projBox = fabsf(tnormal * bax) * bhs.x + fabsf(tnormal * baz) * bhs.z;
 			dot1 = corners[id1] * tnormal;
@@ -728,7 +728,7 @@ float deoglCollisionTriangle::BoxMoveHitsTriangle(deoglCollisionBox *box, const 
 
 		// cross axes[ i ] with box z-axis
 		tnormal = pEdges[i] % baz;
-		if(! tnormal.IsZero()){
+		if(!tnormal.IsZero()){
 			tnormal.Normalize();
 			projBox = fabsf(tnormal * bax) * bhs.x + fabsf(tnormal * bay) * bhs.y;
 			dot1 = corners[id1] * tnormal;

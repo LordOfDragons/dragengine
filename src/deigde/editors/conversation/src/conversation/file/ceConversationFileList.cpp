@@ -110,7 +110,7 @@ bool ceConversationFileList::HasWithID(const char *id) const{
 }
 
 void ceConversationFileList::Add(ceConversationFile *file){
-	if(! file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
+	if(!file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
 	
 	pFiles.Add(file);
 }

@@ -62,10 +62,10 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Directories. */
-	inline decStringSet &GetDirectories(){return pDirectories;}
+	inline decStringSet &GetDirectories(){ return pDirectories; }
 	/*@}*/
 	
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath){
-	if(! variation || ! newPath) DETHROW(deeInvalidParam);
+	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	

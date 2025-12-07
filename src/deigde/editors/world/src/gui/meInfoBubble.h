@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Content view. */
-	inline const deCanvasView::Ref &GetCanvasContent() const{return pCanvasContent;}
+	inline const deCanvasView::Ref &GetCanvasContent() const{ return pCanvasContent; }
 	
 	/** \brief Show bubble at mouse position. */
 	void ShowAt(const decPoint &position, ePlacement placement);

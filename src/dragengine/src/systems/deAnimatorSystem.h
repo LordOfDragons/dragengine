@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Activate graphic module or NULL if none is active. */
-	inline deBaseAnimatorModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseAnimatorModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create and assign peer for animator using the active module. */
 	void LoadAnimator(deAnimator *animator);

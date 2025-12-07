@@ -87,7 +87,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or \em NULL if not set. */
-	inline dealFont *GetFont() const{return pFont;}
+	inline dealFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font or \em NULL if not set. */
 	void SetFont(dealFont *font);
@@ -101,25 +101,25 @@ public:
 	void SetFontSize(int fontSize);
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Alignment. */
-	inline eAlignments GetAlignment() const{return pAlignment;}
+	inline eAlignments GetAlignment() const{ return pAlignment; }
 	
 	/** \brief Set alignment. */
 	void SetAlignment(eAlignments alignment);
 	
 	/** \brief Maximum line width. */
-	inline int GetMaxLineWidth() const{return pMaxLineWidth;}
+	inline int GetMaxLineWidth() const{ return pMaxLineWidth; }
 	
 	/** \brief Set maximum line width. */
 	void SetMaxLineWidth(int lineWidth);

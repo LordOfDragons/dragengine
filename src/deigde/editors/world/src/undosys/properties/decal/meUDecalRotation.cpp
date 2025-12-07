@@ -40,12 +40,12 @@
 ////////////////////////////
 
 meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

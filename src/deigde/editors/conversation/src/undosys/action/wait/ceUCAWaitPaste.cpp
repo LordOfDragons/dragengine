@@ -45,7 +45,7 @@ ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
 const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
-	if(! wait || actions.GetCount() == 0){
+	if(!wait || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

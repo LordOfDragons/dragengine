@@ -77,10 +77,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Archive. */
-	inline deArchive *GetArchive() const{return pArchive;}
+	inline deArchive *GetArchive() const{ return pArchive; }
 	
 	/** \brief Archive path to map as root. */
-	inline const decPath &GetArchivePath(){return pArchivePath;}
+	inline const decPath &GetArchivePath(){ return pArchivePath; }
 	
 	
 	
@@ -190,7 +190,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Previous resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerPrev() const{return pLLManagerPrev;}
+	inline deArchiveContainer *GetLLManagerPrev() const{ return pLLManagerPrev; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
@@ -199,7 +199,7 @@ public:
 	void SetLLManagerPrev(deArchiveContainer *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
-	inline deArchiveContainer *GetLLManagerNext() const{return pLLManagerNext;}
+	inline deArchiveContainer *GetLLManagerNext() const{ return pLLManagerNext; }
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.

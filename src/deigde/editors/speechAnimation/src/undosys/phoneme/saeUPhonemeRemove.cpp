@@ -41,10 +41,10 @@
 ////////////////////////////
 
 saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
-	if(! phoneme) DETHROW(deeInvalidParam);
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	saeSAnimation *sanimation = phoneme->GetSAnimation();
-	if(! sanimation) DETHROW(deeInvalidParam);
+	if(!sanimation) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	pPhoneme = NULL;

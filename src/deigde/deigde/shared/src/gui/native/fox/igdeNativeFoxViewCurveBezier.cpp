@@ -131,7 +131,7 @@ pDragControl(false),
 
 pRulerSize(pFont->TextSize("88.8") + decPoint(4, 2))
 {
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	
@@ -918,7 +918,7 @@ long igdeNativeFoxViewCurveBezierView::onMouseMove(FXObject*, FXSelector, void *
 		}
 		
 		// drag the point around if not delayed
-		if(! pStickyDragging){
+		if(!pStickyDragging){
 			decVector2 point;
 			
 			point.x = WindowXToCurve(pDragCur.x);
@@ -1264,12 +1264,12 @@ igdeNativeFoxViewCurveBezier::~igdeNativeFoxViewCurveBezier(){
 }
 
 igdeNativeFoxViewCurveBezier *igdeNativeFoxViewCurveBezier::CreateNativeWidget(igdeViewCurveBezier &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const nativeParent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! nativeParent){
+	if(!nativeParent){
 		DETHROW(deeInvalidParam);
 	}
 	

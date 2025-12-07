@@ -46,7 +46,7 @@ pOffset(0),
 pSize(0),
 pEmpty(true)
 {
-	if(! tbo){
+	if(!tbo){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -57,7 +57,7 @@ pOffset(offset),
 pSize(size),
 pEmpty(true)
 {
-	if(! tbo || offset < 0 || size < 0){
+	if(!tbo || offset < 0 || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -110,13 +110,13 @@ void deoglDynamicTBOBlock::SetEmpty(bool empty){
 }
 
 void deoglDynamicTBOBlock::Drop(){
-	if(pSharedTBO && ! pEmpty){
+	if(pSharedTBO && !pEmpty){
 		pSharedTBO->RemoveBlock(this);
 	}
 }
 
 void deoglDynamicTBOBlock::WriteToTBO(){
-	if(pEmpty || ! pSharedTBO){
+	if(pEmpty || !pSharedTBO){
 		return;
 	}
 	

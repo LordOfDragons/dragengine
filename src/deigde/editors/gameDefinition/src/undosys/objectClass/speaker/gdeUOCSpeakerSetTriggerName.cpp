@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pSpeaker(NULL),
 pTrigger(trigger)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

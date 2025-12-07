@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName){
-	if(! topic || ! newName) DETHROW(deeInvalidParam);
+	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pCameraShot = NULL;

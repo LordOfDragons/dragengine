@@ -137,7 +137,7 @@ void deoglOcclusionTest::UpdateSSBO(){
 }
 
 void deoglOcclusionTest::UpdateResults(){
-	if(pInputDataCount == 0 || ! pSSBOResult){
+	if(pInputDataCount == 0 || !pSSBOResult){
 		return;
 	}
 	
@@ -147,7 +147,7 @@ void deoglOcclusionTest::UpdateResults(){
 	int i;
 	
 	for(i=0; i<pInputDataCount; i++){
-		if(! result[i] && pInputListeners[i]){
+		if(!result[i] && pInputListeners[i]){
 			pInputListeners[i]->OcclusionTestInvisible();
 		}
 	}

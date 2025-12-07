@@ -90,10 +90,10 @@ public:
 	deoglTexture *GetTexture(int frame) const;
 	
 	/** Number of frames. */
-	inline int GetFrameCount() const{return pFrameCount;}
+	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** Remaining number of frames to cache or -1 if no caching is used. */
-	inline int GetFrameCountToCache() const{return pFrameCountToCache;}
+	inline int GetFrameCountToCache() const{ return pFrameCountToCache; }
 	
 	
 	/**
@@ -103,7 +103,7 @@ public:
 	deoglPixelBuffer::Ref SetPixelBuffer(int frame, deoglPixelBuffer *pixelBuffer);
 	
 	/** Frame to update or -1 if not set to update a frame. */
-	inline int GetUpdateFrame() const{return pUpdateFrame;}
+	inline int GetUpdateFrame() const{ return pUpdateFrame; }
 	
 	
 	

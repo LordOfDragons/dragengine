@@ -101,7 +101,7 @@ void igdeWOSOEnvMapProbe::Visit(igdeWOSOVisitor &visitor){
 //////////////////////
 
 void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
-	if(! pEnvMapProbe){
+	if(!pEnvMapProbe){
 		pEnvMapProbe.TakeOver(GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe());
 		
 		pEnvMapProbe->SetScaling(pGDEnvMapProbe.GetScaling());
@@ -158,17 +158,17 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	}
 	pEnvMapProbe->NotifyShapeReflectionChanged();
 	
-	if(! pAddedToWorld){
+	if(!pAddedToWorld){
 		GetWrapper().GetWorld()->AddEnvMapProbe(pEnvMapProbe);
 		pAddedToWorld = true;
 	}
-	if(pAddedToWorld && ! pAttachedToCollider){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
-	if(! pEnvMapProbe){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
@@ -185,7 +185,7 @@ void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
 void igdeWOSOEnvMapProbe::AttachToCollider(){
 	DetachFromCollider();
 	
-	if(! pEnvMapProbe){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
@@ -223,7 +223,7 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 }
 
 void igdeWOSOEnvMapProbe::DetachFromCollider(){
-	if(! pAttachedToCollider){
+	if(!pAttachedToCollider){
 		return;
 	}
 	

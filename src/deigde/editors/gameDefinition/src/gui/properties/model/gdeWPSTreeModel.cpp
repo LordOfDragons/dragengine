@@ -109,7 +109,7 @@ pSkies(NULL),
 
 pIgnoreSelectionChange(false)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,7 +191,7 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
 	case gdeGameDefinition::eotOCWorld:
-		if(! pGameDefinition->GetActiveObjectClass()){
+		if(!pGameDefinition->GetActiveObjectClass()){
 			break;
 		}
 		modelObjectClass = pObjectClasses->GetChildWith(pGameDefinition->GetActiveObjectClass());

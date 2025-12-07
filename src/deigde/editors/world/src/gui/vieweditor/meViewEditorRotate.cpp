@@ -179,7 +179,7 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 					activeProperty.Empty();
 				}
 				
-			}else if(! activeObject->IsPropertyShapeList(activeProperty.GetString())){
+			}else if(!activeObject->IsPropertyShapeList(activeProperty.GetString())){
 				activeProperty.Empty();
 			}
 			
@@ -188,7 +188,7 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 			}
 		}
 		
-		if(! activeProperty.IsEmpty()){
+		if(!activeProperty.IsEmpty()){
 			const decDMatrix matrixParent = decDMatrix::CreateRT(decDVector(activeObject->GetRotation() * DEG2RAD), activeObject->GetPosition());
 			const meObjectShapeList &listSelected = selection.GetSelected();
 			decDMatrix matrixShape;
@@ -264,7 +264,7 @@ void meViewEditorRotate::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 void meViewEditorRotate::OnMouseMove(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if(! pUndoRotate){
+	if(!pUndoRotate){
 		return;
 	}
 	

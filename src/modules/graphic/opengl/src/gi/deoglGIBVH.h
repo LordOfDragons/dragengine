@@ -222,13 +222,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Index of bvh component root node or -1 if there are no components. */
-	inline int GetIndexRootNode() const{return pIndexRootNode;}
+	inline int GetIndexRootNode() const{ return pIndexRootNode; }
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. If changed marks BVH dirty. */
 	void SetPosition(const decDVector &position);
@@ -236,7 +236,7 @@ public:
 	
 	
 	/** BVH is dirty. */
-	inline bool GetDirty() const{return pDirty;}
+	inline bool GetDirty() const{ return pDirty; }
 	
 	/** Mark BVH dirty. */
 	void MarkDirty();
@@ -262,14 +262,14 @@ public:
 	
 	
 	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{return pTBOInstance;}
+	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{return pTBOMatrix;}
+	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** Render materials render task. */
-	inline deoglRenderTask &GetRenderTaskMaterial(){return pRenderTaskMaterial;}
-	inline const deoglRenderTask &GetRenderTaskMaterial() const{return pRenderTaskMaterial;}
+	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }
+	inline const deoglRenderTask &GetRenderTaskMaterial() const{ return pRenderTaskMaterial; }
 	/*@}*/
 	
 	

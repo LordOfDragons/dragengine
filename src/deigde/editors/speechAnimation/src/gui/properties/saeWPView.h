@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline saeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{return pSAnimation;}
+	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

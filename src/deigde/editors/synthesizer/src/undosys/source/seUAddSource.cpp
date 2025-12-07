@@ -45,7 +45,7 @@ pSynthesizer(NULL),
 pSource(NULL),
 pIndex(index)
 {
-	if(! synthesizer || ! source){
+	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

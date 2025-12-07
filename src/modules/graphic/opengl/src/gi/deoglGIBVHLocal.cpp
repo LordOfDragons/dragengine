@@ -172,7 +172,7 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockNode(){
-	if(! pBlockNode){
+	if(!pBlockNode){
 		pBlockNode.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()
 			->AddBlock(pTBOIndex, pTBONodeBox));
 	}
@@ -180,7 +180,7 @@ const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockNode(){
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockFace(){
-	if(! pBlockFace){
+	if(!pBlockFace){
 		pBlockFace.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()
 			->AddBlock(pTBOFace, pTBOTexCoord));
 	}
@@ -188,7 +188,7 @@ const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockFace(){
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockVertex(){
-	if(! pBlockVertex){
+	if(!pBlockVertex){
 		pBlockVertex.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()
 			->AddBlock(pTBOVertex));
 	}

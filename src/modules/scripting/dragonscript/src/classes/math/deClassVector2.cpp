@@ -85,7 +85,7 @@ void deClassVector2::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	vector = clsVector2->GetVector2(objVec);
 }
@@ -339,7 +339,7 @@ void deClassVector2::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself)
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decVector2 vector;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -357,7 +357,7 @@ void deClassVector2::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassFileWriter &clsFileWriter = *clsVector2.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -390,7 +390,7 @@ void deClassVector2::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -407,7 +407,7 @@ void deClassVector2::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -448,7 +448,7 @@ void deClassVector2::nfOpDot::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -465,7 +465,7 @@ void deClassVector2::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -482,7 +482,7 @@ void deClassVector2::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -499,7 +499,7 @@ void deClassVector2::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -516,7 +516,7 @@ void deClassVector2::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector2 &other = clsVector2->GetVector2(objVec);
 	
@@ -537,7 +537,7 @@ void deClassVector2::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decVector2 &vector = ((sVec2NatDat*)p_GetNativeData(myself))->vector;
 	deClassVector2 *clsVector2 = (deClassVector2*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
-	if(! p_IsObjOfType(obj, clsVector2)){
+	if(!p_IsObjOfType(obj, clsVector2)){
 		rt->PushBool(false);
 	}else{
 		const decVector2 &otherVector2 = ((sVec2NatDat*)p_GetNativeData(obj))->vector;
@@ -600,7 +600,7 @@ void deClassVector2::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *my
 
 deClassVector2::deClassVector2(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("Vector2", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scriptManager) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -683,7 +683,7 @@ void deClassVector2::CreateClassMembers(dsEngine *engine){
 }
 
 const decVector2 &deClassVector2::GetVector2(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -691,7 +691,7 @@ const decVector2 &deClassVector2::GetVector2(dsRealObject *myself) const{
 }
 
 void deClassVector2::PushVector2(dsRunTime *rt, const decVector2 &vector){
-	if(! rt) DSTHROW(dueInvalidParam);
+	if(!rt) DSTHROW(dueInvalidParam);
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sVec2NatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;

@@ -62,7 +62,7 @@ public:
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPathList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		if(pPanel.GetPathList()->Has(pEditPath->GetPath())){
@@ -88,7 +88,7 @@ public:
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPathList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		if(pPanel.GetPathList()->Has(pEditPath->GetPath())){
@@ -125,7 +125,7 @@ public:
 		"Remove path"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPathList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -152,7 +152,7 @@ public:
 	igdeAction("Clear", NULL, "Clear path"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPathList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		

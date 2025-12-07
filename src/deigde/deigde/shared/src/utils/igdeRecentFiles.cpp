@@ -170,7 +170,7 @@ void igdeRecentFiles::SetMenu(igdeMenuCascade *menu){
 }
 
 void igdeRecentFiles::AddFile(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -227,13 +227,13 @@ void igdeRecentFiles::ReadFromXml(const decXmlElementTag &root){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
 		if(tag->GetName() == "filename"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if(! cdata){
+			if(!cdata){
 				DETHROW(deeInvalidParam);
 			}
 			pFiles.Add(cdata->GetData());
@@ -265,7 +265,7 @@ void igdeRecentFiles::WriteToXml(decXmlWriter &writer, const char *tagName) cons
 
 
 void igdeRecentFiles::OpenFile(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -275,7 +275,7 @@ void igdeRecentFiles::OpenFile(const char *filename){
 }
 
 void igdeRecentFiles::UpdateMenu(){
-	if(! pMenu){
+	if(!pMenu){
 		return;
 	}
 	

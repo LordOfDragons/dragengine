@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controller is disabled. */
-	inline bool IsDisabled() const{return pDisabled;}
+	inline bool IsDisabled() const{ return pDisabled; }
 	
 	/** Get value of link. */
 	float GetValue(const deoglRSkyInstance &instance) const;

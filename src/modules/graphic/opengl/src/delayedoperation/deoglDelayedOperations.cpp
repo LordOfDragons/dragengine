@@ -122,7 +122,7 @@ deoglDelayedOperations::~deoglDelayedOperations(){
 void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 	const deMutexGuard guard(pMutexAsyncResInit);
 	
-	if(! pHasAsyncResInitOperations){
+	if(!pHasAsyncResInitOperations){
 		return;
 	}
 	
@@ -233,7 +233,7 @@ void deoglDelayedOperations::ProcessRecreateResOperations(){
 void deoglDelayedOperations::ProcessInitOperations(){
 	const deMutexGuard guard(pMutexInit);
 	
-	if(! pHasInitOperations){
+	if(!pHasInitOperations){
 		return;
 	}
 	
@@ -371,7 +371,7 @@ void deoglDelayedOperations::ProcessFreeOperations(bool /*deleteAll*/){
 }
 
 void deoglDelayedOperations::DeleteOpenGLObject(eOpenGLObjectType type, GLuint name){
-	if(! name){
+	if(!name){
 		return;
 	}
 	
@@ -392,7 +392,7 @@ void deoglDelayedOperations::DeleteOpenGLObject(eOpenGLObjectType type, GLuint n
 }
 
 void deoglDelayedOperations::DeleteOpenGLObject(deoglDelayedOperations::eOpenGLObjectType type, GLsync sync){
-	if(! sync){
+	if(!sync){
 		return;
 	}
 	
@@ -421,7 +421,7 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	const deMutexGuard guard(pMutexSynchronize);
 	
-	if(! pHasSynchronizeOperations){
+	if(!pHasSynchronizeOperations){
 		return;
 	}
 	
@@ -529,12 +529,12 @@ void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 		
 		for(c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++){
 			deoglSkinChannel * const skinChannel = skinTexture.GetChannelAt((deoglSkinChannel::eChannelTypes)c);
-			if(! skinChannel){
+			if(!skinChannel){
 				continue;
 			}
 			
 			const deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
-			if(! pixelBufferMipMap){
+			if(!pixelBufferMipMap){
 				continue;
 			}
 			
@@ -782,7 +782,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 	
 	deoglArrayTexture * const channelArrayTexture = channel.GetArrayTexture();
 	deoglTexture * const channelTexture = channel.GetTexture();
-	if(! channelTexture || ! channelArrayTexture){
+	if(!channelTexture || !channelArrayTexture){
 		return; // should not happen
 	}
 	
@@ -848,7 +848,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 		const deoglShaderProgram *program = nullptr;
 
 		if(channelTexture){
-			if(! pShaderGenConeMap){
+			if(!pShaderGenConeMap){
 				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed("DefRen Generate ConeMap");
 				DEASSERT_NOTNULL(sources)
@@ -858,7 +858,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 			program = pShaderGenConeMap;
 			
 		}else{
-			if(! pShaderGenConeMapLayer){
+			if(!pShaderGenConeMapLayer){
 				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed("DefRen Generate ConeMap");
 				DEASSERT_NOTNULL(sources)
@@ -926,8 +926,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 			coneMapArr = NULL;
 		}
 		
-		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
-		
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!		
 	}catch(const deException &){
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
@@ -937,8 +936,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 		if(coneMap){
 			delete coneMap;
 		}
-		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
-		throw;
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!		throw;
 	}
 	
 	pRenderThread.GetLogger().LogInfoFormat("deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",

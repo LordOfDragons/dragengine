@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation(aeRuleStateSnapshot *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleSnapToggleEnableRotation::~aeURuleSnapToggleEnableRotation(){
 ///////////////
 
 void aeURuleSnapToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleSnapToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 

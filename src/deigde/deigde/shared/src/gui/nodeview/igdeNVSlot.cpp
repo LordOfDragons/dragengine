@@ -160,7 +160,7 @@ bool igdeNVSlot::HasLink(igdeNVLink *link) const{
 }
 
 void igdeNVSlot::AddLink(igdeNVLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -181,7 +181,7 @@ void igdeNVSlot::RemoveAllLinks(){
 
 
 decPoint igdeNVSlot::GetCenter() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -189,7 +189,7 @@ decPoint igdeNVSlot::GetCenter() const{
 }
 
 decPoint igdeNVSlot::GetCenterNode() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -197,7 +197,7 @@ decPoint igdeNVSlot::GetCenterNode() const{
 }
 
 decPoint igdeNVSlot::GetCenterBoard() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -205,7 +205,7 @@ decPoint igdeNVSlot::GetCenterBoard() const{
 }
 
 decPoint igdeNVSlot::GetConnector() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -213,7 +213,7 @@ decPoint igdeNVSlot::GetConnector() const{
 }
 
 decPoint igdeNVSlot::GetConnectorNode() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -221,7 +221,7 @@ decPoint igdeNVSlot::GetConnectorNode() const{
 }
 
 decPoint igdeNVSlot::GetConnectorBoard() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -243,7 +243,7 @@ void igdeNVSlot::CreateNativeWidget(){
 }
 
 void igdeNVSlot::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -254,7 +254,7 @@ void igdeNVSlot::DestroyNativeWidget(){
 
 
 void igdeNVSlot::OnTextChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -262,7 +262,7 @@ void igdeNVSlot::OnTextChanged(){
 }
 
 void igdeNVSlot::OnDescriptionChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -270,7 +270,7 @@ void igdeNVSlot::OnDescriptionChanged(){
 }
 
 void igdeNVSlot::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -278,7 +278,7 @@ void igdeNVSlot::OnEnabledChanged(){
 }
 
 void igdeNVSlot::OnColorChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -286,7 +286,7 @@ void igdeNVSlot::OnColorChanged(){
 }
 
 void igdeNVSlot::OnLinksChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

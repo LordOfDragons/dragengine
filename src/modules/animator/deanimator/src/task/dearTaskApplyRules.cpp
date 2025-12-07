@@ -94,7 +94,7 @@ void dearTaskApplyRules::Finished(){
 	// 
 	// GetDependedOnBy() can not be used because Finished() will be called after clearing
 	// both the 'depends on' and 'depended on by' list
-	if(! IsCancelled()){
+	if(!IsCancelled()){
 		dearComponent * const component = pInstance.GetComponent();
 		if(component && component->GetComponent().GetAnimatorTask() == this){
 			try{

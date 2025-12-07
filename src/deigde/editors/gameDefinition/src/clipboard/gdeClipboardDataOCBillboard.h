@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Billboard. */
-	gdeOCBillboard *GetBillboard() const{return pBillboard;}
+	gdeOCBillboard *GetBillboard() const{ return pBillboard; }
 	/*@}*/
 };
 

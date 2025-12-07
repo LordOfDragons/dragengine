@@ -91,19 +91,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Number of samples. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Number of channels. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Play time in seconds. */
-	inline float GetPlayTime() const{return pPlayTime;}
+	inline float GetPlayTime() const{ return pPlayTime; }
 	/*@}*/
 	
 	
@@ -111,13 +111,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Audio system peer object. */
-	inline deBaseAudioSound *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioSound *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
 	void SetPeerAudio(deBaseAudioSound *peer);
 	
 	/** \brief Synthesizer system peer object. */
-	inline deBaseSynthesizerSound *GetPeerSynthesizer() const{return pPeerSynthesizer;}
+	inline deBaseSynthesizerSound *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer system peer object. */
 	void SetPeerSynthesizer(deBaseSynthesizerSound *peer);

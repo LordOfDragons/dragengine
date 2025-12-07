@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Freetype library. */
-	inline FT_Library GetFTLibrary() const{return pFTLib;}
+	inline FT_Library GetFTLibrary() const{ return pFTLib; }
 	
 	/** Assert Freetype call. */
 	void AssertFT(FT_Error error, const char *function);

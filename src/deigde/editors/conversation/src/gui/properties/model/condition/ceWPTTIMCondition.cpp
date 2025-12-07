@@ -65,7 +65,7 @@ ceWPTTreeItemModel(windowMain, conversation, type),
 pAction(&action),
 pCondition(condition)
 {
-	if(! condition){
+	if(!condition){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -91,7 +91,7 @@ void ceWPTTIMCondition::Update(){
 }
 
 void ceWPTTIMCondition::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	

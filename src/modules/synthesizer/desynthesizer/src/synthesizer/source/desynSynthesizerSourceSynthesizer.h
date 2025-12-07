@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Child synthesizer or \em NULL if not set. */
-	inline desynSynthesizer *GetChildSynthesizer() const{return pChildSynthesizer;}
+	inline desynSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
 	
 	
 	

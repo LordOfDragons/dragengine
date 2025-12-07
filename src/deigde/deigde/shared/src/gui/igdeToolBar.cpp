@@ -66,7 +66,7 @@ void igdeToolBar::CreateNativeWidget(){
 }
 
 void igdeToolBar::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -365,7 +365,7 @@ void deoglGIState::ProbesMoved(){
 void deoglGIState::InvalidateArea(const decDVector &minExtend, const decDVector &maxExtend, bool hard){
 // 		pRenderThread.GetLogger().LogInfoFormat("InvalidateArea %s (%g,%g,%g) (%g,%g,%g)", hard ? "hard" : "soft",
 // 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
-	if(! (maxExtend > minExtend)){
+	if(!(maxExtend > minExtend)){
 		return;
 	}
 	
@@ -380,7 +380,7 @@ void deoglGIState::InvalidateArea(const decDVector &minExtend, const decDVector 
 void deoglGIState::TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend){
 // 		pRenderThread.GetLogger().LogInfoFormat("TouchDynamicArea (%g,%g,%g) (%g,%g,%g)",
 // 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
-	if(! (maxExtend > minExtend)){
+	if(!(maxExtend > minExtend)){
 		return;
 	}
 	
@@ -402,7 +402,7 @@ void deoglGIState::ValidatedRayCaches(){
 }
 
 void deoglGIState::ComponentEnteredWorld(deoglRComponent *component){
-	if(! pAreaTracker.ComponentTouches(*component) || pAreaTracker.RejectComponent(*component)){
+	if(!pAreaTracker.ComponentTouches(*component) || pAreaTracker.RejectComponent(*component)){
 		return;
 	}
 	
@@ -419,7 +419,7 @@ void deoglGIState::ComponentEnteredWorld(deoglRComponent *component){
 }
 
 void deoglGIState::ComponentChangedLayerMask(deoglRComponent *component){
-	if(! pAreaTracker.ComponentTouches(*component) || pAreaTracker.RejectComponent(*component)){
+	if(!pAreaTracker.ComponentTouches(*component) || pAreaTracker.RejectComponent(*component)){
 		return;
 	}
 	
@@ -657,7 +657,7 @@ void deoglGIState::pTrackInstanceChanges(){
 }
 
 void deoglGIState::pUpdateProbeOffsetFromShader(deoglGICascade &cascade){
-	if(! pProbesHaveMoved || cascade.GetUpdateProbeCount() == 0){
+	if(!pProbesHaveMoved || cascade.GetUpdateProbeCount() == 0){
 		return;
 	}
 	
@@ -672,7 +672,7 @@ void deoglGIState::pUpdateProbeOffsetFromShader(deoglGICascade &cascade){
 }
 
 void deoglGIState::pUpdateProbeExtendsFromShader(deoglGICascade &cascade){
-	if(! pProbesExtendsChanged || cascade.GetRayCacheProbeCount() == 0){
+	if(!pProbesExtendsChanged || cascade.GetRayCacheProbeCount() == 0){
 		return;
 	}
 	
@@ -716,18 +716,18 @@ void deoglGIState::pPrepareRayCacheProbes(deoglGICascade &cascade){
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if(pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && ! pClearMaps){
+	&& pTexProbeOffset.GetTexture() && !pClearMaps){
 		return;
 	}
 	
-	if(! pTexProbeIrradiance.GetTexture()){
+	if(!pTexProbeIrradiance.GetTexture()){
 		pTexProbeIrradiance.SetFBOFormat(4, true); // image load/store supports only 1, 2 and 4 not 3
 		pTexProbeIrradiance.SetSize((pSizeTexIrradiance + 2) * pProbeCount.x * pProbeCount.y + 2,
 			(pSizeTexIrradiance + 2) * pProbeCount.z + 2, pCascadeCount);
 		pTexProbeIrradiance.CreateTexture();
 	}
 	
-	if(! pTexProbeDistance.GetTexture()){
+	if(!pTexProbeDistance.GetTexture()){
 		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
 			// pTexProbeDistance.SetFBOFormatIntegral(1, 32, true);
 			pTexProbeDistance.SetFBOFormat(4, true);
@@ -740,7 +740,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pTexProbeDistance.CreateTexture();
 	}
 	
-	if(! pTexProbeOffset.GetTexture()){
+	if(!pTexProbeOffset.GetTexture()){
 		pTexProbeOffset.SetFBOFormat(4, true);
 		pTexProbeOffset.SetSize(pProbeCount.x * pProbeCount.y, pProbeCount.z, pCascadeCount);
 		pTexProbeOffset.CreateTexture();

@@ -49,9 +49,9 @@ public:
 	debpMotionState();
 	~debpMotionState();
 	// management
-	inline const decDVector &GetPosition() const{return pPosition;}
-	inline const decVector &GetScaling() const{return pScaling;}
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetScaling() const{ return pScaling; }
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	void SetPosition(const decDVector &position);
 	void SetScaling(const decVector &scaling);
 	void SetOrientation(const decQuaternion &orientation);

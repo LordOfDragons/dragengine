@@ -85,7 +85,7 @@ decShape *decShapeList::GetAt(int index) const{
 }
 
 int decShapeList::IndexOf(decShape *shape) const{
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -101,7 +101,7 @@ int decShapeList::IndexOf(decShape *shape) const{
 }
 
 bool decShapeList::Has(decShape *shape) const{
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -117,7 +117,7 @@ bool decShapeList::Has(decShape *shape) const{
 }
 
 void decShapeList::SetAt(int index, decShape *shape){
-	if(! shape || index < 0 || index >= pCount){
+	if(!shape || index < 0 || index >= pCount){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -58,7 +58,7 @@ seControllerTarget::~seControllerTarget(){
 ///////////////
 
 void seControllerTarget::AddLink(seLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);

@@ -69,7 +69,7 @@ void deClassColliderBreakingListener::nfRigConstraintBroke::RunFunction(dsRunTim
 
 deClassColliderBreakingListener::deClassColliderBreakingListener(deScriptingDragonScript *ds) :
 dsClass("ColliderBreakingListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	

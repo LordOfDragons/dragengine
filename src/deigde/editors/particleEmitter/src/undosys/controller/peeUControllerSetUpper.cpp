@@ -43,7 +43,7 @@ peeUControllerSetUpper::peeUControllerSetUpper(peeController *controller, float 
 pController(NULL),
 pNewUpper(newValue)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	

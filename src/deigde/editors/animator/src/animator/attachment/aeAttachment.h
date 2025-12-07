@@ -84,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set parent animator. */
 	void SetAnimator(aeAnimator *animator);
@@ -92,19 +92,19 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{return pAttachType;}
+	inline eAttachTypes GetAttachType() const{ return pAttachType; }
 	
 	/** Set attached type. */
 	void SetAttachType(eAttachTypes type);
 	
 	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** Set name of the bone to attach to. */
 	void SetBoneName(const char *name);
@@ -126,7 +126,7 @@ public:
 	
 	
 	/** Object wrapper. */
-	inline const igdeWObject::Ref &GetObjectWrapper() const{return pObjectWrapper;}
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pObjectWrapper; }
 	/*@}*/
 	
 private:

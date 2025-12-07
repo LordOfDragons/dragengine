@@ -74,7 +74,7 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{return pShapes;}
+	inline const decShapeList &GetShapes() const{ return pShapes; }
 	
 	/** \brief Set shapes. */
 	void SetShapes(const decShapeList &shapes);

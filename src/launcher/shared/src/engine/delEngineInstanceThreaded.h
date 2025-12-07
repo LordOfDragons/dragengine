@@ -97,13 +97,13 @@ public:
 	/*@{*/
 	#ifdef OS_W32
 	/** \brief Executable name. */
-	inline const decString &GetExecutableName() const{return pExecutableName;}
+	inline const decString &GetExecutableName() const{ return pExecutableName; }
 	
 	/** \brief Set executable name. */
 	void SetExecutableName(const char *executableName);
 	
 	/** \brief Default executable name. */
-	inline static const decString &GetDefaultExecutableName(){return pDefaultExecutableName;}
+	inline static const decString &GetDefaultExecutableName(){ return pDefaultExecutableName; }
 	
 	/** \brief Set default executable name. */
 	static void SetDefaultExecutableName(const char *executableName);

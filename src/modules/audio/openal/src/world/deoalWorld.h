@@ -75,13 +75,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deAudioOpenAL &GetOal() const{return pOal;}
+	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	/** \brief World resource. */
-	inline deWorld &GetWorld() const{return pWorld;}
+	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Audio world. */
-	inline deoalAWorld *GetAWorld() const{return pAWorld;}
+	inline deoalAWorld *GetAWorld() const{ return pAWorld; }
 	
 	
 	

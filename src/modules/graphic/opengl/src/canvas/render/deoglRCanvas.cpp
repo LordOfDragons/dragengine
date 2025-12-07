@@ -127,7 +127,7 @@ void deoglRCanvas::DirtyMaskRenderTarget(){
 
 
 void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pMask){
+	if(!pMask){
 		return;
 	}
 	
@@ -145,7 +145,7 @@ void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask)
 }
 
 void deoglRCanvas::PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask){
-	if(! pMask || ! pMaskRenderTarget->GetTextureDirty()){
+	if(!pMask || !pMaskRenderTarget->GetTextureDirty()){
 		return;
 	}
 	

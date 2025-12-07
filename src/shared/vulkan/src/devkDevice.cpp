@@ -372,7 +372,7 @@ void devkDevice::pCreateDevice(){
 		for(i=0; i<pConfig.graphicQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexGraphic, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get graphic device queue failed");
 			}
 			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexGraphic, i, queue));
@@ -386,7 +386,7 @@ void devkDevice::pCreateDevice(){
 		for(i=0; i<allowComputeQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexCompute, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get compute device queue failed");
 			}
 			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexCompute, i, queue));
@@ -400,7 +400,7 @@ void devkDevice::pCreateDevice(){
 		for(i=0; i<allowTransferQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexTransfer, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get transfer device queue failed");
 			}
 			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexTransfer, i, queue));
@@ -475,7 +475,7 @@ void devkDevice::pDetectExtensions(){
 		
 		baseModule.LogInfo("Not Supported Extensions:");
 		for(i=0; i<ExtensionCount; i++){
-			if(! pSupportsExtension[i].version){
+			if(!pSupportsExtension[i].version){
 				baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
 			}
 		}
@@ -571,7 +571,7 @@ void devkDevice::pDetectCapabilities(){
 void devkDevice::pLoadFunctions(){
 	#define DEVICE_LEVEL_VULKAN_FUNCTION(name) \
 		name = (PFN_##name)pvkGetDeviceProcAddr(pDevice, #name); \
-		if(! name){ \
+		if(!name){ \
 			DETHROW_INFO(deeInvalidAction, "Device function " #name " not found"); \
 		}
 	

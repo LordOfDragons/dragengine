@@ -83,11 +83,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the class name of the prop to search for. */
-	inline const decString &GetPropClass() const{return pPropClass;}
+	inline const decString &GetPropClass() const{ return pPropClass; }
 	/** Sets the class name of the prop to search for. */
 	void SetPropClass(const char *propClass);
 	/** Retrieves the search radius. */
-	inline float GetSearchRadius() const{return pSearchRadius;}
+	inline float GetSearchRadius() const{ return pSearchRadius; }
 	/** Sets the search radius. */
 	void SetSearchRadius(float searchRadius);
 	

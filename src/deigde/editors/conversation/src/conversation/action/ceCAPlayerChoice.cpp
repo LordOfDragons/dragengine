@@ -103,7 +103,7 @@ ceConversationAction *ceCAPlayerChoice::CreateCopy() const{
 }
 
 void ceCAPlayerChoice::SetVariableName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

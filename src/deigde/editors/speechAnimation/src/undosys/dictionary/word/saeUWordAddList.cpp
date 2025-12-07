@@ -44,7 +44,7 @@ saeUWordAddList::saeUWordAddList(saeSAnimation *sanimation, const saeWordList &w
 pSAnimation(NULL),
 pWords(words)
 {
-	if(! sanimation || words.GetCount() == 0){
+	if(!sanimation || words.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

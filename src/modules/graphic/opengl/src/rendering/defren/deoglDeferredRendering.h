@@ -123,38 +123,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width of buffers. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height of buffers. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** Buffer layer count. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Real width of buffers. */
-	inline int GetRealWidth() const{return pRealWidth;}
+	inline int GetRealWidth() const{ return pRealWidth; }
 	
 	/** Real height of buffers. */
-	inline int GetRealHeight() const{return pRealHeight;}
+	inline int GetRealHeight() const{ return pRealHeight; }
 	
 	/** Real buffer layer count. */
-	inline int GetRealLayerCount() const{return pRealLayerCount;}
+	inline int GetRealLayerCount() const{ return pRealLayerCount; }
 	
 	/** Retrieves the scaling factor in u direction. */
-	inline float GetScalingU() const{return pScalingU;}
+	inline float GetScalingU() const{ return pScalingU; }
 	/** Retrieves the scaling factor in v direction. */
-	inline float GetScalingV() const{return pScalingV;}
+	inline float GetScalingV() const{ return pScalingV; }
 	/** Retrieves the texture coordinate displacement in u direction for 1 pixel. */
-	inline float GetPixelSizeU() const{return pPixelSizeU;}
+	inline float GetPixelSizeU() const{ return pPixelSizeU; }
 	/** Retrieves the texture coordinate displacement in v direction for 1 pixel. */
-	inline float GetPixelSizeV() const{return pPixelSizeV;}
+	inline float GetPixelSizeV() const{ return pPixelSizeV; }
 	/** Resizes the buffers. */
 	void Resize(int width, int height, int layerCount = 1);
 	
 	
 	
 	/** Fade out near render range. */
-	inline bool GetUseFadeOutRange() const{return pUseFadeOutRange;}
+	inline bool GetUseFadeOutRange() const{ return pUseFadeOutRange; }
 	
 	
 	
@@ -181,10 +181,10 @@ public:
 	deoglArrayTexture *GetDepthTexture2() const;
 	
 	/** Third depth texture. */
-	inline deoglArrayTexture *GetDepthTexture3() const{return pTextureDepth3;}
+	inline deoglArrayTexture *GetDepthTexture3() const{ return pTextureDepth3; }
 	
 	/** XRay depth texture. */
-	inline deoglArrayTexture *GetDepthTextureXRay() const{return pTextureDepthXRay;}
+	inline deoglArrayTexture *GetDepthTextureXRay() const{ return pTextureDepthXRay; }
 	
 	/** Swap first depth texture to second. */
 	void SwapDepthTextures();
@@ -208,29 +208,29 @@ public:
 	void CopyFirstDepthToXRayDepth(bool copyDepth, bool copyStencil);
 	
 	/** Retrieves the diffuse texture. */
-	inline deoglArrayTexture *GetTextureDiffuse() const{return pTextureDiffuse;}
+	inline deoglArrayTexture *GetTextureDiffuse() const{ return pTextureDiffuse; }
 	/** Retrieves the normal texture. */
-	inline deoglArrayTexture *GetTextureNormal() const{return pTextureNormal;}
+	inline deoglArrayTexture *GetTextureNormal() const{ return pTextureNormal; }
 	/** Retrieves the reflectivity texture. */
-	inline deoglArrayTexture *GetTextureReflectivity() const{return pTextureReflectivity;}
+	inline deoglArrayTexture *GetTextureReflectivity() const{ return pTextureReflectivity; }
 	/** Retrieves the roughness texture. */
-	inline deoglArrayTexture *GetTextureRoughness() const{return pTextureRoughness;}
+	inline deoglArrayTexture *GetTextureRoughness() const{ return pTextureRoughness; }
 	/** Retrieves the ao and solidity texture. */
-	inline deoglArrayTexture *GetTextureAOSolidity() const{return pTextureAOSolidity;}
+	inline deoglArrayTexture *GetTextureAOSolidity() const{ return pTextureAOSolidity; }
 	/** Retrieves the sub-surface texture. */
-	inline deoglArrayTexture *GetTextureSubSurface() const{return pTextureSubSurface;}
+	inline deoglArrayTexture *GetTextureSubSurface() const{ return pTextureSubSurface; }
 	/** Retrieves the color texture. */
-	inline deoglArrayTexture *GetTextureColor() const{return pTextureColor;}
+	inline deoglArrayTexture *GetTextureColor() const{ return pTextureColor; }
 	
 	/** Luminance texture. */
-	inline deoglArrayTexture *GetTextureLuminance() const{return pTextureLuminance;}
+	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
 	
 	/** Retrieves the first temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary1() const{return pTextureTemporary1;}
+	inline deoglArrayTexture *GetTextureTemporary1() const{ return pTextureTemporary1; }
 	/** Retrieves the second temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary2() const{return pTextureTemporary2;}
+	inline deoglArrayTexture *GetTextureTemporary2() const{ return pTextureTemporary2; }
 	/** Retrieves the third temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary3() const{return pTextureTemporary3;}
+	inline deoglArrayTexture *GetTextureTemporary3() const{ return pTextureTemporary3; }
 	
 	/** Sets the normal as the current post processing target. */
 	void InitPostProcessTarget();
@@ -283,7 +283,7 @@ public:
 	void ActivateFBOLuminance();
 	
 	/** Retrieves the depth min-map texture. */
-	inline deoglDRDepthMinMax &GetDepthMinMax() const{return *pDepthMinMax;}
+	inline deoglDRDepthMinMax &GetDepthMinMax() const{ return *pDepthMinMax; }
 	
 	/** Luminance texture. */
 // 	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
@@ -301,12 +301,12 @@ public:
 // 	void ActivateFBOLuminanceNormal();
 	
 	/** Retrieves the full screen quad VAO. */
-	inline deoglVAO *GetVAOFullScreenQuad() const{return pVAOFullScreenQuad;}
+	inline deoglVAO *GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }
 	/** Retrieves the billboard VAO. */
-	inline deoglVAO *GetVAOBillboard() const{return pVAOBillboard;}
+	inline deoglVAO *GetVAOBillboard() const{ return pVAOBillboard; }
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{return pMemUse;}
+	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }
 	/*@}*/
 	
 	/** \name Rendering */
@@ -350,7 +350,7 @@ public:
 	void SetShaderParamSCToCSP(deoglShaderCompiled &shader, int parameter) const;
 	
 	/** Render doc debug texture. */
-	inline deoglTexture *GetTexRenderDocDebug() const{return pTexRenderDocDebug;}
+	inline deoglTexture *GetTexRenderDocDebug() const{ return pTexRenderDocDebug; }
 	/*@}*/
 	
 private:

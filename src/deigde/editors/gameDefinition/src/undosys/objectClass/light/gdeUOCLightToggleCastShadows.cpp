@@ -44,7 +44,7 @@ gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass *objec
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -72,7 +72,7 @@ gdeUOCLightToggleCastShadows::~gdeUOCLightToggleCastShadows(){
 ///////////////
 
 void gdeUOCLightToggleCastShadows::Undo(){
-	pLight->SetCastShadows(! pLight->GetCastShadows());
+	pLight->SetCastShadows(!pLight->GetCastShadows());
 	pObjectClass->NotifyLightChanged(pLight);
 }
 

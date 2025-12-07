@@ -62,7 +62,7 @@ pDDSCenter(NULL),
 pDDSCoordSystem(NULL),
 pDDSSnapDistance(NULL)
 {
-	if(! ocsnapPoint){
+	if(!ocsnapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

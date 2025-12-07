@@ -113,7 +113,7 @@ bool gdeSkinList::HasWithPath(const char *path) const{
 }
 
 void gdeSkinList::Add(gdeSkin *skin){
-	if(! skin || HasWithPath(skin->GetPath())){
+	if(!skin || HasWithPath(skin->GetPath())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -348,7 +348,7 @@ void deClassNavigatorPath::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *m
 	decBaseFileReader * const reader = clsNavPath.GetDS().GetClassFileReader()->
 		GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -382,7 +382,7 @@ void deClassNavigatorPath::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *my
 	const deScriptingDragonScript &ds = ((deClassNavigatorPath*)GetOwnerClass())->GetDS();
 	decBaseFileWriter * const writer = ds.GetClassFileWriter()->GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -411,7 +411,7 @@ void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsVal
 	const deScriptingDragonScript &ds = ((deClassNavigatorPath*)GetOwnerClass())->GetDS();
 	
 	deDebugDrawer * const debugDrawer = ds.GetClassDebugDrawer()->GetDebugDrawer(rt->GetValue(0)->GetRealObject());
-	if(! debugDrawer){
+	if(!debugDrawer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -504,7 +504,7 @@ void deClassNavigatorPath::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassNavigatorPath * const clsNavPath = (deClassNavigatorPath*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsNavPath)){
+	if(!p_IsObjOfType(object, clsNavPath)){
 		rt->PushBool(false);
 		
 	}else{
@@ -586,7 +586,7 @@ void deClassNavigatorPath::CreateClassMembers(dsEngine *engine){
 }
 
 deNavigatorPath &deClassNavigatorPath::GetNavigatorPath(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -594,7 +594,7 @@ deNavigatorPath &deClassNavigatorPath::GetNavigatorPath(dsRealObject *myself) co
 }
 
 void deClassNavigatorPath::PushNavigatorPath(dsRunTime *rt, const deNavigatorPath &path){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

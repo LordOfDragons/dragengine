@@ -68,13 +68,13 @@ bool ceConversationConditionList::Has(ceConversationCondition *condition) const{
 }
 
 void ceConversationConditionList::Add(ceConversationCondition *condition){
-	if(! condition) DETHROW(deeInvalidParam);
+	if(!condition) DETHROW(deeInvalidParam);
 	
 	pConditions.Add(condition);
 }
 
 void ceConversationConditionList::InsertAt(ceConversationCondition *condition, int index){
-	if(! condition) DETHROW(deeInvalidParam);
+	if(!condition) DETHROW(deeInvalidParam);
 	
 	pConditions.Insert(condition, index);
 }

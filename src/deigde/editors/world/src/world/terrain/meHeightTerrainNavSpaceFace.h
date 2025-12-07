@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent type or \em NULL. */
-	inline meHeightTerrainNavSpaceType *GetType() const{return pType;}
+	inline meHeightTerrainNavSpaceType *GetType() const{ return pType; }
 	
 	/** \brief Set parent type or \em NULL. */
 	void SetType(meHeightTerrainNavSpaceType *type);
@@ -69,7 +69,7 @@ public:
 	
 	/** \brief Navigation points. */
 	decIntList &GetNavPoints(){return pNavPoints;}
-	const decIntList &GetNavPoints() const{return pNavPoints;}
+	const decIntList &GetNavPoints() const{ return pNavPoints; }
 	
 	/** \brief Order navigation points clock-wise. */
 	void OrderClockwise(int pointsPerRow);

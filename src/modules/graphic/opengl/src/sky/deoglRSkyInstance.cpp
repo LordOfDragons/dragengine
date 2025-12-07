@@ -202,7 +202,7 @@ void deoglRSkyInstance::RebuildLayers(){
 		pLayerCount = 0;
 	}
 	
-	if(! pRSky){
+	if(!pRSky){
 		return;
 	}
 	

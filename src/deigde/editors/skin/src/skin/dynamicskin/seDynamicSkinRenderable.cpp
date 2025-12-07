@@ -66,7 +66,7 @@ pSliderValueLower(0.0f),
 pSliderValueUpper(1.0f),
 pColor(1.0f, 1.0f, 1.0f)
 {
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -140,7 +140,7 @@ void seDynamicSkinRenderable::NotifyChanged(){
 }
 
 void seDynamicSkinRenderable::NotifyEngineDynamicSkinChanged(){
-	if(! pDynamicSkin){
+	if(!pDynamicSkin){
 		return;
 	}
 	
@@ -159,7 +159,7 @@ void seDynamicSkinRenderable::Update(float elapsed){
 		pEngVideoPlayer->Update(elapsed);
 	}
 	
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -333,7 +333,7 @@ void seDynamicSkinRenderable::SetImagePath(const char *imagePath){
 void seDynamicSkinRenderable::UpdateImage(){
 	deImage::Ref image;
 	
-	if(! pPathImage.IsEmpty()){
+	if(!pPathImage.IsEmpty()){
 		try{
 			image.TakeOver(pEngine->GetImageManager()->LoadImage(pPathImage, "/"));
 			
@@ -372,7 +372,7 @@ void seDynamicSkinRenderable::SetVideoPath(const char *videoPath){
 void seDynamicSkinRenderable::UpdateVideo(){
 	deVideo::Ref video;
 	
-	if(! pPathVideo.IsEmpty()){
+	if(!pPathVideo.IsEmpty()){
 		try{
 			video.TakeOver(pEngine->GetVideoManager()->LoadVideo(pPathVideo, "/", false));
 			

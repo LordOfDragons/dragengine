@@ -124,13 +124,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property list to edit. */
-	inline const gdePropertyList *GetPropertyList() const{return pPropertyList;}
+	inline const gdePropertyList *GetPropertyList() const{ return pPropertyList; }
 	
 	/** \brief Set property list to edit. */
 	void SetPropertyList(const gdePropertyList *propPropertyList);
 	
 	/** \brief Game definition or NULL. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or NULL. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -139,7 +139,7 @@ public:
 	igdeUndoSystem *GetUndoSystem() const;
 	
 	/** \brief Clipboard or NULL. */
-	inline igdeClipboard *GetClipboard() const{return pClipboard;}
+	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Set clipboard or NULL. */
 	void SetClipboard(igdeClipboard *clipboard);
@@ -190,20 +190,20 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionPropertiesMenu() const{return pActionPropertiesMenu;}
-	inline igdeAction *GetActionPropertyAdd() const{return pActionPropertyAdd;}
-	inline igdeAction *GetActionPropertyRemove() const{return pActionPropertyRemove;}
-	inline igdeAction *GetActionPropertyCopy() const{return pActionPropertyCopy;}
-	inline igdeAction *GetActionPropertyCut() const{return pActionPropertyCut;}
-	inline igdeAction *GetActionPropertyPaste() const{return pActionPropertyPaste;}
+	inline igdeActionContextMenu *GetActionPropertiesMenu() const{ return pActionPropertiesMenu; }
+	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
+	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
+	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
 	
-	inline igdeAction *GetActionOptionAdd() const{return pActionOptionAdd;}
-	inline igdeAction *GetActionOptionRemove() const{return pActionOptionRemove;}
+	inline igdeAction *GetActionOptionAdd() const{ return pActionOptionAdd; }
+	inline igdeAction *GetActionOptionRemove() const{ return pActionOptionRemove; }
 	
-	inline igdeAction *GetActionCustomPatternAdd() const{return pActionCustomPatternAdd;}
-	inline igdeAction *GetActionCustomPatternRemove() const{return pActionCustomPatternRemove;}
+	inline igdeAction *GetActionCustomPatternAdd() const{ return pActionCustomPatternAdd; }
+	inline igdeAction *GetActionCustomPatternRemove() const{ return pActionCustomPatternRemove; }
 	
-	inline igdeActionContextMenu *GetActionCustomPatternMenu() const{return pActionCustomPatternMenu;}
+	inline igdeActionContextMenu *GetActionCustomPatternMenu() const{ return pActionCustomPatternMenu; }
 	/*@}*/
 	
 	

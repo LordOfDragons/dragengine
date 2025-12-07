@@ -112,7 +112,7 @@ void deRLTaskReadFont::Run(){
 	LogRunEnter();
 	
 	// checks
-	if(! pInternalTask){
+	if(!pInternalTask){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -123,12 +123,12 @@ void deRLTaskReadFont::Run(){
 	}
 	
 	deFont * const font = pInternalTask->GetFont();
-	if(! font){
+	if(!font){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const deRLTaskReadFontInternal2 * const internalTask2 = pInternalTask->GetInternalTask();
-	if(! internalTask2){
+	if(!internalTask2){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -139,7 +139,7 @@ void deRLTaskReadFont::Run(){
 	}
 	
 	// verify font and update glyphs
-	if(! font->Verify()){
+	if(!font->Verify()){
 		DETHROW(deeInvalidParam);
 	}
 	font->UpdateGlyphs();
@@ -154,7 +154,7 @@ void deRLTaskReadFont::Run(){
 void deRLTaskReadFont::Finished(){
 	LogFinishedEnter();
 	
-	if(! pSucceeded || ! pInternalTask){
+	if(!pSucceeded || !pInternalTask){
 		SetState(esFailed);
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
@@ -162,7 +162,7 @@ void deRLTaskReadFont::Finished(){
 	}
 	
 	deFont * const font = pInternalTask->GetFont();
-	if(pInternalTask->GetState() != esSucceeded || ! font){
+	if(pInternalTask->GetState() != esSucceeded || !font){
 		SetState(esFailed);
 		LogFinishedExit();
 		GetResourceLoader().FinishTask(this);
@@ -190,7 +190,7 @@ void deRLTaskReadFont::Finished(){
 		}
 	}
 	
-	if(! alreadyLoaded){
+	if(!alreadyLoaded){
 		deFontManager &fontManager = *GetEngine().GetFontManager();
 		deFont * const checkFont = fontManager.GetFontWith(GetPath());
 		

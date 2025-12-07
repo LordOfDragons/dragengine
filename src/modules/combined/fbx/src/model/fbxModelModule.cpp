@@ -243,7 +243,7 @@ void fbxModelModule::pLoadModelTexture(deModel &model, const fbxModel &loadModel
 	try{
 		texture = new deModelTexture(name, width, height);
 		texture->SetDecalOffset(model.GetTextureCount());
-		texture->SetDoubleSided(! loadModel.GetCulling());
+		texture->SetDoubleSided(!loadModel.GetCulling());
 		model.AddTexture(texture);
 		
 	}catch(const deException &){

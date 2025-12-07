@@ -94,7 +94,7 @@ public:
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator){
+		if(!animator){
 			return;
 		}
 		
@@ -131,7 +131,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator || animator->GetRigPath() == editPath->GetPath()){
+		if(!animator || animator->GetRigPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -150,7 +150,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(! animator || animator->GetAnimationPath() == editPath->GetPath()){
+		if(!animator || animator->GetAnimationPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -170,13 +170,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		const decString &name = pPanel.GetCBRigBoneText();
-		return ! name.IsEmpty() && ! animator->GetListBones().Has(name)
+		return !name.IsEmpty() && !animator->GetListBones().Has(name)
 			? new aeUAnimatorAddBone(animator, name) : nullptr;
 	}
 	
 	virtual void Update(const aeAnimator &animator){
 		const decString &name = pPanel.GetCBRigBoneText();
-		SetEnabled(! name.IsEmpty() && ! animator.GetListBones().Has(name));
+		SetEnabled(!name.IsEmpty() && !animator.GetListBones().Has(name));
 	}
 };
 
@@ -187,13 +187,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		const decString &name = pPanel.GetCBRigBoneText();
-		return ! name.IsEmpty() && animator->GetListBones().Has(name)
+		return !name.IsEmpty() && animator->GetListBones().Has(name)
 			? new aeUAnimatorRemoveBone(animator, name) : nullptr;
 	}
 	
 	virtual void Update(const aeAnimator &animator){
 		const decString &name = pPanel.GetCBRigBoneText();
-		SetEnabled(! name.IsEmpty() && animator.GetListBones().Has(name));
+		SetEnabled(!name.IsEmpty() && animator.GetListBones().Has(name));
 	}
 };
 
@@ -232,7 +232,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
-		if(! clip){
+		if(!clip){
 			return nullptr;
 		}
 		
@@ -281,7 +281,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		decString text;
 		while(true){
-			if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Import From Text", "Bones. One bone per line.", text)){
 				return nullptr;
 			}
@@ -294,7 +294,7 @@ public:
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! lines.GetAt(i).IsEmpty()){
+			if(!lines.GetAt(i).IsEmpty()){
 				bones.Add(lines.GetAt(i));
 			}
 		}
@@ -319,7 +319,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetAnimator()){
+		if(!pPanel.GetAnimator()){
 			return;
 		}
 		
@@ -345,13 +345,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		return ! name.IsEmpty() && ! animator->GetListVertexPositionSets().Has(name)
+		return !name.IsEmpty() && !animator->GetListVertexPositionSets().Has(name)
 			? new aeUAnimatorAddVertexPositionSet(animator, name) : nullptr;
 	}
 	
 	virtual void Update(const aeAnimator &animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		SetEnabled(! name.IsEmpty() && ! animator.GetListVertexPositionSets().Has(name));
+		SetEnabled(!name.IsEmpty() && !animator.GetListVertexPositionSets().Has(name));
 	}
 };
 
@@ -362,13 +362,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		return ! name.IsEmpty() && animator->GetListVertexPositionSets().Has(name)
+		return !name.IsEmpty() && animator->GetListVertexPositionSets().Has(name)
 			? new aeUAnimatorRemoveVertexPositionSet(animator, name) : nullptr;
 	}
 	
 	virtual void Update(const aeAnimator &animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		SetEnabled(! name.IsEmpty() && animator.GetListVertexPositionSets().Has(name));
+		SetEnabled(!name.IsEmpty() && animator.GetListVertexPositionSets().Has(name));
 	}
 };
 
@@ -407,7 +407,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
-		if(! clip){
+		if(!clip){
 			return nullptr;
 		}
 		
@@ -456,7 +456,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator *animator){
 		decString text;
 		while(true){
-			if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Import From Text", "Vertex position sets. One vertex position set per line.", text)){
 				return nullptr;
 			}
@@ -469,7 +469,7 @@ public:
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! lines.GetAt(i).IsEmpty()){
+			if(!lines.GetAt(i).IsEmpty()){
 				sets.Add(lines.GetAt(i));
 			}
 		}
@@ -495,7 +495,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetAnimator()){
+		if(!pPanel.GetAnimator()){
 			return;
 		}
 		
@@ -628,7 +628,7 @@ void aeWPAnimator::UpdateAnimator(){
 		}
 		pListBones->SortItems();
 		pListBones->SetSelection(pListBones->IndexOfItem(boneSelection));
-		if(! pListBones->GetSelectedItem() && pListBones->GetItemCount() > 0){
+		if(!pListBones->GetSelectedItem() && pListBones->GetItemCount() > 0){
 			pListBones->SetSelection(0);
 		}
 		
@@ -644,7 +644,7 @@ void aeWPAnimator::UpdateAnimator(){
 		}
 		pListVertexPositionSets->SortItems();
 		pListVertexPositionSets->SetSelection(pListVertexPositionSets->IndexOfItem(vpsSelection));
-		if(! pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItemCount() > 0){
+		if(!pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItemCount() > 0){
 			pListVertexPositionSets->SetSelection(0);
 		}
 		

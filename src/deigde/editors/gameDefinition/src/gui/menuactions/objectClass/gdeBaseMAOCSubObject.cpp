@@ -56,7 +56,7 @@ gdeBaseAction(windowMain, text, icon, description){
 
 igdeUndo *gdeBaseMAOCSubObject::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -69,7 +69,7 @@ void gdeBaseMAOCSubObject::Update(){
 
 gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return NULL;
 	}
 	

@@ -75,19 +75,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline const deoglRImage::Ref &GetImage() const{return pImage;}
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Repeat. */
-	inline const decPoint &GetRepeat() const{return pRepeat;}
+	inline const decPoint &GetRepeat() const{ return pRepeat; }
 	
 	/** TC Transform. */
-	inline const decTexMatrix2 &GetTCTransform() const{return pTCTransform;}
+	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
 	/** Texture coordinates clamp minimum. */
-	inline const decVector2 &GetTCClampMinimum() const{return pTCClampMin;}
+	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
 	/** Texture coordinates clamp maximum. */
-	inline const decVector2 &GetTCClampMaximum() const{return pTCClampMax;}
+	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
 	
 	

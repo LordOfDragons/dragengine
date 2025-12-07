@@ -66,7 +66,7 @@ pDDSReflection(NULL),
 pDDSInfluence(NULL),
 pDDSMask(NULL)
 {
-	if(! ocenvMapProbe){
+	if(!ocenvMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

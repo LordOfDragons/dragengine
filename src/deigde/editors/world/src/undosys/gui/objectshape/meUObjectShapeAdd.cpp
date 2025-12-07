@@ -46,10 +46,10 @@
 ////////////////////////////
 
 meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, const decShape &shape){
-	if(! object || ! property){
+	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -308,7 +308,7 @@ void deoglSkinTexture::BuildChannels(deoglRSkin &skin, const deSkinTexture &text
 	int i;
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		if(! pChannels[i]){
+		if(!pChannels[i]){
 			continue;
 		}
 		if(pChannels[i]->GetIsCached()){
@@ -928,7 +928,7 @@ void deoglSkinTexture::pPrepareChannels(deoglRSkin &skin, const deSkinTexture &t
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
 		determineFormat.ProcessChannel((deoglSkinChannel::eChannelTypes)i);
-		if(! determineFormat.GetIsDefined()){
+		if(!determineFormat.GetIsDefined()){
 			continue;
 		}
 		
@@ -1169,7 +1169,7 @@ void deoglSkinTexture::pCreateMipMaps(){
 	int i;
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		if(! pChannels[i]){
+		if(!pChannels[i]){
 			continue;
 		}
 		if(pChannels[i]->GetIsCached()){
@@ -1177,7 +1177,7 @@ void deoglSkinTexture::pCreateMipMaps(){
 		}
 		
 		deoglPixelBufferMipMap * const pbMipMap = pChannels[i]->GetPixelBufferMipMap();
-		if(! pbMipMap){
+		if(!pbMipMap){
 			continue;
 		}
 		
@@ -1274,7 +1274,7 @@ void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &
 	textureCompression.SetFastCompression(true);
 	
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
-		if(! pChannels[i]){
+		if(!pChannels[i]){
 			continue;
 		}
 		if(pChannels[i]->GetIsCached()){
@@ -1282,7 +1282,7 @@ void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &
 		}
 		
 		deoglPixelBufferMipMap * const pbMipMapSource = pChannels[i]->GetPixelBufferMipMap();
-		if(! pbMipMapSource){
+		if(!pbMipMapSource){
 			continue;
 		}
 		
@@ -1303,7 +1303,7 @@ void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &
 		}
 		
 		// if the texture format is not compressed continue
-		if(! texformat->GetIsCompressed()){
+		if(!texformat->GetIsCompressed()){
 			continue;
 		}
 		
@@ -1327,7 +1327,7 @@ void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &
 			//pbformat = deoglPixelBuffer::epfDXT5;
 		}
 		
-		if(! canCompress){
+		if(!canCompress){
 			// we can not compress it. in theory the driver would compress for us. unfortunately
 			// various drivers exhibit crashes and even GPU lock-ups due to faulty compression
 			// code included. for this reason only formats are allowed which we know how to
@@ -1775,7 +1775,7 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			pOutlineThickness = decMath::max(value, 0.0f);
-			pHasOutline = pOutlineThickness != 0.0f || ! property.GetRenderable().IsEmpty();
+			pHasOutline = pOutlineThickness != 0.0f || !property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThicknessScreen:
@@ -1797,7 +1797,7 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			pOutlineEmissivityIntensity = decMath::max(value, 0.0f);
-			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || ! property.GetRenderable().IsEmpty();
+			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || !property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptNonPbrAlbedo:
@@ -2228,7 +2228,7 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 	}
 	
 	// check if the property has a renderable
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		const decString &renderable = property.GetRenderable();
 		
 		switch(propertyType){
@@ -2521,7 +2521,7 @@ void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &proper
 	}
 	
 	// check if the property has a boner
-	if(! property.GetBone().IsEmpty()){
+	if(!property.GetBone().IsEmpty()){
 		switch(propertyType){
 		case deoglSkinPropertyMap::eptClipPlane:
 			pMaterialProperties[empSkinClipPlane].SetBone(skin.AddBone(property.GetBone()));

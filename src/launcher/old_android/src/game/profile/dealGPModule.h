@@ -67,14 +67,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
 	void SetName(const char *name);
 	
 	/** \brief Parameter list. */
-	inline dealGPMParameterList &GetParameterList(){return pParameterList;}
-	inline const dealGPMParameterList &GetParameterList() const{return pParameterList;}
+	inline dealGPMParameterList &GetParameterList(){ return pParameterList; }
+	inline const dealGPMParameterList &GetParameterList() const{ return pParameterList; }
 	
 	/** \brief Copy from another module. */
 	void CopyFrom(const dealGPModule &module);

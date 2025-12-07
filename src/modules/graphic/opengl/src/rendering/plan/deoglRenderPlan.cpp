@@ -329,7 +329,7 @@ void deoglRenderPlan::PrepareRenderSkyOnly(){
 #endif
 
 void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -341,10 +341,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
-	if(! pCompute){
+	if(!pCompute){
 		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
 	}
-	if(! pTasks){
+	if(!pTasks){
 		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
 	}
 	
@@ -381,7 +381,7 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	renderCanvas.SampleDebugInfoPlanPrepareWorld(*this);
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
-	if(! pNoReflections){
+	if(!pNoReflections){
 		// NOTE requires world prepare to be fully done first.
 		// 
 		// NOTE this can trigger rendering in the world and thus can trigger
@@ -480,7 +480,7 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 }
 
 void deoglRenderPlan::pBarePrepareRenderRightEye(){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -646,7 +646,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 		const int layerCount = instance.GetLayerCount();
 		for(j=0; j<layerCount; j++){
 			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt(j);
-			if(! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient()){
+			if(!skyLayer.GetHasLightDirect() && !skyLayer.GetHasLightAmbient()){
 				continue;
 			}
 			
@@ -660,7 +660,7 @@ void deoglRenderPlan::pPlanSkyLight(){
 				}
 			}
 			
-			if(! planSkyLight){
+			if(!planSkyLight){
 				if(pSkyLightCount < pSkyLights.GetCount()){
 					planSkyLight = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(pSkyLightCount);
 					
@@ -805,7 +805,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	if(! pRenderThread.GetChoices().GetUseComputeRenderTask()){
+	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
 		pTaskFindContent = new deoglRPTFindContent(*this);
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
@@ -823,7 +823,7 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 		return;
 	}
 	
-	if(! pTaskFindContent){
+	if(!pTaskFindContent){
 		return;
 	}
 	
@@ -838,12 +838,12 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 }
 
 void deoglRenderPlan::pPlanGI(){
-	if(pUseConstGIState || ! pUseGIState || pDisableLights
+	if(pUseConstGIState || !pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
 		return;
 	}
 	
-	if(! pGIState){
+	if(!pGIState){
 		// GI state uses probes of 32x8x32 grid size. this is a default ratio of 4 times as width
 		// than high. we use the view distance as the width and thus 1/4 as the height. for a view
 		// distance of 500m this would yield a height of 125m. for most games this is enough.
@@ -873,7 +873,7 @@ void deoglRenderPlan::pPlanGI(){
 
 void deoglRenderPlan::pUpdateGI(){
 	deoglGIState * const giState = GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
@@ -931,7 +931,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 			}
 		}
 		
-		if(k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()
+		if(k == i && !envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()
 		&& envmap->GetInfluenceCollisionBox().IsPointInside(pCameraPosition)){
 			pEnvMaps[i].SetEnvMap(envmap);
 			pEnvMaps[i].SetDistance(0.0f);
@@ -968,7 +968,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 				}
 			}
 			
-			if(k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()){
+			if(k == i && !envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()){
 				for(k=0; k<cap; k++){
 					if(envmap->GetInfluenceCollisionBox().BoxHitsBox(
 					&pEnvMaps[k].GetEnvMap()->GetInfluenceCollisionBox())){
@@ -1013,10 +1013,10 @@ void deoglRenderPlan::pPlanEnvMaps(){
 				}
 			}
 			
-			if(k == i && ! envmap->GetSkyOnly()){
+			if(k == i && !envmap->GetSkyOnly()){
 				distance = (float)((envmap->GetPosition() - pCameraPosition).Length());
 				
-				if(! pEnvMaps[i].GetEnvMap() || distance < pEnvMaps[i].GetDistance()){
+				if(!pEnvMaps[i].GetEnvMap() || distance < pEnvMaps[i].GetDistance()){
 					pEnvMaps[i].SetEnvMap(envmap);
 					pEnvMaps[i].SetDistance(distance);
 				}
@@ -1147,7 +1147,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		}
 		
 		// if no environment map has been chosen to update check if the sky environment map needs updating. if so choose this one
-		if(! updateEnvmap && pWorld->GetSkyEnvironmentMap()->GetDirty()){
+		if(!updateEnvmap && pWorld->GetSkyEnvironmentMap()->GetDirty()){
 			updateEnvmap = pWorld->GetSkyEnvironmentMap();
 		}
 		
@@ -1184,14 +1184,14 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		for(i=0; i<count; i++){
 			envmap = pCollideList.GetComponentAt(i)->GetComponent()->GetRenderEnvMap();
 			
-			if(envmap && ! envmap->GetMarked()){
+			if(envmap && !envmap->GetMarked()){
 				envmap->SetMarked(true);
 				
 				if(envmap->GetDirty()){
 					positionDifference = envmap->GetPosition() - pCameraPosition;
 					envmapDistSquared = positionDifference * positionDifference;
 					
-					if(! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
+					if(!updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
 						updateEnvmap = envmap;
 						updateEnvmapDistSquared = envmapDistSquared;
 					}
@@ -1206,14 +1206,14 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		for(i=0; i<envmapCount; i++){
 			envmap = envmapList.GetAt(i);
 			
-			if(! envmap->GetMarked()){
+			if(!envmap->GetMarked()){
 				envmap->SetMarked(true);
 				
 				if(envmap->GetDirty()){
 					positionDifference = envmap->GetPosition() - pCameraPosition;
 					envmapDistSquared = positionDifference * positionDifference;
 					
-					if(! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
+					if(!updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
 						updateEnvmap = envmap;
 						updateEnvmapDistSquared = envmapDistSquared;
 					}
@@ -1349,7 +1349,7 @@ void deoglRenderPlan::pDebugVisibleNoCull(){
 		for(i=0; i<componentCount; i++){
 			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
-			if(! component.GetModel()){
+			if(!component.GetModel()){
 				continue;
 			}
 			
@@ -1398,7 +1398,7 @@ void deoglRenderPlan::pDebugVisibleCulled(){
 		for(i=0; i<componentCount; i++){
 			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
-			if(! component.GetModel()){
+			if(!component.GetModel()){
 				continue;
 			}
 			
@@ -1420,7 +1420,7 @@ void deoglRenderPlan::pDebugVisibleCulled(){
 			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
 			
-			if(! component.GetModel()){
+			if(!component.GetModel()){
 				continue;
 			}
 			
@@ -1451,7 +1451,7 @@ void deoglRenderPlan::PlanTransparency(int layerCount){
 	pTransparencyLayerCount = layerCount;
 	pCurTransparencyLayer = 0;
 	
-	if(! pHasTransparency){
+	if(!pHasTransparency){
 		// set light shadow parameters to default
 		return;
 	}
@@ -1502,7 +1502,7 @@ void deoglRenderPlan::CleanUp(){
 	if(pTasks){
 		pTasks->CleanUp();
 	}
-	if(! pRenderThread.GetChoices().GetUseComputeRenderTask()){
+	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
 		pWaitFinishedFindContent(nullptr);
 	}
 	
@@ -1871,7 +1871,7 @@ void deoglRenderPlan::SetOcclusionTestMatrixStereo(const decMatrix &matrix){
 
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
-	if(pUseGIState && ! pUseConstGIState && ! pDisableLights
+	if(pUseGIState && !pUseConstGIState && !pDisableLights
 	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
 	&& pRenderVR != ervrRightEye){
 		return pGIState;
@@ -1880,7 +1880,7 @@ deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
-	if(! pUseGIState || pDisableLights
+	if(!pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
 		return NULL;
 		
@@ -1920,7 +1920,7 @@ deoglRenderPlanEnvMap &deoglRenderPlan::GetEnvMapAt(int index) const{
 }
 
 void deoglRenderPlan::RemoveEnvMap(deoglEnvironmentMap *envmap){
-	if(! envmap){
+	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1947,7 +1947,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightAt(int index) const{
 }
 
 deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1967,7 +1967,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light)
 			pLightSize = newSize;
 		}
 		
-		if(! pLights[pLightCount]){
+		if(!pLights[pLightCount]){
 			pLights[pLightCount] = new deoglRenderPlanLight(*this);
 		}
 		
@@ -2041,12 +2041,12 @@ deoglRenderPlanMasked *deoglRenderPlan::GetMaskedPlanAt(int index) const{
 }
 
 deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
-	if(! plan) DETHROW(deeInvalidParam);
+	if(!plan) DETHROW(deeInvalidParam);
 	
 	if(pMaskedPlanCount == pMaskedPlanSize){
 		int newSize = pMaskedPlanSize * 3 / 2 + 1;
 		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		memset(newArray, '\0', sizeof(deoglRenderPlanMasked*) * newSize);
 		if(pMaskedPlans){
@@ -2058,7 +2058,7 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 		pMaskedPlanSize = newSize;
 	}
 	
-	if(! pMaskedPlans[pMaskedPlanCount]){
+	if(!pMaskedPlans[pMaskedPlanCount]){
 		pMaskedPlans[pMaskedPlanCount] = new deoglRenderPlanMasked;
 	}
 	
@@ -2107,10 +2107,10 @@ void deoglRenderPlan::pCheckTransparency(){
 	int i;
 	for(i=0; i<componentCount; i++){
 		const deoglRComponent &component = *pCollideList.GetComponentAt(i)->GetComponent();
-		if(! component.GetSolid() || ! component.GetOutlineSolid()){
+		if(!component.GetSolid() || !component.GetOutlineSolid()){
 			pHasTransparency = true;
 		}
-		if(! component.GetXRaySolid()){
+		if(!component.GetXRaySolid()){
 			pHasXRayTransparency = true;
 		}
 	}
@@ -2123,7 +2123,7 @@ void deoglRenderPlan::pCheckTransparency(){
 	for(i=0; i<billboardCount; i++){
 		const deoglRBillboard &billboard = *pCollideList.GetBillboardAt(i);
 		if(billboard.GetUseSkinTexture()){
-			if(! billboard.GetUseSkinTexture()->GetSolid()){
+			if(!billboard.GetUseSkinTexture()->GetSolid()){
 				pHasTransparency = true;
 				if(billboard.GetUseSkinTexture()->GetXRay()){
 					pHasXRayTransparency = true;
@@ -2151,7 +2151,7 @@ void deoglRenderPlan::pCheckTransparency(){
 			for(j=0; j<typeCount; j++){
 				const deoglRSkin * const skin = instance.GetTypeAt(j).GetUseSkin();
 				if(skin){
-					if(! skin->GetIsSolid()){
+					if(!skin->GetIsSolid()){
 						pHasTransparency = true;
 						if(skin->GetHasXRay()){
 							pHasXRayTransparency = true;
@@ -2185,7 +2185,7 @@ void deoglRenderPlan::pCheckTransparency(){
 			for(j=0; j<typeCount; j++){
 				const deoglRSkin * const skin = instance.GetTypeAt(j).GetUseSkin();
 				if(skin){
-					if(! skin->GetIsSolid()){
+					if(!skin->GetIsSolid()){
 						pHasTransparency = true;
 						if(skin->GetHasXRay()){
 							pHasXRayTransparency = true;
@@ -2260,7 +2260,7 @@ void deoglRenderPlan::pUpdateHTView(){
 }
 
 void deoglRenderPlan::pUpdateHTViewRTSInstances(){
-	if(! pHTView){
+	if(!pHTView){
 		return;
 	}
 	
@@ -2276,7 +2276,7 @@ void deoglRenderPlan::pCheckOutsideVisibility(){
 	bool outsideWorldVisible = true;
 	
 	pSkyVisible = outsideWorldVisible;
-	if(! outsideWorldVisible){
+	if(!outsideWorldVisible){
 		pCollideList.RemoveAllHTSectors();
 	}
 }

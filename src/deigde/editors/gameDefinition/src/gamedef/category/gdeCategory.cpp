@@ -117,7 +117,7 @@ void gdeCategory::SetHidden(bool hidden){
 
 
 void gdeCategory::AddCategory(gdeCategory *category){
-	if(! category || category->GetParent()){
+	if(!category || category->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -126,7 +126,7 @@ void gdeCategory::AddCategory(gdeCategory *category){
 }
 
 void gdeCategory::RemoveCategory(gdeCategory *category){
-	if(! pCategories.Has(category)){
+	if(!pCategories.Has(category)){
 		DETHROW(deeInvalidParam);
 	}
 	

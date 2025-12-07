@@ -77,14 +77,14 @@ public:
 	bool ReadPage(ogg_page &page, int serial);
 	
 	/** Retrieves the current frame. */
-	inline int GetCurrentFrame() const{return pCurFrame;}
+	inline int GetCurrentFrame() const{ return pCurFrame; }
 	/** Rewind. */
 	void Rewind();
 	/** Seek to frame. */
 	void SeekFrame(int frame);
 	
 	/** Retrieves the stream or NULL if not found. */
-	inline dethStreamReader *GetStream() const{return pStream;}
+	inline dethStreamReader *GetStream() const{ return pStream; }
 	/** Create default color conversion matrix. */
 	void DefaultColorConversionMatrix(decColorMatrix3 &matrix);
 	/*@}*/

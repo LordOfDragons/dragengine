@@ -65,29 +65,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sky instance layer. */
-	inline deoglRSkyInstanceLayer &GetLayer() const{return pLayer;}
+	inline deoglRSkyInstanceLayer &GetLayer() const{ return pLayer; }
 	
 	/** GI Cascade. */
-	inline const deoglGICascade &GetGICascade() const{return pGICascade;}
+	inline const deoglGICascade &GetGICascade() const{ return pGICascade; }
 	
 	/** Tracker. */
-	inline deoglSkyLayerTracker &GetTracker(){return pTracker;}
-	inline const deoglSkyLayerTracker &GetTracker() const{return pTracker;}
+	inline deoglSkyLayerTracker &GetTracker(){ return pTracker; }
+	inline const deoglSkyLayerTracker &GetTracker() const{ return pTracker; }
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Position threshold. */
-	inline double GetPositionThreshold() const{return pPositionThreshold;}
+	inline double GetPositionThreshold() const{ return pPositionThreshold; }
 	
 	/** Shadow caster. */
-	inline deoglShadowCaster &GetShadowCaster() const{return *pShadowCaster;}
+	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
 	
 	/** Update. */
 	void Update();
 	
 	/** Static shadow map is dirty. */
-	inline bool GetDirtyStaticShadow() const{return pDirtyStaticShadow;}
+	inline bool GetDirtyStaticShadow() const{ return pDirtyStaticShadow; }
 	
 	/** Clear dirty static shadow map flag. */
 	void ClearDirtyStaticShadow();

@@ -71,7 +71,7 @@ bool deReadLockGuard::TryReadLock(){
 }
 
 void deReadLockGuard::ReadUnlock(){
-	if(! pLocked){
+	if(!pLocked){
 		DETHROW(deeInvalidAction);
 	}
 	

@@ -176,7 +176,7 @@ void dealWidgetButton::SetLabel(const char *label){
 	}
 	
 	pLabel->SetText(label);
-	pLabel->SetVisible(! pLabel->GetText().IsEmpty());
+	pLabel->SetVisible(!pLabel->GetText().IsEmpty());
 }
 
 dealImage *dealWidgetButton::GetImage() const{
@@ -262,7 +262,7 @@ void dealWidgetButton::OnKeyRelease(int keycode){
 }
 
 void dealWidgetButton::OnMousePress(int buttons, const decPoint &position){
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	

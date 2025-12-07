@@ -234,7 +234,7 @@ float deoalEnvironment::Distance(const deoalEnvironment &env, bool withPan) cons
 void deoalEnvironment::Update(){
 	pSetSilent();
 	
-	if(! pWorld || ! pAudioThread.GetActiveMicrophone()){
+	if(!pWorld || !pAudioThread.GetActiveMicrophone()){
 		return;
 	}
 	
@@ -312,14 +312,14 @@ void deoalEnvironment::Update(){
 
 
 void deoalEnvironment::DebugPrint(){
-	if(! pDebug){
+	if(!pDebug){
 		pDebug = new deoalEnvironmentDebug(*this);
 	}
 	pDebug->Print();
 }
 
 void deoalEnvironment::DebugUpdateInfo(deDebugBlockInfo &debugInfo){
-	if(! pDebug){
+	if(!pDebug){
 		pDebug = new deoalEnvironmentDebug(*this);
 	}
 	pDebug->UpdateInfo(debugInfo);
@@ -420,10 +420,10 @@ void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoal
 }
 
 void deoalEnvironment::DebugSoundRays(deDebugDrawer &/*debugDrawer*/){
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
-	if(! pDebug){
+	if(!pDebug){
 		pDebug = new deoalEnvironmentDebug(*this);
 	}
 	
@@ -483,7 +483,7 @@ void deoalEnvironment::pDirectPath(const deoalAMicrophone &microphone, const dec
 			curTransElement = NULL;
 		}
 		
-		if(! transmitFront){
+		if(!transmitFront){
 			continue;
 		}
 		
@@ -608,7 +608,7 @@ const decDVector &micPos, const decQuaternion &micOrient){
 	#ifdef LISTENER_CENTRIC_RAY_CAST
 	pEnvProbe->CalcListener(listener, *pWorld, micPos, &microphone);
 	
-	if(! pEnvProbe->GetOctreeNode()){
+	if(!pEnvProbe->GetOctreeNode()){
 		pWorld->GetOctree()->InsertEnvProbeIntoTree(pEnvProbe, 8);
 	}
 	

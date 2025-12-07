@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImpulse){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

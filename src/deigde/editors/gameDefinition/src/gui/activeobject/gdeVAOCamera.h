@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class camera. */
-	inline gdeOCCamera *GetOCCamera() const{return pOCCamera;}
+	inline gdeOCCamera *GetOCCamera() const{ return pOCCamera; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

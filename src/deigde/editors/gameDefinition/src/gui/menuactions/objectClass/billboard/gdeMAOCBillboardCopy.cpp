@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject(gdeGameDefinition &gameDefinit
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
-	if(! billboard){
+	if(!billboard){
 		return NULL;
 	}
 	

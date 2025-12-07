@@ -84,7 +84,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSource * const source = pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -128,7 +128,7 @@ public:
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		
@@ -151,7 +151,7 @@ public:
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		
@@ -178,13 +178,13 @@ public:
 		"Paste effect from clipboard"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSource()){
+		if(!pPanel.GetSource()){
 			return;
 		}
 		
 		seClipboardDataEffect * const cdata = (seClipboardDataEffect*)pPanel.GetViewSynthesizer()
 			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataEffect::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -210,13 +210,13 @@ public:
 	}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetSource()){
+		if(!pPanel.GetSource()){
 			return;
 		}
 		
 		seClipboardDataEffect * const cdata = (seClipboardDataEffect*)pPanel.GetViewSynthesizer()
 			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataEffect::TYPE_NAME);
-		if(! cdata){
+		if(!cdata){
 			return;
 		}
 		
@@ -367,7 +367,7 @@ void seWPEffect::SelectActiveEffect(){
 
 void seWPEffect::ShowActiveEffectPanel(){
 	const seEffect * const effect = GetEffect();
-	if(! effect){
+	if(!effect){
 		pSwitcher->SetCurrent(epEmpty);
 		return;
 	}

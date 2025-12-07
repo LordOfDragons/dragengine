@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Moves. */
-	inline const decStringList &GetMoves() const{return pMoves;}
+	inline const decStringList &GetMoves() const{ return pMoves; }
 	
 	/** Set moves. */
 	void SetMoves(const decStringList &moves);
@@ -78,25 +78,25 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
@@ -104,12 +104,12 @@ public:
 	
 	
 	/** Move time target. */
-	inline aeControllerTarget &GetTargetMoveTime(){return pTargetMoveTime;}
-	inline const aeControllerTarget &GetTargetMoveTime() const{return pTargetMoveTime;}
+	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
+	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Select target. */
-	inline aeControllerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const aeControllerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	

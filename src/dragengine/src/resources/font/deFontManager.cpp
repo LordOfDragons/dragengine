@@ -84,7 +84,7 @@ deFont *deFontManager::GetFontWith(const char *filename) const{
 
 deFont *deFontManager::GetFontWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deFont * const font = (deFont*)pFonts.GetWithFilename(vfs, filename);
-	return font && ! font->GetOutdated() ? font : NULL;
+	return font && !font->GetOutdated() ? font : NULL;
 }
 
 deFont *deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
@@ -93,7 +93,7 @@ deFont *deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
 
 deFont *deFontManager::CreateFont(deVirtualFileSystem *vfs, const char *filename,
 deFontBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -103,7 +103,7 @@ deFontBuilder &builder){
 		// check if the animation with this filename already exists
 		if(filename[0] != '\0'){
 			deFont * const findFont = (deFont*)pFonts.GetWithFilename(vfs, filename);
-			if(findFont && ! findFont->GetOutdated()){
+			if(findFont && !findFont->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
@@ -113,7 +113,7 @@ deFontBuilder &builder){
 		builder.BuildFont(font);
 		
 		// check and init
-		if(! font->Verify()){
+		if(!font->Verify()){
 			DETHROW(deeInvalidParam);
 		}
 		font->UpdateGlyphs();
@@ -148,7 +148,7 @@ const char *basePath){
 	
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -183,7 +183,7 @@ const char *basePath){
 			// check and init
 			pLoadFontSources(font);
 			
-			if(! font->Verify()){
+			if(!font->Verify()){
 				DETHROW(deeInvalidParam);
 			}
 			font->UpdateGlyphs();
@@ -217,7 +217,7 @@ const char *basePath){
 deFont *deFontManager::LoadDebugFont(){
 	deFont *font = (deFont*)pFonts.GetWithFilename(GetEngine()->GetVirtualFileSystem(), FONT_DEBUG);
 	if(font){
-		if(! font->GetPeerGraphic()){
+		if(!font->GetPeerGraphic()){
 			GetGraphicSystem()->LoadFont(font);
 		}
 		font->AddReference();
@@ -450,7 +450,7 @@ deFont *deFontManager::LoadDebugFont(){
 			glyph.SetAdvance(tempGlyphs[i].width);
 		}
 		
-		if(! font->Verify()){
+		if(!font->Verify()){
 			DETHROW(deeInvalidParam);
 		}
 		font->UpdateGlyphs();
@@ -546,7 +546,7 @@ void deFontManager::SystemGraphicLoad(){
 	deFont *font = (deFont*)pFonts.GetRoot();
 	
 	while(font){
-		if(! font->GetPeerGraphic()){
+		if(!font->GetPeerGraphic()){
 			graSys.LoadFont(font);
 		}
 		font = (deFont*)font->GetLLManagerNext();
@@ -574,10 +574,10 @@ void deFontManager::pLoadFontSources(deFont *font){
 		decPath basePath(decPath::CreatePathUnix(font->GetFilename()));
 		basePath.RemoveLastComponent();
 		
-		if(! font->GetImagePath().IsEmpty()){
+		if(!font->GetImagePath().IsEmpty()){
 			newImage = imageMgr.LoadImage(font->GetVirtualFileSystem(),
 				font->GetImagePath(), basePath.GetPathUnix());
-			font->SetImage(newImage); // attention! +1 reference
+			font->SetImage(newImage); // attention!+1 reference
 			newImage->FreeReference();
 			newImage = NULL;
 		}

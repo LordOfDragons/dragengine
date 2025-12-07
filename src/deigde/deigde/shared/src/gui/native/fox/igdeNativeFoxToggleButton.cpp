@@ -75,7 +75,7 @@ pDeleted(NULL)
 	setFont((FXFont*)pFont->GetNativeFont());
 	setState(powner.GetToggled());
 	
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	setTipText(powner.GetDescription().GetString());
@@ -89,12 +89,12 @@ igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
 }
 
 igdeNativeFoxToggleButton *igdeNativeFoxToggleButton::CreateNativeWidget(igdeToggleButton &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*)powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -244,7 +244,7 @@ int igdeNativeFoxToggleButton::ButtonPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxToggleButton::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -273,7 +273,7 @@ long igdeNativeFoxToggleButton::onCommand(FXObject*, FXSelector, void*){
 	// - igdeAction with GetSelected()
 	// we have to ensure they are all in sync again
 	igdeAction * const action = pOwner->GetAction();
-	if(! action){
+	if(!action){
 		return 1;
 	}
 	
@@ -291,7 +291,7 @@ long igdeNativeFoxToggleButton::onCommand(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxToggleButton::onUpdate(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if(! action){
+	if(!action){
 		return 0;
 	}
 	

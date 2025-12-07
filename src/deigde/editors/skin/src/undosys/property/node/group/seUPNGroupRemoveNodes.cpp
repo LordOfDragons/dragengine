@@ -44,7 +44,7 @@ pNode(NULL),
 pChildren(NULL),
 pCount(0)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

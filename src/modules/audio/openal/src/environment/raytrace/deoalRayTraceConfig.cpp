@@ -74,7 +74,7 @@ deoalRayTraceConfig::~deoalRayTraceConfig(){
 ///////////////
 
 void deoalRayTraceConfig::SetFromVertices(const decVector *vertices, int count, float openingAngle){
-	if(! vertices || count < 1){
+	if(!vertices || count < 1){
 		DETHROW(deeInvalidParam);
 	}
 	

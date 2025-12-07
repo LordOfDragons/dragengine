@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bone name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Index of the parent bone or -1 if top level bone. */
-	inline int GetParent() const{return pParent;}
+	inline int GetParent() const{ return pParent; }
 	
 	/**
 	 * \brief Set index of the parent bone or -1 if top level bone.
@@ -103,40 +103,40 @@ public:
 	void SetParent(int bone);
 	
 	/** \brief Position relative to parent bone or rig. */
-	inline decVector GetPosition() const{return pPos;}
+	inline decVector GetPosition() const{ return pPos; }
 	
 	/** \brief Set position relative to parent bone or rig. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to parent bone or rig. */
-	inline decVector GetRotation() const{return pRot;}
+	inline decVector GetRotation() const{ return pRot; }
 	
 	/** \brief Set rotation relative to parent bone or rig. */
 	void SetRotation(const decVector &rotation);
 	
 	/** \brief Central mass point position. */
-	inline const decVector &GetCentralMassPoint() const{return pCMP;}
+	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
 	
 	/** \brief Set central mass point position. */
 	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Matrix transforming from local bone space to model space in reference pose. */
-	inline decMatrix GetMatrix() const{return pMatrix;}
+	inline decMatrix GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Matrix transforming from model space to local bone space in reference pose. */
-	inline decMatrix GetInverseMatrix() const{return pInvMatrix;}
+	inline decMatrix GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Set matrix transforming from local bone space to model space in reference pose. */
 	void SetMatrices(const decMatrix &matrix);
 	
 	/** \brief Bone is dynamic. */
-	inline bool GetDynamic() const{return pDynamic;}
+	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** \brief Set if bone is dynamic. */
 	void SetDynamic(bool dynamic);
 	
 	/** \brief Mass in kg. */
-	inline float GetMass() const{return pMass;}
+	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass in kg clamped to 0 or larger. */
 	void SetMass(float mass);
@@ -147,34 +147,34 @@ public:
 	/** \name Inverse Kinematics */
 	/*@{*/
 	/** \brief Lower ik limits. */
-	inline const decVector &GetIKLimitsLower() const{return pIKLimitsLower;}
+	inline const decVector &GetIKLimitsLower() const{ return pIKLimitsLower; }
 	
 	/** \brief Upper ik limits. */
-	inline const decVector &GetIKLimitsUpper() const{return pIKLimitsUpper;}
+	inline const decVector &GetIKLimitsUpper() const{ return pIKLimitsUpper; }
 	
 	/** \brief Set ik limits. */
 	void SetIKLimits(const decVector &lower, const decVector &upper);
 	
 	/** \brief IK resistance. */
-	inline const decVector &GetIKResistance() const{return pIKResistance;}
+	inline const decVector &GetIKResistance() const{ return pIKResistance; }
 	
 	/** \brief Set ik resistance. */
 	void SetIKResistance(const decVector &resistance);
 	
 	/** \brief X rotation is locked under IK. */
-	inline bool GetIKLockedX() const{return pIKLocked[0];}
+	inline bool GetIKLockedX() const{ return pIKLocked[0]; }
 	
 	/** \brief Set if X rotation is locked under IK. */
 	void SetIKLockedX(bool locked);
 	
 	/** \brief Y rotation is locked under IK. */
-	inline bool GetIKLockedY() const{return pIKLocked[1];}
+	inline bool GetIKLockedY() const{ return pIKLocked[1]; }
 	
 	/** \brief Set if y rotation is locked under IK. */
 	void SetIKLockedY(bool locked);
 	
 	/** \brief Z rotation is locked under IK. */
-	inline bool GetIKLockedZ() const{return pIKLocked[2];}
+	inline bool GetIKLockedZ() const{ return pIKLocked[2]; }
 	
 	/** \brief Set z rotation is locked under IK. */
 	void SetIKLockedZ(bool locked);
@@ -185,7 +185,7 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{return pShapes;}
+	inline const decShapeList &GetShapes() const{ return pShapes; }
 	
 	/**
 	 * \brief Set shapes.
@@ -195,7 +195,7 @@ public:
 	void SetShapes(const decShapeList &shapes);
 	
 	/** \brief Shape properties. */
-	inline const decStringList &GetShapeProperties() const{return pShapeProperties;}
+	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }
 	
 	/**
 	 * \brief Set shape properties.
@@ -209,7 +209,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	
 	/**
 	 * \brief Constraint at index.

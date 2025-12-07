@@ -81,7 +81,7 @@ decColor deoglRDSRenderableColor::GetRenderColor(const decColor &){
 }
 
 deoglTexture *deoglRDSRenderableColor::GetRenderTexture(){
-	if(! pTexture){
+	if(!pTexture){
 		pTexture = new deoglTexture(GetDynamicSkin().GetRenderThread());
 		pTexture->SetSize(1, 1);
 		pTexture->SetMipMapped(false);

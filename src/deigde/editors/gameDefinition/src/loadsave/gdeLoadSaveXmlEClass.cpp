@@ -84,7 +84,7 @@ gdeObjectClass *gdeLoadSaveXmlEClass::LoadXmlEClass(decBaseFileReader &reader){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root){
+	if(!root){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -246,7 +246,7 @@ const gdeObjectClass &objectClass, gdeOCComponentTextureList &list){
 	
 	for(i=0; i<textureCount; i++){
 		gdeOCComponentTexture * const texture = textures.GetAt(i);
-		if(! list.HasNamed(texture->GetName())){
+		if(!list.HasNamed(texture->GetName())){
 			list.Add(texture);
 		}
 	}
@@ -259,7 +259,7 @@ const gdeObjectClass &objectClass, gdeOCComponentTextureList &list){
 		const int textureCount2 = textures2.GetCount();
 		for(i=0; i<textureCount2; i++){
 			gdeOCComponentTexture * const texture = textures2.GetAt(i);
-			if(! list.HasNamed(texture->GetName())){
+			if(!list.HasNamed(texture->GetName())){
 				list.Add(texture);
 			}
 		}
@@ -421,12 +421,12 @@ const gdeObjectClass &objectClass, const gdeOCComponentTexture &texture){
 	writer.WriteOpeningTagEnd();
 	
 	// skin path
-	if(! texture.GetPathSkin().IsEmpty()){
+	if(!texture.GetPathSkin().IsEmpty()){
 		pWritePropertyValueType(writer, true, "string", "skin", texture.GetPathSkin());
 	}
 	
 	// color tint
-	if(! texture.GetColorTint().IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!texture.GetColorTint().IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		const decColor &color = texture.GetColorTint();
 		writer.WriteOpeningTagStart("color");
 		writer.WriteAttributeString("key", "tint");
@@ -444,9 +444,9 @@ const gdeObjectClass &objectClass, const gdeOCComponentTexture &texture){
 	const float rotation = texture.GetRotation();
 	const decVector2 &scale = texture.GetScale();
 	
-	const bool hasOffset = ! offset.IsEqualTo(decVector2());
+	const bool hasOffset = !offset.IsEqualTo(decVector2());
 	const bool hasRotation = fabsf(rotation) > FLOAT_SAFE_EPSILON;
-	const bool hasScale = ! scale.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasScale = !scale.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	if(hasOffset || hasRotation || hasScale){
 		writer.WriteOpeningTagStart("map");

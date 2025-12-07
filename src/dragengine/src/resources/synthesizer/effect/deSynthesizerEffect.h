@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent synthesizer. */
-	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/**
 	 * \brief Set parent synthesizer.
@@ -83,13 +83,13 @@ public:
 	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Effect is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Strength. */
-	inline float GetStrength() const{return pStrength;}
+	inline float GetStrength() const{ return pStrength; }
 	
 	/** \brief Set strength. */
 	void SetStrength(float strength);
@@ -97,8 +97,8 @@ public:
 	
 	
 	/** \brief Strength target. */
-	inline deSynthesizerControllerTarget &GetTargetStrength(){return pTargetStrength;}
-	inline const deSynthesizerControllerTarget &GetTargetStrength() const{return pTargetStrength;}
+	inline deSynthesizerControllerTarget &GetTargetStrength(){ return pTargetStrength; }
+	inline const deSynthesizerControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
 	/*@}*/
 	
 	

@@ -174,7 +174,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	aeWindowMain &GetWindowMain() const{return pWindowMain;}
+	aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -183,24 +183,24 @@ public:
 	void Reset();
 	
 	/** Retrieves the display model path. */
-	inline const decString &GetDisplayModelPath() const{return pDisplayModelPath;}
+	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
 	/** Sets the display model path. */
 	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
-	inline const decString &GetDisplaySkinPath() const{return pDisplaySkinPath;}
+	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
 	/** Sets the display skin path. */
 	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
-	inline const decString &GetDisplayRigPath() const{return pDisplayRigPath;}
+	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
 	/** Sets the display rig path. */
 	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{return pRigPath;}
+	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
 	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{return pAnimationPath;}
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the rig path. */
 	void SetAnimationPath(const char *path);
 	
@@ -209,42 +209,42 @@ public:
 	/** Sets if bones are shown. */
 	void SetShowBones(bool showBones);
 	/** Retrieves the base debug drawer bone size. */
-	inline float GetDDBoneSize() const{return pDDSBoneSize;}
+	inline float GetDDBoneSize() const{ return pDDSBoneSize; }
 	/** Set the base debug drawer bone scale. */
 	void SetDDBoneSize(float size);
 	
 	/** Determines if the animation is paused. */
-	inline bool GetPaused() const{return pPaused;}
+	inline bool GetPaused() const{ return pPaused; }
 	/** Sets if the animation is paused. */
 	void SetPaused(bool paused);
 	/** Retrieves the play speed. */
-	inline float GetPlaySpeed() const{return pPlaySpeed;}
+	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	/** Sets the play speed. */
 	void SetPlaySpeed(float playSpeed);
 	/** Retrieves the time step. */
-	inline float GetTimeStep() const{return pTimeStep;}
+	inline float GetTimeStep() const{ return pTimeStep; }
 	/** Sets the time step. */
 	void SetTimeStep(float timeStep);
 	
 	/** Retrieves the engine debug drawer for bones. */
-	inline deDebugDrawer *GetDDBones() const{return pDDBones;}
+	inline deDebugDrawer *GetDDBones() const{ return pDDBones; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the locomotion. */
-	inline aeAnimatorLocomotion &GetLocomotion() const{return *pLocomotion;}
+	inline aeAnimatorLocomotion &GetLocomotion() const{ return *pLocomotion; }
 	/** Retrieves the wakeboard. */
-	inline aeWakeboard &GetWakeboard() const{return *pWakeboard;}
+	inline aeWakeboard &GetWakeboard() const{ return *pWakeboard; }
 	/** Retrieves the sub animator. */
-	inline aeSubAnimator *GetSubAnimator() const{return pSubAnimator;}
+	inline aeSubAnimator *GetSubAnimator() const{ return pSubAnimator; }
 	/** Retrieves the testing sub animator. */
-	inline aeSubAnimator *GetTestingSubAnimator() const{return pTestingSubAnimator;}
+	inline aeSubAnimator *GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
 	/** Determines if the state is reset before applying the animator. */
-	inline bool GetResetState() const{return pResetState;}
+	inline bool GetResetState() const{ return pResetState; }
 	/** Sets if the state is reset before applying the animator. */
 	void SetResetState(bool resetState);
 	
@@ -256,7 +256,7 @@ public:
 	
 	
 	/** Last file dialog attachment configuration path. */
-	inline const decString &GetPathAttachmentConfig() const{return pPathAttConfig;}
+	inline const decString &GetPathAttachmentConfig() const{ return pPathAttConfig; }
 	
 	/** Set last file dialog attachment configuration path. */
 	void SetPathAttachmentConfig(const char *path);
@@ -265,24 +265,24 @@ public:
 	/** \name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{return pEngAnimatorInstance;}
+	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{return pEngComponent;}
+	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{return pEngLight;}
+	inline deLight *GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{return pEngCollider;}
+	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	/** Retrieves the camera. */
-	inline aeCamera *GetCamera() const{return pCamera;}
+	inline aeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Engine rig if present. */
-	inline deRig *GetEngineRig() const{return pEngRig;}
+	inline deRig *GetEngineRig() const{ return pEngRig; }
 	/*@}*/
 	
 	
@@ -290,7 +290,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** Controllers. */
-	inline const aeControllerList &GetControllers() const{return pControllers;}
+	inline const aeControllerList &GetControllers() const{ return pControllers; }
 	
 	/** Add controller. */
 	void AddController(aeController *controller);
@@ -308,7 +308,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** Active controller or NULL. */
-	inline aeController *GetActiveController() const{return pActiveController;}
+	inline aeController *GetActiveController() const{ return pActiveController; }
 	
 	/** Set active controller or NULL. */
 	void SetActiveController(aeController *controller);
@@ -331,7 +331,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** Links. */
-	inline const aeLinkList &GetLinks() const{return pLinks;}
+	inline const aeLinkList &GetLinks() const{ return pLinks; }
 	
 	/** Add link. */
 	void AddLink(aeLink *link);
@@ -343,7 +343,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** Active link or NULL. */
-	inline aeLink *GetActiveLink() const{return pActiveLink;}
+	inline aeLink *GetActiveLink() const{ return pActiveLink; }
 	
 	/** Set active link or NULL. */
 	void SetActiveLink(aeLink *link);
@@ -357,7 +357,7 @@ public:
 	/** \name Rules */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{return pRules;}
+	inline const aeRuleList &GetRules() const{ return pRules; }
 	
 	/** Add rule. */
 	void AddRule(aeRule *rule);
@@ -375,7 +375,7 @@ public:
 	void RemoveAllRules();
 	
 	/** Active rule or NULL. */
-	inline aeRule *GetActiveRule() const{return pActiveRule;}
+	inline aeRule *GetActiveRule() const{ return pActiveRule; }
 	
 	/** Set active rule or NULL. */
 	void SetActiveRule(aeRule *rule);
@@ -389,7 +389,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** List of bones. */
-	inline const decStringSet &GetListBones() const{return pListBones;}
+	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -409,7 +409,7 @@ public:
 	/** \name Vertex position set Management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{return pListVertexPositionSets;}
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);
@@ -429,7 +429,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{return pAttachmentCount;}
+	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	/** Retrieves the attachment at the given index. */
 	aeAttachment *GetAttachmentAt(int index) const;
 	/** Retrieves the attachment with the given name or NULL if not found. */
@@ -447,7 +447,7 @@ public:
 	/** Removes all attachments. */
 	void RemoveAllAttachments();
 	/** Retrieves the active attachment or NULL. */
-	inline aeAttachment *GetActiveAttachment() const{return pActiveAttachment;}
+	inline aeAttachment *GetActiveAttachment() const{ return pActiveAttachment; }
 	/** Sets the active attachment or NULL. */
 	void SetActiveAttachment(aeAttachment *attachment);
 	
@@ -462,7 +462,7 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{return pNotifierCount;}
+	inline int GetNotifierCount() const{ return pNotifierCount; }
 	/** Retrieves the notifier at the given index. */
 	aeAnimatorNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */

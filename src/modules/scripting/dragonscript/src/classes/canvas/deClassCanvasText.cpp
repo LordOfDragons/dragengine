@@ -189,7 +189,7 @@ void deClassCanvasText::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassCanvasText * const clsCText = (deClassCanvasText*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCText)){
+	if(!p_IsObjOfType(obj, clsCText)){
 		rt->PushBool(false);
 		
 	}else{
@@ -258,7 +258,7 @@ void deClassCanvasText::CreateClassMembers(dsEngine *engine){
 
 
 deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -266,11 +266,11 @@ deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
 }
 
 void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! canvas){
+	if(!canvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

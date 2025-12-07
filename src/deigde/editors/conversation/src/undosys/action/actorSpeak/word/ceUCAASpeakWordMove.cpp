@@ -44,7 +44,7 @@
 
 ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *word, int newIndex){
-	if(! topic || ! actorSpeak || ! word){
+	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
 	

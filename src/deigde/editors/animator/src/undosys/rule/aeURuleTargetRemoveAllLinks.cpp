@@ -47,7 +47,7 @@ pRule(NULL),
 pTarget(NULL),
 pLinks(links)
 {
-	if(! rule || ! target || links.GetCount() == 0){
+	if(!rule || !target || links.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

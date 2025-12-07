@@ -213,7 +213,7 @@ void deoalASoundLevelMeter::PrepareQuickDispose(){
 
 
 deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
-	if(! pDirtyEnvProbe){
+	if(!pDirtyEnvProbe){
 		return pEnvProbe;
 	}
 	
@@ -221,11 +221,11 @@ deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
 	pEnvProbe = NULL;
 	
 	deoalAWorld * const world = GetParentWorld();
-	if(! world){
+	if(!world){
 		return NULL;
 	}
 	
-	if(! pEnvProbeList){
+	if(!pEnvProbeList){
 		const float reuseDistance = 1.0;
 		const int maxProbeCount = 20;
 		
@@ -264,7 +264,7 @@ void deoalASoundLevelMeter::FindSpeakers(){
 	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker &speaker =
 			*( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) );
-		if(! speaker.GetSpeaker()->GetFlag()){
+		if(!speaker.GetSpeaker()->GetFlag()){
 // 			pAudioThread.GetLogger().LogInfoFormat( "FindSpeakers: Remove %p", speaker.GetSpeaker() );
 			pRemoveSpeakerFrom(i);
 			i--;

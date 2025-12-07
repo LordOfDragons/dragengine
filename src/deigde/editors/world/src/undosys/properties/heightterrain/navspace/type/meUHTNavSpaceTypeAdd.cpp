@@ -44,7 +44,7 @@ meUHTNavSpaceTypeAdd::meUHTNavSpaceTypeAdd(meHeightTerrainNavSpace *navspace, me
 pNavSpace(NULL),
 pType(NULL)
 {
-	if(! navspace || ! type){
+	if(!navspace || !type){
 		DETHROW(deeInvalidParam);
 	}
 	

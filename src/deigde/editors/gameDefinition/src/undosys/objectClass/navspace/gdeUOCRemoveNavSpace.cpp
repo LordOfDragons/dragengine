@@ -45,11 +45,11 @@ gdeUOCRemoveNavSpace::gdeUOCRemoveNavSpace(gdeObjectClass *objectClass, gdeOCNav
 pObjectClass(NULL),
 pNavSpace(NULL)
 {
-	if(! objectClass || ! navspace){
+	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetNavigationSpaces().Has(navspace)){
+	if(!objectClass->GetNavigationSpaces().Has(navspace)){
 		DETHROW(deeInvalidParam);
 	}
 	

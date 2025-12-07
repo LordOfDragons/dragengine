@@ -84,10 +84,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{return pEngine;}
+	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Main window. */
-	inline igdeMainWindow &GetMainWindow() const{return pMainWindow;}
+	inline igdeMainWindow &GetMainWindow() const{ return pMainWindow; }
 	
 	/** \brief Initializes the engine. */
 	void InitEngine();
@@ -118,7 +118,7 @@ public:
 	void ActivateModule(int system, const char *name);
 	
 	/** \brief Engine is running. */
-	inline bool GetRunning() const{return pRunning;}
+	inline bool GetRunning() const{ return pRunning; }
 	
 	/** \brief Start engine. */
 	void StartEngine();

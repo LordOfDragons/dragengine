@@ -71,31 +71,31 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the bone or NULL. */
-	inline reRigBone *GetBone() const{return pBone;}
+	inline reRigBone *GetBone() const{ return pBone; }
 	/** Sets the bone or NULL. */
 	void SetBone(reRigBone *bone);
 	/** Retrieves the free position. */
-	inline const decDVector &GetFreePosition() const{return pFreePosition;}
+	inline const decDVector &GetFreePosition() const{ return pFreePosition; }
 	/** Sets the free position. */
 	void SetFreePosition(const decDVector &freePosition);
 	/** Retrieves the free orientation. */
-	inline const decVector &GetFreeOrientation() const{return pFreeOrientation;}
+	inline const decVector &GetFreeOrientation() const{ return pFreeOrientation; }
 	/** Sets the free orientation. */
 	void SetFreeOrientation(const decVector &freeOrientation);
 	/** Retrieves the distance of camera to the center point along the view direction. */
-	inline float GetFreeDistance() const{return pFreeDistance;}
+	inline float GetFreeDistance() const{ return pFreeDistance; }
 	/** Sets the distance of camera to the center point along the view direction. */
 	void SetFreeDistance(float freeDistance);
 	/** Retrieves the relative position. */
-	inline const decDVector &GetRelativePosition() const{return pRelPosition;}
+	inline const decDVector &GetRelativePosition() const{ return pRelPosition; }
 	/** Sets the relative position. */
 	void SetRelativePosition(const decDVector &relativePosition);
 	/** Retrieves the relative orientation. */
-	inline const decVector &GetRelativeOrientation() const{return pRelOrientation;}
+	inline const decVector &GetRelativeOrientation() const{ return pRelOrientation; }
 	/** Sets the relative orientation. */
 	void SetRelativeOrientation(const decVector &relativeOrientation);
 	/** Determines if this camera is attached to a bone. */
-	inline bool GetAttachToBone() const{return pAttachToBone;}
+	inline bool GetAttachToBone() const{ return pAttachToBone; }
 	/** Sets if this camera is attached to a bone. */
 	void SetAttachToBone(bool attachToBone);
 	

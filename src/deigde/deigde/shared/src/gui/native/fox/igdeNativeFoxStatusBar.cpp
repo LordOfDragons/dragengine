@@ -68,7 +68,7 @@ igdeNativeFoxStatusBar::igdeNativeFoxStatusBar(igdeStatusBar &powner, FXComposit
 FXStatusBar(pparent, layoutFlags.flags | StatusBarFlags(powner)),
 pOwner(&powner)
 {
-	if(! pOwner->GetVisible()){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	
@@ -81,12 +81,12 @@ igdeNativeFoxStatusBar::~igdeNativeFoxStatusBar(){
 }
 
 igdeNativeFoxStatusBar *igdeNativeFoxStatusBar::CreateNativeWidget(igdeStatusBar &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	

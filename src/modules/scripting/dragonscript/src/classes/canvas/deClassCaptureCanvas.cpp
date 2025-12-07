@@ -216,7 +216,7 @@ void deClassCaptureCanvas::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassCaptureCanvas * const clsCapCan = (deClassCaptureCanvas*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCapCan)){
+	if(!p_IsObjOfType(obj, clsCapCan)){
 		rt->PushBool(false);
 		
 	}else{
@@ -286,7 +286,7 @@ void deClassCaptureCanvas::CreateClassMembers(dsEngine *engine){
 
 
 deCaptureCanvas *deClassCaptureCanvas::GetCaptureCanvas(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -294,11 +294,11 @@ deCaptureCanvas *deClassCaptureCanvas::GetCaptureCanvas(dsRealObject *myself) co
 }
 
 void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *captureCanvas){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! captureCanvas){
+	if(!captureCanvas){
 		rt->PushObject(NULL, this);
 		return;
 	}

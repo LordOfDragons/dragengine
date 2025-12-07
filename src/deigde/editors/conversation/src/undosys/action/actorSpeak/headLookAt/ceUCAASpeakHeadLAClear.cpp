@@ -47,7 +47,7 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
 pTopic(NULL),
 pActorSpeak(NULL)
 {
-	if(! topic || ! actorSpeak){
+	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -131,7 +131,7 @@ void deClassParticleEmitter::nfSetControllerCount::RunFunction(dsRunTime *rt, ds
 	try{
 		while(emitter->GetControllerCount() < count){
 			controller = new deParticleEmitterController;
-			if(! controller) DSTHROW(dueOutOfMemory);
+			if(!controller) DSTHROW(dueOutOfMemory);
 			emitter->AddController(controller);
 			controller = NULL;
 		}
@@ -365,7 +365,7 @@ deClassParticleEmitter::nfSetTypeCastFrom::nfSetTypeCastFrom(const sInitData &in
 	p_AddParameter(init.clsParticleEmitterCastFrom); // castFrom
 }
 void deClassParticleEmitter::nfSetTypeCastFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -397,7 +397,7 @@ deClassParticleEmitter::nfSetTypeSimulationType::nfSetTypeSimulationType(const s
 	p_AddParameter(init.clsParticleEmitterSimulation); // simulationType
 }
 void deClassParticleEmitter::nfSetTypeSimulationType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -495,7 +495,7 @@ deClassParticleEmitter::nfGetTypeTrailController::nfGetTypeTrailController(const
 	p_AddParameter(init.clsParticleEmitterEmitController); // controller
 }
 void deClassParticleEmitter::nfGetTypeTrailController::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -516,7 +516,7 @@ deClassParticleEmitter::nfSetTypeTrailController::nfSetTypeTrailController(const
 	p_AddParameter(init.clsInt); // targetController
 }
 void deClassParticleEmitter::nfSetTypeTrailController::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -550,7 +550,7 @@ deClassParticleEmitter::nfSetTypeCollisionResponse::nfSetTypeCollisionResponse(c
 	p_AddParameter(init.clsParticleCollisionResponse); // response
 }
 void deClassParticleEmitter::nfSetTypeCollisionResponse::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -623,7 +623,7 @@ deClassParticleEmitter::nfGetTypeEmitController::nfGetTypeEmitController(const s
 	p_AddParameter(init.clsParticleEmitterEmitController); // controller
 }
 void deClassParticleEmitter::nfGetTypeEmitController::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -644,7 +644,7 @@ deClassParticleEmitter::nfSetTypeEmitController::nfSetTypeEmitController(const s
 	p_AddParameter(init.clsInt); // targetController
 }
 void deClassParticleEmitter::nfSetTypeEmitController::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -668,7 +668,7 @@ deClassParticleEmitter::nfSetTypeParameterValue::nfSetTypeParameterValue(const s
 	p_AddParameter(init.clsFloat); // value
 }
 void deClassParticleEmitter::nfSetTypeParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -693,7 +693,7 @@ deClassParticleEmitter::nfSetTypeParameterSpread::nfSetTypeParameterSpread(const
 	p_AddParameter(init.clsFloat); // spread
 }
 void deClassParticleEmitter::nfSetTypeParameterSpread::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -718,7 +718,7 @@ deClassParticleEmitter::nfSetTypeParameterControllerValue::nfSetTypeParameterCon
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassParticleEmitter::nfSetTypeParameterControllerValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -743,7 +743,7 @@ deClassParticleEmitter::nfSetTypeParameterCurveValue::nfSetTypeParameterCurveVal
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassParticleEmitter::nfSetTypeParameterCurveValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -774,7 +774,7 @@ deClassParticleEmitter::nfSetTypeParameterControllerSpread::nfSetTypeParameterCo
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassParticleEmitter::nfSetTypeParameterControllerSpread::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -799,7 +799,7 @@ deClassParticleEmitter::nfSetTypeParameterCurveSpread::nfSetTypeParameterCurveSp
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassParticleEmitter::nfSetTypeParameterCurveSpread::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -830,7 +830,7 @@ deClassParticleEmitter::nfSetTypeParameterCurveProgress::nfSetTypeParameterCurve
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassParticleEmitter::nfSetTypeParameterCurveProgress::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -862,7 +862,7 @@ deClassParticleEmitter::nfSetTypeParameterCurveBeam::nfSetTypeParameterCurveBeam
 }
 void deClassParticleEmitter::nfSetTypeParameterCurveBeam::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(((sPENatDat*)p_GetNativeData(myself))->emitter);
-	if(! rt->GetValue(1)->GetRealObject()){
+	if(!rt->GetValue(1)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -907,7 +907,7 @@ void deClassParticleEmitter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassParticleEmitter *clsPE = (deClassParticleEmitter*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsPE)){
+	if(!p_IsObjOfType(obj, clsPE)){
 		rt->PushBool(false);
 		
 	}else{
@@ -928,7 +928,7 @@ void deClassParticleEmitter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 
 deClassParticleEmitter::deClassParticleEmitter(deScriptingDragonScript *ds) :
 dsClass("ParticleEmitter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -1032,7 +1032,7 @@ void deClassParticleEmitter::CreateClassMembers(dsEngine *engine){
 }
 
 deParticleEmitter *deClassParticleEmitter::GetParticleEmitter(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -1040,11 +1040,11 @@ deParticleEmitter *deClassParticleEmitter::GetParticleEmitter(dsRealObject *myse
 }
 
 void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! emitter){
+	if(!emitter){
 		rt->PushObject(NULL, this);
 		return;
 	}

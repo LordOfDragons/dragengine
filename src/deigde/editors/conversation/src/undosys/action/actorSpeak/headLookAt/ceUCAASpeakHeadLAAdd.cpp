@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, int index){
-	if(! topic || ! actorSpeak || ! headLookAt){
+	if(!topic || !actorSpeak || !headLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > actorSpeak->GetHeadLookAtList().GetCount()){

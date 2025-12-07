@@ -67,7 +67,7 @@ public:
 	/** \name Management. */
 	/*@{*/
 	/** Number of shared video players. */
-	inline int GetVideoPlayerCount() const{return pSharedVideoPlayerCount;}
+	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayerCount; }
 	
 	/** Set number of video players. */
 	void SetVideoPlayerCount(int count);
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** Has calculated properties. */
-	inline bool GetHasCalculatedProperties() const{return pHasCalculatedProperties;}
+	inline bool GetHasCalculatedProperties() const{ return pHasCalculatedProperties; }
 	
 	/** Set if has calculated properties. */
 	void SetHasCalculatedProperties(bool hasCalculatedProperties);
@@ -95,7 +95,7 @@ public:
 	
 	
 	/** Has constructed properties. */
-	inline bool GetHasConstructedProperties() const{return pHasConstructedProperties;}
+	inline bool GetHasConstructedProperties() const{ return pHasConstructedProperties; }
 	
 	/** Set if has constructed properties. */
 	void SetHasConstructedProperties(bool hasConstructedProperties);

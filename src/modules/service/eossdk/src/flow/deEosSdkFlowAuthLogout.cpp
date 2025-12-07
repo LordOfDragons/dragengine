@@ -55,7 +55,7 @@ deEosSdkFlow(service, id)
 	service.NewPendingRequest(id, "authLogout");
 	
 	try{
-		if(! service.localUserId){
+		if(!service.localUserId){
 			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		
@@ -73,7 +73,7 @@ deEosSdkFlow(service, id)
 ///////////////
 
 void deEosSdkFlowAuthLogout::ConnectLogout(){
-	if(! pService.productUserId){
+	if(!pService.productUserId){
 		AuthLogout();
 		return;
 	}

@@ -96,7 +96,7 @@ void deoalEffectSlot::AssignOwner(void *owner, float importance){
 }
 
 void deoalEffectSlot::ClearOwner(){
-	if(! pOwner){
+	if(!pOwner){
 		return;
 	}
 	
@@ -165,7 +165,7 @@ void deoalEffectSlot::pCleanUp(){
 }
 
 void deoalEffectSlot::pUpdateSlotParameters(){
-	if(! pParametersChanged){
+	if(!pParametersChanged){
 		return;
 	}
 	

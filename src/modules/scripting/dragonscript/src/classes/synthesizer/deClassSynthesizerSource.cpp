@@ -104,7 +104,7 @@ void deClassSynthesizerSource::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue 
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	const bool enabled = rt->GetValue(0)->GetBool();
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -127,7 +127,7 @@ deClassSynthesizerSource::nfSetMixMode::nfSetMixMode(const sInitData &init) : ds
 void deClassSynthesizerSource::nfSetMixMode::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source || ! rt->GetValue(0)->GetRealObject()){
+	if(!nd.source || !rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -148,7 +148,7 @@ deClassSynthesizerSource::nfSetBlendFactor::nfSetBlendFactor(const sInitData &in
 void deClassSynthesizerSource::nfSetBlendFactor::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -170,7 +170,7 @@ deClassSynthesizerSource::nfSetMinVolume::nfSetMinVolume(const sInitData &init) 
 void deClassSynthesizerSource::nfSetMinVolume::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -189,7 +189,7 @@ deClassSynthesizerSource::nfSetMaxVolume::nfSetMaxVolume(const sInitData &init) 
 void deClassSynthesizerSource::nfSetMaxVolume::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -208,7 +208,7 @@ deClassSynthesizerSource::nfSetMinPanning::nfSetMinPanning(const sInitData &init
 void deClassSynthesizerSource::nfSetMinPanning::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -227,7 +227,7 @@ deClassSynthesizerSource::nfSetMaxPanning::nfSetMaxPanning(const sInitData &init
 void deClassSynthesizerSource::nfSetMaxPanning::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -249,13 +249,13 @@ void deClassSynthesizerSource::nfAddEffect::RunFunction(dsRunTime *rt, dsValue *
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassSynthesizerSource*)GetOwnerClass())->GetDS();
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
 	dsRealObject * const objEffect = rt->GetValue(0)->GetRealObject();
 	deSynthesizerEffect * const effect = ds.GetClassSynthesizerEffect()->GetEffect(objEffect);
-	if(! effect){
+	if(!effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -277,13 +277,13 @@ void deClassSynthesizerSource::nfRemoveEffect::RunFunction(dsRunTime *rt, dsValu
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassSynthesizerSource*)GetOwnerClass())->GetDS();
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
 	dsRealObject * const objEffect = rt->GetValue(0)->GetRealObject();
 	deSynthesizerEffect * const effect = ds.GetClassSynthesizerEffect()->GetEffect(objEffect);
-	if(! effect){
+	if(!effect){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -303,7 +303,7 @@ deClassSynthesizerSource::nfRemoveAllEffects::nfRemoveAllEffects(const sInitData
 void deClassSynthesizerSource::nfRemoveAllEffects::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
 	
-	if(! nd.source){
+	if(!nd.source){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -377,7 +377,7 @@ void deClassSynthesizerSource::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerSource *deClassSynthesizerSource::GetSource(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -385,7 +385,7 @@ deSynthesizerSource *deClassSynthesizerSource::GetSource(dsRealObject *myself) c
 }
 
 void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -407,7 +407,7 @@ void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerS
 }
 
 void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -429,11 +429,11 @@ void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthes
 }
 
 void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! source){
+	if(!source){
 		rt->PushObject(NULL, this);
 		return;
 	}

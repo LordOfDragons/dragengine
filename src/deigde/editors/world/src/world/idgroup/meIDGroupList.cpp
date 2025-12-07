@@ -54,14 +54,14 @@ int meIDGroupList::GetCount() const{
 }
 
 bool meIDGroupList::HasNamed(const char *name) const{
-	if(! name || strlen(name) == 0){
+	if(!name || strlen(name) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	return pGroups.Has(name);
 }
 
 meIDGroup *meIDGroupList::GetNamed(const char *name) const{
-	if(! name || strlen(name) == 0){
+	if(!name || strlen(name) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -76,13 +76,13 @@ meIDGroup *meIDGroupList::GetNamed(const char *name) const{
 }
 
 meIDGroup *meIDGroupList::GetOrAddNamed(const char *name){
-	if(! name || strlen(name) == 0){
+	if(!name || strlen(name) == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *group = NULL;
 	
-	if(! pGroups.GetAt(name, &group)){
+	if(!pGroups.GetAt(name, &group)){
 		try{
 			group = new meIDGroup(name);
 			pGroups.SetAt(name, group);

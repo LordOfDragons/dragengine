@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -52,7 +52,7 @@ meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
 	int i;
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -62,7 +62,7 @@ meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
 	
 	object->GetModelTextureNameList(modelTextureNames);
 	for(i=0; i<count; i++){
-		if(! modelTextureNames.Has(object->GetTextureAt(i)->GetName())){
+		if(!modelTextureNames.Has(object->GetTextureAt(i)->GetName())){
 			pTextureList.AddTexture(object->GetTextureAt(i));
 		}
 	}

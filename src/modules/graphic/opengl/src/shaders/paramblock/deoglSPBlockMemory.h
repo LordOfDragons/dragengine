@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Memory buffer. */
-	inline char *GetBuffer() const{return pBuffer;}
+	inline char *GetBuffer() const{ return pBuffer; }
 	
 	/** Always throws an exception. */
 	virtual void Activate() const;

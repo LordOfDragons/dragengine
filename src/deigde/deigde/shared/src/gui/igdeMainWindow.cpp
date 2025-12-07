@@ -104,7 +104,7 @@ void igdeMainWindow::StartEngine(){
 }
 
 void igdeMainWindow::StopEngine(){
-	if(! pEngineController || ! pEngineController->GetRunning()){
+	if(!pEngineController || !pEngineController->GetRunning()){
 		return;
 	}
 	
@@ -187,7 +187,7 @@ void igdeMainWindow::DropNativeWidget(){
 }
 
 void igdeMainWindow::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

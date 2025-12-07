@@ -128,21 +128,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Layer type. */
-	inline eLayerTypes GetLayerType() const{return pLayerType;}
+	inline eLayerTypes GetLayerType() const{ return pLayerType; }
 	
 	/** Textures. */
-	inline const int *GetTextures() const{return &pTextures[0];}
+	inline const int *GetTextures() const{ return &pTextures[0]; }
 	
 	/** Render skin. */
-	inline deoglRSkin *GetSkin() const{return pSkin;}
+	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	
 	
 	/** Bodies. */
-	inline const sBody *GetBodies() const{return pBodies;}
+	inline const sBody *GetBodies() const{ return pBodies; }
 	
 	/** Number of bodies. */
-	inline int GetBodyCount() const{return pBodyCount;}
+	inline int GetBodyCount() const{ return pBodyCount; }
 	
 	
 	
@@ -153,41 +153,41 @@ public:
 	
 	
 	/** Offset. */
-	inline const decVector &GetOffset() const{return pOffset;}
+	inline const decVector &GetOffset() const{ return pOffset; }
 	
 	/** Orientation. */
-	inline const decVector &GetOrientation() const{return pOrientation;}
+	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
 	/** Blending color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Intensity. */
-	inline float GetIntensity() const{return pIntensity;}
+	inline float GetIntensity() const{ return pIntensity; }
 	
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	
 	
 	/** Orientation of the sky light. */
-	inline const decQuaternion &GetLightOrientation() const{return pLightOrientation;}
+	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
 	/** Color of the sky light. */
-	inline const decColor &GetLightColor() const{return pLightColor;}
+	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
 	/** Intensity of the direct sky light. */
-	inline float GetLightIntensity() const{return pLightIntensity;}
+	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
 	/** Intensity of the diffuse sky light. */
-	inline float GetAmbientIntensity() const{return pAmbientIntensity;}
+	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
 	
 	
 	/** Layer intensity is multiplied by total sky light intensity. */
-	inline bool GetMuliplyBySkyLight() const{return pMulBySkyLight;}
+	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
 	
 	/** Layer color is multiplied by total sky light color. */
-	inline bool GetMuliplyBySkyColor() const{return pMulBySkyColor;}
+	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
 	/*@}*/
 	
 	

@@ -68,7 +68,7 @@ void projProjectLocalXml::ReadFromFile(decBaseFileReader &reader, projProject &p
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "projectLocal") != 0){
+	if(!root || strcmp(root->GetName(), "projectLocal") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ const projProject &project){
 		writer.WriteDataTagString("activeProfile", project.GetActiveProfile()->GetName());
 	}
 	
-	if(! project.GetActiveLaunchProfile().IsEmpty()){
+	if(!project.GetActiveLaunchProfile().IsEmpty()){
 		writer.WriteDataTagString("launchProfile", project.GetActiveLaunchProfile());
 	}
 	
@@ -111,7 +111,7 @@ projProject &project){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -131,11 +131,11 @@ projProject &project){
 	// select active profile
 	const projProfileList &profiles = project.GetProfiles();
 	
-	if(! activeProfile.IsEmpty()){
+	if(!activeProfile.IsEmpty()){
 		project.SetActiveProfile(profiles.GetNamed(activeProfile));
 	}
 	
-	if(! project.GetActiveProfile() && profiles.GetCount() > 0){
+	if(!project.GetActiveProfile() && profiles.GetCount() > 0){
 		project.SetActiveProfile(profiles.GetAt(0));
 	}
 }

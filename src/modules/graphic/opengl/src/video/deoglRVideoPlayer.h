@@ -73,13 +73,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */
-	inline deoglRVideo *GetVideo() const{return pVideo;}
+	inline deoglRVideo *GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
 	void SetVideo(deoglRVideo *video);
 	
 	/** Cached frame or -1 if not set. */
-	inline deoglTexture *GetCachedFrameTexture() const{return pCachedFrameTexture;}
+	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }
 	
 	/** Set cached frame or -1 if not set. */
 	void SetCachedFrameTexture(deoglTexture *texture);
@@ -93,13 +93,13 @@ public:
 	
 	
 	/** Width of video. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** Height of video. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** Component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/**
 	 * Set video size.

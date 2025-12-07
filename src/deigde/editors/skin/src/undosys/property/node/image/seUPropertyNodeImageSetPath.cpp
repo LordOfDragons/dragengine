@@ -43,7 +43,7 @@ sePropertyNodeImage *node, const char *newValue) :
 pNode(NULL),
 pNewValue(newValue)
 {
-	if(! node || ! node->GetProperty()){
+	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	

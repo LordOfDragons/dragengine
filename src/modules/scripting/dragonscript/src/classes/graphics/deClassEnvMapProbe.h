@@ -54,7 +54,7 @@ public:
 	/** Creates the class members. */
 	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** Retrieves the environment map probe or NULL if object is NULL. */
 	deEnvMapProbe *GetEnvMapProbe(dsRealObject *object) const;

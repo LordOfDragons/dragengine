@@ -107,25 +107,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Alignment. */
-	inline int GetAlignment() const{return pAlignment;}
+	inline int GetAlignment() const{ return pAlignment; }
 	
 	/** \brief Set alignment. */
 	void SetAlignment(int alignment);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);

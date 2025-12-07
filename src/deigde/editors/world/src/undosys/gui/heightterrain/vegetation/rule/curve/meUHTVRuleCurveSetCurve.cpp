@@ -46,7 +46,7 @@ pVLayer(NULL),
 pRule(NULL),
 pNewCurve(newCurve)
 {
-	if(! vlayer || ! rule){
+	if(!vlayer || !rule){
 		DETHROW(deeInvalidParam);
 	}
 	

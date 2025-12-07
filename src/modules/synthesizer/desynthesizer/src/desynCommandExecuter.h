@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDESynthesizer &GetModule() const{return pModule;}
+	inline deDESynthesizer &GetModule() const{ return pModule; }
 	
 	
 	

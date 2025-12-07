@@ -37,10 +37,10 @@
 ////////////////////////////
 
 meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pOldSize = object->GetSize();
 	pNewSize = newSize;

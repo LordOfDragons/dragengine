@@ -73,7 +73,7 @@ decQuadtree *decDefaultQuadtree::CreateQuadtree(int quadrant) const{
 	
 	// create child node
 	node = (decDefaultQuadtree*)new decDefaultQuadtree(nc, halfSize);
-	if(! node) DETHROW(deeOutOfMemory);
+	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -88,7 +88,7 @@ decDefaultQuadtree *decDefaultQuadtree::InsertIntoTree(void *element, const decV
 	
 	for(d=0; d<maxDepth; d++){
 		nextNode = curNode->GetNodeAtBox(boxCenter, boxHalfSize);
-		if(! nextNode) break;
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
@@ -115,12 +115,12 @@ int decDefaultQuadtree::IndexOfElement(void *element) const{
 }
 
 void decDefaultQuadtree::AddElement(void *element){
-	if(! element) DETHROW(deeInvalidParam);
+	if(!element) DETHROW(deeInvalidParam);
 	
 	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
 		void **newArray = new void*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pElements){
 			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;

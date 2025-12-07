@@ -70,7 +70,7 @@ void deoalCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command,
 	}else if(command.MatchesArgumentAt(0, "extensions")){
 		CmdExtensions(command, answer);
 		
-	}else if(! pOal.GetDevMode() || ! pOal.GetDevMode()->ExecuteCommand(command, answer)){
+	}else if(!pOal.GetDevMode() || !pOal.GetDevMode()->ExecuteCommand(command, answer)){
 		answer.SetFromUTF8("Unknown command '");
 		answer += *command.GetArgumentAt(0);
 		answer.AppendFromUTF8("'.");

@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapePosition::reUSetShapePosition(reRigShape *shape, const decVector &newPosition){
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	

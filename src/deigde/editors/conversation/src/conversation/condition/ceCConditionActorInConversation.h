@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actor id. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	
 	/** \brief Set actor id. */
 	void SetActor(const char *id);
 	
 	/** \brief Negate condition. */
-	inline bool GetNegate() const{return pNegate;}
+	inline bool GetNegate() const{ return pNegate; }
 	
 	/** \brief Set if condition is negated. */
 	void SetNegate(bool negate);

@@ -113,7 +113,7 @@ void deClassColliderRig::nfAttachRig::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
-	if(! resource){
+	if(!resource){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -132,7 +132,7 @@ void deClassColliderRig::nfAttachBone::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	const char * const targetBone = rt->GetValue(1)->GetString();
-	if(! resource){
+	if(!resource){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -155,7 +155,7 @@ void deClassColliderRig::nfAttachBone2::RunFunction(dsRunTime *rt, dsValue *myse
 	const char * const targetBone = rt->GetValue(1)->GetString();
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(3)->GetRealObject());
-	if(! resource){
+	if(!resource){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -175,7 +175,7 @@ void deClassColliderRig::nfAttachWeight::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	deCollisionInfo * collisionInfo = ds.GetClassCollisionInfo()->GetInfo(rt->GetValue(1)->GetRealObject());
-	if(! resource || ! collisionInfo){
+	if(!resource || !collisionInfo){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -320,7 +320,7 @@ void deClassColliderRig::nfCopyStatesFromCollider::RunFunction(dsRunTime *rt, ds
 	const deClassColliderRig &clsColRig = *((deClassColliderRig*)GetOwnerClass());
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(0)->GetRealObject());
 	
-	if(! collider2){
+	if(!collider2){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -339,7 +339,7 @@ void deClassColliderRig::nfCopyStateFromCollider::RunFunction(dsRunTime *rt, dsV
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
-	if(! collider2){
+	if(!collider2){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -360,7 +360,7 @@ void deClassColliderRig::nfCopyStateFromCollider2::RunFunction(dsRunTime *rt, ds
 	const int boneFrom = rt->GetValue(0)->GetInt();
 	const int boneTo = rt->GetValue(1)->GetInt();
 	
-	if(! collider2){
+	if(!collider2){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -560,7 +560,7 @@ void deClassColliderRig::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassColliderRig * const clsColRig = (deClassColliderRig*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsColRig)){
+	if(!p_IsObjOfType(obj, clsColRig)){
 		rt->PushBool(false);
 		
 	}else{
@@ -672,7 +672,7 @@ void deClassColliderRig::CreateClassMembers(dsEngine *engine){
 
 
 deColliderRig *deClassColliderRig::GetCollider(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -680,11 +680,11 @@ deColliderRig *deClassColliderRig::GetCollider(dsRealObject *myself) const{
 }
 
 void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! collider){
+	if(!collider){
 		rt->PushObject(NULL, this);
 		return;
 	}
@@ -709,7 +709,7 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 }
 
 void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig *collider){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	

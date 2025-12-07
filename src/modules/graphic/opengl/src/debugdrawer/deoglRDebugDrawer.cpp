@@ -165,7 +165,7 @@ deoglDebugDrawerShape &deoglRDebugDrawer::GetShapeAt(int index) const{
 
 
 void deoglRDebugDrawer::UpdateVBO(){
-	if(! pDirtyVBO){
+	if(!pDirtyVBO){
 		return;
 	}
 	
@@ -175,9 +175,9 @@ void deoglRDebugDrawer::UpdateVBO(){
 	}
 	
 	// create vbo if not existing
-	if(! pVBO){
+	if(!pVBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		if(! pVBO){
+		if(!pVBO){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -188,7 +188,7 @@ void deoglRDebugDrawer::UpdateVBO(){
 	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglVector3) * pVBOPointCount, pVBOData, GL_STATIC_DRAW));
 	
 	// create vao if not existing
-	if(! pVAO){
+	if(!pVAO){
 		deoglVBOLayout vboLayout;
 		vboLayout.SetAttributeCount(1);
 		vboLayout.SetStride(12);

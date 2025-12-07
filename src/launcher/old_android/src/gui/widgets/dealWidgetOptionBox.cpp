@@ -113,7 +113,7 @@ void dealWidgetOptionBox::SetLabel(const char *label){
 	}
 	
 	pLabel->SetText(label);
-	pLabel->SetVisible(! pLabel->GetText().IsEmpty());
+	pLabel->SetVisible(!pLabel->GetText().IsEmpty());
 }
 
 dealImage *dealWidgetOptionBox::GetImage() const{
@@ -156,7 +156,7 @@ void dealWidgetOptionBox::SetSelected(bool selected){
 	
 	pSelected = selected;
 	pBoxImageSelected->SetVisible(selected);
-	pBoxImageDeselected->SetVisible(! selected);
+	pBoxImageDeselected->SetVisible(!selected);
 	
 	if(selected && pGroup){
 		pGroup->Select(this);
@@ -189,7 +189,7 @@ void dealWidgetOptionBox::OnKeyRelease(int keycode){
 }
 
 void dealWidgetOptionBox::OnMousePress(int buttons, const decPoint &position){
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	

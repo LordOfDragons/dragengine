@@ -79,7 +79,7 @@ void debpDebugInformation::IncrementElapsedTime(float time){
 }
 
 void debpDebugInformation::ClearElapsedTime(){
-	if(! pHasElapsedTime){
+	if(!pHasElapsedTime){
 		return;
 	}
 	

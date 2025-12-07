@@ -65,7 +65,7 @@ FXComposite *p, FXObject* tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FX
 FXIconList(p, tgt, sel, opts, x, y, w, h),
 pEnvironment(&environment)
 {
-	if(! vfs){
+	if(!vfs){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -125,7 +125,7 @@ public:
 	}
 	
 	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
-		if(! path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
+		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}
 		
@@ -163,7 +163,7 @@ public:
 	}
 	
 	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
-		if(! path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
+		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}
 		
@@ -227,7 +227,7 @@ void igdeNativeFoxVFSList::SetPath(const decPath &path){
 }
 
 void igdeNativeFoxVFSList::SetPattern(const char *pattern){
-	if(! pattern){
+	if(!pattern){
 		DETHROW(deeInvalidParam);
 	}
 	

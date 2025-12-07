@@ -69,16 +69,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline feWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{return pFont;}
+	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
-	inline feFontGlyph *GetGlyph() const{return pGlyph;}
+	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
 	void SetGlyph(feFontGlyph *glyph);

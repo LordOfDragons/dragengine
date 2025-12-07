@@ -45,11 +45,11 @@ gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass *objectClass, gd
 pObjectClass(NULL),
 pEnvMapProbe(NULL)
 {
-	if(! objectClass || ! envMapProbe){
+	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetEnvMapProbes().Has(envMapProbe)){
+	if(!objectClass->GetEnvMapProbes().Has(envMapProbe)){
 		DETHROW(deeInvalidParam);
 	}
 	

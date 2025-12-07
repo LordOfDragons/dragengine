@@ -48,12 +48,12 @@
 #define ASSERT_NEQUAL(expr,val)		if((expr) == (val)) DETHROW_INFO(deeTestFailed, "AssertNotEqual failed")
 #define ASSERT_FEQUAL(expr,val)		if(fabs((expr) - (val)) >= 0.00001) DETHROW_INFO(deeTestFailed, "AssertFEqual failed")
 #define ASSERT_NFEQUAL(expr,val)	if(fabs((expr) - (val)) < 0.00001) DETHROW_INFO(deeTestFailed, "AssertNFEqual failed")
-#define ASSERT_NOT_NULL(expr)		if(! (expr)) DETHROW_INFO(deeTestFailed, "AssertNotNull failed")
+#define ASSERT_NOT_NULL(expr)		if(!(expr)) DETHROW_INFO(deeTestFailed, "AssertNotNull failed")
 #define ASSERT_NULL(expr)			if(expr) DETHROW_INFO(deeTestFailed, "AssertNull failed")
 
 #define ASSERT_NEW(expr)			if(!(expr)) DETHROW(deeOutOfMemory)
 
-#define ASSERT_DOES_FAIL(expr)		{ bool __failed=false; try{ expr; }catch(const deException &){ __failed=true; } if(! __failed) DETHROW_INFO(deeTestFailed, "AssertDoesFail failed"); }
+#define ASSERT_DOES_FAIL(expr)		{ bool __failed=false; try{ expr; }catch(const deException &){ __failed=true; } if(!__failed) DETHROW_INFO(deeTestFailed, "AssertDoesFail failed"); }
 
 
 

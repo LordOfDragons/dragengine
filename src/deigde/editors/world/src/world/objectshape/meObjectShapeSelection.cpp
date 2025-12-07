@@ -56,7 +56,7 @@ meObjectShapeSelection::~meObjectShapeSelection(){
 ///////////////
 
 void meObjectShapeSelection::Add(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -65,7 +65,7 @@ void meObjectShapeSelection::Add(meObjectShape *objectShape){
 }
 
 void meObjectShapeSelection::Remove(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,7 +167,7 @@ void meObjectShapeSelection::Restore(const meObjectShapeList &shapeList, const d
 		SetActive(shapeList.GetAt(indexActive));
 	}
 	
-	if(! pActive && pSelection.GetCount() > 0){
+	if(!pActive && pSelection.GetCount() > 0){
 		ActivateNext();
 	}
 }

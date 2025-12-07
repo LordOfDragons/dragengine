@@ -219,7 +219,7 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 	
 	for(i=0; i<count; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
-		if(! directory){
+		if(!directory){
 			return NULL;
 		}
 	}
@@ -228,7 +228,7 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 }
 
 void dealVFSZipArchive::cArchiveDirectory::AddDirectory(cArchiveDirectory *directory){
-	if(! directory || HasDirectoryNamed(directory->GetFilename()) || HasFileNamed(directory->GetFilename())){
+	if(!directory || HasDirectoryNamed(directory->GetFilename()) || HasFileNamed(directory->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
 	pDirectories.Add(directory);
@@ -288,7 +288,7 @@ dealVFSZipArchive::cArchiveFile *dealVFSZipArchive::cArchiveDirectory
 	
 	for(i=0; i<count-1; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
-		if(! directory){
+		if(!directory){
 			return NULL;
 		}
 	}
@@ -297,7 +297,7 @@ dealVFSZipArchive::cArchiveFile *dealVFSZipArchive::cArchiveDirectory
 }
 
 void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile *file){
-	if(! file || HasDirectoryNamed(file->GetFilename()) || HasFileNamed(file->GetFilename())){
+	if(!file || HasDirectoryNamed(file->GetFilename()) || HasFileNamed(file->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
 	pFiles.Add(file);
@@ -319,7 +319,7 @@ pFileReader(NULL),
 pZipFile(NULL),
 pArchiveDirectory(NULL)
 {
-	if(! fileReader){
+	if(!fileReader){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -347,7 +347,7 @@ dealVFSZipArchive::~dealVFSZipArchive(){
 ///////////////
 
 bool dealVFSZipArchive::ExistsFile(const decPath &path){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		return false;
 	}
 	
@@ -361,7 +361,7 @@ bool dealVFSZipArchive::ExistsFile(const decPath &path){
 }
 
 bool dealVFSZipArchive::CanReadFile(const decPath &path){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		return false;
 	}
 	
@@ -418,12 +418,12 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 	//      the mutex is release and the copying into the read buffer continuous. this
 	//      system allows multiple files to be opened and decompressed on the same
 	//      file handler without interfering.
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		DETHROW(deeFileNotFound);
 	}
 	
 	const cArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	
@@ -512,7 +512,7 @@ void dealVFSZipArchive::TouchFile(const decPath &path){
 }
 
 void dealVFSZipArchive::SearchFiles(const decPath &directory, deContainerFileSearch &searcher){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		return;
 	}
 	
@@ -525,7 +525,7 @@ void dealVFSZipArchive::SearchFiles(const decPath &directory, deContainerFileSea
 	if(directory.GetComponentCount() > 0){
 		adir = adir->GetDirectoryByPath(directory);
 	}
-	if(! adir){
+	if(!adir){
 		return;
 	}
 	
@@ -542,7 +542,7 @@ void dealVFSZipArchive::SearchFiles(const decPath &directory, deContainerFileSea
 }
 
 deVFSContainer::eFileTypes dealVFSZipArchive::GetFileType(const decPath &path){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		DETHROW(deeFileNotFound);
 	}
 	
@@ -565,24 +565,24 @@ deVFSContainer::eFileTypes dealVFSZipArchive::GetFileType(const decPath &path){
 }
 
 uint64_t dealVFSZipArchive::GetFileSize(const decPath &path){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		DETHROW(deeFileNotFound);
 	}
 	
 	const cArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	return file->GetFileSize();
 }
 
 TIME_SYSTEM dealVFSZipArchive::GetFileModificationTime(const decPath &path){
-	if(! pArchiveDirectory){
+	if(!pArchiveDirectory){
 		DETHROW(deeFileNotFound);
 	}
 	
 	const cArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
-	if(! file){
+	if(!file){
 		DETHROW(deeFileNotFound);
 	}
 	return file->GetModificationTime();
@@ -631,7 +631,7 @@ void dealVFSZipArchive::pBuildFileTable(){
 			DETHROW(deeReadFile);
 		}
 		
-		if(! filename.IsEmpty() && filename.GetAt(filename.GetLength() - 1) != '/'){
+		if(!filename.IsEmpty() && filename.GetAt(filename.GetLength() - 1) != '/'){
 			decPath archivePath;
 			archivePath.SetFromUnix(filename);
 			
@@ -718,7 +718,7 @@ void dealVFSZipArchive::pOpenZipFile(){
 	ffunc.opaque = this;
 	
 	pZipFile = unzOpen2(pFileReader->GetFilename(), &ffunc);
-	if(! pZipFile){
+	if(!pZipFile){
 		DETHROW(deeReadFile);
 	}
 	

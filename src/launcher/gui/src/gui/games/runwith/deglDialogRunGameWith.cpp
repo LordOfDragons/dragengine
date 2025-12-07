@@ -153,9 +153,9 @@ void deglDialogRunGameWith::UpdateGame(){
 	}
 	
 	delGameProfile *validateGameProfile = GetProfile();
-	if(! validateGameProfile){
+	if(!validateGameProfile){
 		validateGameProfile = gameManager.GetActiveProfile();
-		if(! validateGameProfile){
+		if(!validateGameProfile){
 			validateGameProfile = gameManager.GetDefaultProfile();
 		}
 	}
@@ -196,9 +196,9 @@ long deglDialogRunGameWith::onBtnEditProfiles(FXObject*, FXSelector, void*){
 	
 	try{
 		delGameProfile *profile = GetProfile();
-		if(! profile){
+		if(!profile){
 			profile = gameManager.GetActiveProfile();
-			if(! profile){
+			if(!profile){
 				profile = gameManager.GetDefaultProfile();
 			}
 		}

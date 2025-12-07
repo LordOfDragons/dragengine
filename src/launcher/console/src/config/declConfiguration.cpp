@@ -109,7 +109,7 @@ void declConfiguration::LoadConfiguration(){
 }
 
 void declConfiguration::SaveConfiguration(){
-	if(! pCanSave){
+	if(!pCanSave){
 		return;
 	}
 	

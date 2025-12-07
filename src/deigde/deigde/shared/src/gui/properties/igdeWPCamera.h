@@ -118,7 +118,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or nullptr if not set. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera or nullptr if not set. */
 	void SetCamera(igdeCamera *camera);
@@ -135,7 +135,7 @@ public:
 	
 	
 	/** Action or nullptr. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** Set action or nullptr. */
 	void SetAction(igdeAction *action);

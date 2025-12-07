@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if defined OS_UNIX && !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 #include <execinfo.h>
 #endif
 
@@ -165,7 +165,7 @@ static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context *context, void 
 #endif
 
 void deException::pBuildBacktrace(){
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if defined OS_UNIX && !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 	const int maxFramepointerCount = MAX_BACKTRACE_COUNT + SKIP_SELF_TRACE_COUNT;
 	void *framepointers[maxFramepointerCount];
 	const int fpcount = backtrace(framepointers, maxFramepointerCount);
@@ -236,10 +236,10 @@ void deException::pBuildBacktrace(){
 	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
 	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
 
-	if(! SymSetOptions(symOptions)){
+	if(!SymSetOptions(symOptions)){
 		return;
 	}
-	if(! SymInitialize(process, NULL, TRUE)){
+	if(!SymInitialize(process, NULL, TRUE)){
 		return;
 	}
 	
@@ -296,7 +296,7 @@ void deException::pBuildBacktrace(){
 	for(i=0; i<50; i++){
 		result = StackWalkEx(machineType, process, thread, &stack, &context, NULL,
 			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0);
-		if(! result || ! stack.AddrPC.Offset){
+		if(!result || !stack.AddrPC.Offset){
 			break;
 		}
 

@@ -62,20 +62,20 @@ igdeNativeFoxContainerScroll::~igdeNativeFoxContainerScroll(){
 }
 
 igdeNativeFoxContainerScroll *igdeNativeFoxContainerScroll::CreateNativeWidget(igdeContainerScroll &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
 	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags(&powner) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
-	if(! powner.GetCanScrollX()){
+	if(!powner.GetCanScrollX()){
 		layoutFlags |= HSCROLLING_OFF;
 	}
-	if(! powner.GetCanScrollY()){
+	if(!powner.GetCanScrollY()){
 		layoutFlags |= VSCROLLING_OFF;
 	}
 	

@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Result. */
-	inline int GetResult() const{return pResult;}
+	inline int GetResult() const{ return pResult; }
 	
 	/** Run check. */
 	void Check(GLuint fbo);

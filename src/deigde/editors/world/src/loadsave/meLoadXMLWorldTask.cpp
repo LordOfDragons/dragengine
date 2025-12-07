@@ -81,7 +81,7 @@ pXMLDocument(NULL),
 pXMLRoot(NULL),
 pNextTag(0)
 {
-	if(! lssys || ! world || ! file){
+	if(!lssys || !world || !file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -104,7 +104,7 @@ meLoadXMLWorldTask::~meLoadXMLWorldTask(){
 ///////////////
 
 bool meLoadXMLWorldTask::Step(){
-	if(! pXMLDocument){
+	if(!pXMLDocument){
 		pXMLDocument.TakeOver(new decXmlDocument);
 		
 		decXmlParser parser(pLSSys->GetWindowMain()->GetEnvironment().GetLogger());
@@ -114,7 +114,7 @@ bool meLoadXMLWorldTask::Step(){
 		pXMLDocument->CleanCharData();
 		
 		pXMLRoot = pXMLDocument->GetRoot();
-		if(! pXMLRoot){
+		if(!pXMLRoot){
 			DETHROW(deeInvalidParam);
 		}
 		if(strcmp(pXMLRoot->GetName(), "world") != 0){
@@ -159,7 +159,7 @@ bool meLoadXMLWorldTask::Step(){
 			
 			// height terrain
 			meHeightTerrain * const heightTerrain = pWorld->GetHeightTerrain();
-			if(! heightTerrain->GetPathHT().IsEmpty()){
+			if(!heightTerrain->GetPathHT().IsEmpty()){
 				pLSSys->LoadHeightTerrain(*heightTerrain, decPath::AbsolutePathUnix(
 					heightTerrain->GetPathHT(), pWorld->GetDirectoryPath()).GetPathUnix());
 			}
@@ -167,7 +167,7 @@ bool meLoadXMLWorldTask::Step(){
 		}
 		
 		const decXmlElementTag * const tag = pXMLRoot->GetElementIfTag(pNextTag++);
-		if(! tag){
+		if(!tag){
 			elapsedTime += timer.GetElapsedTime();
 			continue;
 		}
@@ -272,7 +272,7 @@ void meLoadXMLWorldTask::pLoadWorldEditor(const decXmlElementTag &root){
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -282,7 +282,7 @@ void meLoadXMLWorldTask::pLoadWorldEditor(const decXmlElementTag &root){
 			
 		}else if(tagName == "skyController"){
 			const decString &name = GetAttributeString(*tag, "name");
-			if(! pWorld->GetSky()->GetSky()){
+			if(!pWorld->GetSky()->GetSky()){
 				continue;
 			}
 			
@@ -384,7 +384,7 @@ void meLoadXMLWorldTask::pLoadObject(const decXmlElementTag &root, meObject &obj
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -450,7 +450,7 @@ void meLoadXMLWorldTask::pLoadObjectTexture(const decXmlElementTag &root, meObje
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -487,7 +487,7 @@ void meLoadXMLWorldTask::pLoadObjectTextureTransform(const decXmlElementTag &roo
 	
 	for(i=0; i<tagCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -515,7 +515,7 @@ void meLoadXMLWorldTask::pLoadDecal(const decXmlElementTag &root, meDecal &decal
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -570,7 +570,7 @@ void meLoadXMLWorldTask::pLoadDecalTransform(const decXmlElementTag &root, meDec
 	
 	for(i=0; i<tagCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -598,7 +598,7 @@ void meLoadXMLWorldTask::pLoadNavigationSpace(const decXmlElementTag &root, meNa
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

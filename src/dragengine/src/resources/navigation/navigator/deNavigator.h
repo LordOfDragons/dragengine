@@ -92,13 +92,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
 	void SetLayer(int layer);
 	
 	/** \brief Space type to navigate. */
-	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{return pSpaceType;}
+	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set space type to navigate. */
 	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
@@ -109,7 +109,7 @@ public:
 	 * If the start or goal point is outside the range path update returns an empty path.
 	 * The default disstance is 0.5m .
 	 */
-	inline float GetMaxOutsideDistance() const{return pMaxOutsideDistance;}
+	inline float GetMaxOutsideDistance() const{ return pMaxOutsideDistance; }
 	
 	/**
 	 * \brief Set maximum distance the start and goal point are allowed to be outside any navigation space.
@@ -121,19 +121,19 @@ public:
 	
 	
 	/** \brief Fix cost to use if no matching type is found. */
-	inline float GetDefaultFixCost() const{return pDefFixCost;}
+	inline float GetDefaultFixCost() const{ return pDefFixCost; }
 	
 	/** \brief Set fix cost to use if no matching type is found. */
 	void SetDefaultFixCost(float cost);
 	
 	/** \brief Cost per meter to use if no matching type is found. */
-	inline float GetDefaultCostPerMeter() const{return pDefCostPerMeter;}
+	inline float GetDefaultCostPerMeter() const{ return pDefCostPerMeter; }
 	
 	/** \brief Set cost per meter to use if no matching type is found. */
 	void SetDefaultCostPerMeter(float costPerMeter);
 	
 	/** \brief Maximum cost beyond which a node or path is considered impassable. */
-	inline float GetBlockingCost() const{return pBlockingCost;}
+	inline float GetBlockingCost() const{ return pBlockingCost; }
 	
 	/** \brief Set maximum cost beyond which a node or path is considered impassable. */
 	void SetBlockingCost(float cost);
@@ -141,7 +141,7 @@ public:
 	
 	
 	/** \brief Number of types. */
-	inline int GetTypeCount() const{return pTypeCount;}
+	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** \brief Type by index. */
 	deNavigatorType *GetTypeAt(int index) const;
@@ -298,7 +298,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief AI system peer. */
-	inline deBaseAINavigator *GetPeerAI() const{return pPeerAI;}
+	inline deBaseAINavigator *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer. */
 	void SetPeerAI(deBaseAINavigator *peer);
@@ -309,19 +309,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deNavigator *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next navigator in the parent world linked list. */
 	void SetLLWorldPrev(deNavigator *navigator);
 	
 	/** \brief Next navigator in the parent world linked list. */
-	inline deNavigator *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deNavigator *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next navigator in the parent world linked list. */
 	void SetLLWorldNext(deNavigator *navigator);

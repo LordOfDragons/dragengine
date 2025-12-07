@@ -287,7 +287,7 @@ static LONG WINAPI unhandledException(_EXCEPTION_POINTERS *ei){
 	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
 	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
 
-	if(! SymSetOptions(symOptions)){
+	if(!SymSetOptions(symOptions)){
 		if(module){
 			module->LogError("Failed calling SymSetOptions\n");
 		}else{
@@ -296,7 +296,7 @@ static LONG WINAPI unhandledException(_EXCEPTION_POINTERS *ei){
 	}
 	
 	const HANDLE process = GetCurrentProcess();
-	if(! SymInitialize(process, NULL, true)){
+	if(!SymInitialize(process, NULL, true)){
 		if(module){
 			module->LogError("Failed calling SymInitialize\n");
 		}else{
@@ -330,26 +330,26 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	// some infos
 	if(infos->si_code == SEGV_MAPERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Tried to access not allocated memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Tried to access not allocated memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Tried to access not allocated memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Tried to access not allocated memory at %p.\n", infos->si_addr);
 		}
 		
 	}else if(infos->si_code == SEGV_ACCERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Permission denied accessing memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Permission denied accessing memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Permission denied accessing memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Permission denied accessing memory at %p.\n", infos->si_addr);
 		}
 		
 	}else{
 		if(module){
-			module->LogErrorFormat("Segmentation Fault! Unknown memory error at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault!Unknown memory error at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr);
+			printf("Segmentation Fault!Unknown memory error at %p.\n", infos->si_addr);
 		}
 	}
 	
@@ -479,7 +479,7 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 ////////////////////////////
 
 decrbCoreFault::decrbCoreFault(deCRBasic *module){
-	if(! module) DETHROW(deeInvalidParam);
+	if(!module) DETHROW(deeInvalidParam);
 	
 	if(GetGlobalCoreFault()) DETHROW(deeInvalidAction);
 	

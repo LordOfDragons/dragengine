@@ -51,7 +51,7 @@ reURemovePush::reURemovePush(reRigPushList &list){
 	
 	try{
 		pPushes = new reRigPush*[pushCount];
-		if(! pPushes) DETHROW(deeOutOfMemory);
+		if(!pPushes) DETHROW(deeOutOfMemory);
 		
 		while(pPushCount < pushCount){
 			pPushes[pPushCount] = list.GetPushAt(pPushCount);
@@ -78,7 +78,7 @@ reURemovePush::~reURemovePush(){
 
 void reURemovePush::Undo(){
 	reRig *rig = pPushes[0]->GetRig();
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
 	int p;
@@ -95,7 +95,7 @@ void reURemovePush::Undo(){
 
 void reURemovePush::Redo(){
 	reRig *rig = pPushes[0]->GetRig();
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
 	int p;

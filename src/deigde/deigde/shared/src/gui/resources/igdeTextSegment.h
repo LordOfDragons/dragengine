@@ -81,19 +81,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Offset to begin of text segment. */
-	inline int GetBegin() const{return pBegin;}
+	inline int GetBegin() const{ return pBegin; }
 	
 	/** \brief Offset to end of text segment. */
-	inline int GetEnd() const{return pEnd;}
+	inline int GetEnd() const{ return pEnd; }
 	
 	/** \brief Length of text segment. */
-	inline int GetLength() const{return pEnd - pBegin + 1;}
+	inline int GetLength() const{ return pEnd - pBegin + 1; }
 	
 	/** \brief Style. */
-	inline const decString &GetStyle() const{return pStyle;}
+	inline const decString &GetStyle() const{ return pStyle; }
 	
 	/** \brief Action or NULL if not used. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	/*@}*/
 };
 

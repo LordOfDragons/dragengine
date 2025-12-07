@@ -97,10 +97,10 @@ public:
 	/*@{*/
 #ifdef BACKEND_OPENGL
 	/** Texture handle. */
-	inline GLuint GetTexture() const{return pTexture;}
+	inline GLuint GetTexture() const{ return pTexture; }
 	
 	/** Texture format. */
-	inline const deoglCapsTextureFormat *GetFormat() const{return pFormat;}
+	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	
 	/** Set texture format. */
 	void SetFormat(const deoglCapsTextureFormat *format);
@@ -113,10 +113,10 @@ public:
 	
 #elif defined BACKEND_VULKAN
 	/** Image or nullptr. */
-	inline const devkImage::Ref &GetImage() const{return pImage;}
+	inline const devkImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Texture format. */
-	inline const devkFormat *GetFormat() const{return pFormat;}
+	inline const devkFormat *GetFormat() const{ return pFormat; }
 	
 	/** Set texture format. */
 	void SetFormat(const devkFormat *format);
@@ -130,13 +130,13 @@ public:
 	
 	
 	/** Width in pixels. */
-	inline int GetWidth() const{return pSize.x;}
+	inline int GetWidth() const{ return pSize.x; }
 	
 	/** Height in pixels. */
-	inline int GetHeight() const{return pSize.y;}
+	inline int GetHeight() const{ return pSize.y; }
 	
 	/** Size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** Set size in pixels destroying opengl texture if present. */
 	void SetSize(int width, int height);
@@ -147,13 +147,13 @@ public:
 	
 	
 	/** Mip mapping has to be used on this texture. */
-	inline bool GetMipMapped() const{return pMipMapped;}
+	inline bool GetMipMapped() const{ return pMipMapped; }
 	
 	/** Set if mip mapping has to be used on this texture. */
 	void SetMipMapped(bool mipmapped);
 	
 	/** Mip map level count or 0 to let the hardware auto-generate them. */
-	inline int GetMipMapLevelCount() const{return pMipMapLevelCount;}
+	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	
 	/** Set mip map level count or 0 to let the hardware auto-generate them. */
 	void SetMipMapLevelCount(int count);
@@ -162,7 +162,7 @@ public:
 	 * Real mip map level count.
 	 * \details Is either mipMapLevelCount or the real texture mip map level count.
 	 */
-	inline int GetRealMipMapLevelCount() const{return pRealMipMapLevelCount;}
+	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
 	
 	
@@ -203,7 +203,7 @@ public:
 	
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{return pMemUse;}
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();

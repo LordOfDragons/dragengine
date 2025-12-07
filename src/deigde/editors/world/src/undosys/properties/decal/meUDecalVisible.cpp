@@ -40,12 +40,12 @@
 ////////////////////////////
 
 meUDecalVisible::meUDecalVisible(meDecal *decal){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -69,11 +69,11 @@ meUDecalVisible::~meUDecalVisible(){
 ///////////////
 
 void meUDecalVisible::Undo(){
-	pDecal->SetVisible(! pDecal->GetVisible());
+	pDecal->SetVisible(!pDecal->GetVisible());
 	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalVisible::Redo(){
-	pDecal->SetVisible(! pDecal->GetVisible());
+	pDecal->SetVisible(!pDecal->GetVisible());
 	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

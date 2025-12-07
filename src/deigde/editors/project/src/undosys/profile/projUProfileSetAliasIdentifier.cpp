@@ -43,7 +43,7 @@ projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier(projProfile *prof
 pProfile(NULL),
 pNewValue(newValue)
 {
-	if(! profile){
+	if(!profile){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -80,7 +80,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if(! skin || skin->GetPath() == editPath->GetPath()){
+		if(!skin || skin->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -104,7 +104,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if(! skin || skin->GetName() == textField->GetText()){
+		if(!skin || skin->GetName() == textField->GetText()){
 			return;
 		}
 		
@@ -121,7 +121,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if(! skin || skin->GetDescription() == textArea->GetDescription()){
+		if(!skin || skin->GetDescription() == textArea->GetDescription()){
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if(! skin || skin->GetCategory() == comboBox->GetText()){
+		if(!skin || skin->GetCategory() == comboBox->GetText()){
 			return;
 		}
 		
@@ -158,14 +158,14 @@ public:
 	
 	virtual void OnAction(){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if(! skin){
+		if(!skin){
 			return;
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesSkin()
 			.GetWithPath(skin->GetCategory());
-		if(! category){
+		if(!category){
 			return;
 		}
 		
@@ -278,7 +278,7 @@ void gdeWPSSkin::UpdateCategoryList(){
 	}
 	
 	pCBCategory->SetText(selection);
-	pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty() && ! pCBCategory->GetSelectedItem());
+	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
 void gdeWPSSkin::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
@@ -307,8 +307,8 @@ void gdeWPSSkin::UpdateSkin(){
 		pEditName->SetText(skin->GetName());
 		pEditDescription->SetText(skin->GetDescription());
 		pCBCategory->SetText(skin->GetCategory());
-		pCBCategory->SetInvalidValue(! pCBCategory->GetText().IsEmpty()
-			&& ! pCBCategory->GetSelectedItem());
+		pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty()
+			&& !pCBCategory->GetSelectedItem());
 		
 	}else{
 		pEditPath->ClearPath();

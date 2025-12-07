@@ -44,7 +44,7 @@ lpeULangPackSetDescription::lpeULangPackSetDescription(
 pLangPack(NULL),
 pNewDescription(newDescription)
 {
-	if(! langpack){
+	if(!langpack){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -69,25 +69,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Size in radians. */
-	inline const decVector2 &GetSize() const{return pSize;}
+	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size in radians. */
 	void SetSize(const decVector2 &size);
 	
 	/** \brief Blending color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set blending color. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);

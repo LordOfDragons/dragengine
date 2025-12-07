@@ -128,7 +128,7 @@ void deoalMOVRayBlocked::VisitNode(deoalModelOctree &node){
 			continue;
 		}
 		
-		if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+		if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 			continue;
 		}
 		
@@ -200,7 +200,7 @@ const deoalModelRTOctree::sNode &node){
 			continue;
 		}
 		
-		if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+		if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 			continue;
 		}
 		
@@ -252,7 +252,7 @@ void deoalMOVRayBlocked::pVisitNode(const deoalModelRTBVH &bvh, const deoalModel
 				continue;
 			}
 			
-			if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+			if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 				continue;
 			}
 			

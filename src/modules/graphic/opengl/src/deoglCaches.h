@@ -61,16 +61,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mutex. */
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** Skin textures cache. */
-	inline deCacheHelper &GetSkinTextures() const{return *pSkinTextures;}
+	inline deCacheHelper &GetSkinTextures() const{ return *pSkinTextures; }
 	
 	/** Model cache. */
-	inline deCacheHelper &GetModels() const{return *pModels;}
+	inline deCacheHelper &GetModels() const{ return *pModels; }
 	
 	/** Shaders cache. */
-	inline deCacheHelper &GetShaders() const{return *pShaders;}
+	inline deCacheHelper &GetShaders() const{ return *pShaders; }
 	
 	
 	

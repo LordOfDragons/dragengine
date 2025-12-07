@@ -52,7 +52,7 @@ pSoundLevelMeter(soundLevelMeter),
 pValCB(NULL),
 pHasCB(false)
 {
-	if(! soundLevelMeter){
+	if(!soundLevelMeter){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -60,7 +60,7 @@ pHasCB(false)
 }
 
 dedsSoundLevelMeter::~dedsSoundLevelMeter(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -89,7 +89,7 @@ dsRealObject *dedsSoundLevelMeter::GetCallback() const{
 }
 
 void dedsSoundLevelMeter::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -112,7 +112,7 @@ void dedsSoundLevelMeter::SetCallback(dsRealObject *object){
 //////////////////
 
 void dedsSoundLevelMeter::SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker){
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	
@@ -130,11 +130,11 @@ void dedsSoundLevelMeter::SpeakerAudible(const deSoundLevelMeter::cAudibleSpeake
 }
 
 void dedsSoundLevelMeter::SpeakerInaudible(deSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	

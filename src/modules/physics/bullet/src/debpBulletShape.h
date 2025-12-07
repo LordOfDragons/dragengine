@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */
-	inline btCollisionShape *GetShape() const{return pShape;}
+	inline btCollisionShape *GetShape() const{ return pShape; }
 	/*@}*/
 };
 

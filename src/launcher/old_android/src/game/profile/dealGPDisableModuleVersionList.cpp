@@ -64,7 +64,7 @@ dealGPDisableModuleVersion *dealGPDisableModuleVersionList::GetAt(int index) con
 }
 
 dealGPDisableModuleVersion *dealGPDisableModuleVersionList::GetWith(const char *name, const char *version) const{
-	if(! name || ! version){
+	if(!name || !version){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ int dealGPDisableModuleVersionList::IndexOf(dealGPDisableModuleVersion *entry) c
 }
 
 int dealGPDisableModuleVersionList::IndexOfWith(const char *name, const char *version) const{
-	if(! name || ! version){
+	if(!name || !version){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -112,7 +112,7 @@ int dealGPDisableModuleVersionList::IndexOfWith(const char *name, const char *ve
 }
 
 void dealGPDisableModuleVersionList::Add(dealGPDisableModuleVersion *entry){
-	if(! entry || HasWith(entry->GetName(), entry->GetVersion())){
+	if(!entry || HasWith(entry->GetName(), entry->GetVersion())){
 		DETHROW(deeInvalidParam);
 	}
 	pList.Add(entry);

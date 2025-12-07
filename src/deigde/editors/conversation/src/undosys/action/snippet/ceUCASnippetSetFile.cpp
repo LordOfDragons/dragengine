@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile){
-	if(! topic || ! newFile) DETHROW(deeInvalidParam);
+	if(!topic || !newFile) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pSnippet = NULL;

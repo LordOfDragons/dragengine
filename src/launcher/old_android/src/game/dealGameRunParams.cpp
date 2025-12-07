@@ -64,7 +64,7 @@ void dealGameRunParams::SetGameProfile(dealGameProfile *profile){
 }
 
 void dealGameRunParams::SetRunArguments(const char *arguments){
-	if(! arguments) DETHROW(deeInvalidParam);
+	if(!arguments) DETHROW(deeInvalidParam);
 	pRunArguments = arguments;
 }
 

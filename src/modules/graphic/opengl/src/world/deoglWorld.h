@@ -88,22 +88,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGl module. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Retrieves the engine world resource. */
-	inline const deWorld &GetWorld() const{return pWorld;}
+	inline const deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Render world. */
-	inline deoglRWorld *GetRWorld() const{return pRWorld;}
+	inline deoglRWorld *GetRWorld() const{ return pRWorld; }
 	
 	/** \deprecated Height terrain or \em NULL if not set. */
-	inline deoglHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Update dynamic parts of world like the skins. */
 	virtual void Update(float elapsed);
 	
 	/** Shared video player list. */
-	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{return *pSharedVideoPlayerList;}
+	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{ return *pSharedVideoPlayerList; }
 	
 	
 	

@@ -57,11 +57,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the command. */
-	inline const decString &GetCommand() const{return pCommand;}
+	inline const decString &GetCommand() const{ return pCommand; }
 	/** \brief Sets the command. */
 	void SetCommand(const char *command);
 	/** \brief Determines if the result is true if the command returned false. */
-	inline bool GetNegate() const{return pNegate;}
+	inline bool GetNegate() const{ return pNegate; }
 	/** \brief Sets if the result is true if the command returned false. */
 	void SetNegate(bool negate);
 	

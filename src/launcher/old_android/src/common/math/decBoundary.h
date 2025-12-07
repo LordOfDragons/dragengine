@@ -75,7 +75,7 @@ public:
 	 */
 	void OrientateLine();
 	/** Returns the point formed by adding the given point to the top left corner point. */
-	inline decPoint MapPoint(const decPoint &pt) const{return decPoint(x1 + pt.x, y1 + pt.y);}
+	inline decPoint MapPoint(const decPoint &pt) const{ return decPoint(x1 + pt.x, y1 + pt.y); }
 	/*@}*/
 	
 	/** @name Operators */

@@ -53,7 +53,7 @@ ceConversationTopic *topic, const char *newID) :
 pTopic(NULL),
 pNewID(newID)
 {
-	if(! topic || ! topic->GetFile()){
+	if(!topic || !topic->GetFile()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -58,10 +58,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent rig. */
-	inline reRig *GetParentRig() const{return pRig;}
+	inline reRig *GetParentRig() const{ return pRig; }
 	
 	/** Retrieves the number of selected pushs. */
-	inline int GetPushCount() const{return pPushCount;}
+	inline int GetPushCount() const{ return pPushCount; }
 	/** Retrieves the push at the given index. */
 	reRigPush *GetPushAt(int index) const;
 	/** Determines if the given push exists. */
@@ -78,7 +78,7 @@ public:
 	void RemoveAllPushes();
 	
 	/** Retrieves the active push or NULL. */
-	inline reRigPush *GetActivePush() const{return pActivePush;}
+	inline reRigPush *GetActivePush() const{ return pActivePush; }
 	/** Determines if an active push exists. */
 	bool HasActivePush() const;
 	/** Sets the acitve push or NULL. */

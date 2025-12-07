@@ -85,7 +85,7 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 		gdeObjectClass * const objectClass = list.GetAt(i);
 		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith(objectClass);
 		
-		if(! modelObjectClass){
+		if(!modelObjectClass){
 			item.TakeOver(new gdeWPSTIMObjectClass(GetTree(), list.GetAt(i)));
 			AppendModel(item);
 		}
@@ -97,7 +97,7 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 		gdeWPSTIMObjectClass * const modelObjectClass = (gdeWPSTIMObjectClass*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelObjectClass->GetObjectClass())){
+		if(!list.Has(modelObjectClass->GetObjectClass())){
 			RemoveModel(modelObjectClass);
 		}
 	}
@@ -150,7 +150,7 @@ void gdeWPSTIMObjectClasses::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMObjectClasses::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

@@ -60,11 +60,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline delLauncher &GetLauncher() const{return pLauncher;}
+	inline delLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Game list. */
-	inline delPatchList &GetPatches(){return pPatches;}
-	inline const delPatchList &GetPatches() const{return pPatches;}
+	inline delPatchList &GetPatches(){ return pPatches; }
+	inline const delPatchList &GetPatches() const{ return pPatches; }
 	
 	/** \brief Load list of game patches from game patch directory. */
 	void LoadPatches(delEngineInstance &instance);

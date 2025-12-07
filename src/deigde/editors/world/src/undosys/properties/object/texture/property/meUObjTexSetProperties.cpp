@@ -45,7 +45,7 @@ const decStringDictionary &newValues) :
 pTexture(texture),
 pNewValues(newValues)
 {
-	if(! texture || ! texture->GetObject() || ! texture->GetObject()->GetWorld()){
+	if(!texture || !texture->GetObject() || !texture->GetObject()->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

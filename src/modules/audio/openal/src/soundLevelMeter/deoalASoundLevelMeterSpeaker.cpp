@@ -92,7 +92,7 @@ void deoalASoundLevelMeterSpeaker::EnvProbeDropOctreeNode(){
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerPositionChanged(){
-	if(! pEnvProbe){
+	if(!pEnvProbe){
 		return;
 	}
 	
@@ -104,7 +104,7 @@ void deoalASoundLevelMeterSpeaker::SpeakerPositionChanged(){
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerLayerMaskChanged(){
-	if(! pEnvProbe){
+	if(!pEnvProbe){
 		return;
 	}
 	
@@ -116,7 +116,7 @@ void deoalASoundLevelMeterSpeaker::SpeakerLayerMaskChanged(){
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerRangeChanged(){
-	if(! pEnvProbe){
+	if(!pEnvProbe){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void deoalASoundLevelMeterSpeaker::SpeakerRangeChanged(){
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerAttenuationChanged(){
-	if(! pEnvProbe){
+	if(!pEnvProbe){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void deoalASoundLevelMeterSpeaker::SpeakerAttenuationChanged(){
 }
 
 void deoalASoundLevelMeterSpeaker::Listen(){
-	if(! pSoundLevelMeter.GetParentWorld()){
+	if(!pSoundLevelMeter.GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -191,12 +191,12 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	
 	while(index < count){
 		const deoalRayTraceHitElement * const forward = pNextHitElement(rtresult, index, true);
-		if(! forward){
+		if(!forward){
 			break;
 		}
 		
 		const deoalRayTraceHitElement * const backward = pNextHitElement(rtresult, index, false);
-		if(! backward){
+		if(!backward){
 			return;
 		}
 		
@@ -225,7 +225,7 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 }
 
 void deoalASoundLevelMeterSpeaker::pListenReflected(){
-	if(! pEnvProbe){
+	if(!pEnvProbe){
 		pEnvProbe = new deoalEnvProbe(pSoundLevelMeter.GetAudioThread());
 		pEnvProbe->SetPosition(pSpeaker->GetPosition());
 		pEnvProbe->SetRange(pSpeaker->GetRange());
@@ -233,14 +233,14 @@ void deoalASoundLevelMeterSpeaker::pListenReflected(){
 			pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset());
 	}
 	
-	if(! pListener){
+	if(!pListener){
 		pListener = new deoalEnvProbeListener;
 	}
 	
 	pEnvProbe->CalcListener(*pListener, *pSoundLevelMeter.GetParentWorld(),
 		pSoundLevelMeter.GetPosition(), &pSoundLevelMeter);
 	
-	if(! pEnvProbe->GetOctreeNode()){
+	if(!pEnvProbe->GetOctreeNode()){
 		pSoundLevelMeter.GetParentWorld()->GetOctree()->InsertEnvProbeIntoTree(pEnvProbe, 8);
 	}
 	

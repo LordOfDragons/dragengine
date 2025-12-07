@@ -83,7 +83,7 @@ aeRuleInverseKinematic::~aeRuleInverseKinematic(){
 ///////////////
 
 void aeRuleInverseKinematic::SetGoalPosition(const decVector &position){
-	if(! position.IsEqualTo(pGoalPosition)){
+	if(!position.IsEqualTo(pGoalPosition)){
 		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pGoalPosition = position;
@@ -97,7 +97,7 @@ void aeRuleInverseKinematic::SetGoalPosition(const decVector &position){
 }
 
 void aeRuleInverseKinematic::SetGoalOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pGoalOrientation)){
+	if(!orientation.IsEqualTo(pGoalOrientation)){
 		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pGoalOrientation = orientation;
@@ -111,7 +111,7 @@ void aeRuleInverseKinematic::SetGoalOrientation(const decVector &orientation){
 }
 
 void aeRuleInverseKinematic::SetLocalPosition(const decVector &position){
-	if(! position.IsEqualTo(pLocalPosition)){
+	if(!position.IsEqualTo(pLocalPosition)){
 		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pLocalPosition = position;
@@ -125,7 +125,7 @@ void aeRuleInverseKinematic::SetLocalPosition(const decVector &position){
 }
 
 void aeRuleInverseKinematic::SetLocalOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pLocalOrientation)){
+	if(!orientation.IsEqualTo(pLocalOrientation)){
 		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pLocalOrientation = orientation;
@@ -169,9 +169,9 @@ void aeRuleInverseKinematic::SetUseSolverBone(bool useSolverBone){
 }
 
 void aeRuleInverseKinematic::SetSolverBone(const char *solverBone){
-	if(! solverBone) DETHROW(deeInvalidParam);
+	if(!solverBone) DETHROW(deeInvalidParam);
 	
-	if(! pSolverBone.Equals(solverBone)){
+	if(!pSolverBone.Equals(solverBone)){
 		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pSolverBone = solverBone;
@@ -215,7 +215,7 @@ void aeRuleInverseKinematic::SetReachBone(const char *bone){
 }
 
 void aeRuleInverseKinematic::SetReachCenter(const decVector &center){
-	if(! center.IsEqualTo(pReachCenter)){
+	if(!center.IsEqualTo(pReachCenter)){
 		pReachCenter = center;
 		
 		deAnimatorRuleInverseKinematic * const engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
@@ -318,7 +318,7 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleInverseKinematic;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
 		InitEngineRule(engRule);

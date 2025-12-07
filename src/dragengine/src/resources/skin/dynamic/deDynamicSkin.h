@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of renderables. */
-	inline int GetRenderableCount() const{return pRenderableCount;}
+	inline int GetRenderableCount() const{ return pRenderableCount; }
 	
 	/** \brief Renderable at the given index. */
 	deDSRenderable *GetRenderableAt(int index) const;
@@ -115,7 +115,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicDynamicSkin *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicDynamicSkin *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicDynamicSkin *peer);

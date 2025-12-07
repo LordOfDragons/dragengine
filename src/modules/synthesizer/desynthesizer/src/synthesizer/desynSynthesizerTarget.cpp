@@ -91,7 +91,7 @@ float desynSynthesizerTarget::GetValue(const desynSynthesizerInstance &instance,
 	
 	for(i=0; i<pLinkCount; i++){
 		const desynSynthesizerLink &link = *pLinks[i];
-		if(! link.HasController()){
+		if(!link.HasController()){
 			continue;
 		}
 		

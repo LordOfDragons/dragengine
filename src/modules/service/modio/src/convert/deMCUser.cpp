@@ -47,15 +47,15 @@ deServiceObject::Ref deMCUser::User(const Modio::User &user){
 	
 	so->SetChildAt("userId", deMCCommon::ID(user.UserId));
 	
-	if(! user.Username.empty()){
+	if(!user.Username.empty()){
 		so->SetStringChildAt("username", user.Username.c_str());
 	}
 	
-	if(! user.ProfileUrl.empty()){
+	if(!user.ProfileUrl.empty()){
 		so->SetStringChildAt("profileUrl", user.ProfileUrl.c_str());
 	}
 	
-	if(! user.DisplayNamePortal.empty()){
+	if(!user.DisplayNamePortal.empty()){
 		so->SetStringChildAt("displayNamePortal", user.DisplayNamePortal.c_str());
 	}
 	

@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, ceStrip *newStrip){
-	if(! topic || ! actorSpeak || ! gesture || ! newStrip){
+	if(!topic || !actorSpeak || !gesture || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font. */
-	inline feFont *GetFont() const{return pFont;}
+	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
@@ -98,7 +98,7 @@ public:
 	void ResetView();
 	
 	/** \brief View image. */
-	inline feViewFIImage &GetViewImage() const{return *pViewImage;}
+	inline feViewFIImage &GetViewImage() const{ return *pViewImage; }
 	
 	
 	/** \brief Game like frame update. */

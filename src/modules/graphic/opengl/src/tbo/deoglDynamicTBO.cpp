@@ -227,7 +227,7 @@ void deoglDynamicTBO::pEnsureVBO(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-	if(! pVBO){
+	if(!pVBO){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -240,7 +240,7 @@ void deoglDynamicTBO::pEnsureTBO(){
 	}
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTBO));
-	if(! pTBO){
+	if(!pTBO){
 		DETHROW(deeOutOfMemory);
 	}
 	

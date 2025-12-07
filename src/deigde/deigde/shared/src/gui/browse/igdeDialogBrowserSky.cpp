@@ -65,7 +65,7 @@ igdeGDSky *igdeDialogBrowserSky::GetSelectedSky() const{
 }
 
 void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
-	if(! gdSky){
+	if(!gdSky){
 		return;
 	}
 	

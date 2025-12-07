@@ -88,7 +88,7 @@ public:
 	
 	
 	/** \brief Owner. */
-	inline igdeNVSlot &GetOwner() const{return *pOwner;}
+	inline igdeNVSlot &GetOwner() const{ return *pOwner; }
 	
 	
 	

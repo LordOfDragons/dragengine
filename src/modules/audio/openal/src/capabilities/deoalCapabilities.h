@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deoalAudioThread &GetModule() const{return pAudioThread;}
+	inline deoalAudioThread &GetModule() const{ return pAudioThread; }
 	
 	/** \brief Report capabilities. */
 	void ReportCapabilities();
@@ -72,20 +72,20 @@ public:
 	
 	
 	/** \brief Maximum mono sources. */
-	inline int GetMaxMonoSources() const{return pMaxMonoSources;}
+	inline int GetMaxMonoSources() const{ return pMaxMonoSources; }
 	
 	/** \brief Maximum stereo sources. */
-	inline int GetMaxStereoSources() const{return pMaxStereoSources;}
+	inline int GetMaxStereoSources() const{ return pMaxStereoSources; }
 	
 	
 	
 	/** \brief EFX maximum auxiliary send. */
-	inline int GetEfxMaxAuxSend() const{return pEfxMaxAuxSend;}
+	inline int GetEfxMaxAuxSend() const{ return pEfxMaxAuxSend; }
 	
 	
 	
 	/** \brief HRTF specifiers. */
-	inline const decStringList &GetHRTFSpecifiers() const{return pHRTFSpecifiers;}
+	inline const decStringList &GetHRTFSpecifiers() const{ return pHRTFSpecifiers; }
 	/*@}*/
 	
 	

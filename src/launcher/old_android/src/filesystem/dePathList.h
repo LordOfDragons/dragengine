@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of path. */
-	inline int GetCount() const{return pPathCount;}
+	inline int GetCount() const{ return pPathCount; }
 	
 	/** \brief Path at index. */
 	const decPath &GetAt(int index) const;

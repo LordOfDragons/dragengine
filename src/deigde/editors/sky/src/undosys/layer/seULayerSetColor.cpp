@@ -43,7 +43,7 @@ seULayerSetColor::seULayerSetColor(seLayer *layer, const decColor &newColor) :
 pLayer(NULL),
 pNewColor(newColor)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

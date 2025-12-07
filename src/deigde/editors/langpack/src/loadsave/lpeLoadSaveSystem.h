@@ -58,10 +58,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline lpeWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline lpeWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the number of load save langpacks. */
-	inline int GetLSLangPackCount() const{return pLSLangPackCount;}
+	inline int GetLSLangPackCount() const{ return pLSLangPackCount; }
 	/** Retrieves the load save langpack at the given index. */
 	lpeLoadSaveLangPack *GetLSLangPackAt(int index) const;
 	/** Retrieves the index of the load save langpack. */
@@ -85,7 +85,7 @@ public:
 	void SaveLangPack(lpeLangPack *langpack, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetLangPackFPList() const{return pFPListLangPack;}
+	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }
 	/*@}*/
 	
 private:

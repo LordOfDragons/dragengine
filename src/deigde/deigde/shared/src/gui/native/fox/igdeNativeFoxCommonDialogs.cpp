@@ -146,7 +146,7 @@ const char *title, const char *text){
 
 bool igdeNativeFoxCommonDialogs::GetInteger(igdeWidget *owner, const char *title,
 const char *text, int &value){
-	if(! owner || ! owner->GetNativeWidget() || ! title || ! text){
+	if(!owner || !owner->GetNativeWidget() || !title || !text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -169,7 +169,7 @@ const char *text, int &value){
 
 bool igdeNativeFoxCommonDialogs::GetFloat(igdeWidget *owner, const char *title,
 const char *text, float &value){
-	if(! owner || ! owner->GetNativeWidget() || ! title || ! text){
+	if(!owner || !owner->GetNativeWidget() || !title || !text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -192,7 +192,7 @@ const char *text, float &value){
 
 bool igdeNativeFoxCommonDialogs::GetString(igdeWidget *owner, const char *title,
 const char *text, decString &value){
-	if(! owner || ! owner->GetNativeWidget() || ! title || ! text){
+	if(!owner || !owner->GetNativeWidget() || !title || !text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -213,7 +213,7 @@ const char *text, decString &value){
 
 bool igdeNativeFoxCommonDialogs::SelectString(igdeWidget *owner, const char *title,
 const char *text, const decStringList &list, int &selection){
-	if(! owner || ! owner->GetNativeWidget() || ! title || ! text || list.GetCount() == 0){
+	if(!owner || !owner->GetNativeWidget() || !title || !text || list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -232,7 +232,7 @@ const char *text, const decStringList &list, int &selection){
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
 const igdeFilePatternList &filePatterns, decString &filename){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -254,7 +254,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
 deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -275,7 +275,7 @@ deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &fi
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
 const igdeFilePatternList &filePatterns, decString &filename){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -286,7 +286,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 	dialog.setCurrentPattern(0);
 	dialog.setFilename(filename.GetString());
 	
-	if(! dialog.execute(PLACEMENT_OWNER)){
+	if(!dialog.execute(PLACEMENT_OWNER)){
 		return false;
 	}
 	
@@ -295,7 +295,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 	// TEMP
 	if(true){
 		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(dialog.getCurrentPattern());
-		if(! filename.MatchesPattern(pattern.GetPattern())){
+		if(!filename.MatchesPattern(pattern.GetPattern())){
 			filename.Append(pattern.GetDefaultExtension());
 		}
 	}
@@ -306,7 +306,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
 deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -316,7 +316,7 @@ deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &fi
 	dialog.SetFilePatternList(&filePatterns);
 	dialog.SetFilename(filename);
 	
-	if(! dialog.execute(PLACEMENT_OWNER)){
+	if(!dialog.execute(PLACEMENT_OWNER)){
 		return false;
 	}
 	
@@ -325,7 +325,7 @@ deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &fi
 }
 
 bool igdeNativeFoxCommonDialogs::GetDirectory(igdeWidget *owner, const char *title, decString &dirname){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -345,7 +345,7 @@ bool igdeNativeFoxCommonDialogs::GetDirectory(igdeWidget *owner, const char *tit
 
 bool igdeNativeFoxCommonDialogs::GetDirectory(igdeWidget *owner, const char *title,
 deVirtualFileSystem &vfs, decString &dirname){
-	if(! owner || ! owner->GetNativeWidget() || ! title){
+	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -387,7 +387,7 @@ const char *title, igdeFont::sConfiguration &config){
 	fdesc.slant = config.italic ? FXFont::Italic : FXFont::Straight;
 	dialog.setFontDesc(fdesc);
 	
-	if(! dialog.execute(PLACEMENT_OWNER)){
+	if(!dialog.execute(PLACEMENT_OWNER)){
 		return false;
 	}
 	

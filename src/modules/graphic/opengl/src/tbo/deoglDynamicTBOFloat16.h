@@ -53,8 +53,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline HALF_FLOAT *GetDataFloat(){return (HALF_FLOAT*)pData;}
-	inline const HALF_FLOAT *GetDataFloat() const{return (const HALF_FLOAT*)pData;}
+	inline HALF_FLOAT *GetDataFloat(){ return (HALF_FLOAT*)pData; }
+	inline const HALF_FLOAT *GetDataFloat() const{ return (const HALF_FLOAT*)pData; }
 	
 	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool(bool value);

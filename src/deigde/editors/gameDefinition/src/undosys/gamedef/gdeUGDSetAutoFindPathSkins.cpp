@@ -44,7 +44,7 @@ gdeUGDSetAutoFindPathSkins::gdeUGDSetAutoFindPathSkins(
 pGameDefinition(NULL),
 pNewValue(newValue)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

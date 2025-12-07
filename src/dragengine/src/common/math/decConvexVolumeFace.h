@@ -69,19 +69,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Face normal. */
-	inline const decVector &GetNormal() const{return pNormal;}
+	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
 	void SetNormal(const decVector &normal);
 	
 	/** \brief Marker value. */
-	inline int GetMarker() const{return pMarker;}
+	inline int GetMarker() const{ return pMarker; }
 	
 	/** \brief Set marker value. */
 	void SetMarker(int marker);
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Index of the vertex at the given position. */
 	int GetVertexAt(int position) const;

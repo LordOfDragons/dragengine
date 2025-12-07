@@ -58,7 +58,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deBaseNetworkModule *GetActiveModule() const{return pActiveModule;}
+	inline deBaseNetworkModule *GetActiveModule() const{ return pActiveModule; }
 	/*@}*/
 	
 	

@@ -67,22 +67,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Node. */
-	inline sePropertyNode *GetNode() const{return pNode;}
+	inline sePropertyNode *GetNode() const{ return pNode; }
 	
 	/** \brief Reference position. */
-	inline const decPoint3 &GetPosition() const{return pPosition;}
+	inline const decPoint3 &GetPosition() const{ return pPosition; }
 	
 	/** \brief Reference size. */
-	inline const decPoint3 &GetSize() const{return pSize;}
+	inline const decPoint3 &GetSize() const{ return pSize; }
 	
 	/** \brief Refrence rotation. */
-	inline float GetRotation() const{return pRotation;}
+	inline float GetRotation() const{ return pRotation; }
 	
 	/** \brief Reference shearing. */
-	inline float GetShearing() const{return pShearing;}
+	inline float GetShearing() const{ return pShearing; }
 	
 	/** \brief Matrix. */
-	inline const decTexMatrix2 &GetMatrix() const{return pMatrix;}
+	inline const decTexMatrix2 &GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Create inverse matrix for the parent or mask parent. */
 	decTexMatrix2 CreateInverseParentMatrix() const;

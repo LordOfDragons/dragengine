@@ -91,7 +91,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleForeignState * const rule = (aeRuleForeignState*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -131,7 +131,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleForeignState * const rule = (aeRuleForeignState*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -154,7 +154,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleForeignState * const rule = (aeRuleForeignState*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -193,7 +193,7 @@ public:
 	cComboCoordFrameSource(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -208,7 +208,7 @@ public:
 	cComboCoordFrameDestination(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		

@@ -348,17 +348,17 @@ int igdeUIFoxHelper::GetChildLayoutFlags(igdeWidget *widget, int defaultFlags){
 
 igdeUIFoxHelper::sChildLayoutFlags igdeUIFoxHelper::GetChildLayoutFlagsAll(
 igdeWidget *widget, int defaultFlags){
-	if(! widget){
+	if(!widget){
 		DETHROW(deeInvalidParam);
 	}
 	
 	igdeContainer * const pparent = widget->GetParent();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const foxContainer = (FXComposite*) pparent->GetNativeContainer();
-	if(! foxContainer){
+	if(!foxContainer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -372,17 +372,17 @@ igdeWidget *widget, int defaultFlags){
 }
 
 void igdeUIFoxHelper::UpdateLayoutFlags(igdeWidget *widget){
-	if(! widget){
+	if(!widget){
 		DETHROW(deeInvalidParam);
 	}
 	
 	igdeContainer * const pparent = widget->GetParent();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const foxContainer = (FXComposite*) pparent->GetNativeContainer();
-	if(! foxContainer){
+	if(!foxContainer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -390,7 +390,7 @@ void igdeUIFoxHelper::UpdateLayoutFlags(igdeWidget *widget){
 	
 	clflags.widget = widget;
 	FXWindow * const foxWidget = (FXWindow*)widget->GetNativeWidget();
-	if(! foxWidget){
+	if(!foxWidget){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -400,12 +400,12 @@ void igdeUIFoxHelper::UpdateLayoutFlags(igdeWidget *widget){
 }
 
 void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
-	if(! container){
+	if(!container){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const foxContainer = (FXComposite*)container->GetNativeContainer();
-	if(! foxContainer){
+	if(!foxContainer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -416,7 +416,7 @@ void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
 	for(i=0; i<count; i++){
 		clflags.widget = container->GetChildAt(i);
 		FXWindow * const foxWidget = (FXWindow*)clflags.widget->GetNativeWidget();
-		if(! foxWidget){
+		if(!foxWidget){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -462,7 +462,7 @@ FXColor igdeUIFoxHelper::BrighterColor(FXColor color, int amount){
 }
 
 int igdeUIFoxHelper::DebugCountWindows(FXWindow *rootWindow){
-	if(! rootWindow){
+	if(!rootWindow){
 		rootWindow = FXApp::instance()->getRootWindow();
 	}
 	

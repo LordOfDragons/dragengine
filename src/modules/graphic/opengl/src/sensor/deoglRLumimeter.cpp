@@ -173,7 +173,7 @@ deoglRLight *deoglRLumimeter::GetLightAt(int index) const{
 }
 
 void deoglRLumimeter::AddLight(deoglRLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	

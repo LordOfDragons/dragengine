@@ -43,7 +43,7 @@ seUBodySetOrientation::seUBodySetOrientation(seBody *body, const decVector &newO
 pBody(NULL),
 pNewOrientation(newOrientation)
 {
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	

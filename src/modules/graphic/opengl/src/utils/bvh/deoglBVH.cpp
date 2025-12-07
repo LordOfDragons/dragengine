@@ -91,7 +91,7 @@ void deoglBVH::Build(const sBuildPrimitive *primitives, int primitiveCount, int 
 	if(primitiveCount < 0){
 		DETHROW_INFO(deeInvalidParam, "primitiveCount < 0");
 	}
-	if(primitiveCount > 0 && ! primitives){
+	if(primitiveCount > 0 && !primitives){
 		DETHROW_INFO(deeInvalidParam, "primitiveCount > 0 && primitives is null");
 	}
 	if(maxDepth < 1){
@@ -182,7 +182,7 @@ void deoglBVH::pBuildNode(const sBuildPrimitive *primitives, int primitiveCount,
 	// or the node size becomes too small keep the node a primitive only node and stop
 	// building this branch of the tree
 	if(nodePrimitiveCount < 2 || maxDepth == 0
-	|| ! (nodeSize > decVector(FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON))){
+	|| !(nodeSize > decVector(FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON))){
 		return;
 	}
 	

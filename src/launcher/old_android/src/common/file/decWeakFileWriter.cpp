@@ -38,7 +38,7 @@
 decWeakFileWriter::decWeakFileWriter(decBaseFileWriter *writer) :
 pWriter(writer)
 {
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 }

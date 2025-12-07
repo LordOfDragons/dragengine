@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
-	if(! topic || ! newTarget) DETHROW(deeInvalidParam);
+	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pCameraShot = NULL;

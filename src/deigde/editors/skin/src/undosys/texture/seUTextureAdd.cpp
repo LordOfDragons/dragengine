@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
-	if(! skin || ! texture) DETHROW(deeInvalidParam);
+	if(!skin || !texture) DETHROW(deeInvalidParam);
 	
 	pSkin = NULL;
 	pTexture = NULL;

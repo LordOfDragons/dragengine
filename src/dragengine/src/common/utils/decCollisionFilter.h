@@ -75,12 +75,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Category layer mask. */
-	inline decLayerMask &GetCategory(){return pCategory;}
-	inline const decLayerMask &GetCategory() const{return pCategory;}
+	inline decLayerMask &GetCategory(){ return pCategory; }
+	inline const decLayerMask &GetCategory() const{ return pCategory; }
 	
 	/** \brief Filter layer mask. */
-	inline decLayerMask &GetFilter(){return pFilter;}
-	inline const decLayerMask &GetFilter() const{return pFilter;}
+	inline decLayerMask &GetFilter(){ return pFilter; }
+	inline const decLayerMask &GetFilter() const{ return pFilter; }
 	
 	/**
 	 * \brief Determines if two collision filters can collide.

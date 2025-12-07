@@ -98,25 +98,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parser. */
-	inline igdeTriggerExpressionParser *GetParser() const{return pParser;}
+	inline igdeTriggerExpressionParser *GetParser() const{ return pParser; }
 	
 	/** \brief Set parser. */
 	void SetParser(igdeTriggerExpressionParser *parser);
 	
 	/** \brief Target list. */
-	inline const igdeTriggerTargetList *GetTargetList() const{return pTargetList;}
+	inline const igdeTriggerTargetList *GetTargetList() const{ return pTargetList; }
 	
 	/** \brief Set target list. */
 	void SetTargetList(const igdeTriggerTargetList *targetList);
 	
 	/** \brief Expression. */
-	inline const decString &GetExpression() const{return pExpression;}
+	inline const decString &GetExpression() const{ return pExpression; }
 	
 	/** \brief Set expression. */
 	void SetExpression(const char *expression);
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

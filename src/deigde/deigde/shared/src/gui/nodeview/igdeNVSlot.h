@@ -89,34 +89,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Button is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Slot is an input slot (left side) or output slot (right side). */
-	inline bool GetIsInput() const{return pIsInput;}
+	inline bool GetIsInput() const{ return pIsInput; }
 	
 	/** \brief Color indicating slot type. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color indicating slot type. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Owner node or NULL. */
-	inline igdeNVNode *GetOwnerNode() const{return pOwnerNode;}
+	inline igdeNVNode *GetOwnerNode() const{ return pOwnerNode; }
 	
 	/**
 	 * \brief Set owner node or NULL.

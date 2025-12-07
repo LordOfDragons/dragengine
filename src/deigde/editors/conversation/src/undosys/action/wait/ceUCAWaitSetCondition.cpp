@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition){
-	if(! topic || ! wait) DETHROW(deeInvalidParam);
+	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pWait = NULL;

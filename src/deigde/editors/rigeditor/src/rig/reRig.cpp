@@ -224,7 +224,7 @@ pDirtyRig(true)
 		
 		amRuleAnim = new deAnimatorRuleAnimation;
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
-		amRuleAnim->SetEnabled(! pUseRestPose);
+		amRuleAnim->SetEnabled(!pUseRestPose);
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
 		amRuleAnim->FreeReference();
@@ -270,7 +270,7 @@ pDirtyRig(true)
 		pEngSimCollider = engine->GetColliderManager()->CreateColliderComponent();
 		pEngSimCollider->SetEnabled(false);
 		pEngSimCollider->SetResponseType(deCollider::ertDynamic);
-		pEngSimCollider->SetUseLocalGravity(false);//! pDynamic);
+		pEngSimCollider->SetUseLocalGravity(false);//!pDynamic);
 		pEngSimCollider->SetMass(pMass);
 		
 		layerMask.ClearMask();
@@ -492,7 +492,7 @@ void reRig::SetUseRestPose(bool useRestPose){
 	
 	pUseRestPose = useRestPose;
 	
-	pEngAnimatorAnim->SetEnabled(! useRestPose);
+	pEngAnimatorAnim->SetEnabled(!useRestPose);
 	pEngAnimatorRestPose->SetEnabled(useRestPose);
 	pEngAnimator->NotifyRulesChanged();
 	
@@ -503,7 +503,7 @@ void reRig::SetPlaybackMove(bool playbackMove){
 	if(playbackMove != pPlaybackMove){
 		pPlaybackMove = playbackMove;
 		
-		pEngAnimatorInstance->GetControllerAt(0).SetClamp(! playbackMove);
+		pEngAnimatorInstance->GetControllerAt(0).SetClamp(!playbackMove);
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 		
 		NotifyViewChanged();
@@ -545,7 +545,7 @@ void reRig::UpdateComponentTextures(){
 				useTexture = 0;
 			}
 			
-			if(! useSkin && (! engSkin || engSkin->IndexOfTextureNamed(textureName.GetString()) == -1)){
+			if(!useSkin && (!engSkin || engSkin->IndexOfTextureNamed(textureName.GetString()) == -1)){
 				useSkin = defaultSkin;
 				useTexture = defaultTexture;
 			}
@@ -621,7 +621,7 @@ void reRig::Invalidate(){
 }
 
 void reRig::Rebuild(){
-	if(! pDirtyRig){
+	if(!pDirtyRig){
 		return;
 	}
 	
@@ -911,7 +911,7 @@ void reRig::SetSimulationRunning(bool simulationRunning){
 }
 
 void reRig::SetGravity(const decVector &gravity){
-	if(! gravity.IsEqualTo(pGravity)){
+	if(!gravity.IsEqualTo(pGravity)){
 		pGravity = gravity;
 		
 		pEngWorld->SetGravity(gravity);
@@ -919,7 +919,7 @@ void reRig::SetGravity(const decVector &gravity){
 }
 
 void reRig::SetLocalGravity(const decVector &gravity){
-	if(! gravity.IsEqualTo(pLocalGravity)){
+	if(!gravity.IsEqualTo(pLocalGravity)){
 		pLocalGravity = gravity;
 		
 		pEngSimCollider->SetGravity(gravity);
@@ -987,7 +987,7 @@ reRigBone *reRig::GetBoneAt(int index) const{
 }
 
 reRigBone *reRig::GetBoneNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -1000,7 +1000,7 @@ reRigBone *reRig::GetBoneNamed(const char *name) const{
 }
 
 reRigBone *reRig::GetBoneWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -1025,7 +1025,7 @@ reRigBone *reRig::GetBoneWithOrder(int order) const{
 }
 
 int reRig::IndexOfBone(reRigBone *bone) const{
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -1036,7 +1036,7 @@ int reRig::IndexOfBone(reRigBone *bone) const{
 }
 
 bool reRig::HasBone(reRigBone *bone) const{
-	if(! bone) DETHROW(deeInvalidParam);
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pBoneCount; i++){
@@ -1116,7 +1116,7 @@ void reRig::ReorderBones(){
 			if(pBones[b]->GetOrder() == -1){
 				// if the bone has no parent or the parent has an order assigned
 				// assign the next order to this bone
-				if(! pBones[b]->GetParentBone() || pBones[b]->GetParentBone()->GetOrder() != -1){
+				if(!pBones[b]->GetParentBone() || pBones[b]->GetParentBone()->GetOrder() != -1){
 					pBones[b]->SetOrder(nextOrder);
 					nextOrder++;
 				}
@@ -1167,7 +1167,7 @@ reRigShape *reRig::GetShapeAt(int index) const{
 }
 
 reRigShape *reRig::GetShapeWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -1180,7 +1180,7 @@ reRigShape *reRig::GetShapeWith(deColliderVolume *collider) const{
 }
 
 int reRig::IndexOfShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -1191,7 +1191,7 @@ int reRig::IndexOfShape(reRigShape *shape) const{
 }
 
 bool reRig::HasShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -1261,7 +1261,7 @@ reRigConstraint *reRig::GetConstraintAt(int index) const{
 }
 
 reRigConstraint *reRig::GetConstraintWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -1274,7 +1274,7 @@ reRigConstraint *reRig::GetConstraintWith(deColliderVolume *collider) const{
 }
 
 int reRig::IndexOfConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -1285,7 +1285,7 @@ int reRig::IndexOfConstraint(reRigConstraint *constraint) const{
 }
 
 bool reRig::HasConstraint(reRigConstraint *constraint) const{
-	if(! constraint) DETHROW(deeInvalidParam);
+	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pConstraintCount; i++){
@@ -1320,7 +1320,7 @@ void reRig::AddConstraint(reRigConstraint *constraint){
 	deColliderConstraint *engConstraint = NULL;
 	try{
 		engConstraint = new deColliderConstraint;
-		if(! engConstraint) DETHROW(deeOutOfMemory);
+		if(!engConstraint) DETHROW(deeOutOfMemory);
 		
 		pEngSimCollider->AddConstraint(engConstraint);
 		
@@ -1384,7 +1384,7 @@ reRigPush *reRig::GetPushAt(int index) const{
 }
 
 reRigPush *reRig::GetPushWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -1397,7 +1397,7 @@ reRigPush *reRig::GetPushWith(deColliderVolume *collider) const{
 }
 
 int reRig::IndexOfPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -1408,7 +1408,7 @@ int reRig::IndexOfPush(reRigPush *push) const{
 }
 
 bool reRig::HasPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -1478,7 +1478,7 @@ reRigNotifier *reRig::GetNotifierAt(int index) const{
 }
 
 int reRig::IndexOfNotifier(reRigNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -1489,7 +1489,7 @@ int reRig::IndexOfNotifier(reRigNotifier *notifier) const{
 }
 
 bool reRig::HasNotifier(reRigNotifier *notifier) const{
-	if(! notifier) DETHROW(deeInvalidParam);
+	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pNotifierCount; i++){
@@ -2012,7 +2012,7 @@ void reRig::pUpdateComponent(){
 	// protect the loaded parts
 	try{
 		// if the skin is missing use the default one
-		if(! skin){
+		if(!skin){
 			skin = GetGameDefinition()->GetDefaultSkin();
 			skin->AddReference();
 		}
@@ -2082,11 +2082,11 @@ void reRig::pUpdateComponent(){
 			
 			if(textureCount > 0){
 				pComponentTextures = new reRigTexture*[textureCount];
-				if(! pComponentTextures) DETHROW(deeOutOfMemory);
+				if(!pComponentTextures) DETHROW(deeOutOfMemory);
 				
 				for(t=0; t<textureCount; t++){
 					pComponentTextures[t] = new reRigTexture(GetEngine(), engModel->GetTextureAt(t)->GetName());
-					if(! pComponentTextures[t]) DETHROW(deeOutOfMemory);
+					if(!pComponentTextures[t]) DETHROW(deeOutOfMemory);
 				}
 				
 				pComponentTextureCount = textureCount;

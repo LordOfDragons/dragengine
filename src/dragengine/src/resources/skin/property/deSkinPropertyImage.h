@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image path. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path. */
 	void SetPath(const char *path);
 	
 	/** \brief Image. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image. */
 	void SetImage(deImage *image);

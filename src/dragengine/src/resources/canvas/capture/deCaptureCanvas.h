@@ -89,19 +89,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to capture. */
-	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view to capture. */
 	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Image to capture canvas view into. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image to capture canvas view into. */
 	void SetImage(deImage *image);
 	
 	/** \brief Capture in progress. */
-	inline bool GetCapture() const{return pCapture;}
+	inline bool GetCapture() const{ return pCapture; }
 	
 	/** \brief Set if capture is in progress. */
 	void SetCapture(bool capture);
@@ -112,7 +112,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object or NULL if not set. */
-	inline deBaseGraphicCaptureCanvas *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicCaptureCanvas *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not set. */
 	void SetPeerGraphic(deBaseGraphicCaptureCanvas *peer);

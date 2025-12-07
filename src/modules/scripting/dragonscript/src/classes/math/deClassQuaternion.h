@@ -45,8 +45,8 @@ public:
 	~deClassQuaternion();
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decQuaternion &GetQuaternion(dsRealObject *This) const;
 	void PushQuaternion(dsRunTime *RT, const decQuaternion &vector);
 

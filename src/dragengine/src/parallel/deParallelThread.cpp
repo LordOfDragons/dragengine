@@ -73,7 +73,7 @@ bool deParallelThread::IsWaiting(){
 }
 
 void deParallelThread::RequestExit(){
-	if(! IsRunning()){
+	if(!IsRunning()){
 		return;
 	}
 	

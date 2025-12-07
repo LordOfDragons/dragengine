@@ -85,7 +85,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetSelectedParameter().IsEmpty());
+		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };
 
@@ -101,7 +101,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pPanel.GetSelectedParameter().IsEmpty());
+		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };
 
@@ -168,7 +168,7 @@ igdeDEParameters::~igdeDEParameters(){
 
 void igdeDEParameters::UpdateParameter(){
 	deLoadableModule * const loadableModule = GetSelectedModule();
-	if(! loadableModule || ! loadableModule->GetModule() || ! pCBParameter->GetSelectedItem()){
+	if(!loadableModule || !loadableModule->GetModule() || !pCBParameter->GetSelectedItem()){
 		pEditDescription->SetText("?");
 		pEditType->SetText("?");
 		pEditAllowedValues->SetText("?");
@@ -259,7 +259,7 @@ void igdeDEParameters::UpdateModulesList(){
 	pCBModule->RemoveAllItems();
 	for(i=0; i<count; i++){
 		deLoadableModule * const loadableModule = moduleSystem.GetModuleAt(i);
-		if(! pCBModule->HasItem(loadableModule->GetName())){
+		if(!pCBModule->HasItem(loadableModule->GetName())){
 			pCBModule->AddItem(loadableModule->GetName());
 		}
 	}
@@ -279,7 +279,7 @@ const decString &igdeDEParameters::GetSelectedParameter() const{
 void igdeDEParameters::ParameterSetValue(){
 	deLoadableModule * const loadableModule = GetSelectedModule();
 	const decString &name = GetSelectedParameter();
-	if(! loadableModule || ! loadableModule->GetModule() || name.IsEmpty()){
+	if(!loadableModule || !loadableModule->GetModule() || name.IsEmpty()){
 		return;
 	}
 	
@@ -296,7 +296,7 @@ void igdeDEParameters::ParameterSetValue(){
 void igdeDEParameters::ParameterResetValue(){
 	deLoadableModule * const loadableModule = GetSelectedModule();
 	const decString &name = GetSelectedParameter();
-	if(! loadableModule || ! loadableModule->GetModule() || name.IsEmpty()){
+	if(!loadableModule || !loadableModule->GetModule() || name.IsEmpty()){
 		return;
 	}
 	

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo){
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

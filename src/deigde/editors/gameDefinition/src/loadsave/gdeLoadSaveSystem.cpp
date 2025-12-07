@@ -76,7 +76,7 @@ gdeLoadSaveSystem::~gdeLoadSaveSystem(){
 ///////////////
 
 gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -99,7 +99,7 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
 }
 
 void gdeLoadSaveSystem::SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -122,7 +122,7 @@ void gdeLoadSaveSystem::SaveGameDefinition(const gdeGameDefinition &gameDefiniti
 
 
 gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	

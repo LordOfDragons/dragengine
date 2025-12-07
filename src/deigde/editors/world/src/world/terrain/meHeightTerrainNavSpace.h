@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine &GetEngine() const{return pEngine;}
+	inline deEngine &GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine navigation space or \em NULL. */
-	inline deHeightTerrainNavSpace *GetEngineNavSpace() const{return pEngNavSpace;}
+	inline deHeightTerrainNavSpace *GetEngineNavSpace() const{ return pEngNavSpace; }
 	
 	/** \brief Set engine navigation space or \em NULL. */
 	void SetEngineNavSpace(deHeightTerrainNavSpace *navspace);
@@ -105,7 +105,7 @@ public:
 	
 	
 	/** \brief Parent height terrain sector or \em NULL. */
-	inline meHeightTerrainSector *GetHTSector() const{return pHTSector;}
+	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Set parent height terrain sector or \em NULL. */
 	void SetHTSector(meHeightTerrainSector *sector);
@@ -113,7 +113,7 @@ public:
 	
 	
 	/** \brief Display name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
 	void SetName(const char *name);
@@ -121,13 +121,13 @@ public:
 	
 	
 	/** \brief Navigation space type. */
-	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{return pSpaceType;}
+	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set navigation space type. */
 	void SetSpaceType(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Navigation layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set navigation layer number. */
 	void SetLayer(int layer);
@@ -138,7 +138,7 @@ public:
 	 * \brief Snap distance in meters up to which edges are linked to neighbor spaces.
 	 * \details The default snap distance is 0.001 (1mm).
 	 */
-	inline float GetSnapDistance() const{return pSnapDistance;}
+	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/**
 	 * \brief Set snap distance in meters up to which edges are linked to neighbor spaces.
@@ -150,7 +150,7 @@ public:
 	 * \brief Snap angle in radians up to which edges are linked to neighbor spaces.
 	 * \details The default snap angle is 180° in radians.
 	 */
-	inline float GetSnapAngle() const{return pSnapAngle;}
+	inline float GetSnapAngle() const{ return pSnapAngle; }
 	
 	/**
 	 * \brief Set snap angle in radians up to which edges are linked to neighbor spaces.
@@ -191,7 +191,7 @@ public:
 	
 	
 	/** \brief Navigation space is active. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if navigation space is active. */
 	void SetActive(bool active);
@@ -232,13 +232,13 @@ public:
 	void RemoveAllTypes();
 	
 	/** \brief Active type or \em NULL. */
-	inline meHeightTerrainNavSpaceType *GetActiveType() const{return pActiveType;}
+	inline meHeightTerrainNavSpaceType *GetActiveType() const{ return pActiveType; }
 	
 	/** \brief Set active type or \em NULL. */
 	void SetActiveType(meHeightTerrainNavSpaceType *type);
 	
 	/** \brief Type faces debug drawer for use by types only. */
-	inline deDebugDrawer *GetDDTypeFaces() const{return pDDTypeFaces;}
+	inline deDebugDrawer *GetDDTypeFaces() const{ return pDDTypeFaces; }
 	
 	/** \brief Notify listeners type count changed. */
 	void NotifyTypeCountChanged();
@@ -249,19 +249,19 @@ public:
 	/** \name Nav-space file */
 	/*@{*/
 	/** \brief Nav-space file path. */
-	inline const decString &GetPathNavSpace() const{return pPathNavSpace;}
+	inline const decString &GetPathNavSpace() const{ return pPathNavSpace; }
 	
 	/** \brief Set nav-space file path. */
 	void SetPathNavSpace(const char *path, bool load);
 	
 	/** \brief Nav-space file changed. */
-	inline bool GetNavSpaceChanged() const{return pNavSpaceChanged;}
+	inline bool GetNavSpaceChanged() const{ return pNavSpaceChanged; }
 	
 	/** \brief Set if nav-space file changed. */
 	void SetNavSpaceChanged(bool changed);
 	
 	/** \brief Nav-space file has been saved. */
-	inline bool GetNavSpaceSaved() const{return pNavSpaceSaved;}
+	inline bool GetNavSpaceSaved() const{ return pNavSpaceSaved; }
 	
 	/** \brief Set if nav-space file has been saved. */
 	void SetNavSpaceSaved(bool saved);
@@ -273,7 +273,7 @@ public:
 	void LoadNavSpaceFromFile();
 	
 	/** \brief Bulk update for internal use only. */
-	inline bool GetBulkUpdate() const{return pBulkUpdate;}
+	inline bool GetBulkUpdate() const{ return pBulkUpdate; }
 	/*@}*/
 	
 	

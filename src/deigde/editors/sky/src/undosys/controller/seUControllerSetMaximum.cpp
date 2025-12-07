@@ -43,7 +43,7 @@ seUControllerSetMaximum::seUControllerSetMaximum(seController *controller, float
 pController(NULL),
 pNewMaximum(newMaximum)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	

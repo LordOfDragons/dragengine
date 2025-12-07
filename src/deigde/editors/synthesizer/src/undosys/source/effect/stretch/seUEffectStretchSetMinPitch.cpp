@@ -42,7 +42,7 @@
 seUEffectStretchSetMinPitch::seUEffectStretchSetMinPitch(seEffectStretch *effect, float newPitch) :
 pSource(NULL)
 {
-	if(! effect){
+	if(!effect){
 		DETHROW(deeInvalidParam);
 	}
 	

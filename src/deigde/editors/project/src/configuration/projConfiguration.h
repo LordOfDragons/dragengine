@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);
 	
 	/** \brief Remote server address. */
-	inline const decString &GetRemoteAddress() const{return pRemoteAddress;}
+	inline const decString &GetRemoteAddress() const{ return pRemoteAddress; }
 	
 	/** \brief Set remote server address. */
 	void SetRemoteAddress(const decString &address);

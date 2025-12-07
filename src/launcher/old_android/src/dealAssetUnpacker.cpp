@@ -106,7 +106,7 @@ pUnpackFailed(false),
 pEnableLogging(false),
 pThreadUnpack(0)
 {
-	if(! logger){
+	if(!logger){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -139,7 +139,7 @@ dealAssetUnpacker::~dealAssetUnpacker(){
 
 void dealAssetUnpacker::StartUnpacking(AAssetManager *assetManager,
 const char *assetFilename, const char *targetDirectory, const decStringList &filter){
-	if(! assetManager || ! assetFilename || ! targetDirectory){
+	if(!assetManager || !assetFilename || !targetDirectory){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -158,7 +158,7 @@ const char *assetFilename, const char *targetDirectory, const decStringList &fil
 		pLogger->LogInfoFormat(LOGSOURCE, "Unpacking asset file '%s'", assetFilename);
 	}
 	pAsset = AAssetManager_open(assetManager, assetFilename, AASSET_MODE_RANDOM);
-	if(! pAsset){
+	if(!pAsset){
 		DETHROW(deeOpenFile);
 	}
 	
@@ -201,7 +201,7 @@ void dealAssetUnpacker::UnpackProgress(bool &unpacking, float &progress){
 }
 
 void dealAssetUnpacker::StopUnpacking(){
-	if(! pUnpacking){
+	if(!pUnpacking){
 		return;
 	}
 	
@@ -288,7 +288,7 @@ void dealAssetUnpacker::pUnpack(){
 			pLogger->LogInfo(LOGSOURCE, "Open archive");
 		}
 		zipfile = unzOpen2("dealAssetUnpacker", &ffunc);
-		if(! zipfile){
+		if(!zipfile){
 			DETHROW(deeReadFile);
 		}
 		
@@ -375,8 +375,8 @@ void dealAssetUnpacker::pUnpack(){
 				}
 			}
 			
-			if(! nextFile){
-				if(! writeFile){
+			if(!nextFile){
+				if(!writeFile){
 					DETHROW(deeReadFile);
 				}
 				
@@ -398,7 +398,7 @@ void dealAssetUnpacker::pUnpack(){
 					}
 				}
 				
-				if(! writeFile){
+				if(!writeFile){
 					// file finished
 					if(unzCloseCurrentFile(zipfile) != UNZ_OK){
 						DETHROW(deeReadFile);

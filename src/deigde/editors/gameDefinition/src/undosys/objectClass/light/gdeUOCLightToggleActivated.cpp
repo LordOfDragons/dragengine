@@ -44,7 +44,7 @@ gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass *objectCla
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -72,7 +72,7 @@ gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
 ///////////////
 
 void gdeUOCLightToggleActivated::Undo(){
-	pLight->SetActivated(! pLight->GetActivated());
+	pLight->SetActivated(!pLight->GetActivated());
 	pObjectClass->NotifyLightChanged(pLight);
 }
 

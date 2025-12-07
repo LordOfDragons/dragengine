@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Count of vertex positions. */
-	inline int GetPositionCount() const{return pPositionCount;}
+	inline int GetPositionCount() const{ return pPositionCount; }
 	
 	/** \brief Set count of vertex positions. */
 	void SetPositionCount(int count);
@@ -86,7 +86,7 @@ public:
 	const deModelLodVertexPositionSetPosition &GetPositionAt(int index) const;
 	
 	/** \brief Pointer to vertex positions. */
-	inline deModelLodVertexPositionSetPosition *GetPositions() const{return pPositions;}
+	inline deModelLodVertexPositionSetPosition *GetPositions() const{ return pPositions; }
 	/*@}*/
 };
 

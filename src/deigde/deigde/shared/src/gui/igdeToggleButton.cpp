@@ -85,7 +85,7 @@ void igdeToggleButton::SetToggled(bool toggled){
 
 
 void igdeToggleButton::OnAction(){
-	SetToggled(! pToggled);
+	SetToggled(!pToggled);
 	igdeButton::OnAction();
 }
 
@@ -107,7 +107,7 @@ void igdeToggleButton::CreateNativeWidget(){
 }
 
 void igdeToggleButton::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

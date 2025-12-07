@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline ScriptingSmalltalk *GetST() const{return pST;}
+	inline ScriptingSmalltalk *GetST() const{ return pST; }
 	
 	/** Set up links. */
 	void SetUpLinks();

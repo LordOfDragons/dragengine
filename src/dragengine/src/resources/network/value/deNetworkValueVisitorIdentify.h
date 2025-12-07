@@ -75,37 +75,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Vvalue type. */
-	inline eNetworkValues GetType() const{return pType;}
+	inline eNetworkValues GetType() const{ return pType; }
 	
 	/** \brief Is unknown value. */
-	inline bool IsUnknown() const{return pType == envtUnknown;}
+	inline bool IsUnknown() const{ return pType == envtUnknown; }
 	
 	/** \brief Is integer value. */
-	inline bool IsInteger() const{return pType == envtInteger;}
+	inline bool IsInteger() const{ return pType == envtInteger; }
 	
 	/** \brief Is float value. */
-	inline bool IsFloat() const{return pType == envtFloat;}
+	inline bool IsFloat() const{ return pType == envtFloat; }
 	
 	/** \brief Is string value. */
-	inline bool IsString() const{return pType == envtString;}
+	inline bool IsString() const{ return pType == envtString; }
 	
 	/** \brief Is data value. */
-	inline bool IsData() const{return pType == envtData;}
+	inline bool IsData() const{ return pType == envtData; }
 	
 	/** \brief Is point-2 value. */
-	inline bool IsPoint2() const{return pType == envtPoint2;}
+	inline bool IsPoint2() const{ return pType == envtPoint2; }
 	
 	/** \brief Is point-3 value. */
-	inline bool IsPoint3() const{return pType == envtPoint3;}
+	inline bool IsPoint3() const{ return pType == envtPoint3; }
 	
 	/** \brief Is vector-2 value. */
-	inline bool IsVector2() const{return pType == envtVector2;}
+	inline bool IsVector2() const{ return pType == envtVector2; }
 	
 	/** \brief Is vector-3 value. */
-	inline bool IsVector3() const{return pType == envtVector3;}
+	inline bool IsVector3() const{ return pType == envtVector3; }
 	
 	/** \brief Is quaternion value. */
-	inline bool IsQuaternion() const{return pType == envtQuaternion;}
+	inline bool IsQuaternion() const{ return pType == envtQuaternion; }
 	
 	/** \brief Cast to integer network value. */
 	deNetworkValueInteger *CastToInteger() const;

@@ -356,7 +356,7 @@ void deoglBillboard::pCleanUp(){
 
 
 void deoglBillboard::pSyncSkin(){
-	if(! pDirtySkin){
+	if(!pDirtySkin){
 		return;
 	}
 	
@@ -407,7 +407,7 @@ void deoglBillboard::pCheckRequiresUpdateEverySync(){
 
 
 void deoglBillboard::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncBillboard(this);
 	}
 }

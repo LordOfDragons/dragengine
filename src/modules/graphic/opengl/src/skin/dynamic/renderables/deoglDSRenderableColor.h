@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableColor &GetRenderableColor() const{return pRenderableColor;}
+	inline const deDSRenderableColor &GetRenderableColor() const{ return pRenderableColor; }
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

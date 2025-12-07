@@ -76,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld &GetWorld() const{return pWorld;}
+	inline meWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Object. */
-	inline meObject *GetObject() const{return pObject;}
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Snapping is enabled due to gui parameters. */
 	bool IsSnappingEnabled() const;
@@ -103,16 +103,16 @@ public:
 	void Reset();
 	
 	/** \brief Distance between source point and target snap point. */
-	inline float GetDistance() const{return pDistance;}
+	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Source snap point or \em NULL to use object position. */
-	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{return pSourceSnapPoint;}
+	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{ return pSourceSnapPoint; }
 	
 	/** \brief Target object or \em NULL if not set. */
-	inline meObject *GetTargetObject() const{return pTargetObject;}
+	inline meObject *GetTargetObject() const{ return pTargetObject; }
 	
 	/** \brief Target snap point or \em NULL if not set. */
-	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{return pTargetSnapPoint;}
+	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{ return pTargetSnapPoint; }
 	
 	
 	

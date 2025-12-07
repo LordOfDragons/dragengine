@@ -67,7 +67,7 @@ void delPatchXML::ReadFromFile(decBaseFileReader &reader, delPatch &patch){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "depatch"){
+	if(!root || root->GetName() != "depatch"){
 		DETHROW_INFO(deeInvalidParam, "missing root tag 'depatch'");
 	}
 	
@@ -85,7 +85,7 @@ void delPatchXML::pReadPatch(const decXmlElementTag &root, delPatch &patch){
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -125,11 +125,11 @@ void delPatchXML::pReadPatch(const decXmlElementTag &root, delPatch &patch){
 		}
 	}
 	
-	if(! patch.GetIdentifier()){
+	if(!patch.GetIdentifier()){
 		ErrorMissingTag(root, "identifier");
 		DETHROW_INFO(deeInvalidParam, "missing tag");
 	}
-	if(! patch.GetGameID()){
+	if(!patch.GetGameID()){
 		ErrorMissingTag(root, "gameId");
 		DETHROW_INFO(deeInvalidParam, "missing tag");
 	}

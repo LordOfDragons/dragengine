@@ -166,7 +166,7 @@ void deoglRPropFieldType::RebuildInstances(const dePropFieldType &type){
 	
 	RemoveAllClusters();
 	
-	if(! pModel || ! pSkin){
+	if(!pModel || !pSkin){
 		ClusterRequiresPrepareForRender();
 		return;
 	}
@@ -507,7 +507,7 @@ void deoglRPropFieldType::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, 
 	deoglRDynamicSkin *useDynamicSkin = NULL;
 	deoglSkinState *useSkinState = NULL;
 	
-	if(! pUseSkinTexture){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
@@ -622,7 +622,7 @@ void deoglRPropFieldType::AddToWorldCompute(deoglWorldCompute &worldCompute){
 }
 
 void deoglRPropFieldType::UpdateWorldCompute(){
-	if(! pPropField.GetParentWorld()){
+	if(!pPropField.GetParentWorld()){
 		return;
 	}
 	
@@ -634,7 +634,7 @@ void deoglRPropFieldType::UpdateWorldCompute(){
 }
 
 void deoglRPropFieldType::UpdateWorldComputeTextures(){
-	if(! pPropField.GetParentWorld()){
+	if(!pPropField.GetParentWorld()){
 		return;
 	}
 	
@@ -646,7 +646,7 @@ void deoglRPropFieldType::UpdateWorldComputeTextures(){
 }
 
 void deoglRPropFieldType::RemoveFromWorldCompute(){
-	if(! pPropField.GetParentWorld()){
+	if(!pPropField.GetParentWorld()){
 		return;
 	}
 	
@@ -663,7 +663,7 @@ void deoglRPropFieldType::RemoveFromWorldCompute(){
 //////////////////////
 
 void deoglRPropFieldType::pPrepareModel(){
-	if(! pDirtyModel){
+	if(!pDirtyModel){
 		return;
 	}
 	
@@ -676,7 +676,7 @@ void deoglRPropFieldType::pPrepareModel(){
 }
 
 void deoglRPropFieldType::pPrepareParamBlock(){
-	if(! pValidParamBlock){
+	if(!pValidParamBlock){
 		pParamBlock = nullptr;
 		
 		if(pUseSkinTexture){

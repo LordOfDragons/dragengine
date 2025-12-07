@@ -54,7 +54,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertIma
 pImage(image),
 pSucceeded(false)
 {
-	if(! image){
+	if(!image){
 		DETHROW(deeInvalidParam);
 	}
 	SetType(etWrite);
@@ -72,7 +72,7 @@ void deRLTaskWriteImage::Run(){
 	LogRunEnter();
 	deBaseImageModule * const module = (deBaseImageModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

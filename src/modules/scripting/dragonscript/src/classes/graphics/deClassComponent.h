@@ -71,20 +71,20 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deComponent *GetComponent(dsRealObject *This) const;
 	void PushComponent(dsRunTime *rt, deComponent *component);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
-	inline deClassModel *GetClassModel() const{return pClsMdl;}
-	inline deClassRig *GetClassRig() const{return pClsRig;}
-	inline deClassSkin *GetClassSkin() const{return pClsSkin;}
-	inline deClassImage *GetClassImage() const{return pClsImg;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
-	inline deClassDecal *GetClassDecal() const{return pClsDec;}
-	inline deClassColor *GetClassColor() const{return pClsClr;}
-	inline deClassCamera *GetClassCamera() const{return pClsCam;}
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassQuaternion *GetClassQuaternion() const{return pClsQuat;}
-	inline dsClass *GetClassComponentHintMovement() const{return pClsComponentHintMovement;}
+	inline deClassModel *GetClassModel() const{ return pClsMdl; }
+	inline deClassRig *GetClassRig() const{ return pClsRig; }
+	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
+	inline deClassImage *GetClassImage() const{ return pClsImg; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	inline deClassDecal *GetClassDecal() const{ return pClsDec; }
+	inline deClassColor *GetClassColor() const{ return pClsClr; }
+	inline deClassCamera *GetClassCamera() const{ return pClsCam; }
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassQuaternion *GetClassQuaternion() const{ return pClsQuat; }
+	inline dsClass *GetClassComponentHintMovement() const{ return pClsComponentHintMovement; }
 
 private:
 	struct sInitData{

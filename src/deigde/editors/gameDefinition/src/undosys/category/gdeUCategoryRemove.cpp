@@ -46,7 +46,7 @@ gdeUCategoryBase(gameDefinition, type),
 pParent(NULL),
 pCategory(NULL)
 {
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -54,7 +54,7 @@ pCategory(NULL)
 	
 	gdeCategory * const parent = category->GetParent();
 	if(parent){
-		if(! parent->GetCategories().Has(category)){
+		if(!parent->GetCategories().Has(category)){
 		   DETHROW(deeInvalidParam);
 		}
 		
@@ -64,25 +64,25 @@ pCategory(NULL)
 	}else{
 		switch(type){
 		case ectObjectClass:
-			if(! gameDefinition->GetCategoriesObjectClass().Has(category)){
+			if(!gameDefinition->GetCategoriesObjectClass().Has(category)){
 				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectParticleEmitter:
-			if(! gameDefinition->GetCategoriesParticleEmitter().Has(category)){
+			if(!gameDefinition->GetCategoriesParticleEmitter().Has(category)){
 				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectSkin:
-			if(! gameDefinition->GetCategoriesSkin().Has(category)){
+			if(!gameDefinition->GetCategoriesSkin().Has(category)){
 				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectSky:
-			if(! gameDefinition->GetCategoriesSky().Has(category)){
+			if(!gameDefinition->GetCategoriesSky().Has(category)){
 				DETHROW(deeInvalidParam);
 			}
 			break;
@@ -155,7 +155,7 @@ void gdeUCategoryRemove::Redo(){
 			case gdeGameDefinition::eotCategoryParticleEmitter:
 			case gdeGameDefinition::eotCategorySkin:
 			case gdeGameDefinition::eotCategorySky:
-				if(! activeCheck->GetParent()){
+				if(!activeCheck->GetParent()){
 					gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 				}
 				break;

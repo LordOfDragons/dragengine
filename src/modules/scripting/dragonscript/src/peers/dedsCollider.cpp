@@ -56,7 +56,7 @@ pHasCB(false),
 pValCBBreaking(NULL),
 pHasCBBreaking(false)
 {
-	if(! collider){
+	if(!collider){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -126,7 +126,7 @@ dsRealObject *dedsCollider::GetOwner() const{
 }
 
 void dedsCollider::SetOwner(dsRealObject *object){
-	if(! pValOwner){
+	if(!pValOwner){
 		return;
 	}
 	
@@ -147,7 +147,7 @@ dsRealObject *dedsCollider::GetCallback() const{
 }
 
 void dedsCollider::SetCallback(dsRealObject *object){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -171,7 +171,7 @@ dsRealObject *dedsCollider::GetCallbackBreaking() const{
 }
 
 void dedsCollider::SetCallbackBreaking(dsRealObject *object){
-	if(! pValCBBreaking){
+	if(!pValCBBreaking){
 		return;
 	}
 	
@@ -203,11 +203,11 @@ void dedsCollider::SetCallbackBreaking(dsRealObject *object){
 #endif
 
 void dedsCollider::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	
-	if(! owner || ! info){
+	if(!owner || !info){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -238,11 +238,11 @@ void dedsCollider::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 }
 
 bool dedsCollider::CanHitCollider(deCollider *owner, deCollider *collider){
-	if(! pEnableCanHitCallback || ! pHasCB){
+	if(!pEnableCanHitCallback || !pHasCB){
 		return true;
 	}
 	
-	if(! owner || ! collider){
+	if(!owner || !collider){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -276,11 +276,11 @@ bool dedsCollider::CanHitCollider(deCollider *owner, deCollider *collider){
 }
 
 void dedsCollider::ColliderChanged(deCollider *owner){
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	
-	if(! owner){
+	if(!owner){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -312,11 +312,11 @@ void dedsCollider::ColliderChanged(deCollider *owner){
 
 void dedsCollider::ColliderConstraintBroke(deCollider *owner,
 int index, deColliderConstraint *constraint){
-	if(! pHasCBBreaking){
+	if(!pHasCBBreaking){
 		return;
 	}
 	
-	if(! owner){
+	if(!owner){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -337,11 +337,11 @@ int index, deColliderConstraint *constraint){
 
 void dedsCollider::RigConstraintBroke(deCollider *owner,
 int bone, int index, deRigConstraint *constraint) {
-	if(! pHasCBBreaking){
+	if(!pHasCBBreaking){
 		return;
 	}
 	
-	if(! owner){
+	if(!owner){
 		DSTHROW(dueInvalidParam);
 	}
 	

@@ -77,7 +77,7 @@ void fbxRigBone::SetName(const char *name){
 
 
 void fbxRigBone::Prepare(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	

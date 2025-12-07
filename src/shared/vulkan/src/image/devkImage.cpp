@@ -113,7 +113,7 @@ void devkImage::SetData(const void *data, uint32_t offset, uint32_t size){
 	if(offset + size > pImageSize){
 		DETHROW_INFO(deeInvalidParam, "offset + size > imageSize");
 	}
-	if(! data){
+	if(!data){
 		DETHROW_INFO(deeNullPointer, "data");
 	}
 	
@@ -122,7 +122,7 @@ void devkImage::SetData(const void *data, uint32_t offset, uint32_t size){
 	const bool whole = offset == 0 && size == pImageSize;
 	void *mapped = nullptr;
 	
-	if(! pBufferHostMemory){
+	if(!pBufferHostMemory){
 		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size);
 	}
@@ -294,10 +294,10 @@ void devkImage::GetData(void *data, uint32_t offset, uint32_t size){
 	if(offset + size > pImageSize){
 		DETHROW_INFO(deeInvalidParam, "offset + size > imageSize");
 	}
-	if(! data){
+	if(!data){
 		DETHROW_INFO(deeNullPointer, "data");
 	}
-	if(! pBufferHost || ! pBufferHostMemory){
+	if(!pBufferHost || !pBufferHostMemory){
 		DETHROW_INFO(deeNullPointer, "bufferHost");
 	}
 	
@@ -361,7 +361,7 @@ void devkImage::DropTransferResources(){
 void devkImage::EnsureHostBuffer(){
 	Wait();
 	
-	if(! pBufferHostMemory){
+	if(!pBufferHostMemory){
 		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, pImageSize);
 	}

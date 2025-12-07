@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject(gdeGameDefinition &gameDefiniti
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
-	if(! navSpace){
+	if(!navSpace){
 		return NULL;
 	}
 	

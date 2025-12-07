@@ -81,7 +81,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seLink * const link = pPanel.GetLink();
-		if(! link){
+		if(!link){
 			return;
 		}
 		
@@ -105,7 +105,7 @@ public:
 	
 	virtual void OnAction(){
 		seLink * const link = pPanel.GetLink();
-		if(! link){
+		if(!link){
 			return;
 		}
 		
@@ -128,7 +128,7 @@ public:
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -155,7 +155,7 @@ public:
 	
 	virtual void OnAction(){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if(! synthesizer){
+		if(!synthesizer){
 			return;
 		}
 		
@@ -196,7 +196,7 @@ public:
 		seLink * const link = pPanel.GetLink();
 		seController * const controller = comboBox->GetSelectedItem()
 			? (seController*)comboBox->GetSelectedItem()->GetData() : NULL;
-		if(! link || controller == link->GetController() || pPanel.GetPreventUpdate()){
+		if(!link || controller == link->GetController() || pPanel.GetPreventUpdate()){
 			return;
 		}
 		
@@ -214,7 +214,7 @@ public:
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		const int value = textField->GetValue();
 		seLink * const link = pPanel.GetLink();
-		if(! link || value == link->GetRepeat()){
+		if(!link || value == link->GetRepeat()){
 			return;
 		}
 		
@@ -233,7 +233,7 @@ public:
 		if(pUndo){
 			((seULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			
-		}else if(! pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
+		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{
@@ -371,7 +371,7 @@ void seWPLink::UpdateLinkList(){
 	pListLink->SortItems();
 	
 	pListLink->SetSelectionWithData(selection);
-	if(! pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
+	if(!pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
 		pListLink->SetSelection(0);
 	}
 }

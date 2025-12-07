@@ -61,7 +61,7 @@
 
 
 
-#if defined OS_UNIX && ! defined OS_ANDROID
+#if defined OS_UNIX && !defined OS_ANDROID
 // Stuff required for file error checking
 extern int errno;
 #endif
@@ -399,14 +399,14 @@ void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSe
 	
 	try{
 		theDir = opendir(searchPath.GetPathNative());
-		if(! theDir){
+		if(!theDir){
 			return;
 		}
 		
 		while(true){
 			errno = 0;
 			entry = readdir(theDir);
-			if(! entry){
+			if(!entry){
 				if(errno == 0){
 					break;
 				}
@@ -538,7 +538,7 @@ void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSe
 					}
 				}
 				
-				if(! FindNextFileW(searchHandle, &dirEntry)){
+				if(!FindNextFileW(searchHandle, &dirEntry)){
 					if(GetLastError() == ERROR_NO_MORE_FILES){
 						break;
 					}
@@ -565,7 +565,7 @@ deVFSContainer::eFileTypes deVFSDiskDirectory::GetFileType(const decPath &path){
 	deOSWindows::Utf8ToWide((pDiskPath + path).GetPathNative(), widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+	if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
 		DETHROW_INFO(deeFileNotFound, (pDiskPath + path).GetPathNative());
 	}
 	
@@ -601,7 +601,7 @@ uint64_t deVFSDiskDirectory::GetFileSize(const decPath &path){
 	deOSWindows::Utf8ToWide((pDiskPath + path).GetPathNative(), widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+	if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
 		DETHROW_INFO(deeFileNotFound, (pDiskPath + path).GetPathNative());
 	}
 	
@@ -623,12 +623,12 @@ TIME_SYSTEM deVFSDiskDirectory::GetFileModificationTime(const decPath &path){
 	deOSWindows::Utf8ToWide((pDiskPath + path).GetPathNative(), widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+	if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
 		DETHROW_INFO(deeFileNotFound, (pDiskPath + path).GetPathNative());
 	}
 	
 	SYSTEMTIME stime;
-	if(! FileTimeToSystemTime(&fa.ftLastWriteTime, &stime)){
+	if(!FileTimeToSystemTime(&fa.ftLastWriteTime, &stime)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -683,7 +683,7 @@ void deVFSDiskDirectory::pEnsureDirectoryExists(const decPath &path){
 		parentPath.RemoveLastComponent();
 		pEnsureDirectoryExists(parentPath);
 		
-		if(! CreateDirectoryW(widePath, NULL)){
+		if(!CreateDirectoryW(widePath, NULL)){
 			DETHROW_INFO(deeWriteFile, path.GetPathNative());
 		}
 	}
@@ -703,7 +703,7 @@ void deVFSDiskDirectory::pEnsureDirectoryExists(const decPath &path){
 			DETHROW_INFO(deeWriteFile, path.GetPathNative());
 		}
 		
-	}else if(! S_ISDIR(st.st_mode)){
+	}else if(!S_ISDIR(st.st_mode)){
 		DETHROW_INFO(deeFileNotFound, path.GetPathNative()); // this is not a directory
 	}
 #endif

@@ -86,7 +86,7 @@ FXVerticalFrame(container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0
 pParentDialog(parentDialog),
 pStatusWorking(false)
 {
-	if(! parentDialog) DETHROW(deeInvalidParam);
+	if(!parentDialog) DETHROW(deeInvalidParam);
 	
 	FXScrollWindow *scrollWindow;
 	FXVerticalFrame *frameContent;
@@ -227,7 +227,7 @@ void deglDGPPanelSystem::UpdateSystem(sSystem &system, const char *moduleName){
 	system.combobox->setText(moduleName);
 	module = modules.GetNamed(moduleName);
 	
-	if(! module){
+	if(!module){
 		system.problem->setText("No module exists with the given name.");
 		working = false;
 		

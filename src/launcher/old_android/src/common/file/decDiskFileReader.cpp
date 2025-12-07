@@ -39,7 +39,7 @@
 ////////////////////////////
 
 decDiskFileReader::decDiskFileReader(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -59,7 +59,7 @@ decDiskFileReader::decDiskFileReader(const char *filename){
 		}
 		
 		pFile = fopen(filename, "rb");
-		if(! pFile){
+		if(!pFile){
 			DETHROW(deeFileNotFound);
 		}
 		
@@ -139,7 +139,7 @@ void decDiskFileReader::Read(void *buffer, int size){
 	const bool endOfFile = (feof(pFile) != 0);
 	clearerr(pFile);  // required to support growing files
 	
-	if(! endOfFile){
+	if(!endOfFile){
 		DETHROW(deeReadFile);
 	}
 }

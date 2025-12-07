@@ -298,7 +298,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 				remainingTime / estimatedGameTime, ratioTimes);
 			*/
 			
-			if(remainingTime / estimatedGameTime >= ratioTimes && ! pReadyToWait){
+			if(remainingTime / estimatedGameTime >= ratioTimes && !pReadyToWait){
 // 				pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 				return false; // enough time to do another game frame update
 			}
@@ -310,7 +310,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 		// tries to minimize expensive tasks until required. this makes prediction less
 		// accurate than graphic rendering for example. it is better to skip a synchronization
 		// than having the main thread stutter on random waits
-		if(! pReadyToWait){
+		if(!pReadyToWait){
 // 			pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 			return false;
 		}
@@ -331,7 +331,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 void deoalAudioThread::WaitFinishAudio(){
 	{
 	const deMutexGuard lock(pMutexShared);
-	if(! pReadyToWait){
+	if(!pReadyToWait){
 		return; // true if audio thread is waiting on pBarrierSyncIn otherwise pBarrierSyncOut
 	}
 	}
@@ -682,7 +682,7 @@ void deoalAudioThread::pInitThreadPhase1(){
 	// check context extensions. this has to be done after the context has been created
 	pExtensions->ScanContextExtensions();
 	pExtensions->PrintSummary();
-	if(! pExtensions->VerifyPresence()){
+	if(!pExtensions->VerifyPresence()){
 		pLogger->LogError("Extension problems present");
 		DETHROW(deeInvalidParam);
 	}

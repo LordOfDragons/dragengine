@@ -79,7 +79,7 @@ deModel *deModelManager::GetModelWith(const char *filename) const{
 
 deModel *deModelManager::GetModelWith(deVirtualFileSystem *vfs, const char *filename) const{
 	deModel * const model = (deModel*)pModels.GetWithFilename(vfs, filename);
-	return model && ! model->GetOutdated() ? model : NULL;
+	return model && !model->GetOutdated() ? model : NULL;
 }
 
 deModel *deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
@@ -88,7 +88,7 @@ deModel *deModelManager::CreateModel(const char *filename, deModelBuilder &build
 
 deModel *deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
 deModelBuilder &builder){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	deModel *model = NULL;
@@ -110,7 +110,7 @@ deModelBuilder &builder){
 		builder.BuildModel(model);
 		
 		// prepare and check model
-		if(! model->Verify()){
+		if(!model->Verify()){
 			DETHROW(deeInvalidParam);
 		}
 		model->Prepare();
@@ -140,7 +140,7 @@ deModel *deModelManager::LoadModel(const char *filename, const char *basePath){
 }
 
 deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -152,7 +152,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 	
 	try{
 		// locate file
-		if(! FindFileForReading(path, *vfs, filename, basePath)){
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
@@ -179,7 +179,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			model = new deModel(this, vfs, path.GetPathUnix(), modificationTime);
-			if(! model){
+			if(!model){
 				DETHROW(deeOutOfMemory);
 			}
 			
@@ -190,7 +190,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 			fileReader = NULL;
 			
 			// prepare and check model
-			if(! model->Verify()){
+			if(!model->Verify()){
 				DETHROW(deeInvalidParam);
 			}
 			model->Prepare();
@@ -225,7 +225,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 }
 
 void deModelManager::AddLoadedModel(deModel *model){
-	if(! model){
+	if(!model){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -272,7 +272,7 @@ void deModelManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(model){
-		if(! model->GetPeerGraphic()){
+		if(!model->GetPeerGraphic()){
 			graSys.LoadModel(model);
 		}
 		
@@ -294,7 +294,7 @@ void deModelManager::SystemPhysicsLoad(){
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(model){
-		if(! model->GetPeerPhysics()){
+		if(!model->GetPeerPhysics()){
 			phySys.LoadModel(model);
 		}
 		
@@ -316,7 +316,7 @@ void deModelManager::SystemAudioLoad(){
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(model){
-		if(! model->GetPeerAudio()){
+		if(!model->GetPeerAudio()){
 			audSys.LoadModel(model);
 		}
 		

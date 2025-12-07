@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling){
-	if(! world || ! heightTerrain){
+	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	

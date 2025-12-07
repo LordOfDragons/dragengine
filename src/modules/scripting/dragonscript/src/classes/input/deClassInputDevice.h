@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -72,10 +72,10 @@ public:
 	/** \brief Push input device which can be \em NULL. */
 	void PushInputDevice(dsRunTime *rt, dedsInputDevice *device);
 	
-	inline dsClass *GetClassInputDeviceType() const{return pClsInputDeviceType;}
-	inline dsClass *GetClassInputDeviceBoneConfiguration() const{return pClsInputDeviceBoneConfiguration;}
-	inline dsClass *GetClassInputEventSource() const{return pClsInputEventSource;}
-	inline dsClass *GetClassInputEventKeyLocation() const{return pClsInputEventKeyLocation;}
+	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
+	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }
+	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	

@@ -77,7 +77,7 @@ public:
 	decPoint GetContentSize() const;
 	
 	/** \brief Scroll position. */
-	inline int GetScrollPosition() const{return pScrollPosition;}
+	inline int GetScrollPosition() const{ return pScrollPosition; }
 	
 	/** \brief Set scroll position. */
 	void SetScrollPosition(int position);

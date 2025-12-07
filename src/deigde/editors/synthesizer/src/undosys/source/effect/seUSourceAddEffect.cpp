@@ -45,7 +45,7 @@ pSource(NULL),
 pEffect(NULL),
 pIndex(index)
 {
-	if(! source || ! effect){
+	if(!source || !effect){
 		DETHROW(deeInvalidParam);
 	}
 	

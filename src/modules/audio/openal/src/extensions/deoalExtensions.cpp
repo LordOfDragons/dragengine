@@ -144,7 +144,7 @@ void deoalExtensions::PrintSummary(){
 	
 	logger.LogInfo("Not Supported Extensions:");
 	for(i=0; i<EXT_COUNT; i++){
-		if(! pHasExtension[i]){
+		if(!pHasExtension[i]){
 			logger.LogInfoFormat("- %s", vExtensionNames[i]);
 		}
 	}
@@ -232,7 +232,7 @@ void deoalExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction((void**)&palAuxiliaryEffectSlotf, "alAuxiliaryEffectSlotf", ext_ALC_EXT_EFX);
 		pGetOptionalFunction((void**)&palAuxiliaryEffectSlotfv, "alAuxiliaryEffectSlotfv", ext_ALC_EXT_EFX);
 		
-		if(! pHasExtension[ext_ALC_EXT_EFX]){
+		if(!pHasExtension[ext_ALC_EXT_EFX]){
 			DETHROW(deeInvalidAction);
 		}
 	}
@@ -263,13 +263,13 @@ void deoalExtensions::pFetchOptionalFunctions(){
 void deoalExtensions::pGetRequiredFunction(void **funcPointer, const char *funcName){
 	void * const fp = alcGetProcAddress(pAudioThread.GetContext().GetDevice(), funcName);
 	
-	if(! fp){
+	if(!fp){
 		pAudioThread.GetLogger().LogErrorFormat(
 			"Failed to get a suitable function address for %s", funcName);
 		pHasRequiredFunctions = false;
 	}
 	
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }
@@ -277,14 +277,14 @@ void deoalExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 void deoalExtensions::pGetOptionalFunction(void **funcPointer, const char *funcName, int extensionIndex){
 	void * const fp = alcGetProcAddress(pAudioThread.GetContext().GetDevice(), funcName);
 	
-	if(! fp){
+	if(!fp){
 		pAudioThread.GetLogger().LogErrorFormat(
 			"Failed to get a suitable function address for %s although extension "
 			"%s is supported. This is a driver bug!", funcName, vExtensionNames[extensionIndex]);
 		pHasExtension[extensionIndex] = false;
 	}
 	
-	if(! *funcPointer){
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }

@@ -610,7 +610,7 @@ void deoglLight::pCleanUp(){
 }
 
 void deoglLight::pSyncSource(){
-	if(! pDirtySource){
+	if(!pDirtySource){
 		return;
 	}
 	
@@ -618,7 +618,7 @@ void deoglLight::pSyncSource(){
 	if(pLightSkin){
 		pRLight->SetLightSkin(pLightSkin->GetRSkin());
 		
-		if(! pSkinStateController){
+		if(!pSkinStateController){
 			pSkinStateController = new deoglSkinStateController;
 		}
 		

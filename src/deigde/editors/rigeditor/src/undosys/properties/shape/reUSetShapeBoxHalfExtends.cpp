@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const decVector &halfExtends){
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	

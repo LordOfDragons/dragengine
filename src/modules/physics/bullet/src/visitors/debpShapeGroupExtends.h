@@ -60,9 +60,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	/** Resets the visitor. */
 	void Reset();
 	/** Sets the rotation to apply to shapes before calculating the extends. */

@@ -188,7 +188,7 @@ void igdeGDCLight::SetLightSkinPath(const char *path){
 
 
 bool igdeGDCLight::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCLight::GetPropertyName(eProperties property) const{
@@ -196,7 +196,7 @@ const decString &igdeGDCLight::GetPropertyName(eProperties property) const{
 }
 
 void igdeGDCLight::SetPropertyName(eProperties property, const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	pPropertyNames[property] = name;
@@ -217,7 +217,7 @@ bool igdeGDCLight::HasPropertyWithName(const char *name) const{
 
 
 bool igdeGDCLight::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &igdeGDCLight::GetTriggerName(eTriggers trigger) const{

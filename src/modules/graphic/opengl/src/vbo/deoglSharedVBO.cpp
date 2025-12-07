@@ -51,7 +51,7 @@ deoglSharedVBO::deoglSharedVBO(deoglSharedVBOList *parentList, int size, int ind
 pMemUseVBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vboShared),
 pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.iboShared)
 {
-	if(! parentList || size < 1 || indexSize < 0){
+	if(!parentList || size < 1 || indexSize < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -111,7 +111,7 @@ deoglSharedVBO::~deoglSharedVBO(){
 ///////////////
 
 void deoglSharedVBO::Prepare(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -136,7 +136,7 @@ void deoglSharedVBO::Prepare(){
 			
 			for(i=0; i<blockCount; i++){
 				const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
-				if(! block.GetEmpty()){
+				if(!block.GetEmpty()){
 					memcpy(vboData + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
 				}
 			}
@@ -224,7 +224,7 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	
 	for(i=count-1; i>=0; i--){
 		const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
-		if(! block.GetEmpty()){
+		if(!block.GetEmpty()){
 			pUsedSize = block.GetOffset() + block.GetSize();
 			break;
 		}
@@ -235,7 +235,7 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	
 	for(i=count-1; i>=0; i--){
 		deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
-		if(! block.GetEmpty()){
+		if(!block.GetEmpty()){
 			pIndexUsedSize = block.GetIndexOffset() + block.GetIndexCount();
 			break;
 		}

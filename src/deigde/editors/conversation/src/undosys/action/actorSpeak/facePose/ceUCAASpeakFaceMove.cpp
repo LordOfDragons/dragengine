@@ -44,7 +44,7 @@
 
 ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *facePose, int newIndex){
-	if(! topic || ! actorSpeak || ! facePose){
+	if(!topic || !actorSpeak || !facePose){
 		DETHROW(deeInvalidParam);
 	}
 	

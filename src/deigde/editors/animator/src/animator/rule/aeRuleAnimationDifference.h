@@ -66,52 +66,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{return pMove1Name;}
+	inline const decString &GetLeadingMoveName() const{ return pMove1Name; }
 	/** Set the leading animation move name. */
 	void SetLeadingMoveName(const char *moveName);
 	/** Retrieve the leading animation move time. */
-	inline float GetLeadingMoveTime() const{return pMove1Time;}
+	inline float GetLeadingMoveTime() const{ return pMove1Time; }
 	/** Set the leading animation move time. */
 	void SetLeadingMoveTime(float moveTime);
 	/** Retrieve the name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{return pMove2Name;}
+	inline const decString &GetReferenceMoveName() const{ return pMove2Name; }
 	/** Set the reference animation move name. */
 	void SetReferenceMoveName(const char *moveName);
 	/** Retrieve the reference animation move time. */
-	inline float GetReferenceMoveTime() const{return pMove2Time;}
+	inline float GetReferenceMoveTime() const{ return pMove2Time; }
 	/** Set the reference animation move time. */
 	void SetReferenceMoveTime(float moveTime);
 	/** Determine if the reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{return pUseSameMove;}
+	inline bool GetUseSameMove() const{ return pUseSameMove; }
 	/** Set if the reference move is the same as the leading move. */
 	void SetUseSameMove(bool useSameMove);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool enabled);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool enabled);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the leading move time target. */
-	inline aeControllerTarget &GetTargetLeadingMoveTime(){return pTargetLeadMoveTime;}
-	inline const aeControllerTarget &GetTargetLeadingMoveTime() const{return pTargetLeadMoveTime;}
+	inline aeControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }
+	inline const aeControllerTarget &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
 	
 	/** Retrieve the reference move time target. */
-	inline aeControllerTarget &GetTargetReferenceMoveTime(){return pTargetRefMoveTime;}
-	inline const aeControllerTarget &GetTargetReferenceMoveTime() const{return pTargetRefMoveTime;}
+	inline aeControllerTarget &GetTargetReferenceMoveTime(){ return pTargetRefMoveTime; }
+	inline const aeControllerTarget &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
 	
 	/** Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

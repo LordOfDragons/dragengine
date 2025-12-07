@@ -54,9 +54,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the value. */
-	inline int GetValue() const{return pValue;}
+	inline int GetValue() const{ return pValue; }
 	/** Sets the value. */
 	void SetValue(int value);
 	/*@}*/

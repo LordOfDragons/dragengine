@@ -110,7 +110,7 @@ bool seDynamicSkinRenderableList::HasNamed(const char *name) const{
 }
 
 void seDynamicSkinRenderableList::Add(seDynamicSkinRenderable *renderable){
-	if(! renderable || HasNamed(renderable->GetName().GetString())){
+	if(!renderable || HasNamed(renderable->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -118,7 +118,7 @@ void seDynamicSkinRenderableList::Add(seDynamicSkinRenderable *renderable){
 }
 
 void seDynamicSkinRenderableList::InsertAt(seDynamicSkinRenderable *renderable, int index){
-	if(! renderable || HasNamed(renderable->GetName().GetString())){
+	if(!renderable || HasNamed(renderable->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	

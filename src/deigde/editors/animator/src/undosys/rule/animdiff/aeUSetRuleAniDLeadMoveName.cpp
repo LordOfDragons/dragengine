@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleAniDLeadMoveName::aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference *rule, const char *newName){
-	if(! rule || ! newName) DETHROW(deeInvalidParam);
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pOldName = rule->GetLeadingMoveName();

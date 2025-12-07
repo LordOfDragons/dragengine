@@ -42,7 +42,7 @@ meUWorldSetSize::meUWorldSetSize(meWorld *world, const decDVector &newValue) :
 pWorld(NULL),
 pNewValue(newValue)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

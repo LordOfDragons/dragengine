@@ -106,7 +106,7 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskVAO::GetRootInstance(
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith(
 const deoglSharedSPBRTIGroup *group) const{
-	if(! group){
+	if(!group){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -127,7 +127,7 @@ deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group){
 }
 
 void deoglPersistentRenderTaskVAO::RemoveInstance(deoglPersistentRenderTaskInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	

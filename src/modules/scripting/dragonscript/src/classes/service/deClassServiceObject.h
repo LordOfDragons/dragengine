@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -69,7 +69,7 @@ public:
 	/** Push service object which can be nullptr. */
 	void PushServiceObject(dsRunTime *rt, const deServiceObject::Ref &object);
 	
-	inline dsClass *GetClassServiceObjectType() const{return pClsServiceObjectType;}
+	inline dsClass *GetClassServiceObjectType() const{ return pClsServiceObjectType; }
 	
 	/**
 	 * Retrieve the engine resource object for a script object.

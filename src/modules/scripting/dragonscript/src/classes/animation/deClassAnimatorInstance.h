@@ -57,8 +57,8 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS(){return pDS;}
-	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS(){ return pDS; }
+	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Animator instance for object or \em NULL if object is \em NULL. */
 	deAnimatorInstance *GetAnimatorInstance(dsRealObject *object) const;
@@ -66,7 +66,7 @@ public:
 	/** \brief Push animator instance or NULL on the stack. */
 	void PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance);
 	
-	inline dsClass *GetClassAnimatorRuleBlendMode() const{return pClsAnimatorRuleBlendMode;}
+	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
 	/*@}*/
 	
 private:

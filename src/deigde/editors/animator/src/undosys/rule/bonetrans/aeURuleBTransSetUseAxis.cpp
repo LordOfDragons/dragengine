@@ -42,7 +42,7 @@
 aeURuleBTransSetUseAxis::aeURuleBTransSetUseAxis(aeRuleBoneTransformator *rule) :
 pRule(rule)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -62,5 +62,5 @@ void aeURuleBTransSetUseAxis::Undo(){
 }
 
 void aeURuleBTransSetUseAxis::Redo(){
-	pRule->SetUseAxis(! pRule->GetUseAxis());
+	pRule->SetUseAxis(!pRule->GetUseAxis());
 }

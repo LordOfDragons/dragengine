@@ -84,7 +84,7 @@ public:
 	void SetListener(deoalEnvProbeListener *listener);
 	
 	/** \brief Listen tasks (deoalRTPTListen*). */
-	inline decPointerList GetListenTasks(){return pTasks;}
+	inline decPointerList GetListenTasks(){ return pTasks; }
 	
 	
 	

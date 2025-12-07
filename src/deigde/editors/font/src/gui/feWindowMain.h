@@ -101,17 +101,17 @@ public:
 	//inline igdeIcon* GetIconFontNew() const{ return pIconFontNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionFontNew() const{return pActionFontNew;}
-	inline igdeAction *GetActionFontOpen() const{return pActionFontOpen;}
-	inline igdeAction *GetActionFontSave() const{return pActionFontSave;}
-	inline igdeAction *GetActionFontSaveAs() const{return pActionFontSaveAs;}
-	inline igdeAction *GetActionFontGenerate() const{return pActionFontGenerate;}
+	inline igdeAction *GetActionFontNew() const{ return pActionFontNew; }
+	inline igdeAction *GetActionFontOpen() const{ return pActionFontOpen; }
+	inline igdeAction *GetActionFontSave() const{ return pActionFontSave; }
+	inline igdeAction *GetActionFontSaveAs() const{ return pActionFontSaveAs; }
+	inline igdeAction *GetActionFontGenerate() const{ return pActionFontGenerate; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
-	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
-	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
-	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
-	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
+	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
+	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
+	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
+	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
+	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -119,20 +119,20 @@ public:
 	void ResetViews();
 	
 	/** Retrieves the configuration. */
-	inline feConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline feConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	/** Retrieves the clipboard. */
-	inline feClipboard &GetClipboard() const{return *pClipboard;}
+	inline feClipboard &GetClipboard() const{ return *pClipboard; }
 	/** Retrieves the load save system. */
-	inline feLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
+	inline feLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \breif Font generation font configuration. */
-	inline const igdeFont::sConfiguration &GetGenFontConfig() const{return pGenFontConfig;}
+	inline const igdeFont::sConfiguration &GetGenFontConfig() const{ return pGenFontConfig; }
 	
 	/** \brief Set font generation font configuration. */
 	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
-	inline feFont *GetFont() const{return pFont;}
+	inline feFont *GetFont() const{ return pFont; }
 	/** Sets the font. */
 	void SetFont(feFont *font);
 	/** Creates a new font. */

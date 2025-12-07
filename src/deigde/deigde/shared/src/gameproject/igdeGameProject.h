@@ -91,43 +91,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Directory path. */
-	inline const decString &GetDirectoryPath() const{return pPathDirectory;}
+	inline const decString &GetDirectoryPath() const{ return pPathDirectory; }
 	
 	/** \brief File path. */
-	inline const decString &GetFilePath() const{return pPathFile;}
+	inline const decString &GetFilePath() const{ return pPathFile; }
 	
 	/** \brief Set file path. */
 	void SetFilePath(const char *path);
 	
 	/** \brief Project name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set project name. */
 	void SetName(const char *name);
 	
 	/** \brief Project description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set project description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Path to data relative to project directory. */
-	inline const decString &GetPathData() const{return pPathData;}
+	inline const decString &GetPathData() const{ return pPathData; }
 	
 	/** \brief Set path to data relative to project directory. */
 	void SetPathData(const char *path);
 	
 	/** \brief Path to cache relative to project directory. */
-	inline const decString &GetPathCache() const{return pPathCache;}
+	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set path to cache relative to project directory. */
 	void SetPathCache(const char *path);
 	
 	/** \brief Path to local data relative to project directory. */
-	inline const decString &GetPathLocal() const{return pPathLocal;}
+	inline const decString &GetPathLocal() const{ return pPathLocal; }
 	
 	/** \brief Set path to local data relative to project directory. */
 	void SetPathLocal(const char *path);
@@ -135,18 +135,18 @@ public:
 	
 	
 	/** \brief Base game definition id list. */
-	inline decStringList &GetBaseGameDefinitionIDList(){return pBaseGameDefinitionIDList;}
-	inline const decStringList &GetBaseGameDefinitionIDList() const{return pBaseGameDefinitionIDList;}
+	inline decStringList &GetBaseGameDefinitionIDList(){ return pBaseGameDefinitionIDList; }
+	inline const decStringList &GetBaseGameDefinitionIDList() const{ return pBaseGameDefinitionIDList; }
 	
 	/** \brief Project game definition path relative to project directory. */
-	inline const decString &GetPathProjectGameDefinition() const{return pPathProjectGameDefinition;}
+	inline const decString &GetPathProjectGameDefinition() const{ return pPathProjectGameDefinition; }
 	
 	/** \brief Set project game definition path relative to project directory. */
 	void SetPathProjectGameDefinition(const char *path);
 	
 	/** \brief Base game definition list. */
-	inline igdeGameDefinitionList &GetBaseGameDefinitionList(){return pBaseGameDefinitionList;}
-	inline const igdeGameDefinitionList &GetBaseGameDefinitionList() const{return pBaseGameDefinitionList;}
+	inline igdeGameDefinitionList &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
+	inline const igdeGameDefinitionList &GetBaseGameDefinitionList() const{ return pBaseGameDefinitionList; }
 	
 	/**
 	 * \brief Project game definition.
@@ -154,7 +154,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition path is not found set it to a default game definition instead.
 	 */
-	inline igdeGameDefinition *GetProjectGameDefinition() const{return pProjectGameDefinition;}
+	inline igdeGameDefinition *GetProjectGameDefinition() const{ return pProjectGameDefinition; }
 	
 	/**
 	 * \brief Set project game definition.
@@ -172,12 +172,12 @@ public:
 	 * mappers to explicitly define object classes with specific extra parameters like snap
 	 * points for example. The XML Element Class will then overwrite the regular parameters.
 	 */
-	inline igdeGameDefinition *GetXMLEClassGameDefinition() const{return pXMLEClassGameDefinition;}
+	inline igdeGameDefinition *GetXMLEClassGameDefinition() const{ return pXMLEClassGameDefinition; }
 	
 	/**
 	 * \brief Found file resources game definition.
 	 */
-	inline igdeGameDefinition *GetFoundGameDefinition() const{return pFoundGameDefinition;}
+	inline igdeGameDefinition *GetFoundGameDefinition() const{ return pFoundGameDefinition; }
 	
 	/**
 	 * \brief Merged game definition.
@@ -187,7 +187,7 @@ public:
 	 * game definition with all the content of the respective game definitions has been
 	 * created. If possible use this game definition.
 	 */
-	inline igdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline igdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/**
 	 * \brief Update merged game definition.
@@ -202,13 +202,13 @@ public:
 	void MergeGameDefinitions();
 	
 	/** \brief Name of script module to use. */
-	inline const decString &GetScriptModule() const{return pScriptModule;}
+	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set name of script module to use. */
 	void SetScriptModule(const char *moduleName);
 	
 	/** \brief Minimum script module version or empty string. */
-	inline const decString &GetScriptModuleVersion() const{return pScriptModuleVersion;}
+	inline const decString &GetScriptModuleVersion() const{ return pScriptModuleVersion; }
 	
 	/** \brief Set minimum script module version or empty string. */
 	void SetScriptModuleVersion(const char *version);
@@ -216,7 +216,7 @@ public:
 	
 	
 	/** \brief Project file changed. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	
 	/**
 	 * \brief Sets if project file has changed.

@@ -55,7 +55,7 @@ deoglPointSieve::deoglPointSieve(int bucketCountX, int bucketCountZ, float sieve
 	pBucketCount = bucketCountX * bucketCountZ;
 	
 	pBuckets = new deoglPointSieveBucket[pBucketCount];
-	if(! pBuckets) DETHROW(deeOutOfMemory);
+	if(!pBuckets) DETHROW(deeOutOfMemory);
 }
 
 deoglPointSieve::~deoglPointSieve(){

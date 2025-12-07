@@ -72,40 +72,40 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{return pSession;}
+	inline deoxrSession &GetSession() const{ return pSession; }
 	
 	
 	/** Enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Set enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
 	void SetTransparency(float transparency);
 	
 	
 	/** Passthrough. */
-	inline XrPassthroughFB GetPassthroughFB() const{return pPassthroughFB;}
+	inline XrPassthroughFB GetPassthroughFB() const{ return pPassthroughFB; }
 	
 	/** Passthrough layer. */
-	inline XrPassthroughLayerFB GetLayerFB() const{return pLayerFB;}
+	inline XrPassthroughLayerFB GetLayerFB() const{ return pLayerFB; }
 	
 	/** Composite layer. */
-	inline const XrCompositionLayerPassthroughFB &GetCompositeLayerFB() const{return pCompositeLayerFB;}
+	inline const XrCompositionLayerPassthroughFB &GetCompositeLayerFB() const{ return pCompositeLayerFB; }
 	
 	/** Show passthrough layer. */
 	bool ShowPassthroughLayerFB() const;
 	
 	
 	/** Environment blend mode. */
-	inline XrEnvironmentBlendMode GetEnvBlendMode() const{return pEnvBlendMode;}
+	inline XrEnvironmentBlendMode GetEnvBlendMode() const{ return pEnvBlendMode; }
 	
 	/** Composition layer flags. */
-	inline XrCompositionLayerFlags GetCompositeLayerFlags() const{return pCompositionLayerFlags;}
+	inline XrCompositionLayerFlags GetCompositeLayerFlags() const{ return pCompositionLayerFlags; }
 	/*@}*/
 	
 	

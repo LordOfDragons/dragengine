@@ -121,7 +121,7 @@ void meWPSelection::SetWorld(meWorld *world){
 
 
 void meWPSelection::ElementModeChanged(){
-	if(! pWorld){
+	if(!pWorld){
 		SetCurrent(0); // none
 		return;
 	}

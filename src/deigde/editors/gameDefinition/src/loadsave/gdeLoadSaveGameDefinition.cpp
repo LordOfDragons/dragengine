@@ -108,7 +108,7 @@ decBaseFileReader &reader){
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root){
+	if(!root){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -145,7 +145,7 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition(const decXmlElementTag &root
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -201,19 +201,19 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition(const decXmlElementTag &root
 			
 		}else if(tagName == "findPathClasses"){
 			const char * const cdata = GetCDataString(*tag);
-			if(cdata && ! autoFindPathObjectClasses.Has(cdata)){
+			if(cdata && !autoFindPathObjectClasses.Has(cdata)){
 				autoFindPathObjectClasses.Add(cdata);
 			}
 			
 		}else if(tagName == "findPathSkins"){
 			const char * const cdata = GetCDataString(*tag);
-			if(cdata && ! autoFindPathSkins.Has(cdata)){
+			if(cdata && !autoFindPathSkins.Has(cdata)){
 				autoFindPathSkins.Add(cdata);
 			}
 			
 		}else if(tagName == "findPathSkies"){
 			const char * const cdata = GetCDataString(*tag);
-			if(cdata && ! autoFindPathSkies.Has(cdata)){
+			if(cdata && !autoFindPathSkies.Has(cdata)){
 				autoFindPathSkies.Add(cdata);
 			}
 			
@@ -248,7 +248,7 @@ void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdeP
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -417,7 +417,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClass(const decXmlElementTag &root, g
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -578,7 +578,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassInherit(const decXmlElementTag &
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -601,7 +601,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassBillboard(const decXmlElementTag
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -701,7 +701,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -859,7 +859,7 @@ const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -905,7 +905,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight(const decXmlElementTag &ro
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1110,7 +1110,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSnapPoint(const decXmlElementTag
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1150,7 +1150,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter(const decXmlElem
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1223,7 +1223,7 @@ const decXmlElementTag &root, gdeObjectClass &objectClass){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1384,7 +1384,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe(const decXmlElementT
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1474,7 +1474,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker(const decXmlElementTag &
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1585,7 +1585,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace(const decXmlElem
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1687,7 +1687,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker(const decXmlEl
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1833,7 +1833,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1875,7 +1875,7 @@ const decXmlElementTag &root, gdeFilePatternList &list){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1913,7 +1913,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassCamera(const decXmlElementTag &r
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1965,7 +1965,7 @@ void gdeLoadSaveGameDefinition::pReadParticleEmitter(const decXmlElementTag &roo
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2005,7 +2005,7 @@ void gdeLoadSaveGameDefinition::pReadSkin(const decXmlElementTag &root, gdeGameD
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2045,7 +2045,7 @@ void gdeLoadSaveGameDefinition::pReadSky(const decXmlElementTag &root, gdeGameDe
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2099,7 +2099,7 @@ void gdeLoadSaveGameDefinition::pReadCategories(const decXmlElementTag &root, gd
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2130,7 +2130,7 @@ gdeCategoryList *list, gdeCategory *parent){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2191,7 +2191,7 @@ gdeCategoryList *list, gdeCategory *parent){
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -2274,13 +2274,13 @@ const gdeGameDefinition &gameDefinition){
 	}
 	
 	// default
-	if(! gameDefinition.GetDefaultObjectClass().IsEmpty()){
+	if(!gameDefinition.GetDefaultObjectClass().IsEmpty()){
 		writer.WriteDataTagString("defaultClass", gameDefinition.GetDefaultObjectClass());
 	}
-	if(! gameDefinition.GetDefaultSkin().IsEmpty()){
+	if(!gameDefinition.GetDefaultSkin().IsEmpty()){
 		writer.WriteDataTagString("defaultSkin", gameDefinition.GetDefaultSkin());
 	}
-	if(! gameDefinition.GetDefaultSky().IsEmpty()){
+	if(!gameDefinition.GetDefaultSky().IsEmpty()){
 		writer.WriteDataTagString("defaultSky", gameDefinition.GetDefaultSky());
 	}
 	
@@ -2339,7 +2339,7 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass){
 	if(objectClass.GetIsGhost()){
 		writer.WriteDataTagBool("ghost", objectClass.GetIsGhost());
 	}
-	if(! objectClass.GetCanInstantiate()){
+	if(!objectClass.GetCanInstantiate()){
 		writer.WriteDataTagBool("canInstantiate", objectClass.GetCanInstantiate());
 	}
 	if(objectClass.GetIsAttachableBehavior()){
@@ -2381,13 +2381,13 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass){
 		if((objectClass.GetInheritSubObjects() & igdeGDClass::efsoWorlds) == 0){
 			keys.Append("worlds,");
 		}
-		if(! keys.IsEmpty()){
+		if(!keys.IsEmpty()){
 			keys.SetAt(-1, 0);
 		}
 		writer.WriteDataTagString("replaceSubObjects", keys);
 	}
 	
-	if(! objectClass.GetDefaultInheritPropertyPrefix().IsEmpty()){
+	if(!objectClass.GetDefaultInheritPropertyPrefix().IsEmpty()){
 		writer.WriteDataTagString("defaultInheritPropertyPrefix", objectClass.GetDefaultInheritPropertyPrefix());
 	}
 	
@@ -2508,7 +2508,7 @@ void gdeLoadSaveGameDefinition::pWriteObjectClassInherit(decXmlWriter &writer, c
 	writer.WriteAttributeString("name", inherit.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if(! inherit.GetPropertyPrefix().IsEmpty()){
+	if(!inherit.GetPropertyPrefix().IsEmpty()){
 		writer.WriteDataTagString("propertyPrefix", inherit.GetPropertyPrefix());
 	}
 	
@@ -2520,28 +2520,28 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	writer.WriteOpeningTag("component");
 	
 	writer.WriteDataTagString("model", component.GetModelPath());
-	if(! component.GetSkinPath().IsEmpty()){
+	if(!component.GetSkinPath().IsEmpty()){
 		writer.WriteDataTagString("skin", component.GetSkinPath());
 	}
-	if(! component.GetRigPath().IsEmpty()){
+	if(!component.GetRigPath().IsEmpty()){
 		writer.WriteDataTagString("rig", component.GetRigPath());
 	}
-	if(! component.GetAnimatorPath().IsEmpty()){
+	if(!component.GetAnimatorPath().IsEmpty()){
 		writer.WriteDataTagString("animator", component.GetAnimatorPath());
 	}
-	if(! component.GetAnimationPath().IsEmpty()){
+	if(!component.GetAnimationPath().IsEmpty()){
 		writer.WriteDataTagString("animation", component.GetAnimationPath());
 	}
-	if(! component.GetMove().IsEmpty()){
+	if(!component.GetMove().IsEmpty()){
 		writer.WriteDataTagString("move", component.GetMove());
 	}
-	if(! component.GetOcclusionMeshPath().IsEmpty()){
+	if(!component.GetOcclusionMeshPath().IsEmpty()){
 		writer.WriteDataTagString("occlusionMesh", component.GetOcclusionMeshPath());
 	}
-	if(! component.GetAudioModelPath().IsEmpty()){
+	if(!component.GetAudioModelPath().IsEmpty()){
 		writer.WriteDataTagString("audioModel", component.GetAudioModelPath());
 	}
-	if(! component.GetPlaybackController().IsEmpty()){
+	if(!component.GetPlaybackController().IsEmpty()){
 		writer.WriteDataTagString("playbackController", component.GetPlaybackController());
 	}
 	if(component.GetDoNotScale()){
@@ -2553,7 +2553,7 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	if(component.GetPartialHide()){
 		writer.WriteDataTagBool("partialHide", component.GetPartialHide());
 	}
-	if(! component.GetAttachTarget()){
+	if(!component.GetAttachTarget()){
 		writer.WriteDataTagBool("attachTarget", component.GetAttachTarget());
 	}
 	
@@ -2570,10 +2570,10 @@ decXmlWriter &writer, const gdeOCComponent &component){
 		break;
 	}
 	
-	if(! component.GetRenderEnvMap()){
+	if(!component.GetRenderEnvMap()){
 		writer.WriteDataTagBool("renderEnvMap", component.GetRenderEnvMap());
 	}
-	if(! component.GetAffectsAudio()){
+	if(!component.GetAffectsAudio()){
 		writer.WriteDataTagBool("affectsAudio", component.GetAffectsAudio());
 	}
 	if(component.GetLightShadowIgnore()){
@@ -2581,7 +2581,7 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	}
 	
 	const decVector &position = component.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2590,7 +2590,7 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	}
 	
 	const decVector &orientation = component.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -2598,7 +2598,7 @@ decXmlWriter &writer, const gdeOCComponent &component){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! component.GetBoneName().IsEmpty()){
+	if(!component.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", component.GetBoneName());
 	}
 	
@@ -2649,12 +2649,12 @@ decXmlWriter &writer, const gdeOCComponentTexture &texture){
 	writer.WriteAttributeString("name", texture.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if(! texture.GetPathSkin().IsEmpty()){
+	if(!texture.GetPathSkin().IsEmpty()){
 		writer.WriteDataTagString("skin", texture.GetPathSkin());
 	}
 	
 	const decVector2 &offset = texture.GetOffset();
-	if(! offset.IsEqualTo(decVector2())){
+	if(!offset.IsEqualTo(decVector2())){
 		writer.WriteOpeningTagStart("offset");
 		writer.WriteAttributeFloat("x", offset.x);
 		writer.WriteAttributeFloat("y", offset.y);
@@ -2662,7 +2662,7 @@ decXmlWriter &writer, const gdeOCComponentTexture &texture){
 	}
 	
 	const decVector2 &scale = texture.GetScale();
-	if(! decVector2(1.0f, 1.0f).IsEqualTo(scale)){
+	if(!decVector2(1.0f, 1.0f).IsEqualTo(scale)){
 		writer.WriteOpeningTagStart("scale");
 		writer.WriteAttributeFloat("x", scale.x);
 		writer.WriteAttributeFloat("y", scale.y);
@@ -2674,7 +2674,7 @@ decXmlWriter &writer, const gdeOCComponentTexture &texture){
 	}
 	
 	const decColor &tint = texture.GetColorTint();
-	if(! decColor(1.0f, 1.0f, 1.0f).IsEqualTo(tint)){
+	if(!decColor(1.0f, 1.0f, 1.0f).IsEqualTo(tint)){
 		writer.WriteOpeningTagStart("tint");
 		writer.WriteAttributeFloat("r", tint.r);
 		writer.WriteAttributeFloat("g", tint.g);
@@ -2694,7 +2694,7 @@ decXmlWriter &writer, const gdeOCBillboard &billboard){
 	writer.WriteDataTagString("skin", billboard.GetSkinPath());
 	
 	const decVector &axis = billboard.GetAxis();
-	if(! decVector(0.0f, 1.0f, 0.0f).IsEqualTo(axis)){
+	if(!decVector(0.0f, 1.0f, 0.0f).IsEqualTo(axis)){
 		writer.WriteOpeningTagStart("axis");
 		writer.WriteAttributeFloat("x", axis.x);
 		writer.WriteAttributeFloat("y", axis.y);
@@ -2709,17 +2709,17 @@ decXmlWriter &writer, const gdeOCBillboard &billboard){
 	writer.WriteOpeningTagEnd(true);
 	
 	const decVector2 &offset = billboard.GetOffset();
-	if(! offset.IsEqualTo(decVector2())){
+	if(!offset.IsEqualTo(decVector2())){
 		writer.WriteOpeningTagStart("offset");
 		writer.WriteAttributeFloat("x", offset.x);
 		writer.WriteAttributeFloat("y", offset.y);
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! billboard.GetLocked()){
+	if(!billboard.GetLocked()){
 		writer.WriteDataTagBool("locked", billboard.GetLocked());
 	}
-	if(! billboard.GetSpherical()){
+	if(!billboard.GetSpherical()){
 		writer.WriteDataTagBool("spherical", billboard.GetSpherical());
 	}
 	if(billboard.GetSizeFixedToScreen()){
@@ -2733,7 +2733,7 @@ decXmlWriter &writer, const gdeOCBillboard &billboard){
 	}
 	
 	const decVector &position = billboard.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2741,7 +2741,7 @@ decXmlWriter &writer, const gdeOCBillboard &billboard){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! billboard.GetBoneName().IsEmpty()){
+	if(!billboard.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", billboard.GetBoneName());
 	}
 	
@@ -2761,7 +2761,7 @@ decXmlWriter &writer, const gdeOCCamera &camera){
 	writer.WriteOpeningTag("camera");
 	
 	const decVector &position = camera.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2770,7 +2770,7 @@ decXmlWriter &writer, const gdeOCCamera &camera){
 	}
 	
 	const decVector &orientation = camera.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -2790,7 +2790,7 @@ decXmlWriter &writer, const gdeOCCamera &camera){
 	if(fabsf(camera.GetViewDistance() - 500.0f) > FLOAT_SAFE_EPSILON){
 		writer.WriteDataTagFloat("viewDistance", camera.GetViewDistance());
 	}
-	if(! camera.GetPropName().IsEmpty()){
+	if(!camera.GetPropName().IsEmpty()){
 		writer.WriteDataTagString("propName", camera.GetPropName());
 	}
 	if(!camera.GetPropPosition().IsEmpty()){
@@ -2808,7 +2808,7 @@ decXmlWriter &writer, const gdeOCLight &light){
 	writer.WriteOpeningTag("light");
 	
 	const decVector &position = light.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2817,7 +2817,7 @@ decXmlWriter &writer, const gdeOCLight &light){
 	}
 	
 	const decVector &orientation = light.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -2825,7 +2825,7 @@ decXmlWriter &writer, const gdeOCLight &light){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! light.GetBoneName().IsEmpty()){
+	if(!light.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", light.GetBoneName());
 	}
 	
@@ -2877,13 +2877,13 @@ decXmlWriter &writer, const gdeOCLight &light){
 		break;
 	}
 	
-	if(! light.GetActivated()){
+	if(!light.GetActivated()){
 		writer.WriteDataTagBool("activated", light.GetActivated());
 	}
-	if(! light.GetCastShadows()){
+	if(!light.GetCastShadows()){
 		writer.WriteDataTagBool("castShadows", light.GetCastShadows());
 	}
-	if(! light.GetLightSkinPath().IsEmpty()){
+	if(!light.GetLightSkinPath().IsEmpty()){
 		writer.WriteDataTagString("lightSkin", light.GetLightSkinPath());
 	}
 	
@@ -2954,7 +2954,7 @@ decXmlWriter &writer, const gdeOCSnapPoint &snapPoint){
 	writer.WriteDataTagString("name", snapPoint.GetName());
 	
 	const decVector &position = snapPoint.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2963,7 +2963,7 @@ decXmlWriter &writer, const gdeOCSnapPoint &snapPoint){
 	}
 	
 	const decVector &orientation = snapPoint.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -2973,7 +2973,7 @@ decXmlWriter &writer, const gdeOCSnapPoint &snapPoint){
 	
 	writer.WriteDataTagFloat("snapDistance", snapPoint.GetSnapDistance());
 	
-	if(! snapPoint.GetSnapToRotation()){
+	if(!snapPoint.GetSnapToRotation()){
 		writer.WriteDataTagBool("snapToRotation", snapPoint.GetSnapToRotation());
 	}
 	
@@ -2984,12 +2984,12 @@ void gdeLoadSaveGameDefinition::pWriteObjectClassParticleEmitter(
 decXmlWriter &writer, const gdeOCParticleEmitter &particleEmitter){
 	writer.WriteOpeningTag("particleEmitter");
 	
-	if(! particleEmitter.GetPath().IsEmpty()){
+	if(!particleEmitter.GetPath().IsEmpty()){
 		writer.WriteDataTagString("path", particleEmitter.GetPath());
 	}
 	
 	const decVector &position = particleEmitter.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -2998,7 +2998,7 @@ decXmlWriter &writer, const gdeOCParticleEmitter &particleEmitter){
 	}
 	
 	const decVector &orientation = particleEmitter.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3006,11 +3006,11 @@ decXmlWriter &writer, const gdeOCParticleEmitter &particleEmitter){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! particleEmitter.GetBoneName().IsEmpty()){
+	if(!particleEmitter.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", particleEmitter.GetBoneName());
 	}
 	
-	if(! particleEmitter.GetCasting()){
+	if(!particleEmitter.GetCasting()){
 		writer.WriteDataTagBool("casting", particleEmitter.GetCasting());
 	}
 	
@@ -3031,7 +3031,7 @@ decXmlWriter &writer, const gdeOCForceField &forceField){
 	writer.WriteOpeningTag("forceField");
 	
 	const decVector &position = forceField.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -3040,7 +3040,7 @@ decXmlWriter &writer, const gdeOCForceField &forceField){
 	}
 	
 	const decVector &orientation = forceField.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3048,7 +3048,7 @@ decXmlWriter &writer, const gdeOCForceField &forceField){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! forceField.GetBoneName().IsEmpty()){
+	if(!forceField.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", forceField.GetBoneName());
 	}
 	
@@ -3098,7 +3098,7 @@ decXmlWriter &writer, const gdeOCForceField &forceField){
 	}
 	
 	const decVector &direction = forceField.GetDirection();
-	if(! direction.IsZero()){
+	if(!direction.IsZero()){
 		writer.WriteOpeningTagStart("direction");
 		writer.WriteAttributeFloat("x", direction.x);
 		writer.WriteAttributeFloat("y", direction.y);
@@ -3123,7 +3123,7 @@ decXmlWriter &writer, const gdeOCForceField &forceField){
 		writer.WriteDataTagString("shape", value);
 	}
 	
-	if(! forceField.GetEnabled()){
+	if(!forceField.GetEnabled()){
 		writer.WriteDataTagBool("enabled", forceField.GetEnabled());
 	}
 	
@@ -3153,7 +3153,7 @@ decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe){
 	writer.WriteOpeningTag("environmentMapProbe");
 	
 	const decVector &position = envMapProbe.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -3162,7 +3162,7 @@ decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe){
 	}
 	
 	const decVector &orientation = envMapProbe.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3171,7 +3171,7 @@ decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe){
 	}
 	
 	const decVector &scaling = envMapProbe.GetScaling();
-	if(! scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("scaling");
 		writer.WriteAttributeFloat("x", scaling.x);
 		writer.WriteAttributeFloat("y", scaling.y);
@@ -3228,12 +3228,12 @@ void gdeLoadSaveGameDefinition::pWriteObjectClassSpeaker(
 decXmlWriter &writer, const gdeOCSpeaker &speaker){
 	writer.WriteOpeningTag("speaker");
 	
-	if(! speaker.GetPathSound().IsEmpty()){
+	if(!speaker.GetPathSound().IsEmpty()){
 		writer.WriteDataTagString("sound", speaker.GetPathSound());
 	}
 	
 	const decVector &position = speaker.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -3242,7 +3242,7 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker){
 	}
 	
 	const decVector &orientation = speaker.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3250,14 +3250,14 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! speaker.GetBoneName().IsEmpty()){
+	if(!speaker.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", speaker.GetBoneName());
 	}
 	
-	if(! speaker.GetLooping()){
+	if(!speaker.GetLooping()){
 		writer.WriteDataTagBool("looping", speaker.GetLooping());
 	}
-	if(! speaker.GetPlaying()){
+	if(!speaker.GetPlaying()){
 		writer.WriteDataTagBool("playing", speaker.GetPlaying());
 	}
 	
@@ -3312,12 +3312,12 @@ decXmlWriter &writer, const gdeOCNavigationSpace &navspace){
 	
 	writer.WriteOpeningTag("navigationSpace");
 	
-	if(! navspace.GetPath().IsEmpty()){
+	if(!navspace.GetPath().IsEmpty()){
 		writer.WriteDataTagString("path", navspace.GetPath());
 	}
 	
 	const decVector &position = navspace.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -3326,7 +3326,7 @@ decXmlWriter &writer, const gdeOCNavigationSpace &navspace){
 	}
 	
 	const decVector &orientation = navspace.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3334,7 +3334,7 @@ decXmlWriter &writer, const gdeOCNavigationSpace &navspace){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! navspace.GetBoneName().IsEmpty()){
+	if(!navspace.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", navspace.GetBoneName());
 	}
 	
@@ -3389,7 +3389,7 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker){
 	writer.WriteOpeningTag("navigationBlocker");
 	
 	const decVector &position = navblocker.GetPosition();
-	if(! position.IsZero()){
+	if(!position.IsZero()){
 		writer.WriteOpeningTagStart("position");
 		writer.WriteAttributeFloat("x", position.x);
 		writer.WriteAttributeFloat("y", position.y);
@@ -3398,7 +3398,7 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker){
 	}
 	
 	const decVector &orientation = navblocker.GetRotation();
-	if(! orientation.IsZero()){
+	if(!orientation.IsZero()){
 		writer.WriteOpeningTagStart("orientation");
 		writer.WriteAttributeFloat("x", orientation.x);
 		writer.WriteAttributeFloat("y", orientation.y);
@@ -3406,11 +3406,11 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! navblocker.GetBoneName().IsEmpty()){
+	if(!navblocker.GetBoneName().IsEmpty()){
 		writer.WriteDataTagString("bone", navblocker.GetBoneName());
 	}
 	
-	if(! navblocker.GetEnabled()){
+	if(!navblocker.GetEnabled()){
 		writer.WriteDataTagBool("enabled", navblocker.GetEnabled());
 	}
 	if(navblocker.GetLayer() != 0){
@@ -3474,19 +3474,19 @@ void gdeLoadSaveGameDefinition::pWriteObjectClassTexture(decXmlWriter &writer, c
 	writer.WriteAttributeString("name", texture.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if(! texture.GetPathSkin().IsEmpty()){
+	if(!texture.GetPathSkin().IsEmpty()){
 		writer.WriteDataTagString("skin", texture.GetPathSkin());
 	}
-	if(! texture.GetOffset().IsEqualTo(decVector2())){
+	if(!texture.GetOffset().IsEqualTo(decVector2())){
 		WriteVector2(writer, "offset", texture.GetOffset());
 	}
-	if(! decVector2(1.0f, 1.0f).IsEqualTo(texture.GetScale())){
+	if(!decVector2(1.0f, 1.0f).IsEqualTo(texture.GetScale())){
 		WriteVector2(writer, "scale", texture.GetScale());
 	}
 	if(fabsf(texture.GetRotation()) > FLOAT_SAFE_EPSILON){
 		writer.WriteDataTagFloat("rotate", texture.GetRotation() / DEG2RAD);
 	}
-	if(! decColor(1.0f, 1.0f, 1.0f).IsEqualTo(texture.GetColorTint())){
+	if(!decColor(1.0f, 1.0f, 1.0f).IsEqualTo(texture.GetColorTint())){
 		WriteColor(writer, "tint", texture.GetColorTint());
 	}
 	
@@ -3499,7 +3499,7 @@ const gdeGameDefinition&, const gdeSkin &skin){
 	
 	writer.WriteDataTagString("path", skin.GetPath());
 	writer.WriteDataTagString("name", skin.GetName());
-	if(! skin.GetDescription().IsEmpty()){
+	if(!skin.GetDescription().IsEmpty()){
 		WriteMultilineString(writer, "description", skin.GetDescription());
 	}
 	writer.WriteDataTagString("category", skin.GetCategory());
@@ -3513,7 +3513,7 @@ const gdeGameDefinition&, const gdeSky &sky){
 	
 	writer.WriteDataTagString("path", sky.GetPath());
 	writer.WriteDataTagString("name", sky.GetName());
-	if(! sky.GetDescription().IsEmpty()){
+	if(!sky.GetDescription().IsEmpty()){
 		WriteMultilineString(writer, "description", sky.GetDescription());
 	}
 	
@@ -3540,7 +3540,7 @@ const gdeGameDefinition&, const gdeParticleEmitter &particleEmitter){
 	
 	writer.WriteDataTagString("path", particleEmitter.GetPath());
 	writer.WriteDataTagString("name", particleEmitter.GetName());
-	if(! particleEmitter.GetDescription().IsEmpty()){
+	if(!particleEmitter.GetDescription().IsEmpty()){
 		WriteMultilineString(writer, "description", particleEmitter.GetDescription());
 	}
 	writer.WriteDataTagString("category", particleEmitter.GetCategory());
@@ -3591,7 +3591,7 @@ void gdeLoadSaveGameDefinition::pWriteCategory(decXmlWriter &writer, const gdeCa
 	writer.WriteOpeningTag("category");
 	
 	writer.WriteDataTagString("name", category.GetName()); // mvoe to attribute?
-	if(! category.GetDescription().IsEmpty()){
+	if(!category.GetDescription().IsEmpty()){
 		WriteMultilineString(writer, "description", category.GetDescription());
 	}
 	
@@ -3835,7 +3835,7 @@ const gdeProperty &property, const char *tagName){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! property.GetDefaultValue().IsEmpty()){
+	if(!property.GetDefaultValue().IsEmpty()){
 		WriteMultilineString(writer, "default", property.GetDefaultValue());
 	}
 	

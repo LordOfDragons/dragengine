@@ -63,7 +63,7 @@ deDebugDrawer::~deDebugDrawer(){
 ///////////////
 
 void deDebugDrawer::SetPosition(const decDVector &position){
-	if(! pPosition.IsEqualTo(position)){
+	if(!pPosition.IsEqualTo(position)){
 		pPosition = position;
 		if(pPeerGraphic){
 			pPeerGraphic->PositionChanged();
@@ -72,7 +72,7 @@ void deDebugDrawer::SetPosition(const decDVector &position){
 }
 
 void deDebugDrawer::SetOrientation(const decQuaternion &orientation){
-	if(! pOrientation.IsEqualTo(orientation)){
+	if(!pOrientation.IsEqualTo(orientation)){
 		pOrientation = orientation;
 		if(pPeerGraphic){
 			pPeerGraphic->OrientationChanged();
@@ -81,7 +81,7 @@ void deDebugDrawer::SetOrientation(const decQuaternion &orientation){
 }
 
 void deDebugDrawer::SetScale(const decVector &scale){
-	if(! pScale.IsEqualTo(scale)){
+	if(!pScale.IsEqualTo(scale)){
 		pScale = scale;
 		if(pPeerGraphic){
 			pPeerGraphic->ScalingChanged();
@@ -131,7 +131,7 @@ bool deDebugDrawer::HasShape(deDebugDrawerShape *shape) const{
 }
 
 void deDebugDrawer::AddShape(deDebugDrawerShape *shape){
-	if(! shape || HasShape(shape)){
+	if(!shape || HasShape(shape)){
 		DETHROW(deeInvalidParam);
 	}
 	pShapes.Add(shape);

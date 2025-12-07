@@ -70,19 +70,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object pointer. */
-	inline const meObject::Ref &GetObject() const{return pObject;}
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Position before redo action. */
-	inline const decDVector &GetOldPosition() const{return pOldPosition;}
+	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
 	
 	/** \brief Orientation before redo action. */
-	inline const decVector &GetOldOrientation() const{return pOldOrientation;}
+	inline const decVector &GetOldOrientation() const{ return pOldOrientation; }
 	
 	/** \brief Size before redo action. */
-	inline const decVector &GetOldSize() const{return pOldSize;}
+	inline const decVector &GetOldSize() const{ return pOldSize; }
 	
 	/** \brief Attached to before redo action. */
-	inline const meObject::Ref &GetAttachedTo() const{return pAttachedTo;}
+	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set attached to before redo action. */
 	void SetAttachedTo(meObject *object);

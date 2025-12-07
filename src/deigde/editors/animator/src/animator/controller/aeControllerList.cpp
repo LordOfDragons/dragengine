@@ -101,14 +101,14 @@ bool aeControllerList::HasNamed(const char *name) const{
 }
 
 void aeControllerList::Add(aeController *controller){
-	if(! controller || HasNamed(controller->GetName())){
+	if(!controller || HasNamed(controller->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Add(controller);
 }
 
 void aeControllerList::Insert(aeController *controller, int index){
-	if(! controller || HasNamed(controller->GetName())){
+	if(!controller || HasNamed(controller->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Insert(controller, index);

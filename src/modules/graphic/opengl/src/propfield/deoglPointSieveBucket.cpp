@@ -63,7 +63,7 @@ void deoglPointSieveBucket::AddIndex(int index){
 	if(pIndexCount == pIndexSize){
 		int newSize = pIndexSize * 3 / 2 + 1;
 		int *newArray = new int[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pIndices){
 			memcpy(newArray, pIndices, sizeof(int) * pIndexSize);
 			delete [] pIndices;

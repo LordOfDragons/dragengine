@@ -46,7 +46,7 @@ pPeerVideo(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
-	if(! video){
+	if(!video){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -63,21 +63,21 @@ deVideoAudioDecoder::~deVideoAudioDecoder(){
 ///////////////
 
 int deVideoAudioDecoder::GetPosition(){
-	if(! pPeerVideo){
+	if(!pPeerVideo){
 		DETHROW(deeInvalidParam);
 	}
 	return pPeerVideo->GetPosition();
 }
 
 void deVideoAudioDecoder::SetPosition(int position){
-	if(! pPeerVideo){
+	if(!pPeerVideo){
 		DETHROW(deeInvalidParam);
 	}
 	pPeerVideo->SetPosition(position);
 }
 
 int deVideoAudioDecoder::ReadSamples(void *buffer, int size){
-	if(! pPeerVideo){
+	if(!pPeerVideo){
 		DETHROW(deeInvalidParam);
 	}
 	return pPeerVideo->ReadSamples(buffer, size);

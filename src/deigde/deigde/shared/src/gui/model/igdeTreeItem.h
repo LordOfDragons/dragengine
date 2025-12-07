@@ -102,37 +102,37 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
-	inline void *GetData() const{return pData;}
+	inline void *GetData() const{ return pData; }
 	
 	/** \brief Set user data pointer. */
 	void SetData(void *data);
 	
 	/** \brief Item is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if item is selected. */
 	void SetSelected(bool selected);
 	
 	/** \brief Item is expanded. */
-	inline bool GetExpanded() const{return pExpanded;}
+	inline bool GetExpanded() const{ return pExpanded; }
 	
 	/** \brief Set if item is expanded. */
 	void SetExpanded(bool expanded);
@@ -140,25 +140,25 @@ public:
 	
 	
 	/** \brief Parent item. */
-	inline igdeTreeItem *GetParent() const{return pParent;}
+	inline igdeTreeItem *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent item. */
 	void SetParent(igdeTreeItem *item);
 	
 	/** \brief Previous item. */
-	inline igdeTreeItem *GetPrevious() const{return pPrevious;}
+	inline igdeTreeItem *GetPrevious() const{ return pPrevious; }
 	
 	/** \brief Set previous item. */
 	void SetPrevious(igdeTreeItem *item);
 	
 	/** \brief Next item. */
-	inline igdeTreeItem *GetNext() const{return pNext;}
+	inline igdeTreeItem *GetNext() const{ return pNext; }
 	
 	/** \brief Set next item. */
 	void SetNext(igdeTreeItem *item);
 	
 	/** \brief First child item. */
-	inline igdeTreeItem *GetFirstChild() const{return pFirstChild;}
+	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Set first child item. */
 	void SetFirstChild(igdeTreeItem *item);
@@ -180,7 +180,7 @@ public:
 	 * \brief Get native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void *GetNativeWidget() const{return pNativeWidget;}
+	void *GetNativeWidget() const{ return pNativeWidget; }
 	
 	/**
 	 * \brief Set native widget pointer.

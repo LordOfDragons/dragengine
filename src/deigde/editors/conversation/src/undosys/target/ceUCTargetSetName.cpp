@@ -52,7 +52,7 @@
 ////////////////////////////
 
 ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
-	if(! target || ! newName) DETHROW(deeInvalidParam);
+	if(!target || !newName) DETHROW(deeInvalidParam);
 	
 	const ceCameraShotList &cameraShotList = target->GetConversation()->GetCameraShotList();
 	const ceConversationFileList &fileList = target->GetConversation()->GetFileList();

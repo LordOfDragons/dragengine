@@ -117,7 +117,7 @@ deoglSharedVBOBlock *deoglSharedVBOList::AddData(int size, int indexCount){
 	pVBOs.Add(vbo);
 	
 	block = ((deoglSharedVBO*)pVBOs.GetAt(pVBOs.GetCount() - 1))->AddBlock(size, indexCount);
-	if(! block){
+	if(!block){
 		DETHROW(deeInvalidAction);
 	}
 	

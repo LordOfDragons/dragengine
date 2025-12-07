@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the number of entries in the dictionary. */
-	inline int GetCount() const{return pEntryCount;}
+	inline int GetCount() const{ return pEntryCount; }
 	/** \brief Determines if a key is located in the dictionary. */
 	bool Has(const char *key) const;
 	/** \brief Retrieves an string by key throwing an exception if not found. */

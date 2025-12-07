@@ -44,7 +44,7 @@ seProperty *property, const decColor &newValue) :
 pProperty(NULL),
 pNewValue(newValue)
 {
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	

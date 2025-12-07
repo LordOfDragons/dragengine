@@ -41,7 +41,7 @@
 reURigToggleModelCollision::reURigToggleModelCollision(reRig *rig) :
 pRig(NULL)
 {
-	if(! rig){
+	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,7 +63,7 @@ reURigToggleModelCollision::~reURigToggleModelCollision(){
 ///////////////
 
 void reURigToggleModelCollision::Undo(){
-	pRig->SetModelCollision(! pRig->GetModelCollision());
+	pRig->SetModelCollision(!pRig->GetModelCollision());
 }
 
 void reURigToggleModelCollision::Redo(){

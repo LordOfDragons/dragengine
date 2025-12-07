@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Bone matric. */
-	inline const decMatrix &GetBoneMatrix() const{return pBoneMatrix;}
+	inline const decMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
 	
 	/** Skin bone. */
-	const deoglSkinBone *GetSkinBone() const{return pSkinBone;}
+	const deoglSkinBone *GetSkinBone() const{ return pSkinBone; }
 	
 	/** Set skin bone. */
 	void SetSkinBone(const deoglSkinBone *skinBone);
 	
 	/** Bone index or -1 if not found. */
-	inline int GetBoneIndex() const{return pBoneIndex;}
+	inline int GetBoneIndex() const{ return pBoneIndex; }
 	
 	/** Map bone. */
 	void MapBone(const deComponent &component);

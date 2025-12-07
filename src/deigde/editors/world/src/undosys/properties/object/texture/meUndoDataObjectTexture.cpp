@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUndoDataObjectTexture::meUndoDataObjectTexture(meObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	

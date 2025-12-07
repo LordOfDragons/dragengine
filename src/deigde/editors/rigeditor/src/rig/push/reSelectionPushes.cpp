@@ -40,7 +40,7 @@
 ////////////////////////////
 
 reSelectionPushes::reSelectionPushes(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -67,7 +67,7 @@ reRigPush *reSelectionPushes::GetPushAt(int index) const{
 }
 
 bool reSelectionPushes::HasPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -80,7 +80,7 @@ bool reSelectionPushes::HasPush(reRigPush *push) const{
 }
 	
 int reSelectionPushes::IndexOfPush(reRigPush *push) const{
-	if(! push) DETHROW(deeInvalidParam);
+	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -93,7 +93,7 @@ int reSelectionPushes::IndexOfPush(reRigPush *push) const{
 }
 
 int reSelectionPushes::IndexOfPushWith(deColliderVolume *collider) const{
-	if(! collider) DETHROW(deeInvalidParam);
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pPushCount; i++){
@@ -111,7 +111,7 @@ void reSelectionPushes::AddPush(reRigPush *push){
 	if(pPushCount == pPushSize){
 		int newSize = pPushSize * 3 / 2 + 1;
 		reRigPush **newArray = new reRigPush*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pPushes){
 			memcpy(newArray, pPushes, sizeof(reRigPush*) * pPushSize);
 			delete [] pPushes;
@@ -181,7 +181,7 @@ bool reSelectionPushes::HasActivePush() const{
 
 void reSelectionPushes::SetActivePush(reRigPush *push){
 	if(push != pActivePush){
-		if(push && ! HasPush(push)) DETHROW(deeInvalidParam);
+		if(push && !HasPush(push)) DETHROW(deeInvalidParam);
 		
 		if(pActivePush){
 			pActivePush->SetActive(false);

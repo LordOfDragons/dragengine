@@ -73,19 +73,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Short info. */
-	inline const decString &GetShortInfo() const{return pShortInfo;}
+	inline const decString &GetShortInfo() const{ return pShortInfo; }
 	
 	/** \brief Set short info. */
 	void SetShortInfo(const char *info);
 	
 	/** \brief Long info. */
-	inline const decString &GetLongInfo() const{return pLongInfo;}
+	inline const decString &GetLongInfo() const{ return pLongInfo; }
 	
 	/** \brief Set long info. */
 	void SetLongInfo(const char *info);
 	
 	/** \brief Memory consumption. */
-	inline int GetMemoryConsumption() const{return pMemoryConsumption;}
+	inline int GetMemoryConsumption() const{ return pMemoryConsumption; }
 	
 	/** \brief Set memory consumption. */
 	void SetMemoryConsumption(int bytes);

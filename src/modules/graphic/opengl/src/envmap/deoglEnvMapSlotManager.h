@@ -70,16 +70,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the array texture. */
-	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/** Retrieves the width of the array texture. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	/** Retrieves the height of the array texture. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	/** Retrieves the number of layers in the array texture. This is also the number of available slots. */
-	inline int GetLayerCount() const{return pLayerCount;}
+	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Retrieves the slot at the given index. */
 	deoglEnvMapSlot &GetSlotAt(int index) const;
@@ -103,7 +103,7 @@ public:
 	void NotifyEnvMapChanged(int slotIndex);
 	
 	/** Retrieves the number of used slots. */
-	inline int GetUsedSlotCount() const{return pUsedSlotsCount;}
+	inline int GetUsedSlotCount() const{ return pUsedSlotsCount; }
 	/** Retrieves the index of the used slot by index. */
 	int GetUsedSlotIndexAt(int index) const;
 	/** Update the used slots list from the current slot assignment. */

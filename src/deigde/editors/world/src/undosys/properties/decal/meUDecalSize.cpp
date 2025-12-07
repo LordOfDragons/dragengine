@@ -40,12 +40,12 @@
 ////////////////////////////
 
 meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
-	if(! decal){
+	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

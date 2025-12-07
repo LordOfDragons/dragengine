@@ -76,31 +76,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent list. */
-	inline deoglSharedVBOList *GetParentList() const{return pParentList;}
+	inline deoglSharedVBOList *GetParentList() const{ return pParentList; }
 	/** Prepare if required. */
 	void Prepare();
 	/** Retrieves the VBO. */
-	inline GLuint GetVBO() const{return pVBO;}
+	inline GLuint GetVBO() const{ return pVBO; }
 	/** Retrieves the IBO. */
-	inline GLuint GetIBO() const{return pIBO;}
+	inline GLuint GetIBO() const{ return pIBO; }
 	/** Retrieves the VAO. */
-	inline deoglVAO *GetVAO() const{return pVAO;}
+	inline deoglVAO *GetVAO() const{ return pVAO; }
 	/** Retrieves the used size. */
-	inline int GetUsedSize() const{return pUsedSize;}
+	inline int GetUsedSize() const{ return pUsedSize; }
 	/** Retrieves the size. */
-	inline int GetSize() const{return pSize;}
+	inline int GetSize() const{ return pSize; }
 	/** Retrieves the used index size. */
-	inline int GetIndexUsedSize() const{return pIndexUsedSize;}
+	inline int GetIndexUsedSize() const{ return pIndexUsedSize; }
 	/** Retrieves the index size. */
-	inline int GetIndexSize() const{return pIndexSize;}
+	inline int GetIndexSize() const{ return pIndexSize; }
 	/** Updates the used sizes. */
 	void UpdateUsedSizes();
 	/** Marks the VBO dirty. */
 	void MarkDirty();
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{return pMemUseVBO;}
-	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{return pMemUseIBO;}
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{ return pMemUseVBO; }
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{ return pMemUseIBO; }
 	/*@}*/
 	
 	/** \name Data Management */

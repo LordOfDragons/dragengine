@@ -99,7 +99,7 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 	}
 	
 	const decColor &colorize = node.GetColorize();
-	if(! colorize.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+	if(!colorize.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
 		pWriter.WriteOpeningTagStart("colorize");
 		pWriter.WriteAttributeFloat("r", colorize.r);
 		pWriter.WriteAttributeFloat("g", colorize.g);

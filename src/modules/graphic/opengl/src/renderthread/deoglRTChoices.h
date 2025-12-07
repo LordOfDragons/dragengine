@@ -89,62 +89,62 @@ public:
 	 * 
 	 * Requires gl*BaseVertex to be usable and rendering does not required pre-shifted points.
 	 */
-	inline bool GetSharedVBOUseBaseVertex() const{return pSharedVBOUseBaseVertex;}
+	inline bool GetSharedVBOUseBaseVertex() const{ return pSharedVBOUseBaseVertex; }
 	
 	/** Use SSBO for rendering. */
-	inline bool GetUseSSBORender() const{return pUseSSBORender;}
+	inline bool GetUseSSBORender() const{ return pUseSSBORender; }
 	
 	/**
 	 * Use SSBO for shared SPB.
 	 * 
 	 * Requires SSBO to be supported by hardware.
 	 */
-	inline bool GetSharedSPBUseSSBO() const{return pSharedSPBUseSSBO;}
+	inline bool GetSharedSPBUseSSBO() const{ return pSharedSPBUseSSBO; }
 	
 	/** Use global shared SPB lists. */
-	inline bool GetGlobalSharedSPBLists() const{return pGlobalSharedSPBLists;}
+	inline bool GetGlobalSharedSPBLists() const{ return pGlobalSharedSPBLists; }
 	
 	/** Render real transparent particles. */
-	inline bool GetRealTransparentParticles() const{return pRealTransparentParticles;}
+	inline bool GetRealTransparentParticles() const{ return pRealTransparentParticles; }
 	
 	/** Transform component vertices on the GPU. */
-	inline eGPUTransformVertices GetGPUTransformVertices() const{return pGPUTransformVertices;}
+	inline eGPUTransformVertices GetGPUTransformVertices() const{ return pGPUTransformVertices; }
 	
 	/** GI move probes using ray cache instead of all rays. */
-	inline bool GetGIMoveUsingCache() const{return pGIMoveUsingCache;}
+	inline bool GetGIMoveUsingCache() const{ return pGIMoveUsingCache; }
 	
 	/** Use render stereo rendering for VR. */
-	inline bool GetVRRenderStereo() const{return pVRRenderStereo;}
+	inline bool GetVRRenderStereo() const{ return pVRRenderStereo; }
 	
 	/** Use layer in vertex shaders for stereo rendering. */
-	inline bool GetRenderStereoVSLayer() const{return pRenderStereoVSLayer;}
+	inline bool GetRenderStereoVSLayer() const{ return pRenderStereoVSLayer; }
 	
 	/** Use layer in vertex shaders for fullscreen quad stereo rendering. */
-	inline bool GetRenderFSQuadStereoVSLayer() const{return pRenderFSQuadStereoVSLayer;}
+	inline bool GetRenderFSQuadStereoVSLayer() const{ return pRenderFSQuadStereoVSLayer; }
 	
 	/** Use inverse depth. */
-	inline bool GetUseInverseDepth() const{return pUseInverseDepth;}
+	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
 	
 	/** Regular depth compare function. */
-	inline GLenum GetDepthCompareFuncRegular() const{return pDepthCompareFuncRegular;}
+	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
 	
 	/** Reversed depth compare function. */
-	inline GLenum GetDepthCompareFuncReversed() const{return pDepthCompareFuncReversed;}
+	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
 	
 	/** Regular clear depth value. */
-	inline GLfloat GetClearDepthValueRegular() const{return pClearDepthValueRegular;}
+	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
 	
 	/** Reversed clear depth value. */
-	inline GLfloat GetClearDepthValueReversed() const{return pClearDepthValueReversed;}
+	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
 	
 	/** Use compute shader render task. */
-	inline bool GetUseComputeRenderTask() const{return pUseComputeRenderTask;}
+	inline bool GetUseComputeRenderTask() const{ return pUseComputeRenderTask; }
 	
 	/** Use direct state access. */
-	inline bool GetUseDirectStateAccess() const{return pUseDirectStateAccess;}
+	inline bool GetUseDirectStateAccess() const{ return pUseDirectStateAccess; }
 	
 	/** Render doc debug flags. */
-	inline int GetRenderDocDebugFlags() const{return pRenderDocDebugFlags;}
+	inline int GetRenderDocDebugFlags() const{ return pRenderDocDebugFlags; }
 	/*@}*/
 };
 

@@ -146,7 +146,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsNetworkStateValueFormat); // format
 }
 void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW_INFO(dueNullPointer, "type");
 	}
 	
@@ -165,7 +165,7 @@ void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself
 	case deNetworkValueVisitorIdentify::envtVector2:
 	case deNetworkValueVisitorIdentify::envtVector3:
 	case deNetworkValueVisitorIdentify::envtQuaternion:{
-		if(! rt->GetValue(1)->GetRealObject()){
+		if(!rt->GetValue(1)->GetRealObject()){
 			DSTHROW_INFO(dueNullPointer, "type");
 		}
 		
@@ -283,7 +283,7 @@ void deClassNetworkState::nfGetValueIntAt::RunFunction(dsRunTime *rt, dsValue *m
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsInteger()){
+	if(!identify.IsInteger()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -302,7 +302,7 @@ void deClassNetworkState::nfGetValueFloatAt::RunFunction(dsRunTime *rt, dsValue 
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsFloat()){
+	if(!identify.IsFloat()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -321,7 +321,7 @@ void deClassNetworkState::nfGetValueStringAt::RunFunction(dsRunTime *rt, dsValue
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsString()){
+	if(!identify.IsString()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -341,7 +341,7 @@ void deClassNetworkState::nfGetValuePoint2At::RunFunction(dsRunTime *rt, dsValue
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsPoint2()){
+	if(!identify.IsPoint2()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -361,7 +361,7 @@ void deClassNetworkState::nfGetValuePoint3At::RunFunction(dsRunTime *rt, dsValue
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsPoint3()){
+	if(!identify.IsPoint3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -381,7 +381,7 @@ void deClassNetworkState::nfGetValueVector2At::RunFunction(dsRunTime *rt, dsValu
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector2()){
+	if(!identify.IsVector2()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -401,7 +401,7 @@ void deClassNetworkState::nfGetValueVector3At::RunFunction(dsRunTime *rt, dsValu
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector3()){
+	if(!identify.IsVector3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -421,7 +421,7 @@ void deClassNetworkState::nfGetValueDVector3At::RunFunction(dsRunTime *rt, dsVal
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector3()){
+	if(!identify.IsVector3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -441,7 +441,7 @@ void deClassNetworkState::nfGetValueQuaternionAt::RunFunction(dsRunTime *rt, dsV
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsQuaternion()){
+	if(!identify.IsQuaternion()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -461,7 +461,7 @@ void deClassNetworkState::nfSetValueIntAt::RunFunction(dsRunTime *rt, dsValue *m
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsInteger()){
+	if(!identify.IsInteger()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -482,7 +482,7 @@ void deClassNetworkState::nfSetValueFloatAt::RunFunction(dsRunTime *rt, dsValue 
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsFloat()){
+	if(!identify.IsFloat()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -503,7 +503,7 @@ void deClassNetworkState::nfSetValueStringAt::RunFunction(dsRunTime *rt, dsValue
 	deNetworkValueVisitorIdentify identify;
 	
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsString()){
+	if(!identify.IsString()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -526,7 +526,7 @@ void deClassNetworkState::nfSetValuePoint2At::RunFunction(dsRunTime *rt, dsValue
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsPoint2()){
+	if(!identify.IsPoint2()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -549,7 +549,7 @@ void deClassNetworkState::nfSetValuePoint3At::RunFunction(dsRunTime *rt, dsValue
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsPoint3()){
+	if(!identify.IsPoint3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -572,7 +572,7 @@ void deClassNetworkState::nfSetValueVector2At::RunFunction(dsRunTime *rt, dsValu
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector2()){
+	if(!identify.IsVector2()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -595,7 +595,7 @@ void deClassNetworkState::nfSetValueVector3At::RunFunction(dsRunTime *rt, dsValu
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector3()){
+	if(!identify.IsVector3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -618,7 +618,7 @@ void deClassNetworkState::nfSetValueDVector3At::RunFunction(dsRunTime *rt, dsVal
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsVector3()){
+	if(!identify.IsVector3()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -641,7 +641,7 @@ void deClassNetworkState::nfSetValueQuaternionAt::RunFunction(dsRunTime *rt, dsV
 	
 	deNetworkValueVisitorIdentify identify;
 	state.GetValueAt(index)->Visit(identify);
-	if(! identify.IsQuaternion()){
+	if(!identify.IsQuaternion()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -726,7 +726,7 @@ void deClassNetworkState::nfGetValueDataAt::RunFunction(dsRunTime *rt, dsValue *
 	deNetworkValueVisitorIdentify identify;
 	
 	decMemoryFile * const file = ds.GetClassMemoryFile()->GetMemoryFile(rt->GetValue(1)->GetRealObject());
-	if(! file){
+	if(!file){
 		DSTHROW_INFO(dueNullPointer, "data");
 	}
 	
@@ -759,7 +759,7 @@ void deClassNetworkState::nfSetValueDataAt::RunFunction(dsRunTime *rt, dsValue *
 	deNetworkValueVisitorIdentify identify;
 	
 	const decMemoryFile * const file = ds.GetClassMemoryFile()->GetMemoryFile(rt->GetValue(1)->GetRealObject());
-	if(! file){
+	if(!file){
 		DSTHROW_INFO(dueNullPointer, "data");
 	}
 	
@@ -843,7 +843,7 @@ void deClassNetworkState::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassNetworkState * const clsNS = (deClassNetworkState*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsNS)){
+	if(!p_IsObjOfType(obj, clsNS)){
 		rt->PushBool(false);
 		
 	}else{
@@ -944,7 +944,7 @@ void deClassNetworkState::CreateClassMembers(dsEngine *engine){
 }
 
 deNetworkState *deClassNetworkState::GetNetworkState(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -952,11 +952,11 @@ deNetworkState *deClassNetworkState::GetNetworkState(dsRealObject *myself) const
 }
 
 void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! state){
+	if(!state){
 		rt->PushObject(NULL, this);
 		return;
 	}

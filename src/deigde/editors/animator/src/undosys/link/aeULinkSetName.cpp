@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
-	if(! link || ! newName) DETHROW(deeInvalidParam);
+	if(!link || !newName) DETHROW(deeInvalidParam);
 	
 	pLink = NULL;
 	

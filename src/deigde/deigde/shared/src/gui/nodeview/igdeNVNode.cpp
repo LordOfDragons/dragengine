@@ -159,7 +159,7 @@ void igdeNVNode::SetPosition(const decPoint &position){
 }
 
 decPoint igdeNVNode::GetSize() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -201,7 +201,7 @@ bool igdeNVNode::HasSlot(igdeNVSlot *slot) const{
 }
 
 void igdeNVNode::AddSlot(igdeNVSlot *slot){
-	if(! slot || HasSlot(slot)){
+	if(!slot || HasSlot(slot)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -212,7 +212,7 @@ void igdeNVNode::AddSlot(igdeNVSlot *slot){
 }
 
 void igdeNVNode::RemoveSlot(igdeNVSlot *slot){
-	if(! slot || ! HasSlot(slot)){
+	if(!slot || !HasSlot(slot)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -239,7 +239,7 @@ void igdeNVNode::RemoveAllSlots(){
 }
 
 void igdeNVNode::ShowContextMenu(const decPoint &position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -260,7 +260,7 @@ void igdeNVNode::ShowContextMenu(const decPoint &position){
 
 
 void igdeNVNode::AddListener(igdeNVNodeListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -337,7 +337,7 @@ void igdeNVNode::CreateNativeWidget(){
 }
 
 void igdeNVNode::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

@@ -131,7 +131,7 @@ spTypeCanvas::~spTypeCanvas(){
 ///////////////
 
 deCanvas *spTypeCanvas::CanvasFromObject(PyObject *object){
-	if(! object){
+	if(!object){
 		return NULL;
 	}
 	
@@ -139,7 +139,7 @@ deCanvas *spTypeCanvas::CanvasFromObject(PyObject *object){
 }
 
 PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas *canvas){
-	if(! canvas){
+	if(!canvas){
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
@@ -168,7 +168,7 @@ void spTypeCanvas::Constructor(PyObject *myself, PyObject *args, PyObject *kwds)
 	od.canvas = NULL;
 	
 	int type;
-	if(! PyArg_ParseTuple(args, "i", &type)){
+	if(!PyArg_ParseTuple(args, "i", &type)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -240,7 +240,7 @@ PyObject *spTypeCanvas::cfSetPosition(PyObject *myself, PyObject *args){
 	deCanvas &canvas = *(((sObjectData*)GetObjectData(myself))->canvas);
 	
 	decPoint position;
-	if(! PyArg_ParseTuple(args, "ii", &position.x, &position.y)){
+	if(!PyArg_ParseTuple(args, "ii", &position.x, &position.y)){
 		return NULL;
 	}
 	
@@ -261,7 +261,7 @@ PyObject *spTypeCanvas::cfSetSize(PyObject *myself, PyObject *args){
 	deCanvas &canvas = *(((sObjectData*)GetObjectData(myself))->canvas);
 	
 	decPoint size;
-	if(! PyArg_ParseTuple(args, "ii", &size.x, &size.y)){
+	if(!PyArg_ParseTuple(args, "ii", &size.x, &size.y)){
 		return NULL;
 	}
 	
@@ -295,7 +295,7 @@ PyObject *spTypeCanvas::cfGetVisible(PyObject *myself){
 PyObject *spTypeCanvas::cfSetVisible(PyObject *myself, PyObject *args){
 	deCanvas &canvas = *(((sObjectData*)GetObjectData(myself))->canvas);
 	bool visible;
-	if(! PyArg_ParseTuple(args, "b", &visible)){
+	if(!PyArg_ParseTuple(args, "b", &visible)){
 		return NULL;
 	}
 	
@@ -315,7 +315,7 @@ PyObject *spTypeCanvas::cfGetOrder(PyObject *myself){
 PyObject *spTypeCanvas::cfSetOrder(PyObject *myself, PyObject *args){
 	deCanvas &canvas = *(((sObjectData*)GetObjectData(myself))->canvas);
 	float order;
-	if(! PyArg_ParseTuple(args, "f", &order)){
+	if(!PyArg_ParseTuple(args, "f", &order)){
 		return NULL;
 	}
 	
@@ -335,7 +335,7 @@ PyObject *spTypeCanvas::cfGetTransparency(PyObject *myself){
 PyObject *spTypeCanvas::cfSetTransparency(PyObject *myself, PyObject *args){
 	deCanvas &canvas = *(((sObjectData*)GetObjectData(myself))->canvas);
 	float transparency;
-	if(! PyArg_ParseTuple(args, "f", &transparency)){
+	if(!PyArg_ParseTuple(args, "f", &transparency)){
 		return NULL;
 	}
 	
@@ -416,7 +416,7 @@ PyObject *spTypeCanvas::cfSetShapeType(PyObject *myself, PyObject *args){
 		deCanvasPaint &canvasPaint = *((deCanvasPaint*)od.canvas);
 		
 		int shapeType;
-		if(! PyArg_ParseTuple(args, "i", &shapeType)){
+		if(!PyArg_ParseTuple(args, "i", &shapeType)){
 			return NULL;
 		}
 		
@@ -458,7 +458,7 @@ PyObject *spTypeCanvas::cfSetLineColor(PyObject *myself, PyObject *args){
 		deCanvasPaint &canvasPaint = *((deCanvasPaint*)od.canvas);
 		
 		decColor color;
-		if(! PyArg_ParseTuple(args, "ffff", &color.r, &color.g, &color.b, &color.a)){
+		if(!PyArg_ParseTuple(args, "ffff", &color.r, &color.g, &color.b, &color.a)){
 			return NULL;
 		}
 		
@@ -500,7 +500,7 @@ PyObject *spTypeCanvas::cfSetFillColor(PyObject *myself, PyObject *args){
 		deCanvasPaint &canvasPaint = *((deCanvasPaint*)od.canvas);
 		
 		decColor color;
-		if(! PyArg_ParseTuple(args, "ffff", &color.r, &color.g, &color.b, &color.a)){
+		if(!PyArg_ParseTuple(args, "ffff", &color.r, &color.g, &color.b, &color.a)){
 			return NULL;
 		}
 		
@@ -541,7 +541,7 @@ PyObject *spTypeCanvas::cfSetThickness(PyObject *myself, PyObject *args){
 		deCanvasPaint &canvasPaint = *((deCanvasPaint*)od.canvas);
 		
 		float thickness;
-		if(! PyArg_ParseTuple(args, "f", &thickness)){
+		if(!PyArg_ParseTuple(args, "f", &thickness)){
 			return NULL;
 		}
 		
@@ -708,12 +708,12 @@ PyObject *spTypeCanvas::cfAddCanvas(PyObject *myself, PyObject *args){
 		deCanvasView &canvasView = *((deCanvasView*)od.canvas);
 		
 		PyObject *pyoCanvas = NULL;
-		if(! PyArg_ParseTuple(args, "O", &pyoCanvas)){
+		if(!PyArg_ParseTuple(args, "O", &pyoCanvas)){
 			return NULL;
 		}
 		
 		deCanvas * const canvas = clsCanvas.CanvasFromObject(pyoCanvas);
-		if(! canvas){
+		if(!canvas){
 			PyErr_BadArgument();
 			return NULL;
 		}
@@ -740,12 +740,12 @@ PyObject *spTypeCanvas::cfRemoveCanvas(PyObject *myself, PyObject *args){
 		deCanvasView &canvasView = *((deCanvasView*)od.canvas);
 		
 		PyObject *pyoCanvas = NULL;
-		if(! PyArg_ParseTuple(args, "O", &pyoCanvas)){
+		if(!PyArg_ParseTuple(args, "O", &pyoCanvas)){
 			return NULL;
 		}
 		
 		deCanvas * const canvas = clsCanvas.CanvasFromObject(pyoCanvas);
-		if(! canvas){
+		if(!canvas){
 			PyErr_BadArgument();
 			return NULL;
 		}

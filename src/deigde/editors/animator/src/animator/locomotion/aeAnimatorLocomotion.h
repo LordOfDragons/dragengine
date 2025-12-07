@@ -275,20 +275,20 @@ public:
 	void Reset();
 	
 	/** Retrieves the animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	/** Retrieves the logger. */
 	deLogger *GetLogger() const;
 	
 	/** Retrieves the debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
+	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	/** Retrieves the collider to use for locomotion. */
-	inline deColliderVolume *GetCollider() const{return pCollider;}
+	inline deColliderVolume *GetCollider() const{ return pCollider; }
 	/** Retrieves the position of the collider relative to the actor. */
-	inline const decVector &GetColliderPosition() const{return pColliderPosition;}
+	inline const decVector &GetColliderPosition() const{ return pColliderPosition; }
 	/** Sets the position of the collider relative to the actor. */
 	void SetColliderPosition(const decVector &position);
 	/** Retrieves the radius of the collider. */
-	inline float GetColliderRadius() const{return pColliderRadius;}
+	inline float GetColliderRadius() const{ return pColliderRadius; }
 	/** Sets the radius of the collider. */
 	void SetColliderRadius(float radius);
 	/** Updates the collider. */
@@ -304,45 +304,45 @@ public:
 	void SetShowShapes(bool showShapes);
 	
 	/** Retrieves the touch sensor. */
-	inline deTouchSensor *GetTouchSensor() const{return pTouchSensor;}
+	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
 	/** Retrieves the collider used for touch ground rules. */
-	inline deColliderVolume *GetTGCollider() const{return pTGCollider;}
+	inline deColliderVolume *GetTGCollider() const{ return pTGCollider; }
 	
 	/** Locomotion type. */
-	inline eLocomotionTypes GetLocomotionType() const{return pLocomotionType;}
+	inline eLocomotionTypes GetLocomotionType() const{ return pLocomotionType; }
 	/** Set locomotion type. */
 	void SetLocomotionType(eLocomotionTypes type);
 	
 	/** Retrieves the number of legs. */
-	inline int GetLegCount() const{return pLegCount;}
+	inline int GetLegCount() const{ return pLegCount; }
 	/** Retrieves a leg by index. */
 	aeAnimatorLocomotionLeg *GetLegAt(int index) const;
 	/** Retrieves the number of leg pairs to use. */
-	inline int GetUseLegPairCount() const{return pUseLegPairCount;}
+	inline int GetUseLegPairCount() const{ return pUseLegPairCount; }
 	/** Sets the number of leg pairs to use. */
 	void SetUseLegPairCount(int pairCount);
 	/** Retrieves the leg blend time in seconds. */
-	inline float GetLegBlendTime() const{return pLegBlendTime;}
+	inline float GetLegBlendTime() const{ return pLegBlendTime; }
 	/** Sets the leg blend time in seconds. */
 	void SetLegBlendTime(float time);
 	
 	
 	
 	/** Look down limit in degrees. */
-	inline float GetLimitLookDown() const{return pLimitLookDown;}
+	inline float GetLimitLookDown() const{ return pLimitLookDown; }
 	
 	/** Set look down limit in degrees. */
 	void SetLimitLookDown(float degrees);
 	
 	/** Look up limit in degrees. */
-	inline float GetLimitLookUp() const{return pLimitLookUp;}
+	inline float GetLimitLookUp() const{ return pLimitLookUp; }
 	
 	/** Set look up limit in degrees. */
 	void SetLimitLookUp(float degrees);
 	
 	/** Look up down angle in degrees. */
-	inline decSmoothFloat &GetLookUpDown(){return pLookUpDown;}
-	inline const decSmoothFloat &GetLookUpDown() const{return pLookUpDown;}
+	inline decSmoothFloat &GetLookUpDown(){ return pLookUpDown; }
+	inline const decSmoothFloat &GetLookUpDown() const{ return pLookUpDown; }
 	
 	/** Set look up down angle in degrees clamped to range. */
 	void SetLookUpDown(float degrees);
@@ -353,25 +353,25 @@ public:
 	
 	
 	/** Look left limit in degrees. */
-	inline float GetLimitLookLeft() const{return pLimitLookLeft;}
+	inline float GetLimitLookLeft() const{ return pLimitLookLeft; }
 	
 	/** Set look left limit in degrees. */
 	void SetLimitLookRight(float degrees);
 	
 	/** Look right limit in degrees. */
-	inline float GetLimitLookRight() const{return pLimitLookRight;}
+	inline float GetLimitLookRight() const{ return pLimitLookRight; }
 	
 	/** Set look right limit in degrees. */
 	void SetLimitLookLeft(float degrees);
 	
 	/** Look right angle in degrees. */
-	inline decSmoothFloat &GetLookLeftRight(){return pLookLeftRight;}
-	inline const decSmoothFloat &GetLookLeftRight() const{return pLookLeftRight;}
+	inline decSmoothFloat &GetLookLeftRight(){ return pLookLeftRight; }
+	inline const decSmoothFloat &GetLookLeftRight() const{ return pLookLeftRight; }
 	
 	
 	
 	/** Adjustment speed for turning in place. */
-	inline float GetAdjustTimeTurnIP() const{return pAdjustTimeTurnIP;}
+	inline float GetAdjustTimeTurnIP() const{ return pAdjustTimeTurnIP; }
 	
 	/** Set adjustment speed for turning in place. */
 	void SetAdjustTimeTurnIP(float adjustTime);
@@ -379,66 +379,66 @@ public:
 	
 	
 	/** Retrieves the walk speed. */
-	inline float GetWalkSpeed() const{return pSpeedWalk;}
+	inline float GetWalkSpeed() const{ return pSpeedWalk; }
 	/** Sets the walk speed. */
 	void SetWalkSpeed(float speed);
 	/** Retrieves the run speed. */
-	inline float GetRunSpeed() const{return pSpeedRun;}
+	inline float GetRunSpeed() const{ return pSpeedRun; }
 	/** Sets the run speed. */
 	void SetRunSpeed(float speed);
 	
 	/** Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decDVector &position);
 	/** Retrieves the view vector. */
-	inline const decVector &GetView() const{return pView;}
+	inline const decVector &GetView() const{ return pView; }
 	/** Retrieves the orientation quaternion. */
-	inline const decQuaternion &GetOrientationQuaternion() const{return pOrientQuat;}
+	inline const decQuaternion &GetOrientationQuaternion() const{ return pOrientQuat; }
 	
 	/** Orientation angle in degrees. */
-	inline decSmoothFloat &GetOrientation(){return pOrientation;}
-	inline const decSmoothFloat &GetOrientation() const{return pOrientation;}
+	inline decSmoothFloat &GetOrientation(){ return pOrientation; }
+	inline const decSmoothFloat &GetOrientation() const{ return pOrientation; }
 	
 	/** Set orientation in degrees. */
 	void SetOrientation(float orientation);
 	
 	/** Retrieves the tilt offset in meters. */
-	inline float GetTiltOffset() const{return pTiltOffset;}
+	inline float GetTiltOffset() const{ return pTiltOffset; }
 	/** Sets the tilt offset in meters. */
 	void SetTiltOffset(float offset);
 	/** Retrieves the up-down tilt in degrees. */
-	inline float GetTiltUpDown() const{return pTiltUpDown;}
+	inline float GetTiltUpDown() const{ return pTiltUpDown; }
 	/** Sets the up-down tilt in degrees. */
 	void SetTiltUpDown(float tilt);
 	/** Retrieves the left-right tilt in degrees. */
-	inline float GetTiltLeftRight() const{return pTiltLeftRight;}
+	inline float GetTiltLeftRight() const{ return pTiltLeftRight; }
 	/** Sets the left-right tilt in degrees. */
 	void SetTiltLeftRight(float tilt);
 	
 	/** Linear velocity. */
-	inline decSmoothVector &GetLinearVelocity(){return pLinearVelocity;}
-	inline const decSmoothVector &GetLinearVelocity() const{return pLinearVelocity;}
+	inline decSmoothVector &GetLinearVelocity(){ return pLinearVelocity; }
+	inline const decSmoothVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	/** Angular velocity. */
-	inline const decVector &GetAngularVelocity() const{return pAngularVelocity;}
+	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** Set linearvelocity. */
 	void SetAngularVelocity(const decVector &velocity);
 	
 	/** Retrieves the turning velocity. */
-	inline float GetTurnVelocity() const{return pTurnVelocity;}
+	inline float GetTurnVelocity() const{ return pTurnVelocity; }
 	/** Sets the turning velocity. */
 	void SetTurnVelocity(float velocity);
 	
 	/** Velocity orientation around world Y axis. */
-	inline float GetVelocityOrientation() const{return pVelocityOrientation;}
+	inline float GetVelocityOrientation() const{ return pVelocityOrientation; }
 	
 	/** Set velocity orientation around world Y axis. */
 	void SetVelocityOrientation(float orientation);
 	
 	/** Moving speed in meter per seconds. */
-	inline float GetMovingSpeed() const{return pMovingSpeed;}
+	inline float GetMovingSpeed() const{ return pMovingSpeed; }
 	
 	/** Set moving speed in meter per seconds. */
 	void SetMovingSpeed(float speed);
@@ -448,7 +448,7 @@ public:
 	 * 
 	 * Moving backwards returns negative speed.
 	 */
-	inline float GetRelativeMovingSpeed() const{return pRelativeMovingSpeed;}
+	inline float GetRelativeMovingSpeed() const{ return pRelativeMovingSpeed; }
 	
 	/**
 	 * Set relative moving speed in meter per seconds.
@@ -458,43 +458,43 @@ public:
 	void SetRelativeMovingSpeed(float speed);
 	
 	/** Retrieves the moving direction in degrees relative to the view direction. */
-	inline float GetMovingDirection() const{return pMovingDirection;}
+	inline float GetMovingDirection() const{ return pMovingDirection; }
 	/** Sets the moving direction in degrees relative to the view direction. */
 	void SetMovingDirection(float movingDirection);
 	
 	/** Stance ranging from 0 for uprect to 1 crouching. */
-	inline decSmoothFloat &GetStance(){return pStance;}
-	inline const decSmoothFloat &GetStance() const{return pStance;}
+	inline decSmoothFloat &GetStance(){ return pStance; }
+	inline const decSmoothFloat &GetStance() const{ return pStance; }
 	
 	/** Determines if the forward key is pressed. */
-	inline bool GetKeyForward() const{return pKeyForward;}
+	inline bool GetKeyForward() const{ return pKeyForward; }
 	/** Sets if the forward key is pressed. */
 	void SetKeyForward(bool pressed);
 	/** Determines if the backward key is pressed. */
-	inline bool GetKeyBackward() const{return pKeyBackward;}
+	inline bool GetKeyBackward() const{ return pKeyBackward; }
 	/** Sets if the backward key is pressed. */
 	void SetKeyBackward(bool pressed);
 	/** Determines if the step left key is pressed. */
-	inline bool GetKeyStepLeft() const{return pKeyStepLeft;}
+	inline bool GetKeyStepLeft() const{ return pKeyStepLeft; }
 	/** Sets if the step left key is pressed. */
 	void SetKeyStepLeft(bool pressed);
 	/** Determines if the step right key is pressed. */
-	inline bool GetKeyStepRight() const{return pKeyStepRight;}
+	inline bool GetKeyStepRight() const{ return pKeyStepRight; }
 	/** Sets if the step right key is pressed. */
 	void SetKeyStepRight(bool pressed);
 	
 	/** Key input direction. */
-	inline float GetKeyInputDirection() const{return pKeyInputDirection;}
+	inline float GetKeyInputDirection() const{ return pKeyInputDirection; }
 	
 	/** Set key input direction. */
 	void SetKeyInputDirection(float direction);
 	
 	/** Determines if the crouching is switched on. */
-	inline bool GetToggleCrouch() const{return pToggleCrouch;}
+	inline bool GetToggleCrouch() const{ return pToggleCrouch; }
 	/** Sets if the crouching is switched on. */
 	void SetToggleCrouch(bool toggled);
 	/** Determines if running is switched on. */
-	inline bool GetToggleRun() const{return pToggleRun;}
+	inline bool GetToggleRun() const{ return pToggleRun; }
 	/** Sets if running is switched on. */
 	void SetToggleRun(bool toggled);
 	
@@ -514,11 +514,11 @@ public:
 	void OnColliderChanged();
 	
 	/** Determines if the locomotion testing is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	/** Sets if the locomotion testing is enabled. */
 	void SetEnabled(bool enabled);
 	/** Determines if the feet-on-ground IK is used. */
-	inline bool GetUseFoGIK() const{return pUseFoGIK;}
+	inline bool GetUseFoGIK() const{ return pUseFoGIK; }
 	/** Sets if the feet-on-ground IK is used. */
 	void SetUseFoGIK(bool use);
 	/*@}*/

@@ -218,10 +218,10 @@ uint32_t deoxrInstance::LayerVersion(eLayer layer) const{
 }
 
 void deoxrInstance::SuggestBindings(const deoxrPath &profile, const sSuggestBinding *bindings, int count){
-	if(! profile){
+	if(!profile){
 		DETHROW_INFO(deeNullPointer, "profile");
 	}
-	if(! bindings){
+	if(!bindings){
 		DETHROW_INFO(deeNullPointer, "bindings");
 	}
 	if(count < 1){
@@ -330,7 +330,7 @@ void deoxrInstance::pDetectExtensions(){
 		// report support extensions
 		pOxr.LogInfo("Not upported Extensions:");
 		for(i=0; i<ExtensionCount; i++){
-			if(! pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
+			if(!pSupportsExtension[i].version && pSupportsExtension[i].enableIfSupported){
 				pOxr.LogInfoFormat("- %s", pSupportsExtension[i].name);
 			}
 		}
@@ -438,7 +438,7 @@ void deoxrInstance::pDetectLayers(){
 		
 		pOxr.LogInfo("Not Supported Layers:");
 		for(i=0; i<LayerCount; i++){
-			if(! pSupportsLayer[i].layerVersion){
+			if(!pSupportsLayer[i].layerVersion){
 				pOxr.LogInfoFormat("- %s", pSupportsLayer[i].name);
 			}
 		}

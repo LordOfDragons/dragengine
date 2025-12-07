@@ -113,10 +113,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Window properties. */
-	inline peeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline peeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{return pEmitter;}
+	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);
@@ -163,9 +163,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction* GetActionTypeAdd() const{return pActionTypeAdd;}
-	inline igdeAction* GetActionTypeRemove() const{return pActionTypeRemove;}
-	inline igdeAction* GetActionTypeRename() const{return pActionTypeRename;}
+	inline igdeAction* GetActionTypeAdd() const{ return pActionTypeAdd; }
+	inline igdeAction* GetActionTypeRemove() const{ return pActionTypeRemove; }
+	inline igdeAction* GetActionTypeRename() const{ return pActionTypeRename; }
 	/*@}*/
 };
 

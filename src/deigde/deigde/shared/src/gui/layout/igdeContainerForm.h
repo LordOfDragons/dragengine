@@ -90,13 +90,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Stretching. */
-	inline eStretching GetStretching() const{return pStretching;}
+	inline eStretching GetStretching() const{ return pStretching; }
 	
 	/** \brief Spacing between columns in pixels. */
-	inline int GetColumnSpacing() const{return pColumnSpacing;}
+	inline int GetColumnSpacing() const{ return pColumnSpacing; }
 	
 	/** \brief Spacing between rows in pixels. */
-	inline int GetRowSpacing() const{return pRowSpacing;}
+	inline int GetRowSpacing() const{ return pRowSpacing; }
 	
 	
 	

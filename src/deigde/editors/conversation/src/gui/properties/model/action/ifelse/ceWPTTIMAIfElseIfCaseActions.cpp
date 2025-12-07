@@ -74,7 +74,7 @@ ceWPTTIMAIfElseIfCaseActions::~ceWPTTIMAIfElseIfCaseActions(){
 
 ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElseIfCaseActions::GetModelIfCase() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -99,17 +99,17 @@ ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCaseActions::GetModelIfElse() const{
 
 
 void ceWPTTIMAIfElseIfCaseActions::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAIfElseIfCase * const modelIfCase = GetModelIfCase();
-	if(! modelIfCase){
+	if(!modelIfCase){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = modelIfCase->GetModelIfElse();
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	
@@ -117,7 +117,7 @@ void ceWPTTIMAIfElseIfCaseActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -151,17 +151,17 @@ void ceWPTTIMAIfElseIfCaseActions::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAIfElseIfCase * const modelIfCase = GetModelIfCase();
-	if(! modelIfCase){
+	if(!modelIfCase){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = modelIfCase->GetModelIfElse();
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	
@@ -169,7 +169,7 @@ void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction(igdeMenuCascade &contextMen
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

@@ -58,7 +58,7 @@
 ////////////////////////////
 
 aeSubAnimator::aeSubAnimator(deEngine *engine){
-	if(! engine) DETHROW(deeInvalidParam);
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
@@ -87,7 +87,7 @@ aeSubAnimator::~aeSubAnimator(){
 ///////////////
 
 void aeSubAnimator::SetPathAnimator(const char *path){
-	if(! path) DETHROW(deeInvalidParam);
+	if(!path) DETHROW(deeInvalidParam);
 	
 	pPathAnimator = path;
 }
@@ -269,7 +269,7 @@ const char *solverBone, int linkBlendFactor){
 	
 	try{
 		engRule = new deAnimatorRuleInverseKinematic;
-		if(! engRule) DETHROW(deeOutOfMemory);
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		engRule->SetLocalPosition(localPosition);
 		engRule->SetLocalOrientation(decMatrix::CreateRotation(localOrientation * DEG2RAD).ToQuaternion());

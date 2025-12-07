@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the music to use. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name of the music to use. */
 	void SetName(const char *name);
 	

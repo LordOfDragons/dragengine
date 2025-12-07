@@ -373,7 +373,7 @@ void deoalComponent::pCleanUp(){
 
 
 void deoalComponent::pDropTextures(){
-	if(! pTextures){
+	if(!pTextures){
 		return;
 	}
 	
@@ -388,7 +388,7 @@ void deoalComponent::pDropTextures(){
 
 void deoalComponent::pCreateTextures(){
 	const deModel * const model = pComponent.GetModel();
-	if(! model || model->GetTextureCount() == 0){
+	if(!model || model->GetTextureCount() == 0){
 		return;
 	}
 	
@@ -404,7 +404,7 @@ void deoalComponent::pCreateTextures(){
 
 
 void deoalComponent::pSyncModel(){
-	if(! pDirtyModel){
+	if(!pDirtyModel){
 		return;
 	}
 	
@@ -437,7 +437,7 @@ void deoalComponent::pSyncModel(){
 }
 
 void deoalComponent::pSyncSkin(){
-	if(! pDirtySkin){
+	if(!pDirtySkin){
 		return;
 	}
 	
@@ -480,7 +480,7 @@ void deoalComponent::pSyncDebug(){
 	// NOTE affects sound is updated during synchronization time and during audio thread time
 	
 	if(pOal.GetDevMode()->GetEnabled() && pOal.GetDevMode()->GetShowAudioModels()){
-		if(! pDebug){
+		if(!pDebug){
 			pDebug = new deoalComponentDebug(*this);
 		}
 		pDebug->Update();
@@ -493,7 +493,7 @@ void deoalComponent::pSyncDebug(){
 
 
 void deoalComponent::pRequiresSync(){
-	if(! pLLSyncWorld.GetList() && pParentWorld){
+	if(!pLLSyncWorld.GetList() && pParentWorld){
 		pParentWorld->AddSyncComponent(this);
 	}
 }

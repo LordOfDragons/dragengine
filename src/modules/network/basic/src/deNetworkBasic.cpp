@@ -260,7 +260,7 @@ DEBUG_PRINT_TIMER_TOTAL(*this, "Process Network");
 ////////////////////
 
 void deNetworkBasic::RegisterConnection(debnConnection *connection){
-	if(! connection || connection->GetIsRegistered()){
+	if(!connection || connection->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -278,7 +278,7 @@ void deNetworkBasic::RegisterConnection(debnConnection *connection){
 }
 
 void deNetworkBasic::UnregisterConnection(debnConnection *connection){
-	if(! connection || ! connection->GetIsRegistered()){
+	if(!connection || !connection->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -305,7 +305,7 @@ void deNetworkBasic::UnregisterConnection(debnConnection *connection){
 }
 
 void deNetworkBasic::RegisterServer(debnServer *server){
-	if(! server || server->GetIsRegistered()){
+	if(!server || server->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -323,7 +323,7 @@ void deNetworkBasic::RegisterServer(debnServer *server){
 }
 
 void deNetworkBasic::UnregisterServer(debnServer *server){
-	if(! server || ! server->GetIsRegistered()){
+	if(!server || !server->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -350,7 +350,7 @@ void deNetworkBasic::UnregisterServer(debnServer *server){
 }
 
 void deNetworkBasic::RegisterSocket(debnSocket *bnSocket){
-	if(! bnSocket || bnSocket->GetIsRegistered()){
+	if(!bnSocket || bnSocket->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -368,7 +368,7 @@ void deNetworkBasic::RegisterSocket(debnSocket *bnSocket){
 }
 
 void deNetworkBasic::UnregisterSocket(debnSocket *bnSocket){
-	if(! bnSocket || ! bnSocket->GetIsRegistered()){
+	if(!bnSocket || !bnSocket->GetIsRegistered()){
 		DETHROW(deeInvalidParam);
 	}
 	

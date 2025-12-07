@@ -80,25 +80,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Unique identifier. */
-	inline const decString &GetIdentifier() const{return pIdentifier;}
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set unique identifier. */
 	void SetIdentifier(const decString &identifier);
 	
 	/** \brief Name in native language. */
-	inline const decUnicodeString &GetName() const{return pName;}
+	inline const decUnicodeString &GetName() const{ return pName; }
 	
 	/** \brief Set name in native language. */
 	void SetName(const decUnicodeString &name);
 	
 	/** \brief Description in native language. */
-	inline const decUnicodeString &GetDescription() const{return pDescription;}
+	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description in native language. */
 	void SetDescription(const decUnicodeString &description);
 	
 	/** \brief Missing translation text in native language. */
-	inline const decUnicodeString &GetMissingText() const{return pMissingText;}
+	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
 	
 	/** \brief Set missing translation text in native language. */
 	void SetMissingText(const decUnicodeString &missingText);
@@ -106,7 +106,7 @@ public:
 	
 	
 	/** \brief Number of entries. */
-	inline int GetEntryCount() const{return pEntryCount;}
+	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/**
 	 * \brief Set number of entries.

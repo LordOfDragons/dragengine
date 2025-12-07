@@ -159,7 +159,7 @@ void igdeEditDirectory::SetDefaultDirectory(const char *path){
 }
 
 bool igdeEditDirectory::IsDirectoryValid() const{
-	return ! pText->GetInvalidValue();
+	return !pText->GetInvalidValue();
 }
 
 void igdeEditDirectory::ValidateDirectory(){
@@ -167,10 +167,10 @@ void igdeEditDirectory::ValidateDirectory(){
 	// what path to use. so for the time being only absolute path are verified
 	if(decPath::IsUnixPathAbsolute(pText->GetText())){
 		if(pUseGameVFS){
-			if(! pText->GetText().IsEmpty()){
+			if(!pText->GetText().IsEmpty()){
 				deVirtualFileSystem &vfs = *GetEnvironment().GetFileSystemGame();
 				const decPath path(decPath::CreatePathUnix(pText->GetText()));
-				pText->SetInvalidValue(! vfs.ExistsFile(path)
+				pText->SetInvalidValue(!vfs.ExistsFile(path)
 					|| vfs.GetFileType(path) != deVFSContainer::eftDirectory);
 			}
 			
@@ -193,7 +193,7 @@ void igdeEditDirectory::SetAutoValidateDirectory(bool autoValidateDirectory){
 
 
 void igdeEditDirectory::AddListener(igdeEditDirectoryListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);

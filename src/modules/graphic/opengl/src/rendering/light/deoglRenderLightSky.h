@@ -90,7 +90,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline const deoglPipeline *GetPipelineOccMesh() const{return pPipelineOccMesh;}
+	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
 	
 	/** Render lights. */
 	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
@@ -128,10 +128,10 @@ public:
 	
 	
 	/** Debug information solid lighting. */
-	inline deoglDebugInformation *GetDebugInfoSolid() const{return pDebugInfoSolid;}
+	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
 	/** Debug information transparent lighting. */
-	inline deoglDebugInformation *GetDebugInfoTransparent() const{return pDebugInfoTransparent;}
+	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	

@@ -40,7 +40,7 @@ pShape(shape),
 pPointNew(pointNew),
 pIndex(index)
 {
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	

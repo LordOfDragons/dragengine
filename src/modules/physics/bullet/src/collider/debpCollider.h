@@ -115,13 +115,13 @@ public:
 	
 	// physics management
 	/** Retrieves the type. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/** Determines if this is a collider volume. */
-	inline bool IsVolume() const{return pType == ectVolume;}
+	inline bool IsVolume() const{ return pType == ectVolume; }
 	/** Determines if this is a collider component. */
-	inline bool IsComponent() const{return pType == ectComponent;}
+	inline bool IsComponent() const{ return pType == ectComponent; }
 	/** Determines if this is a collider rigged. */
-	inline bool IsRigged() const{return pType == ectRig;}
+	inline bool IsRigged() const{ return pType == ectRig; }
 	/** Cast to collider volume. Throws an exception if this is not a collider volume. */
 	debpColliderVolume *CastToVolume() const;
 	/** Cast to collider component. Throws an exception if this is not a collider component. */
@@ -130,16 +130,16 @@ public:
 	debpColliderRig *CastToRigged() const;
 	
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{return pBullet;}
+	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
 	
-	inline deCollider &GetCollider() const{return pCollider;}
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
-	inline debpWorld *GetParentWorld() const{return pParentWorld;}
-	inline int GetIndex() const{return pIndex;}
+	inline deCollider &GetCollider() const{ return pCollider; }
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Requires update. */
-	inline bool GetRequiresUpdate() const{return pRequiresUpdate;}
+	inline bool GetRequiresUpdate() const{ return pRequiresUpdate; }
 	
 	/** Requires update. */
 	void RequiresUpdate();
@@ -147,7 +147,7 @@ public:
 	/** Clear requires update. */
 	void ClearRequiresUpdate();
 	
-	inline bool GetIsMoving() const{return pIsMoving;}
+	inline bool GetIsMoving() const{ return pIsMoving; }
 	void SetIsMoving(bool isMoving);
 	const decDMatrix &GetMatrix();
 	const decDMatrix &GetInverseMatrix();
@@ -196,15 +196,15 @@ public:
 	debpCollisionWorld *GetDynamicsWorld() const;
 	
 	/** Retrieves the marked flag. */
-	inline bool GetMarked() const{return pMarked;}
+	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
 	inline void SetMarked(bool marked){pMarked = marked;}
 	
-	inline bool GetTouchSensorMarked() const{return pTouchSensorMarked;}
+	inline bool GetTouchSensorMarked() const{ return pTouchSensorMarked; }
 	inline void SetTouchSensorMarked(bool marked){pTouchSensorMarked = marked;}
 	
 	/** Determines if this collider has to be simulated using kinematics. */
-	inline bool GetUseKinematicSimulation() const{return pUseKinematicSim;}
+	inline bool GetUseKinematicSimulation() const{ return pUseKinematicSim; }
 	/** Sets if this collider has to be simulated using kinematics. */
 	void SetUseKinematicSimulation(bool useKinematicSimulation);
 	
@@ -216,9 +216,9 @@ public:
 	/** Updates shapes using a transformation matrix. */
 	virtual void UpdateShapesWithMatrix(const decDMatrix &transformation);
 	/** Retrieves the minimum extend of the shapes. */
-	inline const decDVector &GetShapeMinimumExtend() const{return pShapeMinExtend;}
+	inline const decDVector &GetShapeMinimumExtend() const{ return pShapeMinExtend; }
 	/** Retrieves the maximum extend of the shapes. */
-	inline const decDVector &GetShapeMaximumExtend() const{return pShapeMaxExtend;}
+	inline const decDVector &GetShapeMaximumExtend() const{ return pShapeMaxExtend; }
 	/** Sets the extends of the shapes. */
 	void SetShapeExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
@@ -243,13 +243,13 @@ public:
 	void UnregisterColDetPrepare();
 	
 	/** Prepare collision detection index or -1 if not registered. */
-	inline int GetColDetPrepareIndex() const{return pColDetPrepareIndex;}
+	inline int GetColDetPrepareIndex() const{ return pColDetPrepareIndex; }
 	
 	/** Set prepare collision detection index or -1 if not registered. */
 	void SetColDetPrepareIndex(int index);
 	
 	/** Automatically re-registered for collision detection prepare. */
-	inline bool GetAutoColDetPrepare() const{return pAutoColDetPrepare;}
+	inline bool GetAutoColDetPrepare() const{ return pAutoColDetPrepare; }
 	
 	/** Set automatically re-registered for collision detection prepare. */
 	void SetAutoColDetPrepare(bool autoColDetPrepare);
@@ -266,13 +266,13 @@ public:
 	void UnregisterColDetFinish();
 	
 	/** Finish collision detection index or -1 if not registered. */
-	inline int GetColDetFinishIndex() const{return pColDetFinishIndex;}
+	inline int GetColDetFinishIndex() const{ return pColDetFinishIndex; }
 	
 	/** Set finish collision detection index or -1 if not registered. */
 	void SetColDetFinishIndex(int index);
 	
 	/** Automatically re-registered for collision detection finish. */
-	inline bool GetAutoColDetFinish() const{return pAutoColDetFinish;}
+	inline bool GetAutoColDetFinish() const{ return pAutoColDetFinish; }
 	
 	/** Set automatically re-registered for collision detection finish. */
 	void SetAutoColDetFinish(bool autoColDetFinish);
@@ -289,7 +289,7 @@ public:
 	void UnregisterPPCProcessing();
 	
 	/** Post physics collision processing index or -1 if not registered. */
-	inline int GetPPCProcessingIndex() const{return pPPCTColliderIndex;}
+	inline int GetPPCProcessingIndex() const{ return pPPCTColliderIndex; }
 	
 	/** Set post physics collision processing index or -1 if not registered. */
 	void SetPPCProcessingIndex(int index);
@@ -303,7 +303,7 @@ public:
 	void UnregisterUpdateOctree();
 	
 	/** Update octree processing index or -1 if not registered. */
-	inline int GetUpdateOctreeIndex() const{return pUpdateOctreeIndex;}
+	inline int GetUpdateOctreeIndex() const{ return pUpdateOctreeIndex; }
 	
 	/** Set update octree processing index or -1 if not registered. */
 	void SetUpdateOctreeIndex(int index);
@@ -317,17 +317,17 @@ public:
 	/** @name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{return pAttachmentCount;}
+	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	/** Retrieves an attachment. */
 	debpColliderAttachment *GetAttachmentAt(int index) const;
 	
 	/** Retrieves the list of colliders this collider is attached to. */
-	inline decPointerSet &GetAttachedToList(){return pAttachedToList;}
-	inline const decPointerSet &GetAttachedToList() const{return pAttachedToList;}
+	inline decPointerSet &GetAttachedToList(){ return pAttachedToList; }
+	inline const decPointerSet &GetAttachedToList() const{ return pAttachedToList; }
 	
 	/** List of touch sensors tracking this collider. */
-	inline decPointerSet &GetTrackingTouchSensors(){return pTrackingTouchSensors;}
-	inline const decPointerSet &GetTrackingTouchSensors() const{return pTrackingTouchSensors;}
+	inline decPointerSet &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
+	inline const decPointerSet &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
 	/*@}*/
 	
 	
@@ -335,7 +335,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{return pConstraintCount;}
+	inline int GetConstraintCount() const{ return pConstraintCount; }
 	/** Retrieves the constraint at the given index. */
 	debpColliderConstraint *GetConstraintAt(int index) const;
 	/*@}*/
@@ -356,10 +356,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
+	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
-	inline deDebugDrawerShape *GetDDSShape() const{return pDDSShape;}
+	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
 	/** Update debug drawer if developer mode is enabled. */
 	virtual void UpdateDebugDrawer();
@@ -451,7 +451,7 @@ public:
 	
 	
 protected:
-	inline bool GetIsPrepared() const{return pIsPrepared;}
+	inline bool GetIsPrepared() const{ return pIsPrepared; }
 	
 private:
 	void pCleanUp();

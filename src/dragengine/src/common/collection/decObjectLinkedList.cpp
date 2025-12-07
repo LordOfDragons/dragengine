@@ -42,7 +42,7 @@ pPrev(NULL),
 pNext(NULL),
 pList(NULL)
 {
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -79,7 +79,7 @@ void decObjectLinkedList::cListEntry::Clear(){
 namespace {
 	static decObjectLinkedList &decObjectLinkedList_cIterator_List(
 	const decObjectLinkedList::cListEntry *entry){
-		if(! entry || ! entry->GetList()){
+		if(!entry || !entry->GetList()){
 			DETHROW(deeInvalidParam);
 		}
 		return *entry->GetList();
@@ -107,13 +107,13 @@ pEntry(NULL),
 pNextEntry(firstEntry),
 pLastEntry(lastEntry)
 {
-	if(! lastEntry || lastEntry->GetList() != firstEntry->GetList()){
+	if(!lastEntry || lastEntry->GetList() != firstEntry->GetList()){
 		DETHROW(deeInvalidParam);
 	}
 }
 
 deObject &decObjectLinkedList::cIterator::Entry() const{
-	if(! pEntry){
+	if(!pEntry){
 		DETHROW(deeInvalidParam);
 	}
 	return *pEntry;
@@ -146,21 +146,21 @@ bool decObjectLinkedList::cIterator::HasNotFinished() const{
 }
 
 decObjectLinkedList::cIterator::operator deObject *() const{
-	if(! pEntry){
+	if(!pEntry){
 		DETHROW(deeInvalidParam);
 	}
 	return pEntry;
 }
 
 decObjectLinkedList::cIterator::operator deObject &() const{
-	if(! pEntry){
+	if(!pEntry){
 		DETHROW(deeInvalidParam);
 	}
 	return *pEntry;
 }
 
 deObject *decObjectLinkedList::cIterator::operator->() const{
-	if(! pEntry){
+	if(!pEntry){
 		DETHROW(deeInvalidParam);
 	}
 	return pEntry;
@@ -227,7 +227,7 @@ decObjectLinkedList::cListEntry *decObjectLinkedList::GetAt(int index) const{
 }
 
 int decObjectLinkedList::IndexOf(cListEntry *entry) const{
-	if(! entry || entry->GetList() != this){
+	if(!entry || entry->GetList() != this){
 		return -1;
 	}
 	
@@ -246,7 +246,7 @@ bool decObjectLinkedList::Has(cListEntry *entry) const{
 }
 
 void decObjectLinkedList::Add(cListEntry *entry){
-	if(! entry || entry->GetList()){
+	if(!entry || entry->GetList()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -269,7 +269,7 @@ void decObjectLinkedList::Add(cListEntry *entry){
 }
 
 void decObjectLinkedList::InsertAfter(cListEntry *entry, cListEntry *after){
-	if(! entry || entry->GetList() || ! after || after->GetList() != this){
+	if(!entry || entry->GetList() || !after || after->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -292,7 +292,7 @@ void decObjectLinkedList::InsertAfter(cListEntry *entry, cListEntry *after){
 }
 
 void decObjectLinkedList::InsertBefore(cListEntry *entry, cListEntry *before){
-	if(! entry || entry->GetList() || ! before || before->GetList() != this){
+	if(!entry || entry->GetList() || !before || before->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -315,7 +315,7 @@ void decObjectLinkedList::InsertBefore(cListEntry *entry, cListEntry *before){
 }
 
 void decObjectLinkedList::Remove(cListEntry *entry){
-	if(! entry || entry->GetList() != this){
+	if(!entry || entry->GetList() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

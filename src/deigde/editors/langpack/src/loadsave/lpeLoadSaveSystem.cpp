@@ -55,7 +55,7 @@
 ////////////////////////////
 
 lpeLoadSaveSystem::lpeLoadSaveSystem(lpeWindowMain *windowMain){
-	if(! windowMain){
+	if(!windowMain){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -91,7 +91,7 @@ lpeLoadSaveLangPack *lpeLoadSaveSystem::GetLSLangPackAt(int index) const{
 }
 
 int lpeLoadSaveSystem::IndexOfLSLangPack(lpeLoadSaveLangPack *lsLangPack) const{
-	if(! lsLangPack){
+	if(!lsLangPack){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ int lpeLoadSaveSystem::IndexOfLSLangPack(lpeLoadSaveLangPack *lsLangPack) const{
 }
 
 bool lpeLoadSaveSystem::HasLSLangPack(lpeLoadSaveLangPack *lsLangPack) const{
-	if(! lsLangPack){
+	if(!lsLangPack){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -143,7 +143,7 @@ void lpeLoadSaveSystem::AddLSLangPack(lpeLoadSaveLangPack *lsLangPack){
 	if(pLSLangPackCount == pLSLangPackSize){
 		int newSize = pLSLangPackSize * 3 / 2 + 1;
 		lpeLoadSaveLangPack **newArray = new lpeLoadSaveLangPack*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLSLangPacks){
 			memcpy(newArray, pLSLangPacks, sizeof(lpeLoadSaveLangPack*) * pLSLangPackSize);
 			delete [] pLSLangPacks;
@@ -192,10 +192,10 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 			loadableModule = modSys->GetModuleAt(m);
 			
 			if(loadableModule->GetType() != deModuleSystem::emtLanguagePack) continue;
-			if(! loadableModule->IsLoaded()) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
 			lsLangPack = new lpeLoadSaveLangPack((deBaseLanguagePackModule*)loadableModule->GetModule());
-			if(! lsLangPack) DETHROW(deeOutOfMemory);
+			if(!lsLangPack) DETHROW(deeOutOfMemory);
 			
 			AddLSLangPack(lsLangPack);
 			lsLangPack = NULL;
@@ -210,7 +210,7 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 
 
 lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
-	if(! filename) DETHROW(deeInvalidParam);
+	if(!filename) DETHROW(deeInvalidParam);
 	decBaseFileReader *fileReader = NULL;
 	lpeLangPack *langpack = NULL;
 	decPath path;
@@ -245,7 +245,7 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 }
 
 void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename){
-	if(! langpack || ! filename) DETHROW(deeInvalidParam);
+	if(!langpack || !filename) DETHROW(deeInvalidParam);
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;
 	int lsIndex;

@@ -213,7 +213,7 @@ bool decObjectSet::Equals(const decObjectSet &set) const{
 	}
 	
 	for(p=0; p<pObjectCount; p++){
-		if(! set.Has(pObjects[p])){
+		if(!set.Has(pObjects[p])){
 			return false;
 		}
 	}

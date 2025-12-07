@@ -81,19 +81,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the value to use if there is no input value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	/** Sets the value to use if there is no input value. */
 	void SetValue(float value);
 	/** Retrieves the lower bound to use if there is no input lower bound. */
-	inline float GetLower() const{return pLower;}
+	inline float GetLower() const{ return pLower; }
 	/** Sets the lower bound to use if there is no input lower bound. */
 	void SetLower(float lower);
 	/** Retrieves the upper bound to use if there is no input upper bound. */
-	inline float GetUpper() const{return pUpper;}
+	inline float GetUpper() const{ return pUpper; }
 	/** Sets the upper bound to use if there is no input upper bound. */
 	void SetUpper(float upper);
 	/** Determines if the mapping is inversed. */
-	inline bool GetInversed() const{return pInversed;}
+	inline bool GetInversed() const{ return pInversed; }
 	/** Sets if the mapping is inverse. */
 	void SetInversed(bool inversed);
 	

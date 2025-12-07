@@ -175,7 +175,7 @@ void deoglSkinChannel::FinalizeAsyncResLoading(){
 
 
 void deoglSkinChannel::SetSize(const decPoint3 &size){
-	if(! (size > decPoint3())){
+	if(!(size > decPoint3())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -251,7 +251,7 @@ bool deoglSkinChannel::HasStaticComponent() const{
 bool deoglSkinChannel::AllComponentsStatic() const{
 	int i;
 	for(i=0; i<pComponentCount; i++){
-		if(! pUniformColorMask[i]){
+		if(!pUniformColorMask[i]){
 			return false;
 		}
 	}
@@ -259,7 +259,7 @@ bool deoglSkinChannel::AllComponentsStatic() const{
 }
 
 bool deoglSkinChannel::AllComponentsNotStatic() const{
-	return ! HasStaticComponent();
+	return !HasStaticComponent();
 }
 
 void deoglSkinChannel::SetUniform(bool uniform){
@@ -344,7 +344,7 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
-	if(! pPixelBufferMipMap){
+	if(!pPixelBufferMipMap){
 		return; // texture is completly uniform
 	}
 	
@@ -848,7 +848,7 @@ const deoglVSDetermineChannelFormat &channelFormat){
 		}
 	}
 	
-	if(! pRenderThread.GetConfiguration().GetUseTextureCompression()){
+	if(!pRenderThread.GetConfiguration().GetUseTextureCompression()){
 		pCompressed = false;
 	}
 	
@@ -945,7 +945,7 @@ deSkinProperty &property){
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
 		deoglSkinPropertyMap::GetTypeFor(property.GetType());
 	
-	if(! pIsPropertyValidForType(propertyType)){
+	if(!pIsPropertyValidForType(propertyType)){
 		return;
 	}
 	
@@ -971,7 +971,7 @@ deSkinProperty &property){
 		pPreparePropertyMapped(propertyType, skin, texture, identify.CastToMapped());
 	}
 	
-	if(! property.GetRenderable().IsEmpty()){
+	if(!property.GetRenderable().IsEmpty()){
 		pRenderable = skin.AddRenderable(property.GetRenderable());
 		texture.SetRenderableChannels(true);
 	}
@@ -1130,7 +1130,7 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property){
 void deoglSkinChannel::pPreparePropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
 deoglSkinTexture &texture, const deSkinPropertyImage &property){
 	const deImage * const image = property.GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	
@@ -1213,7 +1213,7 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property){
 void deoglSkinChannel::pPreparePropertyVideo(deoglSkinPropertyMap::ePropertyTypes propertyType,
 deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property){
 	pVideo = property.GetVideo();
-	if(! pVideo){
+	if(!pVideo){
 		return;
 	}
 	
@@ -1388,7 +1388,7 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 	deoglSCConstructedDefinition visitor(*pRenderThread.GetOgl().GetGameEngine(),
 		memoryFileDef, memoryFileVerify, property);
 	property.GetContent().Visit(visitor);
-	if(! visitor.GetCacheValid()){
+	if(!visitor.GetCacheValid()){
 		pCanBeCached = false;
 		return;
 	}
@@ -1616,7 +1616,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	// property. if the resource does not belong to the virtual file system used by the game
 	// engine the cache id is not used to avoid problems
 	
-	if(! pCanBeCached){
+	if(!pCanBeCached){
 		return;
 	}
 	if(pComponentCount < 1){
@@ -1643,7 +1643,7 @@ void deoglSkinChannel::pBuildCacheID(){
 			return;
 		}
 		
-		if(! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
+		if(!pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
 		decPath::CreatePathUnix(filename))){
 			pCanBeCached = false;
 			return;
@@ -1666,7 +1666,7 @@ void deoglSkinChannel::pBuildCacheID(){
 			return;
 		}
 		
-		if(! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
+		if(!pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
 		decPath::CreatePathUnix(filename))){
 			pCanBeCached = false;
 			return;
@@ -1772,7 +1772,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	pCacheID.AppendCharacter(';');
 	pCacheID.Append(pCacheIDSource1);
 	
-	if(! pCacheIDSource2.IsEmpty()){
+	if(!pCacheIDSource2.IsEmpty()){
 		pCacheID.AppendCharacter(';');
 		pCacheID.Append(pCacheIDSource2);
 	}
@@ -1805,11 +1805,11 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	// crc32 applied.
 	//   <construction-definition UInt8[]>
 	
-	if(pCacheID.IsEmpty() || ! pCanBeCached){
+	if(pCacheID.IsEmpty() || !pCanBeCached){
 		return;
 	}
 	
-	if(! pCacheVerify){
+	if(!pCacheVerify){
 		pCacheVerify = new decMemoryFile("");
 	}
 	
@@ -1888,7 +1888,7 @@ void deoglSkinChannel::pBuildProperty(deSkinProperty &property){
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
 		deoglSkinPropertyMap::GetTypeFor(property.GetType());
 	
-	if(! pIsPropertyValidForType(propertyType)){
+	if(!pIsPropertyValidForType(propertyType)){
 		return;
 	}
 	
@@ -1906,7 +1906,7 @@ void deoglSkinChannel::pBuildProperty(deSkinProperty &property){
 void deoglSkinChannel::pBuildPropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
 const deSkinPropertyImage &property){
 	const deImage * const image = property.GetImage();
-	if(! image){
+	if(!image){
 		return;
 	}
 	
@@ -2039,7 +2039,7 @@ const deSkinPropertyConstructed &property){
 	}
 	
 	deoglSCBuildConstructed visitor(*this);
-	if(! visitor.BuildFromProperty(property, targetRed, targetGreen, targetBlue, targetAlpha)){
+	if(!visitor.BuildFromProperty(property, targetRed, targetGreen, targetBlue, targetAlpha)){
 		return;
 	}
 }
@@ -2060,7 +2060,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	const int componentCount = image.GetComponentCount();
 	const int bitCount = image.GetBitCount();
 	
-	if(! pPixelBufferMipMap){
+	if(!pPixelBufferMipMap){
 		return;
 	}
 	

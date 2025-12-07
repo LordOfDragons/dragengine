@@ -68,7 +68,7 @@ pWithGICascade(false){
 ///////////////
 
 void deoglRPVisitorFindContent::Init(deoglDCollisionFrustum *frustum){
-	if(! frustum){
+	if(!frustum){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -200,7 +200,7 @@ void deoglRPVisitorFindContent::DisableGIBox(){
 
 
 void deoglRPVisitorFindContent::VisitWorldOctree(const deoglWorldOctree &octree){
-	if(! pFrustum){
+	if(!pFrustum){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -221,11 +221,11 @@ void deoglRPVisitorFindContent::pVisitNode(const deoglWorldOctree &node, bool in
 	int i;
 	for(i=0; i<8; i++){
 		const deoglWorldOctree * const child = (const deoglWorldOctree*) node.GetNodeAt(i);
-		if(! child){
+		if(!child){
 			continue;
 		}
 		
-		if(! intersect){
+		if(!intersect){
 			pVisitNode(*child, false);
 			continue;
 		}
@@ -268,11 +268,11 @@ void deoglRPVisitorFindContent::pVisitNodeGICascade(const deoglWorldOctree &node
 	int i;
 	for(i=0; i<8; i++){
 		const deoglWorldOctree * const child = (const deoglWorldOctree*) node.GetNodeAt(i);
-		if(! child){
+		if(!child){
 			continue;
 		}
 		
-		if(! intersect){
+		if(!intersect){
 			pVisitNodeGICascade(*child, false);
 			continue;
 		}
@@ -321,7 +321,7 @@ void deoglRPVisitorFindContent::pVisitComponents(const deoglWorldOctree &node, b
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			if(! pFrustum->BoxHits(minExtend, maxExtend)){
+			if(!pFrustum->BoxHits(minExtend, maxExtend)){
 				continue;
 			}
 		}
@@ -337,7 +337,7 @@ void deoglRPVisitorFindContent::pVisitComponents(const deoglWorldOctree &node, b
 		
 		// cull dynamic if required
 		//if( pCullDynamicComponents && ! component->GetStatic() ){
-		if(pCullDynamicComponents && ! component.GetRenderStatic()){
+		if(pCullDynamicComponents && !component.GetRenderStatic()){
 			continue;
 		}
 		
@@ -377,7 +377,7 @@ void deoglRPVisitorFindContent::pVisitBillboards(const deoglWorldOctree &node, b
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			if(! pFrustum->BoxHits(minExtend, maxExtend)){
+			if(!pFrustum->BoxHits(minExtend, maxExtend)){
 				continue;
 			}
 		}
@@ -412,7 +412,7 @@ void deoglRPVisitorFindContent::pVisitLights(const deoglWorldOctree &node, bool 
 			continue;
 		}
 		
-		if(intersect && ! light.GetCollisionVolume()->FrustumHitsVolume(pFrustum)){
+		if(intersect && !light.GetCollisionVolume()->FrustumHitsVolume(pFrustum)){
 			if(pWithGICascade && light.GetCollisionVolume()->BoxHitsVolume(&pGICascadeBox)){
 				collideList.AddLight(addLight)->SetCulled(true);
 			}
@@ -437,7 +437,7 @@ void deoglRPVisitorFindContent::pVisitLightsGICascade(const deoglWorldOctree& no
 			continue;
 		}
 		
-		if(intersect && ! light.GetCollisionVolume()->BoxHitsVolume(&pGICascadeBox)){
+		if(intersect && !light.GetCollisionVolume()->BoxHitsVolume(&pGICascadeBox)){
 			continue;
 		}
 		
@@ -461,7 +461,7 @@ void deoglRPVisitorFindContent::pVisitParticleEmitters(const deoglWorldOctree &n
 			continue;
 		}
 		
-		if(intersect && ! pFrustum->BoxHits(instance.GetMinExtend(), instance.GetMaxExtend())){
+		if(intersect && !pFrustum->BoxHits(instance.GetMinExtend(), instance.GetMaxExtend())){
 			continue;
 		}
 		

@@ -77,7 +77,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor()){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
@@ -96,7 +96,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || ! comboBox->GetSelectedItem()){
+		if(!topic || !action || !condition || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -121,7 +121,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || condition->GetParameter() == textField->GetText()){
+		if(!topic || !action || !condition || condition->GetParameter() == textField->GetText()){
 			return;
 		}
 		
@@ -140,7 +140,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
@@ -164,7 +164,7 @@ public:
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorParameter * const condition = pPanel.GetCondition();
-		if(! topic || ! action || ! condition || condition->GetTestVariable() == textField->GetText()){
+		if(!topic || !action || !condition || condition->GetTestVariable() == textField->GetText()){
 			return;
 		}
 		

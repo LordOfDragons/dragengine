@@ -40,7 +40,7 @@
 ////////////////////////////
 
 debpBPConstraintShared::debpBPConstraintShared(debpColliderConstraint *constraint){
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	

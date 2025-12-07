@@ -161,7 +161,7 @@ void gdeSky::SetTags(const decStringSet &tags){
 ////////////////
 
 void gdeSky::AddController(gdeSkyController *controller){
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Add(controller);

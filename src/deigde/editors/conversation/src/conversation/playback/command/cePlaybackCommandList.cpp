@@ -106,7 +106,7 @@ bool cePlaybackCommandList::HasWith(const char *command) const{
 }
 
 void cePlaybackCommandList::Add(cePlaybackCommand *command){
-	if(! command || Has(command)){
+	if(!command || Has(command)){
 		DETHROW(deeInvalidParam);
 	}
 	

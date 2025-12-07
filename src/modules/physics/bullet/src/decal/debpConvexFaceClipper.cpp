@@ -90,7 +90,7 @@ int debpConvexFaceClipper::IndexOfVertex(const decDVector &vertex) const{
 
 void debpConvexFaceClipper::AddVertex(const decDVector &vertex){
 	decDVector *newArray = new decDVector[pVertexCount + 1];
-	if(! newArray) DETHROW(deeOutOfMemory);
+	if(!newArray) DETHROW(deeOutOfMemory);
 	
 	if(pVertices){
 		int i;

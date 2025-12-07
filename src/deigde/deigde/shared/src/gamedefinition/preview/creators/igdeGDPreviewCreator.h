@@ -90,16 +90,16 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment(){return pEnvironment;}
-	inline const igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment(){ return pEnvironment; }
+	inline const igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Canvas to create image from. */
-	inline deCanvasView *GetCanvas() const{return pCanvas;}
+	inline deCanvasView *GetCanvas() const{ return pCanvas; }
 	
 	
 	
 	/** \brief Image or NULL if not created. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL if not created. */
 	void SetImage(deImage *image);

@@ -70,21 +70,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Animator path. */
-	inline const decString &GetPathAnimator() const{return pPathAnimator;}
+	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	
 	/** \brief Set animator path. */
 	void SetPathAnimator(const char *path);

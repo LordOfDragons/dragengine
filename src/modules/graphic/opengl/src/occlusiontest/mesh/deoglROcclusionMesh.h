@@ -105,13 +105,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Filename for debugging. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{return pVBOBlock;}
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
 	
 	/** Prepare VBO block. */
 	void PrepareVBOBlock();
@@ -119,32 +119,32 @@ public:
 	
 	
 	/** Weights entries. */
-	inline sWeight *GetWeightsEntries() const{return pWeightsEntries;}
+	inline sWeight *GetWeightsEntries() const{ return pWeightsEntries; }
 	
 	/** Number of weights entries. */
-	inline int GetWeightsEntryCount() const{return pWeightsEntryCount;}
+	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
 	
 	/** Weights entries count list. */
-	inline int *GetWeightsCounts() const{return pWeightsCounts;}
+	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
 	
 	/** Number of weights. */
-	inline int GetWeightsCount() const{return pWeightsCount;}
+	inline int GetWeightsCount() const{ return pWeightsCount; }
 	
 	
 	
 	/** Vertices. */
-	inline sVertex *GetVertices() const{return pVertices;}
+	inline sVertex *GetVertices() const{ return pVertices; }
 	
 	/** Vertex count. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	
 	
 	/** Corners. */
-	inline unsigned short *GetCorners() const{return pCorners;}
+	inline unsigned short *GetCorners() const{ return pCorners; }
 	
 	/** Number of corners. */
-	inline int GetCornerCount() const{return pCornerCount;}
+	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	
 	
@@ -152,13 +152,13 @@ public:
 	 * Single sided face count.
 	 * \details Located before the double sided faces.
 	 */
-	inline int GetSingleSidedFaceCount() const{return pSingleSidedFaceCount;}
+	inline int GetSingleSidedFaceCount() const{ return pSingleSidedFaceCount; }
 	
 	/**
 	 * Double sided face count.
 	 * \details Located after the single sided faces.
 	 */
-	inline int GetDoubleSidedFaceCount() const{return pDoubleSidedFaceCount;}
+	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
 	
 	
@@ -166,15 +166,15 @@ public:
 	deoglSharedSPBListUBO &GetSharedSPBListUBO();
 	
 	/** Render task instance groups for single sided faces. */
-	inline deoglSharedSPBRTIGroupList &GetRTIGroupsSingle(){return pRTIGroupsSingle;}
+	inline deoglSharedSPBRTIGroupList &GetRTIGroupsSingle(){ return pRTIGroupsSingle; }
 	
 	/** Render task instance groups for double sided fgaces. */
-	inline deoglSharedSPBRTIGroupList &GetRTIGroupDouble(){return pRTIGroupsDouble;}
+	inline deoglSharedSPBRTIGroupList &GetRTIGroupDouble(){ return pRTIGroupsDouble; }
 	
 	
 	
 	/** BVH or NULL. */
-	inline deoglBVH *GetBVH() const{return pBVH;}
+	inline deoglBVH *GetBVH() const{ return pBVH; }
 	
 	/** Build BVH if not build yet. */
 	void PrepareBVH();
@@ -182,7 +182,7 @@ public:
 	
 	
 	/** Ray trace field or NULL. */
-	inline deoglRayTraceField *GetRayTraceField() const{return pRayTraceField;}
+	inline deoglRayTraceField *GetRayTraceField() const{ return pRayTraceField; }
 	
 	/** Prepare ray trace field. */
 	void PrepareRayTraceField();

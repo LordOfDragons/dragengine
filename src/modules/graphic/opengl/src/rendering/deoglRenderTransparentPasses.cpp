@@ -145,7 +145,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Copy Depth Stereo");
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthColorStereo, pipconf, sources, defines);
@@ -161,7 +161,7 @@ deoglRenderBase(renderThread)
 	
 	defines = commonDefines;
 	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
-	if(! useInverseDepth){
+	if(!useInverseDepth){
 		defines.SetDefine("SHADOW_INVERSE_DEPTH", true);
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthLimit, pipconf, sources, defines);
@@ -171,7 +171,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Copy Depth Stereo");
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthLimitStereo, pipconf, sources, defines);
@@ -192,7 +192,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("DefRen Copy Color Stereo");
 	}
 	pAsyncGetPipeline(pPipelineCopyColorStereo, pipconf, sources, defines);
@@ -349,11 +349,11 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			// render the transparent layer
 			RenderTransparentGeometryPass(plan, mask, xray);
 			
-			if(! mask){
+			if(!mask){
 				renderThread.GetRenderers().GetReflection().CopyMaterial(plan, false);
 			}
 			
-			if(! plan.GetDisableLights()){
+			if(!plan.GetDisableLights()){
 				renderThread.GetRenderers().GetLight().RenderLights(plan, false, mask, xray);
 				DebugTimer1Sample(plan, *renworld.GetDebugInfo().infoTransparentLights, true);
 			}
@@ -801,7 +801,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	
 	// create the render task only if this is the first layer or we are not in between.
 	// for all other passes we can reuse the last result
-	if(! inbetween || plan.GetCurrentTransparencyLayer() == 0){
+	if(!inbetween || plan.GetCurrentTransparencyLayer() == 0){
 		for(e=0; e<particleEmitterCount; e++){
 			particleEmitterList.GetAt(e)->ClearIBO();
 		}

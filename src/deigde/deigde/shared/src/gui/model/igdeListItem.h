@@ -94,25 +94,25 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
-	inline void *GetData() const{return pData;}
+	inline void *GetData() const{ return pData; }
 	
 	/** \brief Set user data pointer. */
 	void SetData(void *data);
@@ -126,10 +126,10 @@ public:
 	 * requires the missing details are considered empty strings.
 	 */
 	decStringList &GetDetails(){return pDetails;}
-	inline const decStringList &GetDetails() const{return pDetails;}
+	inline const decStringList &GetDetails() const{ return pDetails; }
 	
 	/** \brief Item is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if item is selected. */
 	void SetSelected(bool selected);

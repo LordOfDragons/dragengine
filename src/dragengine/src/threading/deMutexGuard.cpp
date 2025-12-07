@@ -78,7 +78,7 @@ bool deMutexGuard::TryLock(){
 }
 
 void deMutexGuard::Unlock(){
-	if(! pLocked){
+	if(!pLocked){
 		DETHROW(deeInvalidAction);
 	}
 	

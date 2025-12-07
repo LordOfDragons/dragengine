@@ -58,7 +58,7 @@ dealWidgetOptionBox *dealWidgetOptionGroup::GetAt(int index) const{
 }
 
 void dealWidgetOptionGroup::Add(dealWidgetOptionBox *widget){
-	if(! widget || pWidgets.Has(widget)){
+	if(!widget || pWidgets.Has(widget)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -71,7 +71,7 @@ void dealWidgetOptionGroup::Add(dealWidgetOptionBox *widget){
 }
 
 void dealWidgetOptionGroup::Remove(dealWidgetOptionBox *widget){
-	if(! pWidgets.Has(widget)){
+	if(!pWidgets.Has(widget)){
 		DETHROW(deeInvalidParam);
 	}
 	

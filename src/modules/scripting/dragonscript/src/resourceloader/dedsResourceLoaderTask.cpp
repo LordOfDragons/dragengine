@@ -78,7 +78,7 @@ pListeners(NULL),
 pListenerCount(0),
 pListenerSize(0)
 {
-	if(! ds){
+	if(!ds){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -101,7 +101,7 @@ deResourceLoader::eResourceType resourceType) const{
 }
 
 void dedsResourceLoaderTask::AddListener(dsRealObject *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
@@ -124,7 +124,7 @@ void dedsResourceLoaderTask::AddListener(dsRealObject *listener){
 }
 
 void dedsResourceLoaderTask::RemoveListener(dsRealObject *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
@@ -142,7 +142,7 @@ void dedsResourceLoaderTask::RemoveListener(dsRealObject *listener){
 }
 
 void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	

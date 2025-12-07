@@ -130,7 +130,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	
 	// if there is no parent animator no loading can be done
 	aeAnimator * const parentAnimator = GetAnimator();
-	if(! parentAnimator){
+	if(!parentAnimator){
 		return;
 	}
 	
@@ -146,7 +146,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	int r, ruleCount;
 	
 	// try to load the animator
-	if(! pPathSubAnimator.IsEmpty()){
+	if(!pPathSubAnimator.IsEmpty()){
 		parentAnimator->GetLogger()->LogInfoFormat(LOGSOURCE,
 			"Rule Sub Animator: Loading animator %s...", pPathSubAnimator.GetString());
 		
@@ -209,7 +209,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			// add rules
 			for(r=0; r<ruleCount; r++){
 				engRule = animator->GetRules().GetAt(r)->CreateEngineRule();
-				if(! engRule) DETHROW(deeOutOfMemory);
+				if(!engRule) DETHROW(deeOutOfMemory);
 				
 				pSubAnimator->AddRule(engRule);
 				engRule->FreeReference();
@@ -244,7 +244,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	}
 	
 	// if the engine rule exists assign sub animator
-	if(! rule){
+	if(!rule){
 		return;
 	}
 	

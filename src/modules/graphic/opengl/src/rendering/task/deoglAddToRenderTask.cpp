@@ -263,7 +263,7 @@ void deoglAddToRenderTask::AddComponent(const deoglRComponentLOD &lod, int speci
 	
 	// conventional way
 	const deoglVAO * const vao = lod.GetUseVAO();
-	if(! vao){
+	if(!vao){
 		return;
 	}
 	
@@ -287,7 +287,7 @@ void deoglAddToRenderTask::AddComponent(const deoglRComponentLOD &lod, int speci
 }
 
 void deoglAddToRenderTask::AddComponent(const deoglCollideListComponent &clcomponent){
-	if(pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
+	if(pFilterCubeFace != -1 && !clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
 		return;
 	}
 	
@@ -302,7 +302,7 @@ void deoglAddToRenderTask::AddComponents(const deoglCollideList &clist){
 		for(i=0; i<count; i++){
 			const deoglRComponentLOD &lod = clist.GetComponentAt(i)->GetComponentLOD();
 			const deoglRComponent &component = lod.GetComponent();
-			if(pFilterCubeFace != -1 && ! component.GetCubeFaceVisible(pFilterCubeFace)){
+			if(pFilterCubeFace != -1 && !component.GetCubeFaceVisible(pFilterCubeFace)){
 				return;
 			}
 			
@@ -418,7 +418,7 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		GetShaderFor(pPipelineType)->GetShader()->GetRTSShader();
 	
 	const deoglTexUnitsConfig *tuc = componentTexture.GetTUCForShaderType(pPipelineType);
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	const deoglRenderTaskSharedTexture * const rtt = tuc->GetRTSTexture();
@@ -455,10 +455,10 @@ void deoglAddToRenderTask::AddBillboards(const deoglCollideList &clist){
 }
 
 void deoglAddToRenderTask::AddBillboard(const deoglRBillboard &billboard){
-	if(! billboard.GetParentWorld() || ! billboard.GetSkin()){
+	if(!billboard.GetParentWorld() || !billboard.GetSkin()){
 		return;
 	}
-	if(pFilterCubeFace != -1 && ! billboard.GetCubeFaceVisible(pFilterCubeFace)){
+	if(pFilterCubeFace != -1 && !billboard.GetCubeFaceVisible(pFilterCubeFace)){
 		return;
 	}
 	
@@ -510,12 +510,12 @@ void deoglAddToRenderTask::AddDecal(const deoglRDecal &decal, int lodLevel){
 	}
 	
 	const deoglSharedVBOBlock * const vboBlock = decal.GetVBOBlock();
-	if(! vboBlock){
+	if(!vboBlock){
 		return;
 	}
 	
 	const deoglSkinTexture * const skinTexture = decal.GetUseSkinTexture();
-	if(! skinTexture || pFilterRejectNoSolid(*skinTexture)){
+	if(!skinTexture || pFilterRejectNoSolid(*skinTexture)){
 		return;
 	}
 	if(pNoRendered && skinTexture->GetRendered()){
@@ -560,12 +560,12 @@ void deoglAddToRenderTask::AddPropFieldCluster(
 const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters){
 	const deoglPropFieldCluster &cluster = *clPropFieldCluster.GetCluster();
 	const deoglRPropFieldType &propFieldType = cluster.GetPropFieldType();
-	if(! propFieldType.GetModel()){
+	if(!propFieldType.GetModel()){
 		return;
 	}
 	
 	const deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
-	if(! skinTexture || pFilterReject(*skinTexture)){
+	if(!skinTexture || pFilterReject(*skinTexture)){
 		return;
 	}
 	if(pNoRendered && skinTexture->GetRendered()){
@@ -573,7 +573,7 @@ const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters){
 	}
 	
 	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt(0);
-	if(! modelLOD.GetVBOBlock()){
+	if(!modelLOD.GetVBOBlock()){
 		return;
 	}
 	
@@ -640,12 +640,12 @@ void deoglAddToRenderTask::AddPropFieldClusters(const deoglCollideList &clist, b
 void deoglAddToRenderTask::AddPropFieldType(const deoglCollideListPropFieldType &clPropFieldType,
 const deoglRPropFieldType &propFieldType, bool imposters){
 	const int clusterCount = clPropFieldType.GetClusterCount();
-	if(clusterCount == 0 || ! propFieldType.GetModel()){
+	if(clusterCount == 0 || !propFieldType.GetModel()){
 		return;
 	}
 	
 	const deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
-	if(! skinTexture || pFilterReject(*skinTexture)){
+	if(!skinTexture || pFilterReject(*skinTexture)){
 		return;
 	}
 	if(pNoRendered && skinTexture->GetRendered()){
@@ -653,7 +653,7 @@ const deoglRPropFieldType &propFieldType, bool imposters){
 	}
 	
 	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt(0);
-	if(! modelLOD.GetVBOBlock()){
+	if(!modelLOD.GetVBOBlock()){
 		return;
 	}
 	
@@ -742,13 +742,13 @@ const deoglCollideListHTSCluster &clhtscluster, int texture, bool firstMask){
 	
 	const deoglHTViewSector &htvsector = htvscluster.GetSector();
 	const deoglRHTSector &sector = htvsector.GetSector();
-	if(! sector.GetValid() || ! sector.GetValidTextures()){
+	if(!sector.GetValid() || !sector.GetValidTextures()){
 		return;
 	}
 	
 	const deoglHTSTexture &httexture = sector.GetTextureAt(texture);
 	const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-	if(! skinTexture || pFilterReject(*skinTexture)){
+	if(!skinTexture || pFilterReject(*skinTexture)){
 		return;
 	}
 	if(pNoRendered && skinTexture->GetRendered()){
@@ -766,7 +766,7 @@ const deoglCollideListHTSCluster &clhtscluster, int texture, bool firstMask){
 	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline(pipeline);
 	
 	const deoglTexUnitsConfig *tuc = httexture.GetTUCForPipelineType(pSkinPipelineType);
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
@@ -820,13 +820,13 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters(
 const deoglCollideListHTSector &clhtsector, int texture, bool firstMask){
 	const deoglHTViewSector &htvsector = *clhtsector.GetSector();
 	const deoglRHTSector &sector = htvsector.GetSector();
-	if(! sector.GetValid() || ! sector.GetValidTextures()){
+	if(!sector.GetValid() || !sector.GetValidTextures()){
 		return;
 	}
 	
 	const deoglHTSTexture &httexture = sector.GetTextureAt(texture);
 	const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-	if(! skinTexture || pFilterReject(*skinTexture)){
+	if(!skinTexture || pFilterReject(*skinTexture)){
 		return;
 	}
 	if(pNoRendered && skinTexture->GetRendered()){
@@ -844,7 +844,7 @@ const deoglCollideListHTSector &clhtsector, int texture, bool firstMask){
 	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline(pipeline);
 	
 	const deoglTexUnitsConfig *tuc = httexture.GetTUCForPipelineType(pSkinPipelineType);
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
@@ -906,10 +906,10 @@ void deoglAddToRenderTask::AddOcclusionMesh(const deoglCollideListComponent &clc
 const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble){
 	const deoglRComponent &component = *clcomponent.GetComponent();
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		return;
 	}
-	if(pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
+	if(pFilterCubeFace != -1 && !clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
 		return;
 	}
 	if(pNoRendered && component.GetSkinRendered().GetTexturedCount() > 0){
@@ -927,7 +927,7 @@ const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble){
 void deoglAddToRenderTask::AddOcclusionMesh(deoglRComponent &component,
 const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble){
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		return;
 	}
 	if(pNoRendered && component.GetSkinRendered().GetTexturedCount() > 0){
@@ -1008,13 +1008,13 @@ deoglRParticleEmitterInstanceType &type){
 	}
 	
 	deoglSkinTexture * const skinTexture = type.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	
 	const deoglRParticleEmitterType &etype = emitter.GetEmitter()->GetTypeAt(type.GetIndex());
-	const bool solid = skinTexture->GetSolid(); //;& ! etype.GetHasTransparency();
-	const bool hasHoles = skinTexture->GetHasHoles(); //;& ! etype.GetHasTransparency();
+	const bool solid = skinTexture->GetSolid(); //;& !etype.GetHasTransparency();
+	const bool hasHoles = skinTexture->GetHasHoles(); //;& !etype.GetHasTransparency();
 	
 	if(pSolid != solid){
 		return;
@@ -1031,7 +1031,7 @@ deoglRParticleEmitterInstanceType &type){
 	if(pNoShadowNone && skinTexture->GetShadowNone()){
 		return;
 	}
-	if(pNoNotReflected && ! skinTexture->GetReflected()){
+	if(pNoNotReflected && !skinTexture->GetReflected()){
 		return;
 	}
 	
@@ -1186,7 +1186,7 @@ void deoglAddToRenderTask::pUpdateFilters(){
 
 bool deoglAddToRenderTask::pFilterReject(const deoglSkinTexture &skinTexture) const{
 	if(pOutline){
-		if(! skinTexture.GetHasOutline()){
+		if(!skinTexture.GetHasOutline()){
 			return true;
 		}
 		if(pSolid != skinTexture.GetIsOutlineSolid()){
@@ -1215,7 +1215,7 @@ bool deoglAddToRenderTask::pFilterRejectNoSolid(const deoglSkinTexture &skinText
 	if(pNoShadowNone && skinTexture.GetShadowNone()){
 		return true;
 	}
-	if(pNoNotReflected && ! skinTexture.GetReflected()){
+	if(pNoNotReflected && !skinTexture.GetReflected()){
 		return true;
 	}
 	return false;
@@ -1229,7 +1229,7 @@ const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao) co
 		GetWithRef(pipelineType, pipelineModifier).GetPipeline();
 	DEASSERT_NOTNULL(pipeline)
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	

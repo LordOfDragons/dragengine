@@ -281,7 +281,7 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 			pAddPropertyImage(*texture, "emissivity", fbxTexEmissiveColor);
 			
 		}else{
-			if(! emissivity.IsEqualTo(black)){
+			if(!emissivity.IsEqualTo(black)){
 				pAddPropertyColor(*texture, "emissivity", emissivity);
 			}
 		}

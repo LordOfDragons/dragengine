@@ -64,7 +64,7 @@ fbxObjectMap::~fbxObjectMap(){
 ///////////////
 
 void fbxObjectMap::Add(fbxNode *node){
-	if(! node || node->GetID() == 0){
+	if(!node || node->GetID() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

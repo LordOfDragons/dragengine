@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	
@@ -62,9 +62,9 @@ peeUControllerToggleFrozen::~peeUControllerToggleFrozen(){
 ///////////////
 
 void peeUControllerToggleFrozen::Undo(){
-	pController->SetFrozen(! pController->GetFrozen());
+	pController->SetFrozen(!pController->GetFrozen());
 }
 
 void peeUControllerToggleFrozen::Redo(){
-	pController->SetFrozen(! pController->GetFrozen());
+	pController->SetFrozen(!pController->GetFrozen());
 }

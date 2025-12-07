@@ -101,7 +101,7 @@ void ceWPTTIMCLogic::Update(){
 void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWPTTIMConditions::OnContextMenu(contextMenu);
 	
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -109,7 +109,7 @@ void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -139,7 +139,7 @@ void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -147,7 +147,7 @@ void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConver
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

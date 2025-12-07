@@ -78,71 +78,71 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return pConversation;}
+	inline ceConversation &GetConversation() const{ return pConversation; }
 	
 	/** \brief Engine font. */
-	inline const deFont::Ref &GetFont() const{return pEngFont;}
+	inline const deFont::Ref &GetFont() const{ return pEngFont; }
 	
 	/** \brief Engine font size. */
-	inline const deFontSize::Ref &GetFontSize() const{return pEngFontSize;}
+	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
+	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
-	inline const decString &GetPathFont() const{return pPathFont;}
+	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
 	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
-	inline const decColor &GetBackgroundColor() const{return pBackgroundColor;}
+	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
 	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
-	inline const decColor &GetTextColor() const{return pTextColor;}
+	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
 	void SetTextColor(const decColor &color);
 	
 	/** \brief Selected background color. */
-	inline const decColor &GetSelectedBackgroundColor() const{return pSelectedBackgroundColor;}
+	inline const decColor &GetSelectedBackgroundColor() const{ return pSelectedBackgroundColor; }
 	
 	/** \brief Set selected background color. */
 	void SetSelectedBackgroundColor(const decColor &color);
 	
 	/** \brief Selected text color. */
-	inline const decColor &GetSelectedTextColor() const{return pSelectedTextColor;}
+	inline const decColor &GetSelectedTextColor() const{ return pSelectedTextColor; }
 	
 	/** \brief Set selected text color. */
 	void SetSelectedTextColor(const decColor &color);
 	
 	/** \brief Text size. */
-	inline int GetTextSize() const{return pTextSize;}
+	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
 	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
-	inline int GetPadding() const{return pPadding;}
+	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
 	void SetPadding(int padding);
 	
 	/** \brief Playback stack depth to return to after selecting an option. */
-	inline int GetPlaybackStackDepth() const{return pPlaybackStackDepth;}
+	inline int GetPlaybackStackDepth() const{ return pPlaybackStackDepth; }
 	
 	/** \brief Set playback stack depth to return to after selecting an option. */
 	void SetPlaybackStackDepth(int depth);
 	
 	/** \brief List of options. */
-	inline cePCBOptionList &GetOptionList(){return pOptions;}
-	inline const cePCBOptionList &GetOptionList() const{return pOptions;}
+	inline cePCBOptionList &GetOptionList(){ return pOptions; }
+	inline const cePCBOptionList &GetOptionList() const{ return pOptions; }
 	
 	/** \brief Index of the selected option or -1 if there is none. */
-	inline int GetSelectedOption() const{return pSelectedOption;}
+	inline int GetSelectedOption() const{ return pSelectedOption; }
 	
 	/** \brief Set index of the selected option or -1 if there is none. */
 	void SetSelectedOption(int index);

@@ -119,16 +119,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename of the library file. */
-	inline const decString &GetLibFileName() const{return pLibFileName;}
+	inline const decString &GetLibFileName() const{ return pLibFileName; }
 	
 	/** \brief Required size in bytes of the library file. */
-	inline int GetLibFileSize() const{return pLibFileSize;}
+	inline int GetLibFileSize() const{ return pLibFileSize; }
 	
 	/** \brief Required hash code of the library file. */
-	inline const decString &GetLibFileHash() const{return pLibFileHash;}
+	inline const decString &GetLibFileHash() const{ return pLibFileHash; }
 	
 	/** \brief Name of the entry point function in the library file. */
-	inline const decString &GetLibFileEntryPoint() const{return pLibFileEntryPoint;}
+	inline const decString &GetLibFileEntryPoint() const{ return pLibFileEntryPoint; }
 	/*@}*/
 	
 	

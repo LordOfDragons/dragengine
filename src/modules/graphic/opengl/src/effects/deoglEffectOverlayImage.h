@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectOverlayImage &GetEffectOverlayImage() const{return pEffectOverlayImage;}
+	inline const deEffectOverlayImage &GetEffectOverlayImage() const{ return pEffectOverlayImage; }
 	
 	
 	

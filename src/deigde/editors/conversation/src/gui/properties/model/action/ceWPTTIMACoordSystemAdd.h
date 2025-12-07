@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACoordSystemAdd *GetActionCoordSystemAdd() const{return (ceCACoordSystemAdd*)GetAction();}
+	inline ceCACoordSystemAdd *GetActionCoordSystemAdd() const{ return (ceCACoordSystemAdd*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

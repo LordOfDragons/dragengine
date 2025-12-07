@@ -71,7 +71,7 @@ stClassEngine::~stClassEngine(){
 
 void stClassEngine::SetUpLinks(){
 	OOP oopClass = gst_class_name_to_oop("DEEngine");
-	if(! oopClass){
+	if(!oopClass){
 		DETHROW(deeInvalidParam);
 	}
 	

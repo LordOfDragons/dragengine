@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline double GetValue() const{return pValue;}
+	inline double GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue(double value);

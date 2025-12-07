@@ -49,13 +49,13 @@ public:
 	
 	// management
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
-	inline deClassCollider *GetClassCollider() const{return pClsCol;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
 	
 	deCollisionInfo *GetInfo(dsRealObject *myself) const;
 	void PushInfo(dsRunTime *rt, deCollisionInfo *info);
-	inline dsClass *GetClassParticleCollisionResponse() const{return pClsParticleCollisionResponse;}
+	inline dsClass *GetClassParticleCollisionResponse() const{ return pClsParticleCollisionResponse; }
 
 private:
 	struct sInitData{

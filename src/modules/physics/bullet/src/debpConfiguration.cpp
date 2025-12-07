@@ -105,13 +105,13 @@ void debpConfiguration::LoadConfig(){
 	decPath path;
 	path.SetFromUnix("/config/bullet.xml");
 	
-	if(! vfs.ExistsFile(path)){
+	if(!vfs.ExistsFile(path)){
 		return;
 	}
 	
 	try{
 		reader = vfs.OpenFileForReading(path);
-		if(! reader){
+		if(!reader){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -132,7 +132,7 @@ void debpConfiguration::LoadConfig(){
 	
 	// interpretate xml
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "config") != 0){
+	if(!root || strcmp(root->GetName(), "config") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -199,7 +199,7 @@ void debpConfiguration::pParseProperty(decXmlElementTag *root){
 	
 	// check attributes
 	xmlValue = pFindAttribute(root, "name");
-	if(! xmlValue){
+	if(!xmlValue){
 		pBullet->LogErrorFormat("bullet.xml(%i:%i): Missing Attribute 'name' in tag '%s'",
 			root->GetLineNumber(), root->GetPositionNumber(), root->GetName().GetString());
 		DETHROW(deeInvalidParam);

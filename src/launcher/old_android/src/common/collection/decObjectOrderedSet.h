@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of objects. */
-	inline int GetCount() const{return pObjectCount;}
+	inline int GetCount() const{ return pObjectCount; }
 	
 	/**
 	 * \brief Object at index.

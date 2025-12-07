@@ -55,9 +55,9 @@ public:
 		m_z = z;
 	}
 	
-	float X() const {return m_x;}
-	float Y() const {return m_y;}
-	float Z() const {return m_z;}
+	float X() const { return m_x; }
+	float Y() const { return m_y; }
+	float Z() const { return m_z; }
 	
 	Vec3 operator-() const
 	{

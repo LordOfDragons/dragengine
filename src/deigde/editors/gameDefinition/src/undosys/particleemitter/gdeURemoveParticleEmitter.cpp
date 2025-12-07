@@ -45,11 +45,11 @@ gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
 pGameDefinition(NULL),
 pParticleEmitter(NULL)
 {
-	if(! gameDefinition || ! particleEmitter){
+	if(!gameDefinition || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! gameDefinition->GetParticleEmitters().Has(particleEmitter)){
+	if(!gameDefinition->GetParticleEmitters().Has(particleEmitter)){
 		DETHROW(deeInvalidParam);
 	}
 	

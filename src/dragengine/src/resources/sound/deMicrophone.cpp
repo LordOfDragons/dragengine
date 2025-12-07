@@ -206,7 +206,7 @@ void deMicrophone::SetEnableAuralization(bool enable){
 /////////////
 
 void deMicrophone::AddSpeaker(deSpeaker *speaker){
-	if(! speaker || speaker->GetParentMicrophone() || speaker->GetParentWorld()){
+	if(!speaker || speaker->GetParentMicrophone() || speaker->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -232,7 +232,7 @@ void deMicrophone::AddSpeaker(deSpeaker *speaker){
 }
 
 void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
-	if(! speaker || speaker->GetParentMicrophone() != this){
+	if(!speaker || speaker->GetParentMicrophone() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

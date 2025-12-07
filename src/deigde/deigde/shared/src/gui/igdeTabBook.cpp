@@ -106,7 +106,7 @@ void igdeTabBook::AddChild(igdeWidget *child, const char *text, igdeIcon *icon){
 
 void igdeTabBook::AddChild(igdeWidget *child, const char *text, igdeIcon *icon,
 const char *description){
-	if(! child || child->GetParent()){
+	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -121,7 +121,7 @@ const char *description){
 		throw;
 	}
 	
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -179,7 +179,7 @@ void igdeTabBook::CreateNativeWidget(){
 }
 
 void igdeTabBook::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -188,7 +188,7 @@ void igdeTabBook::DestroyNativeWidget(){
 }
 
 void *igdeTabBook::GetNativeContainer() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return NULL;
 	}
 	return ((igdeNativeTabBook*)GetNativeWidget())->GetNativeContainer();
@@ -198,7 +198,7 @@ void *igdeTabBook::GetNativeContainer() const{
 
 void igdeTabBook::CreateChildWidgetNativeWidgets(){
 	igdeNativeTabBook * const native = (igdeNativeTabBook*)GetNativeWidget();
-	if(! native){
+	if(!native){
 		DETHROW(deeInvalidParam);
 	}
 	

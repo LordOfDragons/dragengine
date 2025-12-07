@@ -110,16 +110,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Side placement. */
-	inline eSidePlacement GetSidePlacement() const{return pSidePlacement;}
+	inline eSidePlacement GetSidePlacement() const{ return pSidePlacement; }
 	
 	/** \brief Split position. */
-	inline int GetSplitPosition() const{return pSplitPosition;}
+	inline int GetSplitPosition() const{ return pSplitPosition; }
 	
 	/** \brief Set split position. */
 	void SetSplitPosition(int splitPosition);
 	
 	/** \brief Relative split position. */
-	inline float GetSplitPositionRelative() const{return pSplitPositionRelative;}
+	inline float GetSplitPositionRelative() const{ return pSplitPositionRelative; }
 	
 	/** \brief Set relative split position. */
 	void SetSplitPositionRelative(float splitPosition);

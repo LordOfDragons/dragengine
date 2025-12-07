@@ -101,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module owning the task or NULL if global. */
-	inline deBaseModule *GetOwner() const{return pOwner;}
+	inline deBaseModule *GetOwner() const{ return pOwner; }
 	
 	/**
 	 * \brief Mark task finished after Run() method leaves.
@@ -111,7 +111,7 @@ public:
 	 * \retval true Task is marked finished after Run() method exits.
 	 * \retval false Task is marked finished after Finished() method exits.
 	 */
-	inline bool GetMarkFinishedAfterRun() const{return pMarkFinishedAfterRun;}
+	inline bool GetMarkFinishedAfterRun() const{ return pMarkFinishedAfterRun; }
 	
 	/**
 	 * \brief Set if task is marked finished after Run() method leaves.
@@ -121,7 +121,7 @@ public:
 	void SetMarkFinishedAfterRun(bool markFinishedAfterRun);
 	
 	/** \brief Task has empty run implementation. */
-	inline bool GetEmptyRun() const{return pEmptyRun;}
+	inline bool GetEmptyRun() const{ return pEmptyRun; }
 	
 	/**
 	 * \brief Set if task has empty run implementation.
@@ -132,13 +132,13 @@ public:
 	void SetEmptyRun(bool emptyRun);
 	
 	/** \brief Task has lower priority than other tasks. */
-	inline bool GetLowPriority() const{return pLowPriority;}
+	inline bool GetLowPriority() const{ return pLowPriority; }
 	
 	/** \brief Set if task has lower priority than other tasks. */
 	void SetLowPriority(bool lowPriority);
 	
 	/** \brief Task has been cancelled. */
-	inline bool IsCancelled() const{return pCancel;}
+	inline bool IsCancelled() const{ return pCancel; }
 	
 	/**
 	 * \brief Cancel task.
@@ -149,7 +149,7 @@ public:
 	void Cancel();
 	
 	/** \brief Task is finished. */
-	inline bool GetFinished() const{return pFinished;}
+	inline bool GetFinished() const{ return pFinished; }
 	
 	/**
 	 * \brief Set task finished.
@@ -191,8 +191,8 @@ public:
 	 * 
 	 * Used by deParallelProcessing only.
 	 */
-	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){return pDependedOnBy;}
-	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{return pDependedOnBy;}
+	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){ return pDependedOnBy; }
+	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{ return pDependedOnBy; }
 	
 	/**
 	 * \brief Remove from all tasks depending on this task.

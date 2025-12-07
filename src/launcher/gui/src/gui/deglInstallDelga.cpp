@@ -103,7 +103,7 @@ public:
 			FXuint progressPercentage = 0;
 			int bytesCopied = 0;
 			
-			while(bytesCopied < totalSize && ! pAbort){
+			while(bytesCopied < totalSize && !pAbort){
 				const FXuint percentage = (FXuint)(percentageFactor * bytesCopied);
 				if(percentage != progressPercentage){
 					progressPercentage = percentage;
@@ -149,7 +149,7 @@ public:
 		}
 		
 		pAbort = abort;
-		while(! pFinished){
+		while(!pFinished){
 			FXThread::sleep(100000000); // 100ms
 		}
 	}
@@ -184,7 +184,7 @@ bool deglInstallDelga::Run(const char *forceFilename){
 		FXFileDialog dialog(&pWindow, "Install DELGA");
 		dialog.setPatternList("DELGA (*.delga)\nAll Files (*)");
 		dialog.setCurrentPattern(0);
-		if(! dialog.execute(PLACEMENT_OWNER)){
+		if(!dialog.execute(PLACEMENT_OWNER)){
 			return false;
 		}
 		
@@ -240,7 +240,7 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	for(i=0; i<patches.GetCount(); i++){
 		const delPatch &patch = *patches.GetAt(i);
 		const delGame *game = launcher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
-		if(! game){
+		if(!game){
 			game = games.GetWithID(patch.GetGameID());
 		}
 		text.AppendFormat("- Patch '%s' for game '%s'\n",
@@ -260,7 +260,7 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	
 	cTaskInstallDelga task(launcher, &dialogProgress, filename);
 	FXWorker::execute(&task);
-	if(! dialogProgress.execute(PLACEMENT_OWNER)){
+	if(!dialogProgress.execute(PLACEMENT_OWNER)){
 		task.WaitFinished(true);
 		return false;
 	}

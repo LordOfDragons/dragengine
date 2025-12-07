@@ -87,7 +87,7 @@ void deoglCapCheckClearEntireArrayTexture::Check(GLuint fbo){
 	//    implementation all pixels of all layers have the value of 1. If the driver has the bug the pixels
 	//    of one or more layers have the value 0.5 .
 	
-	if(! pglFramebufferTexture){
+	if(!pglFramebufferTexture){
 		return;
 	}
 	
@@ -109,7 +109,7 @@ void deoglCapCheckClearEntireArrayTexture::Check(GLuint fbo){
 	try{
 		// generate test array texture
 		OGL_CHECK(renderThread, glGenTextures(1, &texture));
-		if(! texture){
+		if(!texture){
 			DETHROW(deeOutOfMemory);
 		}
 		

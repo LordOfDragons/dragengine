@@ -99,31 +99,31 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decVector &GetRayOrigin() const{ return pRayOrigin; }
 	
 	/** \brief Ray direction. */
-	inline const decVector &GetRayDirection() const{return pRayDirection;}
+	inline const decVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Ray length. */
-	inline float GetRayLength() const{return pRayLength;}
+	inline float GetRayLength() const{ return pRayLength; }
 	
 	/** \brief Ray box minimum extend. */
-	inline const decVector &GetRayBoxMin() const{return pRayBoxMin;}
+	inline const decVector &GetRayBoxMin() const{ return pRayBoxMin; }
 	
 	/** \brief Ray box maximum extend. */
-	inline const decVector &GetRayBoxMax() const{return pRayBoxMax;}
+	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
 	void SetRay(const decVector &origin, const decVector &direction);
 	
 	/** \brief Find front facing hits otherwise back facing hits. */
-	inline bool GetFrontFacing() const{return pFrontFacing;}
+	inline bool GetFrontFacing() const{ return pFrontFacing; }
 	
 	/** \brief Set to find front facing hits or back facing hits. */
 	void SetFrontFacing(bool frontFacing);
 	
 	/** \brief Limit distance. */
-	inline float GetLimitDistance() const{return pLimitDistance;}
+	inline float GetLimitDistance() const{ return pLimitDistance; }
 	
 	/** \brief Set limit distance. */
 	void SetLimitDistance(float limitDistance);
@@ -131,19 +131,19 @@ public:
 	
 	
 	/** \brief Result is set. */
-	inline bool GetHasResult() const{return pHasResult;}
+	inline bool GetHasResult() const{ return pHasResult; }
 	
 	/** \brief Result distance. */
-	inline float GetResultDistance() const{return pResultDistance;}
+	inline float GetResultDistance() const{ return pResultDistance; }
 	
 	/** \brief Result point. */
-	inline const decVector GetResultPoint() const{return pResultPoint;}
+	inline const decVector GetResultPoint() const{ return pResultPoint; }
 	
 	/** \brief Result normal. */
-	inline const decVector &GetResultNormal() const{return *pResultNormal;}
+	inline const decVector &GetResultNormal() const{ return *pResultNormal; }
 	
 	/** \brief Result face index. */
-	inline int GetResultFace() const{return pResultFace;}
+	inline int GetResultFace() const{ return pResultFace; }
 	
 	
 	

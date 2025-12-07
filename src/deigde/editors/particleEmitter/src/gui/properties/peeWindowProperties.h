@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

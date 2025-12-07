@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deoglSkinRenderable::deoglSkinRenderable(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	

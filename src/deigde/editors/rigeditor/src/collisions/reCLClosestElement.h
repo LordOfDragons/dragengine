@@ -86,23 +86,23 @@ public:
 	void Reset();
 	
 	/** \brief Determines if an element has been hit. */
-	inline bool GetHasHit() const{return pHasHit;}
+	inline bool GetHasHit() const{ return pHasHit; }
 	/** \brief Retrieves the hit distance. */
-	inline float GetHitDistance() const{return pHitDistance;}
+	inline float GetHitDistance() const{ return pHitDistance; }
 	/** \brief Retrieves the hit normal. */
-	inline const decVector &GetHitNormal() const{return pHitNormal;}
+	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	/** \brief Determines if the simulation rig itself is hit. */
-	inline bool GetHitSimRig() const{return pHitSimRig;}
+	inline bool GetHitSimRig() const{ return pHitSimRig; }
 	/** \brief Retrieves the hit simulation bone or NULL. */
-	inline reRigBone *GetHitSimBone() const{return pHitSimBone;}
+	inline reRigBone *GetHitSimBone() const{ return pHitSimBone; }
 	/** \brief Retrieves the hit bone or NULL. */
-	inline reRigBone *GetHitBone() const{return pHitBone;}
+	inline reRigBone *GetHitBone() const{ return pHitBone; }
 	/** \brief Retrieves the hit shape or NULL. */
-	inline reRigShape *GetHitShape() const{return pHitShape;}
+	inline reRigShape *GetHitShape() const{ return pHitShape; }
 	/** \brief Retrieves the hit constraint or NULL. */
-	inline reRigConstraint *GetHitConstraint() const{return pHitConstraint;}
+	inline reRigConstraint *GetHitConstraint() const{ return pHitConstraint; }
 	/** \brief Retrieves the hit push or NULL. */
-	inline reRigPush *GetHitPush() const{return pHitPush;}
+	inline reRigPush *GetHitPush() const{ return pHitPush; }
 	/*@}*/
 	
 	/** \name Notifications */

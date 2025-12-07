@@ -86,7 +86,7 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 		gdeParticleEmitter * const particleEmitter = list.GetAt(i);
 		gdeWPSTIMParticleEmitter * const modelParticleEmitter = GetChildWith(particleEmitter);
 		
-		if(! modelParticleEmitter){
+		if(!modelParticleEmitter){
 			item.TakeOver(new gdeWPSTIMParticleEmitter(GetTree(), list.GetAt(i)));
 			AppendModel(item);
 		}
@@ -98,7 +98,7 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 		gdeWPSTIMParticleEmitter * const modelParticleEmitter = (gdeWPSTIMParticleEmitter*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelParticleEmitter->GetParticleEmitter())){
+		if(!list.Has(modelParticleEmitter->GetParticleEmitter())){
 			RemoveModel(modelParticleEmitter);
 		}
 	}
@@ -131,7 +131,7 @@ void gdeWPSTIMParticleEmitters::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMParticleEmitters::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

@@ -72,15 +72,15 @@ public:
 	decStringSet GetSupportedServices() override;
 	
 	/** Mods virtual file system. */
-	inline const deVirtualFileSystem::Ref &GetVFSMods() const{return pVFSMods;}
+	inline const deVirtualFileSystem::Ref &GetVFSMods() const{ return pVFSMods; }
 	
 	/** Mod configurations (deModioModConfig). */
-	inline const decObjectList &GetModConfigs() const{return pModConfigs;}
+	inline const decObjectList &GetModConfigs() const{ return pModConfigs; }
 	void SetModConfigs(const decObjectList &configs);
 	
 	/** User configurations (deModioUserConfig). */
-	inline decObjectDictionary &GetUserConfigs(){return pUserConfigs;}
-	inline const decObjectDictionary &GetUserConfigs() const{return pUserConfigs;}
+	inline decObjectDictionary &GetUserConfigs(){ return pUserConfigs; }
+	inline const decObjectDictionary &GetUserConfigs() const{ return pUserConfigs; }
 	
 	/** User configuration with ID or nullptr if not found. */
 	deModioUserConfig *GetUserConfigIfPresent(const decString &id) const;
@@ -89,7 +89,7 @@ public:
 	deModioUserConfig &GetUserConfig(const decString &id);
 	
 	/** Current user id. */
-	inline const decString &GetCurUserId() const{return pCurUserId;}
+	inline const decString &GetCurUserId() const{ return pCurUserId; }
 	
 	/** Set current user id. Create user if not existing. */
 	void SetCurUserId(const decString &id);
@@ -101,10 +101,10 @@ public:
 	void ActivateMods(const decString &userId);
 	
 	/** Active modifications (deModioUserConfig). */
-	inline const decObjectList &GetActiveMods() const{return pActivateConfigs;}
+	inline const decObjectList &GetActiveMods() const{ return pActivateConfigs; }
 	
 	/** Log level module parameter. */
-	inline const deMPLogLevel &GetParamLogLevel() const{return *pParamLogLevel;}
+	inline const deMPLogLevel &GetParamLogLevel() const{ return *pParamLogLevel; }
 	
 	
 	/**

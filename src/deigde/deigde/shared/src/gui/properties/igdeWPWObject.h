@@ -142,7 +142,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object or NULL if not set. */
-	inline const igdeWObject::Ref &GetObject() const{return pObject;}
+	inline const igdeWObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Set object or NULL to clear. */
 	void SetObject(igdeWObject *object);
@@ -152,13 +152,13 @@ public:
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{return pAction;}
+	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);
 	
 	/** \brief Undo system or nullptr. */
-	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/**
 	 * \brief Set undo system or nullptr.

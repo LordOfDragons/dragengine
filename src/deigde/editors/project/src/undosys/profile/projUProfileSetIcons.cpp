@@ -43,7 +43,7 @@ projUProfileSetIcons::projUProfileSetIcons(projProfile *profile, const decString
 pProfile(NULL),
 pNewValue(newValue)
 {
-	if(! profile){
+	if(!profile){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -74,19 +74,19 @@ public:
 	int GetTotalSubInstanceCount() const;
 	
 	/** Parent pipeline. */
-	inline deoglPersistentRenderTaskPipeline *GetParentPipeline() const{return pParentPipeline;}
+	inline deoglPersistentRenderTaskPipeline *GetParentPipeline() const{ return pParentPipeline; }
 	
 	/** Set parent pipeline. */
 	void SetParentPipeline(deoglPersistentRenderTaskPipeline *pipeline);
 	
 	/** Texture units configuration. */
-	inline const deoglTexUnitsConfig *GetTUC() const{return pTUC;}
+	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
 	void SetTUC(const deoglTexUnitsConfig *tuc);
 	
 	/** Shader parameter block or NULL if not used. */
-	inline const deoglShaderParameterBlock *GetParameterBlock() const{return pParamBlock;}
+	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL if not used. */
 	void SetParameterBlock(const deoglShaderParameterBlock *block);
@@ -122,8 +122,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTexture(){return pLLTexture;}
-	inline const decPointerLinkedList::cListEntry &GetLLShader() const{return pLLTexture;}
+	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
+	inline const decPointerLinkedList::cListEntry &GetLLShader() const{ return pLLTexture; }
 	/*@}*/
 };
 

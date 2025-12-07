@@ -67,7 +67,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
-	if(! snapPoint){
+	if(!snapPoint){
 		return NULL;
 	}
 	

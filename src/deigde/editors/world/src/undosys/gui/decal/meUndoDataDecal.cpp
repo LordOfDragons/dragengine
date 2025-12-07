@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUndoDataDecal::meUndoDataDecal(meDecal *decal){
-	if(! decal) DETHROW(deeInvalidParam);
+	if(!decal) DETHROW(deeInvalidParam);
 	
 	pOldPosition = decal->GetPosition();
 	pOldOrientation = decal->GetRotation();

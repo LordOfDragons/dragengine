@@ -63,7 +63,7 @@ void seWPDynamicSkinListener::DynamicSkinRenderableStructureChanged(seSkin *skin
 
 void seWPDynamicSkinListener::DynamicSkinRenderableChanged(seSkin *skin,
 seDynamicSkinRenderable *renderable){
-	if(skin != pPanel.GetSkin() || ! renderable->GetActive()){
+	if(skin != pPanel.GetSkin() || !renderable->GetActive()){
 		return;
 	}
 	
@@ -73,7 +73,7 @@ seDynamicSkinRenderable *renderable){
 
 void seWPDynamicSkinListener::DynamicSkinRenderableNameChanged(seSkin *skin,
 seDynamicSkinRenderable *renderable){
-	if(skin != pPanel.GetSkin() || ! renderable->GetActive()){
+	if(skin != pPanel.GetSkin() || !renderable->GetActive()){
 		return;
 	}
 	

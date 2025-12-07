@@ -75,7 +75,7 @@ void deoglCapCheckFramebufferTextureSingle::Check(GLuint fbo){
 	//    A 2D texture is attached using glFramebufferTexture. If GL_INVALID_OPERATION is
 	//    thrown then the driver is broken
 	
-	if(! pglFramebufferTexture){
+	if(!pglFramebufferTexture){
 		return;
 	}
 	
@@ -89,7 +89,7 @@ void deoglCapCheckFramebufferTextureSingle::Check(GLuint fbo){
 	try{
 		// generate test array texture
 		OGL_CHECK(renderThread, glGenTextures(1, &texture));
-		if(! texture){
+		if(!texture){
 			DETHROW(deeOutOfMemory);
 		}
 		

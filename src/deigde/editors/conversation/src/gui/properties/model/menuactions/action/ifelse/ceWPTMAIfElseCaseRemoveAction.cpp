@@ -58,7 +58,7 @@ pIfElse(&ifElse),
 pIfCase(&ifCase),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

@@ -67,7 +67,7 @@ pAlreadyLoaded(false),
 pParentTask(parentTask),
 pInternalTask(NULL)
 {
-	if(! parentTask){
+	if(!parentTask){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void deRLTaskReadFontInternal::Run(){
 	
 	deBaseFontModule * const module = (deBaseFontModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtFont, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -109,7 +109,7 @@ void deRLTaskReadFontInternal::Run(){
 void deRLTaskReadFontInternal::Finished(){
 	LogFinishedEnter();
 	
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pFont = NULL;
 		LogFinishedExit();

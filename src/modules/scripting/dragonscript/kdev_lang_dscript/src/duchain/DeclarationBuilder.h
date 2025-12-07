@@ -53,7 +53,7 @@ public:
 	void closeNamespaceContexts();
 	
 	/** \brief Pinned namespaces. */
-	inline const QVector<DUChainPointer<const DUContext>> &GetPinned(){return pPinned;}
+	inline const QVector<DUChainPointer<const DUContext>> &GetPinned(){ return pPinned; }
 	
 	/** \brief Find all existing declarations for the identifier \p node. */
 	QList<Declaration*> existingDeclarationsForNode(IdentifierAst *node);

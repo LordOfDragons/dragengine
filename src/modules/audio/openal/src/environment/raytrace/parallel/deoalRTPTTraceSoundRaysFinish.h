@@ -88,7 +88,7 @@ public:
 	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Trace tasks (deoalRTPTTraceSoundRays*). */
-	inline decPointerList GetTraceTasks(){return pTasks;}
+	inline decPointerList GetTraceTasks(){ return pTasks; }
 	
 	
 	

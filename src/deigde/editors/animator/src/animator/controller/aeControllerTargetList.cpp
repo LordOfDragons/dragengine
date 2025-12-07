@@ -72,14 +72,14 @@ bool aeControllerTargetList::Has(aeControllerTarget *target) const{
 }
 
 void aeControllerTargetList::Add(aeControllerTarget *target){
-	if(! target || Has(target)){
+	if(!target || Has(target)){
 		DETHROW(deeInvalidParam);
 	}
 	pTargets.Add(target);
 }
 
 void aeControllerTargetList::Insert(aeControllerTarget *target, int index){
-	if(! target || Has(target)){
+	if(!target || Has(target)){
 		DETHROW(deeInvalidParam);
 	}
 	pTargets.Insert(target, index);

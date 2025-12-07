@@ -62,14 +62,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOpenGL(){return pOgl;}
-	inline const deGraphicOpenGl &GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
+	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Video player. */
-	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
+	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Usage count. */
-	inline int GetUsageCount() const{return pUsageCount;}
+	inline int GetUsageCount() const{ return pUsageCount; }
 	
 	/** Increase usage count by one. */
 	void AddUsage();

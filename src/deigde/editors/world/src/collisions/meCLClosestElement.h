@@ -103,14 +103,14 @@ public:
 	void SetIgnoreDecal(meDecal *decal);
 	
 	/** \breif Object filter or nullptr to not use filtering. */
-	inline const meFilterObjects *GetFilterObjects() const{return pFilterObjects;}
+	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
 	
 	/**  Set object filter or nullptr to not use filtering. */
 	void SetFilterObjects(const meFilterObjects *filter);
 	
 	/**  List of objects to ignore. */
-	inline meObjectList &GetIgnoreObjects(){return pIgnoreObjects;}
-	inline const meObjectList &GetIgnoreObjects() const{return pIgnoreObjects;}
+	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
+	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
 	
 	
 	
@@ -120,25 +120,25 @@ public:
 	
 	
 	/** \breief Element has been hit. */
-	inline bool GetHasHit() const{return pHasHit;}
+	inline bool GetHasHit() const{ return pHasHit; }
 	
 	/**  Hit distance. */
-	inline float GetHitDistance() const{return pHitDistance;}
+	inline float GetHitDistance() const{ return pHitDistance; }
 	
 	/**  Hit normal. */
-	inline const decVector &GetHitNormal() const{return pHitNormal;}
+	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	
 	/**  Hit height terrain sector or nullptr. */
-	inline meHeightTerrainSector *GetHitHTSector() const{return pHitHTSector;}
+	inline meHeightTerrainSector *GetHitHTSector() const{ return pHitHTSector; }
 	
 	/**  Hit object or nullptr. */
-	inline meObject *GetHitObject() const{return pHitObject;}
+	inline meObject *GetHitObject() const{ return pHitObject; }
 	
 	/**  Hit decal or nullptr. */
-	inline meDecal *GetHitDecal() const{return pHitDecal;}
+	inline meDecal *GetHitDecal() const{ return pHitDecal; }
 	
 	/**  Hit object snap point or nullptr. */
-	inline meObjectSnapPoint *GetHitSnapPoint() const{return pHitSnapPoint;}
+	inline meObjectSnapPoint *GetHitSnapPoint() const{ return pHitSnapPoint; }
 	/*@}*/
 	
 	

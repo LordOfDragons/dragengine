@@ -94,26 +94,26 @@ public:
 		}
 	}
 	
-	inline dePropField *GetEnginePF() const{return pEngPF;}
+	inline dePropField *GetEnginePF() const{ return pEngPF; }
 	
 	void CreatePF(deEngine *engine){
-		if(! pEngPF){
+		if(!pEngPF){
 			pEngPF = engine->GetPropFieldManager()->CreatePropField();
-			if(! pEngPF) DSTHROW(dueOutOfMemory);
+			if(!pEngPF) DSTHROW(dueOutOfMemory);
 			
 			dedsPropField *peer = (dedsPropField*)pEngPF->GetPeerScripting();
 			peer->SetDelegee(this);
 		}
 	}
 	
-	inline float GetHeight() const{return pHeight;}
+	inline float GetHeight() const{ return pHeight; }
 	
 	void SetHeight(float height){
 		pHeight = height;
 	}
 	
-	inline int GetInstanceCount() const{return pInstanceCount;}
-	inline dedsCachedVegetationInstance *GetInstances() const{return pInstances;}
+	inline int GetInstanceCount() const{ return pInstanceCount; }
+	inline dedsCachedVegetationInstance *GetInstances() const{ return pInstances; }
 	
 	void SetInstanceCount(int count){
 		if(count < 0) DSTHROW(dueInvalidParam);
@@ -126,7 +126,7 @@ public:
 		
 		if(count > 0){
 			pInstances = new dedsCachedVegetationInstance[count];
-			if(! pInstances) DSTHROW(dueOutOfMemory);
+			if(!pInstances) DSTHROW(dueOutOfMemory);
 			pInstanceCount = count;
 		}
 	}
@@ -221,7 +221,7 @@ private:
 	
 public:
 	dedsCachedVegetationSector(deEngine *engine, float sectorDim, int pfCellCount, const decPoint &coordinates){
-		if(! engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
+		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		int p, pfCount = pfCellCount * pfCellCount;
 		
@@ -233,7 +233,7 @@ public:
 		pWorld = NULL;
 		
 		pPFs = new dedsCachedVegetationPropField[pfCount];
-		if(! pPFs) DSTHROW(dueOutOfMemory);
+		if(!pPFs) DSTHROW(dueOutOfMemory);
 		pPFCount = pfCount;
 		
 		for(p=0; p<pfCount; p++){
@@ -272,10 +272,10 @@ public:
 		}
 	}
 	
-	inline const decPoint &GetCoordinates() const{return pCoordinates;}
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
-	inline int GetPFCount() const{return pPFCount;}
-	inline dedsCachedVegetationPropField *GetPFs() const{return pPFs;}
+	inline int GetPFCount() const{ return pPFCount; }
+	inline dedsCachedVegetationPropField *GetPFs() const{ return pPFs; }
 	
 	void SetCollisionFilter(const decCollisionFilter &filter){
 		int p;
@@ -427,7 +427,7 @@ private:
 	
 public:
 	dedsCachedVegetation(deEngine *engine, float sectorDim, int pfCellCount){
-		if(! engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
+		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		pEngine = engine;
 		pSectors = NULL;
@@ -467,7 +467,7 @@ public:
 		}
 	}
 	
-	inline int GetSectorCount() const{return pSectorCount;}
+	inline int GetSectorCount() const{ return pSectorCount; }
 	
 	dedsCachedVegetationSector *GetSectorAt(int index) const{
 		if(index < 0 || index >= pSectorCount) DSTHROW(dueInvalidParam);
@@ -497,7 +497,7 @@ public:
 		if(pSectorCount == pSectorSize){
 			int newSize = pSectorSize * 3 / 2 + 1;
 			dedsCachedVegetationSector **newArray = new dedsCachedVegetationSector*[newSize];
-			if(! newArray) DSTHROW(dueOutOfMemory);
+			if(!newArray) DSTHROW(dueOutOfMemory);
 			if(pSectors){
 				memcpy(newArray, pSectors, sizeof(dedsCachedVegetationSector*) * pSectorSize);
 				delete [] pSectors;
@@ -597,7 +597,7 @@ void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	// create cached vegetation worker object
 	nd->cveg = new dedsCachedVegetation(engine, sectorDim, propfieldCellCount);
-	if(! nd->cveg) DSTHROW(dueOutOfMemory);
+	if(!nd->cveg) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -649,7 +649,7 @@ void deClassCachedVegetation::nfHasSector::RunFunction(dsRunTime *rt, dsValue *m
 	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
-	if(! objCoord) DSTHROW(dueNullPointer);
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
 	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
@@ -669,7 +669,7 @@ void deClassCachedVegetation::nfAddSector::RunFunction(dsRunTime *rt, dsValue *m
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
 	const char *cacheFile = rt->GetValue(1)->GetString();
 	
-	if(! objCoord) DSTHROW(dueNullPointer);
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
 	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
@@ -686,7 +686,7 @@ void deClassCachedVegetation::nfRemoveSector::RunFunction(dsRunTime *rt, dsValue
 	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
-	if(! objCoord) DSTHROW(dueNullPointer);
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
 	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
@@ -743,7 +743,7 @@ void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myse
 	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCVeg)){
+	if(!p_IsObjOfType(obj, clsCVeg)){
 		rt->PushBool(false);
 		
 	}else{
@@ -764,7 +764,7 @@ void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myse
 
 deClassCachedVegetation::deClassCachedVegetation(deScriptingDragonScript *ds) :
 dsClass("CachedVegetation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	

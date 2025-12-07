@@ -41,7 +41,7 @@
 ////////////////////////////
 
 saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
-	if(! sanimation || ! phoneme) DETHROW(deeInvalidParam);
+	if(!sanimation || !phoneme) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	pPhoneme = NULL;

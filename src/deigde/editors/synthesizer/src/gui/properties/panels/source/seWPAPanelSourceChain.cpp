@@ -73,7 +73,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seSourceChain * const source = (seSourceChain*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -96,7 +96,7 @@ public:
 	
 	virtual void OnAction(){
 		seSourceChain * const source = (seSourceChain*)pPanel.GetSource();
-		if(! source){
+		if(!source){
 			return;
 		}
 		
@@ -174,7 +174,7 @@ public:
 	
 	virtual igdeUndo *OnAction(seSourceChain *source){
 		decString path;
-		if(! igdeCommonDialogs::GetFileOpen(&pPanel, "Add Sound",
+		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Add Sound",
 			*pPanel.GetEnvironment().GetFileSystemGame(),
 			*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSound ), path ) ){
 				return NULL;
@@ -243,7 +243,7 @@ public:
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
 		seSourceChain * const source = (seSourceChain*)pPanel.GetSource();
 		const int selection = pPanel.GetSelectedSoundInList();
-		if(! source || selection == -1 || source->GetPathSounds().GetAt(selection) == editPath->GetPath()){
+		if(!source || selection == -1 || source->GetPathSounds().GetAt(selection) == editPath->GetPath()){
 			return;
 		}
 		
@@ -406,7 +406,7 @@ void seWPAPanelSourceChain::UpdateSoundInfo(){
 			sound->GetSampleCount(), (float)sound->GetSampleCount() / (float)sound->GetSampleRate());
 		
 		if(GetSynthesizer()->GetChannelCount() < sound->GetChannelCount()){
-			if(! description.IsEmpty()){
+			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
 			description += "Sound has more channels than synthesizer!";
@@ -414,7 +414,7 @@ void seWPAPanelSourceChain::UpdateSoundInfo(){
 		}
 		
 		if(GetSynthesizer()->GetSampleRate() != sound->GetSampleRate()){
-			if(! description.IsEmpty()){
+			if(!description.IsEmpty()){
 				description.AppendCharacter('\n');
 			}
 			description += "Sound sample rate differs synthesizer!";

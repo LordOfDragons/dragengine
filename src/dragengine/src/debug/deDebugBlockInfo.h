@@ -82,22 +82,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to be added to debug overlay. */
-	inline deCanvasView *GetView() const{return pView;}
+	inline deCanvasView *GetView() const{ return pView; }
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{return pFont;}
+	inline deFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(deFont *font);
 	
 	/** \brief Padding. */
-	inline int GetPadding() const{return pPadding;}
+	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set padding. */
 	void SetPadding(int padding);
 	
 	/** \brief Spacing. */
-	inline int GetSpacing() const{return pSpacing;}
+	inline int GetSpacing() const{ return pSpacing; }
 	
 	/** \brief Set spacing. */
 	void SetSpacing(int spacing);

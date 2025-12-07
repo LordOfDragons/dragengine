@@ -77,13 +77,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Reset view. */
 	void ResetView();
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{return pRig;}
+	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

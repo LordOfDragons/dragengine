@@ -44,7 +44,7 @@
 seUControllerToggleClamp::seUControllerToggleClamp(seController *controller) :
 pController(controller)
 {
-	if(! controller){
+	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -59,7 +59,7 @@ seUControllerToggleClamp::~seUControllerToggleClamp(){
 
 void seUControllerToggleClamp::Undo(){
 	seController &controller = (seController&)(deObject&)pController;
-	controller.SetClamp(! controller.GetClamp());
+	controller.SetClamp(!controller.GetClamp());
 }
 
 void seUControllerToggleClamp::Redo(){

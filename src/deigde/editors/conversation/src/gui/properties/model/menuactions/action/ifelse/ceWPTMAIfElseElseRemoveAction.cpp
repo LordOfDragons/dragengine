@@ -56,7 +56,7 @@ pTopic(&topic),
 pIfElse(&ifElse),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

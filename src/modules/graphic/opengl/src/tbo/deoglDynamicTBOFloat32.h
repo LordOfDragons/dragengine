@@ -52,8 +52,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline float *GetDataFloat(){return (float*)pData;}
-	inline const float *GetDataFloat() const{return (float*)pData;}
+	inline float *GetDataFloat(){ return (float*)pData; }
+	inline const float *GetDataFloat() const{ return (float*)pData; }
 	
 	/**
 	 * Add boolean value.

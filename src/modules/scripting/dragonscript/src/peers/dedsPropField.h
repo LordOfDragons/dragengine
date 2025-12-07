@@ -61,7 +61,7 @@ public:
 	/** \brief Sets the callback object. */
 	void SetCallback(dsRealObject *object);
 	/** \brief Retrieves the delegee or NULL. */
-	inline deBaseScriptingPropField *GetDelegee() const{return pDelegee;}
+	inline deBaseScriptingPropField *GetDelegee() const{ return pDelegee; }
 	/** \brief Sets the delegee or NULL. */
 	void SetDelegee(deBaseScriptingPropField *delegee);
 	/*@}*/

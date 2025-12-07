@@ -218,7 +218,7 @@ public:
 		"Animation state is reset before each frame update for testing relative animators"){ }
 	
 	virtual void OnAction(aeAnimator *animator){
-		animator->SetResetState(! animator->GetResetState());
+		animator->SetResetState(!animator->GetResetState());
 	}
 	
 	virtual void Update(const aeAnimator &animator){
@@ -262,7 +262,7 @@ public:
 		"Attaches the camera to a bone instead of roaming around freely"){}
 	
 	virtual void OnAction(aeAnimator *animator){
-		animator->GetCamera()->SetAttachToBone(! animator->GetCamera()->GetAttachToBone());
+		animator->GetCamera()->SetAttachToBone(!animator->GetCamera()->GetAttachToBone());
 	}
 	
 	virtual void Update(const aeAnimator &animator){
@@ -362,7 +362,7 @@ public:
 	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", NULL, "Paus animation playback"){}
 	
 	virtual void OnAction(aeAnimator *animator){
-		animator->SetPaused(! animator->GetPaused());
+		animator->SetPaused(!animator->GetPaused());
 	}
 	
 	virtual void Update(const aeAnimator &animator){
@@ -423,7 +423,7 @@ public:
 	
 	virtual void OnAction(aeAnimator *animator){
 		aeAttachment * const attachment = pPanel.GetAttachment();
-		if(! attachment){
+		if(!attachment){
 			return;
 		}
 		
@@ -462,7 +462,7 @@ public:
 	virtual void OnAction(aeAnimator *animator){
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(! igdeCommonDialogs::GetFileOpen(&pPanel, "Open Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Open Attachment Configuration",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}
@@ -480,7 +480,7 @@ public:
 	virtual void OnAction(aeAnimator *animator){
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
-		if(! igdeCommonDialogs::GetFileSave(&pPanel, "Save Attachment Configuration",
+		if(!igdeCommonDialogs::GetFileSave(&pPanel, "Save Attachment Configuration",
 		*pPanel.GetEnvironment().GetFileSystemGame(), lssys.GetAttConfigFilePatterns(), filename ) ){
 			return;
 		}
@@ -518,7 +518,7 @@ public:
 	
 	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
 		aeAttachment * const attachment = pPanel.GetAttachment();
-		if(! attachment || textField->GetText() == attachment->GetName()){
+		if(!attachment || textField->GetText() == attachment->GetName()){
 			return;
 		}
 		

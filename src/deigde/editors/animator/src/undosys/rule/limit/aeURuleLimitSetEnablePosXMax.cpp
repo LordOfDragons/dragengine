@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnablePosXMax::aeURuleLimitSetEnablePosXMax(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosXMax::Undo(){
 }
 
 void aeURuleLimitSetEnablePosXMax::Redo(){
-	pRule->SetEnablePositionXMax(! pRule->GetEnablePositionXMax());
+	pRule->SetEnablePositionXMax(!pRule->GetEnablePositionXMax());
 }

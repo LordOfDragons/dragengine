@@ -59,7 +59,7 @@ public:
 	/** Pushes the file reader on the stack. File reader can be NULL to push a null object. */
 	void PushFileReader(dsRunTime *rt, decBaseFileReader *fileReader);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/
 	
 private:

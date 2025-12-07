@@ -55,8 +55,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironmentIGDE &GetEnvironment(){return pEnvironment;}
-	inline const igdeEnvironmentIGDE &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironmentIGDE &GetEnvironment(){ return pEnvironment; }
+	inline const igdeEnvironmentIGDE &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Main window. */
 	igdeWindowMain &GetWindowMain() const;

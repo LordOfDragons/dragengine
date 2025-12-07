@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate file. */
-	inline ceConversationFile *GetDuplicateFile() const{return pFile;}
+	inline ceConversationFile *GetDuplicateFile() const{ return pFile; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

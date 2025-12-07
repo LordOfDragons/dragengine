@@ -89,10 +89,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline gdeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

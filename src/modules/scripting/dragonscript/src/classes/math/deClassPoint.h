@@ -45,8 +45,8 @@ public:
 	~deClassPoint();
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decPoint &GetPoint(dsRealObject *This) const;
 	void PushPoint(dsRunTime *RT, const decPoint &vector);
 

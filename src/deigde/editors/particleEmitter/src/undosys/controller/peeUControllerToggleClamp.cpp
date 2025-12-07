@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
-	if(! controller) DETHROW(deeInvalidParam);
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	
@@ -62,9 +62,9 @@ peeUControllerToggleClamp::~peeUControllerToggleClamp(){
 ///////////////
 
 void peeUControllerToggleClamp::Undo(){
-	pController->SetClamp(! pController->GetClamp());
+	pController->SetClamp(!pController->GetClamp());
 }
 
 void peeUControllerToggleClamp::Redo(){
-	pController->SetClamp(! pController->GetClamp());
+	pController->SetClamp(!pController->GetClamp());
 }

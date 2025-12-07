@@ -193,7 +193,7 @@ void deClassColliderComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassColliderComponent * const clsColComp = (deClassColliderComponent*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsColComp)){
+	if(!p_IsObjOfType(obj, clsColComp)){
 		rt->PushBool(false);
 		
 	}else{
@@ -286,11 +286,11 @@ deColliderComponent *deClassColliderComponent::GetCollider(dsRealObject *myself)
 }
 
 void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent *collider){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! collider){
+	if(!collider){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -72,7 +72,7 @@ void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 		if(vfs.ExistsFile(path)){
 			pOgl.LogInfo("Loading configuration file 'opengl.xml'");
 			file = vfs.OpenFileForReading(path);
-			if(! file){
+			if(!file){
 				DETHROW(deeOutOfMemory);
 			}
 			
@@ -117,7 +117,7 @@ void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, 
 	
 	// interpretate xml
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "config") != 0){
+	if(!root || strcmp(root->GetName(), "config") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

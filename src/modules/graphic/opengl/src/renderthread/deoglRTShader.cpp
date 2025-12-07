@@ -177,13 +177,13 @@ void deoglRTShader::InvalidateSSBOSkinTextures(){
 }
 
 void deoglRTShader::UpdateSSBOSkinTextures(){
-	if(! pDirtySSBOSkinTextures){
+	if(!pDirtySSBOSkinTextures){
 		return;
 	}
 	
 	pDirtySSBOSkinTextures = false;
 	
-	if(! pSSBOSkinTextures){
+	if(!pSSBOSkinTextures){
 		pSSBOSkinTextures.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etStream));
 		pSSBOSkinTextures->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 		pSSBOSkinTextures->SetParameterCount(1);
@@ -213,7 +213,7 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 	
 	for(i=0; i<count; i++){
 		const deoglSkinTexture * const texture = pool.GetSkinTextureAt(i);
-		if(! texture){
+		if(!texture){
 			for(j=0; j<pipelinesPerTexture; j++){
 				*( values++ ) = 0;
 			}

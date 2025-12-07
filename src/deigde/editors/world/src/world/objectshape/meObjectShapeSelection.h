@@ -51,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected object shapes. */
-	inline const meObjectShapeList &GetSelected() const{return pSelection;}
+	inline const meObjectShapeList &GetSelected() const{ return pSelection; }
 	/** Adds an object shape to the selection if not included already. */
 	void Add(meObjectShape *objectShape);
 	/** Removes an object shape from the selection if included. */
@@ -60,7 +60,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active object shape or NULL if there is none. */
-	inline meObjectShape *GetActive() const{return pActive;}
+	inline meObjectShape *GetActive() const{ return pActive; }
 	/** Determines if there is an active object shape. */
 	bool HasActive() const;
 	/** Sets the active object shape or NULL if there is none. */

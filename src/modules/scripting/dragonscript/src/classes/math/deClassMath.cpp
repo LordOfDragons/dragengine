@@ -347,7 +347,7 @@ void deClassMath::nfProbability::RunFunction(dsRunTime *rt, dsValue *myself){
 ////////////////
 
 deClassMath::deClassMath(deScriptingDragonScript *ds) : dsClass("DEMath", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds) DSTHROW(dueInvalidParam);
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	

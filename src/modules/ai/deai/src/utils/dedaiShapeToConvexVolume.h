@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cconvex volume list to add volumes to or \em NULL if not set. */
-	inline decConvexVolumeList *GetList() const{return pList;}
+	inline decConvexVolumeList *GetList() const{ return pList; }
 	
 	/** \brief Set convex volume list to add volumes to or \em NULL if not set. */
 	void SetList(decConvexVolumeList *list);
@@ -70,13 +70,13 @@ public:
 	
 	
 	/** \brief Number of rings to generate for spheres. */
-	inline int GetSphereRingCount() const{return pSphereRingCount;}
+	inline int GetSphereRingCount() const{ return pSphereRingCount; }
 	
 	/** \brief Set number of rings to generate for spheres clamped to 2 or larger. */
 	void SetSphereRingCount(int ringCount);
 	
 	/** \brief Number of segments to generate for spheres. */
-	inline int GetSphereSegmentCount() const{return pSphereSegmentCount;}
+	inline int GetSphereSegmentCount() const{ return pSphereSegmentCount; }
 	
 	/** \brief Set number of segments to generate for spheres clamped to 8 or larger. */
 	void SetSphereSegmentsCount(int segmentCount);

@@ -179,7 +179,7 @@ bool dearRuleSubAnimator::RebuildInstance() const{
 
 void dearRuleSubAnimator::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	
@@ -309,7 +309,7 @@ void dearRuleSubAnimator::pCleanUp(){
 
 void dearRuleSubAnimator::pCreateRules(const decIntList &controllerMapping){
 	const deAnimator * const animator = pSubAnimator.GetSubAnimator();
-	if(! animator){
+	if(!animator){
 		return;
 	}
 	

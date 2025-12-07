@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

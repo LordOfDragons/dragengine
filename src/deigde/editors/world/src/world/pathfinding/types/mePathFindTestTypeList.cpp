@@ -115,7 +115,7 @@ bool mePathFindTestTypeList::HasWith(int typeNumber) const{
 }
 
 void mePathFindTestTypeList::Add(mePathFindTestType *type){
-	if(! type || HasWith(type->GetTypeNumber())){
+	if(!type || HasWith(type->GetTypeNumber())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -123,7 +123,7 @@ void mePathFindTestTypeList::Add(mePathFindTestType *type){
 }
 
 void mePathFindTestTypeList::AddIfAbsent(mePathFindTestType *type){
-	if(! type || HasWith(type->GetTypeNumber())){
+	if(!type || HasWith(type->GetTypeNumber())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of input data. */
-	inline int GetInputDataCount() const{return pInputDataCount;}
+	inline int GetInputDataCount() const{ return pInputDataCount; }
 	
 	/**
 	 * Add input data returning the index to fetch the result later. The test box is
@@ -93,10 +93,10 @@ public:
 	void UpdateSSBO();
 	
 	/** Input data SSBO. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOInput() const{return pSSBOInput;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOInput() const{ return pSSBOInput; }
 	
 	/** Result data SSBO. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOResult() const{return pSSBOResult;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOResult() const{ return pSSBOResult; }
 	
 	/** Update results from SSBO. */
 	void UpdateResults();

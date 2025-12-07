@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index){
-	if(! topic || actions.GetCount() == 0){
+	if(!topic || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

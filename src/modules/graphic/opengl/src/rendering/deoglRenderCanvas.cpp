@@ -295,7 +295,7 @@ void deoglRenderCanvas::Prepare(const deoglRenderCanvasContext &context){
 
 
 void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context, const deoglRCanvasPaint &canvas){
-	if(! (canvas.GetSize() > decVector2())){
+	if(!(canvas.GetSize() > decVector2())){
 		return; // too small
 	}
 	if(canvas.GetDrawCountFill() == 0 && canvas.GetDrawCountLine() == 0){
@@ -374,7 +374,7 @@ void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context,
 
 void deoglRenderCanvas::DrawCanvasImage(const deoglRenderCanvasContext &context, const deoglRCanvasImage &canvas){
 	deoglRImage * const image = canvas.GetImage();
-	if(! image || ! image->GetTexture()){
+	if(!image || !image->GetTexture()){
 		return;
 	}
 	
@@ -433,12 +433,12 @@ void deoglRenderCanvas::DrawCanvasImage(const deoglRenderCanvasContext &context,
 
 void deoglRenderCanvas::DrawCanvasCanvasView(const deoglRenderCanvasContext &context, const deoglRCanvasCanvasView &canvas){
 	deoglRCanvasView * const canvasView = canvas.GetCanvasView();
-	if(! canvasView){
+	if(!canvasView){
 		return;
 	}
 	
 	deoglRenderTarget * const renderTarget = canvasView->GetRenderTarget();
-	if(! renderTarget || ! renderTarget->GetTexture()){
+	if(!renderTarget || !renderTarget->GetTexture()){
 		return;
 	}
 	
@@ -496,7 +496,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView(const deoglRenderCanvasContext &con
 
 void deoglRenderCanvas::DrawCanvasVideoPlayer(const deoglRenderCanvasContext &context, const deoglRCanvasVideoPlayer &canvas){
 	deoglRVideoPlayer * const videoPlayer = canvas.GetVideoPlayer();
-	if(! videoPlayer || ! videoPlayer->GetTexture()){
+	if(!videoPlayer || !videoPlayer->GetTexture()){
 		return;
 	}
 	
@@ -702,12 +702,12 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 void deoglRenderCanvas::DrawCanvasRenderWorld(const deoglRenderCanvasContext &context,
 const deoglRCanvasRenderWorld &canvas){
 	deoglRCamera * const camera = canvas.GetCamera();
-	if(! camera){
+	if(!camera){
 		return;
 	}
 	
 	deoglRWorld * const world = camera->GetParentWorld();
-	if(! world){
+	if(!world){
 		return;
 	}
 	
@@ -759,7 +759,7 @@ const deoglRCanvasRenderWorld &canvas){
 #endif
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-		plan.SetDebugTiming(! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo());
+		plan.SetDebugTiming(!context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo());
 		
 		// decTimer timer;
 		plan.PrepareRender(context.GetRenderPlanMask());
@@ -826,7 +826,7 @@ const deoglRCanvasRenderWorld &canvas){
 	const float gamma = 1.0f / (OGL_RENDER_GAMMA * config.GetGammaCorrection());
 	decColorMatrix colorTransform;
 	
-	if(! vr){
+	if(!vr){
 		colorTransform *= decColorMatrix::CreateContrast(config.GetContrast());
 		colorTransform *= decColorMatrix::CreateBrightness(config.GetBrightness());
 	}
@@ -836,7 +836,7 @@ const deoglRCanvasRenderWorld &canvas){
 	
 	shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 	
-	if(! vr || ! vr->GetLeftEye().GetUseGammaCorrection()){
+	if(!vr || !vr->GetLeftEye().GetUseGammaCorrection()){
 		shader.SetParameterFloat(spcGamma, gamma, gamma, gamma, 1.0f);
 		
 	}else{
@@ -871,7 +871,7 @@ const deoglRCanvasRenderWorld &canvas){
 
 
 void deoglRenderCanvas::DebugInfoCanvasReset(){
-	if(! pDebugInfoCanvas->GetVisible()){
+	if(!pDebugInfoCanvas->GetVisible()){
 		return;
 	}
 	
@@ -892,7 +892,7 @@ void deoglRenderCanvas::DebugInfoCanvasReset(){
 }
 
 void deoglRenderCanvas::DebugInfoCanvasUpdate(){
-	if(! pDebugInfoCanvas->GetVisible()){
+	if(!pDebugInfoCanvas->GetVisible()){
 		return;
 	}
 	
@@ -933,7 +933,7 @@ void deoglRenderCanvas::DebugInfoCanvasUpdate(){
 
 
 void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	
@@ -959,140 +959,140 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare(deoglRenderPlan &plan){
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepare(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer1Sample(plan, *pDebugInfoPlanPrepare, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareEarlyWorld(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareEarlyWorld, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareFindContent, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareFindContent, elapsed, 0);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareBuildRTs(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareBuildRTs, elapsed, 0);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightFindContent(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareSkyLightFindContent, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightFindContent(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareSkyLightFindContent, elapsed, 1);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightBuildRT(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareSkyLightBuildRT, elapsed, 1);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareSkyLightGIFindContent, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareSkyLightGIFindContent, elapsed, 1);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask(deoglRenderPlan &plan, float elapsed){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimerIncrement(plan, *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask, elapsed, 1);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareWorld(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareWorld, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareGIUpdate(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareGIUpdate, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareCulling(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareCulling, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareEnvMaps(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareEnvMaps, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPreparePrepareContent(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPreparePrepareContent, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareHTViewVBOs(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer3Sample(plan, *pDebugInfoPlanPrepareHTViewVBOs, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareBuildPlan(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareBuildPlan, false);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareLights(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareLights, true);
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareFinish(deoglRenderPlan &plan){
-	if(! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible()){
+	if(!plan.GetDebugTiming() || !pDebugInfoPlanPrepare->GetVisible()){
 		return;
 	}
 	DebugTimer2Sample(plan, *pDebugInfoPlanPrepareFinish, true);
@@ -1160,13 +1160,13 @@ void deoglRenderCanvas::pCreateShapesVAO(){
 	
 	// create vbo and vao
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOShapes));
-	if(! pVAOShapes){
+	if(!pVAOShapes){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOShapes));
-	if(! pVBOShapes){
+	if(!pVBOShapes){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));

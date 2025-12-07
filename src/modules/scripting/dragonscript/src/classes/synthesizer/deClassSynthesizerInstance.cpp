@@ -212,7 +212,7 @@ void deClassSynthesizerInstance::nfCopyControllerStates::RunFunction(dsRunTime *
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -254,7 +254,7 @@ void deClassSynthesizerInstance::nfCopyControllerStates2::RunFunction(dsRunTime 
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -284,7 +284,7 @@ void deClassSynthesizerInstance::nfCopyNamedControllerStates::RunFunction(dsRunT
 	const deClassSynthesizerInstance &clsAr = *((deClassSynthesizerInstance*)GetOwnerClass());
 	
 	const deSynthesizerInstance * const sourceInstance = clsAr.GetSynthesizerInstance(rt->GetValue(0)->GetRealObject());
-	if(! sourceInstance){
+	if(!sourceInstance){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -326,7 +326,7 @@ void deClassSynthesizerInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *m
 	deClassSynthesizerInstance * const clsSyn = (deClassSynthesizerInstance*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSyn)){
+	if(!p_IsObjOfType(obj, clsSyn)){
 		rt->PushBool(false);
 		
 	}else{
@@ -401,7 +401,7 @@ void deClassSynthesizerInstance::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerInstance *deClassSynthesizerInstance::GetSynthesizerInstance(dsRealObject *object) const{
-	if(! object){
+	if(!object){
 		return NULL;
 	}
 	
@@ -409,11 +409,11 @@ deSynthesizerInstance *deClassSynthesizerInstance::GetSynthesizerInstance(dsReal
 }
 
 void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance *instance){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! instance){
+	if(!instance){
 		rt->PushObject(NULL, this);
 		return;
 	}

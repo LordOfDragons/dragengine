@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width of the image. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Height of the image. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Pointer to RGB aligned data. */
-	inline sPixel *GetPixels() const{return pPixels;}
+	inline sPixel *GetPixels() const{ return pPixels; }
 	/*@}*/
 	
 private:

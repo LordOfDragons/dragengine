@@ -39,7 +39,7 @@
 ////////////////////////////
 
 debpSkin::debpSkin(deSkin *skin){
-	if(! skin) DETHROW(deeInvalidParam);
+	if(!skin) DETHROW(deeInvalidParam);
 	pSkin = skin;
 }
 

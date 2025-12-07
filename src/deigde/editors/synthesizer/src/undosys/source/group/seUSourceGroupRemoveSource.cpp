@@ -43,7 +43,7 @@ seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup *group, seS
 pGroup(NULL),
 pSource(NULL)
 {
-	if(! group || ! source){
+	if(!group || !source){
 		DETHROW(deeInvalidParam);
 	}
 	

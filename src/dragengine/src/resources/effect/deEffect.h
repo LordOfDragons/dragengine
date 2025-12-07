@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Effect is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
 	void SetEnabled(bool enabled);
@@ -90,7 +90,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicEffect *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicEffect *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicEffect *peer);

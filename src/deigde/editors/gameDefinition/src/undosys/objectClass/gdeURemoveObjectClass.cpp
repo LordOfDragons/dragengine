@@ -44,11 +44,11 @@ gdeURemoveObjectClass::gdeURemoveObjectClass(gdeGameDefinition *gameDefinition, 
 pGameDefinition(NULL),
 pObjectClass(NULL)
 {
-	if(! gameDefinition || ! objectClass){
+	if(!gameDefinition || !objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! gameDefinition->GetObjectClasses().Has(objectClass)){
+	if(!gameDefinition->GetObjectClasses().Has(objectClass)){
 		DETHROW(deeInvalidParam);
 	}
 	

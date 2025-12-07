@@ -45,8 +45,8 @@ public:
 	~deClassVector();
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decVector &GetVector(dsRealObject *This) const;
 	void PushVector(dsRunTime *RT, const decVector &vector);
 

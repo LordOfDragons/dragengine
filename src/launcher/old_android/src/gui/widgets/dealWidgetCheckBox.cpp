@@ -109,7 +109,7 @@ void dealWidgetCheckBox::SetLabel(const char *label){
 	}
 	
 	pLabel->SetText(label);
-	pLabel->SetVisible(! pLabel->GetText().IsEmpty());
+	pLabel->SetVisible(!pLabel->GetText().IsEmpty());
 }
 
 dealImage *dealWidgetCheckBox::GetImage() const{
@@ -134,7 +134,7 @@ void dealWidgetCheckBox::SetChecked(bool checked){
 	
 	pChecked = checked;
 	pBoxImageChecked->SetVisible(checked);
-	pBoxImageUnchecked->SetVisible(! checked);
+	pBoxImageUnchecked->SetVisible(!checked);
 	
 	OnStateChanged();
 }
@@ -163,7 +163,7 @@ void dealWidgetCheckBox::OnKeyRelease(int keycode){
 }
 
 void dealWidgetCheckBox::OnMousePress(int buttons, const decPoint &position){
-	if(! GetEnabled()){
+	if(!GetEnabled()){
 		return;
 	}
 	
@@ -172,7 +172,7 @@ void dealWidgetCheckBox::OnMousePress(int buttons, const decPoint &position){
 		return;
 	}
 	
-	SetChecked(! pChecked);
+	SetChecked(!pChecked);
 }
 
 

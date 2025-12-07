@@ -215,7 +215,7 @@ void igdeNativeFoxApplication::Run(){
 	while(runWhileEvents()){
 		igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
 		if(mainWindow){
-			if(! mainWindow->GetNativeWidget()){
+			if(!mainWindow->GetNativeWidget()){
 				return; // sometimes FOX manages to make us miss this event
 			}
 			
@@ -283,11 +283,11 @@ void igdeNativeFoxApplication::ShowError(const deException &exception) const{
 
 void igdeNativeFoxApplication::RunModalWhileShown(igdeWindow &window){
 	FXWindow * const native = (FXWindow*)window.GetNativeWidget();
-	if(! native){
+	if(!native){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const bool updateWindowMain = ! pDisableModalUpdating;
+	const bool updateWindowMain = !pDisableModalUpdating;
 	
 	while(runModalWhileEvents(native) && native->shown()){
 		if(updateWindowMain){

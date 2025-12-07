@@ -58,7 +58,7 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 	try{
 		// we have to create the pixel buffer the image is going to take ownership of.
 		// we have to use fox allocation routines for this to work correctly
-		if(! FXCALLOC(&nativeImageData, FXColor, wwidth * hheight)){
+		if(!FXCALLOC(&nativeImageData, FXColor, wwidth * hheight)){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -130,13 +130,13 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 		
 		nativeIcon = new FXPNGIcon(FXApp::instance(), 0, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
 		#ifdef FOX_OLD_MEMORY_STREAM
-		if(! stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData)){
+		if(!stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData)){
 		#else
-		if(! stream.open(FX::FXStreamLoad, (FXuchar*)imageData, (FXuval)imageSize, false)){
+		if(!stream.open(FX::FXStreamLoad, (FXuchar*)imageData, (FXuval)imageSize, false)){
 		#endif
 			DETHROW(deeInvalidParam);
 		}
-		if(! nativeIcon->loadPixels(stream)){
+		if(!nativeIcon->loadPixels(stream)){
 			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
@@ -165,7 +165,7 @@ void *igdeNativeFoxIcon::DuplicateNativeIcon(void *native){
 	const int pixelCount = wwidth * hheight;
 	
 	FXColor *imageData = NULL;
-	if(! FXCALLOC(&imageData, FXColor, pixelCount)){
+	if(!FXCALLOC(&imageData, FXColor, pixelCount)){
 		DETHROW(deeOutOfMemory);
 	}
 	memcpy(imageData, sourceIcon->getData(), sizeof(FXColor) * pixelCount);
@@ -190,7 +190,7 @@ decPoint igdeNativeFoxIcon::GetSize(void *native){
 void igdeNativeFoxIcon::Scale(const decPoint &size, void *native){
 	FXIcon &iicon = *((FXIcon*)native);
 	const decPoint iconSize(iicon.getWidth(), iicon.getHeight());
-	if(! (iconSize == size)){
+	if(!(iconSize == size)){
 		iicon.scale(size.x, size.y, 1);
 	}
 }

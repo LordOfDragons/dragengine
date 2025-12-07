@@ -1091,7 +1091,7 @@ void deoglShaderParameterBlock::SetParameterDataArrayFloat(int p, int e, float *
 	if(count == 0){
 		return;
 	}
-	if(! values || count < 0){
+	if(!values || count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	const deoglSPBParameter &parameter = pParamFloat(p, 1, 1, count - 1);
@@ -1122,7 +1122,7 @@ void deoglShaderParameterBlock::SetParameterDataArrayInt(int p, int e, int *valu
 	if(count == 0){
 		return;
 	}
-	if(! values || count < 0){
+	if(!values || count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	const deoglSPBParameter &parameter = pParamInt(p, 1, 1, count - 1);
@@ -1156,7 +1156,7 @@ void deoglShaderParameterBlock::SetParameterDataArrayUInt(int p, int e, unsigned
 	if(count == 0){
 		return;
 	}
-	if(! values || count < 0){
+	if(!values || count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	const deoglSPBParameter &parameter = pParamInt(p, 1, 1, count - 1);
@@ -1187,7 +1187,7 @@ void deoglShaderParameterBlock::SetParameterDataArrayBool(int p, int e, bool *va
 	if(count == 0){
 		return;
 	}
-	if(! values || count < 0){
+	if(!values || count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	const deoglSPBParameter &parameter = pParamBool(p, 1, 1, count - 1);
@@ -1218,7 +1218,7 @@ void deoglShaderParameterBlock::pSetMapped(char *data, int element, int count){
 	if(pMapped || pBufferSize == 0){
 		DETHROW(deeInvalidParam);
 	}
-	if(! data || element < 0 || count < 1 || element + count > pElementCount){
+	if(!data || element < 0 || count < 1 || element + count > pElementCount){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1299,7 +1299,7 @@ int element, int arrayIndex) const{
 
 char *deoglShaderParameterBlock::pData(const deoglSPBParameter &parameter,
 int element, int arrayIndex) const{
-	if(! pMapped || element < pElementLower || element > pElementUpper){
+	if(!pMapped || element < pElementLower || element > pElementUpper){
 		DETHROW(deeInvalidParam);
 	}
 	return pMapped + (pElementStride * (element - pElementLower)

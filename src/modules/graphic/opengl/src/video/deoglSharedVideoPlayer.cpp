@@ -49,7 +49,7 @@ pList(list),
 pVideoPlayer(videoPlayer),
 pUsageCount(1)
 {
-	if(! pVideoPlayer){
+	if(!pVideoPlayer){
 		DETHROW(deeInvalidParam);
 	}
 	pVideoPlayer->AddReference();

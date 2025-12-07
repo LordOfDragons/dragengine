@@ -106,7 +106,7 @@ void decXmlWriter::WriteXMLDeclaration(){
 }
 
 void decXmlWriter::WriteDocTypeDeclaration(const char *rootTag, const char *dtdSource){
-	if(! rootTag || ! dtdSource){
+	if(!rootTag || !dtdSource){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -127,7 +127,7 @@ const decUnicodeString &dtdSource){
 }
 
 void decXmlWriter::WriteOpeningTag(const char *name, bool empty, bool indent, bool newline){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -164,7 +164,7 @@ bool indent, bool newline){
 }
 
 void decXmlWriter::WriteOpeningTagStart(const char *name, bool indent){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -182,7 +182,7 @@ void decXmlWriter::WriteOpeningTagStart(const decUnicodeString &name, bool inden
 }
 
 void decXmlWriter::WriteAttributeString(const char *name, const char *string){
-	if(! name || ! string){
+	if(!name || !string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -223,7 +223,7 @@ const decUnicodeString &string){
 }
 
 void decXmlWriter::WriteAttributeBool(const char *name, bool value){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -243,7 +243,7 @@ void decXmlWriter::WriteAttributeBool(const decUnicodeString &name, bool value){
 }
 
 void decXmlWriter::WriteAttributeInt(const char *name, int value){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -267,7 +267,7 @@ void decXmlWriter::WriteAttributeInt(const decUnicodeString &name, int value){
 }
 
 void decXmlWriter::WriteAttributeFloat(const char *name, float value){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -291,7 +291,7 @@ void decXmlWriter::WriteAttributeFloat(const decUnicodeString &name, float value
 }
 
 void decXmlWriter::WriteAttributeDouble(const char *name, double value){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -335,7 +335,7 @@ void decXmlWriter::WriteOpeningTagEnd(bool empty, bool newline){
 }
 
 void decXmlWriter::WriteTextString(const char *text){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -344,7 +344,7 @@ void decXmlWriter::WriteTextString(const char *text){
 	while(*walker){
 		/*
 		if(IS(*walker, 0x9) ||  IS(*walker, 0xA) ||  IS(*walker, 0xD)
-		||  (*walker >= 0x20 && ! (IN(*walker, 0x7f, 0x84) || IN(*walker, 0x86, 0x9f)))){
+		||  (*walker >= 0x20 && !(IN(*walker, 0x7f, 0x84) || IN(*walker, 0x86, 0x9f)))){
 		*/
 		
 		if(*walker == '<'){
@@ -415,7 +415,7 @@ void decXmlWriter::WriteTextDouble(double value){
 }
 
 void decXmlWriter::WriteClosingTag(const char *name, bool indent, bool newline){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -441,7 +441,7 @@ void decXmlWriter::WriteClosingTag(const decUnicodeString &name, bool indent, bo
 }
 
 void decXmlWriter::WriteComment(const char *comment, bool indent, bool newline){
-	if(! comment){
+	if(!comment){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -472,7 +472,7 @@ void decXmlWriter::WriteComment(const decUnicodeString &comment, bool indent, bo
 
 void decXmlWriter::WriteDataTagString(const char *tagName, const char *string,
 bool indent, bool newline){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -552,7 +552,7 @@ double value, bool indent, bool newline){
 
 
 decString decXmlWriter::EscapeText(const char *text){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -562,7 +562,7 @@ decString decXmlWriter::EscapeText(const char *text){
 	while(*walker){
 		/*
 		if(IS(*walker, 0x9) ||  IS(*walker, 0xA) ||  IS(*walker, 0xD)
-		||  (*walker >= 0x20 && ! (IN(*walker, 0x7f, 0x84) || IN(*walker, 0x86, 0x9f)))){
+		||  (*walker >= 0x20 && !(IN(*walker, 0x7f, 0x84) || IN(*walker, 0x86, 0x9f)))){
 		*/
 		
 		if(*walker == '<'){

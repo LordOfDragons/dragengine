@@ -267,7 +267,7 @@ void deWorld::SetSize(const decDVector &size){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! size.IsEqualTo(pSize)){
+	if(!size.IsEqualTo(pSize)){
 		pSize = size;
 		
 		if(pPeerGraphic){
@@ -283,7 +283,7 @@ void deWorld::SetSize(const decDVector &size){
 }
 
 void deWorld::SetGravity(const decVector &gravity){
-	if(! gravity.IsEqualTo(pGravity)){
+	if(!gravity.IsEqualTo(pGravity)){
 		pGravity = gravity;
 		
 		pNotifyPhysicsChanged();
@@ -359,7 +359,7 @@ void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
 //////////
 
 void deWorld::AddSky(deSkyInstance *sky){
-	if(! sky || sky->GetParentWorld()){
+	if(!sky || sky->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -385,7 +385,7 @@ void deWorld::AddSky(deSkyInstance *sky){
 }
 
 void deWorld::RemoveSky(deSkyInstance *sky){
-	if(! sky || sky->GetParentWorld() != this){
+	if(!sky || sky->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -433,7 +433,7 @@ void deWorld::RemoveAllSkies(){
 ///////////////
 
 void deWorld::AddBillboard(deBillboard *billboard){
-	if(! billboard || billboard->GetParentWorld()) DETHROW(deeInvalidParam);
+	if(!billboard || billboard->GetParentWorld()) DETHROW(deeInvalidParam);
 	
 	if(pBillboardTail){
 		pBillboardTail->SetLLWorldNext(billboard);
@@ -457,7 +457,7 @@ void deWorld::AddBillboard(deBillboard *billboard){
 }
 
 void deWorld::RemoveBillboard(deBillboard *billboard){
-	if(! billboard || billboard->GetParentWorld() != this) DETHROW(deeInvalidParam);
+	if(!billboard || billboard->GetParentWorld() != this) DETHROW(deeInvalidParam);
 	
 	if(billboard->GetLLWorldPrev()){
 		billboard->GetLLWorldPrev()->SetLLWorldNext(billboard->GetLLWorldNext());
@@ -503,7 +503,7 @@ void deWorld::RemoveAllBillboards(){
 ////////////
 
 void deWorld::AddCamera(deCamera *camera){
-	if(! camera || camera->GetParentWorld()){
+	if(!camera || camera->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -529,7 +529,7 @@ void deWorld::AddCamera(deCamera *camera){
 }
 
 void deWorld::RemoveCamera(deCamera *camera){
-	if(! camera || camera->GetParentWorld() != this){
+	if(!camera || camera->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -577,7 +577,7 @@ void deWorld::RemoveAllCameras(){
 //////////////
 
 void deWorld::AddCollider(deCollider *collider){
-	if(! collider || collider->GetParentWorld()){
+	if(!collider || collider->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -603,7 +603,7 @@ void deWorld::AddCollider(deCollider *collider){
 }
 
 void deWorld::RemoveCollider(deCollider *collider){
-	if(! collider || collider->GetParentWorld() != this){
+	if(!collider || collider->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -651,7 +651,7 @@ void deWorld::RemoveAllColliders(){
 ///////////////
 
 void deWorld::AddComponent(deComponent *component){
-	if(! component || component->GetParentWorld()){
+	if(!component || component->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -683,7 +683,7 @@ void deWorld::AddComponent(deComponent *component){
 }
 
 void deWorld::RemoveComponent(deComponent *component){
-	if(! component || component->GetParentWorld() != this){
+	if(!component || component->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -743,7 +743,7 @@ void deWorld::RemoveAllComponents(){
 /////////////////
 
 void deWorld::AddDebugDrawer(deDebugDrawer *debugDrawer){
-	if(! debugDrawer || debugDrawer->GetParentWorld()){
+	if(!debugDrawer || debugDrawer->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -769,7 +769,7 @@ void deWorld::AddDebugDrawer(deDebugDrawer *debugDrawer){
 }
 
 void deWorld::RemoveDebugDrawer(deDebugDrawer *debugDrawer){
-	if(! debugDrawer || debugDrawer->GetParentWorld() != this){
+	if(!debugDrawer || debugDrawer->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -817,7 +817,7 @@ void deWorld::RemoveAllDebugDrawers(){
 ///////////////////////////
 
 void deWorld::AddEnvMapProbe(deEnvMapProbe *envMapProbe){
-	if(! envMapProbe || envMapProbe->GetParentWorld()){
+	if(!envMapProbe || envMapProbe->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -843,7 +843,7 @@ void deWorld::AddEnvMapProbe(deEnvMapProbe *envMapProbe){
 }
 
 void deWorld::RemoveEnvMapProbe(deEnvMapProbe *envMapProbe){
-	if(! envMapProbe || envMapProbe->GetParentWorld() != this){
+	if(!envMapProbe || envMapProbe->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -891,7 +891,7 @@ void deWorld::RemoveAllEnvMapProbes(){
 /////////////////
 
 void deWorld::AddForceField(deForceField *forceField){
-	if(! forceField || forceField->GetParentWorld()){
+	if(!forceField || forceField->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -917,7 +917,7 @@ void deWorld::AddForceField(deForceField *forceField){
 }
 
 void deWorld::RemoveForceField(deForceField *forceField){
-	if(! forceField || forceField->GetParentWorld() != this){
+	if(!forceField || forceField->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -965,7 +965,7 @@ void deWorld::RemoveAllForceFields(){
 ////////////
 
 void deWorld::AddLight(deLight *light){
-	if(! light || light->GetParentWorld()){
+	if(!light || light->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -991,7 +991,7 @@ void deWorld::AddLight(deLight *light){
 }
 
 void deWorld::RemoveLight(deLight *light){
-	if(! light || light->GetParentWorld() != this){
+	if(!light || light->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1039,7 +1039,7 @@ void deWorld::RemoveAllLights(){
 ////////////
 
 void deWorld::AddLumimeter(deLumimeter *lumimeter){
-	if(! lumimeter || lumimeter->GetParentWorld()){
+	if(!lumimeter || lumimeter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1065,7 +1065,7 @@ void deWorld::AddLumimeter(deLumimeter *lumimeter){
 }
 
 void deWorld::RemoveLumimeter(deLumimeter *lumimeter){
-	if(! lumimeter || lumimeter->GetParentWorld() != this){
+	if(!lumimeter || lumimeter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1113,7 +1113,7 @@ void deWorld::RemoveAllLumimeters(){
 ////////////
 
 void deWorld::AddMicrophone(deMicrophone *microphone){
-	if(! microphone || microphone->GetParentWorld()){
+	if(!microphone || microphone->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1139,7 +1139,7 @@ void deWorld::AddMicrophone(deMicrophone *microphone){
 }
 
 void deWorld::RemoveMicrophone(deMicrophone *microphone){
-	if(! microphone || microphone->GetParentWorld() != this){
+	if(!microphone || microphone->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1187,7 +1187,7 @@ void deWorld::RemoveAllMicrophones(){
 //////////////////////
 
 void deWorld::AddNavigationSpace(deNavigationSpace *navspace){
-	if(! navspace || navspace->GetParentWorld()){
+	if(!navspace || navspace->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1213,7 +1213,7 @@ void deWorld::AddNavigationSpace(deNavigationSpace *navspace){
 }
 
 void deWorld::RemoveNavigationSpace(deNavigationSpace *navspace){
-	if(! navspace || navspace->GetParentWorld() != this){
+	if(!navspace || navspace->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1261,7 +1261,7 @@ void deWorld::RemoveAllNavigationSpaces(){
 ////////////////////////
 
 void deWorld::AddNavigationBlocker(deNavigationBlocker *blocker){
-	if(! blocker || blocker->GetParentWorld()){
+	if(!blocker || blocker->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1287,7 +1287,7 @@ void deWorld::AddNavigationBlocker(deNavigationBlocker *blocker){
 }
 
 void deWorld::RemoveNavigationBlocker(deNavigationBlocker *blocker){
-	if(! blocker || blocker->GetParentWorld() != this){
+	if(!blocker || blocker->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1335,7 +1335,7 @@ void deWorld::RemoveAllNavigationBlockers(){
 ///////////////
 
 void deWorld::AddNavigator(deNavigator *navigator){
-	if(! navigator || navigator->GetParentWorld()){
+	if(!navigator || navigator->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1361,7 +1361,7 @@ void deWorld::AddNavigator(deNavigator *navigator){
 }
 
 void deWorld::RemoveNavigator(deNavigator *navigator){
-	if(! navigator || navigator->GetParentWorld() != this){
+	if(!navigator || navigator->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1409,7 +1409,7 @@ void deWorld::RemoveAllNavigators(){
 ///////////////////
 
 void deWorld::AddNetworkState(deNetworkState *networkState){
-	if(! networkState || networkState->GetParentWorld()){
+	if(!networkState || networkState->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1435,7 +1435,7 @@ void deWorld::AddNetworkState(deNetworkState *networkState){
 }
 
 void deWorld::RemoveNetworkState(deNetworkState *networkState){
-	if(! networkState || networkState->GetParentWorld() != this){
+	if(!networkState || networkState->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1483,7 +1483,7 @@ void deWorld::RemoveAllNetworkStates(){
 //////////////////////
 
 void deWorld::AddParticleEmitter(deParticleEmitterInstance *emitter){
-	if(! emitter || emitter->GetParentWorld()){
+	if(!emitter || emitter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1512,7 +1512,7 @@ void deWorld::AddParticleEmitter(deParticleEmitterInstance *emitter){
 }
 
 void deWorld::RemoveParticleEmitter(deParticleEmitterInstance *emitter){
-	if(! emitter || emitter->GetParentWorld() != this){
+	if(!emitter || emitter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1566,7 +1566,7 @@ void deWorld::RemoveAllParticleEmitters(){
 ////////////
 
 void deWorld::AddPropField(dePropField *propField){
-	if(! propField || propField->GetParentWorld()){
+	if(!propField || propField->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1595,7 +1595,7 @@ void deWorld::AddPropField(dePropField *propField){
 }
 
 void deWorld::RemovePropField(dePropField *propField){
-	if(! propField || propField->GetParentWorld() != this){
+	if(!propField || propField->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1649,7 +1649,7 @@ void deWorld::RemoveAllPropFields(){
 ///////////////////
 
 void deWorld::AddSmokeEmitter(deSmokeEmitter *smokeEmitter){
-	if(! smokeEmitter || smokeEmitter->GetParentWorld()){
+	if(!smokeEmitter || smokeEmitter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1678,7 +1678,7 @@ void deWorld::AddSmokeEmitter(deSmokeEmitter *smokeEmitter){
 }
 
 void deWorld::RemoveSmokeEmitter(deSmokeEmitter *smokeEmitter){
-	if(! smokeEmitter || smokeEmitter->GetParentWorld() != this){
+	if(!smokeEmitter || smokeEmitter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1776,7 +1776,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 ////////////
 
 void deWorld::AddSpeaker(deSpeaker *speaker){
-	if(! speaker || speaker->GetParentWorld() || speaker->GetParentMicrophone()){
+	if(!speaker || speaker->GetParentWorld() || speaker->GetParentMicrophone()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1802,7 +1802,7 @@ void deWorld::AddSpeaker(deSpeaker *speaker){
 }
 
 void deWorld::RemoveSpeaker(deSpeaker *speaker){
-	if(! speaker || speaker->GetParentWorld() != this){
+	if(!speaker || speaker->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1850,7 +1850,7 @@ void deWorld::RemoveAllSpeakers(){
 ///////////////////////
 
 void deWorld::AddSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
-	if(! soundLevelMeter || soundLevelMeter->GetParentWorld()){
+	if(!soundLevelMeter || soundLevelMeter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1876,7 +1876,7 @@ void deWorld::AddSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
 }
 
 void deWorld::RemoveSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
-	if(! soundLevelMeter || soundLevelMeter->GetParentWorld() != this){
+	if(!soundLevelMeter || soundLevelMeter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1924,7 +1924,7 @@ void deWorld::RemoveAllSoundLevelMeters(){
 //////////////////
 
 void deWorld::AddTouchSensor(deTouchSensor *touchSensor){
-	if(! touchSensor || touchSensor->GetParentWorld()){
+	if(!touchSensor || touchSensor->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1950,7 +1950,7 @@ void deWorld::AddTouchSensor(deTouchSensor *touchSensor){
 }
 
 void deWorld::RemoveTouchSensor(deTouchSensor *touchSensor){
-	if(! touchSensor || touchSensor->GetParentWorld() != this){
+	if(!touchSensor || touchSensor->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

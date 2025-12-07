@@ -44,7 +44,7 @@ projProject *project, const char *newValue) :
 pProject(NULL),
 pNewValue(newValue)
 {
-	if(! project){
+	if(!project){
 		DETHROW(deeInvalidParam);
 	}
 	

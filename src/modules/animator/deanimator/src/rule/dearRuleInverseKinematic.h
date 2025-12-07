@@ -98,7 +98,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Solver bone index. */
-	inline int GetSolverBone() const{return pSolverBone;}
+	inline int GetSolverBone() const{ return pSolverBone; }
 	
 	
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition(aeRuleGroup *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnablePosition::~aeURuleGroupToggleEnablePosition(){
 ///////////////
 
 void aeURuleGroupToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleGroupToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

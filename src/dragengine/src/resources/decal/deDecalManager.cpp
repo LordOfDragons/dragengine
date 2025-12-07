@@ -107,7 +107,7 @@ void deDecalManager::SystemGraphicLoad(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(decal){
-		if(! decal->GetPeerGraphic()){
+		if(!decal->GetPeerGraphic()){
 			graSys.LoadDecal(decal);
 		}
 		
@@ -129,7 +129,7 @@ void deDecalManager::SystemPhysicsLoad(){
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(decal){
-		if(! decal->GetPeerPhysics()){
+		if(!decal->GetPeerPhysics()){
 			phySys.LoadDecal(decal);
 		}
 		
@@ -151,7 +151,7 @@ void deDecalManager::SystemAudioLoad(){
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(decal){
-		if(! decal->GetPeerAudio()){
+		if(!decal->GetPeerAudio()){
 			audSys.LoadDecal(decal);
 		}
 		

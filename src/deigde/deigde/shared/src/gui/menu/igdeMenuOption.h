@@ -74,7 +74,7 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Menu entry is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if menu entry is selected. */
 	void SetSelected(bool selected);

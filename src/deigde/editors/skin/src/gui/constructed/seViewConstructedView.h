@@ -131,10 +131,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Skin or \em NULL. */
-	inline seSkin *GetSkin() const{return pSkin;}
+	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or \em NULL. */
 	void SetSkin(seSkin *skin);
@@ -142,13 +142,13 @@ public:
 	
 	
 	/** \brief Zoom factor in percentage. */
-	inline int GetZoom() const{return pZoom;}
+	inline int GetZoom() const{ return pZoom; }
 	
 	/** \brief Set zoom factor in percentage. */
 	void SetZoom(int zoom);
 	
 	/** \brief Offset in pixels. */
-	inline const decPoint &GetOffset() const{return pOffset;}
+	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset pixels. */
 	void SetOffset(const decPoint &offset);
@@ -157,10 +157,10 @@ public:
 	decPoint GetContentSize() const;
 	
 	/** \brief Zoom scale. */
-	inline float GetZoomScale() const{return pZoomScale;}
+	inline float GetZoomScale() const{ return pZoomScale; }
 	
 	/** \brief Zoom scale matrix. */
-	inline const decTexMatrix2 &GetZoomScaleMatrix() const{return pZoomScaleMatrix;}
+	inline const decTexMatrix2 &GetZoomScaleMatrix() const{ return pZoomScaleMatrix; }
 	
 	
 	
@@ -213,46 +213,46 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionConstructedFromImage() const{return pActionConstructedFromImage;}
-	inline igdeAction *GetActionAddShape() const{return pActionAddShape;}
-	inline igdeAction *GetActionAddImage() const{return pActionAddImage;}
-	inline igdeAction *GetActionAddText() const{return pActionAddText;}
-	inline igdeAction *GetActionRemoveNode() const{return pActionRemoveNode;}
-	inline igdeAction *GetActionCopyNode() const{return pActionCopyNode;}
-	inline igdeAction *GetActionCutNode() const{return pActionCutNode;}
-	inline igdeAction *GetActionPasteNode() const{return pActionPasteNode;}
-	inline igdeAction *GetActionEnterGroup() const{return pActionEnterGroup;}
-	inline igdeAction *GetActionExitGroup() const{return pActionExitGroup;}
-	inline igdeAction *GetActionGroupNodes() const{return pActionGroupNodes;}
-	inline igdeAction *GetActionUngroupNodes() const{return pActionUngroupNodes;}
-	inline igdeAction *GetActionMoveNodeTop() const{return pActionMoveNodeTop;}
-	inline igdeAction *GetActionMoveNodeUp() const{return pActionMoveNodeUp;}
-	inline igdeAction *GetActionMoveNodeDown() const{return pActionMoveNodeDown;}
-	inline igdeAction *GetActionMoveNodeBottom() const{return pActionMoveNodeBottom;}
-	inline igdeAction *GetActionSetMask() const{return pActionSetMask;}
-	inline igdeAction *GetActionRemoveMask() const{return pActionRemoveMask;}
-	inline igdeAction *GetActionSizeFromImage() const{return pActionSizeFromImage;}
+	inline igdeAction *GetActionConstructedFromImage() const{ return pActionConstructedFromImage; }
+	inline igdeAction *GetActionAddShape() const{ return pActionAddShape; }
+	inline igdeAction *GetActionAddImage() const{ return pActionAddImage; }
+	inline igdeAction *GetActionAddText() const{ return pActionAddText; }
+	inline igdeAction *GetActionRemoveNode() const{ return pActionRemoveNode; }
+	inline igdeAction *GetActionCopyNode() const{ return pActionCopyNode; }
+	inline igdeAction *GetActionCutNode() const{ return pActionCutNode; }
+	inline igdeAction *GetActionPasteNode() const{ return pActionPasteNode; }
+	inline igdeAction *GetActionEnterGroup() const{ return pActionEnterGroup; }
+	inline igdeAction *GetActionExitGroup() const{ return pActionExitGroup; }
+	inline igdeAction *GetActionGroupNodes() const{ return pActionGroupNodes; }
+	inline igdeAction *GetActionUngroupNodes() const{ return pActionUngroupNodes; }
+	inline igdeAction *GetActionMoveNodeTop() const{ return pActionMoveNodeTop; }
+	inline igdeAction *GetActionMoveNodeUp() const{ return pActionMoveNodeUp; }
+	inline igdeAction *GetActionMoveNodeDown() const{ return pActionMoveNodeDown; }
+	inline igdeAction *GetActionMoveNodeBottom() const{ return pActionMoveNodeBottom; }
+	inline igdeAction *GetActionSetMask() const{ return pActionSetMask; }
+	inline igdeAction *GetActionRemoveMask() const{ return pActionRemoveMask; }
+	inline igdeAction *GetActionSizeFromImage() const{ return pActionSizeFromImage; }
 	
 	/** \brief Markers. */
-	inline deCanvasView *GetCanvasContent() const{return pCanvasContent;}
-	inline deCanvasPaint *GetCanvasContentBackground() const{return pCanvasContentBackground;}
-	inline deCanvasPaint *GetCanvasMarkerBorder() const{return pCanvasMarkerBorder;}
-	inline deCanvasImage *GetCanvasMarkerResizeTopLeft() const{return pCanvasMarkerResizeTopLeft;}
-	inline deCanvasImage *GetCanvasMarkerResizeTop() const{return pCanvasMarkerResizeTop;}
-	inline deCanvasImage *GetCanvasMarkerResizeTopRight() const{return pCanvasMarkerResizeTopRight;}
-	inline deCanvasImage *GetCanvasMarkerResizeLeft() const{return pCanvasMarkerResizeLeft;}
-	inline deCanvasImage *GetCanvasMarkerResizeRight() const{return pCanvasMarkerResizeRight;}
-	inline deCanvasImage *GetCanvasMarkerResizeBottomLeft() const{return pCanvasMarkerResizeBottomLeft;}
-	inline deCanvasImage *GetCanvasMarkerResizeBottomRight() const{return pCanvasMarkerResizeBottomRight;}
-	inline deCanvasImage *GetCanvasMarkerResizeBottom() const{return pCanvasMarkerResizeBottom;}
-	inline deCanvasImage *GetCanvasMarkerRotateTopLeft() const{return pCanvasMarkerRotateTopLeft;}
-	inline deCanvasImage *GetCanvasMarkerRotateTopRight() const{return pCanvasMarkerRotateTopRight;}
-	inline deCanvasImage *GetCanvasMarkerRotateBottomLeft() const{return pCanvasMarkerRotateBottomLeft;}
-	inline deCanvasImage *GetCanvasMarkerRotateBottomRight() const{return pCanvasMarkerRotateBottomRight;}
-	inline deCanvasImage *GetCanvasMarkerShearTop() const{return pCanvasMarkerShearTop;}
-	inline deCanvasImage *GetCanvasMarkerShearBottom() const{return pCanvasMarkerShearBottom;}
-	inline deCanvasImage *GetCanvasMarkerShearLeft() const{return pCanvasMarkerShearLeft;}
-	inline deCanvasImage *GetCanvasMarkerShearRight() const{return pCanvasMarkerShearRight;}
+	inline deCanvasView *GetCanvasContent() const{ return pCanvasContent; }
+	inline deCanvasPaint *GetCanvasContentBackground() const{ return pCanvasContentBackground; }
+	inline deCanvasPaint *GetCanvasMarkerBorder() const{ return pCanvasMarkerBorder; }
+	inline deCanvasImage *GetCanvasMarkerResizeTopLeft() const{ return pCanvasMarkerResizeTopLeft; }
+	inline deCanvasImage *GetCanvasMarkerResizeTop() const{ return pCanvasMarkerResizeTop; }
+	inline deCanvasImage *GetCanvasMarkerResizeTopRight() const{ return pCanvasMarkerResizeTopRight; }
+	inline deCanvasImage *GetCanvasMarkerResizeLeft() const{ return pCanvasMarkerResizeLeft; }
+	inline deCanvasImage *GetCanvasMarkerResizeRight() const{ return pCanvasMarkerResizeRight; }
+	inline deCanvasImage *GetCanvasMarkerResizeBottomLeft() const{ return pCanvasMarkerResizeBottomLeft; }
+	inline deCanvasImage *GetCanvasMarkerResizeBottomRight() const{ return pCanvasMarkerResizeBottomRight; }
+	inline deCanvasImage *GetCanvasMarkerResizeBottom() const{ return pCanvasMarkerResizeBottom; }
+	inline deCanvasImage *GetCanvasMarkerRotateTopLeft() const{ return pCanvasMarkerRotateTopLeft; }
+	inline deCanvasImage *GetCanvasMarkerRotateTopRight() const{ return pCanvasMarkerRotateTopRight; }
+	inline deCanvasImage *GetCanvasMarkerRotateBottomLeft() const{ return pCanvasMarkerRotateBottomLeft; }
+	inline deCanvasImage *GetCanvasMarkerRotateBottomRight() const{ return pCanvasMarkerRotateBottomRight; }
+	inline deCanvasImage *GetCanvasMarkerShearTop() const{ return pCanvasMarkerShearTop; }
+	inline deCanvasImage *GetCanvasMarkerShearBottom() const{ return pCanvasMarkerShearBottom; }
+	inline deCanvasImage *GetCanvasMarkerShearLeft() const{ return pCanvasMarkerShearLeft; }
+	inline deCanvasImage *GetCanvasMarkerShearRight() const{ return pCanvasMarkerShearRight; }
 	/*@}*/
 	
 	

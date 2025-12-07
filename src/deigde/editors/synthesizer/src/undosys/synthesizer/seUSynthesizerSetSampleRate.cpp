@@ -43,7 +43,7 @@
 seUSynthesizerSetSampleRate::seUSynthesizerSetSampleRate(seSynthesizer *synthesizer, int newSampleRate) :
 pSynthesizer(NULL)
 {
-	if(! synthesizer){
+	if(!synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

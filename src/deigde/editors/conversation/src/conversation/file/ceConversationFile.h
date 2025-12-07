@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent conversation or \em NULL if not set. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set parent conversation or \em NULL if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
@@ -87,7 +87,7 @@ public:
 	/** \name Topics */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopicList() const{return pTopics;}
+	inline const ceConversationTopicList &GetTopicList() const{ return pTopics; }
 	
 	/** \brief Add topic. */
 	void AddTopic(ceConversationTopic *topic);
@@ -99,7 +99,7 @@ public:
 	void RemoveAllTopics();
 	
 	/** \brief Active topic or \em NULL if none is active. */
-	inline ceConversationTopic *GetActiveTopic() const{return pActiveTopic;}
+	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
 	
 	/** \brief Set active topic or \em NULL if none is active. */
 	void SetActiveTopic(ceConversationTopic *topic);

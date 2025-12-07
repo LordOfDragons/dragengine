@@ -62,11 +62,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the glyphs array. */
-	inline sGlyph *GetGlyphs() const{return pGlyphs;}
+	inline sGlyph *GetGlyphs() const{ return pGlyphs; }
 	/** Retrieves the texture. */
-	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline deoglTexture *GetTexture() const{ return pTexture; }
 	/** Retrieves the font height. */
-	inline int GetFontHeight() const{return pFontHeight;}
+	inline int GetFontHeight() const{ return pFontHeight; }
 	/*@}*/
 	
 private:

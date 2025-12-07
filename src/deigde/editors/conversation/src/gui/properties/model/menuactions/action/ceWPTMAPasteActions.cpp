@@ -73,7 +73,7 @@ pConversation(&conversation)
 void ceWPTMAPasteActions::OnAction(){
 	ceClipboardDataAction * const cdata = (ceClipboardDataAction*)GetWindowMain().
 		GetClipboard().GetWithTypeName(ceClipboardDataAction::TYPE_NAME);
-	if(! cdata){
+	if(!cdata){
 		return;
 	}
 	

@@ -64,7 +64,7 @@ public:
 	static ScriptingSmalltalk &GetSTFromOOP(OOP object);
 	
 	/** \brief Singleton smalltalk object. */
-	inline OOP GetSingleton() const{return pSingleton;}
+	inline OOP GetSingleton() const{ return pSingleton; }
 	
 	/** \brief Create singleton. */
 	void CreateSingleton();

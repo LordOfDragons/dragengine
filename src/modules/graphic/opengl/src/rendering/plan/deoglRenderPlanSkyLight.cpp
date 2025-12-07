@@ -246,7 +246,7 @@ void deoglRenderPlanSkyLight::Plan(){
 }
 
 void deoglRenderPlanSkyLight::StartFindContent(){
-	if(! pLayer || ! pUseShadow){
+	if(!pLayer || !pUseShadow){
 		return;
 	}
 	
@@ -282,7 +282,7 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 }
 
 void deoglRenderPlanSkyLight::RenderOcclusionTests(){
-	if(! pLayer || ! pUseShadow){
+	if(!pLayer || !pUseShadow){
 		return;
 	}
 	
@@ -309,13 +309,13 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 }
 
 void deoglRenderPlanSkyLight::FinishPrepare(){
-	if(! pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask()){
+	if(!pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask()){
 		RenderOcclusionTests();
 	}
 }
 
 void deoglRenderPlanSkyLight::StartBuildRT(){
-	if(! pLayer || ! pUseShadow || pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask()){
+	if(!pLayer || !pUseShadow || pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask()){
 		return;
 	}
 	
@@ -339,7 +339,7 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 }
 
 void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
-	if(! pTaskGIUpdateRT){
+	if(!pTaskGIUpdateRT){
 		return;
 	}
 	
@@ -368,7 +368,7 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 }
 
 void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
-	if(! pTaskBuildRT1){
+	if(!pTaskBuildRT1){
 		return;
 	}
 	
@@ -387,7 +387,7 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
 }
 
 void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
-	if(! pTaskBuildRT2){
+	if(!pTaskBuildRT2){
 		return;
 	}
 	
@@ -492,7 +492,7 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 }
 
 void deoglRenderPlanSkyLight::BuildComputeRenderTasks(bool rebuild){
-	if(! pLayer || ! pUseShadow){
+	if(!pLayer || !pUseShadow){
 		return;
 	}
 	
@@ -503,7 +503,7 @@ void deoglRenderPlanSkyLight::BuildComputeRenderTasks(bool rebuild){
 	bool requiresBuilding = false;
 	int i;
 	for(i=0; i<pShadowLayerCount; i++){
-		requiresBuilding |= ! (rebuild && pShadowLayers[i].
+		requiresBuilding |= !(rebuild && pShadowLayers[i].
 			computeRenderTask->GetState() == deoglComputeRenderTask::esReady);
 	}
 	
@@ -534,14 +534,14 @@ void deoglRenderPlanSkyLight::BuildComputeRenderTasks(bool rebuild){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
 	if(giState){
 		requiresBuilding = false;
-		requiresBuilding |= pGIShadowUpdateStatic && ! (rebuild
+		requiresBuilding |= pGIShadowUpdateStatic && !(rebuild
 			&& pCRTShadowGIStatic->GetState() == deoglComputeRenderTask::esReady);
-		requiresBuilding |= ! (rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady);
+		requiresBuilding |= !(rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady);
 		
 		if(requiresBuilding){
 			const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "ShadowGI");
 			
-			if(pGIShadowUpdateStatic && ! (rebuild
+			if(pGIShadowUpdateStatic && !(rebuild
 			&& pCRTShadowGIStatic->GetState() == deoglComputeRenderTask::esReady)){
 				const deoglDebugTraceGroup dt3(pPlan.GetRenderThread(), "Static");
 				renderCompute.ClearCullResult(pPlan);
@@ -552,7 +552,7 @@ void deoglRenderPlanSkyLight::BuildComputeRenderTasks(bool rebuild){
 				renderCompute.BuildRenderTask(pPlan, pCRTShadowGIStatic);
 			}
 			
-			if(! (rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady)){
+			if(!(rebuild && pCRTShadowGIDynamic->GetState() == deoglComputeRenderTask::esReady)){
 				const deoglDebugTraceGroup dt3(pPlan.GetRenderThread(), "Dynamic");
 				renderCompute.ClearCullResult(pPlan);
 				renderCompute.UpdateCullResult(pPlan, pUBOFindConfigGIDynamic,
@@ -566,7 +566,7 @@ void deoglRenderPlanSkyLight::BuildComputeRenderTasks(bool rebuild){
 }
 
 void deoglRenderPlanSkyLight::FinishReadBackComputeRenderTasks(){
-	if(! pLayer || ! pUseShadow){
+	if(!pLayer || !pUseShadow){
 		return;
 	}
 	
@@ -632,7 +632,7 @@ void deoglRenderPlanSkyLight::CleanUp(){
 //////////////////////
 
 void deoglRenderPlanSkyLight::pPrepareFindConfig(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	
@@ -710,7 +710,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 
 void deoglRenderPlanSkyLight::pPrepareFindConfigGIStatic(){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
-	if(! pLayer || ! giState){
+	if(!pLayer || !giState){
 		return;
 	}
 	
@@ -731,7 +731,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGIStatic(){
 
 void deoglRenderPlanSkyLight::pPrepareFindConfigGIDynamic(){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
-	if(! pLayer || ! giState){
+	if(!pLayer || !giState){
 		return;
 	}
 	
@@ -752,7 +752,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfigGIDynamic(){
 
 void deoglRenderPlanSkyLight::pPrepareFindConfigGI(deoglSPBlockUBO &ubo){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
-	if(! pLayer || ! giState){
+	if(!pLayer || !giState){
 		return;
 	}
 	
@@ -971,7 +971,7 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 	pShadowLayerCount = 4;
 	
 	// if array-texture support is missing no shadows for the time being
-	if(! pglFramebufferTexture){
+	if(!pglFramebufferTexture){
 		pUseShadow = false;
 	}
 	
@@ -979,7 +979,7 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 	// shadows to be calculated even if ambient only. this is not selectively enabled since
 	// it is tricky to get this working properly in all code path. instead enable shadow
 	// casting always is the safe route and usually not a performance problem
-	if(! pLayer->GetHasLightDirect() && ! pPlan.GetUpdateGIState()){
+	if(!pLayer->GetHasLightDirect() && !pPlan.GetUpdateGIState()){
 		pUseShadow = false;
 	}
 	
@@ -1141,7 +1141,7 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
-	if(! pTaskFindContent){
+	if(!pTaskFindContent){
 		return;
 	}
 	
@@ -1156,7 +1156,7 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
-	if(! pTaskGIFindContent){
+	if(!pTaskGIFindContent){
 		return;
 	}
 	
@@ -1171,7 +1171,7 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	const deoglGIState * const giState = pPlan.GetUpdateGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	

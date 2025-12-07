@@ -78,7 +78,7 @@ void ceLoadSaveCTA::LoadCTA(ceConversationActor &actor, decBaseFileReader &reade
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "conversationTestActor"){
+	if(!root || root->GetName() != "conversationTestActor"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -160,7 +160,7 @@ void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor 
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -330,7 +330,7 @@ void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor 
 	try{
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -400,7 +400,7 @@ void ceLoadSaveCTA::pReadController(const decXmlElementTag &root, ceActorControl
 	
 	for(i =0; i <elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

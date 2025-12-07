@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeUMoveControllerDown::aeUMoveControllerDown(aeAnimator *animator, aeController *controller){
-	if(! animator || ! controller) DETHROW(deeInvalidParam);
+	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
 	pController = NULL;

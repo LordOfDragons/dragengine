@@ -73,13 +73,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline aeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Reset view. */
 	void ResetView();
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{return pAnimator;}
+	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
@@ -103,7 +103,7 @@ public:
 	virtual void CreateCanvas();
 	
 	/** Gizmos. */
-	inline aeGizmoManager &GetGizoms(){return pGizmos;}
+	inline aeGizmoManager &GetGizoms(){ return pGizmos; }
 	/*@}*/
 };
 

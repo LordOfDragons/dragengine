@@ -60,7 +60,7 @@ reRigShape *reRigShapeList::GetShapeAt(int index) const{
 }
 
 int reRigShapeList::IndexOfShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){
@@ -71,7 +71,7 @@ int reRigShapeList::IndexOfShape(reRigShape *shape) const{
 }
 
 bool reRigShapeList::HasShape(reRigShape *shape) const{
-	if(! shape) DETHROW(deeInvalidParam);
+	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pShapeCount; i++){

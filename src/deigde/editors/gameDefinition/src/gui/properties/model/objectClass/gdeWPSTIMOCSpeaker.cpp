@@ -52,7 +52,7 @@ gdeWPSTIMOCSpeaker::gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *ob
 gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index),
 pSpeaker(NULL)
 {
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,8 +86,8 @@ void gdeWPSTIMOCSpeaker::Validate(){
 bool gdeWPSTIMOCSpeaker::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pSpeaker->GetPathSound().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pSpeaker->GetPathSound()))){
+	if(!pSpeaker->GetPathSound().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pSpeaker->GetPathSound()))){
 		return false;
 	}
 	

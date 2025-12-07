@@ -160,7 +160,7 @@ void debpColliderConstraint::SetHasBroken(bool hasBroken){
 }
 
 void debpColliderConstraint::PrepareForStep(){
-	if(! pBpConstraint){
+	if(!pBpConstraint){
 		return;
 	}
 	
@@ -171,7 +171,7 @@ void debpColliderConstraint::PrepareForStep(){
 }
 
 bool debpColliderConstraint::CheckHasBroken(){
-	if(! pHasBroken && pBpConstraint && ! pBpConstraint->isEnabled()){
+	if(!pHasBroken && pBpConstraint && !pBpConstraint->isEnabled()){
 		pHasBroken = true;
 		return true;
 	}
@@ -179,7 +179,7 @@ bool debpColliderConstraint::CheckHasBroken(){
 }
 
 bool debpColliderConstraint::RequiresAutoDirty() const{
-	return pEnabled && ! pHasBroken && pBpConstraint && pPhyBody2 && pPhyBody2->GetIsActive();
+	return pEnabled && !pHasBroken && pBpConstraint && pPhyBody2 && pPhyBody2->GetIsActive();
 }
 
 
@@ -200,7 +200,7 @@ void debpColliderConstraint::ConstraintChanged(){
 
 
 void debpColliderConstraint::RigidBodyCreated(debpPhysicsBody *body){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -208,7 +208,7 @@ void debpColliderConstraint::RigidBodyCreated(debpPhysicsBody *body){
 }
 
 void debpColliderConstraint::RigidBodyDestroy(debpPhysicsBody *body){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -216,7 +216,7 @@ void debpColliderConstraint::RigidBodyDestroy(debpPhysicsBody *body){
 }
 
 void debpColliderConstraint::PhysicsBodyDestroy(debpPhysicsBody *body){
-	if(! body){
+	if(!body){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -405,7 +405,7 @@ void debpColliderConstraint::pDetectConstraintType(){
 		// a hinge has 3 linear and 2 angular locks
 		}else if(pTypeInfo.countAngularLocks == 2){
 			if(configuration.GetEnableConstraintHinge()){
-				pConstraintType = ectHinge; // bugged since version 2.75 ! (doors flipping around at 0 point!)
+				pConstraintType = ectHinge; // bugged since version 2.75 !(doors flipping around at 0 point!)
 			}
 			
 		// cone twist joints can be used to simulate 1 angular lock if all others are restricted
@@ -475,9 +475,9 @@ void debpColliderConstraint::pDetectConstraintType(){
 
 void debpColliderConstraint::pCreateConstraint(){
 // 	pBullet.LogInfoFormat( "pCreateConstraint c=%p bc=%p e=%i dw=%p pb1=%p pb2=%p", pConstraint, pBpConstraint, pEnabled?1:0, pWorld, pPhyBody1, pPhyBody2 );
-	if(! pBpConstraint && pEnabled && pDynWorld
+	if(!pBpConstraint && pEnabled && pDynWorld
 	&& pPhyBody1 && pPhyBody1->GetRigidBody()
-	&& ! (pPhyBody2 && ! pPhyBody2->GetRigidBody())){
+	&& !(pPhyBody2 && !pPhyBody2->GetRigidBody())){
 		if(pConstraintType == ectStatic){
 			pCreateStaticConstraint();
 			
@@ -586,7 +586,7 @@ void debpColliderConstraint::pCreateBallSocketConstraint(){
 			btVector3(position1.x, position1.y, position1.z),
 			btVector3(position2.x, position2.y, position2.z));
 	}
-	if(! p2p){
+	if(!p2p){
 		DETHROW(deeOutOfMemory);
 	}
 	
@@ -676,7 +676,7 @@ void debpColliderConstraint::pCreateHingeConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(! hinge){
+	if(!hinge){
 		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = hinge;
@@ -805,7 +805,7 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(! coneTwist){
+	if(!coneTwist){
 		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = coneTwist;
@@ -909,7 +909,7 @@ void debpColliderConstraint::pCreateSliderConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(! slider){
+	if(!slider){
 		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = slider;
@@ -1010,7 +1010,7 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(! generic6Dof){
+	if(!generic6Dof){
 		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = generic6Dof;
@@ -1072,7 +1072,7 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	float angularSoftness = 0.5f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if(! body1Dynamic && ! body2Dynamic){
+	if(!body1Dynamic && !body2Dynamic){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;
@@ -1290,7 +1290,7 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	float angularSoftness = 1.0f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if(! body1Dynamic && ! body2Dynamic){
+	if(!body1Dynamic && !body2Dynamic){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;

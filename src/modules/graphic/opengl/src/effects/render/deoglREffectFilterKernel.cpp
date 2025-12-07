@@ -138,7 +138,7 @@ void deoglREffectFilterKernel::SetScale(float scale){
 
 
 const deoglPipeline *deoglREffectFilterKernel::GetPipeline(){
-	if(! pPipeline){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -157,7 +157,7 @@ const deoglPipeline *deoglREffectFilterKernel::GetPipeline(){
 }
 
 const deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
-	if(! pPipelineStereo){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -185,7 +185,7 @@ const deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
 }
 
 const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsample(){
-	if(! pPipeline){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -204,7 +204,7 @@ const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsample(){
 }
 
 const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
-	if(! pPipelineDownsampleStereo){
+	if(!pPipelineDownsampleStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;

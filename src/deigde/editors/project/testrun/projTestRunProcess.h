@@ -149,16 +149,16 @@ public:
 	/*@{*/
 	/** \brief In pipe read end. */
 	#ifdef OS_W32
-	inline HANDLE GetPipeIn() const{return pPipeIn;}
+	inline HANDLE GetPipeIn() const{ return pPipeIn; }
 	#else
-	inline int GetPipeIn() const{return pPipeIn;}
+	inline int GetPipeIn() const{ return pPipeIn; }
 	#endif
 	
 	/** \brief Out pipe write end. */
 	#ifdef OS_W32
-	inline HANDLE GetPipeOut() const{return pPipeOut;}
+	inline HANDLE GetPipeOut() const{ return pPipeOut; }
 	#else
-	inline int GetPipeOut() const{return pPipeOut;}
+	inline int GetPipeOut() const{ return pPipeOut; }
 	#endif
 	
 	/** \brief Write unsigned char to pipe. */
@@ -194,16 +194,16 @@ public:
 	
 	
 	/** \brief Run parameters. */
-	inline const sRunParameters &GetRunParameters() const{return pRunParameters;}
+	inline const sRunParameters &GetRunParameters() const{ return pRunParameters; }
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{return pLogger;}
+	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	/** \brief Launcher simulation. */
-	inline projTestRunLauncher &GetLauncher(){return pLauncher;}
+	inline projTestRunLauncher &GetLauncher(){ return pLauncher; }
 	
 	/** \brief Engine. */
-	inline projTestRunEngine &GetEngine(){return pEngine;}
+	inline projTestRunEngine &GetEngine(){ return pEngine; }
 	
 	
 	

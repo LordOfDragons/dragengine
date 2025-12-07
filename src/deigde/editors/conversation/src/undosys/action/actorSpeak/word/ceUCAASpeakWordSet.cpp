@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip){
-	if(! topic || ! actorSpeak || ! word || ! newStrip){
+	if(!topic || !actorSpeak || !word || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
 	

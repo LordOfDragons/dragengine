@@ -62,17 +62,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Wave type. */
-	inline deSynthesizerSourceWave::eWaveType GetType() const{return pType;}
+	inline deSynthesizerSourceWave::eWaveType GetType() const{ return pType; }
 	
 	/** \brief Minimum play frequency in Hz. */
-	inline float GetMinFrequency() const{return pMinFrequency;}
+	inline float GetMinFrequency() const{ return pMinFrequency; }
 	
 	/** \brief Maximum frequency in Hz. */
-	inline float GetMaxFrequency() const{return pMaxFrequency;}
+	inline float GetMaxFrequency() const{ return pMaxFrequency; }
 	
 	/** \brief Play frequency target. */
-	inline desynSynthesizerTarget &GetTargetFrequency(){return pTargetFrequency;}
-	inline const desynSynthesizerTarget &GetTargetFrequency() const{return pTargetFrequency;}
+	inline desynSynthesizerTarget &GetTargetFrequency(){ return pTargetFrequency; }
+	inline const desynSynthesizerTarget &GetTargetFrequency() const{ return pTargetFrequency; }
 	
 	
 	

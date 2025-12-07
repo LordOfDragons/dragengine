@@ -154,21 +154,21 @@ public:
 	
 	
 	/** \brief Configuration. */
-	inline seConfiguration &GetConfiguration(){return pConfiguration;}
-	inline const seConfiguration &GetConfiguration() const{return pConfiguration;}
+	inline seConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const seConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){return pClipboard;}
-	inline const igdeClipboard &GetClipboard() const{return pClipboard;}
+	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Load save system. */
-	inline seLoadSaveSystem &GetLoadSaveSystem(){return pLoadSaveSystem;}
-	inline const seLoadSaveSystem &GetLoadSaveSystem() const{return pLoadSaveSystem;}
+	inline seLoadSaveSystem &GetLoadSaveSystem(){ return pLoadSaveSystem; }
+	inline const seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	
 	
 	/** \brief Synthesizer. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -204,19 +204,19 @@ public:
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconSourceSound() const{return pIconSourceSound;}
-	inline igdeIcon *GetIconSourceWave() const{return pIconSourceWave;}
-	inline igdeIcon *GetIconSourceChain() const{return pIconSourceChain;}
-	inline igdeIcon *GetIconSourceGroup() const{return pIconSourceGroup;}
-	inline igdeIcon *GetIconSourceSynthesizer() const{return pIconSourceSynthesizer;}
+	inline igdeIcon *GetIconSourceSound() const{ return pIconSourceSound; }
+	inline igdeIcon *GetIconSourceWave() const{ return pIconSourceWave; }
+	inline igdeIcon *GetIconSourceChain() const{ return pIconSourceChain; }
+	inline igdeIcon *GetIconSourceGroup() const{ return pIconSourceGroup; }
+	inline igdeIcon *GetIconSourceSynthesizer() const{ return pIconSourceSynthesizer; }
 	igdeIcon *GetSourceIcon(deSynthesizerSourceVisitorIdentify::eSourceTypes type) const;
 	
-	inline igdeIcon *GetIconEffectStretch() const{return pIconEffectStretch;}
+	inline igdeIcon *GetIconEffectStretch() const{ return pIconEffectStretch; }
 	igdeIcon *GetEffectIcon(deSynthesizerEffectVisitorIdentify::eEffectTypes type) const;
 	
-	inline igdeIcon *GetIconPlay() const{return pIconPlay;}
-	inline igdeIcon *GetIconPause() const{return pIconPause;}
-	inline igdeIcon *GetIconStop() const{return pIconStop;}
+	inline igdeIcon *GetIconPlay() const{ return pIconPlay; }
+	inline igdeIcon *GetIconPause() const{ return pIconPause; }
+	inline igdeIcon *GetIconStop() const{ return pIconStop; }
 	
 	
 	
@@ -285,40 +285,40 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
-	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
-	inline igdeAction *GetActionControllerUp() const{return pActionControllerUp;}
-	inline igdeAction *GetActionControllerDown() const{return pActionControllerDown;}
+	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
+	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
 	
-	inline igdeAction *GetActionSourceAddSound() const{return pActionSourceAddSound;}
-	inline igdeAction *GetActionSourceAddWave() const{return pActionSourceAddWave;}
-	inline igdeAction *GetActionSourceAddChain() const{return pActionSourceAddChain;}
-	inline igdeAction *GetActionSourceAddGroup() const{return pActionSourceAddGroup;}
-	inline igdeAction *GetActionSourceAddSynthesizer() const{return pActionSourceAddSynthesizer;}
+	inline igdeAction *GetActionSourceAddSound() const{ return pActionSourceAddSound; }
+	inline igdeAction *GetActionSourceAddWave() const{ return pActionSourceAddWave; }
+	inline igdeAction *GetActionSourceAddChain() const{ return pActionSourceAddChain; }
+	inline igdeAction *GetActionSourceAddGroup() const{ return pActionSourceAddGroup; }
+	inline igdeAction *GetActionSourceAddSynthesizer() const{ return pActionSourceAddSynthesizer; }
 	
-	inline igdeAction *GetActionSourceGroupAddSound() const{return pActionSourceGroupAddSound;}
-	inline igdeAction *GetActionSourceGroupAddWave() const{return pActionSourceGroupAddWave;}
-	inline igdeAction *GetActionSourceGroupAddChain() const{return pActionSourceGroupAddChain;}
-	inline igdeAction *GetActionSourceGroupAddGroup() const{return pActionSourceGroupAddGroup;}
-	inline igdeAction *GetActionSourceGroupAddSynthesizer() const{return pActionSourceGroupAddSynthesizer;}
+	inline igdeAction *GetActionSourceGroupAddSound() const{ return pActionSourceGroupAddSound; }
+	inline igdeAction *GetActionSourceGroupAddWave() const{ return pActionSourceGroupAddWave; }
+	inline igdeAction *GetActionSourceGroupAddChain() const{ return pActionSourceGroupAddChain; }
+	inline igdeAction *GetActionSourceGroupAddGroup() const{ return pActionSourceGroupAddGroup; }
+	inline igdeAction *GetActionSourceGroupAddSynthesizer() const{ return pActionSourceGroupAddSynthesizer; }
 	
-	inline igdeAction *GetActionSourceInsertSound() const{return pActionSourceInsertSound;}
-	inline igdeAction *GetActionSourceInsertWave() const{return pActionSourceInsertWave;}
-	inline igdeAction *GetActionSourceInsertChain() const{return pActionSourceInsertChain;}
-	inline igdeAction *GetActionSourceInsertGroup() const{return pActionSourceInsertGroup;}
-	inline igdeAction *GetActionSourceInsertSynthesizer() const{return pActionSourceInsertSynthesizer;}
+	inline igdeAction *GetActionSourceInsertSound() const{ return pActionSourceInsertSound; }
+	inline igdeAction *GetActionSourceInsertWave() const{ return pActionSourceInsertWave; }
+	inline igdeAction *GetActionSourceInsertChain() const{ return pActionSourceInsertChain; }
+	inline igdeAction *GetActionSourceInsertGroup() const{ return pActionSourceInsertGroup; }
+	inline igdeAction *GetActionSourceInsertSynthesizer() const{ return pActionSourceInsertSynthesizer; }
 	
-	inline igdeAction *GetActionSourceRemove() const{return pActionSourceRemove;}
-	inline igdeAction *GetActionSourceUp() const{return pActionSourceUp;}
-	inline igdeAction *GetActionSourceDown() const{return pActionSourceDown;}
+	inline igdeAction *GetActionSourceRemove() const{ return pActionSourceRemove; }
+	inline igdeAction *GetActionSourceUp() const{ return pActionSourceUp; }
+	inline igdeAction *GetActionSourceDown() const{ return pActionSourceDown; }
 	
-	inline igdeAction *GetActionEffectAddStretch() const{return pActionEffectAddStretch;}
+	inline igdeAction *GetActionEffectAddStretch() const{ return pActionEffectAddStretch; }
 	
-	inline igdeAction *GetActionEffectInsertStretch() const{return pActionEffectInsertStretch;}
+	inline igdeAction *GetActionEffectInsertStretch() const{ return pActionEffectInsertStretch; }
 	
-	inline igdeAction *GetActionEffectRemove() const{return pActionEffectRemove;}
-	inline igdeAction *GetActionEffectUp() const{return pActionEffectUp;}
-	inline igdeAction *GetActionEffectDown() const{return pActionEffectDown;}
+	inline igdeAction *GetActionEffectRemove() const{ return pActionEffectRemove; }
+	inline igdeAction *GetActionEffectUp() const{ return pActionEffectUp; }
+	inline igdeAction *GetActionEffectDown() const{ return pActionEffectDown; }
 	/*@}*/
 	
 	

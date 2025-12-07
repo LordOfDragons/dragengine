@@ -41,7 +41,7 @@
 meUDeleteObject::meUDeleteObject(meWorld *world) :
 pWorld(NULL)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

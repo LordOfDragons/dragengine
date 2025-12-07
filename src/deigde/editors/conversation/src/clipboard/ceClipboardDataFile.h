@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Files. */
-	inline const ceConversationFileList &GetFiles() const{return pFiles;}
+	inline const ceConversationFileList &GetFiles() const{ return pFiles; }
 	/*@}*/
 };
 

@@ -65,14 +65,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Condition or \em NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{return pCondition;}
+	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Set condition or \em NULL if there is none. */
 	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief List of actions. */
-	inline ceConversationActionList &GetActions(){return pActions;}
-	inline const ceConversationActionList &GetActions() const{return pActions;}
+	inline ceConversationActionList &GetActions(){ return pActions; }
+	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	/*@}*/
 	
 	
@@ -80,19 +80,19 @@ public:
 	/** \name UI */
 	/*@{*/
 	/** \brief Tree list item expanded state. */
-	inline bool GetTIMExpanded() const{return pTIMExpanded;}
+	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
 	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Condition tree list item expanded state. */
-	inline bool GetTIMConditionExpanded() const{return pTIMConditionExpanded;}
+	inline bool GetTIMConditionExpanded() const{ return pTIMConditionExpanded; }
 	
 	/** \brief Set condition tree list item expanded state. */
 	void SetTIMConditionExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
-	inline bool GetTIMActionsExpanded() const{return pTIMActionsExpanded;}
+	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
 	void SetTIMActionsExpanded(bool expanded);

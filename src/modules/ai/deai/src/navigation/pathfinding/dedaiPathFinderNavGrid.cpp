@@ -88,7 +88,7 @@ void dedaiPathFinderNavGrid::SetEndPoint(const decDVector &point){
 
 
 void dedaiPathFinderNavGrid::FindPath(){
-	if(! pNavigator || ! pWorld){
+	if(!pNavigator || !pWorld){
 		return;
 	}
 	
@@ -197,7 +197,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 			
 			for(l=0; l<linkCount; l++){
 				nextVertex = links[testVertex->GetFirstLink() + l];
-				if(! nextVertex->GetEnabled()){
+				if(!nextVertex->GetEnabled()){
 					continue;
 				}
 				
@@ -246,7 +246,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 				}
 				
 				// if disabled ignore it
-				if(! nextVertex->GetEnabled()){
+				if(!nextVertex->GetEnabled()){
 					continue;
 				}
 				
@@ -396,7 +396,7 @@ void dedaiPathFinderNavGrid::pFindVertexPath(){
 		AddPathPoint(testVertex->GetGrid()->GetSpace().GetMatrix() * testVertex->GetPosition());
 	}
 	
-	if(! pPathPoints[count - 1].IsEqualTo(pEndPoint)){
+	if(!pPathPoints[count - 1].IsEqualTo(pEndPoint)){
 		AddPathPoint(pEndPoint);
 	}
 }

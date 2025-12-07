@@ -63,7 +63,7 @@ pSize(width, height)
 }
 
 igdeIcon *igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,7 +82,7 @@ igdeIcon *igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
 }
 
 igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -105,7 +105,7 @@ igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename
 }
 
 igdeIcon *igdeIcon::LoadImage(igdeEnvironment &environment, const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -137,7 +137,7 @@ igdeIcon::~igdeIcon(){
 ///////////////
 
 igdeIcon *igdeIcon::Scale(const decPoint &size) const{
-	if(! (size >= decPoint(1, 1)) || ! pNativeIcon){
+	if(!(size >= decPoint(1, 1)) || !pNativeIcon){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -44,7 +44,7 @@ pDoubleSided(false),
 pDecal(false),
 pDecalOffset(0)
 {
-	if(! name || width < 1 || height < 1){
+	if(!name || width < 1 || height < 1){
 		DETHROW(deeInvalidParam);
 	}
 }

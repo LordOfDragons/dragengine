@@ -52,7 +52,7 @@ gdeWPSTIMOCForceField::gdeWPSTIMOCForceField(gdeWPSTreeModel &tree,
 gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index),
 pForceField(NULL)
 {
-	if(! forceField){
+	if(!forceField){
 		DETHROW(deeInvalidParam);
 	}
 	

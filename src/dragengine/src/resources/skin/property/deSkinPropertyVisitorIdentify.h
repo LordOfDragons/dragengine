@@ -84,28 +84,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property type. */
-	inline ePropertyTypes GetType() const{return pType;}
+	inline ePropertyTypes GetType() const{ return pType; }
 	
 	/** \brief Determines if this is an unknown property. */
-	inline bool IsUnknown() const{return pType == eptUnknown;}
+	inline bool IsUnknown() const{ return pType == eptUnknown; }
 	
 	/** \brief Determines if this is a single value property. */
-	inline bool IsValue() const{return pType == eptValue;}
+	inline bool IsValue() const{ return pType == eptValue; }
 	
 	/** \brief Determines if this is a color property. */
-	inline bool IsColor() const{return pType == eptColor;}
+	inline bool IsColor() const{ return pType == eptColor; }
 	
 	/** \brief Determines if this is an image property. */
-	inline bool IsImage() const{return pType == eptImage;}
+	inline bool IsImage() const{ return pType == eptImage; }
 	
 	/** \brief Determines if this is a video property. */
-	inline bool IsVideo() const{return pType == eptVideo;}
+	inline bool IsVideo() const{ return pType == eptVideo; }
 	
 	/** \brief Determines if this is a constructed property. */
-	inline bool IsConstructed() const{return pType == eptConstructed;}
+	inline bool IsConstructed() const{ return pType == eptConstructed; }
 	
 	/** \brief Determines if this is a mapped property. */
-	inline bool IsMapped() const{return pType == eptMapped;}
+	inline bool IsMapped() const{ return pType == eptMapped; }
 	
 	/** \brief Cast to a single value property. */
 	deSkinPropertyValue &CastToValue() const;

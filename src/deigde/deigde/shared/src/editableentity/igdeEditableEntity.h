@@ -97,7 +97,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the environment. */
-	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the engine object. */
 	deEngine *GetEngine() const;
 	
@@ -108,14 +108,14 @@ public:
 	deLogger *GetLogger() const;
 	
 	/** \brief Retrieves the directory path. */
-	inline const decString &GetDirectoryPath() const{return pPathDirectory;}
+	inline const decString &GetDirectoryPath() const{ return pPathDirectory; }
 	/** \brief Retrieves the file path. */
-	inline const decString &GetFilePath() const{return pPathFile;}
+	inline const decString &GetFilePath() const{ return pPathFile; }
 	/** \brief Sets the file path. */
 	void SetFilePath(const char *path);
 	
 	/** \brief Determines if the entity has changed. */
-	inline bool GetChanged() const{return pChanged;}
+	inline bool GetChanged() const{ return pChanged; }
 	/**
 	 * \brief Sets if the entity has changed.
 	 * 
@@ -124,7 +124,7 @@ public:
 	void SetChanged(bool changed);
 	
 	/** \brief Determines if the entity has been saved. */
-	inline bool GetSaved() const{return pSaved;}
+	inline bool GetSaved() const{ return pSaved; }
 	/**
 	 * \brief Sets if the entity has been saved.
 	 * 
@@ -133,7 +133,7 @@ public:
 	void SetSaved(bool saved);
 	
 	/** \brief Retrieves the undo system. */
-	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Notifies all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();

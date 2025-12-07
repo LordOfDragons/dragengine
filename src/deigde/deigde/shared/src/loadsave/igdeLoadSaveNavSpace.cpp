@@ -50,7 +50,7 @@
 ////////////////////////////
 
 igdeLoadSaveNavSpace::igdeLoadSaveNavSpace(igdeEnvironment *environment, const char *loggingSource){
-	if(! environment || ! loggingSource){
+	if(!environment || !loggingSource){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -185,15 +185,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Retrieves the gesture animator instance. */
-	inline deAnimatorInstance *GetEngineGestureAnimatorInstance() const{return pEngGestureAnimatorInstance;}
+	inline deAnimatorInstance *GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
 	/** Retrieves the engine speaker. */
-	inline deSpeaker *GetEngineSpeaker() const{return pEngSpeaker;}
+	inline deSpeaker *GetEngineSpeaker() const{ return pEngSpeaker; }
 	
 	/** Retrieves the parent conversation or NULL if not set. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	/** Sets the parent conversation or NULL if not set. */
 	void SetConversation(ceConversation *conversation);
 	
@@ -201,74 +201,74 @@ public:
 	void Update(cePlayback &playback, float elapsed);
 	
 	/** Retrieves the model path. */
-	inline const decString &GetPathModel() const{return pPathModel;}
+	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
 	/** Retrieves the skin path. */
-	inline const decString &GetPathSkin() const{return pPathSkin;}
+	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetPathRig() const{return pPathRig;}
+	inline const decString &GetPathRig() const{ return pPathRig; }
 	/** Sets the rig path. */
 	void SetPathRig(const char *path);
 	/** Retrieves the speech animation path. */
-	inline const decString &GetPathSpeechAnimation() const{return pPathSpeechAnimation;}
+	inline const decString &GetPathSpeechAnimation() const{ return pPathSpeechAnimation; }
 	/** Sets the speech animation path. */
 	void SetPathSpeechAnimation(const char *path);
 	/** Retrieves the face pose animator path. */
-	inline const decString &GetPathFacePoseAnimator() const{return pPathFacePoseAnimator;}
+	inline const decString &GetPathFacePoseAnimator() const{ return pPathFacePoseAnimator; }
 	/** Sets the face pose animator path. */
 	void SetPathFacePoseAnimator(const char *path);
 	/** Retrieves the eyes animator path. */
-	inline const decString &GetPathEyesAnimator() const{return pPathEyesAnimator;}
+	inline const decString &GetPathEyesAnimator() const{ return pPathEyesAnimator; }
 	/** Sets the eyes animator path. */
 	void SetPathEyesAnimator(const char *path);
 	/** Retrieves the actor id. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	/** Sets the actor id. */
 	void SetID(const char *id);
 	/** Retrieves the actor alias id. */
-	inline const decString &GetAliasID() const{return pAliasID;}
+	inline const decString &GetAliasID() const{ return pAliasID; }
 	/** Sets the actor alias id. */
 	void SetAliasID(const char *id);
 	/** Retrieves the text box name. */
-	inline const decUnicodeString &GetTextBoxName() const{return pTextBoxName;}
+	inline const decUnicodeString &GetTextBoxName() const{ return pTextBoxName; }
 	/** Sets the text box name. */
 	void SetTextBoxName(const decUnicodeString &name);
 	
 	/** Retrieves the position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
-	inline const decVector &GetOrientation() const{return pOrientation;}
+	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** Sets the orientation. */
 	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Head rotator bone name. */
-	inline const decString &GetBoneHeadRotator() const{return pBoneHeadRotator;}
+	inline const decString &GetBoneHeadRotator() const{ return pBoneHeadRotator; }
 	
 	/** \brief Set head rotator bone name. */
 	void SetBoneHeadRotator(const char *bone);
 	
 	/** \brief Commands. */
-	inline cePlaybackCommandList &GetCommands(){return pCommands;}
-	inline const cePlaybackCommandList &GetCommands() const{return pCommands;}
+	inline cePlaybackCommandList &GetCommands(){ return pCommands; }
+	inline const cePlaybackCommandList &GetCommands() const{ return pCommands; }
 	
 	/** \brief Parameters. */
-	inline ceActorParameterList &GetParameters(){return pParameter;}
-	inline const ceActorParameterList &GetParameter() const{return pParameter;}
+	inline ceActorParameterList &GetParameters(){ return pParameter; }
+	inline const ceActorParameterList &GetParameter() const{ return pParameter; }
 	
 	/** Retrieves the speech animation. */
-	inline ceSpeechAnimation *GetSpeechAnimation() const{return pSpeechAnimation;}
+	inline ceSpeechAnimation *GetSpeechAnimation() const{ return pSpeechAnimation; }
 	
 	/** \brief Poses. */
-	inline ceActorPoseList &GetPoses(){return pPoses;}
-	inline const ceActorPoseList &GetPoses() const{return pPoses;}
+	inline ceActorPoseList &GetPoses(){ return pPoses; }
+	inline const ceActorPoseList &GetPoses() const{ return pPoses; }
 	
 	/** \brief Active pose or \em NULL. */
-	inline ceActorPose *GetActivePose() const{return pActivePose;}
+	inline ceActorPose *GetActivePose() const{ return pActivePose; }
 	
 	/** \brief Set active pose or \em NULL. */
 	void SetActivePose(ceActorPose *pose);
@@ -283,20 +283,20 @@ public:
 	void PlayVoiceAudio(deSound *sound);
 	
 	/** Retrieves the head left-right angle. */
-	inline float GetHeadLeftRight() const{return pHeadLeftRight;}
+	inline float GetHeadLeftRight() const{ return pHeadLeftRight; }
 	/** Sets the head left-right angle. */
 	void SetHeadLeftRight(float angle);
 	/** Retrieves the head up-down angle. */
-	inline float GetHeadUpDown() const{return pHeadUpDown;}
+	inline float GetHeadUpDown() const{ return pHeadUpDown; }
 	/** Sets the head up-down angle. */
 	void SetHeadUpDown(float angle);
 	
 	/** Retrieves the eyes left-right angle. */
-	inline float GetEyesLeftRight() const{return pEyesLeftRight;}
+	inline float GetEyesLeftRight() const{ return pEyesLeftRight; }
 	/** Sets the eyes left-right angle. */
 	void SetEyesLeftRight(float angle);
 	/** Retrieves the eyes up-down angle. */
-	inline float GetEyesUpDown() const{return pEyesUpDown;}
+	inline float GetEyesUpDown() const{ return pEyesUpDown; }
 	/** Sets the eyes up-down angle. */
 	void SetEyesUpDown(float angle);
 	
@@ -321,7 +321,7 @@ public:
 	void AddPlayEyesLookAt(ceTarget *lookAt, float pause, float duration);
 	
 	/** \brief Determines if the actor causes waiting if the playback checks for actor waiting. */
-	inline bool GetWaiting() const{return pWaiting;}
+	inline bool GetWaiting() const{ return pWaiting; }
 	/** \brief Sets if the actor causes waiting if the playback checks for actor waiting. */
 	void SetWaiting(bool waiting);
 	

@@ -162,7 +162,7 @@ public:
 	
 	virtual void OnAction(ceConversation &conversation){
 		if(pWindow.GetTopic()){
-			conversation.GetPlayback()->SetPaused(! conversation.GetPlayback()->GetPaused());
+			conversation.GetPlayback()->SetPaused(!conversation.GetPlayback()->GetPaused());
 		}
 	}
 	
@@ -182,12 +182,12 @@ public:
 		const cePlayback &playback = *conversation.GetPlayback();
 		ceConversationAction * const action = playback.GetLastPlayedAction();
 		ceConversationTopic * const topic = playback.GetLastPlayedActionTopic();
-		if(! action || ! topic){
+		if(!action || !topic){
 			return;
 		}
 		
 		ceConversationFile * const file = topic->GetFile();
-		if(! file){
+		if(!file){
 			return;
 		}
 		
@@ -278,7 +278,7 @@ public:
 	
 	virtual void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers){
 		igdeMouseKeyListener *listener = pDragListener;
-		if(! listener){
+		if(!listener){
 			listener = GetListenerAtPosition(position);
 		}
 		if(listener){
@@ -288,7 +288,7 @@ public:
 	
 	virtual void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers){
 		igdeMouseKeyListener *listener = pDragListener;
-		if(! listener){
+		if(!listener){
 			listener = GetListenerAtPosition(position);
 		}
 		if(listener){
@@ -778,7 +778,7 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 }
 
 void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
-	if(! pCanvasTimeLines || ! pCanvasTimeLineLabels){
+	if(!pCanvasTimeLines || !pCanvasTimeLineLabels){
 		return;
 	}
 	
@@ -829,7 +829,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 }
 
 void ceWindowDopeSheet::pUpdateCanvasVAPreviewTime(){
-	if(! pCanvasVAPreviewTime || ! pVAPreview){
+	if(!pCanvasVAPreviewTime || !pVAPreview){
 		return;
 	}
 	

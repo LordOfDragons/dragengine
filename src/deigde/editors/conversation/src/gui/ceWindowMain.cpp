@@ -300,7 +300,7 @@ void ceWindowMain::CreateNewConversation(){
 }
 
 void ceWindowMain::SaveConversation(const char *filename){
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
@@ -341,7 +341,7 @@ void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 }
 
 void ceWindowMain::LoadCTA(const char *filename){
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
@@ -362,7 +362,7 @@ void ceWindowMain::LoadCTA(const char *filename){
 }
 
 void ceWindowMain::AttachLangPack(const char *filename){
-	if(! pConversation){
+	if(!pConversation){
 		return;
 	}
 	
@@ -431,7 +431,7 @@ void ceWindowMain::OnDeactivate(){
 }
 
 void ceWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -505,7 +505,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetConversation()){
+		if(!pWindow.GetConversation()){
 			return;
 		}
 		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetConversation())));
@@ -543,7 +543,7 @@ public:
 	pWindow(window){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetConversation() || ! pWindow.GetConversation()->GetChanged()
+		if(!pWindow.GetConversation() || !pWindow.GetConversation()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Conversation",
 		"Creating a new conversation discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewConversation();
@@ -568,7 +568,7 @@ public:
 		
 		decString filename(pWindow.GetConversation() ? pWindow.GetConversation()->GetFilePath()
 			: pWindow.GetGameProject()->GetPathData());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetConversationFilePatterns(), filename ) ){
 			return;
@@ -731,7 +731,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceConversationActor * const actor = conversation->GetActiveActor();
-		if(! actor){
+		if(!actor){
 			return NULL;
 		}
 		
@@ -796,7 +796,7 @@ public:
 		"Show Rule of Thirds aid", deInputEvent::ekcT){}
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
-		conversation->SetShowRuleOfThirdsAid(! conversation->GetShowRuleOfThirdsAid());
+		conversation->SetShowRuleOfThirdsAid(!conversation->GetShowRuleOfThirdsAid());
 		return NULL;
 	}
 	
@@ -834,7 +834,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation) override{
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if(! langpack){
+		if(!langpack){
 			return nullptr;
 		}
 		

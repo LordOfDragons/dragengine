@@ -265,7 +265,7 @@ void peeWindowMain::OnDeactivate(){
 
 
 void peeWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -361,7 +361,7 @@ public:
 	
 	virtual void OnAction(){
 		decString filename(pWindow.GetEmitter()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Emitter",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Emitter",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			return;

@@ -71,7 +71,7 @@ bool deWriteLockGuard::TryWriteLock(){
 }
 
 void deWriteLockGuard::WriteUnlock(){
-	if(! pLocked){
+	if(!pLocked){
 		DETHROW(deeInvalidAction);
 	}
 	

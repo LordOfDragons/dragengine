@@ -54,9 +54,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the template. */
-	inline const char *GetName() const{return (const char *)pName;}
+	inline const char *GetName() const{ return (const char *)pName; }
 	/** Retrieves the color matrix. */
-	inline const decTexMatrix &GetPixelMatrix() const{return pPixelMatrix;}
+	inline const decTexMatrix &GetPixelMatrix() const{ return pPixelMatrix; }
 	/** Sets the color matrix. */
 	void SetPixelMatrix(const decTexMatrix &matrix);
 	/*@}*/

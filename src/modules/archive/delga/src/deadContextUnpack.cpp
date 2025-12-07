@@ -120,7 +120,7 @@ pZipFileOpen(false)
 	ffunc.opaque = this;
 	
 	pZipFile = unzOpen2(container->GetFilename(), &ffunc);
-	if(! pZipFile){
+	if(!pZipFile){
 		DETHROW_INFO(deeReadFile, container->GetFilename());
 	}
 	
@@ -287,7 +287,7 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 
 		filename.Replace('\\', '/'); // windows idiocy protection
 		
-		if(! filename.IsEmpty() && filename.GetAt(filename.GetLength() - 1) != '/'){
+		if(!filename.IsEmpty() && filename.GetAt(filename.GetLength() - 1) != '/'){
 			const decPath archivePath(decPath::CreatePathUnix(filename));
 			
 			deadArchiveDirectory *directory = archiveDirectory;

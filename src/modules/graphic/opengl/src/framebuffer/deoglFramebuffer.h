@@ -138,23 +138,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if the framebuffer is a primary framebuffer. */
-	inline bool GetIsPrimary() const{return pPrimary;}
+	inline bool GetIsPrimary() const{ return pPrimary; }
 	/** Activates the framebuffer if not active yet. */
 	void SetAsCurrent() const;
 	/** Verifies the framebuffer for completeness. */
 	void Verify();
 	
 	/** Retrieves the FBO. */
-	inline GLuint GetFBO() const{return pFBO;}
+	inline GLuint GetFBO() const{ return pFBO; }
 	
 	/** Retrieves the usage width. */
-	inline int GetUsageWidth() const{return pUsageWidth;}
+	inline int GetUsageWidth() const{ return pUsageWidth; }
 	/** Retrieves the usage height. */
-	inline int GetUsageHeight() const{return pUsageHeight;}
+	inline int GetUsageHeight() const{ return pUsageHeight; }
 	/** Sets the usage resolution. */
 	void SetUsageResolution(int width, int height);
 	/** Retrieves the usage count. */
-	inline int GetUsageCount() const{return pUsageCount;}
+	inline int GetUsageCount() const{ return pUsageCount; }
 	/** Increases the usage count by one. */
 	void IncreaseUsageCount();
 	/** Decreases the usage count by one. */

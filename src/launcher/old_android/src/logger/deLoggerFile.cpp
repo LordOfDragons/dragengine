@@ -43,7 +43,7 @@
 deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
 pWriter(NULL)
 {
-	if(! writer){
+	if(!writer){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -63,7 +63,7 @@ deLoggerFile::~deLoggerFile(){
 ///////////////
 
 void deLoggerFile::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,7 +92,7 @@ void deLoggerFile::LogInfo(const char *source, const char *message){
 }
 
 void deLoggerFile::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -121,7 +121,7 @@ void deLoggerFile::LogWarn(const char *source, const char *message){
 }
 
 void deLoggerFile::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

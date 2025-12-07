@@ -248,7 +248,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("Sky Sky-Sphere Stereo");
 	}
 	pAsyncGetPipeline(pPipelineSkySphereStereo, pipconf, sources, defines);
@@ -265,7 +265,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("Sky Sky-Box Stereo");
 	}
 	pAsyncGetPipeline(pPipelineSkyBoxStereo, pipconf, sources, defines);
@@ -282,7 +282,7 @@ deoglRenderBase(renderThread)
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if(! renderFSQuadStereoVSLayer){
+	if(!renderFSQuadStereoVSLayer){
 		sources = shaderManager.GetSourcesNamed("Sky Body Stereo");
 	}
 	pAsyncGetPipeline(pPipelineBodyStereo, pipconf, sources, defines);
@@ -383,7 +383,7 @@ void deoglRenderSky::RenderSky(deoglRenderPlan &plan, const deoglRenderPlanMaske
 		
 		for(j=0; j<layerCount; j++){
 			const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt(j);
-			if(! instanceLayer.GetVisible()){
+			if(!instanceLayer.GetVisible()){
 				continue;
 			}
 			
@@ -424,7 +424,7 @@ int layerIndex, bool first, bool renderIntoEnvMap){
 
 bool deoglRenderSky::RenderSkySphere(deoglRenderPlan &plan, deoglRSkyInstance &instance,
 int layerIndex, bool first, bool renderIntoEnvMap){
-	if(! instance.GetRSky()){
+	if(!instance.GetRSky()){
 		return false;
 	}
 	
@@ -439,7 +439,7 @@ int layerIndex, bool first, bool renderIntoEnvMap){
 	decColor layerColor(instanceLayer.GetColor());
 	const deoglRSkin * const skin = layer.GetSkin();
 	
-	if(! skin || skin->GetTextureCount() == 0){
+	if(!skin || skin->GetTextureCount() == 0){
 		return false;
 	}
 	deoglSkinTexture * const oglSkinTexture = &skin->GetTextureAt(0);
@@ -451,7 +451,7 @@ int layerIndex, bool first, bool renderIntoEnvMap){
 	layerColor.a *= instanceLayer.GetTransparency();
 	
 	// if we render full bright ignore the intensity
-	if(! plan.GetDisableLights()){
+	if(!plan.GetDisableLights()){
 		const float layerIntensity = instanceLayer.GetIntensity();
 		layerColor.r *= layerIntensity;
 		layerColor.g *= layerIntensity;
@@ -494,7 +494,7 @@ int layerIndex, bool first, bool renderIntoEnvMap){
 
 void deoglRenderSky::RenderSkyLayerBodies(deoglRenderPlan &plan,
 deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap){
-	if(! instance.GetRSky()){
+	if(!instance.GetRSky()){
 		return;
 	}
 	
@@ -517,7 +517,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap){
 	layerColor.a *= instanceLayer.GetTransparency();
 	
 	// if we render full bright ignore the intensity
-	if(! plan.GetDisableLights()){
+	if(!plan.GetDisableLights()){
 		const float layerIntensity = instanceLayer.GetIntensity();
 		layerColor.r *= layerIntensity;
 		layerColor.g *= layerIntensity;
@@ -543,7 +543,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap){
 		.GetTexSamplerConfig(deoglRTShader::etscClampLinear);
 	
 	for(b=0; b<bodyCount; b++){
-		if(! bodies[b].skin){
+		if(!bodies[b].skin){
 			continue;
 		}
 		
@@ -585,7 +585,7 @@ deoglEnvironmentMap &envmap){
 	
 	for(i=0; i<world.GetSkyCount(); i++){
 		deoglRSkyInstance * const instance = world.GetSkyAt(i);
-		if(! instance->GetRSky()){
+		if(!instance->GetRSky()){
 			continue;
 		}
 		if(useLayerMask && instance->GetLayerMask().IsNotEmpty() && layerMask.MatchesNot(instance->GetLayerMask())){
@@ -703,7 +703,7 @@ deoglEnvironmentMap &envmap){
 				
 				for(l=0; l<layerCount; l++){
 					const deoglRSkyLayer &layer = sky.GetLayerAt(l);
-					if(! instance.GetLayerAt(l).GetVisible()){
+					if(!instance.GetLayerAt(l).GetVisible()){
 						continue;
 					}
 					

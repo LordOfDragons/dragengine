@@ -164,7 +164,7 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 	}
 	
 	// try to load the synthesizer
-	if(! pPathSynthesizer.IsEmpty() && GetSynthesizer()){
+	if(!pPathSynthesizer.IsEmpty() && GetSynthesizer()){
 		const decString &basePath = GetSynthesizer()->GetDirectoryPath();
 		
 		try{

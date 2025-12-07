@@ -66,7 +66,7 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the font to use. */
-	inline FXFont *GetFont() const{return pFont;}
+	inline FXFont *GetFont() const{ return pFont; }
 	/** Sets the font to use. */
 	void SetFont(FXFont *font);
 	
@@ -74,7 +74,7 @@ public:
 	 * Retrieves the number of colons text fields should have that display
 	 * a single precision floating point value.
 	 */
-	inline int GetColonsFloat() const{return pColonsFloat;}
+	inline int GetColonsFloat() const{ return pColonsFloat; }
 	/**
 	 * Sets the number of colons text fields should have that display
 	 * a single precision floating point value.
@@ -84,7 +84,7 @@ public:
 	 * Retrieves the number of colons text fields should have that display
 	 * a double precision floating point value.
 	 */
-	inline int GetColonsDouble() const{return pColonsDouble;}
+	inline int GetColonsDouble() const{ return pColonsDouble; }
 	/**
 	 * Sets the number of colons text fields should have that display
 	 * a double precision floating point value.
@@ -94,7 +94,7 @@ public:
 	 * Retrieves the number of colons text fields should have that display
 	 * a short text string.
 	 */
-	inline int GetColonsTextShort() const{return pColonsTextShort;}
+	inline int GetColonsTextShort() const{ return pColonsTextShort; }
 	/**
 	 * Sets the number of colons text fields should have that display
 	 * a short text string.
@@ -103,7 +103,7 @@ public:
 	/**
 	 * Retrieves the number of colons combo boxes should have.
 	 */
-	inline int GetColonsComboBox() const{return pColonsComboBox;}
+	inline int GetColonsComboBox() const{ return pColonsComboBox; }
 	/**
 	 * Sets the number of colons combo boxes should have.
 	 */
@@ -111,42 +111,42 @@ public:
 	/**
 	 * Retrieves the number of rows combo boxes should have.
 	 */
-	inline int GetRowsComboBox() const{return pRowsComboBox;}
+	inline int GetRowsComboBox() const{ return pRowsComboBox; }
 	/**
 	 * Sets the number of rows combo boxes should have.
 	 */
 	void SetRowsComboBox(int colons);
 	
 	/** Retrieves the padding for group boxes. */
-	inline int GetPaddingGroupBox() const{return pPaddingGroupBox;}
+	inline int GetPaddingGroupBox() const{ return pPaddingGroupBox; }
 	/** Sets the padding for group boxes. */
 	void SetPaddingGroupBox(int padding);
 	/** Retrieves the padding for labels. */
-	inline int GetPaddingLabel() const{return pPaddingLabel;}
+	inline int GetPaddingLabel() const{ return pPaddingLabel; }
 	/** Sets the padding for labels. */
 	void SetPaddingLabel(int padding);
 	/** Retrieves the spacing for group boxes. */
-	inline int GetSpacingGroupBox() const{return pSpacingGroupBox;}
+	inline int GetSpacingGroupBox() const{ return pSpacingGroupBox; }
 	/** Sets the spacing for group boxes. */
 	void SetSpacingGroupBox(int spacing);
 	/** Retrieves the padding for matrix rows. */
-	inline int GetPaddingMatrixRows() const{return pPaddingMatrixRows;}
+	inline int GetPaddingMatrixRows() const{ return pPaddingMatrixRows; }
 	/** Sets the padding for matrix rows. */
 	void SetPaddingMatrixRows(int padding);
 	/** Retrieves the horizontal padding for text elements. */
-	inline int GetPaddingTextHorz() const{return pPaddingTextHorz;}
+	inline int GetPaddingTextHorz() const{ return pPaddingTextHorz; }
 	/** Sets the horizontal padding for text elements. */
 	void SetPaddingTextHorz(int padding);
 	/** Retrieves the vertical padding for text elements. */
-	inline int GetPaddingTextVert() const{return pPaddingTextVert;}
+	inline int GetPaddingTextVert() const{ return pPaddingTextVert; }
 	/** Sets the vertical padding for text elements. */
 	void SetPaddingTextVert(int padding);
 	/** Retrieves the horizontal padding for buttons. */
-	inline int GetPaddingButtonHorz() const{return pPaddingButtonHorz;}
+	inline int GetPaddingButtonHorz() const{ return pPaddingButtonHorz; }
 	/** Sets the horizontal padding for buttons. */
 	void SetPaddingButtonHorz(int padding);
 	/** Retrieves the vertical padding for buttons. */
-	inline int GetPaddingButtonVert() const{return pPaddingButtonVert;}
+	inline int GetPaddingButtonVert() const{ return pPaddingButtonVert; }
 	/** Sets the vertical padding for buttons. */
 	void SetPaddingButtonVert(int padding);
 	/*@}*/

@@ -87,7 +87,7 @@ webm::Status dewmWebmCallbackInfos::OnSegmentEnd(const webm::ElementMetadata &){
 }
 
 webm::Status dewmWebmCallbackInfos::OnInfo(const webm::ElementMetadata &, const webm::Info &info){
-	if(! info.duration.is_present()){
+	if(!info.duration.is_present()){
 		pModule.LogError("info.duration absent");
 		return webm::Status(100);
 	}
@@ -100,7 +100,7 @@ webm::Status dewmWebmCallbackInfos::OnInfo(const webm::ElementMetadata &, const 
 
 webm::Status dewmWebmCallbackInfos::OnTrackEntry(const webm::ElementMetadata &,
 const webm::TrackEntry &track_entry){
-	if(! track_entry.is_enabled.value()){
+	if(!track_entry.is_enabled.value()){
 		return webm::Status(webm::Status::Code::kOkCompleted);
 	}
 	
@@ -166,7 +166,7 @@ webm::Reader *reader, std::uint64_t *bytes_remaining){
 		status = webm::Status(webm::Status::Code::kOkCompleted);
 	}
 	
-	if(! status.completed_ok()){
+	if(!status.completed_ok()){
 		return status;
 	}
 	

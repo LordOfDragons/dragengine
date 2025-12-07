@@ -83,7 +83,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		feFont * const font = pPanel.GetFont();
 		feFontGlyph * const glyph = pPanel.GetGlyph();
-		if(! font || ! glyph){
+		if(!font || !glyph){
 			return;
 		}
 		
@@ -107,7 +107,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		feFont * const font = pPanel.GetFont();
-		if(! font){
+		if(!font){
 			return;
 		}
 		
@@ -321,7 +321,7 @@ void feWPGlyph::SetFont(feFont *font){
 }
 
 void feWPGlyph::SetGlyph(feFontGlyph *glyph){
-	if(glyph && ! pFont){
+	if(glyph && !pFont){
 		DETHROW(deeInvalidParam);
 	}
 	

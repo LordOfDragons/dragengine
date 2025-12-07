@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL if not set. */
 	void SetImage(deImage *image);
@@ -92,7 +92,7 @@ public:
 	void SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{return pTransparency;}
+	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** \brief Set transparency. */
 	void SetTransparency(float transparency);

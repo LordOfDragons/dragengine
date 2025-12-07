@@ -86,25 +86,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of channels. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
 	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
 	void SetSampleRate(int sampleRate);
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
 	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples to create. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
 	void SetSampleCount(int sampleCount);
@@ -223,7 +223,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Synthesizer system peer or NULL if not set. */
-	inline deBaseSynthesizerSynthesizer *GetPeerSynthesizer() const{return pPeerSynthesizer;}
+	inline deBaseSynthesizerSynthesizer *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer system peer. */
 	void SetPeerSynthesizer(deBaseSynthesizerSynthesizer *peer);

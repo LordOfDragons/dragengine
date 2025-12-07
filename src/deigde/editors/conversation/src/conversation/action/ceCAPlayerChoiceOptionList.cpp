@@ -68,13 +68,13 @@ bool ceCAPlayerChoiceOptionList::Has(ceCAPlayerChoiceOption *option) const{
 }
 
 void ceCAPlayerChoiceOptionList::Add(ceCAPlayerChoiceOption *option){
-	if(! option) DETHROW(deeInvalidParam);
+	if(!option) DETHROW(deeInvalidParam);
 	
 	pOptions.Add(option);
 }
 
 void ceCAPlayerChoiceOptionList::InsertAt(ceCAPlayerChoiceOption *option, int index){
-	if(! option) DETHROW(deeInvalidParam);
+	if(!option) DETHROW(deeInvalidParam);
 	
 	pOptions.Insert(option, index);
 }

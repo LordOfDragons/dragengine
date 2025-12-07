@@ -92,10 +92,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline seWindowProperties &GetWindowProperties() const{return pWindowProperties;}
+	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{return pSkin;}
+	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

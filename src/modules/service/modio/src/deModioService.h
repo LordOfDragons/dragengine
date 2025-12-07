@@ -95,11 +95,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deModio &GetModule(){return pModule;}
-	inline const cInvalidator::Ref &GetInvalidator() const{return pInvalidator;}
-	inline const deVirtualFileSystem::Ref &GetVFS() const{return pVFS;}
+	inline deModio &GetModule(){ return pModule; }
+	inline const cInvalidator::Ref &GetInvalidator() const{ return pInvalidator; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
-	static inline deModioService *Global(){return pGlobalService;}
+	static inline deModioService *Global(){ return pGlobalService; }
 	
 	/**
 	 * \brief Start service request.

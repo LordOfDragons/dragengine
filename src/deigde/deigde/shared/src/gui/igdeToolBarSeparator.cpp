@@ -64,7 +64,7 @@ void igdeToolBarSeparator::CreateNativeWidget(){
 }
 
 void igdeToolBarSeparator::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

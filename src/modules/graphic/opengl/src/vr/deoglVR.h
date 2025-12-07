@@ -89,43 +89,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera owning the VR. */
-	inline deoglRCamera &GetCamera() const{return pCamera;}
+	inline deoglRCamera &GetCamera() const{ return pCamera; }
 	
 	/** Left eye. */
-	inline deoglVREye &GetLeftEye(){return pLeftEye;}
-	inline const deoglVREye &GetLeftEye() const{return pLeftEye;}
+	inline deoglVREye &GetLeftEye(){ return pLeftEye; }
+	inline const deoglVREye &GetLeftEye() const{ return pLeftEye; }
 	
 	/** Right eye. */
-	inline deoglVREye &GetRightEye(){return pRightEye;}
-	inline const deoglVREye &GetRightEye() const{return pRightEye;}
+	inline deoglVREye &GetRightEye(){ return pRightEye; }
+	inline const deoglVREye &GetRightEye() const{ return pRightEye; }
 	
 	/** Horizontal field of view. */
-	inline float GetFovX() const{return pFovX;}
+	inline float GetFovX() const{ return pFovX; }
 	
 	/** Vertical field of view. */
-	inline float GetFovY() const{return pFovY;}
+	inline float GetFovY() const{ return pFovY; }
 	
 	/** Camera field of view. */
-	inline float GetCameraFov() const{return pCameraFov;}
+	inline float GetCameraFov() const{ return pCameraFov; }
 	
 	/** Camera field of view ratio. */
-	inline float GetCameraFovRatio() const{return pCameraFovRatio;}
+	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
 	
 	/** Passthrough transparency. */
-	inline float GetPassthroughTransparency() const{return pPassthroughTransparency;}
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
 	
 	/** Passthrough enabled. */
-	inline bool GetPassthroughEnabled() const{return pPassthroughEnabled;}
+	inline bool GetPassthroughEnabled() const{ return pPassthroughEnabled; }
 	
 	
 	/** Update target frame rate. */
 	void UpdateTargetFPS(float elapsed);
 	
 	/** Target frame rate. */
-	inline int GetTargetFPS() const{return pTargetFPS;}
+	inline int GetTargetFPS() const{ return pTargetFPS; }
 	
 	/** Use render stereo rendering. */
-	inline bool GetUseRenderStereo() const{return pUseRenderStereo;}
+	inline bool GetUseRenderStereo() const{ return pUseRenderStereo; }
 	
 	/** Drop stereo framebuffer. */
 	void DropFBOStereo();
@@ -133,16 +133,16 @@ public:
 	
 	
 	/** Debug panel size. */
-	inline const decPoint &GetDebugPanelSize() const{return pDebugPanelSize;}
+	inline const decPoint &GetDebugPanelSize() const{ return pDebugPanelSize; }
 	
 	/** Get debug panel render target. Creates it if not created yet. */
 	const deoglRenderTarget::Ref &GetRenderTargetDebugPanel();
 	
 	/** Debug panel render size. */
-	inline const decVector2 &GetDebugPanelRenderSize() const{return pDebugPanelRenderSize;}
+	inline const decVector2 &GetDebugPanelRenderSize() const{ return pDebugPanelRenderSize; }
 	
 	/** Debug panel color transform. */
-	inline const decColorMatrix &GetDebugPanelColorTransform() const{return pDebugPanelColorTransform;}
+	inline const decColorMatrix &GetDebugPanelColorTransform() const{ return pDebugPanelColorTransform; }
 	
 	
 	

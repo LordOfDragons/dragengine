@@ -76,16 +76,16 @@ private:
 		
 	public:
 		/** \brief Filename. */
-		inline const decString &GetFilename() const{return pFilename;}
+		inline const decString &GetFilename() const{ return pFilename; }
 		
 		/** \brief Position in zip file. */
-		inline const unz_file_pos &GetArchivePosition() const{return pArchivePosition;}
+		inline const unz_file_pos &GetArchivePosition() const{ return pArchivePosition; }
 		
 		/** \brief Uncompressed file size. */
-		inline uint64_t GetFileSize() const{return pFileSize;}
+		inline uint64_t GetFileSize() const{ return pFileSize; }
 		
 		/** \brief Modification time. */
-		inline TIME_SYSTEM GetModificationTime() const{return pModificationTime;}
+		inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
 	};
 	
 	
@@ -120,7 +120,7 @@ private:
 		
 	public:
 		/** \brief Filename. */
-		inline const decString &GetFilename() const{return pFilename;}
+		inline const decString &GetFilename() const{ return pFilename; }
 		
 		
 		
@@ -203,7 +203,7 @@ public:
 	 * \brief File reader.
 	 * \warning For internal use only.
 	 */
-	inline decBaseFileReader &GetFileReader() const{return *pFileReader;}
+	inline decBaseFileReader &GetFileReader() const{ return *pFileReader; }
 	
 	
 	

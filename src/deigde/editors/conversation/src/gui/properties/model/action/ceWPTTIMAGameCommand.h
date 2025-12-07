@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAGameCommand *GetActionGameCommand() const{return (ceCAGameCommand*)GetAction();}
+	inline ceCAGameCommand *GetActionGameCommand() const{ return (ceCAGameCommand*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

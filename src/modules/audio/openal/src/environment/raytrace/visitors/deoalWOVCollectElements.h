@@ -62,10 +62,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Box minimum. */
-	inline const decDVector &GetBoxMin() const{return pBoxMin;}
+	inline const decDVector &GetBoxMin() const{ return pBoxMin; }
 	
 	/** \brief Box maximum. */
-	inline const decDVector &GetBoxMax() const{return pBoxMax;}
+	inline const decDVector &GetBoxMax() const{ return pBoxMax; }
 	
 	/** \brief Set box. */
 	void SetBox(const decDVector &minimum, const decDVector &maximum);

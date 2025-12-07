@@ -43,7 +43,7 @@ pWorld(NULL),
 pNavSpaces(NULL),
 pNavSpaceCount(0)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

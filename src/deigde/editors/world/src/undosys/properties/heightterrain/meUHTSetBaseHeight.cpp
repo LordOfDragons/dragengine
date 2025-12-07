@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight){
-	if(! world || ! heightTerrain){
+	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -178,7 +178,7 @@ int igdeTextArea::IndexOfStyleNamed(const char *name) const{
 }
 
 void igdeTextArea::AddStyle(igdeTextStyle *style){
-	if(! style || GetStyleNamed(style->GetName())){
+	if(!style || GetStyleNamed(style->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -221,11 +221,11 @@ void igdeTextArea::AppendText(const char *text, const char *style){
 }
 
 void igdeTextArea::AppendText(const char *text, const char *style, igdeAction *action){
-	if(! style){
+	if(!style){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(style[0] == 0 && ! action){
+	if(style[0] == 0 && !action){
 		AppendText(text);
 		return;
 	}
@@ -298,7 +298,7 @@ void igdeTextArea::ClearText(){
 
 
 int igdeTextArea::GetCursorPosition() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return 0;
 	}
 	
@@ -306,7 +306,7 @@ int igdeTextArea::GetCursorPosition() const{
 }
 
 void igdeTextArea::SetCursorPosition(int position){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -318,7 +318,7 @@ void igdeTextArea::SetCursorPosition(int position){
 }
 
 decPoint igdeTextArea::GetCursorCoordinate() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
@@ -327,7 +327,7 @@ decPoint igdeTextArea::GetCursorCoordinate() const{
 }
 
 void igdeTextArea::SetCursorCoordinate(const decPoint &coordinate){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -339,7 +339,7 @@ void igdeTextArea::SetCursorCoordinate(const decPoint &coordinate){
 
 
 int igdeTextArea::GetTopLine() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return 0;
 	}
 	
@@ -347,7 +347,7 @@ int igdeTextArea::GetTopLine() const{
 }
 
 void igdeTextArea::SetTopLine(int line){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -355,7 +355,7 @@ void igdeTextArea::SetTopLine(int line){
 }
 
 int igdeTextArea::GetBottomLine() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return 0;
 	}
 	
@@ -363,7 +363,7 @@ int igdeTextArea::GetBottomLine() const{
 }
 
 void igdeTextArea::SetBottomLine(int line){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -371,7 +371,7 @@ void igdeTextArea::SetBottomLine(int line){
 }
 
 int igdeTextArea::GetLineCount() const{
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return 0;
 	}
 	
@@ -430,7 +430,7 @@ void igdeTextArea::ClearTextSegment(int begin, int end){
 
 
 void igdeTextArea::AddListener(igdeTextAreaListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -473,7 +473,7 @@ void igdeTextArea::CreateNativeWidget(){
 }
 
 void igdeTextArea::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

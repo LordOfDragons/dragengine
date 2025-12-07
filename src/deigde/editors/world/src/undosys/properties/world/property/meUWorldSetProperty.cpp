@@ -45,7 +45,7 @@ pKey(key),
 pOldValue(oldValue),
 pNewValue(newValue)
 {
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

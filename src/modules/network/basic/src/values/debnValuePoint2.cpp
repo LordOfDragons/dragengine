@@ -93,7 +93,7 @@ debnValuePoint2::~debnValuePoint2(){
 ///////////////
 
 bool debnValuePoint2::UpdateValue(bool force){
-	if(! force && pValuePoint2.GetPoint() == pLastValue){
+	if(!force && pValuePoint2.GetPoint() == pLastValue){
 		return false;
 	}
 	

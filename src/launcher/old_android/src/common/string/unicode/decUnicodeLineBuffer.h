@@ -55,12 +55,12 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of lines in the buffer. */
-	inline int GetLineCount() const{return pLineCount;}
+	inline int GetLineCount() const{ return pLineCount; }
 	/**
 	 * Retrieves the size of the line buffer. All lines beyond this
 	 * limit are discarded automatically.
 	 */
-	inline int GetBufferSize() const{return pBufferSize;}
+	inline int GetBufferSize() const{ return pBufferSize; }
 	/**
 	 * Sets the size of the line buffer. All lines beyond this
 	 * limit are discarded automatically.

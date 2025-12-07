@@ -94,7 +94,7 @@ void dealGPModule::ApplyParameters(const char *version, dealLauncher &launcher,
 dealIEngineInstance &engineInstance) const{
 	dealEngineModule * const engineModule = launcher.GetEngine()
 		.GetModuleList().GetModuleNamed(pName, version);
-	if(! engineModule){
+	if(!engineModule){
 		return;
 	}
 	
@@ -108,7 +108,7 @@ dealIEngineInstance &engineInstance) const{
 			engineParameterList.GetParameterNamed(parameter.GetName());
 		
 		if(engineParameter){
-			if(! engineInstance.SetModuleParameterValue(pName, version,
+			if(!engineInstance.SetModuleParameterValue(pName, version,
 					parameter.GetName(), parameter.GetValue())){
 				DETHROW(deeInvalidAction);
 			}

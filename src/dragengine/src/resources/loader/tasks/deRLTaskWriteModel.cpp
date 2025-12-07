@@ -54,7 +54,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertMod
 pModel(model),
 pSucceeded(false)
 {
-	if(! model){
+	if(!model){
 		DETHROW(deeInvalidParam);
 	}
 	SetType(etWrite);
@@ -72,7 +72,7 @@ void deRLTaskWriteModel::Run(){
 	LogRunEnter();
 	deBaseModelModule * const module = (deBaseModelModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtModel, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

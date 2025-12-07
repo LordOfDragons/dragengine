@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentToggleLightShadowIgnore::~gdeUOCComponentToggleLightShadowIgnore(
 ///////////////
 
 void gdeUOCComponentToggleLightShadowIgnore::Undo(){
-	pComponent->SetLightShadowIgnore(! pComponent->GetLightShadowIgnore());
+	pComponent->SetLightShadowIgnore(!pComponent->GetLightShadowIgnore());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

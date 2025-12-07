@@ -44,10 +44,10 @@ gdeUOCTexPropertyRemove::gdeUOCTexPropertyRemove(gdeObjectClass *objectClass, gd
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! objectClass->GetTextureProperties().Has(property)){
+	if(!objectClass->GetTextureProperties().Has(property)){
 		DETHROW(deeInvalidParam);
 	}
 	

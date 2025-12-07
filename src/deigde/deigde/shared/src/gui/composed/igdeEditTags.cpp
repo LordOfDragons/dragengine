@@ -69,7 +69,7 @@ pWidget(widget){
 }
 
 void igdeEditTags::cActionRemove::OnAction(){
-	if(! pWidget.GetListBox().GetSelectedItem()){
+	if(!pWidget.GetListBox().GetSelectedItem()){
 		return;
 	}
 	

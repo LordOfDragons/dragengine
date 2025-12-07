@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{return pFormat;}
+	inline eValueFormats GetFormat() const{ return pFormat; }
 	
 	/** \brief Value. */
-	inline const decPoint3 &GetPoint() const{return pValue;}
+	inline const decPoint3 &GetPoint() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetPoint(const decPoint3 &value);

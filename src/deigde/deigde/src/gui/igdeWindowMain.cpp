@@ -177,7 +177,7 @@ public:
 	virtual void OnAction(){
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(! pWindow.RequestSaveDocuments("Open Game Project", NULL)){
+		if(!pWindow.RequestSaveDocuments("Open Game Project", NULL)){
 			return;
 		}
 		
@@ -231,7 +231,7 @@ public:
 		deInputEvent::ekcA){}
 	
 	virtual void OnAction(){
-		if(! pWindow.GetGameProject()){
+		if(!pWindow.GetGameProject()){
 			return;
 		}
 		
@@ -297,13 +297,13 @@ public:
 		"Reload XML Element Classes"){}
 	
 	virtual void OnAction(){
-		if(! pWindow.IsSyncGameDefTaskRunning()){
+		if(!pWindow.IsSyncGameDefTaskRunning()){
 			pWindow.ReloadXMLElementClasses();
 		}
 	}
 	
 	virtual void Update(){
-		SetEnabled(! pWindow.IsSyncGameDefTaskRunning());
+		SetEnabled(!pWindow.IsSyncGameDefTaskRunning());
 	}
 };
 
@@ -385,7 +385,7 @@ public:
 	pModule(module){
 		igdeIcon::Ref icon;
 		const decString &path = smallIcon || module.GetIconLarge().IsEmpty() ? module.GetIconSmall() : module.GetIconLarge();
-		if(! path.IsEmpty()){
+		if(!path.IsEmpty()){
 			try{
 				icon.TakeOver(igdeIcon::LoadPNG(*module.GetModule(), path));
 			}catch(const deException &e){
@@ -393,7 +393,7 @@ public:
 				window.GetEnvironment().GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
-		if(! icon){
+		if(!icon){
 			icon = window.GetStockIcon(igdeEnvironment::esiWarning);
 		}
 		SetIcon(icon);
@@ -651,7 +651,7 @@ igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed(const char *name){
 }
 
 void igdeWindowMain::ShowWindowLogger(){
-	if(! pWindowLogger){
+	if(!pWindowLogger){
 		pWindowLogger.TakeOver(new igdeWindowLogger(pEnvironmentIGDE));
 		pWindowLogger->SetLogger(GetLoggerHistory());
 	}
@@ -695,7 +695,7 @@ bool igdeWindowMain::ProcessCommandLine(const decUnicodeStringList &arguments){
 	
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Loading game project %s", loadFile.GetString());
 	
-	if(! LoadGameProject(loadFile)){
+	if(!LoadGameProject(loadFile)){
 		return false;
 	}
 	
@@ -979,9 +979,9 @@ void igdeWindowMain::RebuildToolBars(){
 }
 
 void igdeWindowMain::SwitchToModuleWindow(){
-	if(! pModuleManager->GetActiveModule()
-	|| ! pModuleManager->GetActiveModule()->GetModule() 
-	|| ! pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow()){
+	if(!pModuleManager->GetActiveModule()
+	|| !pModuleManager->GetActiveModule()->GetModule() 
+	|| !pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow()){
 		pSwiContent->SetCurrent(0); // empty container
 		return;
 	}
@@ -1011,7 +1011,7 @@ bool igdeWindowMain::IsSyncGameDefTaskRunning() const{
 
 
 void igdeWindowMain::ReloadXMLElementClasses(){
-	if(! pGameProject){
+	if(!pGameProject){
 		return;
 	}
 	
@@ -1031,7 +1031,7 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	pTaskSyncGameDefinition->SetReloadXMLElementClasses(true);
 	
-	if(! pTimerSyncProject){
+	if(!pTimerSyncProject){
 		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
 		pTimerSyncProject->Start(10, true);
 	}
@@ -1040,7 +1040,7 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 }
 
 void igdeWindowMain::ReFindAndAddSkins(){
-	if(! pGameProject){
+	if(!pGameProject){
 		return;
 	}
 	
@@ -1055,7 +1055,7 @@ void igdeWindowMain::ReFindAndAddSkins(){
 }
 
 void igdeWindowMain::ReFindAndAddSkies(){
-	if(! pGameProject){
+	if(!pGameProject){
 		return;
 	}
 	
@@ -1119,7 +1119,7 @@ void igdeWindowMain::OnAfterEngineStart(){
 	
 	// first time init. we have to move this here since this is the only safe time to
 	// start anything potentially requiring the game engine object to be present.
-	if(! pFirstEngineRun){
+	if(!pFirstEngineRun){
 		return;
 	}
 	pFirstEngineRun = false;
@@ -1127,7 +1127,7 @@ void igdeWindowMain::OnAfterEngineStart(){
 	// start modules now the engine is running and we are constructed
 	pModuleManager->StartModules();
 	
-	if(! pModuleManager->GetActiveModule()){
+	if(!pModuleManager->GetActiveModule()){
 		RebuildMenu();
 	}
 	
@@ -1183,7 +1183,7 @@ void igdeWindowMain::OnFrameUpdate(){
 // 		getApp()->runOneEvent();
 		return;
 	}
-	if(! pTimer){
+	if(!pTimer){
 		return;  // cleaning up can still call timer
 	}
 	
@@ -1206,7 +1206,7 @@ void igdeWindowMain::OnFrameUpdate(){
 		pFPSRate = 0;
 	}
 	
-	if(! doUpdate){
+	if(!doUpdate){
 		return;
 	}
 	
@@ -1268,7 +1268,7 @@ void igdeWindowMain::OnFrameUpdate(){
 				
 				for(i=0; i<moduleCount; i++){
 					igdeEditorModule * const module = pModuleManager->GetModuleAt(i)->GetModule();
-					if(module && ! module->ProcessCommandLine(pAfterLoadArguments)){
+					if(module && !module->ProcessCommandLine(pAfterLoadArguments)){
 						pAfterLoadArguments.RemoveAll();
 						pEnvironmentIGDE.CloseApplication();
 						return;
@@ -1314,7 +1314,7 @@ void igdeWindowMain::OnProjectGameDefinitionChanged(){
 	
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	
-	if(! pTimerSyncProject){
+	if(!pTimerSyncProject){
 		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
 		pTimerSyncProject->Start(10, true);
 	}
@@ -1323,7 +1323,7 @@ void igdeWindowMain::OnProjectGameDefinitionChanged(){
 }
 
 void igdeWindowMain::ArmUpdateTimer(){
-	if(! pTimerFrameUpdate){
+	if(!pTimerFrameUpdate){
 		pTimerFrameUpdate.TakeOver(new cTimerFrameUpdate(*this));
 		pTimerFrameUpdate->Start(1, true); // 5
 	}
@@ -1341,12 +1341,12 @@ void igdeWindowMain::UpdateFrame(){
 	
 	for(i=0; i<moduleCount; i++){
 		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleAt(i);
-		if(! moduleDef.IsModuleRunning()){
+		if(!moduleDef.IsModuleRunning()){
 			continue;
 		}
 		
 		igdeEditorModule * const module = moduleDef.GetModule();
-		if(! module){
+		if(!module){
 			continue;
 		}
 		
@@ -1360,7 +1360,7 @@ void igdeWindowMain::UpdateFrame(){
 }
 
 void igdeWindowMain::UpdateSyncProject(){
-	if(! pTaskSyncGameDefinition){
+	if(!pTaskSyncGameDefinition){
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
 			pTimerSyncProject = NULL;
@@ -1490,8 +1490,8 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		const decString docfile(parts.GetAt(1).GetTrimmed());
 		igdeEditorModuleDefinition * const moduleDefinition = pModuleManager->GetModuleWithID(moduleID);
 		
-		if(! moduleDefinition || ! moduleDefinition->IsModuleRunning()
-		|| ! moduleDefinition->GetModule()->SaveDocument(docfile)){
+		if(!moduleDefinition || !moduleDefinition->IsModuleRunning()
+		|| !moduleDefinition->GetModule()->SaveDocument(docfile)){
 			igdeCommonDialogs::ErrorFormat(this, title, "Failed to save '%s'", docfile.GetString());
 			return false;
 		}
@@ -1528,7 +1528,7 @@ const deModel::Ref &igdeWindowMain::GetStockModel(igdeEnvironment::eStockModels 
 
 
 bool igdeWindowMain::CloseWindow(){
-	if(! QuitRequest()){
+	if(!QuitRequest()){
 		return false; // do not close window
 	}
 	
@@ -1541,7 +1541,7 @@ void igdeWindowMain::OnWindowState(){
 	//      get the maximize event send twice although it is still minimized. by checking
 	//      the window state directly this problem can be solved
 	/*
-	if(isMaximized() && ! isMinimized()){
+	if(isMaximized() && !isMinimized()){
 		pPauseUpdating = false;
 		printf("onMaximized\n");
 	}
@@ -1700,7 +1700,7 @@ void igdeWindowMain::pCleanUp(){
 }
 
 void igdeWindowMain::pInitLogger(){
-	if(! pLoggerHistory){
+	if(!pLoggerHistory){
 		pLoggerHistory.TakeOver(new igdeLoggerHistory);
 		pLoggerHistory->SetHistorySize(250);
 	}
@@ -1940,7 +1940,7 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	decPath pathFile;
 	pathFile.SetFromUnix("/data/texturePropertyList.xml");
 	
-	if(! pVFS->ExistsFile(pathFile)){
+	if(!pVFS->ExistsFile(pathFile)){
 		logger.LogInfo(LOGSOURCE, "Texture property list file not found, skipped");
 		return;
 	}
@@ -2175,12 +2175,12 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 	
 	for(i=0; i<count; i++){
 		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID(moduleIDs.GetAt(i));
-		if(! moduleDef.IsModuleRunning() || ! moduleDef.GetModule()){
+		if(!moduleDef.IsModuleRunning() || !moduleDef.GetModule()){
 			continue;
 		}
 		
 		igdeIcon::Ref icon;
-		if(! moduleDef.GetIconSmall().IsEmpty()){
+		if(!moduleDef.GetIconSmall().IsEmpty()){
 			try{
 				icon.TakeOver(igdeIcon::LoadPNG(*moduleDef.GetModule(), moduleDef.GetIconSmall()));
 				
@@ -2189,7 +2189,7 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 			}
 		}
 		
-		if(! icon){
+		if(!icon){
 			icon = pStockIcons[igdeEnvironment::esiWarning];
 		}
 		

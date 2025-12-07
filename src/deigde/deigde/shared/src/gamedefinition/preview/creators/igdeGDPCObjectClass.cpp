@@ -80,7 +80,7 @@ pGDClass(gdclass),
 pObject(NULL),
 pSky(NULL)
 {
-	if(! gdclass){
+	if(!gdclass){
 		DETHROW(deeInvalidParam);
 	}
 }

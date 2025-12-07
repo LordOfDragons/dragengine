@@ -87,7 +87,7 @@ void peeConfiguration::LoadConfiguration(){
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
 		const decPath pathFile(decPath::CreatePathUnix("/igde/local/particleEmitterEditor.xml"));
-		if(! vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
@@ -110,7 +110,7 @@ void peeConfiguration::SaveConfiguration(){
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
 	const decPath pathFile(decPath::CreatePathUnix("/igde/local/particleEmitterEditor.xml"));
-	if(! vfs.CanWriteFile(pathFile)){
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	

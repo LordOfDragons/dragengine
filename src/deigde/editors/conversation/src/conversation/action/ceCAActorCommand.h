@@ -64,11 +64,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the actor id. */
-	inline const decString &GetActor() const{return pActor;}
+	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
 	void SetActor(const char *id);
 	/** Retrieves the command string. */
-	inline const decString &GetCommand() const{return pCommand;}
+	inline const decString &GetCommand() const{ return pCommand; }
 	/** Sets the command string. */
 	void SetCommand(const char *command);
 	

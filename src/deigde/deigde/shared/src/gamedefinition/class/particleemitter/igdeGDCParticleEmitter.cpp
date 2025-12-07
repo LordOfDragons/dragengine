@@ -89,7 +89,7 @@ void igdeGDCParticleEmitter::SetCasting(bool casting){
 
 
 bool igdeGDCParticleEmitter::IsPropertySet(eProperties property) const{
-	return ! pPropertyNames[property].IsEmpty();
+	return !pPropertyNames[property].IsEmpty();
 }
 
 const decString &igdeGDCParticleEmitter::GetPropertyName(eProperties property) const{
@@ -113,7 +113,7 @@ bool igdeGDCParticleEmitter::HasPropertyWithName(const char *name) const{
 
 
 bool igdeGDCParticleEmitter::IsTriggerSet(eTriggers trigger) const{
-	return ! pTriggerNames[trigger].IsEmpty();
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
 const decString &igdeGDCParticleEmitter::GetTriggerName(eTriggers trigger) const{

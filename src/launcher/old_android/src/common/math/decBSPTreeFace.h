@@ -57,7 +57,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the vertex at the given position. */
 	const decVector &GetVertexAt(int index) const;
 	/** Adds a vertex. */
@@ -65,7 +65,7 @@ public:
 	/** Removes all vertices. */
 	void RemoveAllVertices();
 	/** Retrieves the user data. */
-	inline void *GetUserData() const{return pUserData;}
+	inline void *GetUserData() const{ return pUserData; }
 	/** Sets the user data. */
 	void SetUserData(void *userData);
 	/*@}*/

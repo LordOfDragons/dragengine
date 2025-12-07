@@ -400,7 +400,7 @@ GLuint deoglModelLOD::GetIBO(){
 	
 	try{
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pIBO));
-		if(! pIBO){
+		if(!pIBO){
 			DETHROW(deeOutOfMemory);
 		}
 		
@@ -412,7 +412,7 @@ GLuint deoglModelLOD::GetIBO(){
 		
 		OGL_CHECK(renderThread, data = (GLuint*)pglMapBufferRange(GL_ELEMENT_ARRAY_BUFFER,
 			0, bufferSize, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
-		if(! data){
+		if(!data){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -861,7 +861,7 @@ void deoglModelLOD::PrepareGILocalBVH(){
 		disable = true;
 	}
 	
-	if(pFaceCount > 0 && ! disable){
+	if(pFaceCount > 0 && !disable){
 		primitives = new deoglBVH::sBuildPrimitive[pFaceCount];
 		primitiveCount = pFaceCount;
 		int i;
@@ -1667,7 +1667,7 @@ void deoglModelLOD::pWriteVBOData(){
 
 #if 0
 void deoglModelLOD::pWriteVBODataPositionWeight(){
-	if(! pVBOBlockPositionWeight){
+	if(!pVBOBlockPositionWeight){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1689,7 +1689,7 @@ void deoglModelLOD::pWriteVBODataPositionWeight(){
 
 #if 0
 void deoglModelLOD::pWriteVBODataCalcNormalTangent(){
-	if(! pVBOBlockCalcNormalTangent){
+	if(!pVBOBlockCalcNormalTangent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1731,7 +1731,7 @@ void deoglModelLOD::pWriteVBODataCalcNormalTangent(){
 
 #if 0
 void deoglModelLOD::pWriteVBODataWriteSkinnedVBO(){
-	if(! pVBOBlockWriteSkinnedVBO){
+	if(!pVBOBlockWriteSkinnedVBO){
 		DETHROW(deeInvalidParam);
 	}
 	

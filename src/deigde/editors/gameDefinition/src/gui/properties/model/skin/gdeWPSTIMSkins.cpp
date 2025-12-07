@@ -85,7 +85,7 @@ void gdeWPSTIMSkins::StructureChanged(){
 		gdeSkin * const skin = list.GetAt(i);
 		gdeWPSTIMSkin * const modelSkin = GetChildWith(skin);
 		
-		if(! modelSkin){
+		if(!modelSkin){
 			item.TakeOver(new gdeWPSTIMSkin(GetTree(), list.GetAt(i)));
 			AppendModel(item);
 		}
@@ -97,7 +97,7 @@ void gdeWPSTIMSkins::StructureChanged(){
 		gdeWPSTIMSkin * const modelSkin = (gdeWPSTIMSkin*)child;
 		child = child->GetNext();
 		
-		if(! list.Has(modelSkin->GetSkin())){
+		if(!list.Has(modelSkin->GetSkin())){
 			RemoveModel(modelSkin);
 		}
 	}
@@ -130,7 +130,7 @@ void gdeWPSTIMSkins::OnContextMenu(igdeMenuCascade &contextMenu){
 }
 
 void gdeWPSTIMSkins::SelectBestMatching(const char *string){
-	if(! string){
+	if(!string){
 		return;
 	}
 	

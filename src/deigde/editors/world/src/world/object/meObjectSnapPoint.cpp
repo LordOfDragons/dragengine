@@ -67,7 +67,7 @@ pDDShape(NULL),
 pCollider(NULL),
 pColliderOwner(this)
 {
-	if(! object || ! snapPoint){
+	if(!object || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -109,7 +109,7 @@ void deoglCombinedTextureList::Remove(deoglCombinedTexture *config){
 	//         texture list has to take care of delaying deletion of the opengl objects
 	//         until a later time. this makes this call main thread safe
 	
-	if(! config){
+	if(!config){
 		DETHROW(deeInvalidParam);
 	}
 	

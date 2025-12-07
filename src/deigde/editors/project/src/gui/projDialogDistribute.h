@@ -88,10 +88,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Profile. */
-	inline projProfile &GetProfile() const{return *pProfile;}
+	inline projProfile &GetProfile() const{ return *pProfile; }
 	
 	/** Add log message. */
 	void LogMessage(const char *message);
@@ -110,7 +110,7 @@ public:
 	void SetPrintToConsole(bool printToConsole);
 	
 	/** Success. */
-	inline bool GetSuccess() const{return pSuccess;}
+	inline bool GetSuccess() const{ return pSuccess; }
 	/*@}*/
 	
 	

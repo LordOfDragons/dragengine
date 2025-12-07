@@ -88,7 +88,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -128,7 +128,7 @@ public:
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -151,7 +151,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -170,7 +170,7 @@ public:
 	cEditPositionMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
 			? new aeUSetRuleSModMinPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -180,7 +180,7 @@ public:
 	cEditPositionMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
 			? new aeUSetRuleSModMaxPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -190,7 +190,7 @@ public:
 	cEditRotationMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
 			? new aeUSetRuleSModMinRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -200,7 +200,7 @@ public:
 	cEditRotationMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
 			? new aeUSetRuleSModMaxRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -210,7 +210,7 @@ public:
 	cEditScalingMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMinimumSize())
+		return !editVector->GetVector().IsEqualTo(rule->GetMinimumSize())
 			? new aeUSetRuleSModMinSize(rule, editVector->GetVector()) : NULL;
 	}
 };
@@ -220,7 +220,7 @@ public:
 	cEditScalingMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
-		return ! editVector->GetVector().IsEqualTo(rule->GetMaximumSize())
+		return !editVector->GetVector().IsEqualTo(rule->GetMaximumSize())
 			? new aeUSetRuleSModMaxSize(rule, editVector->GetVector()) : NULL;
 	}
 };

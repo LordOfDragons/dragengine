@@ -112,7 +112,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the virtual file system. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{return pVFS;}
+	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Retrieves the filename. */
 	FXString GetFilename() const;
@@ -133,7 +133,7 @@ public:
 	void SetFilename(const char *filename, const char *basePath);
 	
 	/** Retrieves the assigned file pattern list.*/
-	inline const igdeFilePatternList *GetFilePatternList() const{return pFilePatternList;}
+	inline const igdeFilePatternList *GetFilePatternList() const{ return pFilePatternList; }
 	/** Sets the assigned file pattern list. */
 	void SetFilePatternList(const igdeFilePatternList *filePatternList);
 	

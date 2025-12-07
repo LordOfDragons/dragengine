@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Blocker",
 igdeUndo *gdeMAOCNavBlockerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCNavBlocker::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

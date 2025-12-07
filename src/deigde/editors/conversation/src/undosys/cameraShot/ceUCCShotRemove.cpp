@@ -41,10 +41,10 @@
 ////////////////////////////
 
 ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = cameraShot->GetConversation();
-	if(! conversation) DETHROW(deeInvalidParam);
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pCameraShot = NULL;

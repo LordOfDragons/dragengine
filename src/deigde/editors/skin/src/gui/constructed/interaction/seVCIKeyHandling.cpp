@@ -60,7 +60,7 @@ seVCIKeyHandling::~seVCIKeyHandling(){
 ///////////////
 
 void seVCIKeyHandling::OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
-	if(pIsLeftMouseButtonPressed || ! pView.GetSkin()){
+	if(pIsLeftMouseButtonPressed || !pView.GetSkin()){
 		return;
 	}
 	
@@ -120,7 +120,7 @@ void seVCIKeyHandling::OnDoubleClicked(igdeWidget*, int button, const decPoint &
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if(! property){
+	if(!property){
 		return;
 	}
 	
@@ -144,7 +144,7 @@ void seVCIKeyHandling::OnDoubleClicked(igdeWidget*, int button, const decPoint &
 ////////////////////////
 
 void seVCIKeyHandling::ShowContextMenu(const decPoint &position){
-	if(pIsLeftMouseButtonPressed || ! pView.GetSkin()){
+	if(pIsLeftMouseButtonPressed || !pView.GetSkin()){
 		return;
 	}
 	

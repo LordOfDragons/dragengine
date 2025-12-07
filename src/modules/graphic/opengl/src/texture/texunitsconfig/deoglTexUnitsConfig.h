@@ -80,16 +80,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Count of units. */
-	inline int GetUnitCount() const{return pUnitCount;}
+	inline int GetUnitCount() const{ return pUnitCount; }
 	
 	/** Set count of units. Disabled all units. */
 	void SetUnitCount(int count);
 	
 	/** Texture units pointer for fast access without index checking. */
-	inline deoglTexUnitConfig *GetUnits() const{return pUnits;}
+	inline deoglTexUnitConfig *GetUnits() const{ return pUnits; }
 	
 	/** Texture unit. */
 	deoglTexUnitConfig &GetUnitAt(int index) const;
@@ -98,7 +98,7 @@ public:
 	void SetUnits(const deoglTexUnitConfig *units, int unitCount);
 	
 	/** Shader parameter block or NULL. */
-	inline deoglShaderParameterBlock *GetParameterBlock() const{return pParamBlock;}
+	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL. */
 	void SetParameterBlock(deoglShaderParameterBlock *paramBlock);
@@ -111,13 +111,13 @@ public:
 	
 	
 	/** Material index or -1. */
-	inline int GetMaterialIndex() const{return pMaterialIndex;}
+	inline int GetMaterialIndex() const{ return pMaterialIndex; }
 	
 	/** Set material index or -1. */
 	void SetMaterialIndex(int index);
 	
 	/** Material usage count. */
-	inline int GetMaterialUsageCount() const{return pMaterialUsageCount;}
+	inline int GetMaterialUsageCount() const{ return pMaterialUsageCount; }
 	
 	/** Increment material usage count by one. */
 	void AddMaterialUsage();
@@ -135,7 +135,7 @@ public:
 		deoglShaderParameterBlock *paramBlock) const;
 	
 	/** Usage count. */
-	inline int GetUsageCount() const{return pUsageCount;}
+	inline int GetUsageCount() const{ return pUsageCount; }
 	
 	/** Increment usage count by one. */
 	void AddUsage();
@@ -149,7 +149,7 @@ public:
 	
 	
 	/** Hash code. */
-	inline unsigned int GetUnitsHashCode() const{return pUnitsHashCode;}
+	inline unsigned int GetUnitsHashCode() const{ return pUnitsHashCode; }
 	
 	/** Calculate hash code. */
 	void CalcUnitsHashCode();
@@ -160,12 +160,12 @@ public:
 	
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	
 	
 	/** Render task shared texture or NULL. */
-	inline deoglRenderTaskSharedTexture *GetRTSTexture() const{return pRTSTexture;}
+	inline deoglRenderTaskSharedTexture *GetRTSTexture() const{ return pRTSTexture; }
 	
 	/** Ensure render task shared texture is present. */
 	void EnsureRTSTexture();
@@ -173,13 +173,13 @@ public:
 	
 	
 	/** Previous entry in the linked list. */
-	inline deoglTexUnitsConfig *GetLLPrev() const{return pLLPrev;}
+	inline deoglTexUnitsConfig *GetLLPrev() const{ return pLLPrev; }
 	
 	/** Set previous entry in the linked list. */
 	void SetLLPrev(deoglTexUnitsConfig *entry);
 	
 	/** Next entry in the linked list. */
-	inline deoglTexUnitsConfig *GetLLNext() const{return pLLNext;}
+	inline deoglTexUnitsConfig *GetLLNext() const{ return pLLNext; }
 	
 	/** Set next entry in the linked list. */
 	void SetLLNext(deoglTexUnitsConfig *entry);

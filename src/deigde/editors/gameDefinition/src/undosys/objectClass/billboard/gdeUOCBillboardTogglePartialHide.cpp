@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 pObjectClass(NULL),
 pBillboard(NULL)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
 ///////////////
 
 void gdeUOCBillboardTogglePartialHide::Undo(){
-	pBillboard->SetPartialHide(! pBillboard->GetPartialHide());
+	pBillboard->SetPartialHide(!pBillboard->GetPartialHide());
 	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 

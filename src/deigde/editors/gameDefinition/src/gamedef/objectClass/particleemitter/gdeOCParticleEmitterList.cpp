@@ -72,7 +72,7 @@ bool gdeOCParticleEmitterList::Has(gdeOCParticleEmitter *emitter) const{
 }
 
 void gdeOCParticleEmitterList::Add(gdeOCParticleEmitter *emitter){
-	if(! emitter || Has(emitter)){
+	if(!emitter || Has(emitter)){
 		DETHROW(deeInvalidParam);
 	}
 	pParticleEmitters.Add(emitter);

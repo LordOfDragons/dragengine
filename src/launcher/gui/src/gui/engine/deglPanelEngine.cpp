@@ -231,9 +231,9 @@ long deglPanelEngine::onListModulesRDown(FXObject*, FXSelector, void *pdata){
 	if(module){
 		try{
 			popup = new FXMenuPane(this);
-			if(! popup) DETHROW(deeOutOfMemory);
+			if(!popup) DETHROW(deeOutOfMemory);
 			
-			if(! new FXMenuCommand(popup, "Properties...", nullptr, this, ID_PU_MODULE_PROPS)) DETHROW(deeOutOfMemory);
+			if(!new FXMenuCommand(popup, "Properties...", nullptr, this, ID_PU_MODULE_PROPS)) DETHROW(deeOutOfMemory);
 			
 			popup->create();
 			

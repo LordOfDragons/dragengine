@@ -95,31 +95,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScaling() const{return pScaling;}
+	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
 	
 	/** \brief Layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
 	void SetLayer(int layer);
 	
 	/** \brief Space type to navigate. */
-	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{return pSpaceType;}
+	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set space type to navigate. */
 	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
@@ -129,7 +129,7 @@ public:
 	 * 
 	 * Blocks navigation meshes with a smaller or equal blocking priority.
 	 */
-	inline int GetBlockingPriority() const{return pBlockingPriority;}
+	inline int GetBlockingPriority() const{ return pBlockingPriority; }
 	
 	/**
 	 * \brief Set blocking priority.
@@ -139,14 +139,14 @@ public:
 	void SetBlockingPriority(int priority);
 	
 	/** \brief Blocker is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if blocker is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Shape list. */
-	inline decShapeList &GetShapeList(){return pShapeList;}
-	inline const decShapeList &GetShapeList() const{return pShapeList;}
+	inline decShapeList &GetShapeList(){ return pShapeList; }
+	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Notifies the peers that the shape list changed. */
 	void NotifyShapeListChanged();
@@ -157,7 +157,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief AI system peer. */
-	inline deBaseAINavigationBlocker *GetPeerAI() const{return pPeerAI;}
+	inline deBaseAINavigationBlocker *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer. */
 	void SetPeerAI(deBaseAINavigationBlocker *peer);
@@ -168,19 +168,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous blocker in the parent world linked list. */
-	inline deNavigationBlocker *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deNavigationBlocker *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next blocker in the parent world linked list. */
 	void SetLLWorldPrev(deNavigationBlocker *blocker);
 	
 	/** \brief Next blocker in the parent world linked list. */
-	inline deNavigationBlocker *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deNavigationBlocker *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next blocker in the parent world linked list. */
 	void SetLLWorldNext(deNavigationBlocker *blocker);

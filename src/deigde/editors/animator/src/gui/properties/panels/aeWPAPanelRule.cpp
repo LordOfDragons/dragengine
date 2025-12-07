@@ -111,7 +111,7 @@ public:
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -151,7 +151,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -174,7 +174,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
-		if(! animator || ! rule){
+		if(!animator || !rule){
 			return;
 		}
 		
@@ -202,7 +202,7 @@ public:
 	cComboBlendMode(aeWPAPanelRule &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRule *rule){
-		if(! comboBox->GetSelectedItem()){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
@@ -261,13 +261,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		const decString &name = pPanel.GetCBBoneText();
-		return ! name.IsEmpty() && ! rule->GetListBones().Has(name)
+		return !name.IsEmpty() && !rule->GetListBones().Has(name)
 			? new aeUSetRuleAddBone(rule, name) : NULL;
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRule &rule){
 		const decString &name = pPanel.GetCBBoneText();
-		SetEnabled(! name.IsEmpty() && ! rule.GetListBones().Has(name));
+		SetEnabled(!name.IsEmpty() && !rule.GetListBones().Has(name));
 	}
 };
 
@@ -292,7 +292,7 @@ public:
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRule &rule){
-		SetEnabled(! pPanel.GetCBBoneText().IsEmpty());
+		SetEnabled(!pPanel.GetCBBoneText().IsEmpty());
 	}
 };
 
@@ -361,7 +361,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowMain()
 			.GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
-		if(! clip){
+		if(!clip){
 			return NULL;
 		}
 		
@@ -408,7 +408,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		decString text;
 		while(true){
-			if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Import From Text", "Bones. One bone per line.", text)){
 				return nullptr;
 			}
@@ -421,7 +421,7 @@ public:
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! lines.GetAt(i).IsEmpty()){
+			if(!lines.GetAt(i).IsEmpty()){
 				bones.Add(lines.GetAt(i));
 			}
 		}
@@ -446,7 +446,7 @@ public:
 	}*/
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetRule()){
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
@@ -473,13 +473,13 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		const decString &name = pPanel.GetCBVertexPositionSetText();
-		return ! name.IsEmpty() && ! rule->GetListVertexPositionSets().Has(name)
+		return !name.IsEmpty() && !rule->GetListVertexPositionSets().Has(name)
 			? new aeUSetRuleAddVertexPositionSet(rule, name) : NULL;
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRule &rule){
 		const decString &name = pPanel.GetCBVertexPositionSetText();
-		SetEnabled(! name.IsEmpty() && ! rule.GetListVertexPositionSets().Has(name));
+		SetEnabled(!name.IsEmpty() && !rule.GetListVertexPositionSets().Has(name));
 	}
 };
 
@@ -504,7 +504,7 @@ public:
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRule &rule){
-		SetEnabled(! pPanel.GetCBVertexPositionSetText().IsEmpty());
+		SetEnabled(!pPanel.GetCBVertexPositionSetText().IsEmpty());
 	}
 };
 
@@ -574,7 +574,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowMain()
 			.GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
-		if(! clip){
+		if(!clip){
 			return NULL;
 		}
 		
@@ -622,7 +622,7 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		decString text;
 		while(true){
-			if(! igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
+			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Import From Text", "Vertex position sets. One vertex position set per line.", text)){
 				return nullptr;
 			}
@@ -635,7 +635,7 @@ public:
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(! lines.GetAt(i).IsEmpty()){
+			if(!lines.GetAt(i).IsEmpty()){
 				vpslist.Add(lines.GetAt(i));
 			}
 		}
@@ -654,7 +654,7 @@ public:
 	cListVertexPositionSets(aeWPAPanelRule &panel) : pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetRule()){
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
@@ -694,14 +694,14 @@ public:
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		return target && link && ! target->HasLink(link)
+		return target && link && !target->HasLink(link)
 			? new aeURuleTargetAddLink(rule, target, link) : NULL;
 	}
 	
 	virtual void Update(const aeAnimator &, const aeRule &){
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		SetEnabled(target && link && ! target->HasLink(link));
+		SetEnabled(target && link && !target->HasLink(link));
 	}
 };
 
@@ -731,7 +731,7 @@ public:
 	
 	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
 		aeControllerTarget * const target = pPanel.GetTarget();
-		if(! target || target->GetLinkCount() == 0){
+		if(!target || target->GetLinkCount() == 0){
 			return NULL;
 		}
 		
@@ -764,7 +764,7 @@ public:
 	}*/
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetRule()){
+		if(!pPanel.GetRule()){
 			return;
 		}
 		

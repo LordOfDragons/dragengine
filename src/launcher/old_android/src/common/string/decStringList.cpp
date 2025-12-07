@@ -111,7 +111,7 @@ int decStringList::IndexOf(const decString &string) const{
 }
 
 int decStringList::IndexOf(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -151,7 +151,7 @@ void decStringList::Add(const decString &string){
 }
 
 void decStringList::Add(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -285,7 +285,7 @@ decString decStringList::Join(const decString &separator) const{
 }
 
 decString decStringList::Join(const char *separator) const{
-	if(! separator){
+	if(!separator){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -361,7 +361,7 @@ bool decStringList::operator==(const decStringList &list) const {
 }
 
 bool decStringList::operator!=(const decStringList &list) const {
-	return ! (*this == list);
+	return !(*this == list);
 }
 
 decStringList decStringList::operator+(const decStringList &list) const{
@@ -396,7 +396,7 @@ decStringList decStringList::operator+(const decString &string) const{
 }
 
 decStringList decStringList::operator+(const char *string) const{
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -413,7 +413,7 @@ decStringList &decStringList::operator+=(const decString &string){
 }
 
 decStringList &decStringList::operator+=(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	

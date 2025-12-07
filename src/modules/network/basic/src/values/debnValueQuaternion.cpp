@@ -74,7 +74,7 @@ debnValueQuaternion::~debnValueQuaternion(){
 ///////////////
 
 bool debnValueQuaternion::UpdateValue(bool force){
-	if(! force && pValueQuat.GetQuaternion().IsEqualTo(pLastValue, (float)pValueQuat.GetPrecision())){
+	if(!force && pValueQuat.GetQuaternion().IsEqualTo(pLastValue, (float)pValueQuat.GetPrecision())){
 		return false;
 	}
 	

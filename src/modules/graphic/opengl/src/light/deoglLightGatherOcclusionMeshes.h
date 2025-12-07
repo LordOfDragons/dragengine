@@ -55,8 +55,8 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the triangle sorter. */
-	inline deoglTriangleSorter &GetTriangleSorter(){return pTriangleSorter;}
-	inline const deoglTriangleSorter &GetTriangleSorter() const{return pTriangleSorter;}
+	inline deoglTriangleSorter &GetTriangleSorter(){ return pTriangleSorter; }
+	inline const deoglTriangleSorter &GetTriangleSorter() const{ return pTriangleSorter; }
 	
 	/** Reset the visitor clearing the triangle sorter. */
 	void Reset();

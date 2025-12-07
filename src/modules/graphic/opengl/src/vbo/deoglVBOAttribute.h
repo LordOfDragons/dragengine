@@ -100,19 +100,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Set count of components. */
 	void SetComponentCount(int componentCount);
 	
 	/** Data type. */
-	inline eDataTypes GetDataType() const{return pDataType;}
+	inline eDataTypes GetDataType() const{ return pDataType; }
 	
 	/** Set data type. */
 	void SetDataType(eDataTypes dataType);
 	
 	/** Offset. */
-	inline int GetOffset() const{return pOffset;}
+	inline int GetOffset() const{ return pOffset; }
 	
 	/** Set offset. */
 	void SetOffset(int offset);

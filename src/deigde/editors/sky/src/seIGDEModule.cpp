@@ -48,7 +48,7 @@ seIGDEModule::~seIGDEModule(){
 ///////////////
 
 void seIGDEModule::Start(){
-	if(! GetEditorWindow()){
+	if(!GetEditorWindow()){
 		SetEditorWindow(new seWindowMain(*this));
 	}
 }

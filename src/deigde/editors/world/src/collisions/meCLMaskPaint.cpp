@@ -62,7 +62,7 @@
 ////////////////////////////
 
 meCLMaskPaint::meCLMaskPaint(meWorld *world){
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = NULL;
@@ -110,7 +110,7 @@ void meCLMaskPaint::BeginSession(){
 }
 
 void meCLMaskPaint::PreparePaint(){
-	if(! pSector || ! pTexture) return;
+	if(!pSector || !pTexture) return;
 	
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	float sectorDim = hterrain->GetSectorSize();
@@ -147,7 +147,7 @@ void meCLMaskPaint::Paint(){
 		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old heights
-		if(! pOldValues){
+		if(!pOldValues){
 			pSessionGrid.x = (int)pPaintGrid.x;
 			if(pSessionGrid.x < 0) pSessionGrid.x = 0;
 			if(pSessionGrid.x >= imageDim) pSessionGrid.x = imageDim - 1;
@@ -199,14 +199,14 @@ void meCLMaskPaint::EndSession(){
 //////////////////
 
 void meCLMaskPaint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! pSector || ! pTexture){
+	if(!pSector || !pTexture){
 		return;
 	}
 	
 	if(info->IsHTSector()){
 		const float distance = info->GetDistance();
 		
-		if(! pHasHit || distance < pHitDistance){
+		if(!pHasHit || distance < pHitDistance){
 			pHasHit = true;
 			pHitPoint = pRayOrigin + pRayDirection * distance;
 			pHitDistance = distance;
@@ -387,7 +387,7 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 		
 		try{
 			oldValues = new unsigned char[newWidth * newHeight];
-			if(! oldValues) DETHROW(deeOutOfMemory);
+			if(!oldValues) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

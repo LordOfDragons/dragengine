@@ -93,19 +93,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Half height. */
-	inline float GetHalfHeight() const{return pHalfHeight;}
+	inline float GetHalfHeight() const{ return pHalfHeight; }
 	
 	/** \brief Set half height. */
 	void SetHalfHeight(float halfHeight);
 	
 	/** \brief Top radius. */
-	inline float GetTopRadius() const{return pTopRadius;}
+	inline float GetTopRadius() const{ return pTopRadius; }
 	
 	/** \brief Set top radius. */
 	void SetTopRadius(float radius);
 	
 	/** \brief Bottom radius. */
-	inline float GetBottomRadius() const{return pBottomRadius;}
+	inline float GetBottomRadius() const{ return pBottomRadius; }
 	
 	/** \brief Set bottom radius. */
 	void SetBottomRadius(float radius);
@@ -114,13 +114,13 @@ public:
 	void SetRadius(float radius);
 	
 	/** \brief Top axis scaling. */
-	inline const decVector2 &GetTopAxisScaling() const{return pTopAxisScaling;}
+	inline const decVector2 &GetTopAxisScaling() const{ return pTopAxisScaling; }
 	
 	/** \brief Set top axis scaling. */
 	void SetTopAxisScaling(const decVector2 &axisScaling);
 	
 	/** \brief Bottom axis scaling. */
-	inline const decVector2 &GetBottomAxisScaling() const{return pBottomAxisScaling;}
+	inline const decVector2 &GetBottomAxisScaling() const{ return pBottomAxisScaling; }
 	
 	/** \brief Set bottom axis scaling. */
 	void SetBottomAxisScaling(const decVector2 &axisScaling);

@@ -43,7 +43,7 @@ seULayerSetSkin::seULayerSetSkin(seLayer *layer, const char *newSkin) :
 pLayer(NULL),
 pNewSkin(newSkin)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

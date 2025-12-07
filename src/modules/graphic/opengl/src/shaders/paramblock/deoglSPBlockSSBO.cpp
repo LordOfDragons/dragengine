@@ -162,7 +162,7 @@ void deoglSPBlockSSBO::Activate() const{
 
 void deoglSPBlockSSBO::Activate(int bindingPoint) const{
 	DEASSERT_NOTNULL(pSSBO)
-	if(! pUseDSA){
+	if(!pUseDSA){
 		DEASSERT_FALSE(IsBufferMapped())
 	}
 	
@@ -179,7 +179,7 @@ void deoglSPBlockSSBO::Deactivate(int bindingPoint) const{
 
 void deoglSPBlockSSBO::ActivateUBO() const{
 	DEASSERT_NOTNULL(pSSBO)
-	if(! pUseDSA){
+	if(!pUseDSA){
 		DEASSERT_FALSE(IsBufferMapped())
 	}
 	
@@ -196,7 +196,7 @@ void deoglSPBlockSSBO::ActivateAtomic() const{
 
 void deoglSPBlockSSBO::ActivateAtomic(int bindingPoint) const{
 	DEASSERT_NOTNULL(pSSBO)
-	if(! pUseDSA){
+	if(!pUseDSA){
 		DEASSERT_FALSE(IsBufferMapped())
 	}
 	
@@ -213,7 +213,7 @@ void deoglSPBlockSSBO::DeactivateAtomic(int bindingPoint) const{
 
 void deoglSPBlockSSBO::ActivateDispatchIndirect() const{
 	DEASSERT_NOTNULL(pSSBO)
-	if(! pUseDSA){
+	if(!pUseDSA){
 		DEASSERT_FALSE(IsBufferMapped())
 	}
 	
@@ -290,7 +290,7 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 	
 	pEnsureSSBO();
 	
-	if(! pAllocateBuffer){
+	if(!pAllocateBuffer){
 		return;
 	}
 	
@@ -335,7 +335,7 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
 		
 		if(pType == etRead){
-			if(! pSSBOLocal){
+			if(!pSSBOLocal){
 				OGL_CHECK(renderThread, pglGenBuffers(1, &pSSBOLocal));
 			}
 			
@@ -588,7 +588,7 @@ void deoglSPBlockSSBO::UnmapBufferRead(){
 	DEASSERT_TRUE(pType == etRead)
 	DEASSERT_TRUE(IsBufferMapped())
 	
-	if(! pPersistentMapped){
+	if(!pPersistentMapped){
 		deoglRenderThread &renderThread = GetRenderThread();
 		OGL_CHECK(renderThread, pglBindBuffer(GL_PIXEL_PACK_BUFFER, pSSBOLocal));
 		OGL_CHECK(renderThread, pglUnmapBuffer(GL_PIXEL_PACK_BUFFER));
@@ -739,7 +739,7 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 		}
 	}
 	
-	if(! pSSBO){
+	if(!pSSBO){
 		if(pUseDSA){
 			OGL_CHECK(renderThread, pglCreateBuffers(1, &pSSBO));
 			
@@ -749,7 +749,7 @@ void deoglSPBlockSSBO::pEnsureSSBO(){
 		pAllocateBuffer = true;
 	}
 	
-	if(pType == etRead && ! pSSBOLocal){
+	if(pType == etRead && !pSSBOLocal){
 		if(pUseDSA){
 			OGL_CHECK(renderThread, pglCreateBuffers(1, &pSSBOLocal));
 			

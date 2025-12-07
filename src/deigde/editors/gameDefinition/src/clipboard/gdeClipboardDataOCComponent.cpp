@@ -42,7 +42,7 @@ gdeClipboardDataOCComponent::gdeClipboardDataOCComponent(gdeOCComponent *compone
 igdeClipboardData(TYPE_NAME),
 pComponent(NULL)
 {
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

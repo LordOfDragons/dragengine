@@ -83,7 +83,7 @@ pLSSys(lssys),
 pName("Drag[en]gine XML Synthesizer"),
 pPattern(".desynth")
 {
-	if(! lssys){
+	if(!lssys){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -102,7 +102,7 @@ void seLoadSaveSynthesizer::LoadSynthesizer(seSynthesizer &synthesizer, decBaseF
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "synthesizer") != 0){
+	if(!root || strcmp(root->GetName(), "synthesizer") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -172,7 +172,7 @@ const seController &controller){
 	writer.WriteAttributeFloat("max", controller.GetMaximumValue());
 	writer.WriteOpeningTagEnd(true);
 	
-	if(! controller.GetClamp()){
+	if(!controller.GetClamp()){
 		writer.WriteDataTagBool("clamp", false);
 	}
 	
@@ -486,7 +486,7 @@ void seLoadSaveSynthesizer::pReadSynthesizer(const decXmlElementTag &root, seSyn
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -542,7 +542,7 @@ void seLoadSaveSynthesizer::pReadController(const decXmlElementTag &root, seSynt
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -573,7 +573,7 @@ const decXmlElementTag &root, seController &controller){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -600,7 +600,7 @@ void seLoadSaveSynthesizer::pReadLink(const decXmlElementTag &root, seSynthesize
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -674,7 +674,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag &root, 
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -742,7 +742,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag &root, s
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -820,7 +820,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag &root, 
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -889,7 +889,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag &root, 
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -966,7 +966,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1089,7 +1089,7 @@ seSynthesizer &synthesizer, seControllerTarget &target){
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1139,7 +1139,7 @@ seEffect *seLoadSaveSynthesizer::pReadEffectStretch(const decXmlElementTag &root
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			

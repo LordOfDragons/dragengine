@@ -45,7 +45,7 @@ gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *sp
 pObjectClass(NULL),
 pSpeaker(NULL)
 {
-	if(! objectClass || ! speaker){
+	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

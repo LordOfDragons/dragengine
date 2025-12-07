@@ -188,7 +188,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline BWindow *GetWindow() const{return pCurWindow;}
+	inline BWindow *GetWindow() const{ return pCurWindow; }
 	
 	/**
 	 * \brief Set current game window.
@@ -203,7 +203,7 @@ public:
 	void SetWindow(BWindow *window);
 	
 	/** \brief Hosting main window or NULL if not set. */
-	inline BWindow *GetHostingMainWindow() const{return pHostingMainWindow;}
+	inline BWindow *GetHostingMainWindow() const{ return pHostingMainWindow; }
 	
 	/**
 	 * \brief Set hosting main window or NULL if not set.
@@ -216,7 +216,7 @@ public:
 	void SetHostingMainWindow(BWindow *window);
 	
 	/** \brief Hosting render window or NULL if not set. */
-	inline BWindow *GetHostingRenderWindow() const{return pHostingRenderWindow;}
+	inline BWindow *GetHostingRenderWindow() const{ return pHostingRenderWindow; }
 	
 	/**
 	 * \brief Set hosting render window or NULL if not set.

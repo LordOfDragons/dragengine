@@ -69,7 +69,7 @@ void dealEngineModuleXML::ReadFromFile(decBaseFileReader &reader, dealEngineModu
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "module") != 0) DETHROW(deeInvalidParam);
+	if(!root || strcmp(root->GetName(), "module") != 0) DETHROW(deeInvalidParam);
 	
 	pReadModule(*root, module);
 }

@@ -41,10 +41,10 @@
 ////////////////////////////
 
 ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose *facePose){
-	if(! facePose) DETHROW(deeInvalidParam);
+	if(!facePose) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = facePose->GetConversation();
-	if(! conversation) DETHROW(deeInvalidParam);
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pFacePose = NULL;

@@ -40,7 +40,7 @@ pShape(shape),
 pPoint(point),
 pIndex(index)
 {
-	if(! shape || index < 0 || index > shape->GetPointCount()){
+	if(!shape || index < 0 || index > shape->GetPointCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -89,7 +89,7 @@ void deClassDVector::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	vector = clsDVector->GetDVector(objVec);
 }
@@ -104,7 +104,7 @@ void deClassDVector::nfNewFromVector::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassVector *clsVector = ((deClassDVector*)GetOwnerClass())->GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decVector &paramVector = clsVector->GetVector(objVec);
 	vector.x = paramVector.x;
@@ -231,7 +231,7 @@ void deClassDVector::nfCompMultiply::RunFunction(dsRunTime *rt, dsValue *myself)
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decDVector &otherDVector = clsDVector->GetDVector(objVec);
 	
@@ -248,7 +248,7 @@ void deClassDVector::nfCompDivide::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	const decDVector &otherDVector = clsDVector->GetDVector(objVec);
 	
@@ -417,7 +417,7 @@ void deClassDVector::nfIsEqualTo::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	double delta = rt->GetValue(1)->GetFloat();
 	rt->PushBool(vector.IsEqualTo(clsDVector->GetDVector(objVec), delta));
@@ -473,7 +473,7 @@ void deClassDVector::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself)
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decDVector vector;
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -491,7 +491,7 @@ void deClassDVector::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassFileWriter &clsFileWriter = *clsDVector.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -524,7 +524,7 @@ void deClassDVector::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	clsDVector->PushDVector(rt, vector + clsDVector->GetDVector(objVec));
 }
@@ -539,7 +539,7 @@ void deClassDVector::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	clsDVector->PushDVector(rt, vector - clsDVector->GetDVector(objVec));
 }
@@ -578,7 +578,7 @@ void deClassDVector::nfOpDot::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	rt->PushFloat((float)(vector * clsDVector->GetDVector(objVec)));
 }
@@ -593,7 +593,7 @@ void deClassDVector::nfOpCross::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	clsDVector->PushDVector(rt, vector % clsDVector->GetDVector(objVec));
 }
@@ -608,7 +608,7 @@ void deClassDVector::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	rt->PushBool(vector < clsDVector->GetDVector(objVec));
 }
@@ -623,7 +623,7 @@ void deClassDVector::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	rt->PushBool(vector <= clsDVector->GetDVector(objVec));
 }
@@ -638,7 +638,7 @@ void deClassDVector::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	rt->PushBool(vector > clsDVector->GetDVector(objVec));
 }
@@ -653,7 +653,7 @@ void deClassDVector::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
-	if(! objVec) DSTHROW(dueNullPointer);
+	if(!objVec) DSTHROW(dueNullPointer);
 	
 	rt->PushBool(vector >= clsDVector->GetDVector(objVec));
 }
@@ -673,7 +673,7 @@ void deClassDVector::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassDVector *clsDVector = (deClassDVector*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsDVector)){
+	if(!p_IsObjOfType(obj, clsDVector)){
 		rt->PushBool(false);
 		
 	}else{
@@ -738,7 +738,7 @@ void deClassDVector::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *my
 
 deClassDVector::deClassDVector(deEngine *gameEngine, deScriptingDragonScript *scriptManager) :
 dsClass("DVector", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scriptManager) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scriptManager) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -832,7 +832,7 @@ void deClassDVector::CreateClassMembers(dsEngine *engine){
 }
 
 const decDVector &deClassDVector::GetDVector(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -840,7 +840,7 @@ const decDVector &deClassDVector::GetDVector(dsRealObject *myself) const{
 }
 
 void deClassDVector::PushDVector(dsRunTime *rt, const decDVector &vector){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

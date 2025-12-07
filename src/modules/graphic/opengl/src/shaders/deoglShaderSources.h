@@ -85,49 +85,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the filename. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** Retrieves the texture binding list. */
-	inline deoglShaderBindingList &GetTextureList(){return pTextureList;}
-	inline const deoglShaderBindingList &GetTextureList() const{return pTextureList;}
+	inline deoglShaderBindingList &GetTextureList(){ return pTextureList; }
+	inline const deoglShaderBindingList &GetTextureList() const{ return pTextureList; }
 	
 	/** Retrieves the parameter list. */
-	inline const decStringList &GetParameterList() const{return pParameterList;}
+	inline const decStringList &GetParameterList() const{ return pParameterList; }
 	
 	/** Parameter locations. */
-	inline const decIntList &GetParameterLocations() const{return pParameterLocations;}
+	inline const decIntList &GetParameterLocations() const{ return pParameterLocations; }
 	
 	/** Add parameter. */
 	void AddParameter(const char *name, int location);
 	
 	/** Path to compute unit source code file or empty string. */
-	inline const decString &GetPathComputeSourceCode() const{return pPathSCCompute;}
+	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }
 	
 	/** Set path to compute unit source code file or empty string. */
 	void SetPathComputeSourceCode(const char *path);
 	
 	/** Retrieves the path to the tessellation control unit source code file or an empty string if not used. */
-	inline const decString &GetPathTessellationControlSourceCode() const{return pPathSCTessellationControl;}
+	inline const decString &GetPathTessellationControlSourceCode() const{ return pPathSCTessellationControl; }
 	
 	/** Sets the path to the tessellation control unit source code file or an empty string if not used. */
 	void SetPathTessellationControlSourceCode(const char *path);
 	
 	/** Retrieves the path to the tessellation evaluation unit source code file or an empty string if not used. */
-	inline const decString &GetPathTessellationEvaluationSourceCode() const{return pPathSCTessellationEvaluation;}
+	inline const decString &GetPathTessellationEvaluationSourceCode() const{ return pPathSCTessellationEvaluation; }
 	/** Sets the path to the tessellation evaluation unit source code file or an empty string if not used. */
 	void SetPathTessellationEvaluationSourceCode(const char *path);
 	/** Retrieves the path to the geometry unit source code file or an empty string if not used. */
-	inline const decString &GetPathGeometrySourceCode() const{return pPathSCGeometry;}
+	inline const decString &GetPathGeometrySourceCode() const{ return pPathSCGeometry; }
 	/** Sets the path to the geometry unit source code file or an empty string if not used. */
 	void SetPathGeometrySourceCode(const char *path);
 	/** Retrieves the path to the vertex unit source code file or an empty string if not used. */
-	inline const decString &GetPathVertexSourceCode() const{return pPathSCVertex;}
+	inline const decString &GetPathVertexSourceCode() const{ return pPathSCVertex; }
 	/** Sets the path to the vertex unit source code file or an empty string if not used. */
 	void SetPathVertexSourceCode(const char *path);
 	/** Retrieves the path to the fragment unit source code file or an empty string if not used. */
-	inline const decString &GetPathFragmentSourceCode() const{return pPathSCFragment;}
+	inline const decString &GetPathFragmentSourceCode() const{ return pPathSCFragment; }
 	/** Sets the path to the fragment unit source code file or an empty string if not used. */
 	void SetPathFragmentSourceCode(const char *path);
 	/*@}*/

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetFovFrom::ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov){
-	if(! cameraShot) DETHROW(deeInvalidParam);
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	

@@ -149,7 +149,7 @@ bool deAudioOpenAL::HasAudioThread() const{
 
 
 deoalWorld *deAudioOpenAL::GetActiveWorld() const{
-	if(! pActiveMicrophone){
+	if(!pActiveMicrophone){
 		return NULL;
 	}
 	return pActiveMicrophone->GetParentWorld();
@@ -205,7 +205,7 @@ void deAudioOpenAL::ProcessAudio(){
 	// finished soon enough to wait for this event or to skip synchronization and running
 	// another game frame update. this method returns only true if the main thread is allowed
 	// to modify synchronization data. in all other situations false is returned
-	if(! pAudioThread->MainThreadWaitFinishAudio()){
+	if(!pAudioThread->MainThreadWaitFinishAudio()){
 		return; // enough time left to run another game frame update
 	}
 	

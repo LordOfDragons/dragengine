@@ -81,7 +81,7 @@ void deRLTaskReadImage::Run(){
 	LogRunEnter();
 	deBaseImageModule * const module = (deBaseImageModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -93,7 +93,7 @@ void deRLTaskReadImage::Run(){
 			 GetVFS()->OpenFileForReading(vfsPath)));
 		
 		infos = module->InitLoadImage(reader);
-		if(! infos){
+		if(!infos){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -121,7 +121,7 @@ void deRLTaskReadImage::Run(){
 
 void deRLTaskReadImage::Finished(){
 	LogFinishedEnter();
-	if(! pSucceeded){
+	if(!pSucceeded){
 		SetState(esFailed);
 		pImage = NULL;
 		LogFinishedExit();

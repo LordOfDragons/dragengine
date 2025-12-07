@@ -92,10 +92,10 @@ public:
 	/** Management */
 	/*@{*/
 	/** Window main. */
-	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game definition. */
-	inline ceConversation *GetConversation() const{return pConversation;}
+	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	
 	
@@ -139,7 +139,7 @@ public:
 	
 	
 	/** Assigned tree list or \em NULL. */
-	inline igdeTreeList *GetTreeList() const{return pTreeList;}
+	inline igdeTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/**
 	 * Assign tree list or \em NULL.
@@ -169,10 +169,10 @@ public:
 	void SelectTopicActive();
 	
 	/** Prevent update. */
-	inline bool GetPreventUpdate() const{return pPreventUpdate;}
+	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
 	
 	/** Forward listener. */
-	inline ceConversationListener &GetForwardListener(){return pForwardListener;}
+	inline ceConversationListener &GetForwardListener(){ return pForwardListener; }
 	/*@}*/
 	
 	

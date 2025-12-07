@@ -48,7 +48,7 @@ decCurve2D::decCurve2D(const decCurve2D &curve){
 	
 	if(curve.pPointCount > 0){
 		pPoints = new decVector2[curve.pPointCount];
-		if(! pPoints){
+		if(!pPoints){
 			DETHROW(deeOutOfMemory);
 		}
 		

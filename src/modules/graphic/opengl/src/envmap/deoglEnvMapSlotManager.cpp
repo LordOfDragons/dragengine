@@ -96,7 +96,7 @@ deoglEnvMapSlot &deoglEnvMapSlotManager::GetSlotAt(int index) const{
 }
 
 int deoglEnvMapSlotManager::IndexOfSlotWith(deoglEnvironmentMap *envmap) const{
-	if(! envmap){
+	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -121,7 +121,7 @@ int deoglEnvMapSlotManager::IndexOfOldestUnusedSlot() const{
 		// if( ! pSlots[ i ].GetInUse() && pSlots[ i ].GetLastUsed() > 1 && ( slotIndex == -1 || pSlots[ i ].GetLastUsed() > oldestLastUsed ) ){
 		// or used in this frame?
 		// if( ! pSlots[ i ].GetInUse() && pSlots[ i ].GetLastUsed() > 0 && ( slotIndex == -1 || pSlots[ i ].GetLastUsed() > oldestLastUsed ) ){
-		if(! pSlots[i].GetInUse() && (slotIndex == -1 || pSlots[i].GetLastUsed() > oldestLastUsed)){
+		if(!pSlots[i].GetInUse() && (slotIndex == -1 || pSlots[i].GetLastUsed() > oldestLastUsed)){
 			slotIndex = i;
 			oldestLastUsed = pSlots[i].GetLastUsed();
 		}
@@ -141,7 +141,7 @@ void deoglEnvMapSlotManager::MarkSlotsUnused(){
 }
 
 void deoglEnvMapSlotManager::AddEnvironmentMap(deoglEnvironmentMap *envmap){
-	if(! envmap){
+	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -212,7 +212,7 @@ void deoglEnvMapSlotManager::IncreaseSlotLastUsedCounters(){
 }
 
 void deoglEnvMapSlotManager::NotifyEnvMapChanged(int slotIndex){
-	if(slotIndex < 0 || slotIndex >= pLayerCount || ! pSlots[slotIndex].GetEnvMap()){
+	if(slotIndex < 0 || slotIndex >= pLayerCount || !pSlots[slotIndex].GetEnvMap()){
 		DETHROW(deeInvalidParam);
 	}
 	

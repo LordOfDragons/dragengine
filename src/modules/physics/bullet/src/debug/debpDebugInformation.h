@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
@@ -89,7 +89,7 @@ public:
 	
 	
 	/** \brief Elapsed time. */
-	inline float GetElapsedTime() const{return pElapsedTime;}
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** \brief Set elapsed time. */
 	void SetElapsedTime(float time);
@@ -101,12 +101,12 @@ public:
 	void ClearElapsedTime();
 	
 	/** \brief Has elapsed time. */
-	inline bool HasElapsedTime() const{return pHasElapsedTime;}
+	inline bool HasElapsedTime() const{ return pHasElapsedTime; }
 	
 	
 	
 	/** \brief Counter. */
-	inline int GetCounter() const{return pCounter;}
+	inline int GetCounter() const{ return pCounter; }
 	
 	/** \brief Set counter. */
 	void SetCounter(int counter);
@@ -121,12 +121,12 @@ public:
 	void ClearCounter();
 	
 	/** \brief Has counter. */
-	inline bool HasCounter() const{return pHasCounter;}
+	inline bool HasCounter() const{ return pHasCounter; }
 	
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);

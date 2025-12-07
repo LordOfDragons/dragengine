@@ -67,7 +67,7 @@ pFaceCount(0)
 			face.face->AddReference();
 			
 			face.type = face.face->GetType();
-			if(! face.type){
+			if(!face.type){
 				DETHROW(deeInvalidParam);
 			}
 			face.type->AddReference();
@@ -110,7 +110,7 @@ void meUHTNavSpaceFaceRemove::Redo(){
 //////////////////////
 
 void meUHTNavSpaceFaceRemove::pCleanUp(){
-	if(! pFaces){
+	if(!pFaces){
 		return;
 	}
 	

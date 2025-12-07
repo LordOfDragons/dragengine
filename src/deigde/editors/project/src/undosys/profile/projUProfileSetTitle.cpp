@@ -43,7 +43,7 @@ projUProfileSetTitle::projUProfileSetTitle(projProfile *profile, const char *new
 pProfile(NULL),
 pNewValue(newValue)
 {
-	if(! profile){
+	if(!profile){
 		DETHROW(deeInvalidParam);
 	}
 	

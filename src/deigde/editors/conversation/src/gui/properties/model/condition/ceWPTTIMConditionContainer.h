@@ -65,10 +65,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction &GetAction() const{return *pAction;}
+	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
 	/** \brief Condition in container or \em NULL. */
-	inline ceConversationCondition *GetCondition() const{return pCondition;}
+	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/**
 	 * \brief Set condition in container or \em NULL.
@@ -86,7 +86,7 @@ public:
 	void SetOrUpdateCondition(ceConversationCondition *condition);
 	
 	/** \brief Model with child condition or \em NULL. */
-	inline ceWPTTIMCondition *GetChildCondition() const{return pChildCondition;}
+	inline ceWPTTIMCondition *GetChildCondition() const{ return pChildCondition; }
 	
 	
 	

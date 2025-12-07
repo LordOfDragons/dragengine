@@ -28,8 +28,8 @@ public:
 	void setDebug(bool);
 	TokenStream *tokenStream() const;
 	
-	inline const IndexedString &currentDocument() const{return pCurrentDocument;}
-	inline const QByteArray &contents() const{return pContents;}
+	inline const IndexedString &currentDocument() const{ return pCurrentDocument; }
+	inline const QByteArray &contents() const{ return pContents; }
 	
 	bool parse(StartAst **);
 	

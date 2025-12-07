@@ -42,7 +42,7 @@
 
 ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics) :
 pFile(NULL){
-	if(! file || topics.GetCount() == 0){
+	if(!file || topics.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

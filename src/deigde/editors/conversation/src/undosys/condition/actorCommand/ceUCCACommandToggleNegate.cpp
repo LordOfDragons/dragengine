@@ -44,7 +44,7 @@
 
 ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionActorCommand *actorCommand){
-	if(! topic || ! action || ! actorCommand){
+	if(!topic || !action || !actorCommand){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,11 +82,11 @@ ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
 ///////////////
 
 void ceUCCACommandToggleNegate::Undo(){
-	pActorCommand->SetNegate(! pActorCommand->GetNegate());
+	pActorCommand->SetNegate(!pActorCommand->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pActorCommand);
 }
 
 void ceUCCACommandToggleNegate::Redo(){
-	pActorCommand->SetNegate(! pActorCommand->GetNegate());
+	pActorCommand->SetNegate(!pActorCommand->GetNegate());
 	pTopic->NotifyConditionChanged(pAction, pActorCommand);
 }

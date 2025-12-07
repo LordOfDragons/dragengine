@@ -44,7 +44,7 @@
 ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionVariable *condition,
 ceCConditionVariable::eOperators newOperator){
-	if(! topic || ! action || ! condition) DETHROW(deeInvalidParam);
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

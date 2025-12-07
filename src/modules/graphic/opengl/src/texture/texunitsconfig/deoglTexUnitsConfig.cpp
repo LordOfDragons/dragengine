@@ -112,7 +112,7 @@ deoglTexUnitConfig &deoglTexUnitsConfig::GetUnitAt(int index) const{
 }
 
 void deoglTexUnitsConfig::SetUnits(const deoglTexUnitConfig *units, int unitCount){
-	if(unitCount < 0 || (unitCount > 0 && ! units)){
+	if(unitCount < 0 || (unitCount > 0 && !units)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,7 +167,7 @@ bool deoglTexUnitsConfig::Equals(const deoglTexUnitsConfig &tuc) const{
 	int i;
 	
 	for(i=0; i<pUnitCount; i++){
-		if(! pUnits[i].Equals(tuc.pUnits[i])){
+		if(!pUnits[i].Equals(tuc.pUnits[i])){
 			return false;
 		}
 	}
@@ -177,7 +177,7 @@ bool deoglTexUnitsConfig::Equals(const deoglTexUnitsConfig &tuc) const{
 
 bool deoglTexUnitsConfig::Equals(const deoglTexUnitConfig *units, int unitCount,
 deoglShaderParameterBlock *paramBlock) const{
-	if(unitCount < 0 || (unitCount > 0 && ! units)){
+	if(unitCount < 0 || (unitCount > 0 && !units)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -187,7 +187,7 @@ deoglShaderParameterBlock *paramBlock) const{
 	
 	int i;
 	for(i=0; i<pUnitCount; i++){
-		if(! pUnits[i].Equals(units[i])){
+		if(!pUnits[i].Equals(units[i])){
 			return false;
 		}
 	}
@@ -221,7 +221,7 @@ void deoglTexUnitsConfig::CalcUnitsHashCode(){
 }
 
 unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits(const deoglTexUnitConfig *units, int unitCount){
-	if(unitCount < 0 || (unitCount > 0 && ! units)){
+	if(unitCount < 0 || (unitCount > 0 && !units)){
 		DETHROW(deeInvalidParam);
 	}
 	

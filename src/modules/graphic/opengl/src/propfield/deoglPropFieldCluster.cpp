@@ -89,17 +89,17 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateData(sDataElement &data) 
 
 void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 	deoglSkinTexture * const skinTexture = pCluster.GetPropFieldType().GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return;
 	}
 	
 	const deoglRModel * const model = pCluster.GetPropFieldType().GetModel();
-	if(! model){
+	if(!model){
 		return;
 	}
 	
 	const deoglModelLOD &modelLOD = model->GetLODAt(0);
-	if(! modelLOD.GetVBOBlock()){
+	if(!modelLOD.GetVBOBlock()){
 		return;
 	}
 	
@@ -332,7 +332,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType(deoglSkinTextu
 
 deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
-	if(! skinTexture){
+	if(!skinTexture){
 		return NULL;
 	}
 	
@@ -366,7 +366,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipeli
 			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if(! tuc){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
 			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
@@ -410,7 +410,7 @@ void deoglPropFieldCluster::RemoveFromWorldCompute(){
 //////////////////////
 
 void deoglPropFieldCluster::pPrepareTUCs(){
-	if(! pDirtyTUCs){
+	if(!pDirtyTUCs){
 		return;
 	}
 	pDirtyTUCs = false;
@@ -473,7 +473,7 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 
 
 void deoglPropFieldCluster::pPrepareTBOs(){
-	if(! pVBOInstances){
+	if(!pVBOInstances){
 		pUpdateTBOInstances();
 	}
 	
@@ -513,14 +513,14 @@ void deoglPropFieldCluster::pUpdateTBOInstances(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOInstances));
-	if(! pVBOInstances){
+	if(!pVBOInstances){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOInstances));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, vboData, GL_STATIC_DRAW));
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTBOInstances));
-	if(! pTBOInstances){
+	if(!pTBOInstances){
 		DETHROW(deeInvalidParam);
 	}
 	tsmgr.EnableBareTBO(0, pTBOInstances);
@@ -535,9 +535,9 @@ void deoglPropFieldCluster::pUpdateTBOInstances(){
 void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	const int vboDataSize = pInstanceCount * 4; // sizeof(halfFloat) * 2
 	
-	if(! pVBOBendStates){
+	if(!pVBOBendStates){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOBendStates));
-		if(! pVBOBendStates){
+		if(!pVBOBendStates){
 			DETHROW(deeOutOfMemory);
 		}
 	}
@@ -546,11 +546,11 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, NULL, GL_STREAM_DRAW));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, pBendStateData, GL_STREAM_DRAW));
 	
-	if(! pTBOBendStates){
+	if(!pTBOBendStates){
 		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 		
 		OGL_CHECK(pRenderThread, glGenTextures(1, &pTBOBendStates));
-		if(! pTBOBendStates){
+		if(!pTBOBendStates){
 			DETHROW(deeInvalidParam);
 		}
 		tsmgr.EnableBareTBO(0, pTBOBendStates);
@@ -566,13 +566,13 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 
 
 void deoglPropFieldCluster::pPrepareRTSInstance(){
-	if(! pDirtyRTSInstance){
+	if(!pDirtyRTSInstance){
 		return;
 	}
 	pDirtyRTSInstance = false;
 	
 	if(pPropFieldType.GetModel()){
-		if(! pRTSInstance){
+		if(!pRTSInstance){
 			pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
 			pUpdateRTSInstances();
 		}
@@ -586,7 +586,7 @@ void deoglPropFieldCluster::pPrepareRTSInstance(){
 }
 
 void deoglPropFieldCluster::pUpdateRTSInstances(){
-	if(! pRTSInstance){
+	if(!pRTSInstance){
 		return;
 	}
 	

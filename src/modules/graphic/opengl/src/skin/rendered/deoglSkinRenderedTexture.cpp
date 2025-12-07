@@ -148,7 +148,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans(deoglRenderPlan &plan){
 	pPlan->SetCameraMatrixNonMirrored(mirrorMatrix.mirrorFreeMatrix);
 	pPlan->UpdateRefPosCameraMatrix();
 	
-	pPlan->SetFlipCulling(! plan.GetFlipCulling());
+	pPlan->SetFlipCulling(!plan.GetFlipCulling());
 	pPlan->SetNoRenderedOccMesh(true);
 	
 	pPlan->SetNoReflections(true); // HACK prevent re-entrant problem for the time being
@@ -224,7 +224,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans(deoglRenderPlan &plan){
 }
 
 void deoglSkinRenderedTexture::pPlaneFromTexture(sMirrorMatrix &mirrorMatrix) const{
-	if(! pSkinRendered.GetOwnerComponent()){
+	if(!pSkinRendered.GetOwnerComponent()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -302,7 +302,7 @@ void deoglSkinRenderedTexture::pPlaneFromTexture(sMirrorMatrix &mirrorMatrix) co
 
 void deoglSkinRenderedTexture::pFrustumFromTexture(int width, int height, double projX, double projY,
 double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &matrixMVP) const{
-	if(! pSkinRendered.GetOwnerComponent()){
+	if(!pSkinRendered.GetOwnerComponent()){
 		DETHROW(deeInvalidParam);
 	}
 	

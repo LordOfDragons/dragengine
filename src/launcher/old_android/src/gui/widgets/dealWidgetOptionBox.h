@@ -88,21 +88,21 @@ public:
 	void SetImage(dealImage *image);
 	
 	/** \brief Bordered box image widget for deselected state. */
-	inline dealWidgetImage &GetBoxImageDeselected() const{return *pBoxImageDeselected;}
+	inline dealWidgetImage &GetBoxImageDeselected() const{ return *pBoxImageDeselected; }
 	
 	/** \brief Bordered box image widget for selected state. */
-	inline dealWidgetImage &GetBoxImageSelected() const{return *pBoxImageSelected;}
+	inline dealWidgetImage &GetBoxImageSelected() const{ return *pBoxImageSelected; }
 	
 	
 	
 	/** \brief Group or \em NULL if not assigned to one. */
-	inline dealWidgetOptionGroup *GetGroup() const{return pGroup;}
+	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
 	void SetGroup(dealWidgetOptionGroup *group);
 	
 	/** \brief Button is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if button is selected. */
 	void SetSelected(bool selected);

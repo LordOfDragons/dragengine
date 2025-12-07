@@ -82,7 +82,7 @@ void ceWPTTIMASetVariable::Update(){
 	
 	const char * const textOperator = GetOperatorText(action.GetOperator());
 	
-	if(! action.GetValueVariable().IsEmpty()){
+	if(!action.GetValueVariable().IsEmpty()){
 		text.Format("Set Variable: '%s' %s '%s'", action.GetName().GetString(),
 			textOperator, action.GetValueVariable().GetString());
 		

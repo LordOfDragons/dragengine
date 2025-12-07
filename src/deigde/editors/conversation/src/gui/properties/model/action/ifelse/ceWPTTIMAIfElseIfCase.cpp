@@ -57,7 +57,7 @@ pIndex(index),
 pCondition(NULL),
 pActions(NULL)
 {
-	if(! ifCase){
+	if(!ifCase){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -104,7 +104,7 @@ ceWPTTIMAIfElseIfCase::~ceWPTTIMAIfElseIfCase(){
 
 ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCase::GetModelIfElse() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -141,12 +141,12 @@ void ceWPTTIMAIfElseIfCase::OnExpandedChanged(){
 }
 
 void ceWPTTIMAIfElseIfCase::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = GetModelIfElse();
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void ceWPTTIMAIfElseIfCase::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

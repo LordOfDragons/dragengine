@@ -44,7 +44,7 @@
 
 ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionGameCommand *condition, const char *newCommand){
-	if(! topic || ! action || ! condition || ! newCommand){
+	if(!topic || !action || !condition || !newCommand){
 		DETHROW(deeInvalidParam);
 	}
 	

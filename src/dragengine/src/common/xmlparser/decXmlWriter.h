@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Indent level. */
-	inline int GetIndent() const{return pIndent;}
+	inline int GetIndent() const{ return pIndent; }
 	
 	/** \brief Set indent level. */
 	void SetIndent(int indent);

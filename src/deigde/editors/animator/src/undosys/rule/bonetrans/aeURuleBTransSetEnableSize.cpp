@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleBTransSetEnableSize::aeURuleBTransSetEnableSize(aeRuleBoneTransformator *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleBTransSetEnableSize::Undo(){
 }
 
 void aeURuleBTransSetEnableSize::Redo(){
-	pRule->SetEnableSize(! pRule->GetEnableSize());
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }

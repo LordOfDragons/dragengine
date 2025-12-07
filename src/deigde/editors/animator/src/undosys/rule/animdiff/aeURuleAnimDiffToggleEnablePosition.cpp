@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleAnimDiffToggleEnablePosition::aeURuleAnimDiffToggleEnablePosition(aeRuleAnimationDifference *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,11 +68,11 @@ aeURuleAnimDiffToggleEnablePosition::~aeURuleAnimDiffToggleEnablePosition(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleAnimDiffToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition(! pRule->GetEnablePosition());
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 

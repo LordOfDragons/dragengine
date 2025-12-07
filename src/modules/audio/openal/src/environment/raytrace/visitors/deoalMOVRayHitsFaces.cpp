@@ -149,7 +149,7 @@ void deoalMOVRayHitsFaces::VisitNode(deoalModelOctree &node){
 			continue;
 		}
 		
-		if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+		if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 			continue;
 		}
 		
@@ -217,7 +217,7 @@ void deoalMOVRayHitsFaces::VisitNode(deoalOctree *node, int){
 			continue;
 		}
 		
-		if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+		if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 			continue;
 		}
 		
@@ -290,7 +290,7 @@ const deoalModelRTOctree::sNode &node){
 			continue;
 		}
 		
-		if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+		if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 			continue;
 		}
 		
@@ -358,7 +358,7 @@ void deoalMOVRayHitsFaces::pVisitNode(const deoalModelRTBVH &bvh, const deoalMod
 				continue;
 			}
 			
-			if(! pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
+			if(!pComponent.GetTextureAt(textureIndex).GetAffectsSound()){
 				continue;
 			}
 			

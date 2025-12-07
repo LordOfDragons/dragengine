@@ -80,18 +80,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{return pOal;}
+	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	/** \brief Microphone. */
-	inline const deMicrophone &GetMicrophone() const{return pMicrophone;}
+	inline const deMicrophone &GetMicrophone() const{ return pMicrophone; }
 	
 	/** \brief Audio microphone. */
-	inline deoalAMicrophone *GetAMicrophone() const{return pAMicrophone;}
+	inline deoalAMicrophone *GetAMicrophone() const{ return pAMicrophone; }
 	
 	
 	
 	/** \brief Microphone is active. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if mocrophone is active. */
 	void SetActive(bool active);
@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Parent world or NULL. */
-	inline deoalWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deoalWorld *world);
@@ -167,8 +167,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

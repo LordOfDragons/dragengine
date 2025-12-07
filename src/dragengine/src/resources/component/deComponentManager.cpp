@@ -108,7 +108,7 @@ void deComponentManager::SystemGraphicLoad(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		if(! component->GetPeerGraphic()){
+		if(!component->GetPeerGraphic()){
 			GetGraphicSystem()->LoadComponent(component);
 		}
 		
@@ -129,7 +129,7 @@ void deComponentManager::SystemPhysicsLoad(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		if(! component->GetPeerPhysics()){
+		if(!component->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadComponent(component);
 		}
 		
@@ -150,7 +150,7 @@ void deComponentManager::SystemAudioLoad(){
 	deComponent *component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
-		if(! component->GetPeerAudio()){
+		if(!component->GetPeerAudio()){
 			GetAudioSystem()->LoadComponent(component);
 		}
 		
@@ -172,7 +172,7 @@ void deComponentManager::SystemAnimatorLoad(){
 	deAnimatorSystem &manager = *GetAnimatorSystem();
 	
 	while(component){
-		if(! component->GetPeerAnimator()){
+		if(!component->GetPeerAnimator()){
 			manager.LoadComponent(component);
 		}
 		

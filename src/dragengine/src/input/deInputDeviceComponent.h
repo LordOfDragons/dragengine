@@ -114,7 +114,7 @@ public:
 	 * suitable to be combined with the device identifier to store them in config files as
 	 * key bindings.
 	 */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
@@ -125,13 +125,13 @@ public:
 	 * Dispaly name is human readable like for example 'Component #1'. The name is unique but
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
 	void SetName(const char *name);
 	
 	/** \brief Component type. */
-	inline eComponentTypes GetType() const{return pType;}
+	inline eComponentTypes GetType() const{ return pType; }
 	
 	/** \brief Component type. */
 	void SetType(eComponentTypes type);
@@ -141,7 +141,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
 	 * \brief Set image to represent the component in 2D user interfaces or NULL if not set.
@@ -168,7 +168,7 @@ public:
 	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
 	void SetDisplayText(const char *text);

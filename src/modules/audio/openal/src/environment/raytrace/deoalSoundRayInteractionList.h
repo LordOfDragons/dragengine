@@ -57,7 +57,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of elements. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Element at index. */
 	const deoalSoundRayInteraction &GetAt(int index) const;

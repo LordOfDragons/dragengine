@@ -100,12 +100,12 @@ int decConvexVolumeList::IndexOfVolume(decConvexVolume *volume) const{
 }
 
 void decConvexVolumeList::AddVolume(decConvexVolume *volume){
-	if(! volume || HasVolume(volume)) DETHROW(deeInvalidParam);
+	if(!volume || HasVolume(volume)) DETHROW(deeInvalidParam);
 	
 	if(pVolumeCount == pVolumeSize){
 		int i, newSize = pVolumeSize * 3 / 2 + 1;
 		decConvexVolume **newArray = new decConvexVolume*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pVolumes){
 			for(i=0; i<pVolumeSize; i++) newArray[i] = pVolumes[i];
@@ -169,7 +169,7 @@ void decConvexVolumeList::SetToCube(const decVector &halfSize){
 	// add new volume set to cube
 	try{
 		volume = CreateVolume(NULL, true);
-		if(! volume) DETHROW(deeOutOfMemory);
+		if(!volume) DETHROW(deeOutOfMemory);
 		
 		volume->SetToCube(halfSize);
 		
@@ -315,14 +315,14 @@ void decConvexVolumeList::SplitByVolume(const decConvexVolume &volume){
 
 decConvexVolume *decConvexVolumeList::CreateVolume(decConvexVolume *volume, bool front){
 	decConvexVolume *newVolume = new decConvexVolume();
-	if(! newVolume) DETHROW(deeOutOfMemory);
+	if(!newVolume) DETHROW(deeOutOfMemory);
 	
 	return newVolume;
 }
 
 decConvexVolumeFace *decConvexVolumeList::CreateVolumeFace(decConvexVolumeFace *face){
 	decConvexVolumeFace *newFace = new decConvexVolumeFace();
-	if(! newFace) DETHROW(deeOutOfMemory);
+	if(!newFace) DETHROW(deeOutOfMemory);
 	
 	if(face){
 		newFace->SetMarker(face->GetMarker());
@@ -516,15 +516,15 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 				// add vertex to the front volume if front side
 				if(isFrontFirst){
 					// if the front volume does not exist we create it
-					if(! volumeFront){
+					if(!volumeFront){
 						volumeFront = CreateVolume(pVolumes[volume], true);
-						if(! volumeFront) DETHROW(deeOutOfMemory);
+						if(!volumeFront) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the front face does not exist we create it
-					if(! faceFront){
+					if(!faceFront){
 						faceFront = CreateVolumeFace(testFace);
-						if(! faceFront) DETHROW(deeOutOfMemory);
+						if(!faceFront) DETHROW(deeOutOfMemory);
 						faceFront->SetNormal(testFace->GetNormal());
 					}
 					
@@ -539,17 +539,17 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 					faceFront->AddVertex(vertexIndex);
 					
 				// add vertex to the back volume if on back side and not marked for deletion
-				}else if(! deleteBackVolume){
+				}else if(!deleteBackVolume){
 					// if the back volume does not exist we create it
-					if(! volumeBack){
+					if(!volumeBack){
 						volumeBack = CreateVolume(pVolumes[volume], false);
-						if(! volumeBack) DETHROW(deeOutOfMemory);
+						if(!volumeBack) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the back face does not exist we create it
-					if(! faceBack){
+					if(!faceBack){
 						faceBack = CreateVolumeFace(testFace);
-						if(! faceBack) DETHROW(deeOutOfMemory);
+						if(!faceBack) DETHROW(deeOutOfMemory);
 						faceBack->SetNormal(testFace->GetNormal());
 					}
 					
@@ -573,22 +573,22 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 					cutVertexPosition = vertexFirstPosition + edgeDirection * lambda;
 					
 					// if the front volume does not exist we create it
-					if(! volumeFront){
+					if(!volumeFront){
 						volumeFront = CreateVolume(pVolumes[volume], true);
-						if(! volumeFront) DETHROW(deeOutOfMemory);
+						if(!volumeFront) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the front face does not exist we create it
-					if(! faceFront){
+					if(!faceFront){
 						faceFront = CreateVolumeFace(testFace);
-						if(! faceFront) DETHROW(deeOutOfMemory);
+						if(!faceFront) DETHROW(deeOutOfMemory);
 						faceFront->SetNormal(testFace->GetNormal());
 					}
 					
 					// if the front cut face does not exist we create it
-					if(! faceCutFront){
+					if(!faceCutFront){
 						faceCutFront = CreateVolumeFace(face);
-						if(! faceCutFront) DETHROW(deeOutOfMemory);
+						if(!faceCutFront) DETHROW(deeOutOfMemory);
 						faceCutFront->SetNormal(-splitNormal);
 					}
 					
@@ -601,29 +601,29 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 					
 					// add vertex to front face and front cut face
 					faceFront->AddVertex(vertexIndex);
-					if(! faceCutFront->HasVertex(vertexIndex)){
+					if(!faceCutFront->HasVertex(vertexIndex)){
 						faceCutFront->AddVertex(vertexIndex);
 					}
 					
 					// back volume stuff only if not marked for deletion
-					if(! deleteBackVolume){
+					if(!deleteBackVolume){
 						// if the back volume does not exist we create it
-						if(! volumeBack){
+						if(!volumeBack){
 							volumeBack = CreateVolume(pVolumes[volume], false);
-							if(! volumeBack) DETHROW(deeOutOfMemory);
+							if(!volumeBack) DETHROW(deeOutOfMemory);
 						}
 						
 						// if the back face does not exist we create it
-						if(! faceBack){
+						if(!faceBack){
 							faceBack = CreateVolumeFace(testFace);
-							if(! faceBack) DETHROW(deeOutOfMemory);
+							if(!faceBack) DETHROW(deeOutOfMemory);
 							faceBack->SetNormal(testFace->GetNormal());
 						}
 						
 						// if the back cut face does not exist we create it
-						if(! faceCutBack){
+						if(!faceCutBack){
 							faceCutBack = CreateVolumeFace(face);
-							if(! faceCutBack) DETHROW(deeOutOfMemory);
+							if(!faceCutBack) DETHROW(deeOutOfMemory);
 							faceCutBack->SetNormal(splitNormal);
 						}
 						
@@ -636,7 +636,7 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 						
 						// add vertex to back face and back cut face
 						faceBack->AddVertex(vertexIndex);
-						if(! faceCutBack->HasVertex(vertexIndex)){
+						if(!faceCutBack->HasVertex(vertexIndex)){
 							faceCutBack->AddVertex(vertexIndex);
 						}
 					}
@@ -656,7 +656,7 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 		
 		// add cut faces if existing
 		if(faceCutFront){
-			if(! faceCutFront->IsTooSmall(*volumeFront)){
+			if(!faceCutFront->IsTooSmall(*volumeFront)){
 				faceCutFront->SortVertices(*volumeFront);
 				volumeFront->AddFace(faceCutFront);
 				
@@ -667,7 +667,7 @@ int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
 		}
 		
 		if(faceCutBack){
-			if(! faceCutBack->IsTooSmall(*volumeBack)){
+			if(!faceCutBack->IsTooSmall(*volumeBack)){
 				faceCutBack->SortVertices(*volumeBack);
 				volumeBack->AddFace(faceCutBack);
 				
@@ -759,15 +759,15 @@ int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &split
 				// add vertex to the front volume if front side
 				if(isFrontFirst){
 					// if the front volume does not exist we create it
-					if(! volumeFront){
+					if(!volumeFront){
 						volumeFront = CreateVolume(pVolumes[volume], true);
-						if(! volumeFront) DETHROW(deeOutOfMemory);
+						if(!volumeFront) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the front face does not exist we create it
-					if(! faceFront){
+					if(!faceFront){
 						faceFront = CreateVolumeFace(testFace);
-						if(! faceFront) DETHROW(deeOutOfMemory);
+						if(!faceFront) DETHROW(deeOutOfMemory);
 						faceFront->SetNormal(testFace->GetNormal());
 					}
 					
@@ -782,17 +782,17 @@ int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &split
 					faceFront->AddVertex(vertexIndex);
 					
 				// add vertex to the back volume if on back side and not marked for deletion
-				}else if(! deleteBackVolume){
+				}else if(!deleteBackVolume){
 					// if the back volume does not exist we create it
-					if(! volumeBack){
+					if(!volumeBack){
 						volumeBack = CreateVolume(pVolumes[volume], false);
-						if(! volumeBack) DETHROW(deeOutOfMemory);
+						if(!volumeBack) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the back face does not exist we create it
-					if(! faceBack){
+					if(!faceBack){
 						faceBack = CreateVolumeFace(testFace);
-						if(! faceBack) DETHROW(deeOutOfMemory);
+						if(!faceBack) DETHROW(deeOutOfMemory);
 						faceBack->SetNormal(testFace->GetNormal());
 					}
 					
@@ -816,22 +816,22 @@ int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &split
 					cutVertexPosition = vertexFirstPosition + edgeDirection * lambda;
 					
 					// if the front volume does not exist we create it
-					if(! volumeFront){
+					if(!volumeFront){
 						volumeFront = CreateVolume(pVolumes[volume], true);
-						if(! volumeFront) DETHROW(deeOutOfMemory);
+						if(!volumeFront) DETHROW(deeOutOfMemory);
 					}
 					
 					// if the front face does not exist we create it
-					if(! faceFront){
+					if(!faceFront){
 						faceFront = CreateVolumeFace(testFace);
-						if(! faceFront) DETHROW(deeOutOfMemory);
+						if(!faceFront) DETHROW(deeOutOfMemory);
 						faceFront->SetNormal(testFace->GetNormal());
 					}
 					
 					// if the front cut face does not exist we create it
-					if(! faceCutFront){
+					if(!faceCutFront){
 						faceCutFront = CreateVolumeFace();
-						if(! faceCutFront) DETHROW(deeOutOfMemory);
+						if(!faceCutFront) DETHROW(deeOutOfMemory);
 						faceCutFront->SetNormal(-splitNormal);
 					}
 					
@@ -844,29 +844,29 @@ int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &split
 					
 					// add vertex to front face and front cut face
 					faceFront->AddVertex(vertexIndex);
-					if(! faceCutFront->HasVertex(vertexIndex)){
+					if(!faceCutFront->HasVertex(vertexIndex)){
 						faceCutFront->AddVertex(vertexIndex);
 					}
 					
 					// back volume stuff only if not marked for deletion
-					if(! deleteBackVolume){
+					if(!deleteBackVolume){
 						// if the back volume does not exist we create it
-						if(! volumeBack){
+						if(!volumeBack){
 							volumeBack = CreateVolume(pVolumes[volume], false);
-							if(! volumeBack) DETHROW(deeOutOfMemory);
+							if(!volumeBack) DETHROW(deeOutOfMemory);
 						}
 						
 						// if the back face does not exist we create it
-						if(! faceBack){
+						if(!faceBack){
 							faceBack = CreateVolumeFace(testFace);
-							if(! faceBack) DETHROW(deeOutOfMemory);
+							if(!faceBack) DETHROW(deeOutOfMemory);
 							faceBack->SetNormal(testFace->GetNormal());
 						}
 						
 						// if the back cut face does not exist we create it
-						if(! faceCutBack){
+						if(!faceCutBack){
 							faceCutBack = CreateVolumeFace();
-							if(! faceCutBack) DETHROW(deeOutOfMemory);
+							if(!faceCutBack) DETHROW(deeOutOfMemory);
 							faceCutBack->SetNormal(splitNormal);
 						}
 						
@@ -879,7 +879,7 @@ int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &split
 						
 						// add vertex to back face and back cut face
 						faceBack->AddVertex(vertexIndex);
-						if(! faceCutBack->HasVertex(vertexIndex)){
+						if(!faceCutBack->HasVertex(vertexIndex)){
 							faceCutBack->AddVertex(vertexIndex);
 						}
 					}

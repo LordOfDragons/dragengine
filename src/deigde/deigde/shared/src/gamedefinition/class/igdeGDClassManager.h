@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{return pCategories;}
+	inline igdeGDCategory *GetCategories() const{ return pCategories; }
 	
 	/** \brief Number of game classes. */
 	int GetCount() const;
@@ -107,25 +107,25 @@ public:
 	void RemoveAll();
 	
 	/** \brief Hide tags. */
-	inline igdeTagManager &GetHideTags(){return pHideTags;}
-	inline const igdeTagManager &GetHideTags() const{return pHideTags;}
+	inline igdeTagManager &GetHideTags(){ return pHideTags; }
+	inline const igdeTagManager &GetHideTags() const{ return pHideTags; }
 	
 	/** \brief Partial hide tags. */
-	inline igdeTagManager &GetPartialHideTags(){return pPartialHideTags;}
-	inline const igdeTagManager &GetPartialHideTags() const{return pPartialHideTags;}
+	inline igdeTagManager &GetPartialHideTags(){ return pPartialHideTags; }
+	inline const igdeTagManager &GetPartialHideTags() const{ return pPartialHideTags; }
 	
 	/** \brief Updates the tags. */
 	void UpdateTags();
 	
 	/** \brief Name of the default class. */
-	inline const decString &GetDefaultClassName() const{return pDefaultClassName;}
+	inline const decString &GetDefaultClassName() const{ return pDefaultClassName; }
 	
 	/** \brief Set name of the default class. */
 	void SetDefaultClassName(const char *defaultClassName);
 	
 	/** \brief Set of path to use to auto-find objects. */
-	inline decStringList &GetAutoFindPath(){return pAutoFindPath;}
-	inline const decStringList &GetAutoFindPath() const{return pAutoFindPath;}
+	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
+	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
 	
 	/** \brief Resolves inherit classes. */
 	void ResolveInheritClasses();

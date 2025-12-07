@@ -59,10 +59,10 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of tasks. */
-	inline int GetTaskCount() const{return pTaskCount;}
+	inline int GetTaskCount() const{ return pTaskCount; }
 	
 	/** Determines if there are still some resources left to load. */
-	inline bool HasResourcesLeft() const{return pTaskCount > 0;}
+	inline bool HasResourcesLeft() const{ return pTaskCount > 0; }
 	/** Update. */
 	void OnFrameUpdate();
 	

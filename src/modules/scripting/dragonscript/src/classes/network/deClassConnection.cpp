@@ -73,7 +73,7 @@ void deClassConnection::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create connection
 	nd->connection = connectionMgr->CreateConnection();
-	if(! nd->connection) DSTHROW(dueOutOfMemory);
+	if(!nd->connection) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -162,7 +162,7 @@ void deClassConnection::nfSendMessage::RunFunction(dsRunTime *rt, dsValue *mysel
 	deClassNetworkMessage *clsNM = ((deClassConnection*)GetOwnerClass())->GetClassNetworkMessage();
 	
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
-	if(! objMessage) DSTHROW(dueInvalidParam);
+	if(!objMessage) DSTHROW(dueInvalidParam);
 	
 	deNetworkMessage * const message = clsNM->GetNetworkMessage(objMessage);
 	const int maxDelay = rt->GetValue(1)->GetInt();
@@ -180,7 +180,7 @@ void deClassConnection::nfSendReliableMessage::RunFunction(dsRunTime *rt, dsValu
 	deClassNetworkMessage *clsNM = ((deClassConnection*)GetOwnerClass())->GetClassNetworkMessage();
 	
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
-	if(! objMessage) DSTHROW(dueInvalidParam);
+	if(!objMessage) DSTHROW(dueInvalidParam);
 	
 	connection->SendReliableMessage(clsNM->GetNetworkMessage(objMessage));
 }
@@ -200,7 +200,7 @@ void deClassConnection::nfLinkState::RunFunction(dsRunTime *rt, dsValue *myself)
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
 	dsRealObject *objState = rt->GetValue(1)->GetRealObject();
 	const bool readOnly = rt->GetValue(2)->GetBool();
-	if(! objMessage || ! objState) DSTHROW(dueInvalidParam);
+	if(!objMessage || !objState) DSTHROW(dueInvalidParam);
 	
 	deNetworkMessage * const message = clsNM->GetNetworkMessage(objMessage);
 	deNetworkState * const state = clsNS->GetNetworkState(objState);
@@ -269,7 +269,7 @@ void deClassConnection::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassConnection *clsCon = (deClassConnection*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCon)){
+	if(!p_IsObjOfType(obj, clsCon)){
 		rt->PushBool(false);
 	}else{
 		deConnection *otherConnection = ((sConNatDat*)p_GetNativeData(obj))->connection;
@@ -287,7 +287,7 @@ void deClassConnection::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassConnection::deClassConnection(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
 dsClass("Connection", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -352,7 +352,7 @@ void deClassConnection::CreateClassMembers(dsEngine *engine){
 }
 
 deConnection *deClassConnection::GetConnection(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -360,11 +360,11 @@ deConnection *deClassConnection::GetConnection(dsRealObject *myself) const{
 }
 
 void deClassConnection::PushConnection(dsRunTime *rt, deConnection *connection){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! connection){
+	if(!connection){
 		rt->PushObject(NULL, this);
 		return;
 	}

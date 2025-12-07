@@ -44,7 +44,7 @@
 
 ceUCCHasActorSetActor::ceUCCHasActorSetActor(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionHasActor *hasActor, const char *newID){
-	if(! topic || ! action || ! hasActor || ! newID) DETHROW(deeInvalidParam);
+	if(!topic || !action || !hasActor || !newID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

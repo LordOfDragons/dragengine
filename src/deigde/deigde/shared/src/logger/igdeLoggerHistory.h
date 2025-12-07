@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Mutex. Lock before working with the history entries in any way. */
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** \brief Size of the history. */
-	int GetHistorySize() const{return pHistorySize;}
+	int GetHistorySize() const{ return pHistorySize; }
 	
 	/**
 	 * \brief Set size of the history. This clears the history.
@@ -94,7 +94,7 @@ public:
 	void SetHistorySize(int size);
 	
 	/** \brief Number of history entries. */
-	inline int GetEntryCount() const{return pEntryCount;}
+	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** \brief Entry at the given position. */
 	igdeLoggerHistoryEntry &GetEntryAt(int index);

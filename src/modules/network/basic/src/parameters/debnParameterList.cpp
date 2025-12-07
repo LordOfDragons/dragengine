@@ -87,7 +87,7 @@ debnParameter &debnParameterList::GetParameterNamed(const char *name) const{
 }
 
 void debnParameterList::AddParameter(debnParameter *parameter){
-	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);

@@ -112,37 +112,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Minimum translation. */
-	inline const decVector &GetMinimumTranslation() const{return pMinTranslation;}
+	inline const decVector &GetMinimumTranslation() const{ return pMinTranslation; }
 	
 	/** \brief Set minimum translation. */
 	void SetMinimumTranslation(const decVector &translation);
 	
 	/** \brief Maximum translation. */
-	inline const decVector &GetMaximumTranslation() const{return pMaxTranslation;}
+	inline const decVector &GetMaximumTranslation() const{ return pMaxTranslation; }
 	
 	/** \brief Set maximum translation. */
 	void SetMaximumTranslation(const decVector &translation);
 	
 	/** \brief Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{return pMinRotation;}
+	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** \brief Set minimum rotation. */
 	void SetMinimumRotation(const decVector &rotation);
 	
 	/** \brief Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{return pMaxRotation;}
+	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** \brief Set maximum rotation. */
 	void SetMaximumRotation(const decVector &rotation);
 	
 	/** \brief Minimum scaling. */
-	inline const decVector &GetMinimumScaling() const{return pMinScaling;}
+	inline const decVector &GetMinimumScaling() const{ return pMinScaling; }
 	
 	/** \brief Set minimum scaling. */
 	void SetMinimumScaling(const decVector &scaling);
 	
 	/** \brief Maximum scaling. */
-	inline const decVector &GetMaximumScaling() const{return pMaxScaling;}
+	inline const decVector &GetMaximumScaling() const{ return pMaxScaling; }
 	
 	/** \brief Set maximum scaling. */
 	void SetMaximumScaling(const decVector &scaling);
@@ -151,7 +151,7 @@ public:
 	 * \brief Rotation axis.
 	 * \version 1.6
 	 */
-	inline const decVector &GetAxis() const{return pAxis;}
+	inline const decVector &GetAxis() const{ return pAxis; }
 	
 	/**
 	 * \brief Set rotation axis.
@@ -163,7 +163,7 @@ public:
 	 * \brief Minimum axis rotation angle.
 	 * \version 1.6
 	 */
-	inline float GetMinimumAngle() const{return pMinAngle;}
+	inline float GetMinimumAngle() const{ return pMinAngle; }
 	
 	/**
 	 * \brief Set minimum axis rotation angle.
@@ -175,7 +175,7 @@ public:
 	 * \brief Maximum axis rotation angle.
 	 * \version 1.6
 	 */
-	inline float GetMaximumAngle() const{return pMaxAngle;}
+	inline float GetMaximumAngle() const{ return pMaxAngle; }
 	
 	/**
 	 * \brief Set maximum axis rotation angle.
@@ -184,25 +184,25 @@ public:
 	void SetMaximumAngle(float angle);
 	
 	/** \brief Transformation coordinate frame. */
-	inline eCoordinateFrames GetCoordinateFrame() const{return pCoordinateFrame;}
+	inline eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
 	
 	/** \brief Set transformation coordinate frame. */
 	void SetCoordinateFrame(eCoordinateFrames coordinateFrame);
 	
 	/** \brief Determines if position is altered. */
-	inline bool GetEnablePosition() const{return pEnablePosition;}
+	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position is altered. */
 	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation is altered. */
-	inline bool GetEnableOrientation() const{return pEnableOrientation;}
+	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation is altered. */
 	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
-	inline bool GetEnableSize() const{return pEnableSize;}
+	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize(bool enabled);
@@ -211,7 +211,7 @@ public:
 	 * \brief Use rotation axis instead of rotation directly.
 	 * \version 1.6
 	 */
-	inline bool GetUseAxis() const{return pUseAxis;}
+	inline bool GetUseAxis() const{ return pUseAxis; }
 	
 	/**
 	 * \brief Set to use rotation axis instead of rotation directly.
@@ -220,34 +220,34 @@ public:
 	void SetUseAxis(bool useAxis);
 	
 	/** \brief Name of the target bone. */
-	inline const decString &GetTargetBone() const{return pTargetBone;}
+	inline const decString &GetTargetBone() const{ return pTargetBone; }
 	
 	/** \brief Set name of the target bone. */
 	void SetTargetBone(const char *boneName);
 	
 	/** \brief Name of the input bone. */
-	inline const decString &GetInputBone() const{return pInputBone;}
+	inline const decString &GetInputBone() const{ return pInputBone; }
 	
 	/** \brief Set name of the input bone. */
 	void SetInputBone(const char *boneName);
 	
 	/** \brief Input source. */
-	inline eInputSources GetInputSource() const{return pInputSource;}
+	inline eInputSources GetInputSource() const{ return pInputSource; }
 	
 	/** \brief Set input source. */
 	void SetInputSource(eInputSources source);
 	
 	/** \brief Translation target. */
-	inline deAnimatorControllerTarget &GetTargetTranslation(){return pTargetTranslation;}
-	inline const deAnimatorControllerTarget &GetTargetTranslation() const{return pTargetTranslation;}
+	inline deAnimatorControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }
+	inline const deAnimatorControllerTarget &GetTargetTranslation() const{ return pTargetTranslation; }
 	
 	/** \brief Rotation target. */
-	inline deAnimatorControllerTarget &GetTargetRotation(){return pTargetRotation;}
-	inline const deAnimatorControllerTarget &GetTargetRotation() const{return pTargetRotation;}
+	inline deAnimatorControllerTarget &GetTargetRotation(){ return pTargetRotation; }
+	inline const deAnimatorControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** \brief Scaling target. */
-	inline deAnimatorControllerTarget &GetTargetScaling(){return pTargetScaling;}
-	inline const deAnimatorControllerTarget &GetTargetScaling() const{return pTargetScaling;}
+	inline deAnimatorControllerTarget &GetTargetScaling(){ return pTargetScaling; }
+	inline const deAnimatorControllerTarget &GetTargetScaling() const{ return pTargetScaling; }
 	/*@}*/
 	
 	

@@ -58,7 +58,7 @@ ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
 ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition),
 pIfCase(NULL)
 {
-	if(! ifCase){
+	if(!ifCase){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -81,7 +81,7 @@ ceWPTTIMAIfElseIfCaseCondition::~ceWPTTIMAIfElseIfCaseCondition(){
 
 ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElseIfCaseCondition::GetModelIfCase() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -110,7 +110,7 @@ void ceWPTTIMAIfElseIfCaseCondition::Update(){
 }
 
 void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -118,12 +118,12 @@ void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu(igdeMenuCascade &contextMenu)
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = GetModelIfElse();
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	ceCAIfElse &ifElse = *modelIfElse->GetActionIfElse();
@@ -152,7 +152,7 @@ void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu(igdeMenuCascade &contextMenu)
 
 void ceWPTTIMAIfElseIfCaseCondition::ContextMenuCondition(
 igdeMenuCascade &contextMenu, ceConversationCondition *condition){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -160,12 +160,12 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = GetModelIfElse();
-	if(! modelIfElse){
+	if(!modelIfElse){
 		return;
 	}
 	ceCAIfElse &ifElse = *modelIfElse->GetActionIfElse();

@@ -105,7 +105,7 @@ deoglVideoPlayer::~deoglVideoPlayer(){
 //static decTimer vTimer;
 
 void deoglVideoPlayer::SetCurrentFrame(int frame){
-	if(! pVideo){
+	if(!pVideo){
 		return;
 	}
 	
@@ -136,7 +136,7 @@ void deoglVideoPlayer::SetCurrentFrame(int frame){
 }
 
 void deoglVideoPlayer::UpdateNextFrame(){
-	if(! pVideo){
+	if(!pVideo){
 		return;
 	}
 	
@@ -168,7 +168,7 @@ void deoglVideoPlayer::SyncToRender(){
 	}
 	
 	if(pDirtyFrame){
-		if(! pVideo){
+		if(!pVideo){
 			pDirtyFrame = false;
 			return;
 		}
@@ -177,7 +177,7 @@ void deoglVideoPlayer::SyncToRender(){
 			pRVideoPlayer->SetCachedFrameTexture(pVideo->GetCachedFrameTexture(pCurFrame));
 			
 			//printf( "CachedFrameTexture %i %p\n", pCurFrame, pRVideoPlayer->GetCachedFrameTexture() );
-			if(! pRVideoPlayer->GetCachedFrameTexture() && pVideo->CanCacheFrame(pCurFrame)){
+			if(!pRVideoPlayer->GetCachedFrameTexture() && pVideo->CanCacheFrame(pCurFrame)){
 				const deoglPixelBuffer::Ref pixelBuffer(pDecodeThread->GetTexturePixelBuffer());
 				if(pixelBuffer){
 					pDecodeThread->SetTexturePixelBuffer(pVideo->CacheFrame(pCurFrame, pixelBuffer));
@@ -186,7 +186,7 @@ void deoglVideoPlayer::SyncToRender(){
 			}
 		}
 		
-		if(! pRVideoPlayer->HasCachedFrameTexture()){
+		if(!pRVideoPlayer->HasCachedFrameTexture()){
 			//vTimer.Reset();
 			const deoglPixelBuffer::Ref pixelBuffer(pDecodeThread->GetTexturePixelBuffer());
 			//printf( "deoglVideoPlayer.UpdateTexture: Get decoded frame in %iys\n", ( int )( vTimer.GetElapsedTime() * 1e6f ) );
@@ -251,7 +251,7 @@ void deoglVideoPlayer::SourceChanged(){
 		pVideo = NULL;
 	}
 	
-	if(pVideo && ! pVideo->AllFramesAreCached()){
+	if(pVideo && !pVideo->AllFramesAreCached()){
 		try{
 			pVideoDecoder.TakeOver(pOgl.GetGameEngine()->GetVideoManager()
 				->CreateDecoder(pVideoPlayer.GetVideo()));
@@ -307,7 +307,7 @@ void deoglVideoPlayer::PlayStateChanged(){
 void deoglVideoPlayer::pPredictNextFrame(){
 	pPredictedFrame = pCurFrame;
 	
-	if(! pVideoPlayer.GetPlaying() || ! pVideoPlayer.GetVideo()){
+	if(!pVideoPlayer.GetPlaying() || !pVideoPlayer.GetVideo()){
 		return;
 	}
 	

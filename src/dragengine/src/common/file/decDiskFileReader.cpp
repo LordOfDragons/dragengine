@@ -44,7 +44,7 @@
 ////////////////////////////
 
 decDiskFileReader::decDiskFileReader(const char *filename){
-	if(! filename){
+	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -60,20 +60,20 @@ decDiskFileReader::decDiskFileReader(const char *filename){
 		deOSWindows::Utf8ToWide(filename, widePath, MAX_PATH);
 		
 		WIN32_FILE_ATTRIBUTE_DATA fa;
-		if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+		if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		
 		#ifdef OS_W32_VS
 		pFile = _wfsopen(widePath, L"rb", _SH_DENYNO);
-		if(! pFile){
+		if(!pFile){
 			errno_t result = 0;
 			_get_errno(&result);
 			DETHROW_INFO(deeFileNotFound, pFormatError(result));
 		}
 		#else
 		pFile = _wfopen(widePath, L"rb");
-		if(! pFile){
+		if(!pFile){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		#endif
@@ -81,7 +81,7 @@ decDiskFileReader::decDiskFileReader(const char *filename){
 		pLength = (int)(((uint64_t)fa.nFileSizeHigh << 32) + (uint64_t)fa.nFileSizeLow);
 		
 		SYSTEMTIME stime;
-		if(! FileTimeToSystemTime(&fa.ftLastWriteTime, &stime)){
+		if(!FileTimeToSystemTime(&fa.ftLastWriteTime, &stime)){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -107,7 +107,7 @@ decDiskFileReader::decDiskFileReader(const char *filename){
 		}
 		
 		pFile = fopen(filename, "rb");
-		if(! pFile){
+		if(!pFile){
 			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		
@@ -188,7 +188,7 @@ void decDiskFileReader::Read(void *buffer, int size){
 	const bool endOfFile = (feof(pFile) != 0);
 	clearerr(pFile);  // required to support growing files
 	
-	if(! endOfFile){
+	if(!endOfFile){
 		DETHROW_INFO(deeReadFile, pFilename);
 	}
 }

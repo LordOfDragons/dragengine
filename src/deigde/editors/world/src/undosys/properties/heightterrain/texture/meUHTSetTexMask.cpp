@@ -43,7 +43,7 @@
 ////////////////////////////
 
 meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
-	if(! world || ! sector || ! texture || ! newPath) DETHROW(deeInvalidParam);
+	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;

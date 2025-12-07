@@ -342,7 +342,7 @@ deClassARBoneTransformator::nfSetCoordinateFrame::nfSetCoordinateFrame(const sIn
 	p_AddParameter(init.clsARBoneTransformatorCFrame); // coordinateFrame
 }
 void deClassARBoneTransformator::nfSetCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -419,7 +419,7 @@ deClassARBoneTransformator::nfTargetAddLink::nfTargetAddLink(const sInitData &in
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARBoneTransformator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -461,7 +461,7 @@ deClassARBoneTransformator::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const
 	p_AddParameter(init.clsARBoneTransformatorTarget); // target
 }
 void deClassARBoneTransformator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -573,7 +573,7 @@ void deClassARBoneTransformator::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleBoneTransformator *deClassARBoneTransformator::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -581,7 +581,7 @@ deAnimatorRuleBoneTransformator *deClassARBoneTransformator::GetRule(dsRealObjec
 }
 
 void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -605,11 +605,11 @@ void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator
 }
 
 void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

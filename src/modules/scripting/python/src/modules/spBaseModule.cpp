@@ -116,7 +116,7 @@ void spBaseModule::SetParent(spBaseModule *parent){
 }
 
 void spBaseModule::AddMethod(const char *name, PyCFunction pyFunction, int argumentType, const char *documentation){
-	if(! name || ! pyFunction || ! documentation){
+	if(!name || !pyFunction || !documentation){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -142,7 +142,7 @@ void spBaseModule::AddMethod(const char *name, PyCFunction pyFunction, int argum
 
 
 spBaseModule *spBaseModule::GetOwnerClass(PyObject *object){
-	if(! object){
+	if(!object){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -234,7 +234,7 @@ void spBaseModule::pCreateModule(){
 	//pSP.LogInfoFormat( "Module %s create module", pFullModuleName.GetString() );
 	
 	pPyModule = PyModule_Create(pPyModuleDefinition);
-	if(! pPyModule){
+	if(!pPyModule){
 		DETHROW(deeInvalidAction);
 	}
 	

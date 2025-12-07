@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleFStaSize::aeUSetRuleFStaSize(aeRuleForeignState *rule, float newScale){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	

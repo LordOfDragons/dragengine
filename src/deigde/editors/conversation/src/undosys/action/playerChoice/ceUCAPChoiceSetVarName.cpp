@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName){
-	if(! topic || ! playerChoice || ! newName){
+	if(!topic || !playerChoice || !newName){
 		DETHROW(deeInvalidParam);
 	}
 	

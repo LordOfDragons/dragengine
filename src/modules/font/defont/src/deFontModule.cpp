@@ -103,7 +103,7 @@ void deFontModule::LoadFont(decBaseFileReader &file, deFont &font) {
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if (! root || strcmp(root->GetName(), "font") != 0){
+	if (!root || strcmp(root->GetName(), "font") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -172,7 +172,7 @@ void deFontModule::pParseFont(decXmlElementTag *root, deFont &font){
 	
 	for(i=0; i<root->GetElementCount(); i++){
 		tag = root->GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

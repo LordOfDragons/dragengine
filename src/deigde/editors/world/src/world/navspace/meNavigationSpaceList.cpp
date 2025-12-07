@@ -67,25 +67,25 @@ bool meNavigationSpaceList::Has(meNavigationSpace *navspaces){
 }
 
 void meNavigationSpaceList::Add(meNavigationSpace *navspaces){
-	if(! navspaces) DETHROW(deeInvalidParam);
+	if(!navspaces) DETHROW(deeInvalidParam);
 	
 	pNavSpaces.Add(navspaces);
 }
 
 void meNavigationSpaceList::AddIfAbsent(meNavigationSpace *navspaces){
-	if(! navspaces) DETHROW(deeInvalidParam);
+	if(!navspaces) DETHROW(deeInvalidParam);
 	
 	pNavSpaces.AddIfAbsent(navspaces);
 }
 
 void meNavigationSpaceList::Remove(meNavigationSpace *navspaces){
-	if(! navspaces) DETHROW(deeInvalidParam);
+	if(!navspaces) DETHROW(deeInvalidParam);
 	
 	pNavSpaces.Remove(navspaces);
 }
 
 void meNavigationSpaceList::RemoveIfPresent(meNavigationSpace *navspaces){
-	if(! navspaces) DETHROW(deeInvalidParam);
+	if(!navspaces) DETHROW(deeInvalidParam);
 	
 	pNavSpaces.RemoveIfPresent(navspaces);
 }

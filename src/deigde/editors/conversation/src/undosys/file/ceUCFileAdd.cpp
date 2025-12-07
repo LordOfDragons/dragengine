@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCFileAdd::ceUCFileAdd(ceConversation *conversation, ceConversationFile *file){
-	if(! conversation || ! file) DETHROW(deeInvalidParam);
+	if(!conversation || !file) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pFile = NULL;

@@ -200,7 +200,7 @@ void igdeButton::CreateNativeWidget(){
 }
 
 void igdeButton::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void igdeButton::DestroyNativeWidget(){
 
 
 void igdeButton::OnStyleChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -219,7 +219,7 @@ void igdeButton::OnStyleChanged(){
 }
 
 void igdeButton::OnTextChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -227,7 +227,7 @@ void igdeButton::OnTextChanged(){
 }
 
 void igdeButton::OnDescriptionChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -235,7 +235,7 @@ void igdeButton::OnDescriptionChanged(){
 }
 
 void igdeButton::OnIconChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -243,7 +243,7 @@ void igdeButton::OnIconChanged(){
 }
 
 void igdeButton::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

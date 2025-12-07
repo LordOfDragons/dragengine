@@ -166,7 +166,7 @@ void deoglRenderConstructed::Prepare(const deoglRenderCanvasContext &context){
 
 
 void deoglRenderConstructed::DrawNodeShape(const deoglRenderCanvasContext &context, const deoglSkinStateCNShape &node){
-	if(! (node.GetSize() > decPoint3())){
+	if(!(node.GetSize() > decPoint3())){
 		return; // too small
 	}
 	if(node.GetDrawCountFill() == 0 && node.GetDrawCountLine() == 0){
@@ -236,7 +236,7 @@ void deoglRenderConstructed::DrawNodeShape(const deoglRenderCanvasContext &conte
 
 void deoglRenderConstructed::DrawNodeImage(const deoglRenderCanvasContext &context, const deoglSkinStateCNImage &node){
 	const deoglRImage::Ref &image = node.GetImage();
-	if(! image || ! image->GetTexture()){
+	if(!image || !image->GetTexture()){
 		return;
 	}
 	
@@ -459,13 +459,13 @@ void deoglRenderConstructed::pCreateShapesVAO(){
 	
 	// create vbo and vao
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOShapes));
-	if(! pVAOShapes){
+	if(!pVAOShapes){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOShapes));
-	if(! pVBOShapes){
+	if(!pVBOShapes){
 		DETHROW(deeOutOfMemory);
 	}
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));

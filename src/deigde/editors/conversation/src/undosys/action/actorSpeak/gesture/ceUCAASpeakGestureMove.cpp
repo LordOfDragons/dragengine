@@ -44,7 +44,7 @@
 
 ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *gesture, int newIndex){
-	if(! topic || ! actorSpeak || ! gesture){
+	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}
 	

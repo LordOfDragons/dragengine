@@ -144,7 +144,7 @@ int main(int argcount, char **args){
 // unix entry point
 /////////////////////
 
-#if defined OS_UNIX && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && !defined OS_BEOS && !defined OS_MACOS
 int main(int argcount, char **args){
 	try{
 		dellLauncher launcher;

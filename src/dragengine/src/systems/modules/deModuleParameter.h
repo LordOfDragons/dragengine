@@ -134,43 +134,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline eParameterTypes GetType() const{return pType;}
+	inline eParameterTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(eParameterTypes type);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Minimum value. */
-	inline float GetMinimumValue() const{return pMinValue;}
+	inline float GetMinimumValue() const{ return pMinValue; }
 	
 	/** \brief Set minimum value. */
 	void SetMinimumValue(float minValue);
 	
 	/** \brief Maximum value. */
-	inline float GetMaximumValue() const{return pMaxValue;}
+	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set maximum value. */
 	void SetMaximumValue(float maxValue);
 	
 	/** \brief Value step size. */
-	inline float GetValueStepSize() const{return pValueStepSize;}
+	inline float GetValueStepSize() const{ return pValueStepSize; }
 	
 	/** \brief Set value step size. */
 	void SetValueStepSize(float valueStepSize);
 	
 	/** \brief Count of selection entries. */
-	inline int GetSelectionEntryCount() const{return pSelectionEntryCount;}
+	inline int GetSelectionEntryCount() const{ return pSelectionEntryCount; }
 	
 	/** \brief Selection entry at index. */
 	const SelectionEntry &GetSelectionEntryAt(int index) const;
@@ -188,13 +188,13 @@ public:
 	void RemoveAllSelectionEntries();
 	
 	/** \brief Category. */
-	inline eCategory GetCategory() const{return pCategory;}
+	inline eCategory GetCategory() const{ return pCategory; }
 	
 	/** \brief Set category. */
 	void SetCategory(eCategory category);
 	
 	/** \brief Display name for use in configuration dialogs. */
-	inline const decString &GetDisplayName() const{return pDisplayName;}
+	inline const decString &GetDisplayName() const{ return pDisplayName; }
 	
 	/** \brief Set display name for use in configuration dialogs. */
 	void SetDisplayName(const char *displayName);
@@ -203,7 +203,7 @@ public:
 	 * \brief Default value.
 	 * \version 1.7
 	 */
-	inline const decString &GetDefaultValue() const{return pDefaultValue;}
+	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
 	
 	/**
 	 * \brief Set default value.

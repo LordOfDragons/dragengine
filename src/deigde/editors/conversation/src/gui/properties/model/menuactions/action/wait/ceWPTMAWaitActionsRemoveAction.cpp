@@ -56,7 +56,7 @@ pTopic(&topic),
 pWait(&wait),
 pAction(action)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 }

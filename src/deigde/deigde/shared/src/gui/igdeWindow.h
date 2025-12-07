@@ -67,34 +67,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Title. */
-	inline const decString &GetTitle() const{return pTitle;}
+	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{return pIcon;}
+	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Window can be resized by user. */
-	inline bool GetCanResize() const{return pCanResize;}
+	inline bool GetCanResize() const{ return pCanResize; }
 	
 	/** \brief Window size. */
-	inline const decPoint &GetSize() const{return pSize;}
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set window size. */
 	void SetSize(const decPoint &size);
 	
 	/** \brief Window is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if window is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Window position. */
-	inline const decPoint &GetPosition() const{return pPosition;}
+	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set window position. */
 	void SetPosition(const decPoint &position);

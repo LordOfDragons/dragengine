@@ -316,7 +316,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	ffunc.opaque = this;
 	
 	pZipFile = zipOpen2(pDelgaPath, APPEND_STATUS_CREATE, NULL, &ffunc);
-	if(! pZipFile){
+	if(!pZipFile){
 		DETHROW_INFO(deeReadFile, pDelgaPath);
 	}
 }
@@ -355,7 +355,7 @@ void projTaskDistribute::pScanDirectory(const decPath &path){
 			}
 		}
 		
-		if(! ignore){
+		if(!ignore){
 			deCollectDirectorySearchVisitor collectDirectories;
 			pVFS->SearchFiles(path, collectDirectories);
 			directory->directories = collectDirectories.GetDirectories();
@@ -381,7 +381,7 @@ void projTaskDistribute::pProcessFiles(){
 	
 	while(processLimit > 0){
 		cProcessDirectory * const directory = GetProcessDirectory();
-		if(! directory){
+		if(!directory){
 			break;
 		}
 		
@@ -436,11 +436,11 @@ void projTaskDistribute::pProcessFile(const decPath &path){
 	
 	// count directory if not counted yet
 	cProcessDirectory * const directory = GetProcessDirectory();
-	if(! directory){
+	if(!directory){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(! directory->hasCountedDir){
+	if(!directory->hasCountedDir){
 		pDelgaDirectoryCount++;
 		directory->hasCountedDir = true;
 	}
@@ -452,7 +452,7 @@ void projTaskDistribute::pProcessFile(const decPath &path){
 	const decString extension(pGetFileExtension(path));
 	bool compress = true;
 	
-	if(! extension.IsEmpty()){
+	if(!extension.IsEmpty()){
 		pUsedFileExtensions.Add(extension);
 		
 		const deLoadableModule * const module = pGetMatchingModule(extension);
@@ -587,7 +587,7 @@ void projTaskDistribute::pZipBeginFile(const decPath &path, bool compress){
 }
 
 void projTaskDistribute::pZipWriteFile(const void *buffer, long size){
-	if(! buffer || size < 0){
+	if(!buffer || size < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -653,7 +653,7 @@ void projTaskDistribute::pWriteGameXml(){
 	decPath pathGameXml;
 	pathGameXml.SetFromUnix("/");
 	
-	if(! pProfile.GetAliasIdentifier().IsEmpty()){
+	if(!pProfile.GetAliasIdentifier().IsEmpty()){
 		pathGameXml.AddComponent(pProfile.GetAliasIdentifier() + ".degame");
 		
 	}else{
@@ -674,7 +674,7 @@ void projTaskDistribute::pWriteGameXml(decXmlWriter &writer){
 	writer.WriteOpeningTag("degame");
 	
 	writer.WriteDataTagString("identifier", pProfile.GetIdentifier().ToHexString(false));
-	if(! pProfile.GetAliasIdentifier().IsEmpty()){
+	if(!pProfile.GetAliasIdentifier().IsEmpty()){
 		writer.WriteDataTagString("aliasIdentifier", pProfile.GetAliasIdentifier());
 	}
 	writer.WriteDataTagString("title", pProfile.GetTitle());
@@ -705,7 +705,7 @@ void projTaskDistribute::pWriteGameXml(decXmlWriter &writer){
 	writer.WriteDataTagString("pathCapture", pProfile.GetPathCapture());
 	
 	writer.WriteOpeningTagStart("scriptModule");
-	if(! env.GetGameProject()->GetScriptModuleVersion().IsEmpty()){
+	if(!env.GetGameProject()->GetScriptModuleVersion().IsEmpty()){
 		writer.WriteAttributeString("version", env.GetGameProject()->GetScriptModuleVersion());
 	}
 	writer.WriteOpeningTagEnd(false, false);
@@ -732,7 +732,7 @@ void projTaskDistribute::pWriteGameXmlRequiredFormats(decXmlWriter &writer){
 	for(i=0; i<usedExtCount; i++){
 		const decString &extension = pUsedFileExtensions.GetAt(i);
 		const deLoadableModule * const foundType = pGetMatchingModule(extension);
-		if(! foundType){
+		if(!foundType){
 			continue;
 		}
 		

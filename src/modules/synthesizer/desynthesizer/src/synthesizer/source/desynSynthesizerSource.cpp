@@ -388,7 +388,7 @@ int firstLink, const deSynthesizerSource &source){
 			source.GetEffectAt(pEffectCount)->Visit(createEffect);
 			pEffects[pEffectCount] = createEffect.GetEffect();
 			
-			if(! pEffects[pEffectCount]->GetDisabled()){
+			if(!pEffects[pEffectCount]->GetDisabled()){
 				pApplyEffect = pEffects[pEffectCount];
 			}
 			

@@ -37,15 +37,15 @@
 class sePropertyNodeShape : public sePropertyNode{
 public:
 	enum eShapeMapped{
-		esmFillColorRed = MappedCount, //<! Fill color red component
-		esmFillColorGreen, //<! Fill color green component
-		esmFillColorBlue, //<! Fill color blue component
-		esmFillColorAlpha, //<! Fill color alpha component
-		esmLineColorRed, //<! Line color red component
-		esmLineColorGreen, //<! Line color green component
-		esmLineColorBlue, //<! Line color blue component
-		esmLineColorAlpha, //<! Line color alpha component
-		esmThickness //<! Thickness
+		esmFillColorRed = MappedCount, //<!Fill color red component
+		esmFillColorGreen, //<!Fill color green component
+		esmFillColorBlue, //<!Fill color blue component
+		esmFillColorAlpha, //<!Fill color alpha component
+		esmLineColorRed, //<!Line color red component
+		esmLineColorGreen, //<!Line color green component
+		esmLineColorBlue, //<!Line color blue component
+		esmLineColorAlpha, //<!Line color alpha component
+		esmThickness //<!Thickness
 	};
 	
 	static const int ShapeMappedCount = esmThickness + 1;
@@ -78,25 +78,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{return pShapeType;}
+	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{ return pShapeType; }
 	
 	/** \brief Set shape type. */
 	void SetShapeType(deSkinPropertyNodeShape::eShapeTypes type);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{return pFillColor;}
+	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** \brief Set fill color. */
 	void SetFillColor(const decColor &color);
 	
 	/** \brief Line color. */
-	inline const decColor &GetLineColor() const{return pLineColor;}
+	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** \brief Set line color. */
 	void SetLineColor(const decColor &color);
 	
 	/** \brief Line thickness in pixels. */
-	inline float GetThickness() const{return pThickness;}
+	inline float GetThickness() const{ return pThickness; }
 	
 	/** \brief Set thicknss in pixels. */
 	void SetThickness(float thickness);

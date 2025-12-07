@@ -44,7 +44,7 @@ gdeUGDSetAutoFindPathObjectClasses::gdeUGDSetAutoFindPathObjectClasses(
 pGameDefinition(NULL),
 pNewValue(newValue)
 {
-	if(! gameDefinition){
+	if(!gameDefinition){
 		DETHROW(deeInvalidParam);
 	}
 	

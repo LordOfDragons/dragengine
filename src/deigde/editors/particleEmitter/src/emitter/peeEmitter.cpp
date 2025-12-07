@@ -196,7 +196,7 @@ peeEmitter::~peeEmitter(){
 ///////////////
 
 void peeEmitter::SetPosition(const decVector &position){
-	if(! pPosition.IsEqualTo(position)){
+	if(!pPosition.IsEqualTo(position)){
 		const decDVector dposition(position);
 		
 		pPosition = position;
@@ -209,7 +209,7 @@ void peeEmitter::SetPosition(const decVector &position){
 }
 
 void peeEmitter::SetOrientation(const decVector &orientation){
-	if(! pOrientation.IsEqualTo(orientation)){
+	if(!pOrientation.IsEqualTo(orientation)){
 		const decQuaternion &qorientation = decMatrix::CreateRotation(orientation * DEG2RAD).ToQuaternion();
 		
 		pOrientation = orientation;
@@ -287,7 +287,7 @@ void peeEmitter::Reset(){
 }
 
 void peeEmitter::Update(float elapsed){
-	if(! pEngEmitter){
+	if(!pEngEmitter){
 		RebuildEmitter();
 	}
 	
@@ -380,7 +380,7 @@ void peeEmitter::AddController(peeController *controller){
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
 	
-	if(! pActiveController){
+	if(!pActiveController){
 		SetActiveController(controller);
 	}
 }
@@ -390,7 +390,7 @@ void peeEmitter::InsertControllerAt(peeController *controller, int index){
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
 	
-	if(! pActiveController){
+	if(!pActiveController){
 		SetActiveController(controller);
 	}
 }
@@ -401,7 +401,7 @@ void peeEmitter::MoveControllerTo(peeController *controller, int index){
 }
 
 void peeEmitter::RemoveController(peeController *controller){
-	if(! controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
+	if(!controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
 	
 	if(controller->GetActive()){
 		if(pControllerList.GetCount() == 1){
@@ -469,7 +469,7 @@ void peeEmitter::AddType(peeType *type){
 	type->SetEmitter(this);
 	NotifyTypeStructureChanged();
 	
-	if(! pActiveType){
+	if(!pActiveType){
 		SetActiveType(type);
 	}
 }
@@ -481,7 +481,7 @@ void peeEmitter::InsertTypeAt(peeType *type, int index){
 	type->SetEmitter(this);
 	NotifyTypeStructureChanged();
 	
-	if(! pActiveType){
+	if(!pActiveType){
 		SetActiveType(type);
 	}
 }
@@ -493,7 +493,7 @@ void peeEmitter::MoveTypeTo(peeType *type, int index){
 }
 
 void peeEmitter::RemoveType(peeType *type){
-	if(! type || type->GetEmitter() != this){
+	if(!type || type->GetEmitter() != this){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -560,7 +560,7 @@ void peeEmitter::SetActiveType(peeType *type){
 //////////////
 
 void peeEmitter::AddListener(peeEmitterListener *listener){
-	if(! listener) DETHROW(deeInvalidParam);
+	if(!listener) DETHROW(deeInvalidParam);
 	
 	pListeners.Add(listener);
 }

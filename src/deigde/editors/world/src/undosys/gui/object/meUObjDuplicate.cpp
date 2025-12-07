@@ -83,7 +83,7 @@ pWorld(nullptr)
 		// update attachment
 		for(i=0; i<count; i++){
 			const meObject &object = *list.GetAt(i);
-			if(! object.GetAttachedTo()){
+			if(!object.GetAttachedTo()){
 				continue;
 			}
 			
@@ -97,7 +97,7 @@ pWorld(nullptr)
 			}
 			
 			// attached to a not duplicated object
-			if(! data.GetAttachedTo()){
+			if(!data.GetAttachedTo()){
 				data.SetAttachedTo(object.GetAttachedTo());
 			}
 		}

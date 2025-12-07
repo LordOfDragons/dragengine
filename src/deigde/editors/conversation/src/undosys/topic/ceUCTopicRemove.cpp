@@ -41,10 +41,10 @@
 ////////////////////////////
 
 ceUCTopicRemove::ceUCTopicRemove(ceConversationTopic *topic){
-	if(! topic) DETHROW(deeInvalidParam);
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	ceConversationFile *file = topic->GetFile();
-	if(! file) DETHROW(deeInvalidParam);
+	if(!file) DETHROW(deeInvalidParam);
 	
 	pFile = NULL;
 	pTopic = NULL;

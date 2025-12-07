@@ -310,7 +310,7 @@ void deClassRuntimeMeter::nfCounterAverageTimeSeconds::RunFunction(dsRunTime *rt
 
 deClassRuntimeMeter::deClassRuntimeMeter(deScriptingDragonScript *ds) :
 dsClass("RuntimeMeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	

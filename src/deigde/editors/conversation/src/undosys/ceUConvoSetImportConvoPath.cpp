@@ -45,7 +45,7 @@ pLSSystem(lssystem),
 pConversation(conversation),
 pNewValue(newValue)
 {
-	if(! conversation){
+	if(!conversation){
 		DETHROW(deeInvalidParam);
 	}
 	

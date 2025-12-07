@@ -42,7 +42,7 @@ gdeClipboardDataOCSnapPoint::gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoi
 igdeClipboardData(TYPE_NAME),
 pSnapPoint(NULL)
 {
-	if(! snapPoint){
+	if(!snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

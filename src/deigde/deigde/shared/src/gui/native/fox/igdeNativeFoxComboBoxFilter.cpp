@@ -85,7 +85,7 @@ pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0
 	setFont((FXFont*)pFont->GetNativeFont());
 	
 	setEditable(powner.GetEditable());
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
@@ -103,12 +103,12 @@ igdeNativeFoxComboBoxFilter::~igdeNativeFoxComboBoxFilter(){
 }
 
 igdeNativeFoxComboBoxFilter *igdeNativeFoxComboBoxFilter::CreateNativeWidget(igdeComboBoxFilter &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -309,7 +309,7 @@ long igdeNativeFoxComboBoxFilter::onCommand(FXObject*, FXSelector, void*){
 	// which event caused SEL_COMMAND to be fired we need to deal with the same problem
 	// we are facing in UpdateText(). in particular we need to fix the list box selection
 	// to not go out of sync with the text
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -333,7 +333,7 @@ long igdeNativeFoxComboBoxFilter::onCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxComboBoxFilter::onChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -350,7 +350,7 @@ long igdeNativeFoxComboBoxFilter::onChanged(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxComboBoxFilter::onEditFilterChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

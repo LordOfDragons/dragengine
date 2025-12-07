@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{return pSources;}
+	inline const seSourceList &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(seSource *source);
@@ -85,14 +85,14 @@ public:
 	
 	
 	/** \brief Application type. */
-	inline deSynthesizerSourceGroup::eApplicationTypes GetApplicationType() const{return pApplicationType;}
+	inline deSynthesizerSourceGroup::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set application type. */
 	void SetApplicationType(deSynthesizerSourceGroup::eApplicationTypes type);
 	
 	/** \brief Select target. */
-	inline seControllerTarget &GetTargetSelect(){return pTargetSelect;}
-	inline const seControllerTarget &GetTargetSelect() const{return pTargetSelect;}
+	inline seControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const seControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	
@@ -120,7 +120,7 @@ public:
 	
 	
 	/** \brief Tree list expanded state. */
-	inline bool GetTreeListExpanded() const{return pTreeListExpanded;}
+	inline bool GetTreeListExpanded() const{ return pTreeListExpanded; }
 	
 	/** \brief Set tree list expanded state. */
 	void SetTreeListExpanded(bool expanded);

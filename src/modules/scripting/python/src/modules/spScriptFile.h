@@ -65,20 +65,20 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
-	inline ScriptingPython &GetSP() const{return pSP;}
+	inline ScriptingPython &GetSP() const{ return pSP; }
 	
 	/** \brief Retrieves the path of the script file. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	/** \brief Retrieves the full module name. */
-	inline const decString &GetFullModuleName() const{return pFullModuleName;}
+	inline const decString &GetFullModuleName() const{ return pFullModuleName; }
 	/** \brief Retrieves the module name. */
-	inline const decString &GetModuleName() const{return pModuleName;}
+	inline const decString &GetModuleName() const{ return pModuleName; }
 	
 	/** \brief Retrieve owner class of a python object. */
 	static spScriptFile *GetOwnerClass(PyObject *object);
 	
 	/** \brief Retrieves the python module. */
-	inline PyObject *GetPyModule() const{return pPyModule;}
+	inline PyObject *GetPyModule() const{ return pPyModule; }
 	
 	/** \brief Python create module. */
 	virtual void PythonCreate();

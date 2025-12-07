@@ -56,7 +56,7 @@ pIfElse(&ifElse),
 pAction(action),
 pIndex(index)
 {
-	if(! action){
+	if(!action){
 		DETHROW(deeInvalidParam);
 	}
 	

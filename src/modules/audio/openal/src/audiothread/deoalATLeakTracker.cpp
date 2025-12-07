@@ -80,7 +80,7 @@ void deoalATLeakTracker::ReportLeaks(const char *name, const decPointerSet &trac
 		}
 	}
 	
-	if(! line.IsEmpty()){
+	if(!line.IsEmpty()){
 		logger.LogInfo(line);
 	}
 }

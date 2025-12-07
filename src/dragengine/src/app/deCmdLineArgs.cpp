@@ -112,7 +112,7 @@ void deCmdLineArgs::AddArgsSplit(const char *commandLine){
 		// parse non-string
 		}else{
 			cur = start;
-			while(cur < len && ! isspace(scmdline.GetAt(cur))){
+			while(cur < len && !isspace(scmdline.GetAt(cur))){
 				cur++;
 			}
 			next = cur;

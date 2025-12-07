@@ -85,7 +85,7 @@ public:
 	cPlaybackListener(ceViewConversation &view) : pView(view){}
 	
 	virtual void OnButtonPress(igdeWidget*, int, const decPoint &position, int){
-		if(! pView.GetConversation()){
+		if(!pView.GetConversation()){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	}
 	
 	virtual void OnMouseMoved(igdeWidget*, const decPoint &position, int){
-		if(! pView.GetConversation()){
+		if(!pView.GetConversation()){
 			return;
 		}
 		
@@ -119,7 +119,7 @@ public:
 	}
 	
 	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
-		if(! pView.GetConversation()){
+		if(!pView.GetConversation()){
 			return;
 		}
 		
@@ -140,7 +140,7 @@ public:
 	}
 	
 	virtual void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int){
-		if(! pView.GetConversation()){
+		if(!pView.GetConversation()){
 			return;
 		}
 		
@@ -160,7 +160,7 @@ public:
 	}
 	
 	bool AdvancePlayerTriggeredAction(){
-		if(! pView.GetConversation()){
+		if(!pView.GetConversation()){
 			return false;
 		}
 		
@@ -210,7 +210,7 @@ public:
 		
 		cePlayback &playback = *pView.GetConversation()->GetPlayback();
 		if(action && option){
-			if(! action->GetVariableName().IsEmpty()){
+			if(!action->GetVariableName().IsEmpty()){
 				playback.GetVariables().Set(action->GetVariableName(), selectedOption);
 				playback.GetConversation().NotifyPlaybackVarListChanged();
 			}
@@ -323,7 +323,7 @@ void ceViewConversation::SetConversation(ceConversation *conversation){
 void ceViewConversation::GetViewportWithRatio(decBoundary &viewport) const{
 	const decPoint size(GetRenderAreaSize());
 	
-	if(size.x == 0 || size.y == 0 || ! pConversation){
+	if(size.x == 0 || size.y == 0 || !pConversation){
 		viewport.x1 = 0;
 		viewport.y1 = 0;
 		viewport.x2 = 1;
@@ -364,7 +364,7 @@ void ceViewConversation::CreateCanvas(){
 		pConversation->GetTextBox()->UpdateCanvas();
 	}
 	
-	if(! pRuleOfThirdsAid){
+	if(!pRuleOfThirdsAid){
 		pRuleOfThirdsAid = new ceCanvasRuleOfThirdsAid(pWindowMain.GetEnvironment());
 		AddCanvas(pRuleOfThirdsAid->GetCanvasView());
 	}

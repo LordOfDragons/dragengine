@@ -61,11 +61,11 @@ public:
 	void PushShapeList(dsRunTime *rt, const decShapeList &shapeList);
 	
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	void HullAddPoints(dsRunTime &rt, decShapeHull &hull, dsValue &pointsArray) const;
 	
-	inline dsClass *GetClassShapeType() const{return pClsShapeType;}
+	inline dsClass *GetClassShapeType() const{ return pClsShapeType; }
 	/*@}*/
 	
 private:

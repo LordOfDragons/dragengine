@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the texture. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Count of properties. */
-	inline int GetPropertyCount() const{return pPropertyCount;}
+	inline int GetPropertyCount() const{ return pPropertyCount; }
 	
 	/** \brief Property at the given index. */
 	deSkinProperty *GetPropertyAt(int index) const;

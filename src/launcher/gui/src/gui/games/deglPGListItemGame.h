@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Games panel. */
-	inline deglPanelGames *GetPanelGames() const{return pPanelGames;}
+	inline deglPanelGames *GetPanelGames() const{ return pPanelGames; }
 	
 	/** Game object. */
-	inline delGame *GetGame() const{return pGame;}
+	inline delGame *GetGame() const{ return pGame; }
 	/*@}*/
 };
 

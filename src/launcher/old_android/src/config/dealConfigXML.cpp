@@ -73,7 +73,7 @@ void dealConfigXML::ReadFromFile(decBaseFileReader &reader, dealConfiguration &c
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "delaunchergui") != 0){
+	if(!root || strcmp(root->GetName(), "delaunchergui") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -45,7 +45,7 @@
 ////////////////////////////
 
 aeCamera::aeCamera(aeAnimator *animator, deEngine *engine) : igdeCamera(engine){
-	if(! animator) DETHROW(deeInvalidParam);
+	if(!animator) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
 	
@@ -74,7 +74,7 @@ void aeCamera::SetBone(const char *bone){
 }
 
 void aeCamera::SetFreePosition(const decDVector &freePosition){
-	if(! freePosition.IsEqualTo(pFreePosition)){
+	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
 		
@@ -83,7 +83,7 @@ void aeCamera::SetFreePosition(const decDVector &freePosition){
 }
 
 void aeCamera::SetFreeOrientation(const decVector &freeOrientation){
-	if(! freeOrientation.IsEqualTo(pFreeOrientation)){
+	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
 		
@@ -101,7 +101,7 @@ void aeCamera::SetFreeDistance(float freeDistance){
 }
 
 void aeCamera::SetRelativePosition(const decVector &relativePosition){
-	if(! relativePosition.IsEqualTo(pRelPosition)){
+	if(!relativePosition.IsEqualTo(pRelPosition)){
 		pRelPosition = relativePosition;
 		pDirty = true;
 		
@@ -110,7 +110,7 @@ void aeCamera::SetRelativePosition(const decVector &relativePosition){
 }
 
 void aeCamera::SetRelativeOrientation(const decVector &relativeOrientation){
-	if(! relativeOrientation.IsEqualTo(pRelOrientation)){
+	if(!relativeOrientation.IsEqualTo(pRelOrientation)){
 		pRelOrientation = relativeOrientation;
 		pDirty = true;
 		
@@ -140,7 +140,7 @@ void aeCamera::Update(){
 				
 				engComponent->PrepareBones();
 				
-				if(! pBone.IsEmpty() && engComponent->GetRig()){
+				if(!pBone.IsEmpty() && engComponent->GetRig()){
 					const int index = engComponent->GetRig()->IndexOfBoneNamed(pBone);
 					if(index != -1){
 						compMat = engComponent->GetBoneAt(index).GetMatrix();

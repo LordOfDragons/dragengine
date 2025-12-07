@@ -109,7 +109,7 @@ void dePropFieldManager::SystemGraphicLoad(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		if(! field->GetPeerGraphic()){
+		if(!field->GetPeerGraphic()){
 			GetGraphicSystem()->LoadPropField(field);
 		}
 		
@@ -130,7 +130,7 @@ void dePropFieldManager::SystemPhysicsLoad(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		if(! field->GetPeerPhysics()){
+		if(!field->GetPeerPhysics()){
 			GetPhysicsSystem()->LoadPropField(field);
 		}
 		
@@ -151,7 +151,7 @@ void dePropFieldManager::SystemScriptingLoad(){
 	dePropField *field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
-		if(! field->GetPeerPhysics()){
+		if(!field->GetPeerPhysics()){
 			GetScriptingSystem()->LoadPropField(field);
 		}
 		

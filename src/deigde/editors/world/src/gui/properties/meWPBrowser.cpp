@@ -174,12 +174,12 @@ public:
 	
 	virtual void OnAction(){
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
-		if(! gdskin){
+		if(!gdskin){
 			return;
 		}
 		
 		meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -216,12 +216,12 @@ public:
 	
 	virtual void OnAction(){
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
-		if(! gdskin){
+		if(!gdskin){
 			return;
 		}
 		
 		meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
-		if(! object){
+		if(!object){
 			return;
 		}
 		
@@ -254,7 +254,7 @@ public:
 	}
 	
 	virtual void OnDoubleClickItem(igdeIconListBox*, int){
-		if(! pPanel.GetWorld()){
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
@@ -284,7 +284,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeIconListBox*, igdeMenuCascade &menu){
-		if(! pPanel.GetWorld()){
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
@@ -301,7 +301,7 @@ public:
 			switch(pPanel.GetWorld()->GetGuiParameters().GetElementMode()){
 			case meWorldGuiParameters::eemObject:{
 				const meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
-				if(! object){
+				if(!object){
 					break;
 				}
 				
@@ -380,7 +380,7 @@ public:
 	
 	virtual void OnAction(){
 		const igdeGDClass * const gdclass = pPanel.GetSelectedObjectClass();
-		if(! gdclass || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
+		if(!gdclass || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
 			return;
 		}
 		
@@ -392,7 +392,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			meObject * const object = selection.GetAt(i);
-			if(! cname.Equals(object->GetClassName())){
+			if(!cname.Equals(object->GetClassName())){
 				list.Add(object);
 			}
 		}
@@ -419,7 +419,7 @@ public:
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
-		if(! gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
+		if(!gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
 			return;
 		}
 		
@@ -431,7 +431,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			meObjectTexture * const texture = selection.GetAt(i)->GetActiveTexture();
-			if(texture && ! newskin.Equals(texture->GetSkinPath())){
+			if(texture && !newskin.Equals(texture->GetSkinPath())){
 				list.AddTexture(texture);
 			}
 		}
@@ -458,7 +458,7 @@ public:
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
-		if(! gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemDecal){
+		if(!gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemDecal){
 			return;
 		}
 		
@@ -470,7 +470,7 @@ public:
 		
 		for(i=0; i<count; i++){
 			meDecal * const decal = selection.GetAt(i);
-			if(! newskin.Equals(decal->GetSkinPath())){
+			if(!newskin.Equals(decal->GetSkinPath())){
 				list.Add(decal);
 			}
 		}
@@ -717,7 +717,7 @@ void meWPBrowser::UpdateCategoryList(){
 	
 	pTreeCategories->RemoveAllItems();
 	
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return;
 	}
 	
@@ -739,13 +739,13 @@ void meWPBrowser::UpdateCategoryList(){
 	
 	UpdateCategoryListWith(categories);
 	pTreeCategories->SortAllItems();
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		SelectCategory(categories->GetCategoryWithPath(decPath::CreatePathNative(selection)));
 	}
 }
 
 void meWPBrowser::UpdateCategoryListWith(igdeGDCategory *category){
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -756,14 +756,14 @@ void meWPBrowser::UpdateCategoryListWith(igdeGDCategory *category){
 	
 	for(i=0; i<categoryCount; i++){
 		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(! child->GetHidden()){
+		if(!child->GetHidden()){
 			AddCategoryToList(child, NULL);
 		}
 	}
 }
 
 void meWPBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent){
-	if(! category){
+	if(!category){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -775,7 +775,7 @@ void meWPBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *pare
 	
 	for(i=0; i<categoryCount; i++){
 		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(! child->GetHidden()){
+		if(!child->GetHidden()){
 			AddCategoryToList(child, item);
 		}
 	}
@@ -828,14 +828,14 @@ void meWPBrowser::UpdateItemList(){
 	pListItems->SortItems();
 	
 	pListItems->SetSelectionWithData(selection);
-	if(! pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
 		pListItems->SetSelection(0);
 	}
 }
 
 void meWPBrowser::RebuildPISelectedItem(){
 	igdeListItem * const item = GetSelectedListItem();
-	if(! item){
+	if(!item){
 		return;
 	}
 	
@@ -851,7 +851,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	switch(GetPreviewItemType()){
 	case meWPBrowser::epitObjectClass:{
 		igdeGDClass * const gdclass = GetSelectedObjectClass();
-		if(! gdclass){
+		if(!gdclass){
 			break;
 		}
 		
@@ -863,7 +863,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 		
 	case meWPBrowser::epitSkin:{
 		igdeGDSkin * const gdskin = GetSelectedSkin();
-		if(! gdskin){
+		if(!gdskin){
 			break;
 		}
 		
@@ -880,7 +880,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 
 void meWPBrowser::CurrentItemChanged(){
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		pEditInfos->ClearText();
 		return;
 	}
@@ -936,7 +936,7 @@ igdeGDCategory *meWPBrowser::GetSelectedCategory() const{
 
 void meWPBrowser::SelectCategory(igdeGDCategory *category){
 	pTreeCategories->SetSelectionWithData(category);
-	if(! pTreeCategories->GetSelection() && pTreeCategories->GetFirstChild()){
+	if(!pTreeCategories->GetSelection() && pTreeCategories->GetFirstChild()){
 		pTreeCategories->SetSelection(pTreeCategories->GetFirstChild());
 	}
 }
@@ -1042,7 +1042,7 @@ void meWPBrowser::OnGameDefinitionChanged(){
 	UpdateCategoryList();
 	UpdateItemList();
 	
-	if(! selection.IsEmpty() && GetGameDefinition()){
+	if(!selection.IsEmpty() && GetGameDefinition()){
 		switch(GetPreviewItemType()){
 		case epitObjectClass:
 			pListItems->SetSelectionWithData(GetGameDefinition()->GetClassManager()->GetNamed(selection));
@@ -1058,7 +1058,7 @@ void meWPBrowser::OnGameDefinitionChanged(){
 		}
 	}
 	
-	if(! pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
 		pListItems->SetSelection(0);
 	}
 }
@@ -1066,13 +1066,13 @@ void meWPBrowser::OnGameDefinitionChanged(){
 
 
 void meWPBrowser::SelectObjectClass(igdeGDClass *gdclass){
-	if(! gdclass){
+	if(!gdclass){
 		DETHROW(deeInvalidParam);
 	}
 	
 	// find object class category
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return;
 	}
 	
@@ -1088,13 +1088,13 @@ void meWPBrowser::SelectObjectClass(igdeGDClass *gdclass){
 }
 
 void meWPBrowser::SelectSkin(igdeGDSkin *gdskin){
-	if(! gdskin){
+	if(!gdskin){
 		DETHROW(deeInvalidParam);
 	}
 	
 	// find skin category
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return;
 	}
 	
@@ -1110,13 +1110,13 @@ void meWPBrowser::SelectSkin(igdeGDSkin *gdskin){
 }
 
 void meWPBrowser::SelectSky(igdeGDSky *gdsky){
-	if(! gdsky){
+	if(!gdsky){
 		DETHROW(deeInvalidParam);
 	}
 	
 	// find sky category
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		return;
 	}
 	

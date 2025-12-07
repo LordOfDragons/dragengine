@@ -81,16 +81,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
+	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game. */
-	inline delGame *GetModule() const{return pGame;}
+	inline delGame *GetModule() const{ return pGame; }
 	
 	/** Update game values. */
 	void UpdateGame();
 	
 	/** Profile. */
-	inline delGameProfile *GetProfile() const{return pProfile;}
+	inline delGameProfile *GetProfile() const{ return pProfile; }
 	
 	/** Set profile. */
 	void SetProfile(delGameProfile *profile);

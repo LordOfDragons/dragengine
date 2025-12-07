@@ -79,7 +79,7 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Game definition sky to create preview for. */
-	inline igdeGDSky *GetGDSky() const{return pGDSky;}
+	inline igdeGDSky *GetGDSky() const{ return pGDSky; }
 	
 	
 	

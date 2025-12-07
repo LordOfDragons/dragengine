@@ -60,7 +60,7 @@ delGPMParameter *delGPMParameterList::GetAt(int index) const{
 }
 
 delGPMParameter *delGPMParameterList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -90,7 +90,7 @@ int delGPMParameterList::IndexOf(delGPMParameter *parameter) const{
 }
 
 int delGPMParameterList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -107,7 +107,7 @@ int delGPMParameterList::IndexOfNamed(const char *name) const{
 }
 
 void delGPMParameterList::Add(delGPMParameter *parameter){
-	if(! parameter){
+	if(!parameter){
 		DETHROW_INFO(deeNullPointer, "parameter");
 	}
 	if(HasNamed (parameter->GetName())){

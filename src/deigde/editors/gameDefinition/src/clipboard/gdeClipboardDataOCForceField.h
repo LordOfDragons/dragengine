@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField. */
-	gdeOCForceField *GetForceField() const{return pForceField;}
+	gdeOCForceField *GetForceField() const{ return pForceField; }
 	/*@}*/
 };
 

@@ -99,7 +99,7 @@ void dearIKWorkState::SetHasLimits(bool hasLimits){
 
 void dearIKWorkState::SetDampening(const decVector &dampening){
 	pDampening = dampening.Clamped(decVector(0.0f, 0.0f, 0.0f), decVector(1.0f, 1.0f, 1.0f));
-	pHasDampening = ! pDampening.IsEqualTo(decVector(1.0f, 1.0f, 1.0f), 0.01f);
+	pHasDampening = !pDampening.IsEqualTo(decVector(1.0f, 1.0f, 1.0f), 0.01f);
 }
 
 void dearIKWorkState::UpdateLimits(const deRigBone &bone){

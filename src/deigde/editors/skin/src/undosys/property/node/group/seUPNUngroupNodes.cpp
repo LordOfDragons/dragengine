@@ -46,12 +46,12 @@ pIndex(0),
 pNodeCount(0),
 pNodes(0)
 {
-	if(! nodeGroup){
+	if(!nodeGroup){
 		DETHROW(deeInvalidParam);
 	}
 	
 	sePropertyNodeGroup * const parentGroup = nodeGroup->GetParent();
-	if(! parentGroup){
+	if(!parentGroup){
 		DETHROW(deeInvalidParam);
 	}
 	

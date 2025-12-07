@@ -62,7 +62,7 @@ public:
 	/** @name Vertex Management */
 	/*@{*/
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the vertex at the given position. */
 	const decVector &GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */
@@ -80,7 +80,7 @@ public:
 	/** @name Face Management */
 	/*@{*/
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the face at the given index. */
 	decConvexVolumeFace *GetFaceAt(int index) const;
 	/** Determines if the given face exists. */

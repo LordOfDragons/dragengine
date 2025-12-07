@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{return *pTopic;}
+	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
 	
 	/** \brief Retrieves the list of actions. */
-	inline const ceConversationActionList &GetActions() const{return pActions;}
+	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

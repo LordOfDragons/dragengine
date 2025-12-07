@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pNavBlocker(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! navblocker){
+	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
 	}
 	

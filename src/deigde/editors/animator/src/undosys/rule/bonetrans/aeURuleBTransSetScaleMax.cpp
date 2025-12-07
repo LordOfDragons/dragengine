@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleBTransSetScaleMax::aeURuleBTransSetScaleMax(aeRuleBoneTransformator *rule, const decVector &newMax){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

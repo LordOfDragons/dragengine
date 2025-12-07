@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Activates the program. */
 	void Activate() const;
@@ -87,22 +87,22 @@ public:
 	void CreateFragmentProgram();
 	
 	/** Retrieves the shader handle. */
-	inline GLuint GetHandleShader() const{return pHandleShader;}
+	inline GLuint GetHandleShader() const{ return pHandleShader; }
 	
 	/** Compute program object handle. */
-	inline GLuint GetHandleC() const{return pHandleC;}
+	inline GLuint GetHandleC() const{ return pHandleC; }
 	
 	/** Retrieves the tessellation control program object handle. */
-	inline GLuint GetHandleTCP() const{return pHandleTCP;}
+	inline GLuint GetHandleTCP() const{ return pHandleTCP; }
 	
 	/** Retrieves the tessellation evaluation program object handle. */
-	inline GLuint GetHandleTEP() const{return pHandleTEP;}
+	inline GLuint GetHandleTEP() const{ return pHandleTEP; }
 	/** Retrieves the geometry program object handle. */
-	inline GLuint GetHandleGP() const{return pHandleGP;}
+	inline GLuint GetHandleGP() const{ return pHandleGP; }
 	/** Retrieves the vertex program object handle. */
-	inline GLuint GetHandleVP() const{return pHandleVP;}
+	inline GLuint GetHandleVP() const{ return pHandleVP; }
 	/** Retrieves the fragment program object handle. */
-	inline GLuint GetHandleFP() const{return pHandleFP;}
+	inline GLuint GetHandleFP() const{ return pHandleFP; }
 	/** Determines if the shader has tessellation. */
 	bool GetHasTessellation() const;
 	/*@}*/

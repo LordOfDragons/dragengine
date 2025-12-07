@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{return pOCSpeaker;}
+	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

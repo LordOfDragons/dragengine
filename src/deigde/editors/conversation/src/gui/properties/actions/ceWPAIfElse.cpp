@@ -83,7 +83,7 @@ ceWPAIfElse::~ceWPAIfElse(){
 
 ceCAIfElse *ceWPAIfElse::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if(! selected){
+	if(!selected){
 		return NULL;
 	}
 	
@@ -124,7 +124,7 @@ ceCAIfElse *ceWPAIfElse::GetAction() const{
 
 ceCAIfElseCase *ceWPAIfElse::GetActiveCase() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if(! selected){
+	if(!selected){
 		return NULL;
 	}
 	

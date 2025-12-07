@@ -77,10 +77,10 @@ bool debpPointContactCallback::process(const btBroadphaseProxy *proxy){
 		if(pCollisionFilter.CollidesNot(engCollider->GetCollisionFilter())){
 			return true;
 		}
-		if(! pListener.CanHitCollider(NULL, engCollider)){
+		if(!pListener.CanHitCollider(NULL, engCollider)){
 			return true;
 		}
-		if(! pColDet.GetBulletShapeCollision().IsPointInside(*bpColObj, pPoint)){
+		if(!pColDet.GetBulletShapeCollision().IsPointInside(*bpColObj, pPoint)){
 			return true;
 		}
 		
@@ -94,7 +94,7 @@ bool debpPointContactCallback::process(const btBroadphaseProxy *proxy){
 		const decCollisionFilter &cfHT = colObj.GetOwnerHTSector()->GetHeightTerrain()->
 			GetHeightTerrain()->GetCollisionFilter();
 			
-		if(! pCollisionFilter.Collides(cfHT)){
+		if(!pCollisionFilter.Collides(cfHT)){
 			return true;
 		}
 		

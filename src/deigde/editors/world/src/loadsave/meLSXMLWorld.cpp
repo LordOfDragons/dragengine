@@ -89,7 +89,7 @@ meLSXMLWorld::~meLSXMLWorld(){
 ///////////////////////
 
 void meLSXMLWorld::SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file){
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -100,7 +100,7 @@ void meLSXMLWorld::SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decB
 }
 
 igdeStepableTask *meLSXMLWorld::CreateLoadTask(meWorld *world, decBaseFileReader *file){
-	if(! world || ! file){
+	if(!world || !file){
 		DETHROW(deeInvalidParam);
 	}
 	return new meLoadXMLWorldTask(pLSSys, world, file);
@@ -159,7 +159,7 @@ void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
 	pWriteProperties(writer, world.GetProperties());
 	
 	meHeightTerrain * const heightTerrain = world.GetHeightTerrain();
-	if(! heightTerrain->GetPathHT().IsEmpty()){
+	if(!heightTerrain->GetPathHT().IsEmpty()){
 		writer.WriteDataTagString("heightTerrain", heightTerrain->GetPathHT());
 	}
 	
@@ -305,7 +305,7 @@ void meLSXMLWorld::pWriteObject(decXmlWriter &writer, const meObject &object){
 		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if(! scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+	if(!scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		writer.WriteOpeningTagStart("scaling");
 		writer.WriteAttributeDouble("x", scaling.x);
 		writer.WriteAttributeDouble("y", scaling.y);
@@ -337,16 +337,16 @@ void meLSXMLWorld::pWriteObjectTexture(decXmlWriter &writer, const meObjectTextu
 	const decVector2 &texCoordScaling = texture.GetTexCoordScaling();
 	const float texCoordRotation = texture.GetTexCoordRotation();
 	const decColor &tint = texture.GetColorTint();
-	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
-	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasTexCoordOffset = !texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
+	const bool hasTexCoordScaling = !texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	const bool hasTexCoordRotation = (fabsf(texCoordRotation) > FLOAT_SAFE_EPSILON);
-	const bool hasTint = ! tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
+	const bool hasTint = !tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 	
 	writer.WriteOpeningTagStart("texture");
 	writer.WriteAttributeString("name", texture.GetName().GetString());
 	writer.WriteOpeningTagEnd(false, true);
 	
-	if(! texture.GetSkinPath().IsEmpty()){
+	if(!texture.GetSkinPath().IsEmpty()){
 		writer.WriteDataTagString("skin", texture.GetSkinPath().GetString());
 	}
 	
@@ -395,10 +395,10 @@ void meLSXMLWorld::pWriteDecal(decXmlWriter &writer, const meDecal &decal){
 	const decVector2 &texCoordScaling = decal.GetTexCoordScaling();
 	const float texCoordRotation = decal.GetTexCoordRotation();
 	const decColor &tint = decal.GetColorTint();
-	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
-	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasTexCoordOffset = !texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
+	const bool hasTexCoordScaling = !texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	const bool hasTexCoordRotation = (fabsf(texCoordRotation) > FLOAT_SAFE_EPSILON);
-	const bool hasTint = ! tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
+	const bool hasTint = !tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 	
 	writer.WriteOpeningTag("decal");
 	
@@ -423,7 +423,7 @@ void meLSXMLWorld::pWriteDecal(decXmlWriter &writer, const meDecal &decal){
 	writer.WriteAttributeDouble("z", size.z);
 	writer.WriteOpeningTagEnd(true);
 	
-	if(! decal.GetVisible()){
+	if(!decal.GetVisible()){
 		writer.WriteDataTagBool("visible", decal.GetVisible());
 	}
 	

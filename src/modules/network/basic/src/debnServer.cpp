@@ -55,7 +55,7 @@
 ////////////////////////////
 
 debnServer::debnServer(deNetworkBasic *netBasic, deServer *server){
-	if(! netBasic || ! server){
+	if(!netBasic || !server){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,7 +82,7 @@ debnServer::~debnServer(){
 void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader){
 	// reject connection if not listening or there is no script module peer
 	deBaseScriptingServer * const scrSvr = pServer->GetPeerScripting();
-	if(! pListening || ! scrSvr){
+	if(!pListening || !scrSvr){
 		decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
 		sendWriter.SetPosition(0);
 		pNetBasic->GetSharedSendDatagram()->Clear();
@@ -100,7 +100,7 @@ void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReade
 		clientProtocols.Add(reader.ReadUShort());
 	}
 	
-	if(! clientProtocols.Has(epDENetworkProtocol)){
+	if(!clientProtocols.Has(epDENetworkProtocol)){
 		decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
 		sendWriter.SetPosition(0);
 		pNetBasic->GetSharedSendDatagram()->Clear();
@@ -176,7 +176,7 @@ bool debnServer::ListenOn(const char *address){
 }
 
 void debnServer::StopListening(){
-	if(! pListening){
+	if(!pListening){
 		return;
 	}
 	

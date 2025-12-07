@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::eCastFrom newCastFrom){
-	if(! type){
+	if(!type){
 		DETHROW(deeInvalidParam);
 	}
 	

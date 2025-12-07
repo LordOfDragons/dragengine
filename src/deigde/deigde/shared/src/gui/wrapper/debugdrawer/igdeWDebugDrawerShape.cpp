@@ -58,7 +58,7 @@ private:
 	
 public:
 	cDucpliateShapeVisitor(deDebugDrawerShape *ddShape){
-		if(! ddShape){
+		if(!ddShape){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -303,7 +303,7 @@ void igdeWDebugDrawerShape::SetVisible(bool visible){
 ///////////
 
 void igdeWDebugDrawerShape::AddShape(decShape *shape){
-	if(! shape){
+	if(!shape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -463,7 +463,7 @@ const decQuaternion &orientation){
 
 void igdeWDebugDrawerShape::AddHullShape(const decVector &position,
 const decQuaternion &orientation, int pointCount, const decVector *points){
-	if(pointCount < 0 || ! points){
+	if(pointCount < 0 || !points){
 		DETHROW(deeInvalidParam);
 	}
 	decShapeHull *hull = NULL;
@@ -497,7 +497,7 @@ void igdeWDebugDrawerShape::RemoveAllShapes(){
 
 void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
 	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if(! face){
+	if(!face){
 		DETHROW(deeInvalidParam);
 	}
 	pFaces.Add(face);
@@ -596,7 +596,7 @@ void igdeWDebugDrawerShape::pUpdateDDShape(){
 	// check if the debug drawer shape has to be existing
 	if(pVisible && pEngDebugDrawer){
 		// if not existing create the debug drawer shape and populate it with the stored parameters
-		if(! pEngDDShape){
+		if(!pEngDDShape){
 			try{
 				pEngDDShape = new deDebugDrawerShape;
 				

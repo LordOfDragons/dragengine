@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
-	if(! world || ! parentObject) DETHROW(deeInvalidParam);
+	if(!world || !parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pDecal = NULL;

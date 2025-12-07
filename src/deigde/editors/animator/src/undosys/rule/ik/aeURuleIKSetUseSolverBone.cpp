@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeURuleIKSetUseSolverBone::~aeURuleIKSetUseSolverBone(){
 ///////////////
 
 void aeURuleIKSetUseSolverBone::Undo(){
-	pRule->SetUseSolverBone(! pRule->GetUseSolverBone());
+	pRule->SetUseSolverBone(!pRule->GetUseSolverBone());
 }
 
 void aeURuleIKSetUseSolverBone::Redo(){
-	pRule->SetUseSolverBone(! pRule->GetUseSolverBone());
+	pRule->SetUseSolverBone(!pRule->GetUseSolverBone());
 }
 
 

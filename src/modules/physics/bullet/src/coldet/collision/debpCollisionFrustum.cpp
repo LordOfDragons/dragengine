@@ -140,12 +140,12 @@ float debpCollisionFrustum::PointMoveHitsVolume(const decVector &point, const de
 //////////////////////
 
 void debpCollisionFrustum::GetEnclosingSphere(debpCollisionSphere *sphere){
-	if(! sphere) DETHROW(deeInvalidParam);
+	if(!sphere) DETHROW(deeInvalidParam);
 	// todo
 }
 
 void debpCollisionFrustum::GetEnclosingBox(debpCollisionBox *box){
-	if(! box) DETHROW(deeInvalidParam);
+	if(!box) DETHROW(deeInvalidParam);
 	// todo
 }
 
@@ -203,7 +203,7 @@ decVector debpCollisionFrustum::ClosestPointTo(const decVector &point){
 /////////////
 
 void debpCollisionFrustum::Visit(debpCollisionVolumeVisitor *visitor){
-	if(! visitor) DETHROW(deeInvalidParam);
+	if(!visitor) DETHROW(deeInvalidParam);
 	visitor->VisitFrustum(this);
 }
 

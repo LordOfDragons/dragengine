@@ -45,7 +45,7 @@ gdeUOCAddCamera::gdeUOCAddCamera(gdeObjectClass *objectClass, gdeOCCamera *camer
 pObjectClass(NULL),
 pCamera(NULL)
 {
-	if(! objectClass || ! camera){
+	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
 	}
 	

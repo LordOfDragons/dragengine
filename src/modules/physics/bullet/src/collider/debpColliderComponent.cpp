@@ -230,7 +230,7 @@ void debpColliderComponent::SetParentWorld(debpWorld *parentWorld){
 
 void debpColliderComponent::CreateBody(){
 	debpCollisionWorld * const dynWorld = GetDynamicsWorld();
-	if(! dynWorld){
+	if(!dynWorld){
 		return;
 	}
 	
@@ -467,7 +467,7 @@ DEBUG_PRINT_TIMER_TOTAL("PrepareForStep");
 }
 
 void debpColliderComponent::DetectCustomCollision(float elapsed){
-	if(! GetUseKinematicSimulation() || ! GetIsMoving()){
+	if(!GetUseKinematicSimulation() || !GetIsMoving()){
 		return;
 	}
 	if(pTestMode != etmRigShape){
@@ -476,7 +476,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 	
 	ApplyGravity(elapsed);
 	
-	if(! pColliderComponent.GetEnabled() || pColliderComponent.GetCollisionFilter().CanNotCollide()){
+	if(!pColliderComponent.GetEnabled() || pColliderComponent.GetCollisionFilter().CanNotCollide()){
 		// no collision possible so just move the collider
 		pColliderComponent.SetPosition(pPosition + pLinVelo);
 		pColliderComponent.SetLinearVelocity(pLinVelo);
@@ -514,7 +514,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 		colliderMoveHits.Reset();
 		colliderMoveHits.SetTestCollider(this);
 		
-		if(! colliderMoveHits.MoveDirIsNotZero()){
+		if(!colliderMoveHits.MoveDirIsNotZero()){
 			break;
 		}
 		
@@ -527,7 +527,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 		
 		pSweepCollisionTest->SweepTest(dynamicsWorld, transformFrom, transformTo, colliderMoveHits);
 		
-		if(! colliderMoveHits.HasLocalCollision()){
+		if(!colliderMoveHits.HasLocalCollision()){
 			//ApplyRotation(); // does not do expensive updates
 			ApplyDisplacement(); // does expensive updates
 			break;
@@ -641,7 +641,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 			const decVector avelo(pColliderComponent.GetAngularVelocity() / DEG2RAD);
 			int i;
 			
-			bullet.LogWarnFormat("STUCK! collider=%p responseType=%i",
+			bullet.LogWarnFormat("STUCK!collider=%p responseType=%i",
 				&pColliderComponent, pColliderComponent.GetResponseType());
 			bullet.LogWarnFormat("   position=(%f,%f,%f) orientation=(%f,%f,%f)",
 				position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
@@ -666,7 +666,7 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 
 bool debpColliderComponent::GetRigidBodyDeactivated() const{
 	if(pSimplePhyBody && pSimplePhyBody->GetRigidBody()){
-		return ! pSimplePhyBody->GetRigidBody()->isActive();
+		return !pSimplePhyBody->GetRigidBody()->isActive();
 	}
 	if(pBones && pBones->GetBoneCount() > 0){
 		const int count = pBones->GetBoneCount();
@@ -717,7 +717,7 @@ void debpColliderComponent::ApplyForceFields(float elapsed){
 		//forceField = forceField->GetLLWorldNext();
 	}
 	
-	if(! hasForceFields){
+	if(!hasForceFields){
 		return;
 	}
 	
@@ -974,7 +974,7 @@ void debpColliderComponent::UpdateOctreePosition(){
 }
 
 void debpColliderComponent::UpdateShapes(){
-	if(! pDirtyShapes){
+	if(!pDirtyShapes){
 		return;
 	}
 	
@@ -1121,7 +1121,7 @@ void debpColliderComponent::UpdateDebugDrawer(){
 
 void debpColliderComponent::UpdateDDSShape(){
 	deDebugDrawerShape * const ddshape = GetDDSShape();
-	if(! ddshape){
+	if(!ddshape){
 		return;
 	}
 	
@@ -1283,7 +1283,7 @@ void debpColliderComponent::PositionChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			if(pHasRigOffset){
 				pSimplePhyBody->SetPosition(GetMatrix() * pRigOffset);
@@ -1331,7 +1331,7 @@ void debpColliderComponent::OrientationChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetOrientation(orientation);
 			
@@ -1370,8 +1370,8 @@ void debpColliderComponent::ScaleChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
-		if(! pSimplePhyBody){
+	if(!pPreventUpdate){
+		if(!pSimplePhyBody){
 			DirtyBones();
 		}
 	}
@@ -1411,7 +1411,7 @@ void debpColliderComponent::GeometryChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			if(pHasRigOffset){
 				pSimplePhyBody->SetPosition(GetMatrix() * pRigOffset);
@@ -1440,7 +1440,7 @@ void debpColliderComponent::GeometryChanged(){
 	
 	pDirtyShapes = true;
 	
-	if(! sameScale){
+	if(!sameScale){
 		pDirtySweepTest = true;
 		pDirtyStaticTest = true;
 		
@@ -1460,7 +1460,7 @@ void debpColliderComponent::LinearVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetLinearVelocity(linVelo);
 			
@@ -1484,7 +1484,7 @@ void debpColliderComponent::AngularVelocityChanged(){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		if(pSimplePhyBody){
 			pSimplePhyBody->SetAngularVelocity(angVelo);
 			
@@ -1561,8 +1561,7 @@ void debpColliderComponent::ResponseTypeChanged(){
 			SetUseKinematicSimulation(false);
 			
 		}else if(responseType == deCollider::ertKinematic){
-			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){ // tri mesh supports no kinematic!
-				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
+			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){ // tri mesh supports no kinematic!				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 				SetUseKinematicSimulation(false);
 				
 			}else{
@@ -1691,9 +1690,9 @@ void debpColliderComponent::AttachmentsForceUpdate(){
 }
 
 void debpColliderComponent::InitWeightAttachment(deColliderAttachment &attachment, int face){
-	if(! pLinkedComponent || ! pColliderComponent.GetComponent()
-	|| ! pColliderComponent.GetComponent()->GetModel()
-	|| ! pColliderComponent.GetComponent()->GetRig()){
+	if(!pLinkedComponent || !pColliderComponent.GetComponent()
+	|| !pColliderComponent.GetComponent()->GetModel()
+	|| !pColliderComponent.GetComponent()->GetRig()){
 		attachment.SetAttachType(deColliderAttachment::eatStatic);
 		return;
 	}
@@ -1847,7 +1846,7 @@ void debpColliderComponent::ConstraintChanged(int index, deColliderConstraint *c
 					}
 				}
 				
-				if(! cbone){
+				if(!cbone){
 					cbone = tcComponent.pBones->GetRootBone();
 				}
 				
@@ -1879,16 +1878,16 @@ void debpColliderComponent::ConstraintChanged(int index, deColliderConstraint *c
 ///////////////////////
 
 void debpColliderComponent::BonePositionChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		cbone->GetPhysicsBody()->SetPosition(pColliderComponent.GetBoneAt(index).GetPosition());
 		if(pResetKinematicInterpolation){
 			cbone->GetPhysicsBody()->ResetKinematicInterpolation();
@@ -1904,16 +1903,16 @@ void debpColliderComponent::BonePositionChanged(int index){
 }
 
 void debpColliderComponent::BoneOrientationChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
-	if(! pPreventUpdate){
+	if(!pPreventUpdate){
 		cbone->GetPhysicsBody()->SetOrientation(pColliderComponent.GetBoneAt(index).GetOrientation());
 		if(pResetKinematicInterpolation){
 			cbone->GetPhysicsBody()->ResetKinematicInterpolation();
@@ -1929,12 +1928,12 @@ void debpColliderComponent::BoneOrientationChanged(int index){
 }
 
 void debpColliderComponent::BoneLinearVelocityChanged(int index){
-	if(pPreventUpdate || ! pBones){
+	if(pPreventUpdate || !pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
@@ -1945,12 +1944,12 @@ void debpColliderComponent::BoneLinearVelocityChanged(int index){
 }
 
 void debpColliderComponent::BoneAngularVelocityChanged(int index){
-	if(pPreventUpdate || ! pBones){
+	if(pPreventUpdate || !pBones){
 		return;
 	}
 	
 	debpColliderBone * const cbone = pBones->GetBoneAt(index);
-	if(! cbone){
+	if(!cbone){
 		return;
 	}
 	
@@ -1961,7 +1960,7 @@ void debpColliderComponent::BoneAngularVelocityChanged(int index){
 }
 
 void debpColliderComponent::BonePropertiesChanged(int index){
-	if(! pBones){
+	if(!pBones){
 		return;
 	}
 	
@@ -1985,7 +1984,7 @@ void debpColliderComponent::BoneDynamicChanged(int index){
 bool debpColliderComponent::PointInside(const decDVector &point){
 	switch(pTestMode){
 	case etmRigShape:{
-		if(! pSimplePhyBody){
+		if(!pSimplePhyBody){
 			return false;
 		}
 		
@@ -2023,7 +2022,7 @@ bool debpColliderComponent::PointInside(const decDVector &point){
 
 void debpColliderComponent::RayHits(const decDVector &rayOrigin,
 const decVector &rayDirection, deBaseScriptingCollider *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -2122,7 +2121,7 @@ void debpColliderComponent::ColliderHits(deCollider *engCollider, deBaseScriptin
 
 void debpColliderComponent::ColliderMoveHits(deCollider *engCollider,
 const decVector &displacement, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -2163,7 +2162,7 @@ const decVector &displacement, deBaseScriptingCollider *listener){
 
 void debpColliderComponent::ColliderRotateHits(deCollider *engCollider,
 const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -2205,7 +2204,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 
 void debpColliderComponent::ColliderMoveRotateHits(deCollider *engCollider,
 const decVector &displacement, const decVector &rotation, deBaseScriptingCollider *listener){
-	if(! engCollider || ! listener){
+	if(!engCollider || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -2268,7 +2267,7 @@ void debpColliderComponent::ComponentRigChanged(){
 }
 
 void debpColliderComponent::ComponentShapeChanged(){
-	if(pBones /*&& ! pPreventUpdate*/){
+	if(pBones /*&& !pPreventUpdate*/){
 		DirtyBones();
 	}
 	
@@ -2438,7 +2437,7 @@ void debpColliderComponent::pUpdateBones(){
 	// one bone with a shape. if there are no bones with shapes the model would be
 	// impossible to collide with. in this case the model is considered having no rig
 	// shapes and no bones
-	if(! modelCollision && shapeCount == 0 && boneCount > 0 && hasBonesWithShape){
+	if(!modelCollision && shapeCount == 0 && boneCount > 0 && hasBonesWithShape){
 		pBones = new debpColliderBones(*this, &pColliderComponent);
 		pTestMode = etmBoneShape;
 		
@@ -2470,8 +2469,7 @@ void debpColliderComponent::pUpdateBones(){
 				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
 				
 			}else{
-				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!
-			}
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!			}
 			
 		}else{
 			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);
@@ -2527,7 +2525,7 @@ void debpColliderComponent::pUpdateBones(){
 			debpShapeSurface shapeSurface;
 			
 			pRigOffset = rig->GetCentralMassPoint();
-			pHasRigOffset = ! pRigOffset.IsZero();
+			pHasRigOffset = !pRigOffset.IsZero();
 			
 			if(pHasRigOffset){
 				pSimplePhyBody->SetPosition(GetMatrix() * pRigOffset);
@@ -2603,7 +2601,7 @@ void debpColliderComponent::pUpdateBones(){
 // #include <dragengine/common/utils/decTimer.h>
 // static decString debugDepth;
 void debpColliderComponent::pUpdateAttachments(bool force){
-	if(! pDirtyAttachments && ! force){
+	if(!pDirtyAttachments && !force){
 		return;
 	}
 	
@@ -2628,12 +2626,12 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 			
 			switch(attachment.GetAttachType()){
 			case deColliderAttachment::eatStatic:
-				bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify);
+				bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 				break;
 				
 			case deColliderAttachment::eatRig:{
-				if(! rig || ! model){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+				if(!rig || !model){
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2643,8 +2641,8 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				const bool isAttCollider = attResType == deResourceManager::ertCollider;
 				const bool isAttComponent = attResType == deResourceManager::ertComponent;
 				
-				if(! isAttCollider && ! isAttComponent){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+				if(!isAttCollider && !isAttComponent){
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2662,21 +2660,21 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 					const deModel * const attachedModel = attachedComponent
 						? attachedComponent->GetModel() : nullptr;
 					
-					if(! attachedComponent || ! attachedModel){
-						bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+					if(!attachedComponent || !attachedModel){
+						bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 						break;
 					}
 					
 					deRig * const attachedRig = attachedComponent->GetRig();
-					if(! attachedRig){
-						bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+					if(!attachedRig){
+						bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 						break;
 					}
 					
 					const int boneCount = attachedComponent->GetBoneCount();
 					const int vpsCount = attachedComponent->GetVertexPositionSetCount();
 					if(boneCount == 0){
-						bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+						bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 						break;
 					}
 					
@@ -2743,7 +2741,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 					changed = true; // TODO: can this be optimized to be false in some cases?
 					
 				}else{
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2764,8 +2762,8 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				}break;
 				
 			case deColliderAttachment::eatBone:{
-				if(! rig){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+				if(!rig){
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2776,7 +2774,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				
 				const int boneIndex = bpAttachment.GetTrackBone();
 				if(boneIndex == -1){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2784,19 +2782,19 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				((debpComponent*)component->GetPeerPhysics())->PrepareBone(boneIndex);
 				
 				/*if( colBone->GetDynamic() && pBones[ boneIndex ] ){
-					bpAttachment.Reposition(pBones[boneIndex]->GetRealMatrix(), ! pPreventAttNotify);
+					bpAttachment.Reposition(pBones[boneIndex]->GetRealMatrix(), !pPreventAttNotify);
 					
 				}else{*/
 					const deComponentBone &cbone = component->GetBoneAt(boneIndex);
 					bpAttachment.Reposition(decDMatrix(cbone.GetMatrix()).QuickMultiply(posMatrix),
-						pLinVelo, ! pPreventAttNotify);
+						pLinVelo, !pPreventAttNotify);
 				//}
 				
 				}break;
 				
 			case deColliderAttachment::eatWeight:{
-				if(! rig || ! pLinkedComponent){
-					bpAttachment.Reposition(posMatrix, pLinVelo, ! pPreventAttNotify); // fall back to static
+				if(!rig || !pLinkedComponent){
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
 					break;
 				}
 				
@@ -2837,7 +2835,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 						}
 					}
 					
-					bpAttachment.Reposition(transform.QuickMultiply(posMatrix), pLinVelo, ! pPreventAttNotify);
+					bpAttachment.Reposition(transform.QuickMultiply(posMatrix), pLinVelo, !pPreventAttNotify);
 				}
 				}break;
 				
@@ -2850,7 +2848,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				}
 				
 				bpAttachment.Transform(bpAttachment.GetAccumRelMoveMatrix()
-					.QuickMultiply(pRelMoveMatrix), pLinVelo, ! pPreventAttNotify);
+					.QuickMultiply(pRelMoveMatrix), pLinVelo, !pPreventAttNotify);
 				bpAttachment.SetAccumRelMoveMatrix(decDMatrix());
 				}break;
 			}
@@ -2876,7 +2874,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 }
 
 void debpColliderComponent::pApplyAccumRelMoveMatrices(){
-	if(! pDirtyAttachments || ! pDirtyRelMoveMatrix){
+	if(!pDirtyAttachments || !pDirtyRelMoveMatrix){
 		return;
 	}
 	
@@ -2890,7 +2888,7 @@ void debpColliderComponent::pApplyAccumRelMoveMatrices(){
 			bpAttachment.Transform(bpAttachment.GetAccumRelMoveMatrix()
 				.QuickMultiply(decDMatrix::CreateTranslation(decDVector(pRelMoveDisplacement) - pPosition))
 				.QuickMultiply(decDMatrix::CreateWorld(pPosition, pRelMoveRotation)),
-				pLinVelo, ! pPreventAttNotify);
+				pLinVelo, !pPreventAttNotify);
 			bpAttachment.SetAccumRelMoveMatrix(decDMatrix());
 		}
 	}
@@ -2908,7 +2906,7 @@ void debpColliderComponent::pUpdateIsMoving(){
 
 
 void debpColliderComponent::pUpdateSweepCollisionTest(){
-	if(! pSweepCollisionTest){
+	if(!pSweepCollisionTest){
 		pSweepCollisionTest = new debpSweepCollisionTest(GetBullet()->GetCollisionDetection());
 		pDirtySweepTest = true;
 	}
@@ -2937,13 +2935,13 @@ void debpColliderComponent::pUpdateSweepCollisionTest(){
 }
 
 void debpColliderComponent::pUpdateStaticCollisionTest(){
-	if(! pStaticCollisionTest){
+	if(!pStaticCollisionTest){
 		pStaticCollisionTest = new btGhostObject;
 		pStaticCollisionTest->setUserPointer(&pStaticCollisionTestObject);
 		pDirtyStaticTest = true;
 	}
 	
-	if(! pDirtyStaticTest){
+	if(!pDirtyStaticTest){
 		return;
 	}
 	
@@ -2975,7 +2973,7 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 }
 
 void debpColliderComponent::pCheckDebugChecks(){
-	if(! pDirtyDebugChecks){
+	if(!pDirtyDebugChecks){
 		return;
 	}
 	
@@ -2992,7 +2990,7 @@ void debpColliderComponent::pCheckDebugChecks(){
 				rig = component->GetRig();
 			}
 			
-			if(model && ! rig){
+			if(model && !rig){
 				const decDVector &position = pColliderComponent.GetPosition();
 				GetBullet()->LogWarnFormat("ColliderComponent at (%f,%f,%f) with model '%s' has no rig."
 					" Triangle mesh collision will be used. This can be a performance problem.",

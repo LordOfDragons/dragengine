@@ -61,7 +61,7 @@ delGPModule *delGPModuleList::GetAt(int index) const{
 }
 
 delGPModule *delGPModuleList::GetNamed (const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -91,7 +91,7 @@ int delGPModuleList::IndexOf(delGPModule *module) const{
 }
 
 int delGPModuleList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -108,7 +108,7 @@ int delGPModuleList::IndexOfNamed(const char *name) const{
 }
 
 void delGPModuleList::Add(delGPModule *module){
-	if(! module){
+	if(!module){
 		DETHROW_INFO(deeNullPointer, "module");
 	}
 	if(HasNamed (module->GetName())){

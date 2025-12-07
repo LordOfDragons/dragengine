@@ -36,7 +36,7 @@
 aeURuleMirrorRemoveAllMatchNames::aeURuleMirrorRemoveAllMatchNames(aeRuleMirror *rule) :
 pRule(rule)
 {
-	if(! rule || rule->GetMatchNameCount() == 0){
+	if(!rule || rule->GetMatchNameCount() == 0){
 		DETHROW(deeInvalidAction);
 	}
 	

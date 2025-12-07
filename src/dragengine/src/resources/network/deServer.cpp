@@ -68,7 +68,7 @@ void deServer::SetAddress(const char *address){
 }
 
 bool deServer::ListenOn(const char *address){
-	if(! address){
+	if(!address){
 		DETHROW(deeInvalidParam);
 	}
 	

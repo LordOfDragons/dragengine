@@ -43,7 +43,7 @@
 
 reUConstraintDofSetKinematicFriction::reUConstraintDofSetKinematicFriction(reRigConstraint *constraint,
 deColliderConstraint::eDegreesOfFreedom dof, float newValue){
-	if(! constraint || ! constraint->GetRig()
+	if(!constraint || !constraint->GetRig()
 	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
 		DETHROW(deeInvalidParam);
 	}

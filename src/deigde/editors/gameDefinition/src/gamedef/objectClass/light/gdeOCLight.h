@@ -148,7 +148,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline deLight::eLightTypes GetType() const{return pType;}
+	inline deLight::eLightTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(deLight::eLightTypes type);
@@ -156,31 +156,31 @@ public:
 	
 	
 	/** \brief Color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color. */
 	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
-	inline float GetIntensity() const{return pIntensity;}
+	inline float GetIntensity() const{ return pIntensity; }
 	
 	/** \brief Set intensity. */
 	void SetIntensity(float intensity);
 	
 	/** \brief Light range in meters. */
-	inline float GetRange() const{return pRange;}
+	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set light range in meters. */
 	void SetRange(float range);
 	
 	/** \brief Half intensity distance in meters. */
-	inline float GetHalfIntensityDistance() const{return pHalfIntensityDistance;}
+	inline float GetHalfIntensityDistance() const{ return pHalfIntensityDistance; }
 	
 	/** \brief Set half intensity distance in meters. */
 	void SetHalfIntensityDistance(float distance);
 	
 	/** \brief Ratio of ambient light in relation to the total intensity. */
-	inline float GetAmbientRatio() const{return pAmbientRatio;}
+	inline float GetAmbientRatio() const{ return pAmbientRatio; }
 	
 	/** \brief Set ratio of ambient light in relation to the total intensity. */
 	void SetAmbientRatio(float ratio);
@@ -188,13 +188,13 @@ public:
 	
 	
 	/** \brief Position relative to parent object. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Sets position relative to parent object. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to parent object. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation relative to parent object. */
 	void SetRotation(const decVector &orientation);
@@ -202,7 +202,7 @@ public:
 	
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
@@ -210,25 +210,25 @@ public:
 	
 	
 	/** \brief Outer spot Angle. */
-	inline float GetSpotAngle() const{return pSpotAngle;}
+	inline float GetSpotAngle() const{ return pSpotAngle; }
 	
 	/** \brief Set outer spot angle. */
 	void SetSpotAngle(float angle);
 	
 	/** \brief Spot ratio as height divided by width. */
-	inline float GetSpotRatio() const{return pSpotRatio;}
+	inline float GetSpotRatio() const{ return pSpotRatio; }
 	
 	/** \brief Set spot ratio as height divided by width. */
 	void SetSpotRatio(float ratio);
 	
 	/** \brief Spot smoothness. */
-	inline float GetSpotSmoothness() const{return pSpotSmoothness;}
+	inline float GetSpotSmoothness() const{ return pSpotSmoothness; }
 	
 	/** \brief Set spot smoothness. */
 	void SetSpotSmoothness(float smoothness);
 	
 	/** \brief Spot exponent. */
-	inline float GetSpotExponent() const{return pSpotExponent;}
+	inline float GetSpotExponent() const{ return pSpotExponent; }
 	
 	/** \brief Set spot exponent. */
 	void SetSpotExponent(float exponent);
@@ -236,25 +236,25 @@ public:
 	
 	
 	/** \brief Light importance hint. */
-	inline int GetHintLightImportance() const{return pHintLightImportance;}
+	inline int GetHintLightImportance() const{ return pHintLightImportance; }
 	
 	/** \brief Set light importance hint. */
 	void SetHintLightImportance(int importance);
 	
 	/** \brief Shadow importance hint. */
-	inline int GetHintShadowImportance() const{return pHintShadowImportance;}
+	inline int GetHintShadowImportance() const{ return pHintShadowImportance; }
 	
 	/** \brief Set shadow importance hint. */
 	void SetHintShadowImportance(int importance);
 	
 	/** \brief Movement hint. */
-	inline deLight::eMovementHints GetHintMovement() const{return pHintMovement;}
+	inline deLight::eMovementHints GetHintMovement() const{ return pHintMovement; }
 	
 	/** \brief Set movement hint. */
 	void SetHintMovement(deLight::eMovementHints hint);
 	
 	/** \brief Parameter hint. */
-	inline deLight::eParameterHints GetHintParameter() const{return pHintParameter;}
+	inline deLight::eParameterHints GetHintParameter() const{ return pHintParameter; }
 	
 	/** \brief Set parameter hint. */
 	void SetHintParameter(deLight::eParameterHints hint);
@@ -262,13 +262,13 @@ public:
 	
 	
 	/** \brief Light is activated emitting light. */
-	inline bool GetActivated() const{return pActivated;}
+	inline bool GetActivated() const{ return pActivated; }
 	
 	/** \brief Set if light is activated emitting light. */
 	void SetActivated(bool activated);
 	
 	/** \brief Light casts shadows. */
-	inline bool GetCastShadows() const{return pCastShadows;}
+	inline bool GetCastShadows() const{ return pCastShadows; }
 	
 	/** \brief Set if light casts shadows. */
 	void SetCastShadows(bool castShadows);
@@ -276,7 +276,7 @@ public:
 	
 	
 	/** \brief Light skin path. */
-	inline const decString &GetLightSkinPath() const{return pLightSkinPath;}
+	inline const decString &GetLightSkinPath() const{ return pLightSkinPath; }
 	
 	/** \brief Set light skin path. */
 	void SetLightSkinPath(const char *path);

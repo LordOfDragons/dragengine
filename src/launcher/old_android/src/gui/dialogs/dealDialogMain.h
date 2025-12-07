@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Check engine task. */
-	inline dealWidgetTaskStatus &GetTaskCheckEngine(){return *pTaskCheckEngine;}
+	inline dealWidgetTaskStatus &GetTaskCheckEngine(){ return *pTaskCheckEngine; }
 	
 	
 	

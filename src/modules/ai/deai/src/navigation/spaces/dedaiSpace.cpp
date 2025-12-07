@@ -337,7 +337,7 @@ const decDVector &dedaiSpace::GetMaximumExtends(){
 
 
 int dedaiSpace::AddTypeMapping(int typeNumber){
-	if(! pLayer){
+	if(!pLayer){
 		DETHROW(deeInvalidParam);
 	}	
 	return pLayer->GetCostTable().GetTypeWith(typeNumber);
@@ -346,7 +346,7 @@ int dedaiSpace::AddTypeMapping(int typeNumber){
 
 
 void dedaiSpace::Prepare(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -362,10 +362,10 @@ void dedaiSpace::Prepare(){
 }
 
 void dedaiSpace::PrepareLinks(){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		return;
 	}
-	if(! pDirtyLinks){
+	if(!pDirtyLinks){
 		return;
 	}
 	
@@ -420,7 +420,7 @@ void dedaiSpace::UpdateDDSSpace(){
 	
 	if(devmode.GetEnabled() && devmode.GetShowSpaces()){
 		// ensure the debug drawer exists
-		if(! pDebugDrawer){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			
@@ -436,7 +436,7 @@ void dedaiSpace::UpdateDDSSpace(){
 		// ensure the debug drawer shapes exists
 		bool updateShapes = false;
 		
-		if(! pDDSSpace){
+		if(!pDDSSpace){
 			pDDSSpace = new deDebugDrawerShape;
 			pDDSSpace->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
 			pDDSSpace->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
@@ -444,7 +444,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if(! pDDSCorners){
+		if(!pDDSCorners){
 			pDDSCorners = new deDebugDrawerShape;
 			pDDSCorners->SetFillColor(decColor(0.5f, 0.5f, 1.0f, 0.1f));
 			pDDSCorners->SetEdgeColor(decColor(0.5f, 0.5f, 1.0f, 0.8f));
@@ -452,7 +452,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if(! pDDSNormals){
+		if(!pDDSNormals){
 			pDDSNormals = new deDebugDrawerShape;
 			pDDSNormals->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
 			pDDSNormals->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
@@ -460,7 +460,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if(! pDDSMismatching){
+		if(!pDDSMismatching){
 			pDDSMismatching = new deDebugDrawerShape;
 			pDDSMismatching->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
 			pDDSMismatching->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
@@ -468,7 +468,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if(! pDDSHighlightCostType){
+		if(!pDDSHighlightCostType){
 			pDDSHighlightCostType = new deDebugDrawerShape;
 			pDDSHighlightCostType->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
 			pDDSHighlightCostType->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
@@ -507,7 +507,7 @@ void dedaiSpace::UpdateDDSSpace(){
 }
 
 void dedaiSpace::UpdateDDSSpaceShape(){
-	if(! pDebugDrawer){
+	if(!pDebugDrawer){
 		return;
 	}
 	
@@ -524,7 +524,7 @@ void dedaiSpace::UpdateDDSSpaceShape(){
 
 
 void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
-	if(! pParentWorld){
+	if(!pParentWorld){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -538,7 +538,7 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 	try{
 		deNavigationBlocker *engNavBlocker = pParentWorld->GetWorld().GetRootNavigationBlocker();
 		while(engNavBlocker){
-			if(! engNavBlocker->GetEnabled()){
+			if(!engNavBlocker->GetEnabled()){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
@@ -601,7 +601,7 @@ void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
 							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
 							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
 							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
-							if(! edgeVector.IsZero()){
+							if(!edgeVector.IsZero()){
 								volumeFace->SetNormal(edgeVector.Normalized());
 								
 							}else{
@@ -702,7 +702,7 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
 							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
 							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
-							if(! edgeVector.IsZero()){
+							if(!edgeVector.IsZero()){
 								volumeFace->SetNormal(edgeVector.Normalized());
 								
 							}else{
@@ -928,7 +928,7 @@ void dedaiSpace::pUpdateBlockerConvexVolumeList(){
 
 
 void dedaiSpace::pInvalidateLayerBlocking(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	
@@ -943,7 +943,7 @@ void dedaiSpace::pInvalidateLayerBlocking(){
 }
 
 void dedaiSpace::pInvalidateLayerLinks(){
-	if(! pLayer){
+	if(!pLayer){
 		return;
 	}
 	pLayer->InvalidateLinks(pType, GetMinimumExtends(), GetMaximumExtends());

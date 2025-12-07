@@ -86,16 +86,16 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetFilePatterns() const{return pFilePatterns;}
+	inline const igdeFilePatternList &GetFilePatterns() const{ return pFilePatterns; }
 	
 	/** \brief Use game virtual file system or native file system. */
-	inline bool GetUseGameVFS() const{return pUseGameVFS;}
+	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
 	
 	/** \brief Text field. */
-	inline igdeTextField &GetTextField() const{return pTextField;}
+	inline igdeTextField &GetTextField() const{ return pTextField; }
 	
 	
 	

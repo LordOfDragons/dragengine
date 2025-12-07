@@ -193,14 +193,14 @@ void dedaiHeightTerrainSector::pUpdateHeights(const decPoint &from, const decPoi
 	const int pixelCount = imageDim * imageDim;
 	
 	// create height values if not existing already
-	if(! pHeights){
+	if(!pHeights){
 		pHeights = new float[pixelCount];
 	}
 	
 	// update height values unless image is not set
 	int x, y;
 	
-	if(! heightImage){
+	if(!heightImage){
 		for(y=from.y; y<=to.y; y++){
 			float * const heightsRow = pHeights + imageDim * y;
 			for(x=from.x; x<=to.x; x++){

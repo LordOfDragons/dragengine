@@ -43,7 +43,7 @@ meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navs
 pNavSpace(NULL),
 pNewSnapDist(newSnapDist)
 {
-	if(! navspace){
+	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
 	

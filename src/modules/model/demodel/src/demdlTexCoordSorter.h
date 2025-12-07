@@ -86,10 +86,10 @@ public:
 	void Sort();
 	
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Number of texture coordinate sets. */
-	inline int GetTexCoordSetCount() const{return pTexCoordSetCount;}
+	inline int GetTexCoordSetCount() const{ return pTexCoordSetCount; }
 	
 	/** \brief Face corner texture coordinate index. */
 	int GetFaceCornerAt(int face, int corner) const;
@@ -104,7 +104,7 @@ public:
 	void SetFaceTexCoordAt(int face, int corner, int texCoordSet, const decVector2 &texCoord);
 	
 	/** \brief Number of texture coordinates. */
-	inline int GetTexCoordCount() const{return pTexCoordCount;}
+	inline int GetTexCoordCount() const{ return pTexCoordCount; }
 	
 	/** \brief Texture coordinate. */
 	const decVector2 &GetTexCoordAt(int index, int texCoordSet) const;

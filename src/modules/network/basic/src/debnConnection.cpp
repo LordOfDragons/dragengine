@@ -61,7 +61,7 @@
 ////////////////////////////
 
 debnConnection::debnConnection(deNetworkBasic *netBasic, deConnection *connection){
-	if(! netBasic || ! connection) DETHROW(deeInvalidParam);
+	if(!netBasic || !connection) DETHROW(deeInvalidParam);
 	
 	pNetBasic = netBasic;
 	pConnection = connection;
@@ -150,7 +150,7 @@ bool debnConnection::Matches(const debnSocket *bnSocket, const debnAddress &addr
 
 
 void debnConnection::AcceptConnection(debnSocket *bnSocket, const debnAddress &address, eProtocols protocol){
-	if(! bnSocket) DETHROW(deeInvalidParam);
+	if(!bnSocket) DETHROW(deeInvalidParam);
 	
 	pSocket = bnSocket;
 	bnSocket->AddReference();
@@ -248,7 +248,7 @@ void debnConnection::ProcessReliableMessage(decBaseFileReader &reader){
 	}else{
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
-	if(! validNumber){
+	if(!validNumber){
 // 		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
 		return;
 	}
@@ -303,7 +303,7 @@ void debnConnection::ProcessReliableLinkState(decBaseFileReader &reader){
 	}else{
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
-	if(! validNumber){
+	if(!validNumber){
 // 		pNetBasic->LogInfo( "Link state: invalid sequence number." );
 		return;
 	}
@@ -389,7 +389,7 @@ void debnConnection::ProcessLinkUp(decBaseFileReader &reader){
 	
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-	if(! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
+	if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
 // 		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
 		return;
 	}
@@ -413,7 +413,7 @@ void debnConnection::ProcessLinkDown(decBaseFileReader &reader){
 	
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-	if(! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
+	if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
 // 		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
 		return;
 	}
@@ -438,7 +438,7 @@ void debnConnection::ProcessLinkUpdate(decBaseFileReader &reader){
 			const int identifier = reader.ReadUShort();
 			
 			debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-			if(! stateLink || stateLink->GetLinkState() != debnStateLink::elsUp){
+			if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsUp){
 // 				pNetBasic->LogInfo( "Invalid link identifier!" );
 				return;
 			}
@@ -471,7 +471,7 @@ void debnConnection::ProcessReliableMessageLong(decBaseFileReader &reader){
 	}else{
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
-	if(! validNumber){
+	if(!validNumber){
 		return;
 	}
 	
@@ -520,7 +520,7 @@ void debnConnection::ProcessReliableLinkStateLong(decBaseFileReader &reader){
 	}else{
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
-	if(! validNumber){
+	if(!validNumber){
 		return;
 	}
 	
@@ -753,7 +753,7 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	}
 	
 	// create the link if not existing, assign it a new identifier and add it
-	if(! stateLink){
+	if(!stateLink){
 		try{
 			stateLink = new debnStateLink(bnState, *this);
 			
@@ -922,7 +922,7 @@ void debnConnection::pUpdateStates(){
 	
 	for(i=0; i<linkCount; i++){
 		debnStateLink &stateLink = *pModifiedStateLinks->GetLinkAt(i);
-		if(stateLink.GetLinkState() != debnStateLink::elsUp || ! stateLink.GetChanged()){
+		if(stateLink.GetLinkState() != debnStateLink::elsUp || !stateLink.GetChanged()){
 			continue;
 		}
 		
@@ -1106,7 +1106,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 	deNetworkState::Ref state;
 	if(scrCon){
 		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
-		if(! scrCon->LinkState(state, message)){
+		if(!scrCon->LinkState(state, message)){
 			state = NULL;
 		}
 	}
@@ -1121,7 +1121,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 	if(bnState){
 		if(bnState->LinkReadAndVerifyAllValues(reader)){
 			// create the link if not existing, assign it a new identifier and add it
-			if(! stateLink){
+			if(!stateLink){
 				try{
 					stateLink = new debnStateLink(bnState, *this);
 					stateLink->SetIdentifier(identifier);
@@ -1169,7 +1169,7 @@ void debnConnection::pProcessReliableMessageLong(int number, decBaseFileReader &
 	if((flags & (uint8_t)elmfFirst) != 0) {
 		pLongMessage.TakeOver(new deNetworkMessage);
 	}
-	if(! pLongMessage){
+	if(!pLongMessage){
 		return;
 	}
 	
@@ -1211,7 +1211,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 		pLongLinkStateValues.TakeOver(new deNetworkMessage);
 	}
 	
-	if(! pLongLinkStateMessage || ! pLongLinkStateValues){
+	if(!pLongLinkStateMessage || !pLongLinkStateValues){
 		return;
 	}
 	
@@ -1245,7 +1245,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	deNetworkState::Ref state;
 	if(scrCon){
 		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
-		if(! scrCon->LinkState(state, message)){
+		if(!scrCon->LinkState(state, message)){
 			state = nullptr;
 		}
 	}
@@ -1259,7 +1259,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	if(bnState){
 		if(bnState->LinkReadAndVerifyAllValues(deNetworkMessageReader::Ref::NewWith(values))){
 			// create the link if not existing, assign it a new identifier and add it
-			if(! stateLink){
+			if(!stateLink){
 				try{
 					stateLink = new debnStateLink(bnState, *this);
 					stateLink->SetIdentifier(identifier);

@@ -57,19 +57,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** Rotation . */
-	inline const decQuaternion &GetRotation() const{return pRotation;}
+	inline const decQuaternion &GetRotation() const{ return pRotation; }
 	
 	/** Set rotation. */
 	void SetRotation(const decQuaternion &rotation);
 	
 	/** Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** Set scale. */
 	void SetScale(const decVector &scale);
@@ -77,19 +77,19 @@ public:
 	
 	
 	/** Parent state used to prepare the matrices or \em NULL. */
-	inline dearComponentBoneState *GetParent() const{return pParent;}
+	inline dearComponentBoneState *GetParent() const{ return pParent; }
 	
 	/** Set parent state used to prepare the matrices or \em NULL. */
 	void SetParent(dearComponentBoneState *parent);
 	
 	/** Original matrix required to prepate matrix. */
-	inline const decMatrix &GetOriginalMatrix() const{return pOriginalMatrix;}
+	inline const decMatrix &GetOriginalMatrix() const{ return pOriginalMatrix; }
 	
 	/** Set original matrix required to prepare matrix. */
 	void SetOriginalMatrix(const decMatrix &matrix);
 	
 	/** Prepared matrix. */
-	inline const decMatrix &GetMatrix() const{return pMatrix;}
+	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set prepared matrix. */
 	void SetMatrix(const decMatrix &matrix);

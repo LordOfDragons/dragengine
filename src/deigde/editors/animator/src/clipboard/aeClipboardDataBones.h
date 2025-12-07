@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Boness. */
-	inline const decStringSet &GetBones() const{return pBones;}
+	inline const decStringSet &GetBones() const{ return pBones; }
 	/*@}*/
 };
 

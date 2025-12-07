@@ -108,7 +108,7 @@ deClassSEStretch::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFu
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSEStretch::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -146,7 +146,7 @@ deClassSEStretch::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData
 	p_AddParameter(init.clsSEStretchTarget); // target
 }
 void deClassSEStretch::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -313,7 +313,7 @@ void deClassSEStretch::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -321,7 +321,7 @@ deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) co
 }
 
 void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -345,11 +345,11 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 }
 
 void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! effect){
+	if(!effect){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -151,7 +151,7 @@ void seSource::SetEngineSource(deSynthesizerSource *engSource){
 }
 
 void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
-	if(! engSource){
+	if(!engSource){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -407,7 +407,7 @@ void seSource::ListLinks(seLinkList &list){
 
 void seSource::NotifySourceChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if(! synthesizer){
+	if(!synthesizer){
 		return;
 	}
 	
@@ -422,7 +422,7 @@ void seSource::NotifySourceChanged(){
 
 void seSource::NotifyEngineOnlySourceChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if(! synthesizer || ! pEngSource){
+	if(!synthesizer || !pEngSource){
 		return;
 	}
 	
@@ -484,7 +484,7 @@ void seSource::AddEffect(seEffect *effect){
 		synthesizer->NotifyEffectStructureChanged(this);
 	}
 	
-	if(! pActiveEffect){
+	if(!pActiveEffect){
 		SetActiveEffect(effect);
 	}
 }
@@ -500,7 +500,7 @@ void seSource::InsertEffectAt(seEffect *effect, int index){
 		synthesizer->NotifyEffectStructureChanged(this);
 	}
 	
-	if(! pActiveEffect){
+	if(!pActiveEffect){
 		SetActiveEffect(effect);
 	}
 }

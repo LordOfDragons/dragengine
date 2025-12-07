@@ -127,106 +127,106 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter position. */
-	inline const decDVector &GetEmitterPosition() const{return pEmitterPosition;}
+	inline const decDVector &GetEmitterPosition() const{ return pEmitterPosition; }
 	
 	/** \brief Set emitter position. */
 	void SetEmitterPosition(const decDVector &position);
 	
 	/** \brief Emitter orientation. */
-	inline const decQuaternion &GetEmitterOrientation() const{return pEmitterOrientation;}
+	inline const decQuaternion &GetEmitterOrientation() const{ return pEmitterOrientation; }
 	
 	/** \brief Set emitter orientation. */
 	void SetEmitterOrientation(const decQuaternion &orientation);
 	
 	/** \brief Volume position. */
-	inline const decDVector &GetVolumePosition() const{return pVolumePosition;}
+	inline const decDVector &GetVolumePosition() const{ return pVolumePosition; }
 	
 	/** \brief Set volume position. */
 	void SetVolumePosition(const decDVector &position);
 	
 	/** \brief Minimum cast direction deviation. */
-	inline const decVector &GetMinCastDirection() const{return pCastDirectionMin;}
+	inline const decVector &GetMinCastDirection() const{ return pCastDirectionMin; }
 	
 	/** \brief Set minimum cast direction deviation. */
 	void SetMinCastDirection(const decVector &deviation);
 	
 	/** \brief Maximum cast direction deviation. */
-	inline const decVector &GetMaxCastDirection() const{return pCastDirectionMax;}
+	inline const decVector &GetMaxCastDirection() const{ return pCastDirectionMax; }
 	
 	/** \brief Set maximum cast direction deviation. */
 	void SetMaxCastDirection(const decVector &deviation);
 	
 	/** \brief Minimum cast velocity. */
-	inline float GetMinCastVelocity() const{return pCastVelocityMin;}
+	inline float GetMinCastVelocity() const{ return pCastVelocityMin; }
 	
 	/** \brief Set minimum cast velocity. */
 	void SetMinCastVelocity(float velocity);
 	
 	/** \brief Maximum cast velocity. */
-	inline float GetMaxCastVelocity() const{return pCastVelocityMax;}
+	inline float GetMaxCastVelocity() const{ return pCastVelocityMax; }
 	
 	/** \brief Set maximum cast velocity. */
 	void SetMaxCastVelocity(float velocity);
 	
 	/** \brief Minimum cast density. */
-	inline float GetMinCastDensity() const{return pCastDensityMin;}
+	inline float GetMinCastDensity() const{ return pCastDensityMin; }
 	
 	/** \brief Set minimum cast density. */
 	void SetMinCastDensity(float density);
 	
 	/** \brief Maximum cast density. */
-	inline float GetMaxCastDensity() const{return pCastDensityMax;}
+	inline float GetMaxCastDensity() const{ return pCastDensityMax; }
 	
 	/** \brief Set maximum cast density. */
 	void SetMaxCastDensity(float density);
 	
 	/** \brief Determines if casting particles is enabled. */
-	inline bool GetEnableCasting() const{return pEnableCasting;}
+	inline bool GetEnableCasting() const{ return pEnableCasting; }
 	
 	/** \brief Sets if casting particles is enabled. */
 	void SetEnableCasting(bool enable);
 	
 	/** \brief Component used for casting or NULL. */
-	inline deComponent *GetComponent() const{return pComponent;}
+	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
 	void SetComponent(deComponent *component);
 	
 	/** \brief Texture to use from the component skin to cast particles from. */
-	inline int GetCastTexture() const{return pCastTexture;}
+	inline int GetCastTexture() const{ return pCastTexture; }
 	
 	/** \brief Set texture to use from the component skin to cast particles from. */
 	void SetCastTexture(int texture);
 	
 	/** \brief Skin of the particle instances or NULL. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set mode of the particle instances or NULL. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Gravity in m/s^2. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set gravity in m/s^2. */
 	void SetGravity(const decVector &gravity);
 	
 	/** \brief Local gravity has to be used instead of the world gravity. */
-	inline bool GetUseLocalGravity() const{return pUseLocalGravity;}
+	inline bool GetUseLocalGravity() const{ return pUseLocalGravity; }
 	
 	/** \brief Set if local gravity has to be used instead of the world gravity. */
 	void SetUseLocalGravity(bool useLocalGravity);
 	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** \brief Pointer to the points which can be NULL. */
-	inline deSmokeDensityPoint *GetPoints() const{return pPoints;}
+	inline deSmokeDensityPoint *GetPoints() const{ return pPoints; }
 	
 	/** \brief Set points. */
 	void SetPoints(deSmokeDensityPoint *points, int count);
@@ -240,13 +240,13 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicSmokeEmitter *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicSmokeEmitter *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicSmokeEmitter *peer);
 	
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsSmokeEmitter *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsSmokeEmitter *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsSmokeEmitter *peer);
@@ -257,19 +257,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous smoke emitter in the parent world linked list. */
-	inline deSmokeEmitter *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deSmokeEmitter *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next smoke emitter in the parent world linked list. */
 	void SetLLWorldPrev(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief Next smoke emitter in the parent world linked list. */
-	inline deSmokeEmitter *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deSmokeEmitter *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next smoke emitter in the parent world linked list. */
 	void SetLLWorldNext(deSmokeEmitter *smokeEmitter);

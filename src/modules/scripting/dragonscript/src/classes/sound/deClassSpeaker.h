@@ -59,13 +59,13 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	deSpeaker *GetSpeaker(dsRealObject *myself) const;
 	void PushSpeaker(dsRunTime *rt, deSpeaker *speaker);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassVector *GetClassVector() const{return pClsVec;}
-	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
-	inline deClassSound *GetClassSound() const{return pClsSnd;}
-	inline dsClass *GetClassSpeakerType() const{return pClsSpeakerType;}
+	inline deClassVector *GetClassVector() const{ return pClsVec; }
+	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassSound *GetClassSound() const{ return pClsSnd; }
+	inline dsClass *GetClassSpeakerType() const{ return pClsSpeakerType; }
 	
 private:
 	struct sInitData{

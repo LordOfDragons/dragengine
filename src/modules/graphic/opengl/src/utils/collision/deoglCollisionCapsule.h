@@ -179,14 +179,14 @@ public:
 	/**
 	 * Retrieves the capsule center.
 	 */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/**
 	 * Sets the position.
 	 * @param position Center of capsule.
 	 */
 	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/**
 	 * Sets the orientation.
 	 * @param orientation Normalized rotation quaternion.
@@ -195,21 +195,21 @@ public:
 	/** Clears the orientation of the capsule setting it to the identity quaternion. */
 	void ClearOrientation();
 	/** Retrieves the half height. */
-	inline float GetHalfHeight() const{return pHalfHeight;}
+	inline float GetHalfHeight() const{ return pHalfHeight; }
 	/**
 	 * Sets the half height.
 	 * @param halfHeight Half the height of the capsule. Has to be greater than 0.
 	 */
 	void SetHalfHeight(float halfHeight);
 	/** Retrieves the top radius. */
-	inline float GetTopRadius() const{return pTopRadius;}
+	inline float GetTopRadius() const{ return pTopRadius; }
 	/**
 	 * Sets the top radius.
 	 * @param radius Radius of the top capsule cap. Has to be greater than 0.
 	 */
 	void SetTopRadius(float radius);
 	/** Retrieves the bottom radius. */
-	inline float GetBottomRadius() const{return pBottomRadius;}
+	inline float GetBottomRadius() const{ return pBottomRadius; }
 	/**
 	 * Sets the bottom radius.
 	 * @param radius Radius of the bottom capsule cap. Has to be greater than 0.
@@ -225,33 +225,33 @@ public:
 	 * Determines if this capsule is oriented.
 	 * @return True if the capsule has an orientation other than the identity quaternion.
 	 */
-	inline bool GetOriented() const{return pOriented;}
+	inline bool GetOriented() const{ return pOriented; }
 	/**
 	 * Determines if this capsule is axis aligned.
 	 * @return True if the capsule has an orientation equal to the identity quaternion.
 	 */
-	inline bool GetAxisAligned() const{return ! pOriented;}
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/**
 	 * Determines if this capsule is tapered.
 	 * @return True if the top and bottom radius are not identical.
 	 */
-	inline bool GetTapered() const{return pTapered;}
+	inline bool GetTapered() const{ return pTapered; }
 	
 	/**
 	 * Retrieves the X-Axis.
 	 * @return Normalized vector along the X-Axis.
 	 */
-	inline const decVector &GetAxisX() const{return pAxisX;}
+	inline const decVector &GetAxisX() const{ return pAxisX; }
 	/**
 	 * Retrieves the Y-Axis.
 	 * @return Normalized vector along the Y-Axis.
 	 */
-	inline const decVector &GetAxisY() const{return pAxisY;}
+	inline const decVector &GetAxisY() const{ return pAxisY; }
 	/**
 	 * Retrieves the Z-Axis.
 	 * @return Normalized vector along the Z-Axis.
 	 */
-	inline const decVector &GetAxisZ() const{return pAxisZ;}
+	inline const decVector &GetAxisZ() const{ return pAxisZ; }
 	
 	/** Transforms a point from world coordinates into local coordinates. */
 	decVector WorldToLocal(const decVector &point) const;

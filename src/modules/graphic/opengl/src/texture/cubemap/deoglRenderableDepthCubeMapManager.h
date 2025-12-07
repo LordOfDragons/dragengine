@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable cubemaps. */
-	inline int GetCubeMapCount() const{return pCubeMapCount;}
+	inline int GetCubeMapCount() const{ return pCubeMapCount; }
 	/** Retrieves the renderable cubemap for reading only at the given location. */
 	const deoglRenderableDepthCubeMap *GetCubeMapAt(int index) const;
 	

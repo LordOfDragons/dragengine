@@ -72,20 +72,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the center of the node. */
-	inline const decVector &GetCenter() const{return pCenter;}
+	inline const decVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the node. */
-	inline const decVector &GetHalfSize() const{return pHalfSize;}
+	inline const decVector &GetHalfSize() const{ return pHalfSize; }
 	/** Retrieves the split state. */
-	inline int GetSplitState() const{return pSplitState;}
+	inline int GetSplitState() const{ return pSplitState; }
 	/**
 	 * Sets the split state. This affects the left and right child if
 	 * different than the current split state.
 	 */
 	void SetSplitState(int splitState);
 	/** Retrieves the left child or NULL. */
-	inline deoglSPTreeNode *GetLeftChild() const{return pChildLeft;}
+	inline deoglSPTreeNode *GetLeftChild() const{ return pChildLeft; }
 	/** Retrieves the right child or NULL. */
-	inline deoglSPTreeNode *GetRightChild() const{return pChildRight;}
+	inline deoglSPTreeNode *GetRightChild() const{ return pChildRight; }
 	/*@}*/
 	
 private:

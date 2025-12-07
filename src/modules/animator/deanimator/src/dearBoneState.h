@@ -73,72 +73,72 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the rig bone or NULL if not linked. */
-	inline deRigBone *GetRigBone() const{return pRigBone;}
+	inline deRigBone *GetRigBone() const{ return pRigBone; }
 	/** Sets the rig bone or NULL if not linked. */
 	void SetRigBone(deRigBone *bone);
 	/** Retrieves the rig bone name. */
-	inline const char *GetRigBoneName() const{return pRigBoneName;}
+	inline const char *GetRigBoneName() const{ return pRigBoneName; }
 	/** Sets the rig bone name. */
 	void SetRigBoneName(const char *name);
 	/** Retrieves the index of this bone state. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	/** Sets the index of this bone state. */
 	void SetIndex(int index);
 	/** Retrieves the rig index. */
-	inline int GetRigIndex() const{return pRigIndex;}
+	inline int GetRigIndex() const{ return pRigIndex; }
 	/** Sets the rig index. */
 	void SetRigIndex(int index);
 	/** Retrieves the parent bone state or NULL if not existing. */
-	inline dearBoneState *GetParentState() const{return pParentState;}
+	inline dearBoneState *GetParentState() const{ return pParentState; }
 	/** Sets the parent bone state or NULL if not existing. */
 	void SetParentState(dearBoneState *boneState);
 	/** Retrieves the position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/** Sets the orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	/** Retrieves the scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	/** Sets the scale. */
 	void SetScale(const decVector &size);
 	/** Sets position and orientation. */
 	void SetPosOrient(const decVector &position, const decQuaternion &orientation);
 	
 	/** Retrieves the rig local matrix. */
-	inline const decMatrix &GetRigLocalMatrix() const{return pRigLocalMatrix;}
+	inline const decMatrix &GetRigLocalMatrix() const{ return pRigLocalMatrix; }
 	/** Retrieves the inverse rig local matrix. */
-	inline const decMatrix &GetInverseRigLocalMatrix() const{return pInvRigLocalMatrix;}
+	inline const decMatrix &GetInverseRigLocalMatrix() const{ return pInvRigLocalMatrix; }
 	/** Sets the rig local matrix. */
 	void SetRigLocalMatrix(const decMatrix &matrix);
 	
 	/** Retrieves the local matrix. */
-	inline const decMatrix &GetLocalMatrix() const{return pLocalMatrix;}
+	inline const decMatrix &GetLocalMatrix() const{ return pLocalMatrix; }
 	/** Sets the local matrix. */
 	void SetLocalMatrix(const decMatrix &matrix);
 	/** Retrieves the inverse local matrix. */
-	inline const decMatrix &GetInverseLocalMatrix() const{return pInvLocalMatrix;}
+	inline const decMatrix &GetInverseLocalMatrix() const{ return pInvLocalMatrix; }
 	/** Sets the inverse local matrix. */
 	void SetInverseLocalMatrix(const decMatrix &matrix);
 	
 	/** Retrieves the global matrix. */
-	inline const decMatrix &GetGlobalMatrix() const{return pGlobalMatrix;}
+	inline const decMatrix &GetGlobalMatrix() const{ return pGlobalMatrix; }
 	/** Sets the global matrix. */
 	void SetGlobalMatrix(const decMatrix &matrix);
 	/** Retrieves the inverse global matrix. */
-	inline const decMatrix &GetInverseGlobalMatrix() const{return pInvGlobalMatrix;}
+	inline const decMatrix &GetInverseGlobalMatrix() const{ return pInvGlobalMatrix; }
 	/** Sets the inverse global matrix. */
 	void SetInverseGlobalMatrix(const decMatrix &matrix);
 	
 	/** Determines if the state is protected. */
-	inline bool GetProtected() const{return pProtect;}
+	inline bool GetProtected() const{ return pProtect; }
 	/** Sets if the state is protected. */
 	void SetProtected(bool prot);
 	
 	/** Determines if the state is dirty. */
-	inline bool GetDirty() const{return pDirty;}
+	inline bool GetDirty() const{ return pDirty; }
 	/** Sets if the state is dirty. */
 	void SetDirty(bool dirty);
 	/** Sets the matrices from the current state. */
@@ -198,7 +198,7 @@ public:
 	/** \name Child states */
 	/*@{*/
 	/** Retrieves the number of child states. */
-	inline int GetChildStateCount() const{return pChildStateCount;}
+	inline int GetChildStateCount() const{ return pChildStateCount; }
 	/** Retrieves the child state at the given index. */
 	dearBoneState *GetChildStateAt(int index) const;
 	/** Adds a child state. */

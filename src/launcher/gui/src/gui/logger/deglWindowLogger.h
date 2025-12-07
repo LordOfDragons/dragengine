@@ -80,7 +80,7 @@ public:
 	virtual void create();
 	
 	/** Logger to monitor or nullptr if none. */
-	inline delLoggerHistory *GetLogger() const{return pLogger;}
+	inline delLoggerHistory *GetLogger() const{ return pLogger; }
 	
 	/** Set logger to monitor or nullptr if none. */
 	void SetLogger(delLoggerHistory *logger);

@@ -88,7 +88,7 @@ void deClassSound::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -212,7 +212,7 @@ void deClassSound::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSound * const clsSound = (deClassSound*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(object, clsSound)){
+	if(!p_IsObjOfType(object, clsSound)){
 		rt->PushBool(false);
 		
 	}else{
@@ -278,7 +278,7 @@ void deClassSound::CreateClassMembers(dsEngine *engine){
 }
 
 deSound *deClassSound::GetSound(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -286,11 +286,11 @@ deSound *deClassSound::GetSound(dsRealObject *myself) const{
 }
 
 void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! sound){
+	if(!sound){
 		rt->PushObject(NULL, this);
 		return;
 	}

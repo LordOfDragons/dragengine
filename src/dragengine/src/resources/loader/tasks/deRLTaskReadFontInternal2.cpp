@@ -61,7 +61,7 @@ pFont(font),
 pAlreadyLoaded(false),
 pTaskImage(NULL)
 {
-	if(! font){
+	if(!font){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void deRLTaskReadFontInternal2::Finished(){
 		// check if loadimg image finished successfully
 		if(pTaskImage){
 			deImage * const image = (deImage*)pTaskImage->GetResource();
-			if(pTaskImage->GetState() != esSucceeded || ! image){
+			if(pTaskImage->GetState() != esSucceeded || !image){
 				SetState(esFailed);
 				LogFinishedExit();
 				GetResourceLoader().FinishTask(this);
@@ -145,10 +145,10 @@ void deRLTaskReadFontInternal2::pLoadFontResources(){
 	decString path;
 	
 	// load image if present
-	if(! pFont->GetImage()){
+	if(!pFont->GetImage()){
 		path = pFont->GetImagePath();
-		if(! path.IsEmpty()){
-			if(! decPath::IsUnixPathAbsolute(path)){
+		if(!path.IsEmpty()){
+			if(!decPath::IsUnixPathAbsolute(path)){
 				decPath resourcePath(basePath);
 				resourcePath.AddUnixPath(path);
 				path = resourcePath.GetPathUnix();
@@ -158,7 +158,7 @@ void deRLTaskReadFontInternal2::pLoadFontResources(){
 				path, deResourceLoader::ertImage);
 			pTaskImage->AddReference(); // this is required. see AddLoadRequest for details
 			
-			if(pTaskImage->GetState() == esPending && ! DoesDependOn(pTaskImage)){
+			if(pTaskImage->GetState() == esPending && !DoesDependOn(pTaskImage)){
 				AddDependsOn(pTaskImage);
 			}
 		}

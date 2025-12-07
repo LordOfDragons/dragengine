@@ -71,7 +71,7 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 	
 	pCondition = condition;
 	
-	if(! condition){
+	if(!condition){
 		return;
 	}
 	

@@ -54,7 +54,7 @@ ceCAMusic::~ceCAMusic(){
 ///////////////
 
 void ceCAMusic::SetName(const char *name){
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }

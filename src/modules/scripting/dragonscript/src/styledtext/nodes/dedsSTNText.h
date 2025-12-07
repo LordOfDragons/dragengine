@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 
 	/** Set text. */
 	void SetText(const char *text);

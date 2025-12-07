@@ -80,7 +80,7 @@ FXMenuCascade(pparent, BuildConstrText(powner), powner.GetIcon()
 	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL, new FXMenuPane(paneParent)),
 pOwner(&powner)
 {
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	//getMenu()->create(); // FXMenuCascade constructor calls create()
@@ -158,7 +158,7 @@ FXMenuTitle(pparent, igdeNativeFoxMenuCascadeCascade::BuildConstrText(powner), p
 	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL, new FXMenuPane(paneParent)),
 pOwner(&powner)
 {
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	//getMenu()->create(); // FXMenuCascade constructor calls create()
@@ -229,7 +229,7 @@ igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){
 
 
 void igdeNativeFoxMenuCascade_PopupWindow::Popup(const decPoint &position){
-	if(! pMenu.GetNativeWidget()){
+	if(!pMenu.GetNativeWidget()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -265,12 +265,12 @@ void igdeNativeFoxMenuCascade_PopupWindow::OnEnabledChanged(){}
 ////////////////////////////
 
 void *igdeNativeFoxMenuCascade::CreateNativeWidget(igdeMenuCascade &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -292,7 +292,7 @@ void *igdeNativeFoxMenuCascade::CreateNativeWidget(igdeMenuCascade &powner){
 	// the top level popup menu is destroyed by going out of scope. so all FXMenuPane
 	// have to be destroyed manually with fox dealing with the rest
 	FXWindow * const paneParent = pparent->getShell();
-	if(! paneParent){
+	if(!paneParent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -387,7 +387,7 @@ void *igdeNativeFoxMenuCascade::CreateNativePopup(igdeMenuCascade&, igdeWidget &
 	// fox then fails
 	
 	FXComposite * const nativeParent = (FXComposite*)widgetOwner.GetNativeWidget();
-	if(! nativeParent){
+	if(!nativeParent){
 		DETHROW(deeInvalidParam);
 	}
 	if(nativeParent->isMemberOf(FXMetaClass::getMetaClassFromName("FXMenuBar"))){

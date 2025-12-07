@@ -56,12 +56,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline saeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline saeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
 	/** Prevent saving. */
-	inline bool GetPreventSaving() const{return pPreventSaving;}
+	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** Set prevent saving. */
 	void SetPreventSaving(bool preventSaving);

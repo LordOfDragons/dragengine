@@ -18,7 +18,7 @@ namespace DragonScript{
 
 ReferencedTopDUContext ContextBuilder::build(const IndexedString &url,
 AstNode* node, ReferencedTopDUContext updateContext){
-	if(! updateContext){
+	if(!updateContext){
 		DUChainReadLocker lock;
 		updateContext = DUChain::self()->chainForDocument(url);
 		if(updateContext){
@@ -52,13 +52,13 @@ void ContextBuilder::startVisiting(AstNode *node){
 	TopDUContext * const top = topContext();
 	
 	// if this file is not a documentation file make it import the documentation file contexts
-	if(! Helpers::getDocumentationFiles().contains(document())){
+	if(!Helpers::getDocumentationFiles().contains(document())){
 		DUChainWriteLocker lock;
-		pRequiresReparsing = ! Helpers::addImportsDocumentationFileContexts(top);
+		pRequiresReparsing = !Helpers::addImportsDocumentationFileContexts(top);
 	}
 	
 	// also add all include directory files as imports for project files
-	if(! pRequiresReparsing){
+	if(!pRequiresReparsing){
 		IProject * const project = ICore::self()->projectController()->findProjectForUrl(document().toUrl());
 		if(project){
 			KConfigGroup config(project->projectConfiguration()->group("dragonscriptsupport"));
@@ -104,7 +104,7 @@ TopDUContext *ContextBuilder::newTopContext(const RangeInRevision &range,
 ParsingEnvironmentFile *file){
 	// file is allowed to be null but some code in kdevelop does not seem to know this causing
 	// segfaults if run. ensure the file is present
-	if(! file){
+	if(!file){
 		file = new ParsingEnvironmentFile(document());
 		file->setLanguage(IndexedString("DragonScript"));
 	}
@@ -123,7 +123,7 @@ void ContextBuilder::closeNamespaceContexts(){
 }
 
 void ContextBuilder::openContextClass(ClassAst *node){
-	if(! node->end){
+	if(!node->end){
 		qDebug() << "ContextBuilder::openContextClass: node->end is NULL in" << document()
 			<< "at" << pEditor->findPosition(*node->begin);
 	}
@@ -144,7 +144,7 @@ void ContextBuilder::openContextClass(ClassAst *node){
 }
 
 void ContextBuilder::openContextInterface(InterfaceAst *node){
-	if(! node->end){
+	if(!node->end){
 		qDebug() << "ContextBuilder::openContextInterface: node->end is NULL in" << document()
 			<< "at" << pEditor->findPosition(*node->begin);
 	}
@@ -162,7 +162,7 @@ void ContextBuilder::openContextInterface(InterfaceAst *node){
 }
 
 void ContextBuilder::openContextEnumeration(EnumerationAst *node){
-	if(! node->end){
+	if(!node->end){
 		qDebug() << "ContextBuilder::openContextEnumeration: node->end is NULL in" << document()
 			<< "at" << pEditor->findPosition(*node->begin);
 	}
@@ -180,7 +180,7 @@ void ContextBuilder::openContextEnumeration(EnumerationAst *node){
 }
 
 void ContextBuilder::openContextClassFunction(ClassFunctionDeclareAst *node){
-	if(! node->end){
+	if(!node->end){
 		qDebug() << "ContextBuilder::openContextClassFunction: node->end is NULL in" << document()
 			<< "at" << pEditor->findPosition(*node->begin);
 	}

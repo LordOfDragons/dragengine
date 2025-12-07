@@ -194,63 +194,63 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Type. */
-	inline ePropertyTypes GetType() const{return pType;}
+	inline ePropertyTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
 	void SetType(ePropertyTypes type);
 	
 	/** \brief Minimum value. */
-	inline float GetMinimumValue() const{return pMinimumValue;}
+	inline float GetMinimumValue() const{ return pMinimumValue; }
 	
 	/** \brief Set minimum value. */
 	void SetMinimumValue(float value);
 	
 	/** \brief Maximum value. */
-	inline float GetMaximumValue() const{return pMaximumValue;}
+	inline float GetMaximumValue() const{ return pMaximumValue; }
 	
 	/** \brief Set maximum value. */
 	void SetMaximumValue(float value);
 	
 	/** \brief Select options. */
-	inline decStringList &GetOptions(){return pOptions;}
-	inline const decStringList &GetOptions() const{return pOptions;}
+	inline decStringList &GetOptions(){ return pOptions; }
+	inline const decStringList &GetOptions() const{ return pOptions; }
 	
 	/** \brief Path pattern type. */
-	inline ePathPatternTypes GetPathPatternType() const{return pPathPatternType;}
+	inline ePathPatternTypes GetPathPatternType() const{ return pPathPatternType; }
 	
 	/** \brief Set path pattern type. */
 	void SetPathPatternType(ePathPatternTypes type);
 	
 	/** \brief Custom path pattern list. */
-	inline gdeFilePatternList &GetCustomPathPattern(){return pCustomPathPattern;}
-	inline const gdeFilePatternList &GetCustomPathPattern() const{return pCustomPathPattern;}
+	inline gdeFilePatternList &GetCustomPathPattern(){ return pCustomPathPattern; }
+	inline const gdeFilePatternList &GetCustomPathPattern() const{ return pCustomPathPattern; }
 	
 	/** \brief Identifier group or empty string if not set. */
-	inline const decString &GetIdentifierGroup() const{return pIdentifierGroup;}
+	inline const decString &GetIdentifierGroup() const{ return pIdentifierGroup; }
 	
 	/** \brief Set identifier group or empty string if not set. */
 	void SetIdentifierGroup(const char *group);
 	
 	/** \brief Usage count of identifier in group is altered. */
-	inline bool GetIdentifierUsage() const{return pIdentifierUsage;}
+	inline bool GetIdentifierUsage() const{ return pIdentifierUsage; }
 	
 	/** \brief Set if usage count of identifier in group is altered. */
 	void SetIdentifierUsage(bool usage);
 	
 	/** \brief Default value. */
-	inline const decString &GetDefaultValue() const{return pDefaultValue;}
+	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(const char *value);

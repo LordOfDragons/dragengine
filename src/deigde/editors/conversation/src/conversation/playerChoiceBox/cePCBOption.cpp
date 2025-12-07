@@ -101,7 +101,7 @@ void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOpti
 void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *pcbox.GetConversation().GetEngine()->GetCanvasManager();
-	if(! pCanvasView){
+	if(!pCanvasView){
 		pCanvasView = canvasManager.CreateCanvasView();
 	}
 	
@@ -111,7 +111,7 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	
 	// get font. if not existing exit since we can not render anything this way
 	deFont * const font = pcbox.GetFont();
-	if(! font){
+	if(!font){
 		return;
 	}
 	

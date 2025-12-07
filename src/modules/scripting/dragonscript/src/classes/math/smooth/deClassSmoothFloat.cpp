@@ -249,7 +249,7 @@ void deClassSmoothFloat::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *mys
 	const deClassFileReader &clsFileReader = *clsSmoothFloat.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if(! reader){
+	if(!reader){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -283,7 +283,7 @@ void deClassSmoothFloat::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myse
 	const deClassFileWriter &clsFileWriter = *clsSmoothFloat.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if(! writer){
+	if(!writer){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -310,7 +310,7 @@ void deClassSmoothFloat::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSmoothFloat * const clsSmoothFloat = (deClassSmoothFloat*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSmoothFloat)){
+	if(!p_IsObjOfType(obj, clsSmoothFloat)){
 		rt->PushBool(false);
 		
 	}else{
@@ -398,7 +398,7 @@ void deClassSmoothFloat::CreateClassMembers(dsEngine *engine){
 }
 
 const decSmoothFloat &deClassSmoothFloat::GetSmoothFloat(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -406,7 +406,7 @@ const decSmoothFloat &deClassSmoothFloat::GetSmoothFloat(dsRealObject *myself) c
 }
 
 void deClassSmoothFloat::PushSmoothFloat(dsRunTime *rt, const decSmoothFloat &smoothFloat){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	

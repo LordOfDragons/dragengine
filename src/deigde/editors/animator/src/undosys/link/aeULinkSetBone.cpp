@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetBone::aeULinkSetBone(aeLink *link, const char *newBone){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

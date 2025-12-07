@@ -97,7 +97,7 @@ void deoxrApiLayer::LoadLibrary(){
 }
 
 void deoxrApiLayer::UnloadLibrary(){
-	if(! pLibHandle){
+	if(!pLibHandle){
 		return;
 	}
 	
@@ -138,7 +138,7 @@ void deoxrApiLayer::pLoadLibrary(){
 	
 	#ifdef HAS_LIB_DL
 	pLibHandle = dlopen(pLibraryPath, RTLD_NOW);
-	if(! pLibHandle){
+	if(!pLibHandle){
 		pOxr.LogErrorFormat("dlerror: %s.", dlerror());
 		DETHROW_INFO(deeInvalidAction, "Load library failed");
 	}
@@ -149,7 +149,7 @@ void deoxrApiLayer::pLoadLibrary(){
 	deOSWindows::Utf8ToWide(pLibraryPath, widePath, MAX_PATH);
 	pLibHandle = ::LoadLibrary(widePath);
 	
-	if(! pLibHandle){
+	if(!pLibHandle){
 		int err = GetLastError();
 		wchar_t messageBuffer[251];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -242,7 +242,7 @@ void deoxrApiLayer::pNegotiate(){
 	fNegotiate = (PFN_xrNegotiateLoaderApiLayerInterface)GetProcAddress(pLibHandle, "xrNegotiateLoaderApiLayerInterface");
 	#endif
 	
-	if(! fNegotiate){
+	if(!fNegotiate){
 		DETHROW_INFO(deeInvalidAction, "Function xrNegotiateLoaderApiLayerInterface not found");
 	}
 	
@@ -265,7 +265,7 @@ void deoxrApiLayer::pNegotiate(){
 	layerRequest.structSize = sizeof(layerRequest);
 	
 	OXR_CHECK(fNegotiate(&loaderInfo, pName, &layerRequest));
-	if(! layerRequest.getInstanceProcAddr){
+	if(!layerRequest.getInstanceProcAddr){
 		DETHROW_INFO(deeNullPointer, "negotiate.getInstanceProcAddr");
 	}
 }

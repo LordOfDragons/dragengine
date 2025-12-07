@@ -47,10 +47,10 @@ pObjectClass(NULL),
 pProperty(NULL),
 pFilePattern(NULL)
 {
-	if(! objectClass || ! property || ! filePattern){
+	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
 	}
-	if(! property->GetCustomPathPattern().Has(filePattern)){
+	if(!property->GetCustomPathPattern().Has(filePattern)){
 		DETHROW(deeInvalidParam);
 	}
 	

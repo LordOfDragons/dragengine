@@ -43,7 +43,7 @@ seULayerSetTransparency::seULayerSetTransparency(seLayer *layer, float newTransp
 pLayer(NULL),
 pNewTransparency(newTransparency)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

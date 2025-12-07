@@ -125,7 +125,7 @@ void igdeLoadAnimator::Load(const decString &pathAnimator, deAnimator &animator,
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag *root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "animator") != 0){
+	if(!root || strcmp(root->GetName(), "animator") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -145,7 +145,7 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -217,7 +217,7 @@ void igdeLoadAnimator::pReadController(const decXmlElementTag &root, deAnimator 
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -263,7 +263,7 @@ void igdeLoadAnimator::pReadLink(const decXmlElementTag &root, deAnimator &anima
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -394,7 +394,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimation(const decXmlElementTag &ro
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -455,7 +455,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationDifference(const decXmlElem
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -526,7 +526,7 @@ deAnimator &animator){
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -588,7 +588,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElemen
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -732,7 +732,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElement
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -832,7 +832,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateSnapshot(const decXmlElementTag
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -890,7 +890,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElement
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -990,7 +990,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag 
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1095,7 +1095,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleMirror(const decXmlElementTag &root,
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		
@@ -1181,7 +1181,7 @@ const char *basePath, deAnimator &animator){
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1266,7 +1266,7 @@ const char *basePath, deAnimator &animator){
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1324,7 +1324,7 @@ const char *basePath, deAnimator &animator){
 			}
 		}
 		
-		if(! hasConnections){
+		if(!hasConnections){
 			rule->SetMatchingConnections(animator);
 		}
 		
@@ -1348,7 +1348,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit(const decXmlElementTag &root, 
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1478,7 +1478,7 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleTrackTo(const decXmlElementTag &root,
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -1655,7 +1655,7 @@ deAnimator &animator, deAnimatorControllerTarget &target){
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

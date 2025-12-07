@@ -47,10 +47,10 @@ pLayer(NULL),
 pTarget(target),
 pLink(NULL)
 {
-	if(! layer || ! link){
+	if(!layer || !link){
 		DETHROW(deeInvalidParam);
 	}
-	if(! layer->GetTarget(target).GetLinks().Has(link)){
+	if(!layer->GetTarget(target).GetLinks().Has(link)){
 		DETHROW(deeInvalidParam);
 	}
 	

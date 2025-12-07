@@ -41,7 +41,7 @@
 ////////////////////////////
 
 feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath){
-	if(! newImage || ! newPath) DETHROW(deeInvalidParam);
+	if(!newImage || !newPath) DETHROW(deeInvalidParam);
 	
 	if(newImage->GetComponentCount() != 4) DETHROW(deeInvalidParam);
 	
@@ -67,11 +67,11 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	
 	try{
 		pOldColor = new decColor[pOldWidth * pOldHeight];
-		if(! pOldColor) DETHROW(deeOutOfMemory);
+		if(!pOldColor) DETHROW(deeOutOfMemory);
 		pStoreColors(oldImage, pOldColor);
 		
 		pNewColor = new decColor[pNewWidth * pNewHeight];
-		if(! pNewColor) DETHROW(deeOutOfMemory);
+		if(!pNewColor) DETHROW(deeOutOfMemory);
 		pStoreColors(*newImage, pNewColor);
 		
 	}catch(const deException &){

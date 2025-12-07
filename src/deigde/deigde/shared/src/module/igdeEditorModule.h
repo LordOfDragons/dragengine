@@ -68,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Game engine. */
 	deEngine *GetEngine() const;
 	
 	/** \brief Editor directory used to located editor specific data in virtual file systems. */
-	inline const decString &GetEditorDirectory() const{return pEditorDirectory;}
+	inline const decString &GetEditorDirectory() const{ return pEditorDirectory; }
 	
 	/**
 	 * \brief Set editor directory used to located editor specific data in virtual file systems.
@@ -84,7 +84,7 @@ public:
 	void SetEditorDirectory(const char *directory);
 	
 	/** \brief Editor module libraries directory path. */
-	inline const decString &GetEditorPathLib() const{return pEditorPathLib;}
+	inline const decString &GetEditorPathLib() const{ return pEditorPathLib; }
 	
 	/**
 	 * \brief Set editor module libraries directory path.
@@ -94,7 +94,7 @@ public:
 	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{return pEditorWindow;}
+	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.

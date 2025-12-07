@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{return pWorld;}
+	inline aeAnimator *GetAnimator() const{ return pWorld; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

@@ -87,13 +87,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position of the reference coordinate frame. */
-	inline const decVector &GetReferencePosition() const{return pRefPosition;}
+	inline const decVector &GetReferencePosition() const{ return pRefPosition; }
 	
 	/** \brief Set position of the reference coordinate frame. */
 	void SetReferencePosition(const decVector &position);
 	
 	/** \brief Orientation of the reference coordinate frame. */
-	inline const decQuaternion &GetReferenceOrientation() const{return pRefOrientation;}
+	inline const decQuaternion &GetReferenceOrientation() const{ return pRefOrientation; }
 	
 	/** \brief Set orientation of the reference coordinate frame. */
 	void SetReferenceOrientation(const decQuaternion &orientation);
@@ -102,7 +102,7 @@ public:
 	 * Retrieves the offset of the bone constraint position
 	 * relative to the reference coordinate frame.
 	 */
-	inline const decVector &GetBoneOffset() const{return pBoneOffset;}
+	inline const decVector &GetBoneOffset() const{ return pBoneOffset; }
 	
 	/**
 	 * \brief Set the offset of the bone constraint position
@@ -115,61 +115,61 @@ public:
 	const deColliderConstraintDof &GetDof(deColliderConstraint::eDegreesOfFreedom dof) const;
 	
 	/** \brief X-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearX(){return pDof[deColliderConstraint::edofLinearX];}
-	inline const deColliderConstraintDof &GetDofLinearX() const{return pDof[deColliderConstraint::edofLinearX];}
+	inline deColliderConstraintDof &GetDofLinearX(){ return pDof[deColliderConstraint::edofLinearX]; }
+	inline const deColliderConstraintDof &GetDofLinearX() const{ return pDof[deColliderConstraint::edofLinearX]; }
 	
 	/** \brief Y-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearY(){return pDof[deColliderConstraint::edofLinearY];}
-	inline const deColliderConstraintDof &GetDofLinearY() const{return pDof[deColliderConstraint::edofLinearY];}
+	inline deColliderConstraintDof &GetDofLinearY(){ return pDof[deColliderConstraint::edofLinearY]; }
+	inline const deColliderConstraintDof &GetDofLinearY() const{ return pDof[deColliderConstraint::edofLinearY]; }
 	
 	/** \brief Z-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearZ(){return pDof[deColliderConstraint::edofLinearZ];}
-	inline const deColliderConstraintDof &GetDofLinearZ() const{return pDof[deColliderConstraint::edofLinearZ];}
+	inline deColliderConstraintDof &GetDofLinearZ(){ return pDof[deColliderConstraint::edofLinearZ]; }
+	inline const deColliderConstraintDof &GetDofLinearZ() const{ return pDof[deColliderConstraint::edofLinearZ]; }
 	
 	/** \brief X-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularX(){return pDof[deColliderConstraint::edofAngularX];}
-	inline const deColliderConstraintDof &GetDofAngularX() const{return pDof[deColliderConstraint::edofAngularX];}
+	inline deColliderConstraintDof &GetDofAngularX(){ return pDof[deColliderConstraint::edofAngularX]; }
+	inline const deColliderConstraintDof &GetDofAngularX() const{ return pDof[deColliderConstraint::edofAngularX]; }
 	
 	/** \brief Y-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularY(){return pDof[deColliderConstraint::edofAngularY];}
-	inline const deColliderConstraintDof &GetDofAngularY() const{return pDof[deColliderConstraint::edofAngularY];}
+	inline deColliderConstraintDof &GetDofAngularY(){ return pDof[deColliderConstraint::edofAngularY]; }
+	inline const deColliderConstraintDof &GetDofAngularY() const{ return pDof[deColliderConstraint::edofAngularY]; }
 	
 	/** \brief Z-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularZ(){return pDof[deColliderConstraint::edofAngularZ];}
-	inline const deColliderConstraintDof &GetDofAngularZ() const{return pDof[deColliderConstraint::edofAngularZ];}
+	inline deColliderConstraintDof &GetDofAngularZ(){ return pDof[deColliderConstraint::edofAngularZ]; }
+	inline const deColliderConstraintDof &GetDofAngularZ() const{ return pDof[deColliderConstraint::edofAngularZ]; }
 	
 	/** \brief Linear damping. */
-	inline float GetLinearDamping() const{return pDampingLinear;}
+	inline float GetLinearDamping() const{ return pDampingLinear; }
 	
 	/** \brief Set linear damping. */
 	void SetLinearDamping(float damping);
 	
 	/** \brief Angular damping. */
-	inline float GetAngularDamping() const{return pDampingAngular;}
+	inline float GetAngularDamping() const{ return pDampingAngular; }
 	
 	/** \brief Set angular damping. */
 	void SetAngularDamping(float damping);
 	
 	/** \brief Spring damping. */
-	inline float GetSpringDamping() const{return pDampingSpring;}
+	inline float GetSpringDamping() const{ return pDampingSpring; }
 	
 	/** \brief Set spring damping. */
 	void SetSpringDamping(float damping);
 	
 	/** \brief Determines if this constraint is a rope. */
-	inline bool GetIsRope() const{return pIsRope;}
+	inline bool GetIsRope() const{ return pIsRope; }
 	
 	/** \brief Sets if this constraint is a rope. */
 	void SetIsRope(bool isRope);
 	
 	/** \brief Breaking impulse threshold or 0 if disabled. */
-	inline float GetBreakingThreshold() const{return pBreakingThreshold;}
+	inline float GetBreakingThreshold() const{ return pBreakingThreshold; }
 	
 	/** \brief Set breaking impulse threshold or 0 to disable. */
 	void SetBreakingThreshold(float impulseThreshold);
 	
 	/** \brief Parent bone index. */
-	inline int GetParentBone() const{return pParentBone;}
+	inline int GetParentBone() const{ return pParentBone; }
 	
 	/** \brief Set parent bone index. */
 	void SetParentBone(int bone);

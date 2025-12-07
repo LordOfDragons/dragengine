@@ -49,7 +49,7 @@ pAction(NULL),
 pCondition(NULL),
 pNewVariable(newVariable)
 {
-	if(! topic || ! action || ! condition){
+	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
 	

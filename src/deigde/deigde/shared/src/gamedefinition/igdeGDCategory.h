@@ -78,22 +78,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
 	/** \brief Parent category or NULL if this is a top category. */
-	inline igdeGDCategory *GetParent() const{return pParent;}
+	inline igdeGDCategory *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent category or NULL if this is a top category. */
 	void SetParent(igdeGDCategory *category);
 	
 	/** \brief Patterns to match to add. */
-	inline const decStringSet &GetAutoCategorizePattern() const{return pAutoCategorizePattern;}
+	inline const decStringSet &GetAutoCategorizePattern() const{ return pAutoCategorizePattern; }
 	
 	/** \brief Set patterns to match to add. */
 	void SetAutoCategorizePattern(const decStringSet &patternList);
@@ -102,7 +102,7 @@ public:
 	igdeGDCategory *AutoCategorize(const decString &path) const;
 	
 	/** \brief Hidden in browser. */
-	inline bool GetHidden() const{return pHidden;}
+	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if hidden in browser. */
 	void SetHidden(bool hidden);

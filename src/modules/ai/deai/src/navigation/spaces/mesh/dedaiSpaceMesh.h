@@ -90,21 +90,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent space. */
-	inline dedaiSpace &GetSpace() const{return pSpace;}
+	inline dedaiSpace &GetSpace() const{ return pSpace; }
 	
 	
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Array of vertices. */
-	inline decVector *GetVertices() const{return pVertices;}
+	inline decVector *GetVertices() const{ return pVertices; }
 	
 	/** \brief Vertex by index. */
 	const decVector &GetVertexAt(int index) const;
 	
 	/** \brief Number of static vertices. */
-	inline int GetStaticVertexCount() const{return pStaticVertexCount;}
+	inline int GetStaticVertexCount() const{ return pStaticVertexCount; }
 	
 	/** \brief Add vertex. */
 	void AddVertex(const decVector &position);
@@ -115,13 +115,13 @@ public:
 	
 	
 	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{return pEdgeCount;}
+	inline int GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Number of static edges. */
-	inline int GetStaticEdgeCount() const{return pStaticEdgeCount;}
+	inline int GetStaticEdgeCount() const{ return pStaticEdgeCount; }
 	
 	/** \brief Array of edges. */
-	inline dedaiSpaceMeshEdge *GetEdges() const{return pEdges;}
+	inline dedaiSpaceMeshEdge *GetEdges() const{ return pEdges; }
 	
 	/** \brief Edge by index. */
 	dedaiSpaceMeshEdge &GetEdgeAt(int index) const;
@@ -135,16 +135,16 @@ public:
 	
 	
 	/** \brief Number of corners. */
-	inline int GetCornerCount() const{return pCornerCount;}
+	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Array of corners. */
-	inline dedaiSpaceMeshCorner *GetCorners() const{return pCorners;}
+	inline dedaiSpaceMeshCorner *GetCorners() const{ return pCorners; }
 	
 	/** \brief Corner by index. */
 	dedaiSpaceMeshCorner &GetCornerAt(int index) const;
 	
 	/** \brief Number of static corners. */
-	inline int GetStaticCornerCount() const{return pStaticCornerCount;}
+	inline int GetStaticCornerCount() const{ return pStaticCornerCount; }
 	
 	/** \brief Add corner. */
 	void AddCorner(unsigned short vertex, unsigned short edge, unsigned short type);
@@ -152,16 +152,16 @@ public:
 	
 	
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Array of faces. */
-	inline dedaiSpaceMeshFace *GetFaces() const{return pFaces;}
+	inline dedaiSpaceMeshFace *GetFaces() const{ return pFaces; }
 	
 	/** \brief Face by index. */
 	dedaiSpaceMeshFace &GetFaceAt(int index) const;
 	
 	/** \brief Number of static faces. */
-	inline int GetStaticFaceCount() const{return pStaticFaceCount;}
+	inline int GetStaticFaceCount() const{ return pStaticFaceCount; }
 	
 	/** \brief Face closest to a position or -1 if not found. */
 	dedaiSpaceMeshFace *GetFaceClosestTo(const decVector &position, float &distance) const;
@@ -181,10 +181,10 @@ public:
 	
 	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/** \brief Array of links. */
-	inline dedaiSpaceMeshLink *GetLinks() const{return pLinks;}
+	inline dedaiSpaceMeshLink *GetLinks() const{ return pLinks; }
 	
 	/** \brief Link by index. */
 	dedaiSpaceMeshLink &GetLinkAt(int index) const;

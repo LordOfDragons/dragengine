@@ -82,7 +82,7 @@ void ceLoadSaveCTS::LoadCTS(ceConversation &conversation, decBaseFileReader &rea
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "conversationTestSetup") != 0){
+	if(!root || strcmp(root->GetName(), "conversationTestSetup") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -236,7 +236,7 @@ void ceLoadSaveCTS::pReadCoordSystem(const decXmlElementTag &root, ceConversatio
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			
@@ -282,7 +282,7 @@ void ceLoadSaveCTS::pReadProp(const decXmlElementTag &root, ceConversation &conv
 		
 		for(i =0; i <elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(! tag){
+			if(!tag){
 				continue;
 			}
 			

@@ -60,7 +60,7 @@ projTRProfile *projTRProfileList::GetAt(int index) const{
 }
 
 projTRProfile *projTRProfileList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -91,7 +91,7 @@ int projTRProfileList::IndexOf(projTRProfile *profile) const{
 }
 
 int projTRProfileList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -108,7 +108,7 @@ int projTRProfileList::IndexOfNamed(const char *name) const{
 }
 
 void projTRProfileList::Add(projTRProfile *profile){
-	if(! profile || HasNamed(profile->GetName().GetString())){
+	if(!profile || HasNamed(profile->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
 	

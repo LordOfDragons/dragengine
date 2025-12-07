@@ -69,7 +69,7 @@ deoglRDSRenderable *deoglDSRenderableColor::GetRRenderable() const{
 void deoglDSRenderableColor::RenderableChanged(){
 	const decColor &color = pRenderableColor.GetColor();
 	
-	if(! color.IsEqualTo(pColor)){
+	if(!color.IsEqualTo(pColor)){
 		pColor = color;
 		pDirty = true;
 		

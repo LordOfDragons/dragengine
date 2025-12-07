@@ -107,7 +107,7 @@ bool igdeTaskSyncGameDefinition::Step(){
 		pOldGameDef = project.GetGameDefinition();
 		pOldGameDef->AddReference();
 		
-		if(! pReloadXMLElementClasses){
+		if(!pReloadXMLElementClasses){
 			pLoadProjectGameDefinition();
 		}
 		
@@ -243,17 +243,17 @@ void igdeTaskSyncGameDefinition::pCreateEditorTasks(){
 	try{
 		for(i=0; i<editorCount; i++){
 			const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt(i);
-			if(! editorDefinition.IsModuleRunning()){
+			if(!editorDefinition.IsModuleRunning()){
 				continue;
 			}
 			
 			igdeEditorModule * const editor = editorDefinition.GetModule();
-			if(! editor){
+			if(!editor){
 				continue;
 			}
 			
 			editorTask = editor->OnGameDefinitionChanged();
-			if(! editorTask){
+			if(!editorTask){
 				continue;
 			}
 			

@@ -45,7 +45,7 @@ gdeObjectClass *objectClass, gdeOCComponent *component) :
 pObjectClass(NULL),
 pComponent(NULL)
 {
-	if(! objectClass || ! component){
+	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -73,7 +73,7 @@ gdeUOCComponentTogglePartialHide::~gdeUOCComponentTogglePartialHide(){
 ///////////////
 
 void gdeUOCComponentTogglePartialHide::Undo(){
-	pComponent->SetPartialHide(! pComponent->GetPartialHide());
+	pComponent->SetPartialHide(!pComponent->GetPartialHide());
 	pObjectClass->NotifyComponentChanged(pComponent);
 }
 

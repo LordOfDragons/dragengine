@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of colons. */
-	inline int GetColons() const{return pColons;}
+	inline int GetColons() const{ return pColons; }
 	
 	/** \brief Number of rows. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Value at coordinate. */
 	int GetValueAt(int x, int y) const;

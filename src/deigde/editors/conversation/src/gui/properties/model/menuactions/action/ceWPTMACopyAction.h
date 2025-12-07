@@ -61,7 +61,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{return pAction;}
+	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

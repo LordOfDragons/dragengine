@@ -42,17 +42,17 @@
 ////////////////////////////
 
 meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, const decVector2 &newScaling){
-	if(! texture){
+	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

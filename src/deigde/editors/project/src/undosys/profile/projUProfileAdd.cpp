@@ -44,7 +44,7 @@ projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile) :
 pProject(NULL),
 pProfile(NULL)
 {
-	if(! project || ! profile){
+	if(!project || !profile){
 		DETHROW(deeInvalidParam);
 	}
 	

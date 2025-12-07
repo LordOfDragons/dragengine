@@ -106,7 +106,7 @@ void ExpressionVisitor::visitExpressionConstant(ExpressionConstantAst *node){
 }
 
 void ExpressionVisitor::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
-	if(! node->nameSequence){
+	if(!node->nameSequence){
 		return;
 	}
 	if(node->nameSequence->count() == 0){
@@ -147,7 +147,7 @@ void ExpressionVisitor::visitFullyQualifiedClassname(FullyQualifiedClassnameAst 
 				decl = Helpers::declarationForName(name, findNameBefore, searchContext);
 			}
 			
-			if(! decl){
+			if(!decl){
 				if(m_reportUnknownNames){
 					addUnknownName(name);
 				}
@@ -172,7 +172,7 @@ void ExpressionVisitor::addUnknownName(const QString& name){
 	if(m_parentVisitor){
 		static_cast<ExpressionVisitor*>(m_parentVisitor)->addUnknownName(name);
 		
-	}else if(! m_unknownNames.contains(name)){
+	}else if(!m_unknownNames.contains(name)){
 		m_unknownNames.insert(name);
 	}
 }

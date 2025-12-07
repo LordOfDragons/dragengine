@@ -93,10 +93,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{return pSession;}
+	inline deoxrSession &GetSession() const{ return pSession; }
 	
 	/** Space. */
-	inline XrSpace GetSpace() const{return pSpace;}
+	inline XrSpace GetSpace() const{ return pSpace; }
 	
 	/**
 	 * Transform relative to another space. If time is not valid or data is not present

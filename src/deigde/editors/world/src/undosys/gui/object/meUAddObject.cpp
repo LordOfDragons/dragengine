@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUAddObject::meUAddObject(meWorld *world, meObject *object){
-	if(! world || ! object){
+	if(!world || !object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -54,7 +54,7 @@ meUAddObject::meUAddObject(meWorld *world, meObject *object){
 }
 
 meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const char *classname){
-	if(! world || ! classname){
+	if(!world || !classname){
 		DETHROW(deeInvalidParam);
 	}
 	

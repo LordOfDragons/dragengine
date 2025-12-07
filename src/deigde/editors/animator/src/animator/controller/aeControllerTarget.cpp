@@ -76,7 +76,7 @@ bool aeControllerTarget::HasLink(aeLink *link) const{
 }
 
 void aeControllerTarget::AddLink(aeLink *link){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);
@@ -93,7 +93,7 @@ void aeControllerTarget::RemoveAllLinks(){
 
 
 void aeControllerTarget::UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const{
-	if(! animator){
+	if(!animator){
 		DETHROW(deeInvalidParam);
 	}
 	

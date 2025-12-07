@@ -164,7 +164,7 @@ void dealWidget::SetExplicitMinimumSize(const decPoint &size){
 }
 
 void dealWidget::ClearExplicitMinimumSize(){
-	if(! pHasExplicitMinSize){
+	if(!pHasExplicitMinSize){
 		return;
 	}
 	
@@ -307,7 +307,7 @@ void dealWidget::SetEnabled(bool enabled){
 }
 
 bool dealWidget::GetFullEnabled() const{
-	if(! pEnabled){
+	if(!pEnabled){
 		return false;
 	}
 	

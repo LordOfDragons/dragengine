@@ -88,7 +88,7 @@ public:
 	/*@{*/
 	
 	/** \brief Unique service name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/**
 	 * \brief Start service request.
@@ -139,16 +139,16 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Service module. */
-	inline deBaseServiceModule *GetServiceModule() const{return pServiceModule;}
+	inline deBaseServiceModule *GetServiceModule() const{ return pServiceModule; }
 	
 	/** \brief Service system peer object. */
-	inline deBaseServiceService *GetPeerService() const{return pPeerService;}
+	inline deBaseServiceService *GetPeerService() const{ return pPeerService; }
 	
 	/** \brief Set service system peer object. */
 	void SetPeerService(deBaseServiceModule *module, deBaseServiceService *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingService *GetPeerScripting() const{return pPeerScripting;}
+	inline deBaseScriptingService *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
 	void SetPeerScripting(deBaseScriptingService *peer);

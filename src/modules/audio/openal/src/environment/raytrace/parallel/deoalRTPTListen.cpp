@@ -111,7 +111,7 @@ void deoalRTPTListen::SetLayerMask(const decLayerMask &layerMask){
 
 
 void deoalRTPTListen::Run(){
-	if(! pSourceProbe){
+	if(!pSourceProbe){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -868,7 +868,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge){
 			lastImpinge.medium = decMath::max(/*segment.GetGainMedium()*/ gainMedium, FLOAT_SAFE_EPSILON);
 			lastImpinge.high = decMath::max(/*segment.GetGainHigh()*/ gainHigh, FLOAT_SAFE_EPSILON);
 			
-			if(! firstImpinge){
+			if(!firstImpinge){
 				localFirstImpinge = lastImpinge;
 				firstImpinge = &localFirstImpinge;
 			}
@@ -1610,7 +1610,7 @@ float distance, float gainLow, float gainMedium, float gainHigh){
 		pLRGainHigh += gainHigh;
 		
 		const float weight = maxGain;
-		if(! direction.IsZero()){
+		if(!direction.IsZero()){
 			pLRPanDirection += direction.Normalized() * weight;
 		}
 		pLRPanDirectionWeightSum += weight;
@@ -1632,7 +1632,7 @@ float distance, float gainLow, float gainMedium, float gainHigh){
 		pFRGainHigh += gainHigh;
 		
 		const float weight = maxGain;
-		if(! direction.IsZero()){
+		if(!direction.IsZero()){
 			pFRPanDirection += direction.Normalized() * weight;
 		}
 		pFRPanDirectionWeightSum += weight;
@@ -1640,7 +1640,7 @@ float distance, float gainLow, float gainMedium, float gainHigh){
 		pFRCount++;
 	}
 	
-	if(! pHasHighestGain || maxGain > pHighestGainGain){
+	if(!pHasHighestGain || maxGain > pHighestGainGain){
 		pHasHighestGain = true;
 		pHighestGainGain = maxGain;
 		pHighestGainDistance = distance;

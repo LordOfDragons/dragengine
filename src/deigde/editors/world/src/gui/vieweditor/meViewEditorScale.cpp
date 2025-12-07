@@ -121,7 +121,7 @@ void meViewEditorScale::OnLeftMouseButtonRelease(int x, int y, bool shift, bool 
 	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
 	if(pUndoScale){
-		if(! (((meBaseUndoScale&)(igdeUndo&)pUndoScale).GetFactors().IsEqualTo(decVector(1.0f, 1.0f, 1.0f)))){
+		if(!(((meBaseUndoScale&)(igdeUndo&)pUndoScale).GetFactors().IsEqualTo(decVector(1.0f, 1.0f, 1.0f)))){
 			GetWorld().GetUndoSystem()->Add(pUndoScale, false);
 		}
 		pUndoScale = NULL;

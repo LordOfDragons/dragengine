@@ -237,25 +237,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World. */
-	inline deWorld *GetWorld() const{return pWorld;}
+	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** Camera. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** View ratio used to properly align camera on preview objects. */
-	inline float GetViewRatio() const{return pViewRatio;}
+	inline float GetViewRatio() const{ return pViewRatio; }
 	
 	/** Set view ratio used to properly align camera on preview objects. */
 	void SetViewRatio(float viewRatio);
 	
 	/** Sky wrapper. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	
 	/** Environment wrapper object. */
-	inline const igdeWObject::Ref &GetEnvObject() const{return pEnvObject;}
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Is project game definition. */
-	inline bool GetIsProjectGameDef() const{return pIsProjectGameDef;}
+	inline bool GetIsProjectGameDef() const{ return pIsProjectGameDef; }
 	
 	/** Set if this is project game definition. */
 	void SetIsProjectGameDef(bool isProjectGameDef);
@@ -263,31 +263,31 @@ public:
 	
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Description. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Set description. */
 	void SetDescription(const char *description);
 	
 	/** Get base path. */
-	inline const decString &GetBasePath() const{return pBasePath;}
+	inline const decString &GetBasePath() const{ return pBasePath; }
 	
 	/** Set base path. */
 	void SetBasePath(const char *path);
 	
 	/** Get vfs path. */
-	inline const decString &GetVFSPath() const{return pVFSPath;}
+	inline const decString &GetVFSPath() const{ return pVFSPath; }
 	
 	/** Set vfs path. */
 	void SetVFSPath(const char *path);
 	
 	/** Script module this game definition is compatible with. */
-	inline const decString &GetScriptModule() const{return pScriptModule;}
+	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** Set script module this game definition is compatible with. */
 	void SetScriptModule(const char *identifier);
@@ -295,7 +295,7 @@ public:
 	
 	
 	/** Base game definition id list. */
-	inline const decStringList &GetBaseGameDefinitionIDList() const{return pBaseGameDefinitionIDList;}
+	inline const decStringList &GetBaseGameDefinitionIDList() const{ return pBaseGameDefinitionIDList; }
 	
 	/** Set base game definition id list. */
 	void SetBaseGameDefinitionIDList(const decStringList &ids);
@@ -312,19 +312,19 @@ public:
 	
 	
 	/** Path to object class. */
-	inline const decString &GetDefaultObjectClass() const{return pDefaultObjectClass;}
+	inline const decString &GetDefaultObjectClass() const{ return pDefaultObjectClass; }
 	
 	/** Set path to object class. */
 	void SetDefaultObjectClass(const char *objectClass);
 	
 	/** Path to skin. */
-	inline const decString &GetDefaultSkin() const{return pDefaultSkin;}
+	inline const decString &GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** Set path to skin. */
 	void SetDefaultSkin(const char *skin);
 	
 	/** Path to sky. */
-	inline const decString &GetDefaultSky() const{return pDefaultSky;}
+	inline const decString &GetDefaultSky() const{ return pDefaultSky; }
 	
 	/** Set path to sky. */
 	void SetDefaultSky(const char *sky);
@@ -332,8 +332,8 @@ public:
 	
 	
 	/** Object class categories. */
-	inline gdeCategoryList &GetCategoriesObjectClass(){return pCategoriesObjectClass;}
-	inline const gdeCategoryList &GetCategoriesObjectClass() const{return pCategoriesObjectClass;}
+	inline gdeCategoryList &GetCategoriesObjectClass(){ return pCategoriesObjectClass; }
+	inline const gdeCategoryList &GetCategoriesObjectClass() const{ return pCategoriesObjectClass; }
 	
 	/** Find object class category with path or \em NULL if absent. */
 	const gdeCategory *FindCategoryObjectClass(const char *path) const;
@@ -342,19 +342,19 @@ public:
 	const decStringSet &GetObjectClassCategoryNameList();
 	
 	/** Skin categories. */
-	inline gdeCategoryList &GetCategoriesSkin(){return pCategoriesSkin;}
-	inline const gdeCategoryList &GetCategoriesSkin() const{return pCategoriesSkin;}
+	inline gdeCategoryList &GetCategoriesSkin(){ return pCategoriesSkin; }
+	inline const gdeCategoryList &GetCategoriesSkin() const{ return pCategoriesSkin; }
 	
 	/** Sky categories. */
-	inline gdeCategoryList &GetCategoriesSky(){return pCategoriesSky;}
-	inline const gdeCategoryList &GetCategoriesSky() const{return pCategoriesSky;}
+	inline gdeCategoryList &GetCategoriesSky(){ return pCategoriesSky; }
+	inline const gdeCategoryList &GetCategoriesSky() const{ return pCategoriesSky; }
 	
 	/** Particle emitter categories. */
-	inline gdeCategoryList &GetCategoriesParticleEmitter(){return pCategoriesParticleEmitter;}
-	inline const gdeCategoryList &GetCategoriesParticleEmitter() const{return pCategoriesParticleEmitter;}
+	inline gdeCategoryList &GetCategoriesParticleEmitter(){ return pCategoriesParticleEmitter; }
+	inline const gdeCategoryList &GetCategoriesParticleEmitter() const{ return pCategoriesParticleEmitter; }
 	
 	/** Active category or \em NULL if not set. */
-	inline gdeCategory *GetActiveCategory() const{return pActiveCategory;}
+	inline gdeCategory *GetActiveCategory() const{ return pActiveCategory; }
 	
 	/** Set active category or \em NULL if not set. */
 	void SetActiveCategory(gdeCategory *category);
@@ -362,8 +362,8 @@ public:
 	
 	
 	/** Object class used tags. */
-	inline decStringSet &GetUsedTagsObjectClass(){return pUsedTagsObjectClass;}
-	inline const decStringSet &GetUsedTagsObjectClass() const{return pUsedTagsObjectClass;}
+	inline decStringSet &GetUsedTagsObjectClass(){ return pUsedTagsObjectClass; }
+	inline const decStringSet &GetUsedTagsObjectClass() const{ return pUsedTagsObjectClass; }
 	
 	/** Update object class used tags. */
 	void UpdateUsedTagsObjectClass();
@@ -371,8 +371,8 @@ public:
 	
 	
 	/** World properties. */
-	inline gdePropertyList &GetWorldProperties(){return pWorldProperties;}
-	inline const gdePropertyList &GetWorldProperties() const{return pWorldProperties;}
+	inline gdePropertyList &GetWorldProperties(){ return pWorldProperties; }
+	inline const gdePropertyList &GetWorldProperties() const{ return pWorldProperties; }
 	
 	/** Notify listeners world properties changed. */
 	void NotifyWorldPropertiesChanged();
@@ -386,8 +386,8 @@ public:
 	
 	
 	/** Decal properties. */
-	inline gdePropertyList &GetDecalProperties(){return pDecalProperties;}
-	inline const gdePropertyList &GetDecalProperties() const{return pDecalProperties;}
+	inline gdePropertyList &GetDecalProperties(){ return pDecalProperties; }
+	inline const gdePropertyList &GetDecalProperties() const{ return pDecalProperties; }
 	
 	/** Notify listeners world properties changed. */
 	void NotifyDecalPropertiesChanged();
@@ -401,7 +401,7 @@ public:
 	
 	
 	/** Auto find path for object classes. */
-	inline const decStringList &GetAutoFindPathObjectClasses() const{return pAutoFindPathObjectClasses;}
+	inline const decStringList &GetAutoFindPathObjectClasses() const{ return pAutoFindPathObjectClasses; }
 	
 	/** Set auto find path for object classes. */
 	void SetAutoFindPathObjectClasses(const decStringList &list);
@@ -410,7 +410,7 @@ public:
 	void NotifyAutoFindPathObjectClassesChanged();
 	
 	/** Auto find path for skins. */
-	inline const decStringList &GetAutoFindPathSkins() const{return pAutoFindPathSkins;}
+	inline const decStringList &GetAutoFindPathSkins() const{ return pAutoFindPathSkins; }
 	
 	/** Set auto find path for skins. */
 	void SetAutoFindPathSkins(const decStringList &list);
@@ -419,7 +419,7 @@ public:
 	void NotifyAutoFindPathSkinsChanged();
 	
 	/** Auto find path for skies. */
-	inline const decStringList &GetAutoFindPathSkies() const{return pAutoFindPathSkies;}
+	inline const decStringList &GetAutoFindPathSkies() const{ return pAutoFindPathSkies; }
 	
 	/** Set auto find path for skies. */
 	void SetAutoFindPathSkies(const decStringList &list);
@@ -430,7 +430,7 @@ public:
 	
 	
 	/** Selected object type. */
-	inline eObjectTypes GetSelectedObjectType() const{return pSelectedObjectType;}
+	inline eObjectTypes GetSelectedObjectType() const{ return pSelectedObjectType; }
 	
 	/** Set selected object type. */
 	void SetSelectedObjectType(eObjectTypes objectType);
@@ -438,10 +438,10 @@ public:
 	
 	
 	/** List of defined identifiers. */
-	inline const decStringSet &GetDefinedIDs() const{return pDefinedIDs;}
+	inline const decStringSet &GetDefinedIDs() const{ return pDefinedIDs; }
 	
 	/** List of used identifiers. */
-	inline const decStringSet &GetUsedIDs() const{return pUsedIDs;}
+	inline const decStringSet &GetUsedIDs() const{ return pUsedIDs; }
 	
 	/** Update all identifiers. */
 	void UpdateDefinedUsedIDs();
@@ -469,7 +469,7 @@ public:
 	/** \name Object classes */
 	/*@{*/
 	/** Object classes. */
-	inline const gdeObjectClassList &GetObjectClasses() const{return pObjectClasses;}
+	inline const gdeObjectClassList &GetObjectClasses() const{ return pObjectClasses; }
 	
 	/** Add object class. */
 	void AddObjectClass(gdeObjectClass *objectClass);
@@ -489,7 +489,7 @@ public:
 	
 	
 	/** Active object class or \em NULL if none is active. */
-	inline gdeObjectClass *GetActiveObjectClass() const{return pActiveObjectClass;}
+	inline gdeObjectClass *GetActiveObjectClass() const{ return pActiveObjectClass; }
 	
 	/** Set active object class or \em NULL if none is active. */
 	void SetActiveObjectClass(gdeObjectClass *objectClass);
@@ -500,7 +500,7 @@ public:
 	
 	
 	/** Active object class billboard or \em NULL if none is active. */
-	inline gdeOCBillboard *GetActiveOCBillboard() const{return pActiveOCBillboard;}
+	inline gdeOCBillboard *GetActiveOCBillboard() const{ return pActiveOCBillboard; }
 	
 	/** Set active object class billboard or \em NULL if none is active. */
 	void SetActiveOCBillboard(gdeOCBillboard *billboard);
@@ -511,7 +511,7 @@ public:
 	
 	
 	/** Active object class camera or \em NULL if none is active. */
-	inline gdeOCCamera *GetActiveOCCamera() const{return pActiveOCCamera;}
+	inline gdeOCCamera *GetActiveOCCamera() const{ return pActiveOCCamera; }
 	
 	/** Set active object class camera or \em NULL if none is active. */
 	void SetActiveOCCamera(gdeOCCamera *camera);
@@ -522,7 +522,7 @@ public:
 	
 	
 	/** Active object class component or \em NULL if none is active. */
-	inline gdeOCComponent *GetActiveOCComponent() const{return pActiveOCComponent;}
+	inline gdeOCComponent *GetActiveOCComponent() const{ return pActiveOCComponent; }
 	
 	/** Set active object class component or \em NULL if none is active. */
 	void SetActiveOCComponent(gdeOCComponent *component);
@@ -533,7 +533,7 @@ public:
 	
 	
 	/** Active object class environment map probe or \em NULL if none is active. */
-	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{return pActiveOCEnvMapProbe;}
+	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
 	
 	/** Set active object class environment map probe or \em NULL if none is active. */
 	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
@@ -544,7 +544,7 @@ public:
 	
 	
 	/** Active object class light or \em NULL if none is active. */
-	inline gdeOCLight *GetActiveOCLight() const{return pActiveOCLight;}
+	inline gdeOCLight *GetActiveOCLight() const{ return pActiveOCLight; }
 	
 	/** Set active object class light or \em NULL if none is active. */
 	void SetActiveOCLight(gdeOCLight *light);
@@ -555,7 +555,7 @@ public:
 	
 	
 	/** Active object class navigation blocker or \em NULL if none is active. */
-	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{return pActiveOCNavigationBlocker;}
+	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
 	
 	/** Set active object class navigation blocker or \em NULL if none is active. */
 	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker);
@@ -566,7 +566,7 @@ public:
 	
 	
 	/** Active object class navigation space or \em NULL if none is active. */
-	inline gdeOCNavigationSpace *GetActiveOCNavigationSpace() const{return pActiveOCNavigationSpace;}
+	inline gdeOCNavigationSpace *GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
 	
 	/** Set active object class navigation space or \em NULL if none is active. */
 	void SetActiveOCNavigationSpace(gdeOCNavigationSpace *navspace);
@@ -577,7 +577,7 @@ public:
 	
 	
 	/** Active object class particle emitter or \em NULL if none is active. */
-	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{return pActiveOCParticleEmitter;}
+	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
 	
 	/** Set active object class particle emitter or \em NULL if none is active. */
 	void SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter);
@@ -588,7 +588,7 @@ public:
 	
 	
 	/** Active object class force field or \em NULL if none is active. */
-	inline gdeOCForceField *GetActiveOCForceField() const{return pActiveOCForceField;}
+	inline gdeOCForceField *GetActiveOCForceField() const{ return pActiveOCForceField; }
 	
 	/** Set active object class force field or \em NULL if none is active. */
 	void SetActiveOCForceField(gdeOCForceField *field);
@@ -599,7 +599,7 @@ public:
 	
 	
 	/** Active object class snap point or \em NULL if none is active. */
-	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{return pActiveOCSnapPoint;}
+	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
 	
 	/** Set active object class snap point or \em NULL if none is active. */
 	void SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint);
@@ -610,7 +610,7 @@ public:
 	
 	
 	/** Active object class speaker or \em NULL if none is active. */
-	inline gdeOCSpeaker *GetActiveOCSpeaker() const{return pActiveOCSpeaker;}
+	inline gdeOCSpeaker *GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
 	
 	/** Set active object class speaker or \em NULL if none is active. */
 	void SetActiveOCSpeaker(gdeOCSpeaker *speaker);
@@ -621,7 +621,7 @@ public:
 	
 	
 	/** Active object class world or nullptr if none is active. */
-	inline const gdeOCWorld::Ref &GetActiveOCWorld() const{return pActiveOCWorld;}
+	inline const gdeOCWorld::Ref &GetActiveOCWorld() const{ return pActiveOCWorld; }
 	
 	/** Set active object class world or nullptr if none is active. */
 	void SetActiveOCWorld(gdeOCWorld *world);
@@ -636,7 +636,7 @@ public:
 	/** \name Particle Emitters */
 	/*@{*/
 	/** Particle emitters. */
-	inline const gdeParticleEmitterList &GetParticleEmitters() const{return pParticleEmitters;}
+	inline const gdeParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Add particle emitter. */
 	void AddParticleEmitter(gdeParticleEmitter *particleEmitter);
@@ -648,7 +648,7 @@ public:
 	void RemoveAllParticleEmitters();
 	
 	/** Active particle emitter or \em NULL if none is active. */
-	inline gdeParticleEmitter *GetActiveParticleEmitter() const{return pActiveParticleEmitter;}
+	inline gdeParticleEmitter *GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
 	
 	/** Set active particle emitter or \em NULL if none is active. */
 	void SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter);
@@ -663,7 +663,7 @@ public:
 	/** \name Skins */
 	/*@{*/
 	/** Skins. */
-	inline const gdeSkinList &GetSkins() const{return pSkins;}
+	inline const gdeSkinList &GetSkins() const{ return pSkins; }
 	
 	/** Add skin. */
 	void AddSkin(gdeSkin *skin);
@@ -675,7 +675,7 @@ public:
 	void RemoveAllSkins();
 	
 	/** Active skin or \em NULL if none is active. */
-	inline gdeSkin *GetActiveSkin() const{return pActiveSkin;}
+	inline gdeSkin *GetActiveSkin() const{ return pActiveSkin; }
 	
 	/** Set active skin or \em NULL if none is active. */
 	void SetActiveSkin(gdeSkin *skin);
@@ -690,7 +690,7 @@ public:
 	/** \name Skins */
 	/*@{*/
 	/** Skins. */
-	inline const gdeSkyList &GetSkies() const{return pSkies;}
+	inline const gdeSkyList &GetSkies() const{ return pSkies; }
 	
 	/** Add sky. */
 	void AddSky(gdeSky *sky);
@@ -702,7 +702,7 @@ public:
 	void RemoveAllSkies();
 	
 	/** Active sky or \em NULL if none is active. */
-	inline gdeSky *GetActiveSky() const{return pActiveSky;}
+	inline gdeSky *GetActiveSky() const{ return pActiveSky; }
 	
 	/** Set active sky or \em NULL if none is active. */
 	void SetActiveSky(gdeSky *sky);

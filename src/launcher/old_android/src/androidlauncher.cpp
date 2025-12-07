@@ -116,7 +116,7 @@ static void processAndroidCommand(struct android_app *app, int32_t cmd){
 		
 	case APP_CMD_INIT_WINDOW:
 		// window is being shown, get it ready.
-		if(! launcher.HasAppWindow()){
+		if(!launcher.HasAppWindow()){
 			break;
 		};
 		

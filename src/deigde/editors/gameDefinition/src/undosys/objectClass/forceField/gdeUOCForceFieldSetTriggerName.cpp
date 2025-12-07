@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pForceField(NULL),
 pTrigger(trigger)
 {
-	if(! objectClass || ! forceField){
+	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
 	}
 	

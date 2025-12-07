@@ -47,13 +47,13 @@ deSoundLevelMeter::cAudibleSpeaker::cAudibleSpeaker(deSpeaker *speaker, float vo
 pSpeaker(speaker),
 pVolume(decMath::max(volume, 0.0f))
 {
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 }
 
 void deSoundLevelMeter::cAudibleSpeaker::SetSpeaker(deSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	pSpeaker = speaker;
@@ -222,7 +222,7 @@ void deSoundLevelMeter::NotifySpeakerAudible(const deSoundLevelMeter::cAudibleSp
 }
 
 void deSoundLevelMeter::NotifySpeakerInaudible(deSpeaker *speaker){
-	if(! speaker){
+	if(!speaker){
 		DETHROW(deeInvalidParam);
 	}
 	

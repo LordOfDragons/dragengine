@@ -54,23 +54,23 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	/** Sets the index. */
 	void SetIndex(int index);
 	/** Retrieves the index of the first vertex. */
-	inline int GetVertex1() const{return pVertex1;}
+	inline int GetVertex1() const{ return pVertex1; }
 	/** Sets the index of the first vertex. */
 	void SetVertex1(int vertex);
 	/** Retrieves the index of the second vertex. */
-	inline int GetVertex2() const{return pVertex2;}
+	inline int GetVertex2() const{ return pVertex2; }
 	/** Sets the index of the second vertex. */
 	void SetVertex2(int vertex);
 	/** Retrieves the first face or NULL if there is none. */
-	inline dedaiNavMeshBuilderFace *GetFace1() const{return pFace1;}
+	inline dedaiNavMeshBuilderFace *GetFace1() const{ return pFace1; }
 	/** Sets the first face or NULL if there is none. */
 	void SetFace1(dedaiNavMeshBuilderFace *face);
 	/** Retrieves the second face or NULL if there is none. */
-	inline dedaiNavMeshBuilderFace *GetFace2() const{return pFace2;}
+	inline dedaiNavMeshBuilderFace *GetFace2() const{ return pFace2; }
 	/** Sets the second face or NULL if there is none. */
 	void SetFace2(dedaiNavMeshBuilderFace *face);
 	/*@}*/

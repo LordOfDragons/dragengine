@@ -78,7 +78,7 @@ const ceStripList &ceWDSLaneGesture::GetStripList() const{
 
 void ceWDSLaneGesture::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if(! action){
+	if(!action){
 		return;
 	}
 	

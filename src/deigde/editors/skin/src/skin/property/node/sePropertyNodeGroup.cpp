@@ -125,7 +125,7 @@ int sePropertyNodeGroup::IndexOfNode(sePropertyNode *node) const{
 }
 
 void sePropertyNodeGroup::AddNode(sePropertyNode *node){
-	if(! node || node->GetProperty()){
+	if(!node || node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -136,7 +136,7 @@ void sePropertyNodeGroup::AddNode(sePropertyNode *node){
 }
 
 void sePropertyNodeGroup::InsertNode(int index, sePropertyNode *node){
-	if(! node || node->GetProperty()){
+	if(!node || node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -154,7 +154,7 @@ void sePropertyNodeGroup::RemoveNode(sePropertyNode *node){
 		}
 	}
 	
-	if(! pNodes.Has(node)){
+	if(!pNodes.Has(node)){
 		DETHROW(deeInvalidParam);
 	}
 	

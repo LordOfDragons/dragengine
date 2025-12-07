@@ -83,7 +83,7 @@ void deClassSkyInstance::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 	
 	sSkyInstNatDat &nd = *((sSkyInstNatDat*)p_GetNativeData(myself));
-	if(! nd.instance){
+	if(!nd.instance){
 		return;
 	}
 	
@@ -272,7 +272,7 @@ void deClassSkyInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkyInstance * const clsSkyInst = (deClassSkyInstance*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsSkyInst)){
+	if(!p_IsObjOfType(obj, clsSkyInst)){
 		rt->PushBool(false);
 		
 	}else{
@@ -347,7 +347,7 @@ void deClassSkyInstance::CreateClassMembers(dsEngine *engine){
 }
 
 deSkyInstance *deClassSkyInstance::GetInstance(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -355,11 +355,11 @@ deSkyInstance *deClassSkyInstance::GetInstance(dsRealObject *myself) const{
 }
 
 void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! instance){
+	if(!instance){
 		rt->PushObject(NULL, this);
 		return;
 	}

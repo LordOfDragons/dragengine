@@ -45,7 +45,7 @@ seULinkAdd::seULinkAdd(seSynthesizer *synthesizer, seLink *link) :
 pSynthesizer(NULL),
 pLink(NULL)
 {
-	if(! link || ! synthesizer){
+	if(!link || !synthesizer){
 		DETHROW(deeInvalidParam);
 	}
 	

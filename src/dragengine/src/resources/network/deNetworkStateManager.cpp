@@ -109,7 +109,7 @@ void deNetworkStateManager::SystemNetworkLoad(){
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
 	while(state){
-		if(! state->GetPeerNetwork()){
+		if(!state->GetPeerNetwork()){
 			netSys.LoadState(state);
 		}
 		
@@ -131,7 +131,7 @@ void deNetworkStateManager::SystemScriptingLoad(){
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(state){
-		if(! state->GetPeerScripting()){
+		if(!state->GetPeerScripting()){
 			scrSys.LoadNetworkState(state);
 		}
 		

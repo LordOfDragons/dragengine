@@ -61,18 +61,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal pointer. */
-	inline meDecal *GetDecal() const{return pDecal;}
+	inline meDecal *GetDecal() const{ return pDecal; }
 	/** Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{return pParentObject;}
+	inline meObject *GetParentObject() const{ return pParentObject; }
 	/** Retrieves the index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Retrieves the position before the action too place. */
-	inline const decDVector &GetOldPosition() const{return pOldPosition;}
+	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
 	/** Retrieves the orientation before the action too place. */
-	inline const decVector &GetOldOrientation() const{return pOldOrientation;}
+	inline const decVector &GetOldOrientation() const{ return pOldOrientation; }
 	/** Retrieves the size before the action too place. */
-	inline const decVector &GetOldSize() const{return pOldSize;}
+	inline const decVector &GetOldSize() const{ return pOldSize; }
 	/*@}*/
 };
 

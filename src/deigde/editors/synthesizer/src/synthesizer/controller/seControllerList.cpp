@@ -90,14 +90,14 @@ bool seControllerList::HasNamed(const char *name) const{
 }
 
 void seControllerList::Add(seController *controller){
-	if(! controller || HasNamed(controller->GetName())){
+	if(!controller || HasNamed(controller->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Add(controller);
 }
 
 void seControllerList::Insert(seController *controller, int index){
-	if(! controller || HasNamed(controller->GetName())){
+	if(!controller || HasNamed(controller->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pControllers.Insert(controller, index);

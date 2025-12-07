@@ -87,7 +87,7 @@ void deoglREffectColorMatrix::SetColorMatrix(const decColorMatrix &colorMatrix){
 
 
 const deoglPipeline *deoglREffectColorMatrix::GetPipeline(){
-	if(! pPipeline){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
@@ -106,7 +106,7 @@ const deoglPipeline *deoglREffectColorMatrix::GetPipeline(){
 }
 
 const deoglPipeline *deoglREffectColorMatrix::GetPipelineStereo(){
-	if(! pPipelineStereo){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;

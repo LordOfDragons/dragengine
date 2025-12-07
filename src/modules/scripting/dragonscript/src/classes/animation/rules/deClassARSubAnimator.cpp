@@ -180,7 +180,7 @@ deClassARSubAnimator::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : 
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARSubAnimator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -210,7 +210,7 @@ deClassARSubAnimator::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInit
 	p_AddParameter(init.clsARSubAnimatorTarget); // target
 }
 void deClassARSubAnimator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -286,7 +286,7 @@ void deClassARSubAnimator::nfSetMatchingConnections::RunFunction(dsRunTime *rt, 
 	deScriptingDragonScript &ds = ((deClassARSubAnimator*)GetOwnerClass())->GetDS();
 	
 	deAnimator * const animator = ds.GetClassAnimator()->GetAnimator(rt->GetValue(0)->GetRealObject());
-	if(! animator){
+	if(!animator){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -377,7 +377,7 @@ void deClassARSubAnimator::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimatorRuleSubAnimator *deClassARSubAnimator::GetRule(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -385,7 +385,7 @@ deAnimatorRuleSubAnimator *deClassARSubAnimator::GetRule(dsRealObject *myself) c
 }
 
 void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -409,11 +409,11 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *anim
 }
 
 void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleSubAnimator *rule){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! rule){
+	if(!rule){
 		rt->PushObject(NULL, this);
 		return;
 	}

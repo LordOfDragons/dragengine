@@ -58,7 +58,7 @@ deFileResourceManager::~deFileResourceManager(){
 
 bool deFileResourceManager::FindFileForReading(decPath &path, const deVirtualFileSystem &vfs,
 const char *filename, const char *basePath) const{
-	if(! decPath::IsUnixPathAbsolute(basePath)){
+	if(!decPath::IsUnixPathAbsolute(basePath)){
 		DETHROW(deeInvalidParam);
 	}
 	

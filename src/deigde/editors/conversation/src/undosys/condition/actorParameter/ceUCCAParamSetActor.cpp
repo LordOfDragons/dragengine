@@ -44,7 +44,7 @@
 
 ceUCCAParamSetActor::ceUCCAParamSetActor(ceConversationTopic *topic, ceConversationAction *action,
 ceCConditionActorParameter *condition, const char *newActor){
-	if(! topic || ! action || ! condition) DETHROW(deeInvalidParam);
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

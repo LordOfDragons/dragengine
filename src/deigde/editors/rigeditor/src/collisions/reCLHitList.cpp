@@ -60,7 +60,7 @@ reCLHitListEntry *reCLHitList::GetEntryAt(int index) const{
 }
 
 int reCLHitList::IndexOfEntry(reCLHitListEntry *entry) const{
-	if(! entry) DETHROW(deeInvalidParam);
+	if(!entry) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pEntryCount; i++){
@@ -71,7 +71,7 @@ int reCLHitList::IndexOfEntry(reCLHitListEntry *entry) const{
 }
 
 bool reCLHitList::HasEntry(reCLHitListEntry *entry) const{
-	if(! entry) DETHROW(deeInvalidParam);
+	if(!entry) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pEntryCount; i++){
@@ -87,7 +87,7 @@ void reCLHitList::AddEntry(reCLHitListEntry *entry){
 	if(pEntryCount == pEntrySize){
 		int newSize = pEntryCount * 3 / 2 + 1;
 		reCLHitListEntry **newArray = new reCLHitListEntry*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pEntries){
 			memcpy(newArray, pEntries, sizeof(reCLHitListEntry*) * pEntrySize);
 			delete [] pEntries;

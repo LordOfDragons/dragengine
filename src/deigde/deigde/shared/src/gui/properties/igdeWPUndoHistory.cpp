@@ -119,7 +119,7 @@ void igdeWPUndoHistory::SetUndoSystem(igdeUndoSystem *undoSystem){
 void igdeWPUndoHistory::UpdateUndo(){
 	pListUndo->RemoveAllItems();
 	
-	if(! pUndoSystem){
+	if(!pUndoSystem){
 		return;
 	}
 	

@@ -205,37 +205,37 @@ public:
 	void Clear();
 	
 	/** \brief Assigned height terrain or NULL. */
-	inline deHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set assigned height terrain or NULL to remove it. */
 	void SetHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** \brief Size of the world. */
-	inline const decDVector &GetSize() const{return pSize;}
+	inline const decDVector &GetSize() const{ return pSize; }
 	
 	/** \brief Set size of the world. */
 	void SetSize(const decDVector &size);
 	
 	/** \brief World gravity vector. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set world gravity vector. */
 	void SetGravity(const decVector &gravity);
 	
 	/** \brief Determines if all lights are disables. */
-	inline bool GetDisableLights() const{return pDisableLights;}
+	inline bool GetDisableLights() const{ return pDisableLights; }
 	
 	/** \brief Sets if all lights are disabled. */
 	void SetDisableLights(bool disable);
 	
 	/** \brief Ambient light color. */
-	inline const decColor &GetAmbientLight() const{return pAmbient;}
+	inline const decColor &GetAmbientLight() const{ return pAmbient; }
 	
 	/** \brief Set ambient light color. */
 	void SetAmbientLight(const decColor &color);
 	
 	/** \brief Light color matrix. */
-	inline const decMatrix &GetLightColorMatrix() const{return pLightColorMatrix;}
+	inline const decMatrix &GetLightColorMatrix() const{ return pLightColorMatrix; }
 	
 	/** \brief Set light color matrix. */
 	void SetLightColorMatrix(const decMatrix &matrix);
@@ -244,7 +244,7 @@ public:
 	 * \brief Gain to multiply all speakers with.
 	 * \version 1.16
 	 */
-	inline float GetSpeakerGain() const{return pSpeakerGain;}
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
 	
 	/**
 	 * \brief Set gain to multiply all speakers with.
@@ -279,10 +279,10 @@ public:
 	/** \name Skies */
 	/*@{*/
 	/** \brief Count of skies. */
-	inline int GetSkyCount() const{return pSkyCount;}
+	inline int GetSkyCount() const{ return pSkyCount; }
 	
 	/** \brief Root sky or NULL if there are none. */
-	inline deSkyInstance *GetRootSky() const{return pSkyRoot;}
+	inline deSkyInstance *GetRootSky() const{ return pSkyRoot; }
 	
 	/**
 	 * \brief Add sky.
@@ -307,10 +307,10 @@ public:
 	/** \name Billboards */
 	/*@{*/
 	/** \brief Count of billboards. */
-	inline int GetBillboardCount() const{return pBillboardCount;}
+	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
 	/** \brief Root billboard or NULL if there are none. */
-	inline deBillboard *GetRootBillboard() const{return pBillboardRoot;}
+	inline deBillboard *GetRootBillboard() const{ return pBillboardRoot; }
 	
 	/**
 	 * \brief Add billboard.
@@ -335,10 +335,10 @@ public:
 	/** \name Cameras */
 	/*@{*/
 	/** \brief Count of cameras. */
-	inline int GetCameraCount() const{return pCameraCount;}
+	inline int GetCameraCount() const{ return pCameraCount; }
 	
 	/** \brief Root camera or NULL if there are none. */
-	inline deCamera *GetRootCamera() const{return pCameraRoot;}
+	inline deCamera *GetRootCamera() const{ return pCameraRoot; }
 	
 	/**
 	 * \brief Add camera.
@@ -363,10 +363,10 @@ public:
 	/** \name Colliders */
 	/*@{*/
 	/** \brief Count of colliders. */
-	inline int GetColliderCount() const{return pColliderCount;}
+	inline int GetColliderCount() const{ return pColliderCount; }
 	
 	/** \brief Root collider or NULL if there are none. */
-	inline deCollider *GetRootCollider() const{return pColliderRoot;}
+	inline deCollider *GetRootCollider() const{ return pColliderRoot; }
 	
 	/**
 	 * \brief Add collider.
@@ -391,10 +391,10 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** \brief Count of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Root component or NULL if there are none. */
-	inline deComponent *GetRootComponent() const{return pComponentRoot;}
+	inline deComponent *GetRootComponent() const{ return pComponentRoot; }
 	
 	/**
 	 * \brief Add component.
@@ -419,10 +419,10 @@ public:
 	/** \name Debug drawers */
 	/*@{*/
 	/** \brief Count of debug drawers. */
-	inline int GetDebugDrawerCount() const{return pDebugDrawerCount;}
+	inline int GetDebugDrawerCount() const{ return pDebugDrawerCount; }
 	
 	/** \brief Root debug drawer or NULL if there are none. */
-	inline deDebugDrawer *GetRootDebugDrawer() const{return pDebugDrawerRoot;}
+	inline deDebugDrawer *GetRootDebugDrawer() const{ return pDebugDrawerRoot; }
 	
 	/**
 	 * \brief Add debugDrawer.
@@ -447,10 +447,10 @@ public:
 	/** \name Environment map probes. */
 	/*@{*/
 	/** \brief Count of environment map probes. */
-	inline int GetEnvMapProbeCount() const{return pEnvMapProbeCount;}
+	inline int GetEnvMapProbeCount() const{ return pEnvMapProbeCount; }
 	
 	/** \brief Root environment map probe or NULL if there are none. */
-	inline deEnvMapProbe *GetRootEnvMapProbe() const{return pEnvMapProbeRoot;}
+	inline deEnvMapProbe *GetRootEnvMapProbe() const{ return pEnvMapProbeRoot; }
 	
 	/**
 	 * \brief Add environment map probe.
@@ -475,10 +475,10 @@ public:
 	/** \name Force fields */
 	/*@{*/
 	/** \brief Count of force fields. */
-	inline int GetForceFieldCount() const{return pForceFieldCount;}
+	inline int GetForceFieldCount() const{ return pForceFieldCount; }
 	
 	/** \brief Root force field or NULL if there are none. */
-	inline deForceField *GetRootForceField() const{return pForceFieldRoot;}
+	inline deForceField *GetRootForceField() const{ return pForceFieldRoot; }
 	
 	/**
 	 * \brief Add force field.
@@ -503,10 +503,10 @@ public:
 	/** \name Lights */
 	/*@{*/
 	/** \brief Count of lights. */
-	inline int GetLightCount() const{return pLightCount;}
+	inline int GetLightCount() const{ return pLightCount; }
 	
 	/** \brief Root light or NULL if there are none. */
-	inline deLight *GetRootLight() const{return pLightRoot;}
+	inline deLight *GetRootLight() const{ return pLightRoot; }
 	
 	/**
 	 * \brief Add light.
@@ -531,10 +531,10 @@ public:
 	/** \name Lumimeters */
 	/*@{*/
 	/** \brief Count of lumimeters. */
-	inline int GetLumimeterCount() const{return pLumimeterCount;}
+	inline int GetLumimeterCount() const{ return pLumimeterCount; }
 	
 	/** \brief Root lumimeter or NULL if there are none. */
-	inline deLumimeter *GetRootLumimeter() const{return pLumimeterRoot;}
+	inline deLumimeter *GetRootLumimeter() const{ return pLumimeterRoot; }
 	
 	/**
 	 * \brief Add lumimeter.
@@ -559,10 +559,10 @@ public:
 	/** \name Microphones */
 	/*@{*/
 	/** \brief Count of microphones. */
-	inline int GetMicrophoneCount() const{return pMicrophoneCount;}
+	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
 	
 	/** \brief Root microphone or NULL if there are none. */
-	inline deMicrophone *GetRootMicrophone() const{return pMicrophoneRoot;}
+	inline deMicrophone *GetRootMicrophone() const{ return pMicrophoneRoot; }
 	
 	/**
 	 * \brief Add microphone.
@@ -587,10 +587,10 @@ public:
 	/** \name Navigation spaces */
 	/*@{*/
 	/** \brief Count of navigation spaces. */
-	inline int GetNavigationSpaceCount() const{return pNavSpaceCount;}
+	inline int GetNavigationSpaceCount() const{ return pNavSpaceCount; }
 	
 	/** \brief Root navigation space or NULL if there are none. */
-	inline deNavigationSpace *GetRootNavigationSpace() const{return pNavSpaceRoot;}
+	inline deNavigationSpace *GetRootNavigationSpace() const{ return pNavSpaceRoot; }
 	
 	/**
 	 * \brief Add navigation space.
@@ -615,10 +615,10 @@ public:
 	/** \name Navigation blockers */
 	/*@{*/
 	/** \brief Count of navigation blockers. */
-	inline int GetNavigationBlockerCount() const{return pNavBlockerCount;}
+	inline int GetNavigationBlockerCount() const{ return pNavBlockerCount; }
 	
 	/** \brief Root navigation blocker or NULL if there are none. */
-	inline deNavigationBlocker *GetRootNavigationBlocker() const{return pNavBlockerRoot;}
+	inline deNavigationBlocker *GetRootNavigationBlocker() const{ return pNavBlockerRoot; }
 	
 	/**
 	 * \brief Add navigation blocker.
@@ -643,10 +643,10 @@ public:
 	/** \name Navigators */
 	/*@{*/
 	/** \brief Count of navigators. */
-	inline int GetNavigatorCount() const{return pNavigatorCount;}
+	inline int GetNavigatorCount() const{ return pNavigatorCount; }
 	
 	/** \brief Root navigator or NULL if there are none. */
-	inline deNavigator *GetRootNavigator() const{return pNavigatorRoot;}
+	inline deNavigator *GetRootNavigator() const{ return pNavigatorRoot; }
 	
 	/**
 	 * \brief Add navigator.
@@ -671,10 +671,10 @@ public:
 	/** \name Network states */
 	/*@{*/
 	/** \brief Count of network states. */
-	inline int GetNetworkStateCount() const{return pNetworkStateCount;}
+	inline int GetNetworkStateCount() const{ return pNetworkStateCount; }
 	
 	/** \brief Root network state or NULL if there are none. */
-	inline deNetworkState *GetRootNetworkState() const{return pNetworkStateRoot;}
+	inline deNetworkState *GetRootNetworkState() const{ return pNetworkStateRoot; }
 	
 	/**
 	 * \brief Add network state.
@@ -699,10 +699,10 @@ public:
 	/** \name Particle emitters */
 	/*@{*/
 	/** \brief Count of particle emitters. */
-	inline int GetParticleEmitterCount() const{return pParticleEmitterCount;}
+	inline int GetParticleEmitterCount() const{ return pParticleEmitterCount; }
 	
 	/** \brief Root particle emitter or NULL if there are none. */
-	inline deParticleEmitterInstance *GetRootParticleEmitter() const{return pParticleEmitterRoot;}
+	inline deParticleEmitterInstance *GetRootParticleEmitter() const{ return pParticleEmitterRoot; }
 	
 	/**
 	 * \brief Add particle emitter.
@@ -727,10 +727,10 @@ public:
 	/** \name Prop fields */
 	/*@{*/
 	/** \brief Count of prop fields. */
-	inline int GetPropFieldCount() const{return pPropFieldCount;}
+	inline int GetPropFieldCount() const{ return pPropFieldCount; }
 	
 	/** \brief Root prop field or NULL if there are none. */
-	inline dePropField *GetRootPropField() const{return pPropFieldRoot;}
+	inline dePropField *GetRootPropField() const{ return pPropFieldRoot; }
 	
 	/**
 	 * \brief Add prop field.
@@ -755,10 +755,10 @@ public:
 	/** \name Speakers */
 	/*@{*/
 	/** \brief Count of speakers. */
-	inline int GetSpeakerCount() const{return pSpeakerCount;}
+	inline int GetSpeakerCount() const{ return pSpeakerCount; }
 	
 	/** \brief Root speaker or NULL if there are none. */
-	inline deSpeaker *GetRootSpeaker() const{return pSpeakerRoot;}
+	inline deSpeaker *GetRootSpeaker() const{ return pSpeakerRoot; }
 	
 	/**
 	 * \brief Add speaker.
@@ -783,10 +783,10 @@ public:
 	/** \name Sound level meters */
 	/*@{*/
 	/** \brief Count of sound level meters. */
-	inline int GetSoundLevelMeterCount() const{return pSoundLevelMeterCount;}
+	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
 	
 	/** \brief Root sound level meter or NULL if there are none. */
-	inline deSoundLevelMeter *GetRootSoundLevelMeter() const{return pSoundLevelMeterRoot;}
+	inline deSoundLevelMeter *GetRootSoundLevelMeter() const{ return pSoundLevelMeterRoot; }
 	
 	/**
 	 * \brief Add sound level meter.
@@ -811,10 +811,10 @@ public:
 	/** \name Touch sensors */
 	/*@{*/
 	/** \brief Count of touch sensors. */
-	inline int GetTouchSensorCount() const{return pTouchSensorCount;}
+	inline int GetTouchSensorCount() const{ return pTouchSensorCount; }
 	
 	/** \brief Root touch sensor or NULL if there are none. */
-	inline deTouchSensor *GetRootTouchSensor() const{return pTouchSensorRoot;}
+	inline deTouchSensor *GetRootTouchSensor() const{ return pTouchSensorRoot; }
 	
 	/**
 	 * \brief Add touch sensor.
@@ -839,10 +839,10 @@ public:
 	/** \name Smoke emitters */
 	/*@{*/
 	/** \brief Count of smoke emitters. */
-	inline int GetSmokeEmitterCount() const{return pSmokeEmitterCount;}
+	inline int GetSmokeEmitterCount() const{ return pSmokeEmitterCount; }
 	
 	/** \brief Root smoke emitter or NULL if there are none. */
-	inline deSmokeEmitter *GetRootSmokeEmitter() const{return pSmokeEmitterRoot;}
+	inline deSmokeEmitter *GetRootSmokeEmitter() const{ return pSmokeEmitterRoot; }
 	
 	/**
 	 * \brief Add smoke emitter.
@@ -926,31 +926,31 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object. */
-	inline deBaseGraphicWorld *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicWorld *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
 	void SetPeerGraphic(deBaseGraphicWorld *peer);
 	
 	/** \brief Physics system peer object. */
-	inline deBasePhysicsWorld *GetPeerPhysics() const{return pPeerPhysics;}
+	inline deBasePhysicsWorld *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
 	void SetPeerPhysics(deBasePhysicsWorld *peer);
 	
 	/** \brief Audio system peer object. */
-	inline deBaseAudioWorld *GetPeerAudio() const{return pPeerAudio;}
+	inline deBaseAudioWorld *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
 	void SetPeerAudio(deBaseAudioWorld *peer);
 	
 	/** \brief Network system peer object. */
-	inline deBaseNetworkWorld *GetPeerNetwork() const{return pPeerNetwork;}
+	inline deBaseNetworkWorld *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
 	void SetPeerNetwork(deBaseNetworkWorld *peer);
 	
 	/** \brief Ai system peer object. */
-	inline deBaseAIWorld *GetPeerAI() const{return pPeerAI;}
+	inline deBaseAIWorld *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set ai system peer object. */
 	void SetPeerAI(deBaseAIWorld *peer);

@@ -39,7 +39,7 @@
 deglSharedIcon::deglSharedIcon(FXIcon *icon) :
 pIcon(icon)
 {
-	if(! icon){
+	if(!icon){
 		DETHROW(deeNullPointer);
 	}
 }

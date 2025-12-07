@@ -42,7 +42,7 @@ gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass *objectClass,
 gdeObjectClass::eScaleModes newValue) :
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -115,21 +115,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine logger. */
-	inline const deLogger::Ref &GetEngineLogger() const{return pEngineLogger;}
+	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 	
 	/** Engine logger debug. */
-	inline const deLogger::Ref &GetEngineLoggerDebug() const{return pEngineLoggerDebug;}
+	inline const deLogger::Ref &GetEngineLoggerDebug() const{ return pEngineLoggerDebug; }
 	
 	/** Delga path. */
-	std::string GetDelgaPath() const{return pDelgaPath.GetString();}
+	std::string GetDelgaPath() const{ return pDelgaPath.GetString(); }
 	void SetDelgaPath(const std::string &path){pDelgaPath = path.c_str();}
 	
 	/** Profile name. */
-	std::string GetProfileName() const{return pProfileName.GetString();}
+	std::string GetProfileName() const{ return pProfileName.GetString(); }
 	void SetProfileName(const std::string &name){pProfileName = name.c_str();}
 	
 	/** Canvas id. */
-	std::string GetCanvasId() const{return pCanvasId.GetString();}
+	std::string GetCanvasId() const{ return pCanvasId.GetString(); }
 	
 	/** Run game. */
 	void RunGame();

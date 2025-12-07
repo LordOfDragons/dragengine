@@ -246,14 +246,14 @@ void ceWDSVAPreview::CreateCanvas(){
 }
 
 void ceWDSVAPreview::UpdateCanvas(){
-	if(! pCanvas){
+	if(!pCanvas){
 		return;
 	}
 	
 }
 
 void ceWDSVAPreview::RebuildCanvas(){
-	if(! pCanvas){
+	if(!pCanvas){
 		return;
 	}
 	
@@ -306,7 +306,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 		const int sampleRate = sound->GetSampleRate();
 		
 		// TODO we should do this asynchronous
-		if(! pPreviewSamples){
+		if(!pPreviewSamples){
 			const int bufferSize = sampleCount * bytesPerSample * sound->GetChannelCount();
 			pPreviewSamples = new char[bufferSize];
 			deSoundDecoder::Ref decoder;

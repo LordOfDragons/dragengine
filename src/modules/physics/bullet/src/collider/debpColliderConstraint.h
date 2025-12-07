@@ -103,61 +103,61 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine constraint. */
-	inline deColliderConstraint &GetConstraint() const{return pConstraint;}
+	inline deColliderConstraint &GetConstraint() const{ return pConstraint; }
 	
 	/** Rig bone constraint index or -1 if not set. */
-	inline int GetRigBoneConstraintIndex() const{return pRigBoneConstraintIndex;}
+	inline int GetRigBoneConstraintIndex() const{ return pRigBoneConstraintIndex; }
 	
 	/** Set rig bone constraint index or -1 if not set. */
 	void SetRigBoneConstraintIndex(int index);
 	
 	/** Dynamics world. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
+	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
 	/** Set dynamics world. */
 	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** Bullet constraint or nullptr. */
-	inline btTypedConstraint *GetBpConstraint() const{return pBpConstraint;}
+	inline btTypedConstraint *GetBpConstraint() const{ return pBpConstraint; }
 	
 	/** First physics body or nullptr. */
-	inline debpPhysicsBody *GetFirstBody() const{return pPhyBody1;}
+	inline debpPhysicsBody *GetFirstBody() const{ return pPhyBody1; }
 	
 	/** Set first physics body or nullptr. */
 	void SetFirstBody(debpPhysicsBody *body);
 	
 	/** Second physics body or nullptr. */
-	inline debpPhysicsBody *GetSecondBody() const{return pPhyBody2;}
+	inline debpPhysicsBody *GetSecondBody() const{ return pPhyBody2; }
 	
 	/** Set second physics body or nullptr. */
 	void SetSecondBody(debpPhysicsBody *body);
 	
 	/** Offset for first physics body. */
-	inline const decVector &GetFirstOffset() const{return pOffset1;}
+	inline const decVector &GetFirstOffset() const{ return pOffset1; }
 	
 	/** Set offset for first physics body. */
 	void SetFirstOffset(const decVector &offset);
 	
 	/** Offset for second physics body. */
-	inline const decVector &GetSecondOffset() const{return pOffset2;}
+	inline const decVector &GetSecondOffset() const{ return pOffset2; }
 	
 	/** Set offset for second physics body. */
 	void SetSecondOffset(const decVector &offset);
 	
 	/** Type of constraint. */
-	inline eConstraintType GetConstraintType() const{return pConstraintType;}
+	inline eConstraintType GetConstraintType() const{ return pConstraintType; }
 	
 	/** Constraint can be broken. */
 	bool IsBreakable() const;
 	
 	/** Constraint is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Set if constraint is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** Constraint has broken due to physics simulation. */
-	inline bool GetHasBroken() const{return pHasBroken;}
+	inline bool GetHasBroken() const{ return pHasBroken; }
 	
 	/** Set if constraint has broken due to physics simulation. */
 	void SetHasBroken(bool hasBroken);

@@ -71,7 +71,7 @@ void lpeConfigurationXML::ReadFromFile(decBaseFileReader &reader, lpeConfigurati
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || strcmp(root->GetName(), "langpackEditor") != 0){
+	if(!root || strcmp(root->GetName(), "langpackEditor") != 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void lpeConfigurationXML::pReadConfig(const decXmlElementTag &root, lpeConfigura
 	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

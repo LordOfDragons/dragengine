@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeMainWindow &GetMainWindow() const{return pMainWindow;}
+	inline igdeMainWindow &GetMainWindow() const{ return pMainWindow; }
 	/*@}*/
 };
 

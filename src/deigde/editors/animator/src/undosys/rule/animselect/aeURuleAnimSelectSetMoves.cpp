@@ -44,7 +44,7 @@ const decStringList &newMoves, const char *description) :
 pRule(NULL),
 pNewMoves(newMoves)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

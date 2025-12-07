@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCCShotSetPosFrom::ceUCCShotSetPosFrom(ceCameraShot *cameraShot, const decVector &newPos){
-	if(! cameraShot){
+	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
 	

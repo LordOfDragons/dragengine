@@ -133,85 +133,85 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
 	void SetRotation(const decVector &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
 	
 	/** \brief Influence area. */
-	inline const decShapeList &GetInfluenceArea() const{return pInfluenceArea;}
+	inline const decShapeList &GetInfluenceArea() const{ return pInfluenceArea; }
 	
 	/** \brief Set influence area. */
 	void SetInfluenceArea(const decShapeList &area);
 	
 	/** \brief Falloff radius. */
-	inline float GetRadius() const{return pRadius;}
+	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set falloff radius. */
 	void SetRadius(float radius);
 	
 	/** \brief Falloff exponent. */
-	inline float GetExponent() const{return pExponent;}
+	inline float GetExponent() const{ return pExponent; }
 	
 	/** \brief Set falloff exponent. */
 	void SetExponent(float exponent);
 	
 	/** \brief Field type. */
-	inline deForceField::eFieldTypes GetFieldType() const{return pFieldType;}
+	inline deForceField::eFieldTypes GetFieldType() const{ return pFieldType; }
 	
 	/** \brief Set field type. */
 	void SetFieldType(deForceField::eFieldTypes type);
 	
 	/** \brief Force application type. */
-	inline deForceField::eApplicationTypes GetApplicationType() const{return pApplicationType;}
+	inline deForceField::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set application type. */
 	void SetApplicationType(deForceField::eApplicationTypes type);
 	
 	/** \brief Force direction. */
-	inline const decVector &GetDirection() const{return pDirection;}
+	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set force direction. */
 	void SetDirection(const decVector &direction);
 	
 	/** \brief Force in newton. */
-	inline float GetForce() const{return pForce;}
+	inline float GetForce() const{ return pForce; }
 	
 	/** \brief Set force in newton. */
 	void SetForce(float force);
 	
 	/** \brief Fluctuation of direction in radians. */
-	inline float GetFluctuationDirection() const{return pFluctuationDirection;}
+	inline float GetFluctuationDirection() const{ return pFluctuationDirection; }
 	
 	/** \brief Set fluctuation of direction in radians. */
 	void SetFluctuationDirection(float fluctuation);
 	
 	/** \brief Fluctuation of force in newton. */
-	inline float GetFluctuationForce() const{return pFluctuationForce;}
+	inline float GetFluctuationForce() const{ return pFluctuationForce; }
 	
 	/** \brief Set fluctuation of force in newton. */
 	void SetFluctuationForce(float fluctuation);
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{return pShape;}
+	inline const decShapeList &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
 	void SetShape(const decShapeList &shape);
 	
 	/** \brief Force field is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if force field is enabled. */
 	void SetEnabled(bool enabled);

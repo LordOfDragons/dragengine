@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data. */
-	inline const decString &GetData() const{return pData;}
+	inline const decString &GetData() const{ return pData; }
 	
 	/** \brief Set data. */
 	void SetData(const char *data);

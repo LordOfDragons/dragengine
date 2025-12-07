@@ -37,10 +37,10 @@
 ////////////////////////////
 
 meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &newRotation){
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pOldRotation = object->GetRotation();
 	pNewRotation = newRotation;

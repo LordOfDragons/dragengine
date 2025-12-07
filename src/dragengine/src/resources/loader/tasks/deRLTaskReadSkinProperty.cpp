@@ -87,7 +87,7 @@ void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
 		return;
 	}
 	
-	if(! decPath::IsUnixPathAbsolute(path)){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
 		resourcePath.SetFromUnix(pBasePath);
 		resourcePath.AddUnixPath(path);
@@ -121,7 +121,7 @@ void deRLTaskReadSkinProperty::VisitVideo(deSkinPropertyVideo &property){
 		return;
 	}
 	
-	if(! decPath::IsUnixPathAbsolute(path)){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
 		resourcePath.SetFromUnix(pBasePath);
 		resourcePath.AddUnixPath(path);

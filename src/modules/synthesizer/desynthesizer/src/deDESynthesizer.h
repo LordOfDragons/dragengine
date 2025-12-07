@@ -72,16 +72,16 @@ public:
 	virtual void CleanUp();
 	
 	/** \brief Configuration. */
-	inline desynConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline desynConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Shared decode buffer. */
-	inline desynDecodeBuffer &GetDecodeBuffer() const{return *pDecodeBuffer;}
+	inline desynDecodeBuffer &GetDecodeBuffer() const{ return *pDecodeBuffer; }
 	
 	/** \brief Shared buffer list. */
-	inline desynSharedBufferList &GetSharedBufferList() const{return *pSharedBufferList;}
+	inline desynSharedBufferList &GetSharedBufferList() const{ return *pSharedBufferList; }
 	
 	/** \brief Caches. */
-	inline desynCaches &GetCaches() const{return *pCaches;}
+	inline desynCaches &GetCaches() const{ return *pCaches; }
 	/*@}*/
 	
 	

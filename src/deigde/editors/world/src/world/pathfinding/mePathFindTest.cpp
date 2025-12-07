@@ -61,7 +61,7 @@
 ////////////////////////////
 
 mePathFindTest::mePathFindTest(deEngine *engine){
-	if(! engine){
+	if(!engine){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -276,7 +276,7 @@ void mePathFindTest::Invalidate(){
 
 
 void mePathFindTest::Update(){
-	if(! pDirtyPath || ! pShowPath){
+	if(!pDirtyPath || !pShowPath){
 		return;
 	}
 	
@@ -308,7 +308,7 @@ void mePathFindTest::pCleanUp(){
 
 
 void mePathFindTest::pUpdateDDPath(){
-	if(! pDDSPath){
+	if(!pDDSPath){
 		return;
 	}
 	

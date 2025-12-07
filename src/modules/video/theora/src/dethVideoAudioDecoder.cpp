@@ -200,7 +200,7 @@ void dethVideoAudioDecoder::pFindAudioStream(){
 		
 		if(ogg_page_bos(&page)){
 			// first page in stream
-			if(! pSerial){
+			if(!pSerial){
 				if(ogg_stream_init(&pStreamState, serial)){
 					DETHROW(deeInvalidAction);
 				}
@@ -209,7 +209,7 @@ void dethVideoAudioDecoder::pFindAudioStream(){
 				//pModule.LogInfoFormat( "Stream %d: Testing for Vorbis", serial );
 			}
 			
-		}else if(! pSerial){
+		}else if(!pSerial){
 			//break;
 			continue;
 		}
@@ -220,7 +220,7 @@ void dethVideoAudioDecoder::pFindAudioStream(){
 				maxGranulePos = pageGranulePos;
 			}
 			
-			if(! headerFinished){
+			if(!headerFinished){
 				if(ogg_stream_pagein(&pStreamState, &page)){
 					DETHROW(deeInvalidAction);
 				}
@@ -259,7 +259,7 @@ void dethVideoAudioDecoder::pFindAudioStream(){
 		}
 	}
 	
-	if(! headerFinished){
+	if(!headerFinished){
 		if(pSerial){
 			ogg_stream_clear(&pStreamState);
 			pSerial = 0;

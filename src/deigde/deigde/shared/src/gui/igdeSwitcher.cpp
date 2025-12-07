@@ -119,7 +119,7 @@ void igdeSwitcher::CreateNativeWidget(){
 }
 
 void igdeSwitcher::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

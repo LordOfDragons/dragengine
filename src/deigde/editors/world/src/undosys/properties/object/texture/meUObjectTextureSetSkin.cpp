@@ -43,13 +43,13 @@
 ////////////////////////////
 
 meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin){
-	if(! texture || ! newskin) DETHROW(deeInvalidParam);
+	if(!texture || !newskin) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();
-	if(! object) DETHROW(deeInvalidParam);
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set object texture skin");
 	
@@ -58,7 +58,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const
 	
 	try{
 		pTextures = new sTexture[1];
-		if(! pTextures) DETHROW(deeOutOfMemory);
+		if(!pTextures) DETHROW(deeOutOfMemory);
 		
 		pTextures[0].oldskin = texture->GetSkinPath();
 		pTextures[0].newskin = newskin;
@@ -77,7 +77,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, 
 	int count = textures.GetTextureCount();
 	meObjectTexture *texture;
 	
-	if(count == 0 || ! newskin) DETHROW(deeInvalidParam);
+	if(count == 0 || !newskin) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set object texture skins");
 	
@@ -86,7 +86,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, 
 	
 	try{
 		pTextures = new sTexture[count];
-		if(! pTextures) DETHROW(deeOutOfMemory);
+		if(!pTextures) DETHROW(deeOutOfMemory);
 		
 		for(pTextureCount=0; pTextureCount<count; pTextureCount++){
 			texture = textures.GetTextureAt(pTextureCount);

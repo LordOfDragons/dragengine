@@ -81,7 +81,7 @@ public:
 	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Estimate tasks (deoalRTPTRoomEstimateFinish*). */
-	inline decPointerList GetEstimateTasks(){return pTasks;}
+	inline decPointerList GetEstimateTasks(){ return pTasks; }
 	
 	
 	

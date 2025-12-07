@@ -145,7 +145,7 @@ void deoglComponentTexture::InitSkinState(){
 }
 
 void deoglComponentTexture::AdvanceTime(float timeStep){
-	if(! pRTexture->GetSkinState()){
+	if(!pRTexture->GetSkinState()){
 		return;
 	}
 	pSkinStateController->AdvanceTime(timeStep);

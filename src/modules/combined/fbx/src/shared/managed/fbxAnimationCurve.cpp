@@ -52,7 +52,7 @@ pPropertyValue(nullptr){
 		pPropertyValue = nodeValueTime->GetPropertyAt(0);
 	}
 	
-	if(! pPropertyValue){
+	if(!pPropertyValue){
 		DETHROW_INFO(deeInvalidParam, "AnimationCurve missing KeyValueFloat");
 	}
 	

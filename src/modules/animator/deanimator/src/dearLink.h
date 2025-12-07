@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator link. */
-	inline const deAnimatorLink &GetLink() const{return pLink;}
+	inline const deAnimatorLink &GetLink() const{ return pLink; }
 	
 	/** Link has valid controller. */
 	bool HasController() const;

@@ -80,37 +80,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Model or NULL if not set. */
-	inline deModel *GetModel() const{return pModel;}
+	inline deModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or NULL it not set. */
 	void SetModel(deModel *model);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{return pSkin;}
+	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Rotation per force. */
-	inline float GetRotationPerForce() const{return pRotationPerForce;}
+	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	
 	/** \brief Set rotation per force. */
 	void SetRotationPerForce(float rotation);
 	
 	/** \brief Restitution. */
-	inline float GetRestitution() const{return pRestitution;}
+	inline float GetRestitution() const{ return pRestitution; }
 	
 	/** \brief Set restitution. */
 	void SetRestitution(float restitution);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
+	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
 	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Number of instances. */
-	inline int GetInstanceCount() const{return pInstanceCount;}
+	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** \brief Set number of instances. */
 	void SetInstanceCount(int count);
@@ -126,10 +126,10 @@ public:
 	 * in a continuous list. If possible use the GetInstanceAt method call to obtain
 	 * the individual instances as there boundary checks are conducted.
 	 */
-	inline dePropFieldInstance *GetInstances() const{return pInstances;}
+	inline dePropFieldInstance *GetInstances() const{ return pInstances; }
 	
 	/** \brief Number of bend states. */
-	inline int GetBendStateCount() const{return pBendStateCount;}
+	inline int GetBendStateCount() const{ return pBendStateCount; }
 	
 	/** \brief Set number of bend states. */
 	void SetBendStateCount(int count);
@@ -148,7 +148,7 @@ public:
 	 * access due to performance reasons only keep to this pointer for the short time you
 	 * do some work.
 	 */
-	inline dePropFieldBendState *GetBendStates() const{return pBendStates;}
+	inline dePropFieldBendState *GetBendStates() const{ return pBendStates; }
 	/*@}*/
 };
 

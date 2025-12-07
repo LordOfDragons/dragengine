@@ -87,7 +87,7 @@ public:
 	
 	
 	/** \brief Engine synthesizer effect or \em NULL. */
-	inline deSynthesizerEffect *GetEngineEffect() const{return pEngEffect;}
+	inline deSynthesizerEffect *GetEngineEffect() const{ return pEngEffect; }
 	
 	/** \brief Set the engine synthesizer effect or \em NULL. */
 	void SetEngineEffect(deSynthesizerEffect *effect);
@@ -99,10 +99,10 @@ public:
 	void InitEngineEffect(deSynthesizerEffect *engEffect) const;
 	
 	/** \brief Retrieve the effect type. */
-	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetType() const{return pType;}
+	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetType() const{ return pType; }
 	
 	/** \brief Retrieve the parent source or \em NULL if there is none. */
-	inline seSource *GetParentSource() const{return pParentSource;}
+	inline seSource *GetParentSource() const{ return pParentSource; }
 	
 	/** \brief Set the parent source or \em NULL if there is none. */
 	void SetParentSource(seSource *source);
@@ -110,13 +110,13 @@ public:
 	
 	
 	/** \brief Effect is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Strength. */
-	inline float GetStrength() const{return pStrength;}
+	inline float GetStrength() const{ return pStrength; }
 	
 	/** \brief Set strength. */
 	void SetStrength(float strength);
@@ -136,8 +136,8 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** \brief Strength target. */
-	inline seControllerTarget &GetTargetStrength(){return pTargetStrength;}
-	inline const seControllerTarget &GetTargetStrength() const{return pTargetStrength;}
+	inline seControllerTarget &GetTargetStrength(){ return pTargetStrength; }
+	inline const seControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
 	
 	/** \brief List all links of all effect targets. */
 	virtual void ListLinks(seLinkList& list);

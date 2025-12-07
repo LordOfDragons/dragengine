@@ -99,7 +99,7 @@ void deoalRTWorldOctree::Build(const decDVector &position, double radius){
 }
 
 void deoalRTWorldOctree::AddComponent(deoalAComponent *component){
-	if(! component){
+	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	

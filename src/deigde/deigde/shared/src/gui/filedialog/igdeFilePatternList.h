@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of file patterns. */
-	inline int GetFilePatternCount() const{return pFilePatternCount;}
+	inline int GetFilePatternCount() const{ return pFilePatternCount; }
 	
 	/** \brief File pattern at the given position. */
 	igdeFilePattern *GetFilePatternAt(int index) const;

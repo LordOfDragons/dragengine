@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pParticleEmitter(NULL),
 pTrigger(trigger)
 {
-	if(! objectClass || ! particleEmitter){
+	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	

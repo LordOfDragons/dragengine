@@ -43,7 +43,7 @@
 
 ceUCACoordSysRemoveSetCoordSysID::ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic,
 ceCACoordSystemRemove *action, const char *newCoordSystemID){
-	if(! topic || ! newCoordSystemID){
+	if(!topic || !newCoordSystemID){
 		DETHROW(deeInvalidParam);
 	}
 	

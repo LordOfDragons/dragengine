@@ -74,7 +74,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of impulses. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Impulse at index. */
 	const sImpulse &GetAt(int index) const;

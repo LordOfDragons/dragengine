@@ -72,16 +72,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline deoxrInstance &GetInstance() const{return pInstance;}
+	inline deoxrInstance &GetInstance() const{ return pInstance; }
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Localized name. */
-	inline const decString &GetLocalizedName() const{return pLocalizedName;}
+	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
 	
 	/** ActionSet. */
-	inline XrActionSet GetActionSet() const{return pActionSet;}
+	inline XrActionSet GetActionSet() const{ return pActionSet; }
 	
 	/** Count of actions. */
 	int GetActionCount() const;

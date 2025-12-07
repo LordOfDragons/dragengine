@@ -41,7 +41,7 @@
 
 aeURuleGroupSetApplicationType::aeURuleGroupSetApplicationType(aeRuleGroup *rule,
 deAnimatorRuleGroup::eApplicationTypes newType){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

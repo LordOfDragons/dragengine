@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{return pParticleEmitter;}
+	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

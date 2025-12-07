@@ -191,13 +191,13 @@ public:
 	
 	
 	/** \brief Smalltalk nil object. */
-	inline OOP GetNil() const{return pObjNil;}
+	inline OOP GetNil() const{ return pObjNil; }
 	
 	/** \brief Smalltalk ordered collection class. */
-	inline OOP GetClassOrderedCollection() const{return pClsOrderedCollection;}
+	inline OOP GetClassOrderedCollection() const{ return pClsOrderedCollection; }
 	
 	/** \brief Game object. */
-	inline OOP GetObjectGame() const{return pObjGame;}
+	inline OOP GetObjectGame() const{ return pObjGame; }
 	
 	
 	
@@ -220,24 +220,24 @@ public:
 	
 	
 	/** \brief Script classes. */
-	inline void *GetClassDragengine() const{return pClsDragengine;}
-	inline void *GetClassScenery() const{return pClsScenery;}
-	inline void *GetClassGui() const{return pClsGui;}
+	inline void *GetClassDragengine() const{ return pClsDragengine; }
+	inline void *GetClassScenery() const{ return pClsScenery; }
+	inline void *GetClassGui() const{ return pClsGui; }
 	
-	inline stClassCanvas *GetClassCanvas() const{return pClsCanvas;}
-	inline stClassColor *GetClassColor() const{return pClsColor;}
-	inline stClassEngine *GetClassEngine() const{return pClsEngine;}
-	inline stClassGraphicSystem *GetClassGraphicSystem() const{return pClsGraphicSystem;}
-	inline stClassScripting *GetClassScripting() const{return pClsScripting;}
-	inline stClassVector2 *GetClassVector2() const{return pClsVector2;}
-	inline stClassPoint *GetClassPoint() const{return pClsPoint;}
-	inline stClassWorld *GetClassWorld() const{return pClsWorld;}
+	inline stClassCanvas *GetClassCanvas() const{ return pClsCanvas; }
+	inline stClassColor *GetClassColor() const{ return pClsColor; }
+	inline stClassEngine *GetClassEngine() const{ return pClsEngine; }
+	inline stClassGraphicSystem *GetClassGraphicSystem() const{ return pClsGraphicSystem; }
+	inline stClassScripting *GetClassScripting() const{ return pClsScripting; }
+	inline stClassVector2 *GetClassVector2() const{ return pClsVector2; }
+	inline stClassPoint *GetClassPoint() const{ return pClsPoint; }
+	inline stClassWorld *GetClassWorld() const{ return pClsWorld; }
 	
 	/** \brief Common selectors. */
-	inline OOP GetSelectorNew() const{return pSelectorNew;}
-	inline OOP GetSelectorAdd() const{return pSelectorAdd;}
-	inline OOP GetSelectorInitialize() const{return pSelectorInitialize;}
-	inline OOP GetSelectorAt() const{return pSelectorAt;}
+	inline OOP GetSelectorNew() const{ return pSelectorNew; }
+	inline OOP GetSelectorAdd() const{ return pSelectorAdd; }
+	inline OOP GetSelectorInitialize() const{ return pSelectorInitialize; }
+	inline OOP GetSelectorAt() const{ return pSelectorAt; }
 	
 	/** \brief Load scripts from a directory. */
 	bool LoadScripts(deVirtualFileSystem &vfs, const char *directory);

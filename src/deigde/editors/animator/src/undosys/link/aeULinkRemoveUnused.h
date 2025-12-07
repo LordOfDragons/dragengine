@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Has links. */
-	inline bool HasLinks() const{return pLinks.GetCount() > 0;}
+	inline bool HasLinks() const{ return pLinks.GetCount() > 0; }
 	
 	/** Undo action. */
 	virtual void Undo();

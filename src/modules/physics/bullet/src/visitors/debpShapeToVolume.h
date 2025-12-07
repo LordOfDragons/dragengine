@@ -68,8 +68,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline const decDMatrix &GetMatrix() const{return pMatrix;}
-	inline debpDCollisionVolume *GetVolume() const{return pVolume;}
+	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline debpDCollisionVolume *GetVolume() const{ return pVolume; }
 	void SetMatrix(const decDMatrix &matrix);
 	
 	debpDCollisionVolume *GetVolumeFor(decShape *shape);

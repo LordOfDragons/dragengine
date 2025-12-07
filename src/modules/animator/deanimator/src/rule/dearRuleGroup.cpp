@@ -134,7 +134,7 @@ bool dearRuleGroup::RebuildInstance() const{
 
 void dearRuleGroup::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if(pRuleCount < 1 || ! GetEnabled()){
+	if(pRuleCount < 1 || !GetEnabled()){
 		return;
 	}
 	

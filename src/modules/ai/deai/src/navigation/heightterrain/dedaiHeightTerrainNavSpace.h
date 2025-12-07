@@ -91,38 +91,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Height terrain sector. */
-	inline dedaiHeightTerrainSector &GetSector() const{return pSector;}
+	inline dedaiHeightTerrainSector &GetSector() const{ return pSector; }
 	
 	/** \brief Navigation space. */
-	inline const deHeightTerrainNavSpace &GetNavigationSpace() const{return pNavigationSpace;}
+	inline const deHeightTerrainNavSpace &GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	
 	
 	/** \brief Vertices in grid coordinates. */
-	inline const unsigned int *GetVertices() const{return pVertices;}
+	inline const unsigned int *GetVertices() const{ return pVertices; }
 	
 	/** \brief Number of grid vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Edges mapping to grid vertices. */
-	inline const sEdge *GetEdges() const{return pEdges;}
+	inline const sEdge *GetEdges() const{ return pEdges; }
 	
 	/** \brief Corners mapping to grid vertices. */
-	inline const unsigned short *GetCorners() const{return pCorners;}
+	inline const unsigned short *GetCorners() const{ return pCorners; }
 	
 	/** \brief Number of corners. */
-	inline int GetCornerCount() const{return pCornerCount;}
+	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Faces. */
-	inline const deNavigationSpaceFace * const GetFaces() const{return pFaces;}
+	inline const deNavigationSpaceFace * const GetFaces() const{ return pFaces; }
 	
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	
 	
 	/** \brief Space. */
-	inline dedaiSpace *GetSpace() const{return pSpace;}
+	inline dedaiSpace *GetSpace() const{ return pSpace; }
 	/*@}*/
 	
 	

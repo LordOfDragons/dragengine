@@ -98,15 +98,15 @@ void detThreading::TestThread(){
 	SetSubTestNum(0);
 	
 	mutex1 = new deMutex;
-	if(! mutex1) DETHROW(deeOutOfMemory);
+	if(!mutex1) DETHROW(deeOutOfMemory);
 	
 	semaphore1 = new deSemaphore;
-	if(! semaphore1) DETHROW(deeOutOfMemory);
+	if(!semaphore1) DETHROW(deeOutOfMemory);
 	
 	testValue = 0;
 	
 	threads[0] = new cThreadSimple(this);
-	if(! threads[0]) DETHROW(deeOutOfMemory);
+	if(!threads[0]) DETHROW(deeOutOfMemory);
 	ASSERT_FALSE(threads[0]->IsRunning());
 	
 	Sleep(0.2);

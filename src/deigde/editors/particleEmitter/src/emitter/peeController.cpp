@@ -83,11 +83,11 @@ void peeController::SetEngineControllerIndex(int index){
 
 
 void peeController::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		pName = name;
 		
 		if(pEmitter){

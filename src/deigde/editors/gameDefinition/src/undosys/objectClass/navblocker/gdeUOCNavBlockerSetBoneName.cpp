@@ -45,7 +45,7 @@ gdeOCNavigationBlocker *navBlocker, const char *newValue) :
 pObjectClass(NULL),
 pNavBlocker(NULL)
 {
-	if(! objectClass || ! navBlocker){
+	if(!objectClass || !navBlocker){
 		DETHROW(deeInvalidParam);
 	}
 	

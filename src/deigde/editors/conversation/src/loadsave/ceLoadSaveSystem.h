@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load save conversation. */
-	inline ceLoadSaveConversation *GetLSConversation(){return pLSConversation;}
+	inline ceLoadSaveConversation *GetLSConversation(){ return pLSConversation; }
 	
 	/** \brief Load conversation from file. */
 	ceConversation *LoadConversation(const char *filename);
@@ -92,12 +92,12 @@ public:
 	void SaveConversation(ceConversation *conversation, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList *GetConversationFilePatterns() const{return &pFPConversation;}
+	inline const igdeFilePatternList *GetConversationFilePatterns() const{ return &pFPConversation; }
 	
 	
 	
 	/** \brief Load save conversation test setup. */
-	inline ceLoadSaveCTS *GetLSCTS(){return pLSCTS;}
+	inline ceLoadSaveCTS *GetLSCTS(){ return pLSCTS; }
 	
 	/** \brief Load conversation test setup from file. */
 	void LoadCTS(const char *filename, ceConversation &conversation);
@@ -106,12 +106,12 @@ public:
 	void SaveCTS(const char *filename, ceConversation &conversation);
 	
 	/** \brief Conversation test setup file pattern list. */
-	inline const igdeFilePatternList *GetCTSFilePatterns() const{return &pFPCTS;}
+	inline const igdeFilePatternList *GetCTSFilePatterns() const{ return &pFPCTS; }
 	
 	
 	
 	/** \brief Load save conversation test actor. */
-	inline ceLoadSaveCTA *GetLSCTA(){return pLSCTA;}
+	inline ceLoadSaveCTA *GetLSCTA(){ return pLSCTA; }
 	
 	/** \brief Load conversation test actor from file. */
 	void LoadCTA(const char *filename, ceConversationActor &actor);
@@ -120,12 +120,12 @@ public:
 	void SaveCTA(const char *filename, ceConversationActor &actor);
 	
 	/** \brief Conversation test actor file pattern list. */
-	inline const igdeFilePatternList *GetCTAFilePatterns() const{return &pFPCTA;}
+	inline const igdeFilePatternList *GetCTAFilePatterns() const{ return &pFPCTA; }
 	
 	
 	
 	/** \brief Load save conversation test game state. */
-	inline ceLoadSaveCTGS *GetLSCTGS(){return pLSCTGS;}
+	inline ceLoadSaveCTGS *GetLSCTGS(){ return pLSCTGS; }
 	
 	/** \brief Load conversation test game state from file. */
 	void LoadCTGS(const char *filename, ceConversation &conversation);
@@ -134,7 +134,7 @@ public:
 	void SaveCTGS(const char *filename, const ceConversation &conversation);
 	
 	/** \brief Conversation test game state file pattern list. */
-	inline const igdeFilePatternList *GetCTGSFilePatterns() const{return &pFPCTGS;}
+	inline const igdeFilePatternList *GetCTGSFilePatterns() const{ return &pFPCTGS; }
 	
 	
 	
@@ -173,7 +173,7 @@ public:
 	void SaveLangPack(ceLangPack &langpack);
 	
 	/** File pattern list. */
-	inline const igdeFilePatternList &GetLangPackFPList() const{return pFPListLangPack;}
+	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }
 	/*@}*/
 	
 	

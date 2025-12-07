@@ -64,25 +64,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Minimum time stretch factor. */
-	inline float GetMinTime() const{return pMinTime;}
+	inline float GetMinTime() const{ return pMinTime; }
 	
 	/** \brief Set minimum time stretch factor. */
 	void SetMinTime(float stretch);
 	
 	/** \brief Maximum time stretch factor. */
-	inline float GetMaxTime() const{return pMaxTime;}
+	inline float GetMaxTime() const{ return pMaxTime; }
 	
 	/** \brief Set maximum time stretch factor. */
 	void SetMaxTime(float stretch);
 	
 	/** \brief Minimum pitch shift factor. */
-	inline float GetMinPitch() const{return pMinPitch;}
+	inline float GetMinPitch() const{ return pMinPitch; }
 	
 	/** \brief Set minimum pitch shift factor. */
 	void SetMinPitch(float shift);
 	
 	/** \brief Maximum pitch shift factor. */
-	inline float GetMaxPitch() const{return pMaxPitch;}
+	inline float GetMaxPitch() const{ return pMaxPitch; }
 	
 	/** \brief Set maximum pitch shift factor. */
 	void SetMaxPitch(float shift);
@@ -90,12 +90,12 @@ public:
 	
 	
 	/** \brief Time stretch target. */
-	inline seControllerTarget &GetTargetTime(){return pTargetTime;}
-	inline const seControllerTarget &GetTargetTime() const{return pTargetTime;}
+	inline seControllerTarget &GetTargetTime(){ return pTargetTime; }
+	inline const seControllerTarget &GetTargetTime() const{ return pTargetTime; }
 	
 	/** \brief Pitch stretch target. */
-	inline seControllerTarget &GetTargetPitch(){return pTargetPitch;}
-	inline const seControllerTarget &GetTargetPitch() const{return pTargetPitch;}
+	inline seControllerTarget &GetTargetPitch(){ return pTargetPitch; }
+	inline const seControllerTarget &GetTargetPitch() const{ return pTargetPitch; }
 	
 	
 	

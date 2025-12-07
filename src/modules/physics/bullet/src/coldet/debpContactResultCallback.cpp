@@ -68,7 +68,7 @@ pLastShape(-1),
 pLastFace(-1),
 pLastHTSector(NULL)
 {
-	if(! colinfo){
+	if(!colinfo){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -90,7 +90,7 @@ void debpContactResultCallback::Reset(){
 
 void debpContactResultCallback::SetTestFilter(const decCollisionFilter *collisionFilter,
 deBaseScriptingCollider *listener){
-	if(! collisionFilter || ! listener){
+	if(!collisionFilter || !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -102,10 +102,10 @@ deBaseScriptingCollider *listener){
 
 void debpContactResultCallback::SetTestShape(btCollisionObject *collisionObject,
 debpShape *shape, deBaseScriptingCollider *listener){
-	if(! collisionObject){
+	if(!collisionObject){
 		DETHROW(deeInvalidParam);
 	}
-	if(shape && ! listener){
+	if(shape && !listener){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -157,7 +157,7 @@ void debpContactResultCallback::SetTestCollisionObject(btCollisionObject *collis
 
 bool debpContactResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if(! ContactResultCallback::needsCollision(proxy0)){
+	if(!ContactResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
@@ -190,7 +190,7 @@ bool debpContactResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 			
 			// check if a collision is possible according to the collider listener
 // 	printf( "maybe %p -> %p|%p\n", pCollider, colObj.GetOwnerCollider(), colObj.GetOwnerHTSector() );
-			if(! pListener->CanHitCollider(engOrgCollider, engCollider)){
+			if(!pListener->CanHitCollider(engOrgCollider, engCollider)){
 				return false;
 			}
 //	if( (collisionObject.getWorldTransform().getOrigin() - btVector3(-3.781, 0.0, 13.985)).length() < 0.01 )
@@ -201,7 +201,7 @@ bool debpContactResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 			if(pCollisionFilter->CollidesNot(engCollider->GetCollisionFilter())){
 				return false;
 			}
-			if(! pListener->CanHitCollider(NULL, engCollider)){
+			if(!pListener->CanHitCollider(NULL, engCollider)){
 				return false;
 			}
 		}

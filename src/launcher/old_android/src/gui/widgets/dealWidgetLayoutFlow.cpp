@@ -146,7 +146,7 @@ void dealWidgetLayoutFlow::LayoutWidgets(){
 		
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			
@@ -246,7 +246,7 @@ void dealWidgetLayoutFlow::LayoutWidgets(){
 		
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			
@@ -346,7 +346,7 @@ decPoint dealWidgetLayoutFlow::GetRealMinimumSize(){
 	if(pHorizontal){
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			
@@ -361,7 +361,7 @@ decPoint dealWidgetLayoutFlow::GetRealMinimumSize(){
 	}else{
 		for(i=0; i<count; i++){
 			dealWidget &widget = *GetWidgetAt(i);
-			if(! widget.GetVisible()){
+			if(!widget.GetVisible()){
 				continue;
 			}
 			

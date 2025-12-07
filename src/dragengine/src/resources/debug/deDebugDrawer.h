@@ -100,31 +100,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{return pScale;}
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
 	void SetScale(const decVector &scale);
 	
 	/** \brief Debug drawer is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if debug drawer is visible. */
 	void SetVisible(bool visible);
 	
 	/** \brief Debug drawer is rendered in x-ray mode. */
-	inline bool GetXRay() const{return pXRay;}
+	inline bool GetXRay() const{ return pXRay; }
 	
 	/** \brief Set if debug drawer is rendered in x-ray mode. */
 	void SetXRay(bool xray);
@@ -192,7 +192,7 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphics system peer object. */
-	inline deBaseGraphicDebugDrawer *GetPeerGraphic() const{return pPeerGraphic;}
+	inline deBaseGraphicDebugDrawer *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphics system peer object. */
 	void SetPeerGraphic(deBaseGraphicDebugDrawer *peer);
@@ -203,19 +203,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{return pParentWorld;}
+	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldPrev() const{return pLLWorldPrev;}
+	inline deDebugDrawer *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next debug drawer in the parent world linked list. */
 	void SetLLWorldPrev(deDebugDrawer *debugDrawer);
 	
 	/** \brief Next debug drawer in the parent world linked list. */
-	inline deDebugDrawer *GetLLWorldNext() const{return pLLWorldNext;}
+	inline deDebugDrawer *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next debug drawer in the parent world linked list. */
 	void SetLLWorldNext(deDebugDrawer *debugDrawer);

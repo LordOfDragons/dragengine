@@ -106,55 +106,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{return pEngWorld;}
+	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	
 	/** Retrieves the animator. */
-	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
+	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Component. */
-	inline const deComponent::Ref &GetEngineComponent() const{return pEngComponent;}
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	
 	/** Retrieves the sky. */
-	inline igdeWSky *GetSky() const{return pSky;}
+	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{return pCamera;}
+	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Retrieves the display model path. */
-	inline const decString &GetDisplayModelPath() const{return pDisplayModelPath;}
+	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
 	/** Sets the display model path. */
 	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
-	inline const decString &GetDisplaySkinPath() const{return pDisplaySkinPath;}
+	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
 	/** Sets the display skin path. */
 	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
-	inline const decString &GetDisplayRigPath() const{return pDisplayRigPath;}
+	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
 	/** Sets the display rig path. */
 	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{return pRigPath;}
+	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
 	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{return pAnimationPath;}
+	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the rig path. */
 	void SetAnimationPath(const char *path);
 	
 	/** Neutral move name. */
-	inline const decString &GetNeutralMoveName() const{return pNeutralMoveName;}
+	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
 	
 	/** Set neutral move name. */
 	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
-	inline const decStringSet &GetNeutralVertexPositionSets() const{return pNeutralVertexPositionSets;}
+	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
 	
 	/** Set neutral vertex position sets. */
 	void SetNeutralVertexPositionSets(const decStringSet &sets);
 	
 	/** Retrieves the display mode. */
-	inline eDisplayModes GetDisplayMode() const{return pDisplayMode;}
+	inline eDisplayModes GetDisplayMode() const{ return pDisplayMode; }
 	/** Sets the display mode. */
 	void SetDisplayMode(eDisplayModes displayMode);
 	
@@ -172,7 +172,7 @@ public:
 	/** \name Phonemes */
 	/*@{*/
 	/** Retrieves the phoneme list read-only. */
-	inline const saePhonemeList &GetPhonemeList() const{return pPhonemeList;}
+	inline const saePhonemeList &GetPhonemeList() const{ return pPhonemeList; }
 	/** Adds a new phoneme. */
 	void AddPhoneme(saePhoneme *phoneme);
 	/** Removes a phoneme. */
@@ -180,7 +180,7 @@ public:
 	/** Removes all phonemes. */
 	void RemoveAllPhonemes();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline saePhoneme *GetActivePhoneme() const{return pActivePhoneme;}
+	inline saePhoneme *GetActivePhoneme() const{ return pActivePhoneme; }
 	/** Determines if there is an active phoneme or not. */
 	bool HasActivePhoneme() const;
 	/** Sets the active phoneme or NULL if none is active. */
@@ -190,7 +190,7 @@ public:
 	/** \name Words */
 	/*@{*/
 	/** Retrieves the word list read-only. */
-	inline const saeWordList &GetWordList() const{return pWordList;}
+	inline const saeWordList &GetWordList() const{ return pWordList; }
 	/** Adds a new word. */
 	void AddWord(saeWord *word);
 	/** Removes a word. */
@@ -198,7 +198,7 @@ public:
 	/** Removes all words. */
 	void RemoveAllWords();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline saeWord *GetActiveWord() const{return pActiveWord;}
+	inline saeWord *GetActiveWord() const{ return pActiveWord; }
 	/** Determines if there is an active word or not. */
 	bool HasActiveWord() const;
 	/** Sets the active word or NULL if none is active. */

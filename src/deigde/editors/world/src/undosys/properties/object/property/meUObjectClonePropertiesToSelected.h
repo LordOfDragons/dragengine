@@ -62,11 +62,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){return pList;}
-	inline const decObjectList &GetList() const{return pList;}
+	inline decObjectList &GetList(){ return pList; }
+	inline const decObjectList &GetList() const{ return pList; }
 	/** Retrieves the list of properties to apply. */
-	inline decStringDictionary &GetProperties(){return pProperties;}
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline decStringDictionary &GetProperties(){ return pProperties; }
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

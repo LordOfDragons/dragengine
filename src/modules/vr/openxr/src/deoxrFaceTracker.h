@@ -88,19 +88,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{return pSession;}
+	inline deoxrSession &GetSession() const{ return pSession; }
 	
 	/** Eye tracker or nullptr. */
-	inline XrFacialTrackerHTC GetEyeTracker() const{return pEyeTracker;}
+	inline XrFacialTrackerHTC GetEyeTracker() const{ return pEyeTracker; }
 	
 	/** Lip tracker or nullptr. */
-	inline XrFacialTrackerHTC GetLipTracker() const{return pLipTracker;}
+	inline XrFacialTrackerHTC GetLipTracker() const{ return pLipTracker; }
 	
 	/** Update weights. */
 	void Update();
 	
 	/** Count of face expressions. */
-	inline int GetFaceExpressionCount() const{return pFaceExpressionCount;}
+	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
 	
 	/** Face expression at index. */
 	float GetFaceExpressionAt(int index);

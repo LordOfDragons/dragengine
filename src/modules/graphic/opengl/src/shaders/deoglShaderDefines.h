@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of defines. */
-	inline int GetDefineCount() const{return pDefineCount;}
+	inline int GetDefineCount() const{ return pDefineCount; }
 	
 	/** Name of define at index. */
 	const decString &GetDefineNameAt(int index) const;

@@ -73,12 +73,12 @@ public:
 	bool HasAudioThread() const;
 	
 	/** \brief Audio thread. */
-	inline deoalAudioThread &GetAudioThread() const{return *pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return *pAudioThread; }
 	
 	
 	
 	/** \brief Active microphone. */
-	inline deoalMicrophone *GetActiveMicrophone() const{return pActiveMicrophone;}
+	inline deoalMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
 	/** \brief Active world. */
 	deoalWorld *GetActiveWorld() const;
@@ -122,7 +122,7 @@ public:
 	
 	
 	/** \brief Configuration. */
-	inline deoalConfiguration &GetConfiguration() const{return *pConfiguration;}
+	inline deoalConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	/*@}*/
 	
 	
@@ -206,7 +206,7 @@ public:
 	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** \brief Developer mode or \em NULL. */
-	inline deoalDevMode *GetDevMode() const{return pDevMode;}
+	inline deoalDevMode *GetDevMode() const{ return pDevMode; }
 	/*@}*/
 };
 

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeULinkSetBoneMinimum::aeULinkSetBoneMinimum(aeLink *link, float newBoneMinimum){
-	if(! link){
+	if(!link){
 		DETHROW(deeInvalidParam);
 	}
 	

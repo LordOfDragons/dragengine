@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize){
-	if(! world || ! heightTerrain){
+	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
-	if(! property) DETHROW(deeInvalidParam);
+	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	

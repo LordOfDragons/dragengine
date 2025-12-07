@@ -284,7 +284,7 @@ public:
 		"Enable high definition range rendering (HDRR) if supported"){ }
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		camera.SetEnableHDRR(! camera.GetEnableHDRR());
+		camera.SetEnableHDRR(!camera.GetEnableHDRR());
 		pPanel.OnAction();
 	}
 };
@@ -295,7 +295,7 @@ public:
 		"Enable global illumination (GI) if supported"){ }
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		camera.SetEnableGI(! camera.GetEnableGI());
+		camera.SetEnableGI(!camera.GetEnableGI());
 		pPanel.OnAction();
 	}
 };
@@ -357,7 +357,7 @@ public:
 	
 	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		igdeCamera * const camera = pPanel.GetCamera();
-		if(! camera){
+		if(!camera){
 			return;
 		}
 		
@@ -382,7 +382,7 @@ public:
 	
 	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
 		igdeCamera * const camera = pPanel.GetCamera();
-		if(! camera){
+		if(!camera){
 			return;
 		}
 		
@@ -407,7 +407,7 @@ public:
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		igdeCamera * const camera = pPanel.GetCamera();
-		if(! camera){
+		if(!camera){
 			return;
 		}
 		
@@ -441,7 +441,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(! igdeCommonDialogs::GetFileOpen(&pPanel, "Open Camera",
+		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Open Camera",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;
@@ -460,7 +460,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave)){}
 	
 	void OnActionCamera(igdeCamera &camera) override{
-		if(! igdeCommonDialogs::GetFileSave(&pPanel, "Save Camera",
+		if(!igdeCommonDialogs::GetFileSave(&pPanel, "Save Camera",
 		*pPanel.GetEnvironment().GetFileSystemGame(), igdeWPCamera::patternCamera,
 		igdeWPCamera::lastCameraFile)){
 			return;

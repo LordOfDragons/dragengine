@@ -79,7 +79,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		seEffect * const effect = pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		
@@ -101,7 +101,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seEffect * const effect = pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		
@@ -125,7 +125,7 @@ public:
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if(! effect){
+		if(!effect){
 			return;
 		}
 		
@@ -192,14 +192,14 @@ public:
 	virtual igdeUndo *OnAction(seEffect *effect){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		return target && link && ! target->HasLink(link)
+		return target && link && !target->HasLink(link)
 			? new seUEffectTargetAddLink(effect, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		SetSelected(target && link && ! target->HasLink(link));
+		SetSelected(target && link && !target->HasLink(link));
 	}
 };
 

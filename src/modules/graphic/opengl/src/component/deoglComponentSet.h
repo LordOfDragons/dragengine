@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of components. */
-	inline int GetCount() const{return pComponentCount;}
+	inline int GetCount() const{ return pComponentCount; }
 	
 	/** Index of the component or -1 if not in the list. */
 	int IndexOfComponent(deoglRComponent *component) const;

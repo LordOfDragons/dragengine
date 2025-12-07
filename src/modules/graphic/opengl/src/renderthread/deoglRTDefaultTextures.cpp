@@ -465,7 +465,7 @@ void deoglRTDefaultTextures::pCreateTextureNoise2D(deoglRenderThread &renderThre
 	}
 	
 	pNoise2D = new deoglTexture(this);
-	if(! pNoise2D) DETHROW(deeOutOfMemory);
+	if(!pNoise2D) DETHROW(deeOutOfMemory);
 	
 	pNoise2D->SetMipMapped(false);
 	pNoise2D->SetCompressed(false);

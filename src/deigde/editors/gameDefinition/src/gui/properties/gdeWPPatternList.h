@@ -73,13 +73,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Pattern list to edit. */
-	inline const decStringSet *GetPatternList() const{return pPatternList;}
+	inline const decStringSet *GetPatternList() const{ return pPatternList; }
 	
 	/** \brief Set pattern list to edit. */
 	void SetPatternList(const decStringSet *patternList);
 	
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
@@ -98,9 +98,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{return pActionAdd;}
-	inline igdeAction *GetActionRemove() const{return pActionRemove;}
-	inline igdeAction *GetActionClear() const{return pActionClear;}
+	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
+	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
+	inline igdeAction *GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
@@ -114,10 +114,10 @@ public:
 	
 protected:
 	/** \brief Edit path. */
-	inline igdeEditPath *GetEditPath() const{return pEditPath;}
+	inline igdeEditPath *GetEditPath() const{ return pEditPath; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{return pListBox;}
+	inline igdeListBox *GetListBox() const{ return pListBox; }
 };
 
 #endif

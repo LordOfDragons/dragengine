@@ -391,7 +391,7 @@ public:
  * \brief Throw deeNullPointer exception if pointer is nullptr.
  * \version 1.10
  */
-#define DEASSERT_NOTNULL(pointer) if(! (pointer)) DETHROW_INFO(deeNullPointer, "assertNotNull(" #pointer ")");
+#define DEASSERT_NOTNULL(pointer) if(!(pointer)) DETHROW_INFO(deeNullPointer, "assertNotNull(" #pointer ")");
 
 /**
  * \brief Throw deeInvalidParam exception if pointer is not nullptr.
@@ -403,7 +403,7 @@ public:
  * \brief Throw deeInvalidParam exception if condition is false.
  * \version 1.10
  */
-#define DEASSERT_TRUE(condition) if(! (condition)) DETHROW_INFO(deeInvalidParam, "assertTrue(" #condition ")");
+#define DEASSERT_TRUE(condition) if(!(condition)) DETHROW_INFO(deeInvalidParam, "assertTrue(" #condition ")");
 
 /**
  * \brief Throw deeInvalidParam exception if condition is true.

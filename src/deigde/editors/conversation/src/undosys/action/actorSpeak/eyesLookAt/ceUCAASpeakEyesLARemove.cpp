@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakEyesLARemove::ceUCAASpeakEyesLARemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt){
-	if(! topic || ! actorSpeak || ! eyesLookAt){
+	if(!topic || !actorSpeak || !eyesLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	

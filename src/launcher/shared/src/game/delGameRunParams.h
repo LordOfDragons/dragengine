@@ -70,38 +70,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game profile. */
-	inline delGameProfile *GetGameProfile() const{return pGameProfile;}
+	inline delGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
 	void SetGameProfile(delGameProfile *profile);
 	
 	/** \brief Run arguments. */
-	inline const decString &GetRunArguments() const{return pRunArguments;}
+	inline const decString &GetRunArguments() const{ return pRunArguments; }
 	
 	/** \brief Set run arguments. */
 	void SetRunArguments(const char *arguments);
 	
 	/** \brief Window width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set window width. */
 	void SetWidth(int width);
 	
 	/** \brief Window height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set window height. */
 	void SetHeight(int height);
 	
 	/** \brief Window is full screen. */
-	inline bool GetFullScreen() const{return pFullScreen;}
+	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** \brief Set if window is full screen. */
 	void SetFullScreen(bool fullScreen);
 	
 	/** \brief Patches to apply. */
-	inline delPatchList &GetPatches(){return pPatches;}
-	inline const delPatchList &GetPatches() const{return pPatches;}
+	inline delPatchList &GetPatches(){ return pPatches; }
+	inline const delPatchList &GetPatches() const{ return pPatches; }
 	
 	/** \brief Find patches to use. */
 	bool FindPatches(const delGame &game, bool useLatestPatch,

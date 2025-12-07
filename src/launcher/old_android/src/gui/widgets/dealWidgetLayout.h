@@ -81,7 +81,7 @@ public:
 	
 	
 	/** \brief Layout is dirty. */
-	inline bool GetLayoutDirty() const{return pDirtyLayout;}
+	inline bool GetLayoutDirty() const{ return pDirtyLayout; }
 	
 	/** \brief Dirty layout. */
 	void DirtyLayout();

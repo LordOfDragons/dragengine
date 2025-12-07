@@ -48,9 +48,9 @@ public:
 	pFaceCount(0){
 	}
 	
-	inline int GetNodeCount() const{return pNodeCount;}
-	inline int GetFaceCount() const{return pFaceCount;}
-	inline bool IsEmpty() const{return pNodeCount == 0 || pFaceCount == 0;}
+	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetFaceCount() const{ return pFaceCount; }
+	inline bool IsEmpty() const{ return pNodeCount == 0 || pFaceCount == 0; }
 	
 	virtual void VisitNode(deoalOctree *node, int /*intersection*/){
 		pNodeCount++;

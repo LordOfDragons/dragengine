@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the type of the clip. */
-	inline int GetType() const{return pType;}
+	inline int GetType() const{ return pType; }
 	/*@}*/
 };
 

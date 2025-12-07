@@ -47,14 +47,14 @@ public:
 	~deClassAnimation() override;
 	
 	void CreateClassMembers(dsEngine *engine) override;
-	inline deEngine &GetGameEngine() const{return pGameEngine;}
+	inline deEngine &GetGameEngine() const{ return pGameEngine; }
 	
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	deAnimation *GetAnimation(dsRealObject *This) const;
 	void PushAnimation(dsRunTime *rt, deAnimation *anim);
 	
-	inline dsClass *GetClassAnimationBoneParameter() const{return pClsBoneParameter;}
+	inline dsClass *GetClassAnimationBoneParameter() const{ return pClsBoneParameter; }
 	
 private:
 	struct sInitData{

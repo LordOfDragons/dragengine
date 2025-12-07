@@ -43,12 +43,12 @@
 meUDecalAddProperty::meUDecalAddProperty(meDecal *decal, const char *key, const char *value) :
 pDecal(NULL)
 {
-	if(! decal || ! key || strlen(key) == 0 || ! value){
+	if(!decal || !key || strlen(key) == 0 || !value){
 		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if(! world){
+	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	

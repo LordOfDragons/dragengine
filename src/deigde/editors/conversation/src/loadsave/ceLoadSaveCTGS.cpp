@@ -78,7 +78,7 @@ void ceLoadSaveCTGS::LoadCTGS(ceConversation &conversation, decBaseFileReader &r
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if(! root || root->GetName() != "conversationTestGameState"){
+	if(!root || root->GetName() != "conversationTestGameState"){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -157,7 +157,7 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(! tag){
+		if(!tag){
 			continue;
 		}
 		

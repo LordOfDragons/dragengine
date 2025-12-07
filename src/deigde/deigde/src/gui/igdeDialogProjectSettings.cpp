@@ -96,7 +96,7 @@ public:
 	
 	virtual void OnAction(){
 		igdeGameDefinition * const sharedGameDef = pDialog.GetSelectedSharedGameDef();
-		if(! sharedGameDef){
+		if(!sharedGameDef){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	
 	virtual void Update(){
 		SetEnabled(pDialog.GetSelectedSharedGameDef()
-			&& ! pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
+			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
 	}
 };
 
@@ -129,7 +129,7 @@ public:
 		}
 		
 		pListPathGameDefBase.RemoveItem(selection);
-		if(! pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
+		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
 			pListPathGameDefBase.SetSelection(0);
 		}
 		
@@ -309,7 +309,7 @@ bool igdeDialogProjectSettings::CheckValidInput(){
 }
 
 bool igdeDialogProjectSettings::Accept(){
-	if(! CheckValidInput()){
+	if(!CheckValidInput()){
 		return false;
 	}
 	
@@ -384,7 +384,7 @@ void igdeDialogProjectSettings::UpdateSharedGameDefs(){
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);
-	if(! pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
+	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
 		pCBSharedGameDefs->SetSelection(0);
 	}
 }

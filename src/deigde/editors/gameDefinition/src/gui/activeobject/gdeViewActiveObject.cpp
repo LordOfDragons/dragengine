@@ -806,7 +806,7 @@ void gdeViewActiveObject::pCleanUp(){
 
 
 void gdeViewActiveObject::pUpdateCameraFovRatio(){
-	if(! pGameDefinition){
+	if(!pGameDefinition){
 		return;
 	}
 	
@@ -819,7 +819,7 @@ void gdeViewActiveObject::pUpdateCameraFovRatio(){
 
 void gdeViewActiveObject::pInitObjectClass(){
 	pObjectClass = pGameDefinition->GetActiveObjectClass();
-	if(! pObjectClass){
+	if(!pObjectClass){
 		return;
 	}
 	pObjectClass->AddReference();
@@ -829,7 +829,7 @@ void gdeViewActiveObject::pInitObjectClass(){
 
 void gdeViewActiveObject::pInitSkin(){
 	const gdeSkin * const skin = pGameDefinition->GetActiveSkin();
-	if(! skin){
+	if(!skin){
 		return;
 	}
 	
@@ -857,7 +857,7 @@ void gdeViewActiveObject::pInitSky(){
 
 void gdeViewActiveObject::pInitParticleEmitter(){
 	const gdeParticleEmitter * const particleEmitter = pGameDefinition->GetActiveParticleEmitter();
-	if(! particleEmitter){
+	if(!particleEmitter){
 		return;
 	}
 	
@@ -1090,7 +1090,7 @@ void gdeViewActiveObject::pAddComponentShadowIgnore(){
 	
 	for(i=0; i<componentCount; i++){
 		const gdeVAOComponent &occomp = *((gdeVAOComponent*)pOCComponents.GetAt(i));
-		if(! occomp.GetOCComponent()->GetLightShadowIgnore()){
+		if(!occomp.GetOCComponent()->GetLightShadowIgnore()){
 			continue;
 		}
 		
@@ -1364,7 +1364,7 @@ void gdeViewActiveObject::pCenterOnObjectClass(igdeCamera &camera){
 
 void gdeViewActiveObject::pCenterOnSkin(igdeCamera &camera){
 	const gdeSkin * const skin = pGameDefinition->GetActiveSkin();
-	if(! skin){
+	if(!skin){
 		return;
 	}
 	

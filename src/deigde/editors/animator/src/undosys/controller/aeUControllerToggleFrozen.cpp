@@ -43,7 +43,7 @@
 aeUControllerToggleFrozen::aeUControllerToggleFrozen(aeController *controller) :
 pController(controller)
 {
-	if(! controller || ! controller->GetAnimator()){
+	if(!controller || !controller->GetAnimator()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -60,7 +60,7 @@ aeUControllerToggleFrozen::~aeUControllerToggleFrozen(){
 
 void aeUControllerToggleFrozen::Undo(){
 	aeController &controller = (aeController&)(deObject&)pController;
-	controller.SetFrozen(! controller.GetFrozen());
+	controller.SetFrozen(!controller.GetFrozen());
 }
 
 void aeUControllerToggleFrozen::Redo(){

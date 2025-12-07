@@ -73,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deArchiveDelga &GetModule() const{return pModule;}
+	inline deArchiveDelga &GetModule() const{ return pModule; }
 	
 	/** Container or \em NULL if dropped. */
-	inline deadContainer *GetContainer() const{return pContainer;}
+	inline deadContainer *GetContainer() const{ return pContainer; }
 	
 	/** Drop container. */
 	void DropContainer();

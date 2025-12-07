@@ -64,16 +64,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
-	inline const decVector2 &GetMinExtend() const{return pMinExtend;}
+	inline const decVector2 &GetMinExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decVector2 &GetMaxExtend() const{return pMaxExtend;}
+	inline const decVector2 &GetMaxExtend() const{ return pMaxExtend; }
 	/** Retrieves the maximum entry count. */
-	inline int GetMaxEntryCount() const{return pMaxEntryCount;}
+	inline int GetMaxEntryCount() const{ return pMaxEntryCount; }
 	
 	/** Retrieves the list of entries. */
-	inline const sEntry *GetEntries() const{return pEntries;}
+	inline const sEntry *GetEntries() const{ return pEntries; }
 	/** Retrieves the number of entries. */
-	inline int GetEntryCount() const{return pEntryCount;}
+	inline int GetEntryCount() const{ return pEntryCount; }
 	/** Adds an entry to the list of entries. */
 	void AddEntry(int index, const decVector2 &position);
 	/** Remove all entries in this node. */
@@ -82,9 +82,9 @@ public:
 	void GetEntryExtends(decVector2 &minExtend, decVector2 &maxExtend);
 	
 	/** Retrieves the first node or NULL if there is none. */
-	inline deoglPFClusterGenerator *GetNode1() const{return pNode1;}
+	inline deoglPFClusterGenerator *GetNode1() const{ return pNode1; }
 	/** Retrieves the second node or NULL if there is none. */
-	inline deoglPFClusterGenerator *GetNode2() const{return pNode2;}
+	inline deoglPFClusterGenerator *GetNode2() const{ return pNode2; }
 	
 	/**
 	 * Adds an entry to the tree. Finds the smallest matching node and adds it. If the node is already

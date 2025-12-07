@@ -46,7 +46,7 @@
 
 meUHTPaintHeight::meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
 const decPoint &size, float *oldHeights){
-	if(! world || ! oldHeights) DETHROW(deeInvalidParam);
+	if(!world || !oldHeights) DETHROW(deeInvalidParam);
 	
 	meHeightTerrain *hterrain = world->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
@@ -91,10 +91,10 @@ const decPoint &size, float *oldHeights){
 	
 	try{
 		pOldHeights = new float[pixelCount];
-		if(! pOldHeights) DETHROW(deeOutOfMemory);
+		if(!pOldHeights) DETHROW(deeOutOfMemory);
 		
 		pNewHeights = new float[pixelCount];
-		if(! pNewHeights) DETHROW(deeOutOfMemory);
+		if(!pNewHeights) DETHROW(deeOutOfMemory);
 		
 		pSaveHeights();
 		

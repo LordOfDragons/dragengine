@@ -154,7 +154,7 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 					activeProperty.Empty();
 				}
 				
-			}else if(! activeObject->IsPropertyShapeList(activeProperty.GetString())){
+			}else if(!activeObject->IsPropertyShapeList(activeProperty.GetString())){
 				activeProperty.Empty();
 			}
 			
@@ -163,7 +163,7 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 			}
 		}
 		
-		if(! activeProperty.IsEmpty()){
+		if(!activeProperty.IsEmpty()){
 			pUndoMove.TakeOver(new meUObjectShapeMove(activeObject, activeProperty, selection.GetSelected()));
 		}
 		
@@ -183,7 +183,7 @@ void meViewEditorMove::OnLeftMouseButtonRelease(int x, int y, bool shift, bool c
 	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
 	if(pUndoMove){
-		if(! ((meBaseUndoMove&)(igdeUndo&)pUndoMove).GetDistance().IsZero()){
+		if(!((meBaseUndoMove&)(igdeUndo&)pUndoMove).GetDistance().IsZero()){
 			GetWorld().GetUndoSystem()->Add(pUndoMove, false);
 		}
 		pUndoMove = NULL;
@@ -198,7 +198,7 @@ void meViewEditorMove::OnLeftMouseButtonRelease(int x, int y, bool shift, bool c
 void meViewEditorMove::OnMouseMove(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if(! pUndoMove){
+	if(!pUndoMove){
 		return;
 	}
 	

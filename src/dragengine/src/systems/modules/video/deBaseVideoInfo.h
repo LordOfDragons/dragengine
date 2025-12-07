@@ -64,43 +64,43 @@ public:
 	/** \name Video Information */
 	/*@{*/
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set width in pixels. */
 	void SetWidth(int width);
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set height in pixels. */
 	void SetHeight(int height);
 	
 	/** \brief Component count. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Set component count. */
 	void SetComponentCount(int componentCount);
 	
 	/** \brief Bits per pixel. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/** \brief Set bits per pixel. */
 	void SetBitCount(int bitCount);
 	
 	/** \brief Number of frames. */
-	inline int GetFrameCount() const{return pFrameCount;}
+	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** \brief Set number of frames. */
 	void SetFrameCount(int frameCount);
 	
 	/** \brief Frame rate. */
-	inline float GetFrameRate() const{return pFrameRate;}
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Set frame rate. */
 	void SetFrameRate(float frameRate);
 	
 	/** \brief Color conversion matrix. */
-	inline const decColorMatrix3 &GetColorConversionMatrix() const{return pColorConversionMatrix;}
+	inline const decColorMatrix3 &GetColorConversionMatrix() const{ return pColorConversionMatrix; }
 	
 	/** \brief Set color conversion matrix. */
 	void SetColorConversionMatrix(const decColorMatrix3 &matrix);
@@ -111,25 +111,25 @@ public:
 	/** \name Audio Information */
 	/*@{*/
 	/** \brief Bytes per sample or 0 if no audio. */
-	inline int GetBytesPerSample() const{return pBytesPerSample;}
+	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample or 0 if no audio. */
 	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples or 0 if no audio. */
-	inline int GetSampleCount() const{return pSampleCount;}
+	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples or 0 if no audio. */
 	void SetSampleCount(int sampleCount);
 	
 	/** \brief Number of channels or 0 if no audio. */
-	inline int GetChannelCount() const{return pChannelCount;}
+	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels or 0 if no audio. */
 	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate or 0 if no audio. */
-	inline int GetSampleRate() const{return pSampleRate;}
+	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate or 0 if no audio. */
 	void SetSampleRate(int sampleRate);

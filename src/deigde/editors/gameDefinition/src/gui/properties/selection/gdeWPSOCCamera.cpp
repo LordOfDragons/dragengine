@@ -79,7 +79,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if(! camera){
+		if(!camera){
 			return;
 		}
 		
@@ -103,7 +103,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if(! camera){
+		if(!camera){
 			return;
 		}
 		
@@ -209,7 +209,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if(! camera || camera->GetPropName() == comboBox->GetText()){
+		if(!camera || camera->GetPropName() == comboBox->GetText()){
 			return;
 		}
 		

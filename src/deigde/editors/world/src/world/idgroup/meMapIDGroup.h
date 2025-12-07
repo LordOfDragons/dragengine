@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Game definition property. */
-	inline igdeGDProperty *GetProperty() const{return pProperty;}
+	inline igdeGDProperty *GetProperty() const{ return pProperty; }
 	
 	/** Identifier group. */
-	inline meIDGroup *GetGroup() const{return pGroup;}
+	inline meIDGroup *GetGroup() const{ return pGroup; }
 	
 	/** Property prefix. */
-	inline const decString &GetPropertyPrefix() const{return pPropertyPrefix;}
+	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
 	/*@}*/
 };
 

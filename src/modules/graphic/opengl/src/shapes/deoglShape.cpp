@@ -122,7 +122,7 @@ deoglShape::~deoglShape(){
 ///////////////
 
 deoglSharedVBOBlock *deoglShape::GetVBOBlock(){
-	if(! pVBOBlock){
+	if(!pVBOBlock){
 		const int pointCount = pPointCountFaces + pPointCountLines;
 		//printf( "pointCount %i\n", pointCount );
 		try{

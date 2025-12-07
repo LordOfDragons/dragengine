@@ -73,7 +73,7 @@ deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
 	
 	try{
 		videoPlayer = new deVideoPlayer(this);
-		if(! videoPlayer) DETHROW(deeOutOfMemory);
+		if(!videoPlayer) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
 		GetAudioSystem()->LoadVideoPlayer(videoPlayer);
@@ -111,7 +111,7 @@ void deVideoPlayerManager::SystemAudioLoad(){
 	deAudioSystem &system = *GetAudioSystem();
 	
 	while(videoPlayer){
-		if(! videoPlayer->GetPeerAudio()){
+		if(!videoPlayer->GetPeerAudio()){
 			system.LoadVideoPlayer(videoPlayer);
 		}
 		
@@ -133,7 +133,7 @@ void deVideoPlayerManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(videoPlayer){
-		if(! videoPlayer->GetPeerGraphic()){
+		if(!videoPlayer->GetPeerGraphic()){
 			grasys.LoadVideoPlayer(videoPlayer);
 		}
 		

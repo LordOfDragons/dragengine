@@ -155,37 +155,37 @@ public:
 	
 	
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** \brief Room volume sum. */
-	inline float GetRoomVolume() const{return pRoomVolume;}
+	inline float GetRoomVolume() const{ return pRoomVolume; }
 	
 	/** \brief Room surface sum. */
-	inline float GetRoomSurface() const{return pRoomSurface;}
+	inline float GetRoomSurface() const{ return pRoomSurface; }
 	
 	/** \brief Sabine sum for medium frequencies. */
-	inline float GetSabineMedium() const{return pSabineMedium;}
+	inline float GetSabineMedium() const{ return pSabineMedium; }
 	
 	/** \brief Sabine sum for low frequencies. */
-	inline float GetSabineLow() const{return pSabineLow;}
+	inline float GetSabineLow() const{ return pSabineLow; }
 	
 	/** \brief Sabine sum for high frequencies. */
-	inline float GetSabineHigh() const{return pSabineHigh;}
+	inline float GetSabineHigh() const{ return pSabineHigh; }
 	
 	/** \brief Absorption sum for low frequencies. */
-	inline float GetAbsorptionLow() const{return pAbsorptionLow;}
+	inline float GetAbsorptionLow() const{ return pAbsorptionLow; }
 	
 	/** \brief Absorption sum for medium frequencies. */
-	inline float GetAbsorptionMedium() const{return pAbsorptionMedium;}
+	inline float GetAbsorptionMedium() const{ return pAbsorptionMedium; }
 	
 	/** \brief Absorption sum for high frequencies. */
-	inline float GetAbsorptionHigh() const{return pAbsorptionHigh;}
+	inline float GetAbsorptionHigh() const{ return pAbsorptionHigh; }
 	
 	/** \brief Number of rays hitting room geometry. */
-	inline int GetHitCount() const{return pHitCount;}
+	inline int GetHitCount() const{ return pHitCount; }
 	/*@}*/
 	
 	

@@ -219,7 +219,7 @@ void deOSBeOS::ProcessEventLoop(bool sendToInputModule){
 		pMessageQueue.Lock();
 		message = pMessageQueue.NextMessage();
 		pMessageQueue.Unlock();
-		if(! message){
+		if(!message){
 			break; // finished
 		}
 		

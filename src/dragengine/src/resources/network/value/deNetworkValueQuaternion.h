@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{return pFormat;}
+	inline eValueFormats GetFormat() const{ return pFormat; }
 	
 	/** \brief Value. */
-	inline const decQuaternion &GetQuaternion() const{return pValue;}
+	inline const decQuaternion &GetQuaternion() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetQuaternion(const decQuaternion &value);
 	
 	/** \brief Precision. */
-	inline double GetPrecision() const{return pPrecision;}
+	inline double GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision. */
 	void SetPrecision(double precision);

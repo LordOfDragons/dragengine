@@ -57,7 +57,7 @@ ceCConditionHasActor::~ceCConditionHasActor(){
 ///////////////
 
 void ceCConditionHasActor::SetActor(const char *id){
-	if(! id){
+	if(!id){
 		DETHROW(deeInvalidParam);
 	}
 	

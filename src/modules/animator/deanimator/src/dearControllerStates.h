@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of states. */
-	inline int GetStateCount() const{return pStateCount;}
+	inline int GetStateCount() const{ return pStateCount; }
 	/** Sets the number of states. */
 	void SetStateCount(int count);
 	

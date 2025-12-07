@@ -67,7 +67,7 @@ void deClassColliderConstraint::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	// create a constraint
 	nd->constraint = new deColliderConstraint();
-	if(! nd->constraint) DSTHROW(dueOutOfMemory);
+	if(!nd->constraint) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -162,7 +162,7 @@ void deClassColliderConstraint::nfSetPosition1::RunFunction(dsRunTime *rt, dsVal
 	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	constraint->SetPosition1(clsCCon->GetClassVector()->GetVector(obj));
 }
@@ -188,7 +188,7 @@ void deClassColliderConstraint::nfSetOrientation1::RunFunction(dsRunTime *rt, ds
 	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	constraint->SetOrientation1(clsCCon->GetClassQuaternion()->GetQuaternion(obj));
 }
@@ -214,7 +214,7 @@ void deClassColliderConstraint::nfSetPosition2::RunFunction(dsRunTime *rt, dsVal
 	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	constraint->SetPosition2(clsCCon->GetClassVector()->GetVector(obj));
 }
@@ -240,7 +240,7 @@ void deClassColliderConstraint::nfSetOrientation2::RunFunction(dsRunTime *rt, ds
 	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
-	if(! obj) DSTHROW(dueNullPointer);
+	if(!obj) DSTHROW(dueNullPointer);
 	
 	constraint->SetOrientation2(clsCCon->GetClassQuaternion()->GetQuaternion(obj));
 }
@@ -253,7 +253,7 @@ deClassColliderConstraint::nfGetLowerLimitFor::nfGetLowerLimitFor(const sInitDat
 	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
 void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -286,7 +286,7 @@ deClassColliderConstraint::nfGetUpperLimitFor::nfGetUpperLimitFor(const sInitDat
 	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
 void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -321,7 +321,7 @@ deClassColliderConstraint::nfSetLimitsFor::nfSetLimitsFor(const sInitData &init)
 	p_AddParameter(init.clsFlt); // upperLimit
 }
 void deClassColliderConstraint::nfSetLimitsFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -420,7 +420,7 @@ void deClassColliderConstraint::nfSetLinearLimits::RunFunction(dsRunTime *rt, ds
 	
 	dsRealObject *objLower = rt->GetValue(0)->GetRealObject();
 	dsRealObject *objUpper = rt->GetValue(1)->GetRealObject();
-	if(! objLower || ! objUpper) DSTHROW(dueNullPointer);
+	if(!objLower || !objUpper) DSTHROW(dueNullPointer);
 	
 	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector(objLower);
 	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector(objUpper);
@@ -474,7 +474,7 @@ void deClassColliderConstraint::nfSetAngularLimits::RunFunction(dsRunTime *rt, d
 	
 	dsRealObject *objLower = rt->GetValue(0)->GetRealObject();
 	dsRealObject *objUpper = rt->GetValue(1)->GetRealObject();
-	if(! objLower || ! objUpper) DSTHROW(dueNullPointer);
+	if(!objLower || !objUpper) DSTHROW(dueNullPointer);
 	
 	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector(objLower);
 	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector(objUpper);
@@ -496,7 +496,7 @@ dsFunction(init.clsCCon, "getStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DS
 	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
 void deClassColliderConstraint::nfGetStaticFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -515,7 +515,7 @@ dsFunction(init.clsCCon, "setStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DS
 	p_AddParameter(init.clsFlt); // friction
 }
 void deClassColliderConstraint::nfSetStaticFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -533,7 +533,7 @@ dsFunction(init.clsCCon, "getKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC |
 	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
 void deClassColliderConstraint::nfGetKinematicFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -552,7 +552,7 @@ dsFunction(init.clsCCon, "setKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC |
 	p_AddParameter(init.clsFlt); // friction
 }
 void deClassColliderConstraint::nfSetKinematicFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -570,7 +570,7 @@ dsFunction(init.clsCCon, "getSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | D
 	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
 void deClassColliderConstraint::nfGetSpringStiffnessFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -589,7 +589,7 @@ dsFunction(init.clsCCon, "setSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | D
 	p_AddParameter(init.clsFlt); // stiffness
 }
 void deClassColliderConstraint::nfSetSpringStiffnessFor::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -696,7 +696,7 @@ deClassColliderConstraint::nfSetToHingeJoint::nfSetToHingeJoint(const sInitData 
 	p_AddParameter(init.clsFlt); // upperLimit
 }
 void deClassColliderConstraint::nfSetToHingeJoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -718,7 +718,7 @@ deClassColliderConstraint::nfSetToPistonJoint::nfSetToPistonJoint(const sInitDat
 	p_AddParameter(init.clsFlt); // upperLimit
 }
 void deClassColliderConstraint::nfSetToPistonJoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -829,7 +829,7 @@ void deClassColliderConstraint::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
-	if(! p_IsObjOfType(obj, clsCCon)){
+	if(!p_IsObjOfType(obj, clsCCon)){
 		rt->PushBool(false);
 		
 	}else{
@@ -848,7 +848,7 @@ void deClassColliderConstraint::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 
 deClassColliderConstraint::deClassColliderConstraint(deEngine *gameEngine, deScriptingDragonScript *scrDS) :
 dsClass("ColliderConstraint", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! gameEngine || ! scrDS) DSTHROW(dueInvalidParam);
+	if(!gameEngine || !scrDS) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
@@ -955,7 +955,7 @@ void deClassColliderConstraint::CreateClassMembers(dsEngine *engine){
 }
 
 deColliderConstraint *deClassColliderConstraint::GetConstraint(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -963,11 +963,11 @@ deColliderConstraint *deClassColliderConstraint::GetConstraint(dsRealObject *mys
 }
 
 void deClassColliderConstraint::PushConstraint(dsRunTime *rt, deColliderConstraint *constraint){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! constraint){
+	if(!constraint){
 		rt->PushObject(NULL, this);
 		return;
 	}

@@ -99,7 +99,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render light UBO. */
-	inline deoglSPBlockUBO &GetUBORenderLight() const{return pUBORenderLight;}
+	inline deoglSPBlockUBO &GetUBORenderLight() const{ return pUBORenderLight; }
 	
 	
 	

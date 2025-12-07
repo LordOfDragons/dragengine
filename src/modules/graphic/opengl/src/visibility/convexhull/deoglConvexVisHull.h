@@ -70,23 +70,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
-	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	/** Sets the extends. */
 	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Calculate axis aligned bounding box for a specific transformation. */
 	void CalcBoundingBox(decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix) const;
 	
 	/** Retrieves the points. */
-	inline oglVector3 *GetPoints() const{return pPoints;}
+	inline oglVector3 *GetPoints() const{ return pPoints; }
 	/** Retrieves the number of points. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	/** Sets the number of points. */
 	void SetPointCount(int count);
 	
 	/** Retrieves the VAO. */
-	inline GLuint GetVAO() const{return pVAO;}
+	inline GLuint GetVAO() const{ return pVAO; }
 	/** Updates the VBO from the points. */
 	void UpdateVBO();
 	

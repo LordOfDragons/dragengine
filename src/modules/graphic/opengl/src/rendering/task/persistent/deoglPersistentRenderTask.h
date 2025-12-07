@@ -86,19 +86,19 @@ public:
 	void PrepareForRender(deoglRenderThread &renderThread);
 	
 	/** Render parameter shader parameter block or \em NULL. */
-	inline deoglSPBlockUBO *GetRenderParamBlock() const{return pRenderParamBlock;}
+	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
 	/** Set render parameter shader parameter block or \em NULL to use none. */
 	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	/** Instances texture buffer object or \em NULL. */
-	inline GLuint GetTBOInstances() const{return pTBOInstances;}
+	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
 	/** Set instances texture buffer object or \em NULL to use none. */
 	void SetTBOInstances(GLuint tbo);
 	
 	/** Use SPB instance flags. */
-	inline bool GetUseSPBInstanceFlags() const{return pUseSPBInstanceFlags;}
+	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
 	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags(bool useFlags);

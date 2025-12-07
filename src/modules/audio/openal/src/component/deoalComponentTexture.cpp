@@ -74,7 +74,7 @@ deoalComponentTexture::~deoalComponentTexture(){
 ///////////////
 
 void deoalComponentTexture::Synchronize(){
-	if(! pDirtyTexture){
+	if(!pDirtyTexture){
 		return;
 	}
 	

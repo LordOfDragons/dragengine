@@ -130,7 +130,7 @@ void dealEngineModule::SetLibFileEntryPoint(const char *name){
 ////////////
 
 int dealEngineModule::CompareVersion(const char *version1, const char *version2){
-	if(! version1 || ! version2){
+	if(!version1 || !version2){
 		DETHROW(deeInvalidParam);
 	}
 	

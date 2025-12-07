@@ -38,9 +38,9 @@
 ////////////////////////////
 
 meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
-	if(! world || ! decal) DETHROW(deeInvalidParam);
+	if(!world || !decal) DETHROW(deeInvalidParam);
 	
-	if(! decal->GetParentObject()) DETHROW(deeInvalidParam);
+	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	

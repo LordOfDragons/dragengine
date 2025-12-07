@@ -64,7 +64,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Camera",
 igdeUndo *gdeMAOCCameraPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCCamera::TYPE_NAME));
-	if(! clip){
+	if(!clip){
 		return NULL;
 	}
 	

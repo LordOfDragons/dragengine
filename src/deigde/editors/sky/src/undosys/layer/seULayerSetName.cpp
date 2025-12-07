@@ -43,7 +43,7 @@ seULayerSetName::seULayerSetName(seLayer *layer, const char *newName) :
 pLayer(NULL),
 pNewName(newName)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

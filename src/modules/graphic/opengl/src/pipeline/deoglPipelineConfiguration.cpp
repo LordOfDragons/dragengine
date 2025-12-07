@@ -440,12 +440,12 @@ void deoglPipelineConfiguration::Activate(deoglRenderThread &renderThread) const
 		state.PolygonMode(pPolygonMode);
 		
 		state.EnableCullFace(pEnableCullFace);
-		if(pEnableCullFace && ! pDynamicCullFace){
+		if(pEnableCullFace && !pDynamicCullFace){
 			state.CullFace(pCullFace);
 		}
 		
 		state.EnablePolygonOffsetFill(pEnablePolygonOffset);
-		if(pEnablePolygonOffset && ! pDynamicPolygonOffset){
+		if(pEnablePolygonOffset && !pDynamicPolygonOffset){
 			state.PolygonOffset(pPolygonOffsetFactor, pPolygonOffsetBias);
 		}
 		
@@ -455,7 +455,7 @@ void deoglPipelineConfiguration::Activate(deoglRenderThread &renderThread) const
 		}
 		
 		state.EnableStencilTest(pEnableStencilTest);
-		if(pEnableStencilTest && ! pDynamicStencilTest){
+		if(pEnableStencilTest && !pDynamicStencilTest){
 			if(pStencilSameFrontBack){
 				state.StencilOp(pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront);
 				

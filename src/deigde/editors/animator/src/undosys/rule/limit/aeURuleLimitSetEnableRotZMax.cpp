@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnableRotZMax::aeURuleLimitSetEnableRotZMax(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableRotZMax::Undo(){
 }
 
 void aeURuleLimitSetEnableRotZMax::Redo(){
-	pRule->SetEnableRotationZMax(! pRule->GetEnableRotationZMax());
+	pRule->SetEnableRotationZMax(!pRule->GetEnableRotationZMax());
 }

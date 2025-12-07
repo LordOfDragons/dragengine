@@ -128,38 +128,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline dePhysicsBullet &GetBullet() const{return pBullet;}
+	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
 	/** Engine world resource. */
-	inline deWorld &GetWorld() const{return pWorld;}
+	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Shared collision information. */
-	inline deCollisionInfo *GetCollisionInfo() const{return pColInfo;}
+	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
 	
 	/** Unstuck collider. */
-	inline debpUnstuckCollider *GetUnstuckCollider() const{return pUnstuckCollider;}
+	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }
 	
 	
 	
 	/** Maximum sub steps for dynamic simulation. */
-	inline int GetSimulationMaxSubSteps() const{return pSimMaxSubStep;}
+	inline int GetSimulationMaxSubSteps() const{ return pSimMaxSubStep; }
 	
 	/** Fixed time step for dynamic simulation. */
-	inline float GetSimulationTimeStep() const{return pSimTimeStep;}
+	inline float GetSimulationTimeStep() const{ return pSimTimeStep; }
 	
 	
 	
 	/** Gravity. */
-	inline const decVector &GetGravity() const{return pGravity;}
+	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/**
 	 * Dynamic collision velocity threshold.
 	 * \see debpCollisionWorld::CheckDynamicCollisions.
 	 */
-	inline float GetDynamicCollisionVelocityThreshold() const{return pDynCollisionVelocityThreshold;}
+	inline float GetDynamicCollisionVelocityThreshold() const{ return pDynCollisionVelocityThreshold; }
 	
 	/** In progress of processing physics. */
-	inline bool GetProcessingPhysics() const{return pProcessingPhysics;}
+	inline bool GetProcessingPhysics() const{ return pProcessingPhysics; }
 	
 	
 	
@@ -210,15 +210,15 @@ public:
 	
 	
 	/** Shared collision filteringNULL. */
-	inline debpSharedCollisionFiltering &GetSharedCollisionFiltering() const{return *pSharedCollisionFiltering;}
+	inline debpSharedCollisionFiltering &GetSharedCollisionFiltering() const{ return *pSharedCollisionFiltering; }
 	
 	
 	
 	/** Height terrain or \em NULL. */
-	inline debpHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
+	inline debpHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Dynamics world. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
+	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
 	
 	

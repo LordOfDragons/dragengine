@@ -52,8 +52,7 @@
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
 #else
-#	error OS not supported!
-#endif
+#	error OS not supported!#endif
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -149,7 +148,7 @@ void projTestRunProcess::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(! WriteFile(pPipeOut, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipeOut, data, length, &bytesWritten, NULL)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){
@@ -197,7 +196,7 @@ void projTestRunProcess::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(! ReadFile(pPipeIn, data, length, &bytesRead, NULL)){
+	if(!ReadFile(pPipeIn, data, length, &bytesRead, NULL)){
 		pLogger->LogErrorFormat(LOGSOURCE, "ReadFromPipe failed with error %ld:",
 			GetLastError());
 		DETHROW(deeInvalidAction);

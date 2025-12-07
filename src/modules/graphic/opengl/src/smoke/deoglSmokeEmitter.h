@@ -67,19 +67,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the opengl object. */
-	inline deGraphicOpenGl *GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl *GetOpenGL() const{ return pOgl; }
 	/** Retrieves the prop field. */
-	inline deSmokeEmitter *GetSmokeEmitter() const{return pSmokeEmitter;}
+	inline deSmokeEmitter *GetSmokeEmitter() const{ return pSmokeEmitter; }
 	
 	/** Retrieves the parent world. */
-	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
 	void SetParentWorld(deoglWorld *parentWorld);
 	
 	/** Retrieves the minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	/** Retrieves the maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Updates the smoke emitter if required. */
 	void Update(float elapsed);

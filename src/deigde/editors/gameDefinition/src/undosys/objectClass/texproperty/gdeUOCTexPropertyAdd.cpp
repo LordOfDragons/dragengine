@@ -44,7 +44,7 @@ gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass *objectClass, gdePrope
 pObjectClass(NULL),
 pProperty(NULL)
 {
-	if(! objectClass || ! property){
+	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
 	}
 	

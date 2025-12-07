@@ -109,26 +109,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator module. */
-	inline deDEAnimator &GetModule(){return pModule;}
+	inline deDEAnimator &GetModule(){ return pModule; }
 	
 	
 	
 	/** Animation or nullptr if not set. */
-	inline dearAnimation *GetAnimation() const{return pAnimation;}
+	inline dearAnimation *GetAnimation() const{ return pAnimation; }
 	
 	/** Component or nullptr if not set. */
-	inline dearComponent *GetComponent() const{return pComponent;}
+	inline dearComponent *GetComponent() const{ return pComponent; }
 	
 	/** Bone state list. */
-	inline dearBoneStateList &GetBoneStateList(){return pBoneStateList;}
-	inline const dearBoneStateList &GetBoneStateList() const{return pBoneStateList;}
+	inline dearBoneStateList &GetBoneStateList(){ return pBoneStateList; }
+	inline const dearBoneStateList &GetBoneStateList() const{ return pBoneStateList; }
 	
 	/** VPS state list. */
-	inline dearVPSStateList &GetVPSStateList(){return pVPSStateList;}
-	inline const dearVPSStateList &GetVPSStateList() const{return pVPSStateList;}
+	inline dearVPSStateList &GetVPSStateList(){ return pVPSStateList; }
+	inline const dearVPSStateList &GetVPSStateList() const{ return pVPSStateList; }
 	
 	/** Controller states. */
-	inline const dearControllerStates &GetControllerStates() const{return pControllerStates;}
+	inline const dearControllerStates &GetControllerStates() const{ return pControllerStates; }
 	
 	/** Set capture current component state to true. */
 	void SetCaptureComponentState();

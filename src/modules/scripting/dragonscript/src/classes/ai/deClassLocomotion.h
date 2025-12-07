@@ -55,8 +55,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){return pDS;}
-	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS(){ return pDS; }
+	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -67,8 +67,8 @@ public:
 	/** \brief Push locomotion which can be NULL. */
 	void PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion);
 	
-	inline dsClass *GetClassLocomotionAttribute() const{return pClsLocomotionAttribute;}
-	inline dsClass *GetClassLocomotionTilt() const{return pClsLocomotionTilt;}
+	inline dsClass *GetClassLocomotionAttribute() const{ return pClsLocomotionAttribute; }
+	inline dsClass *GetClassLocomotionTilt() const{ return pClsLocomotionTilt; }
 	/*@}*/
 	
 private:

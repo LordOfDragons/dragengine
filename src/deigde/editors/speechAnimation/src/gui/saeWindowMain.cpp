@@ -200,7 +200,7 @@ void saeWindowMain::CreateNewSAnimation(){
 }
 
 void saeWindowMain::SaveSAnimation(const char *filename){
-	if(! pSAnimation){
+	if(!pSAnimation){
 		return;
 	}
 	
@@ -249,7 +249,7 @@ void saeWindowMain::OnDeactivate(){
 
 
 void saeWindowMain::OnFrameUpdate(float elapsed){
-	if(! GetActiveModule()){
+	if(!GetActiveModule()){
 		return;
 	}
 	
@@ -374,7 +374,7 @@ public:
 		}
 		
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
-		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Speech Animation",
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			return;
@@ -528,7 +528,7 @@ public:
 	
 	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		saePhoneme * const phoneme = sanimation->GetActivePhoneme();
-		if(! phoneme){
+		if(!phoneme){
 			return NULL;
 		}
 		return new saeUPhonemeRemove(phoneme);
@@ -635,7 +635,7 @@ public:
 	
 	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		saeWord * const word = sanimation->GetActiveWord();
-		if(! word){
+		if(!word){
 			return NULL;
 		}
 		return new saeUWordRemove(word);

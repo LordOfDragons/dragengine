@@ -107,7 +107,7 @@ deClassSSGroup::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSSGroup::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -149,7 +149,7 @@ deClassSSGroup::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 	p_AddParameter(init.clsSSGroupTarget); // target
 }
 void deClassSSGroup::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -192,7 +192,7 @@ deClassSSGroup::nfSetApplicationType::nfSetApplicationType(const sInitData &init
 	p_AddParameter(init.clsSSGroupApplication); // applicationType
 }
 void deClassSSGroup::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *myself){
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -225,7 +225,7 @@ void deClassSSGroup::nfAddSource::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
 	
 	deSynthesizerSource * const source = clsSource.GetSource(rt->GetValue(0)->GetRealObject());
-	if(! source){
+	if(!source){
 		DSTHROW(dueNullPointer);
 	}
 	nd.source->AddSource(source);
@@ -245,7 +245,7 @@ void deClassSSGroup::nfRemoveSource::RunFunction(dsRunTime *rt, dsValue *myself)
 	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
 	
 	deSynthesizerSource * const source = clsSource.GetSource(rt->GetValue(0)->GetRealObject());
-	if(! source){
+	if(!source){
 		DSTHROW(dueNullPointer);
 	}
 	nd.source->RemoveSource(source);
@@ -333,7 +333,7 @@ void deClassSSGroup::CreateClassMembers(dsEngine *engine){
 }
 
 deSynthesizerSourceGroup *deClassSSGroup::GetSource(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -341,7 +341,7 @@ deSynthesizerSourceGroup *deClassSSGroup::GetSource(dsRealObject *myself) const{
 }
 
 void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
-	if(! myself){
+	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -365,11 +365,11 @@ void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 }
 
 void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! source){
+	if(!source){
 		rt->PushObject(NULL, this);
 		return;
 	}

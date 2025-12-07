@@ -81,7 +81,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** NonRoamableId. */
-	inline const wrgi::RawGameController &GetController() const{return pController;}
+	inline const wrgi::RawGameController &GetController() const{ return pController; }
 
 	/** Update device state. */
 	virtual void Update();
@@ -96,10 +96,10 @@ public:
 	bool GetReadingButton(int index) const;
 
 	/** Reading time. */
-	inline DWORD GetReadingTime() const{return pReadingTime;}
+	inline DWORD GetReadingTime() const{ return pReadingTime; }
 
 	/** Battery report. Can be nullptr. */
-	inline const wrdp::BatteryReport &GetBatteryReport() const{return pBatteryReport;}
+	inline const wrdp::BatteryReport &GetBatteryReport() const{ return pBatteryReport; }
 	/*@}*/
 };
 

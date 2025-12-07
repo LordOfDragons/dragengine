@@ -282,7 +282,7 @@ void dealGameData::pOpenParcelFileDescriptor(jobject objUri){
 }
 
 void dealGameData::pReadGameDefinitions(){
-	if(! pObjGameData){
+	if(!pObjGameData){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -312,7 +312,7 @@ void dealGameData::pReadGameDefinitions(){
 		reader = new dealFDFileReader("", pFileDescriptor, pFileOffset, pFileLength);
 		ffunc.opaque = reader;
 		zipFile = unzOpen2(reader->GetFilename(), &ffunc);
-		if(! zipFile){
+		if(!zipFile){
 			DETHROW(deeReadFile);
 		}
 		if(unzGetGlobalInfo(zipFile, &gi) != UNZ_OK){
@@ -414,7 +414,7 @@ void dealGameData::pReadGameDefinitions(){
 }
 
 void dealGameData::pCloseParcelFileDescriptor(){
-	if(! pObjGameData){
+	if(!pObjGameData){
 		return;
 	}
 	

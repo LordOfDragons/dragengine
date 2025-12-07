@@ -54,7 +54,7 @@ deResourceList::~deResourceList(){
 ///////////////
 
 bool deResourceList::Has(deResource *resource) const{
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -70,7 +70,7 @@ bool deResourceList::Has(deResource *resource) const{
 }
 
 void deResourceList::Add(deResource *resource){
-	if(! resource || resource->GetLLManagerPrev() || resource->GetLLManagerNext()){
+	if(!resource || resource->GetLLManagerPrev() || resource->GetLLManagerNext()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -92,10 +92,10 @@ void deResourceList::Remove(deResource *resource){
 	// resource list. resource managers use this list correctly hence the only possible problem occurs
 	// if the user messes with the linked list himself. since he is strictly discouraged to do so this
 	// problem situation can be ruled out for normal operation to gain speed by dropping a full check
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
-	if(resource != pRoot && ! resource->GetLLManagerNext() && ! resource->GetLLManagerPrev()){
+	if(resource != pRoot && !resource->GetLLManagerNext() && !resource->GetLLManagerPrev()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -107,7 +107,7 @@ void deResourceList::RemoveIfPresent(deResource *resource){
 	// resource list. resource managers use this list correctly hence the only possible problem occurs
 	// if the user messes with the linked list himself. since he is strictly discouraged to do so this
 	// problem situation can be ruled out for normal operation to gain speed by dropping a full check
-	if(! resource){
+	if(!resource){
 		DETHROW(deeInvalidParam);
 	}
 	if(resource == pRoot || resource->GetLLManagerNext() || resource->GetLLManagerPrev()){
@@ -145,7 +145,7 @@ void deResourceList::pBareRemove(deResource *resource){
 		}
 		
 	}else{
-		if(! resource->GetLLManagerNext()){
+		if(!resource->GetLLManagerNext()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -163,7 +163,7 @@ void deResourceList::pBareRemove(deResource *resource){
 		}
 		
 	}else{
-		if(! resource->GetLLManagerPrev()){
+		if(!resource->GetLLManagerPrev()){
 			DETHROW(deeInvalidParam);
 		}
 		

@@ -130,7 +130,7 @@ const decDVector &referencePosition){
 	// a UseTexture which is not NULL. doing this though over and over again is bad.
 	// requires adding a flag to check if the component has at least one visible texture
 // 	if( ! pComponent->GetModel() || ! pComponent->GetSkin() ){
-	if(! pComponent->GetModel()){
+	if(!pComponent->GetModel()){
 		OcclusionTestInvisible();
 		return;
 	}

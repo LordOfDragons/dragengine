@@ -43,7 +43,7 @@ pResourceManager(resourceManager),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
-	if(! resourceManager){
+	if(!resourceManager){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -60,7 +60,7 @@ deResource::~deResource(){
 ///////////////
 
 deEngine *deResource::GetEngine() const{
-	if(! pResourceManager){
+	if(!pResourceManager){
 		DETHROW(deeInvalidAction);
 	}
 	

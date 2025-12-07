@@ -179,7 +179,7 @@ void seLink::NotifyLinkChanged(){
 
 
 void seLink::UpdateController(){
-	if(! pEngLink){
+	if(!pEngLink){
 		return;
 	}
 	
@@ -196,7 +196,7 @@ void seLink::UpdateController(){
 }
 
 void seLink::UpdateCurve(){
-	if(! pEngLink){
+	if(!pEngLink){
 		return;
 	}
 	

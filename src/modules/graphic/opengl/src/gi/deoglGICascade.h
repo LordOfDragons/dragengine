@@ -44,21 +44,21 @@ public:
 		epfSmoothUpdate = 0x1,
 		epfDisabled = 0x2,
 		epfNearGeometry = 0x4,
-		epfValid = 0x8, //<! Probe has been updated at least once
-		epfRayCacheValid = 0x10, //<! Ray-Tracing ray cache is valid
+		epfValid = 0x8, //<!Probe has been updated at least once
+		epfRayCacheValid = 0x10, //<!Ray-Tracing ray cache is valid
 		epfInsideView = 0x20,
 		epfDynamicDisable = 0x40
 	};
 	
 	/** Probe parameters. */
 	struct sProbe{
-		decPoint3 coord; //<! Grid coordinates
+		decPoint3 coord; //<!Grid coordinates
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
 		decVector minExtend;
 		decVector maxExtend;
-		uint16_t index; //<! Grid index
+		uint16_t index; //<!Grid index
 		uint8_t flags;
 		uint8_t countOffsetMoved;
 	};
@@ -122,49 +122,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** GI State. */
-	inline deoglGIState &GetGIState() const{return pGIState;}
+	inline deoglGIState &GetGIState() const{ return pGIState; }
 	
 	/** Cascade index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Offset. */
-	inline const decVector &GetOffset() const{return pOffset;}
+	inline const decVector &GetOffset() const{ return pOffset; }
 	
 	/** Probe spacing. */
-	inline const decVector &GetProbeSpacing() const{return pProbeSpacing;}
+	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
 	
 	/** Probe spacing inverse. */
-	inline const decVector &GetProbeSpacingInverse() const{return pProbeSpacingInv;}
+	inline const decVector &GetProbeSpacingInverse() const{ return pProbeSpacingInv; }
 	
 	/** Probe field origin. */
-	inline const decVector &GetFieldOrigin() const{return pFieldOrigin;}
+	inline const decVector &GetFieldOrigin() const{ return pFieldOrigin; }
 	
 	/** Size of probe field. */
-	inline const decVector &GetFieldSize() const{return pFieldSize;}
+	inline const decVector &GetFieldSize() const{ return pFieldSize; }
 	
 	/** Position clamp. */
-	inline const decVector &GetPositionClamp() const{return pPositionClamp;}
+	inline const decVector &GetPositionClamp() const{ return pPositionClamp; }
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Grid coordinate shift (wrapping around). Shift is in the range from 0 to probeCount-1. */
-	inline const decPoint3 &GetGridCoordShift() const{return pGridCoordShift;}
+	inline const decPoint3 &GetGridCoordShift() const{ return pGridCoordShift; }
 	
 	/** Detection box. */
-	inline const decVector &GetDetectionBox() const{return pDetectionBox;}
+	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
 	
 	/** Max probe distance. */
-	inline float GetMaxProbeDistance() const{return pMaxProbeDistance;}
+	inline float GetMaxProbeDistance() const{ return pMaxProbeDistance; }
 	
 	/** Fill up update slots with expensive probes on large position changes. */
-	inline bool GetFillUpUpdatesWithExpensiveProbes() const{return pFillUpUpdatesWithExpensiveProbes;}
+	inline bool GetFillUpUpdatesWithExpensiveProbes() const{ return pFillUpUpdatesWithExpensiveProbes; }
 	
 	/** Fill up update slots with expensive probes on large position changes. */
 	void SetFillUpUpdatesWithExpensiveProbes(bool fillUp);
 	
 	/** Index of cascade to use for sky shadow casting. */
-	inline int GetSkyShadowCascade() const{return pSkyShadowCascade;}
+	inline int GetSkyShadowCascade() const{ return pSkyShadowCascade; }
 	
 	/** Set index of cascade to use for sky shadow casting. */
 	void SetSkyShadowCascade(int cascade);
@@ -205,10 +205,10 @@ public:
 	
 	
 	/** Probes inside view with epfValid cleared are present. */
-	inline bool HasInvalidProbesInsideView() const{return pHasInvalidProbesInsideView;}
+	inline bool HasInvalidProbesInsideView() const{ return pHasInvalidProbesInsideView; }
 	
 	/** Cascade requires full update of all inside view probes. */
-	inline bool GetRequiresFullUpdateInsideView() const{return pRequiresFullUpdateInsideView;}
+	inline bool GetRequiresFullUpdateInsideView() const{ return pRequiresFullUpdateInsideView; }
 	
 	/** Set if cascade requires full update of all inside view probes. */
 	void SetRequiresFullUpdateInsideView(bool requiresUpdate);
@@ -219,7 +219,7 @@ public:
 	void ClearClearProbes();
 	
 	/** Has clear probes. */
-	inline bool HasClearProbes() const{return pHasClearProbes;}
+	inline bool HasClearProbes() const{ return pHasClearProbes; }
 	
 	/** Prepare clear probes UBO. */
 	void PrepareUBOClearProbes(deoglSPBlockUBO &ubo) const;
@@ -227,13 +227,13 @@ public:
 	
 	
 	/** Count of probes to update. */
-	inline int GetUpdateProbeCount() const{return pUpdateProbeCount;}
+	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
 	/** Index of probe if in list of update probes otherwise -1. */
 	int IndexOfUpdateProbe(int probeIndex) const;
 	
 	/** Count of probes to ray cache update. */
-	inline int GetRayCacheProbeCount() const{return pRayCacheProbeCount;}
+	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
 	
 	
 	

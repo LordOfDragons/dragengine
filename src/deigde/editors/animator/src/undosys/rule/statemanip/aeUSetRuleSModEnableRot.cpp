@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule){
-	if(! rule) DETHROW(deeInvalidParam);
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -66,11 +66,11 @@ aeUSetRuleSModEnableRot::~aeUSetRuleSModEnableRot(){
 ///////////////
 
 void aeUSetRuleSModEnableRot::Undo(){
-	pRule->SetEnableRotation(! pRule->GetEnableOrientation());
+	pRule->SetEnableRotation(!pRule->GetEnableOrientation());
 }
 
 void aeUSetRuleSModEnableRot::Redo(){
-	pRule->SetEnableRotation(! pRule->GetEnableOrientation());
+	pRule->SetEnableRotation(!pRule->GetEnableOrientation());
 }
 
 

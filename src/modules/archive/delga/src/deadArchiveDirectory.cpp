@@ -121,7 +121,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 	
 	for(i=0; i<count; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
-		if(! directory){
+		if(!directory){
 			return NULL;
 		}
 	}
@@ -130,7 +130,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 }
 
 void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
-	if(! directory){
+	if(!directory){
 		DETHROW(deeInvalidParam);
 	}
 	if(HasDirectoryNamed(directory->GetFilename())){
@@ -198,7 +198,7 @@ deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 	
 	for(i=0; i<count-1; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
-		if(! directory){
+		if(!directory){
 			return NULL;
 		}
 	}
@@ -207,7 +207,7 @@ deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 }
 
 void deadArchiveDirectory::AddFile(deadArchiveFile *file){
-	if(! file){
+	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	if(HasDirectoryNamed(file->GetFilename())){

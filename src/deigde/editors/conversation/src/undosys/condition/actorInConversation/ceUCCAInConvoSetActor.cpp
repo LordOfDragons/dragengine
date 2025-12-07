@@ -48,7 +48,7 @@ pTopic(NULL),
 pAction(NULL),
 pCondition(NULL)
 {
-	if(! topic || ! action || ! condition || ! newID){
+	if(!topic || !action || !condition || !newID){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -51,7 +51,7 @@
 ////////////////////////////
 
 ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
-	if(! gesture || ! newName) DETHROW(deeInvalidParam);
+	if(!gesture || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = gesture->GetConversation()->GetFileList();
 	const int fileCount = fileList.GetCount();

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength){
-	if(! phoneme) DETHROW(deeInvalidParam);
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	

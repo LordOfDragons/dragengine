@@ -82,7 +82,7 @@ void dermWriteShape::VisitShapeSphere(decShapeSphere &sphere){
 	
 	pWriter.WriteDataTagFloat("radius", sphere.GetRadius());
 	
-	if(! pProperty.IsEmpty()){
+	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
 	}
 	
@@ -113,7 +113,7 @@ void dermWriteShape::VisitShapeBox(decShapeBox &box){
 	pWriter.WriteAttributeFloat("z", halfExtends.z);
 	pWriter.WriteOpeningTagEnd(true);
 	
-	if(! pProperty.IsEmpty()){
+	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
 	}
 	
@@ -152,7 +152,7 @@ void dermWriteShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 		pWriter.WriteDataTagFloat("bottomRadius", bottomRadius);
 	}
 	
-	if(! pProperty.IsEmpty()){
+	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
 	}
 	
@@ -191,7 +191,7 @@ void dermWriteShape::VisitShapeCapsule(decShapeCapsule &capsule){
 		pWriter.WriteDataTagFloat("bottomRadius", bottomRadius);
 	}
 	
-	if(! pProperty.IsEmpty()){
+	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
 	}
 	
@@ -226,7 +226,7 @@ void dermWriteShape::VisitShapeHull(decShapeHull &hull){
 		pWriter.WriteOpeningTagEnd(true);
 	}
 	
-	if(! pProperty.IsEmpty()){
+	if(!pProperty.IsEmpty()){
 		pWriter.WriteDataTagString("property", pProperty);
 	}
 	

@@ -57,31 +57,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Font or nullptr. */
-	inline const deoglRFont::Ref &GetFont() const{return pFont;}
+	inline const deoglRFont::Ref &GetFont() const{ return pFont; }
 	
 	/** Set font or nullptr. */
 	void SetFont(deoglRFont *font);
 	
 	/** Font size or nullptr. */
-	inline const deoglRFontSize::Ref &GetFontSize() const{return pFontSize;}
+	inline const deoglRFontSize::Ref &GetFontSize() const{ return pFontSize; }
 	
 	/** Set font size or nullptr. */
 	void SetFontSize(deoglRFontSize *size);
 	
 	/** Text size in canvas units. */
-	inline float GetTextSize() const{return pTextSize;}
+	inline float GetTextSize() const{ return pTextSize; }
 	
 	/** Set text size in canvas units. */
 	void SetTextSize(float size);
 	
 	/** Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** Set text. */
 	void SetText(const char *text);
 	
 	/** Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Set text color. */
 	void SetColor(const decColor &color);

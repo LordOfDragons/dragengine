@@ -73,7 +73,7 @@ public:
 	void SetMappedComponent(int index, int mapped);
 	
 	/** Requires texture. */
-	inline bool GetRequiresTexture() const{return pRequiresTexture;}
+	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
 	/** Set if texture is required. */
 	void SetRequiresTexture(bool requiresTexture);

@@ -197,7 +197,7 @@ deoglRenderBase(renderThread)
 
 	pDirectEnvMapFading = NULL;
 	
-	pUseEquiEnvMap = config.GetEnvMapUseEqui() || ! extensions.GetHasArrayCubeMap();
+	pUseEquiEnvMap = config.GetEnvMapUseEqui() || !extensions.GetHasArrayCubeMap();
 	//printf( "EQUI: %i %i %i\n", pUseEquiEnvMap?1:0, config.GetEnvMapUseEqui()?1:0, extensions.GetHasArrayCubeMap()?1:0 );
 	
 	try{
@@ -223,7 +223,7 @@ deoglRenderBase(renderThread)
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Copy Color Stereo");
 		}
 		pAsyncGetPipeline(pPipelineCopyColorStereo, pipconf, sources, defines);
@@ -329,7 +329,7 @@ deoglRenderBase(renderThread)
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Reflection ScreenSpace Stereo");
 		}
 		pAsyncGetPipeline(pPipelineScreenSpaceStereo, pipconf, sources, defines);
@@ -418,7 +418,7 @@ deoglRenderBase(renderThread)
 		if(renderFSQuadStereoVSLayer){
 			defines.SetDefines("VS_RENDER_LAYER");
 		}
-		if(! renderFSQuadStereoVSLayer){
+		if(!renderFSQuadStereoVSLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Reflection Stereo");
 		}
 		pAsyncGetPipeline(pPipelineReflectionStereo, pipconf, sources, defines);
@@ -524,7 +524,7 @@ deoglRenderReflection::~deoglRenderReflection(){
 //////////////
 
 void deoglRenderReflection::ConvertCubeMap2EquiMap(deoglCubeMap &cubemap, deoglTexture *equimap){
-	if(! equimap){
+	if(!equimap){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -666,7 +666,7 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 		}
 		
 		envmap = plan.GetEnvMapAt(i).GetEnvMap();
-		if(! envmap || ! envmap->GetReady()){
+		if(!envmap || !envmap->GetReady()){
 			continue;
 		}
 		
@@ -870,7 +870,7 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 				blendEnvMapEqui[0] = envmapSky->GetEquiEnvMap();
 			}
 			
-			if(! blendEnvMapEqui[0]){
+			if(!blendEnvMapEqui[0]){
 				blendEnvMapEqui[0] = renderThread.GetDefaultTextures().GetEmissivity();
 			}
 		
@@ -879,7 +879,7 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 				blendEnvMap[0] = envmapSky->GetEnvironmentMap();
 			}
 			
-			if(! blendEnvMap[0]){
+			if(!blendEnvMap[0]){
 				blendEnvMap[0] = renderThread.GetDefaultTextures().GetEnvMap();
 			}
 		}
@@ -894,12 +894,12 @@ void deoglRenderReflection::UpdateEnvMap(deoglRenderPlan &plan){
 	// for the time beeing we need all textures set
 	for(i=1; i<4; i++){
 		if(pEnvMapEqui){
-			if(! blendEnvMapEqui[i]){
+			if(!blendEnvMapEqui[i]){
 				blendEnvMapEqui[i] = blendEnvMapEqui[i - 1];
 			}
 			
 		}else{
-			if(! blendEnvMap[i]){
+			if(!blendEnvMap[i]){
 				blendEnvMap[i] = blendEnvMap[i - 1];
 			}
 		}
@@ -1041,7 +1041,7 @@ void deoglRenderReflection::RenderReflections(deoglRenderPlan &plan){
 	if(plan.GetWorld()->GetSkyEnvironmentMap()){
 		envMapSky = plan.GetWorld()->GetSkyEnvironmentMap()->GetEquiEnvMap();
 	}
-	if(! envMapSky){
+	if(!envMapSky){
 		envMapSky = renderThread.GetDefaultTextures().GetEmissivity();
 	}
 	
@@ -1370,7 +1370,7 @@ void deoglRenderReflection::CopyColorToTemporary1(deoglRenderPlan &plan){
 }
 
 void deoglRenderReflection::CopyMaterial(deoglRenderPlan &plan, bool solid){
-	if(! plan.GetFBOMaterial() || ! solid){
+	if(!plan.GetFBOMaterial() || !solid){
 		return;
 	}
 	
@@ -1416,7 +1416,7 @@ void deoglRenderReflection::RenderGIEnvMaps(deoglRenderPlan &plan){
 	}
 	
 	const deoglGIState * const giState = plan.GetRenderGIState();
-	if(! giState){
+	if(!giState){
 		return;
 	}
 	
@@ -1435,7 +1435,7 @@ void deoglRenderReflection::RenderGIEnvMaps(deoglRenderPlan &plan){
 	
 	for(i=0; i<count; i++){
 		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt(i).GetEnvMap();
-		if(! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly()){
+		if(!envmap || !envmap->GetReady() || !envmap->GetMaterialReady() || envmap->GetSkyOnly()){
 			continue;
 		}
 		
@@ -1444,7 +1444,7 @@ void deoglRenderReflection::RenderGIEnvMaps(deoglRenderPlan &plan){
 			continue; // will be always updated
 		}
 		
-		if(! lightEnvMap || envmap->GetLastGILightUpdate() > lightEnvMap->GetLastGILightUpdate()){
+		if(!lightEnvMap || envmap->GetLastGILightUpdate() > lightEnvMap->GetLastGILightUpdate()){
 			lightEnvMap = envmap;
 		}
 	}
@@ -1476,11 +1476,11 @@ void deoglRenderReflection::RenderGIEnvMaps(deoglRenderPlan &plan){
 // 	renderThread.GetLogger().LogInfoFormat( "RenderGIEnvMaps: %d envmaps", count );
 	for(i=0; i<count; i++){
 		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt(i).GetEnvMap();
-		if(! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly()){
+		if(!envmap || !envmap->GetReady() || !envmap->GetMaterialReady() || envmap->GetSkyOnly()){
 			continue;
 		}
 		
-		if(! envmap->IsLastGILightUpdateAtMax() && envmap != lightEnvMap){
+		if(!envmap->IsLastGILightUpdateAtMax() && envmap != lightEnvMap){
 			continue;
 		}
 		
@@ -1558,7 +1558,7 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	if(! config.GetSSREnable()){
+	if(!config.GetSSREnable()){
 		return;
 	}
 	
@@ -1631,7 +1631,7 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 		const deoglSPBMapBuffer mapped(pEnvMapsParamBlock);
 		for(i=0; envMapCount<8 && i<plan.GetEnvMapCount(); i++){
 			deoglEnvironmentMap * const envmap = plan.GetEnvMapAt(i).GetEnvMap();
-			if(! envmap || ! envmap->GetReady()){
+			if(!envmap || !envmap->GetReady()){
 				continue;
 			}
 			
@@ -1641,7 +1641,7 @@ void deoglRenderReflection::RenderScreenSpace(deoglRenderPlan &plan){
 			decVector influenceBorder = decVector(1e5f, 1e5f, 1e5f);
 			decVector influenceScale = decVector(1.0f, 1.0f, 1.0f);
 			
-			if(! envmap->GetSkyOnly()){
+			if(!envmap->GetSkyOnly()){
 				envMapPosition = plan.GetCameraMatrix() * envmap->GetPosition();
 			}
 			

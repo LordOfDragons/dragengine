@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Camera. */
-	inline gdeOCCamera *GetOCCamera() const{return pCamera;}
+	inline gdeOCCamera *GetOCCamera() const{ return pCamera; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

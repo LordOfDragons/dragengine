@@ -86,12 +86,12 @@ igdeNativeFoxGroupBox::~igdeNativeFoxGroupBox(){
 }
 
 igdeNativeFoxGroupBox *igdeNativeFoxGroupBox::CreateNativeWidget(igdeGroupBox &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -226,7 +226,7 @@ int igdeNativeFoxGroupBox::GroupBoxPadBottom(const igdeGuiTheme &guitheme){
 ///////////
 
 long igdeNativeFoxGroupBox::onLeftMouseDown(FXObject*, FXSelector, void *pdata){
-	if(! pOwner->GetCanCollapse()){
+	if(!pOwner->GetCanCollapse()){
 		return 0;
 	}
 	
@@ -237,7 +237,7 @@ long igdeNativeFoxGroupBox::onLeftMouseDown(FXObject*, FXSelector, void *pdata){
 	// TODO figure out the correct height. check out FXPacker source to see where it places
 	//      the first child item using LAYOUT_SIDE_TOP. this should give a hint
 	if(y >= 0 && y < /*15*/ (int)getFont()->getSize() / 10 + 11){
-		pOwner->SetCollapsed(! pOwner->GetCollapsed());
+		pOwner->SetCollapsed(!pOwner->GetCollapsed());
 	}
 	
 	return 1;

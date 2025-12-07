@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Dragonscript module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -70,7 +70,7 @@ public:
 	/** \brief Push curve. */
 	void PushCurve(dsRunTime *rt, const decCurveBezier3D &curve);
 	
-	inline dsClass *GetClassCurveBezierInterpolation() const{return pClsCurveBezierInterpolation;}
+	inline dsClass *GetClassCurveBezierInterpolation() const{ return pClsCurveBezierInterpolation; }
 	/*@}*/
 	
 	

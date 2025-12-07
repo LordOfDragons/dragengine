@@ -293,7 +293,7 @@ void deLoggerConsoleColor::SetErrorColorBackground(eTextColors color){
 
 
 void deLoggerConsoleColor::LogInfo(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -318,7 +318,7 @@ void deLoggerConsoleColor::LogInfo(const char *source, const char *message){
 }
 
 void deLoggerConsoleColor::LogWarn(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -343,7 +343,7 @@ void deLoggerConsoleColor::LogWarn(const char *source, const char *message){
 }
 
 void deLoggerConsoleColor::LogError(const char *source, const char *message){
-	if(! source || ! message){
+	if(!source || !message){
 		DETHROW(deeInvalidParam);
 	}
 	

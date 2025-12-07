@@ -45,11 +45,11 @@ gdeGameDefinition *gameDefinition, gdeSky *sky) :
 pGameDefinition(NULL),
 pSky(NULL)
 {
-	if(! gameDefinition || ! sky){
+	if(!gameDefinition || !sky){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! gameDefinition->GetSkies().Has(sky)){
+	if(!gameDefinition->GetSkies().Has(sky)){
 		DETHROW(deeInvalidParam);
 	}
 	

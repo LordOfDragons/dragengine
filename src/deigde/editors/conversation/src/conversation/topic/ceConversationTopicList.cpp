@@ -110,7 +110,7 @@ bool ceConversationTopicList::HasWithID(const char *id) const{
 }
 
 void ceConversationTopicList::Add(ceConversationTopic *file){
-	if(! file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
+	if(!file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
 	
 	pTopics.Add(file);
 }

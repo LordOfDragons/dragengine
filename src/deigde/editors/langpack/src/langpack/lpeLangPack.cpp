@@ -110,7 +110,7 @@ void lpeLangPack::AddEntry(lpeLangPackEntry *entry){
 
 
 void lpeLangPack::RemoveEntry(lpeLangPackEntry *entry){
-	if(! entry || entry->GetLangPack() != this){
+	if(!entry || entry->GetLangPack() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

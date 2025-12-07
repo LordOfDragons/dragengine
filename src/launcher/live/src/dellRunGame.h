@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline dellLauncher &GetLauncher() const{return pLauncher;}
+	inline dellLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** Parse arguments. */
 	bool ParseArguments();

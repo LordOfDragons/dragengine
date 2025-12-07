@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
@@ -62,7 +62,7 @@ public:
 	/** Pushes the navigator which can be NULL. */
 	void PushNavigator(dsRunTime *rt, deNavigator *navigator);
 	
-	inline dsClass *GetClassNavigationSpaceType() const{return pClsNavigationSpaceType;}
+	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/
 	
 private:

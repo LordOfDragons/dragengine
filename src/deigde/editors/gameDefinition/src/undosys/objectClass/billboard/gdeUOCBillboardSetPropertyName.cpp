@@ -45,7 +45,7 @@ pObjectClass(NULL),
 pBillboard(NULL),
 pProperty(property)
 {
-	if(! objectClass || ! billboard){
+	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
 	}
 	

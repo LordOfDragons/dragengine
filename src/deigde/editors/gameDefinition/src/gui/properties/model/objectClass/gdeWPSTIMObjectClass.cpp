@@ -76,7 +76,7 @@ gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass
 gdeWPSTreeItemModel(tree, etObjectClass),
 pObjectClass(NULL)
 {
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -284,8 +284,8 @@ void gdeWPSTIMObjectClass::SubObjectsChanged(){
 bool gdeWPSTIMObjectClass::IsValid() const{
 	// category is valid
 	const gdeCategoryList &categories = GetGameDefinition().GetCategoriesObjectClass();
-	if(! pObjectClass->GetCategory().IsEmpty() &&
-	! categories.GetWithPath(pObjectClass->GetCategory())){
+	if(!pObjectClass->GetCategory().IsEmpty() &&
+	!categories.GetWithPath(pObjectClass->GetCategory())){
 		return false;
 	}
 	
@@ -295,7 +295,7 @@ bool gdeWPSTIMObjectClass::IsValid() const{
 	int i;
 	for(i=0; i<inheritCount; i++){
 		const decString &name = inherits.GetAt(i)->GetName();
-		if(! name.IsEmpty() && ! GetGameDefinition().FindObjectClass(name)){
+		if(!name.IsEmpty() && !GetGameDefinition().FindObjectClass(name)){
 			return false;
 		}
 	}
@@ -303,7 +303,7 @@ bool gdeWPSTIMObjectClass::IsValid() const{
 	// sub elements are valid. for this we need to check the models
 	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
 	while(child){
-		if(! child->IsValid()){
+		if(!child->IsValid()){
 			return false;
 		}
 		child = (gdeWPSTIMOCSubObject*)child->GetNext();

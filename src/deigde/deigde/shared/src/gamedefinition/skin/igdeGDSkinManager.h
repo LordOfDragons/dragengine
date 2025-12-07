@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{return pCategories;}
+	inline igdeGDCategory *GetCategories() const{ return pCategories; }
 	
 	/** \brief Number of game skins. */
 	int GetSkinCount() const;
@@ -117,14 +117,14 @@ public:
 	void RemoveAllSkins();
 	
 	/** \brief Path of default skin. */
-	inline const decString &GetDefaultSkinPath() const{return pDefaultSkinPath;}
+	inline const decString &GetDefaultSkinPath() const{ return pDefaultSkinPath; }
 	
 	/** \brief Set path of default skin. */
 	void SetDefaultSkinPath(const char *defaultSkinPath);
 	
 	/** \brief Set of path to use to auto-find skins. */
-	inline decStringList &GetAutoFindPath(){return pAutoFindPath;}
-	inline const decStringList &GetAutoFindPath() const{return pAutoFindPath;}
+	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
+	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
 	
 	/** \brief Visit skins matching the given category. */
 	void VisitSkinsMatchingCategory(igdeGDVisitor &visitor, const igdeGDCategory *category) const;

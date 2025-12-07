@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
-	if(! phoneme || ! newName) DETHROW(deeInvalidParam);
+	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	

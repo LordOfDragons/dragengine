@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Matrix. */
-	inline const decMatrix &GetMatrix() const{return pMatrix;}
+	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
 	void SetMatrix(const decMatrix &matrix);
@@ -82,13 +82,13 @@ public:
 	
 	
 	/** Edge color. */
-	inline const decColor &GetEdgeColor() const{return pEdgeColor;}
+	inline const decColor &GetEdgeColor() const{ return pEdgeColor; }
 	
 	/** Set edge color. */
 	void SetEdgeColor(const decColor &color);
 	
 	/** Fill color. */
-	inline const decColor &GetFillColor() const{return pFillColor;}
+	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** Set fill color. */
 	void SetFillColor(const decColor &color);
@@ -96,7 +96,7 @@ public:
 	
 	
 	/** Shape list. */
-	inline const decShapeList &GetShapeList() const{return pShapeList;}
+	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	
 	/** Set shape list. */
 	void SetShapeList(const decShapeList &shapes);
@@ -104,25 +104,25 @@ public:
 	
 	
 	/** First point for rendering fill triangles. */
-	inline int GetFillFirstPoint() const{return pFillFirstPoint;}
+	inline int GetFillFirstPoint() const{ return pFillFirstPoint; }
 	
 	/** Set first point for rendering fill triangles. */
 	void SetFillFirstPoint(int firstPoint);
 	
 	/** Point count for rendering fill triangles. */
-	inline int GetFillPointCount() const{return pFillPointCount;}
+	inline int GetFillPointCount() const{ return pFillPointCount; }
 	
 	/** Set point count for rendering fill triangles. */
 	void SetFillPointCount(int pointCount);
 	
 	/** First point for rendering lines. */
-	inline int GetLineFirstPoint() const{return pLineFirstPoint;}
+	inline int GetLineFirstPoint() const{ return pLineFirstPoint; }
 	
 	/** Set first point for rendering lines. */
 	void SetLineFirstPoint(int firstPoint);
 	
 	/** Point count for rendering lines. */
-	inline int GetLinePointCount() const{return pLinePointCount;}
+	inline int GetLinePointCount() const{ return pLinePointCount; }
 	
 	/** Set point count for rendering lines. */
 	void SetLinePointCount(int pointCount);

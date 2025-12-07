@@ -136,12 +136,12 @@ deColliderBone &deColliderRig::GetBoneAt(int index) const{
 
 
 void deColliderRig::CopyStatesFromColliderRig(const deColliderRig &collider){
-	if(! pRig){
+	if(!pRig){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if(! rig){
+	if(!rig){
 		return;
 	}
 	
@@ -165,12 +165,12 @@ void deColliderRig::CopyStatesFromColliderRig(const deColliderRig &collider){
 }
 
 void deColliderRig::CopyStateFromColliderRig(int bone, const deColliderRig &collider){
-	if(! pRig || bone < 0 || bone >= pBoneCount){
+	if(!pRig || bone < 0 || bone >= pBoneCount){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if(! rig){
+	if(!rig){
 		return;
 	}
 	
@@ -191,12 +191,12 @@ void deColliderRig::CopyStateFromColliderRig(int bone, const deColliderRig &coll
 }
 
 void deColliderRig::CopyStateFromColliderRig(int boneFrom, int boneTo, const deColliderRig &collider){
-	if(! pRig || boneTo < 0 || boneTo >= pBoneCount){
+	if(!pRig || boneTo < 0 || boneTo >= pBoneCount){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if(! rig || boneFrom < 0 || boneFrom >= rig->GetBoneCount()){
+	if(!rig || boneFrom < 0 || boneFrom >= rig->GetBoneCount()){
 		return;
 	}
 	

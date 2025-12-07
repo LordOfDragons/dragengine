@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAACmdSetActor::ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorCommand *action, const char *newActorID){
-	if(! topic || ! newActorID) DETHROW(deeInvalidParam);
+	if(!topic || !newActorID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

@@ -261,7 +261,7 @@ int declActionGames::pUninstall(){
 	
 	if(hasSharedGamesPatches){
 		printf("\nUninstalling these games/patches too? [y/n] ");
-		if(! pLauncher.ReadInputConfirm()){
+		if(!pLauncher.ReadInputConfirm()){
 			printf("Aborting\n");
 			return -1;
 		}
@@ -271,7 +271,7 @@ int declActionGames::pUninstall(){
 	// ask user if this is the right choice
 	printf("Ready to uninstall game '%s'.\n", game.GetTitle().ToUTF8().GetString());
 	printf("Do you want to continue? [y/n] ");
-	if(! pLauncher.ReadInputConfirm()){
+	if(!pLauncher.ReadInputConfirm()){
 		printf("Aborting\n");
 		return -1;
 	}

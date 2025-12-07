@@ -59,7 +59,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	/*@}*/
 	
 	

@@ -49,7 +49,7 @@
 ////////////////////////////
 
 debpPropFieldType::debpPropFieldType(debpPropField *propField, dePropFieldType *type){
-	if(! propField || ! type) DETHROW(deeInvalidParam);
+	if(!propField || !type) DETHROW(deeInvalidParam);
 	
 	pPropField = propField;
 	pType = type;
@@ -81,7 +81,7 @@ void debpPropFieldType::SetBendStateSize(int size){
 		
 		if(size > 0){
 			newArray = new debpPropFieldBendState[size];
-			if(! newArray) DETHROW(deeOutOfMemory);
+			if(!newArray) DETHROW(deeOutOfMemory);
 		}
 		
 		if(pBendStates) delete [] pBendStates;

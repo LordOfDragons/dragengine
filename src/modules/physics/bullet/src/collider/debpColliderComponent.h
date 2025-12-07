@@ -118,19 +118,19 @@ public:
 	
 	// physics management
 	/** Retrieves the collider component. */
-	inline deColliderComponent &GetColliderComponent() const{return pColliderComponent;}
+	inline deColliderComponent &GetColliderComponent() const{ return pColliderComponent; }
 	/** Retrieves the linked component. */
-	inline debpComponent *GetLinkedComponent() const{return pLinkedComponent;}
+	inline debpComponent *GetLinkedComponent() const{ return pLinkedComponent; }
 	/** Sets the linked component or NULL to clear the link. */
 	void SetLinkedComponent(debpComponent *component);
 	
 	// information
 	/** Retrieves the predicted displacement. */
-	inline const decVector &GetPredictedDisplacement() const{return pPredictDisp;}
+	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
 	/** Retrieves the predicted rotation. */
-	inline const decVector &GetPredictedRotation() const{return pPredictRotation;}
+	inline const decVector &GetPredictedRotation() const{ return pPredictRotation; }
 	/** Retrieves the test mode. */
-	inline eTestModes GetTestMode() const{return pTestMode;}
+	inline eTestModes GetTestMode() const{ return pTestMode; }
 	
 	/** \brief Mark bones dirty. */
 	void DirtyBones();
@@ -200,8 +200,8 @@ public:
 	void UpdateCollisionObjectAABBs() override;
 	
 	/** Retrieves the list of rig shapes. */
-	inline debpShapeList &GetRigShapes(){return pRigShapes;}
-	inline const debpShapeList &GetRigShapes() const{return pRigShapes;}
+	inline debpShapeList &GetRigShapes(){ return pRigShapes; }
+	inline const debpShapeList &GetRigShapes() const{ return pRigShapes; }
 	
 	/** Updates the octree position. */
 	void UpdateOctreePosition() override;
@@ -230,19 +230,19 @@ public:
 	bool PrepareStaticCollisionTest() override;
 	
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	
 	
 	/** \brief Force field fluctuation. */
-	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{return pForceFieldFluctuation;}
+	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{ return pForceFieldFluctuation; }
 	
 	
 	
 	/** \brief Simple physics body or \em NULL. */
-	inline debpPhysicsBody *GetSimplePhysicsBody() const{return pSimplePhyBody;}
+	inline debpPhysicsBody *GetSimplePhysicsBody() const{ return pSimplePhyBody; }
 	/*@}*/
 	
 	
@@ -480,7 +480,7 @@ public:
 	void ComponentMeshDirty();
 	
 	/** \brief Bones or NULL. */
-	inline debpColliderBones *GetBones() const{return pBones;}
+	inline debpColliderBones *GetBones() const{ return pBones; }
 	
 	bool IsSimpleShape() const;
 	

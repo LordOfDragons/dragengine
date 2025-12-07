@@ -71,7 +71,7 @@ void dedsLControllerMapping::SetAttribute(eAttributes attribute){
 
 
 void dedsLControllerMapping::Apply(const dedsLocomotion &locomotion, float elapsed){
-	if(! pAnimatorInstance){
+	if(!pAnimatorInstance){
 		return;
 	}
 	
@@ -165,7 +165,7 @@ void dedsLControllerMapping::Apply(const dedsLocomotion &locomotion, float elaps
 }
 
 void dedsLControllerMapping::ApplyPost(const dedsLocomotion &locomotion, float elapsed){
-	if(! pAnimatorInstance){
+	if(!pAnimatorInstance){
 		return;
 	}
 	

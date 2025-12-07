@@ -79,7 +79,7 @@ public:
 	
 	
 	/** Shared texture. */
-	inline const deoglRenderTaskSharedTexture *GetTexture() const{return pTexture;}
+	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set shared texture. */
 	void SetTexture(const deoglRenderTaskSharedTexture *texture);
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** Count of render task vaos. */
-	inline int GetVAOCount() const{return pVAOCount;}
+	inline int GetVAOCount() const{ return pVAOCount; }
 	
 	/** Render task vao at index. */
 	deoglRenderTaskVAO *GetVAOAt(int index) const;

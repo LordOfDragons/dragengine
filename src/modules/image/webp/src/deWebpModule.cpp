@@ -121,7 +121,7 @@ void deWebpModule::LoadImage(decBaseFileReader&, deImage &image, deBaseImageInfo
 				webpInfo.GetData().GetLength(), readTarget, pixelCount * 3, image.GetWidth() * 3);
 		}
 		
-		if(! result){
+		if(!result){
 			DETHROW(deeInvalidFileFormat);
 		}
 		
@@ -183,7 +183,7 @@ void deWebpModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 				image.GetHeight(), image.GetWidth() * 3, quality, &output);
 		}
 		
-		if(size == 0 || ! output){
+		if(size == 0 || !output){
 			DETHROW(deeWriteFile);
 		}
 		

@@ -44,7 +44,7 @@ seUBodyAdd::seUBodyAdd(seLayer *layer, seBody *body) :
 pLayer(NULL),
 pBody(NULL)
 {
-	if(! layer || ! body){
+	if(!layer || !body){
 		DETHROW(deeInvalidParam);
 	}
 	

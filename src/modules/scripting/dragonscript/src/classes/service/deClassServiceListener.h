@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for requestResponse(). */
-	inline int GetFuncIndexRequestResponse() const{return pFuncIndexRequestResponse;}
+	inline int GetFuncIndexRequestResponse() const{ return pFuncIndexRequestResponse; }
 	
 	/** \brief Function index for requestFailed(). */
-	inline int GetFuncIndexRequestFailed() const{return pFuncIndexRequestFailed;}
+	inline int GetFuncIndexRequestFailed() const{ return pFuncIndexRequestFailed; }
 	
 	/** \brief Function index for eventReceived(). */
-	inline int GetFuncIndexEventReceived() const{return pFuncIndexEventReceived;}
+	inline int GetFuncIndexEventReceived() const{ return pFuncIndexEventReceived; }
 	/*@}*/
 	
 	

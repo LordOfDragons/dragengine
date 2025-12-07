@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{return pSocket;}
+	inline debnSocket *GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
 	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);
@@ -86,19 +86,19 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Previous server. */
-	inline debnServer *GetPreviousServer() const{return pPreviousServer;}
+	inline debnServer *GetPreviousServer() const{ return pPreviousServer; }
 	
 	/** \brief Set previous server. */
 	void SetPreviousServer(debnServer *server);
 	
 	/** \brief Next server. */
-	inline debnServer *GetNextServer() const{return pNextServer;}
+	inline debnServer *GetNextServer() const{ return pNextServer; }
 	
 	/** \brief Set next server. */
 	void SetNextServer(debnServer *server);
 	
 	/** \brief Server is registered. */
-	inline bool GetIsRegistered() const{return pIsRegistered;}
+	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** \brief Set if server is registered. */
 	void SetIsRegistered(bool isRegistered);

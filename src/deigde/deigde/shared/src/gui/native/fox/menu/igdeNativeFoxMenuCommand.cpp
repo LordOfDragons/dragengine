@@ -62,7 +62,7 @@ FXMenuCommand(pparent, BuildConstrText(powner), powner.GetIcon()
 	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF),
 pOwner(&powner)
 {
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 }
@@ -71,12 +71,12 @@ igdeNativeFoxMenuCommand::~igdeNativeFoxMenuCommand(){
 }
 
 igdeNativeFoxMenuCommand *igdeNativeFoxMenuCommand::CreateNativeWidget(igdeMenuCommand &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -149,7 +149,7 @@ FXString igdeNativeFoxMenuCommand::BuildConstrText(igdeMenuCommand &powner){
 ///////////
 
 long igdeNativeFoxMenuCommand::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -167,7 +167,7 @@ long igdeNativeFoxMenuCommand::onCommand(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxMenuCommand::onUpdate(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if(! action){
+	if(!action){
 		return 0;
 	}
 	

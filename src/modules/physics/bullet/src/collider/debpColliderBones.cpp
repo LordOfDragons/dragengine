@@ -184,7 +184,7 @@ bool debpColliderBones::CanBonesCollide(int bone1, int bone2) const{
 		return false;
 	}
 	
-	if(! pBones[bone1] || ! pBones[bone2]){
+	if(!pBones[bone1] || !pBones[bone2]){
 		return false;
 	}
 	
@@ -248,7 +248,7 @@ bool debpColliderBones::UpdateFromBody(){
 	// either the collider if the root bone or the bone otherwise.
 	for(i=0; i<pBonePhysicsCount; i++){
 		debpPhysicsBody &phyBody = *pBonesPhysics[i]->GetPhysicsBody();
-		if(! phyBody.UpdateFromBody()){
+		if(!phyBody.UpdateFromBody()){
 			continue;
 		}
 		
@@ -589,7 +589,7 @@ void debpColliderBones::PrepareConstraintsForStep(){
 
 void debpColliderBones::CheckConstraintsBroke(){
 	deRig * const rig = GetRig();
-	if(! rig){
+	if(!rig){
 		return;
 	}
 	
@@ -600,7 +600,7 @@ void debpColliderBones::CheckConstraintsBroke(){
 		
 		for(j=0; j<count; j++){
 			debpColliderConstraint &constraint = *pBonesPhysics[i]->GetConstraintAt(j);
-			if(! constraint.CheckHasBroken()){
+			if(!constraint.CheckHasBroken()){
 				continue;
 			}
 			
@@ -643,7 +643,7 @@ void debpColliderBones::UpdateShapes(){
 	}else{
 		deComponent * const component = GetComponent();
 		deRig * const rig = GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		
@@ -697,7 +697,7 @@ void debpColliderBones::UpdateShapes(const decDMatrix &transformation){
 	}else{
 		deComponent * const component = GetComponent();
 		deRig * const rig = GetRig();
-		if(! rig){
+		if(!rig){
 			return;
 		}
 		
@@ -775,7 +775,7 @@ void debpColliderBones::DestroyDebugDrawers(){
 	int i;
 	
 	for(i=0; i<pBonePhysicsCount; i++){
-		if(! pBonesPhysics[i]->GetDebugDrawer()){
+		if(!pBonesPhysics[i]->GetDebugDrawer()){
 			continue;
 		}
 		
@@ -789,12 +789,12 @@ void debpColliderBones::DestroyDebugDrawers(){
 
 void debpColliderBones::UpdateDebugDrawersShape(){
 	deDebugDrawerShape * const ddshape = pCollider.GetDDSShape();
-	if(! ddshape){
+	if(!ddshape){
 		return;
 	}
 	
 	const deRig * const rig = GetRig();
-	if(! rig){
+	if(!rig){
 		return;
 	}
 	
@@ -811,7 +811,7 @@ void debpColliderBones::UpdateDebugDrawers(){
 	int i;
 	for(i=0; i<pBonePhysicsCount; i++){
 		deDebugDrawer * const ddrawer = pBonesPhysics[i]->GetDebugDrawer();
-		if(! ddrawer){
+		if(!ddrawer){
 			continue;
 		}
 		
@@ -841,7 +841,7 @@ void debpColliderBones::UpdateDebugDrawers(){
 			colorEdge = debpDebugDrawerColors::colliderBoneEdge;
 		}
 		
-		if(! colorFill.IsEqualTo(ddshape.GetFillColor()) || ! colorEdge.IsEqualTo(ddshape.GetEdgeColor())){
+		if(!colorFill.IsEqualTo(ddshape.GetFillColor()) || !colorEdge.IsEqualTo(ddshape.GetEdgeColor())){
 			ddshape.SetFillColor(colorFill);
 			ddshape.SetEdgeColor(colorEdge);
 			ddrawer->NotifyShapeColorChanged();
@@ -852,12 +852,12 @@ void debpColliderBones::UpdateDebugDrawers(){
 
 
 void debpColliderBones::EnableConstraint(int bone, int constraint, bool enable){
-	if(bone < 0 || bone >= pBoneCount || ! pBones[bone]){
+	if(bone < 0 || bone >= pBoneCount || !pBones[bone]){
 		return;
 	}
 	
 	deRig * const rig = GetRig();
-	if(! rig || constraint < 0 || constraint >= rig->GetBoneAt(bone).GetConstraintCount()){
+	if(!rig || constraint < 0 || constraint >= rig->GetBoneAt(bone).GetConstraintCount()){
 		return;
 	}
 	
@@ -940,7 +940,7 @@ void debpColliderBones::ApplyTorque(const decVector &torque){
 void debpColliderBones::LinearVelocityChanged(const decVector &velocity){
 	int i;
 	for(i=0; i<pBonePhysicsCount; i++){
-		if(! pBonesPhysics[i]->GetColBoneDynamic()){
+		if(!pBonesPhysics[i]->GetColBoneDynamic()){
 			pBonesPhysics[i]->GetPhysicsBody()->SetLinearVelocity(velocity);
 		}
 	}
@@ -949,7 +949,7 @@ void debpColliderBones::LinearVelocityChanged(const decVector &velocity){
 void debpColliderBones::AngularVelocityChanged(const decVector &velocity){
 	int i;
 	for(i=0; i<pBonePhysicsCount; i++){
-		if(! pBonesPhysics[i]->GetColBoneDynamic()){
+		if(!pBonesPhysics[i]->GetColBoneDynamic()){
 			pBonesPhysics[i]->GetPhysicsBody()->SetAngularVelocity(velocity);
 		}
 	}
@@ -1003,7 +1003,7 @@ void debpColliderBones::UpdatePhysicsType(deCollider::eResponseType responseType
 }
 
 void debpColliderBones::UpdatePhysicsType(deCollider::eResponseType responseType, int bone){
-	if(! pBones[bone]){
+	if(!pBones[bone]){
 		return;
 	}
 	
@@ -1085,7 +1085,7 @@ void debpColliderBones::CalcShapeExtends(decDVector &minExtend, decDVector &maxE
 		}
 	}
 	
-	if(! hasExtend){
+	if(!hasExtend){
 		minExtend.SetZero();
 		maxExtend.SetZero();
 	}
@@ -1196,8 +1196,7 @@ void debpColliderBones::pCreateBones(){
 			colBone.SetDynamic(responseType == deCollider::ertDynamic && rigBone->GetDynamic());
 		}
 		*/
-		colBone.SetDynamic(rigBone.GetDynamic()); // WARNING! this calls BoneDynamicChanged()!
-		
+		colBone.SetDynamic(rigBone.GetDynamic()); // WARNING!this calls BoneDynamicChanged()!		
 		// only create a bone if it has a shape definition. bones without a
 		// shape definition are most probably controller bones or used for
 		// rendering only and should not clog up the physics system with
@@ -1339,7 +1338,7 @@ void debpColliderBones::pCreateConstraints(const deRig &rig){
 				deRigConstraint &rigConstraint = rigBone.GetConstraintAt(j);
 				
 				const int partner = rigConstraint.GetParentBone();
-				if(partner < 0 || partner >= pBoneCount || ! pBones[partner]){
+				if(partner < 0 || partner >= pBoneCount || !pBones[partner]){
 					continue;
 				}
 				
@@ -1417,7 +1416,7 @@ void debpColliderBones::pPreparePhyBones(){
 	// hack of some bullet classes to add a late-update call so these
 	// kinematic updates are only done if they are really required.
 	deComponent * const engComponent = GetComponent();
-	if(! engComponent){
+	if(!engComponent){
 		return;
 	}
 	

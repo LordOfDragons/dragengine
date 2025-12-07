@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot){
-	if(! conversation || ! cameraShot) DETHROW(deeInvalidParam);
+	if(!conversation || !cameraShot) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pCameraShot = NULL;

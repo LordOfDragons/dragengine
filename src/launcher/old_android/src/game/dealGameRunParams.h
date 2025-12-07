@@ -63,31 +63,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game profile. */
-	inline dealGameProfile *GetGameProfile() const{return pGameProfile;}
+	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
 	void SetGameProfile(dealGameProfile *profile);
 	
 	/** \brief Run arguments. */
-	inline const decString &GetRunArguments() const{return pRunArguments;}
+	inline const decString &GetRunArguments() const{ return pRunArguments; }
 	
 	/** \brief Set run arguments. */
 	void SetRunArguments(const char *arguments);
 	
 	/** \brief Window width. */
-	inline int GetWidth() const{return pWidth;}
+	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set window width. */
 	void SetWidth(int width);
 	
 	/** \brief Window height. */
-	inline int GetHeight() const{return pHeight;}
+	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set window height. */
 	void SetHeight(int height);
 	
 	/** \brief Window is full screen. */
-	inline bool GetFullScreen() const{return pFullScreen;}
+	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** \brief Set if window is full screen. */
 	void SetFullScreen(bool fullScreen);

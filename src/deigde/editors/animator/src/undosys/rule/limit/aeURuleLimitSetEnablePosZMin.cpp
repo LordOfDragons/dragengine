@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleLimitSetEnablePosZMin::aeURuleLimitSetEnablePosZMin(aeRuleLimit *rule){
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosZMin::Undo(){
 }
 
 void aeURuleLimitSetEnablePosZMin::Redo(){
-	pRule->SetEnablePositionZMin(! pRule->GetEnablePositionZMin());
+	pRule->SetEnablePositionZMin(!pRule->GetEnablePositionZMin());
 }

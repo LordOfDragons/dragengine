@@ -64,22 +64,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline bool GetActionWaiting() const{return pActionWaiting;}
+	inline bool GetActionWaiting() const{ return pActionWaiting; }
 	void SetActionWaiting(bool actionWaiting);
 	
-	inline float GetActionTime() const{return pActionTime;}
+	inline float GetActionTime() const{ return pActionTime; }
 	void SetActionTime(float time);
 	
 	/** Retrieves the size of the stack. */
-	inline int GetStackSize() const{return pEntrySize;}
+	inline int GetStackSize() const{ return pEntrySize; }
 	/** Sets the size of the stack. */
 	void SetStackSize(int size);
 	/** Retrieves the number of entries in the stack. */
-	inline int GetCount() const{return pEntryCount;}
+	inline int GetCount() const{ return pEntryCount; }
 	/** Determines if the stack is empty. */
-	inline bool IsEmpty() const{return pEntryCount == 0;}
+	inline bool IsEmpty() const{ return pEntryCount == 0; }
 	/** Determines if the stack is not empty. */
-	inline bool IsNotEmpty() const{return pEntryCount > 0;}
+	inline bool IsNotEmpty() const{ return pEntryCount > 0; }
 	/** Retrieves the top entry. */
 	cePlaybackActionStackEntry &GetTop() const;
 	/** Retrieves the entry from the given position. */

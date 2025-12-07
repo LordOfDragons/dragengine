@@ -497,7 +497,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary(deoglRenderPlanLight &planLight
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
 	const bool useAmbient = planLight.GetUseAmbient();
 	
-	if(! scsolid.GetStaticCubeMap()){
+	if(!scsolid.GetStaticCubeMap()){
 		DETHROW(deeInvalidParam);
 		// or simply return the full box boundary instead?
 	}
@@ -649,15 +649,15 @@ void deoglRenderLightPoint::RenderLight(deoglRenderPlanLight &planLight, bool so
 const deoglRenderPlanMasked *mask){
 	// determine what needs to be rendered
 	deoglCollideListLight &cllight = *planLight.GetLight();
-	if(! cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
+	if(!cllight.GetCulled() && cllight.IsHiddenByOccQuery()){
 		cllight.SetCulled(true);
 	}
 	
 	deoglRenderPlan &plan = planLight.GetPlan();
-	const bool lightGeometry = ! cllight.GetCulled();
-	deoglGIState * const giState = ! mask && solid ? plan.GetUpdateGIState() : NULL;
+	const bool lightGeometry = !cllight.GetCulled();
+	deoglGIState * const giState = !mask && solid ? plan.GetUpdateGIState() : NULL;
 	
-	if(! lightGeometry && ! giState){
+	if(!lightGeometry && !giState){
 		return;
 	}
 	
@@ -696,10 +696,10 @@ const deoglRenderPlanMasked *mask){
 				if(component.GetSolid()){
 					continue;
 				}
-				if(! component.GetSkin()){
+				if(!component.GetSkin()){
 					continue;
 				}
-				if(! component.GetSkin()->GetCastTransparentShadow()){
+				if(!component.GetSkin()->GetCastTransparentShadow()){
 					continue;
 				}
 				
@@ -713,10 +713,10 @@ const deoglRenderPlanMasked *mask){
 				if(component.GetSolid()){
 					continue;
 				}
-				if(! component.GetSkin()){
+				if(!component.GetSkin()){
 					continue;
 				}
-				if(! component.GetSkin()->GetCastTransparentShadow()){
+				if(!component.GetSkin()->GetCastTransparentShadow()){
 					continue;
 				}
 				
@@ -1219,7 +1219,7 @@ DEBUG_RESET_TIMER
 				shadowMapper.DropForeignAmbientTextures();
 			}
 			
-			if(! light.GetLightVolumeCropBox()){
+			if(!light.GetLightVolumeCropBox()){
 				updateBoxBoundary = true;
 			}
 DEBUG_PRINT_TIMER("Shadow Static");
@@ -1279,7 +1279,7 @@ DEBUG_PRINT_TIMER("Shadow Static");
 		}
 		
 		// drop shadow map if size changed
-		if(! useTemporary){
+		if(!useTemporary){
 			if(scsolid.GetDynamicCubeMap() && scsolid.GetDynamicCubeMap()->GetSize() != dynamicShadowMapSize){
 				LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicCubeMap())
 				scsolid.DropDynamic();
@@ -1300,23 +1300,23 @@ DEBUG_PRINT_TIMER("Shadow Static");
 		bool requiresUpdate = false;
 		
 		if(useTemporary){
-			requiresUpdate = ! scsolid.GetTemporaryCubeMap();
+			requiresUpdate = !scsolid.GetTemporaryCubeMap();
 			if(useAmbient){
-				requiresUpdate |= ! scambient.GetTemporaryCubeMap();
+				requiresUpdate |= !scambient.GetTemporaryCubeMap();
 			}
 			if(shadowParams.transparentDynamicShadow){
-				requiresUpdate |= ! sctransp.GetTemporaryShadowCubeMap()
-					|| ! sctransp.GetTemporaryColorCubeMap();
+				requiresUpdate |= !sctransp.GetTemporaryShadowCubeMap()
+					|| !sctransp.GetTemporaryColorCubeMap();
 			}
 			
 		}else{
-			requiresUpdate = ! scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic();
+			requiresUpdate = !scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic();
 			if(useAmbient){
-				requiresUpdate |= ! scambient.GetDynamicCubeMap() || scambient.GetDirtyDynamic();
+				requiresUpdate |= !scambient.GetDynamicCubeMap() || scambient.GetDirtyDynamic();
 			}
 			if(shadowParams.transparentDynamicShadow){
-				requiresUpdate |= ! sctransp.GetDynamicShadowCubeMap()
-					|| ! sctransp.GetDynamicColorCubeMap() || sctransp.GetDirtyDynamic();
+				requiresUpdate |= !sctransp.GetDynamicShadowCubeMap()
+					|| !sctransp.GetDynamicColorCubeMap() || sctransp.GetDirtyDynamic();
 			}
 		}
 		
@@ -1375,7 +1375,7 @@ DEBUG_RESET_TIMER
 			shadowMapper.DropForeignCubeMaps();
 			shadowMapper.DropForeignTextures();
 			
-			if(! useTemporary){
+			if(!useTemporary){
 				scsolid.SetDirtyDynamic(false);
 				if(shadowParams.transparentDynamicShadow){
 					sctransp.SetDirtyDynamic(false);
@@ -1399,13 +1399,13 @@ DEBUG_PRINT_TIMER("Shadow Dynamic Transparent");
 				shadowMapper.DropForeignAmbientCubeMaps();
 				shadowMapper.DropForeignAmbientTextures();
 				
-				if(! useTemporary){
+				if(!useTemporary){
 					scambient.SetDirtyDynamic(false);
 				}
 			}
 		}
 		
-		if(! useTemporary){
+		if(!useTemporary){
 			scsolid.ResetLastUseDynamic();
 			if(shadowParams.transparentStaticShadow){
 				sctransp.ResetLastUseDynamic();

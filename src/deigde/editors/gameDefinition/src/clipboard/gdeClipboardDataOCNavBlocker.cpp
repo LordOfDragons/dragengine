@@ -42,7 +42,7 @@ gdeClipboardDataOCNavBlocker::gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocke
 igdeClipboardData(TYPE_NAME),
 pNavBlocker(NULL)
 {
-	if(! navBlocker){
+	if(!navBlocker){
 		DETHROW(deeInvalidParam);
 	}
 	

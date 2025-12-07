@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
-	inline deoglRHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
+	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Count of sectors. */
-	inline int GetSectorCount() const{return pSectorCount;}
+	inline int GetSectorCount() const{ return pSectorCount; }
 	
 	/** Sector at index. */
 	deoglHTViewSector *GetSectorAt(int index) const;

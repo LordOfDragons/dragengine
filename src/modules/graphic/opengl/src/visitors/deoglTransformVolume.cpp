@@ -85,7 +85,7 @@ void deoglTransformVolume::SetScaling(const decVector &scaling){
 /////////////////////////
 
 deoglDCollisionVolume *deoglTransformVolume::GetVolumeFor(deoglDCollisionVolume *volume){
-	if(! volume) DETHROW(deeInvalidParam);
+	if(!volume) DETHROW(deeInvalidParam);
 	volume->Visit(this);
 	return pVolume;
 }
@@ -96,9 +96,9 @@ deoglDCollisionVolume *deoglTransformVolume::GetVolumeFor(deoglDCollisionVolume 
 /////////////
 
 void deoglTransformVolume::VisitSphere(deoglDCollisionSphere *sphere){
-	if(! pSphere){
+	if(!pSphere){
 		pSphere = new deoglDCollisionSphere;
-		if(! pSphere) DETHROW(deeOutOfMemory);
+		if(!pSphere) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
@@ -110,9 +110,9 @@ void deoglTransformVolume::VisitSphere(deoglDCollisionSphere *sphere){
 }
 
 void deoglTransformVolume::VisitCylinder(deoglDCollisionCylinder *cylinder){
-	if(! pCylinder){
+	if(!pCylinder){
 		pCylinder = new deoglDCollisionCylinder;
-		if(! pCylinder) DETHROW(deeOutOfMemory);
+		if(!pCylinder) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
@@ -127,9 +127,9 @@ void deoglTransformVolume::VisitCylinder(deoglDCollisionCylinder *cylinder){
 }
 
 void deoglTransformVolume::VisitCapsule(deoglDCollisionCapsule *capsule){
-	if(! pCapsule){
+	if(!pCapsule){
 		pCapsule = new deoglDCollisionCapsule;
-		if(! pCapsule) DETHROW(deeOutOfMemory);
+		if(!pCapsule) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
@@ -144,9 +144,9 @@ void deoglTransformVolume::VisitCapsule(deoglDCollisionCapsule *capsule){
 }
 
 void deoglTransformVolume::VisitBox(deoglDCollisionBox *box){
-	if(! pBox){
+	if(!pBox){
 		pBox = new deoglDCollisionBox;
-		if(! pBox) DETHROW(deeOutOfMemory);
+		if(!pBox) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
@@ -159,9 +159,9 @@ void deoglTransformVolume::VisitBox(deoglDCollisionBox *box){
 }
 
 void deoglTransformVolume::VisitTriangle(deoglDCollisionTriangle *triangle){
-	if(! pTriangle){
+	if(!pTriangle){
 		pTriangle = new deoglDCollisionTriangle;
-		if(! pTriangle) DETHROW(deeOutOfMemory);
+		if(!pTriangle) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
@@ -173,9 +173,9 @@ void deoglTransformVolume::VisitTriangle(deoglDCollisionTriangle *triangle){
 }
 
 void deoglTransformVolume::VisitFrustum(deoglDCollisionFrustum *frustum){
-	if(! pFrustum){
+	if(!pFrustum){
 		pFrustum = new deoglDCollisionFrustum;
-		if(! pFrustum) DETHROW(deeOutOfMemory);
+		if(!pFrustum) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();

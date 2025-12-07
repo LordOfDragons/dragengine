@@ -53,7 +53,7 @@ feUFontToggleColorFont::~feUFontToggleColorFont(){
 ///////////////
 
 void feUFontToggleColorFont::Undo(){
-	pFont->SetColorFont(! pFont->GetColorFont());
+	pFont->SetColorFont(!pFont->GetColorFont());
 }
 
 void feUFontToggleColorFont::Redo(){

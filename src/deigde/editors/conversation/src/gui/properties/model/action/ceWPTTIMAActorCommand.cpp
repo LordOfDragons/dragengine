@@ -64,7 +64,7 @@ void ceWPTTIMAActorCommand::Update(){
 	text.Format("%s => ", action.GetActor().GetString());
 	description = text;
 	
-	if(! action.GetCommand().IsEmpty()){
+	if(!action.GetCommand().IsEmpty()){
 		const decString lineCommand(action.GetCommand().Split('\n').GetAt(0));
 		
 		if(lineCommand.GetLength() > 40){

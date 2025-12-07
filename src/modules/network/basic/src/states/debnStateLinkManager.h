@@ -55,9 +55,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of links. */
-	inline int GetLinkCount() const{return pLinkCount;}
+	inline int GetLinkCount() const{ return pLinkCount; }
 	/** Retrieves the head link or NULL. */
-	inline debnStateLink *GetHeadLink() const{return pHeadLink;}
+	inline debnStateLink *GetHeadLink() const{ return pHeadLink; }
 	/** Retrieves the link with the given identifier or NULL if not found. */
 	debnStateLink *GetLinkWithIdentifier(int identifier) const;
 	/** Retrieves the link with the given network state or NULL if not found. */

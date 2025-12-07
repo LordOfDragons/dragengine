@@ -108,7 +108,7 @@ void igdeViewRenderWindow::OnBeforeEngineStop(){
 }
 
 void igdeViewRenderWindow::OnFrameUpdate(float){
-	if(! pRenderWindow){
+	if(!pRenderWindow){
 		return;
 	}
 	
@@ -130,7 +130,7 @@ void igdeViewRenderWindow::SetRenderWorld(deCamera *camera){
 }
 
 void igdeViewRenderWindow::AddCanvas(deCanvas *canvas){
-	if(! canvas || ! pRenderWindow){
+	if(!canvas || !pRenderWindow){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -141,7 +141,7 @@ void igdeViewRenderWindow::AddCanvas(deCanvas *canvas){
 }
 
 void igdeViewRenderWindow::RemoveCanvas(deCanvas *canvas){
-	if(! canvas || ! pRenderWindow){
+	if(!canvas || !pRenderWindow){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -164,7 +164,7 @@ deCanvasPaint *igdeViewRenderWindow::GetCanvasBackground() const{
 }
 
 void igdeViewRenderWindow::CreateCanvas(){
-	if(! pCanvasBackground){
+	if(!pCanvasBackground){
 		pCanvasBackground.TakeOver(GetEngineController().GetEngine()->
 			GetCanvasManager()->CreateCanvasPaint());
 		deCanvasPaint &background = (deCanvasPaint&)(deCanvas&)pCanvasBackground;
@@ -174,7 +174,7 @@ void igdeViewRenderWindow::CreateCanvas(){
 		background.SetFillColor(GetEnvironment().GetSystemColor(igdeEnvironment::escWidgetShadow));
 		AddCanvas(pCanvasBackground);
 	}
-	if(! pCanvasRenderWorld){
+	if(!pCanvasRenderWorld){
 		pCanvasRenderWorld.TakeOver(GetEngineController().GetEngine()->
 			GetCanvasManager()->CreateCanvasRenderWorld());
 		pCanvasRenderWorld->SetOrder(1.0f);
@@ -199,7 +199,7 @@ void igdeViewRenderWindow::ReleaseInput(){
 
 
 void igdeViewRenderWindow::AddListener(igdeMouseKeyListener *listener){
-	if(! listener){
+	if(!listener){
 		DETHROW(deeInvalidParam);
 	}
 	pListeners.Add(listener);
@@ -323,7 +323,7 @@ void igdeViewRenderWindow::DropNativeWidget(){
 }
 
 void igdeViewRenderWindow::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -332,11 +332,11 @@ void igdeViewRenderWindow::DestroyNativeWidget(){
 }
 
 void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		DETHROW(deeNullPointer);
 	}
 	
-	if(! pRenderWindow){
+	if(!pRenderWindow){
 		pRenderWindow.TakeOver(GetEngineController().CreateRenderWindow(*this));
 		pRenderWindow->SetPaint(pEnableRendering);
 		CreateCanvas();

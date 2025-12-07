@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Time in seconds. */
-	inline float GetTime() const{return pTime;}
+	inline float GetTime() const{ return pTime; }
 	
 	/** Time step. */
-	inline float GetTimeStep() const{return pTimeStep;}
+	inline float GetTimeStep() const{ return pTimeStep; }
 	
 	/** Weight. */
-	inline float GetWeight() const{return pWeight;}
+	inline float GetWeight() const{ return pWeight; }
 	
 	/** Weight step. */
-	inline float GetWeightStep() const{return pWeightStep;}
+	inline float GetWeightStep() const{ return pWeightStep; }
 	
 	/** Interpolated position. Has to be interpolationTime - keyframeTime. No range checking is done. */
 	float InterpolateWeight(float time) const;

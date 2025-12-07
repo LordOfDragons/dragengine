@@ -68,7 +68,7 @@ pOwner(&powner)
 	UpdateScale();
 	UpdateRange();
 	UpdateValue();
-	if(! powner.GetEnabled()){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
@@ -80,12 +80,12 @@ igdeNativeFoxSlider::~igdeNativeFoxSlider(){
 }
 
 igdeNativeFoxSlider *igdeNativeFoxSlider::CreateNativeWidget(igdeSlider &powner){
-	if(! powner.GetParent()){
+	if(!powner.GetParent()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
-	if(! pparent){
+	if(!pparent){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -163,7 +163,7 @@ int igdeNativeFoxSlider::SliderFlags(const igdeSlider &powner){
 ///////////
 
 long igdeNativeFoxSlider::onCommand(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -193,7 +193,7 @@ long igdeNativeFoxSlider::onCommand(FXObject*, FXSelector, void*){
 }
 
 long igdeNativeFoxSlider::onChanged(FXObject*, FXSelector, void*){
-	if(! pOwner->GetEnabled()){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	

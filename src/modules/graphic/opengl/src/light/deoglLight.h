@@ -110,15 +110,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	/** Light resource. */
-	inline const deLight &GetLight() const{return pLight;}
+	inline const deLight &GetLight() const{ return pLight; }
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
+	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
@@ -129,7 +129,7 @@ public:
 	
 	
 	/** Render light. */
-	inline deoglRLight *GetRLight() const{return pRLight;}
+	inline deoglRLight *GetRLight() const{ return pRLight; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -218,8 +218,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

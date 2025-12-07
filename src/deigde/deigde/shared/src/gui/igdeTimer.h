@@ -74,19 +74,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Timeout in milliseconds. */
-	inline int GetTimeout() const{return pTimeout;}
+	inline int GetTimeout() const{ return pTimeout; }
 	
 	/** \brief Timeout in seconds. */
-	inline double GetTimeoutSeconds() const{return (double)pTimeout * 1000.0;}
+	inline double GetTimeoutSeconds() const{ return (double)pTimeout * 1000.0; }
 	
 	/** \brief Repeating. */
-	inline bool GetRepeating() const{return pRepeating;}
+	inline bool GetRepeating() const{ return pRepeating; }
 	
 	/** \brief Timer is running. */
-	inline bool GetRunning() const{return pRunning;}
+	inline bool GetRunning() const{ return pRunning; }
 	
 	
 	
@@ -124,7 +124,7 @@ public:
 	 * \brief Get native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void *GetNativeTimer() const{return pNativeTimer;}
+	void *GetNativeTimer() const{ return pNativeTimer; }
 	
 protected:
 	/**

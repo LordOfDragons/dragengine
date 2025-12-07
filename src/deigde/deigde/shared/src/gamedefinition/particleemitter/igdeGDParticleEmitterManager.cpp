@@ -56,7 +56,7 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 ///////////////
 
 void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
-	if(! emitter){
+	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	pEmitterList.Add(emitter);

@@ -121,7 +121,7 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskTexture::GetRootVAO()
 }
 
 deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith(const deoglVAO *vao) const{
-	if(! vao){
+	if(!vao){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -130,7 +130,7 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith(const
 }
 
 deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO(const deoglVAO *vao){
-	if(! vao){
+	if(!vao){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -148,7 +148,7 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO(const deo
 }
 
 void deoglPersistentRenderTaskTexture::RemoveVAO(deoglPersistentRenderTaskVAO *vao){
-	if(! vao){
+	if(!vao){
 		DETHROW(deeInvalidParam);
 	}
 	

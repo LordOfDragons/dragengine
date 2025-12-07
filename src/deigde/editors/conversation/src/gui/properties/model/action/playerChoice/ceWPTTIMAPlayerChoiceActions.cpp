@@ -72,7 +72,7 @@ ceWPTTIMAPlayerChoiceActions::~ceWPTTIMAPlayerChoiceActions(){
 
 ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceActions::GetModelPlayerChoice() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -87,12 +87,12 @@ ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceActions::GetModelPlayerChoice() cons
 
 
 void ceWPTTIMAPlayerChoiceActions::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = GetModelPlayerChoice();
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	
@@ -100,7 +100,7 @@ void ceWPTTIMAPlayerChoiceActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
@@ -135,12 +135,12 @@ void ceWPTTIMAPlayerChoiceActions::OnContextMenu(igdeMenuCascade &contextMenu){
 
 void ceWPTTIMAPlayerChoiceActions::ContextMenuAction(
 igdeMenuCascade &contextMenu, ceConversationAction *action){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = GetModelPlayerChoice();
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	
@@ -148,7 +148,7 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

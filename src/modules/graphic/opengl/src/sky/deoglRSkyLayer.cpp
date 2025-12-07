@@ -132,7 +132,7 @@ void deoglRSkyLayer::pUpdateSkins(){
 		pTextures[i] = -1;
 	}
 	
-	if(! pSkin){
+	if(!pSkin){
 		return;
 	}
 	

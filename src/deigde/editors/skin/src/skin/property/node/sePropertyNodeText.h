@@ -41,10 +41,10 @@ public:
 	
 	
 	enum eTextMapped{
-		etmFontSize = MappedCount, //<! Font size
-		etmColorRed, //<! Color red component
-		etmColorGreen, //<! Color green component
-		etmColorBlue //<! Color blue component
+		etmFontSize = MappedCount, //<!Font size
+		etmColorRed, //<!Color red component
+		etmColorGreen, //<!Color green component
+		etmColorBlue //<!Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;
@@ -79,19 +79,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font path or empty string if not set. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set font path or empty path if not set. */
 	void SetPath(const char *path);
 	
 	/** \brief Font or nullptr. */
-	inline const deFont::Ref &GetFont() const{return pFont;}
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Font size or nullptr. */
-	inline const deFontSize::Ref &GetFontSize() const{return pFontSize;}
+	inline const deFontSize::Ref &GetFontSize() const{ return pFontSize; }
 	
 	/** \brief Text size in canvas units. */
-	inline float GetTextSize() const{return pTextSize;}
+	inline float GetTextSize() const{ return pTextSize; }
 	
 	/**
 	 * \brief Set text size in canvas units.
@@ -106,13 +106,13 @@ public:
 	void UpdateFontSize();
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);

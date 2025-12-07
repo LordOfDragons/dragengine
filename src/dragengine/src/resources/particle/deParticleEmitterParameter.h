@@ -64,44 +64,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast value. */
-	inline float GetValue() const{return pValue;}
+	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set cast value. */
 	void SetValue(float value);
 	
 	/** \brief Cast value spread. */
-	inline float GetSpread() const{return pSpread;}
+	inline float GetSpread() const{ return pSpread; }
 	
 	/** \brief Set cast value spread. */
 	void SetSpread(float spread);
 	
 	/** \brief Curve controller for the cast value. */
-	inline int GetControllerValue() const{return pControllerValue;}
+	inline int GetControllerValue() const{ return pControllerValue; }
 	
 	/** \brief Set curve controller for the cast value. */
 	void SetControllerValue(int controller);
 	
 	/** \brief Curve controller for the cast value spread. */
-	inline int GetControllerSpread() const{return pControllerSpread;}
+	inline int GetControllerSpread() const{ return pControllerSpread; }
 	
 	/** \brief Set curve controller for the cast value spread. */
 	void SetControllerSpread(int controller);
 	
 	/** \brief Cast value curve. */
-	inline decCurveBezier &GetCurveValue(){return pCurveValue;}
-	inline const decCurveBezier &GetCurveValue() const{return pCurveValue;}
+	inline decCurveBezier &GetCurveValue(){ return pCurveValue; }
+	inline const decCurveBezier &GetCurveValue() const{ return pCurveValue; }
 	
 	/** \brief Cast value spread curve. */
-	inline decCurveBezier &GetCurveSpread(){return pCurveSpread;}
-	inline const decCurveBezier &GetCurveSpread() const{return pCurveSpread;}
+	inline decCurveBezier &GetCurveSpread(){ return pCurveSpread; }
+	inline const decCurveBezier &GetCurveSpread() const{ return pCurveSpread; }
 	
 	/** \brief Progress curve. */
-	inline decCurveBezier &GetCurveProgress(){return pCurveProgress;}
-	inline const decCurveBezier &GetCurveProgress() const{return pCurveProgress;}
+	inline decCurveBezier &GetCurveProgress(){ return pCurveProgress; }
+	inline const decCurveBezier &GetCurveProgress() const{ return pCurveProgress; }
 	
 	/** \brief Beam curve. */
-	inline decCurveBezier &GetCurveBeam(){return pCurveBeam;}
-	inline const decCurveBezier &GetCurveBeam() const{return pCurveBeam;}
+	inline decCurveBezier &GetCurveBeam(){ return pCurveBeam; }
+	inline const decCurveBezier &GetCurveBeam() const{ return pCurveBeam; }
 	/*@}*/
 };
 

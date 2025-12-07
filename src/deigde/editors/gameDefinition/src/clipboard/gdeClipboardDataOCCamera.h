@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera. */
-	gdeOCCamera *GetCamera() const{return pCamera;}
+	gdeOCCamera *GetCamera() const{ return pCamera; }
 	/*@}*/
 };
 

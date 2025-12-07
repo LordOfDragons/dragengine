@@ -67,37 +67,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Year. */
-	inline int GetYear() const{return pYear;}
+	inline int GetYear() const{ return pYear; }
 	
 	/** \brief Set year. */
 	void SetYear(int year);
 	
 	/** \brief Month starting with 0 for january. */
-	inline int GetMonth() const{return pMonth;}
+	inline int GetMonth() const{ return pMonth; }
 	
 	/** \brief Set month starting with 0 for january. */
 	void SetMonth(int month);
 	
 	/** \brief Day starting with 0 for the first day in the month. */
-	inline int GetDay() const{return pDay;}
+	inline int GetDay() const{ return pDay; }
 	
 	/** \brief Set day starting with 0 for the first day in the month. */
 	void SetDay(int day);
 	
 	/** \brief Hour. */
-	inline int GetHour() const{return pHour;}
+	inline int GetHour() const{ return pHour; }
 	
 	/** \brief Set hour. */
 	void SetHour(int hour);
 	
 	/** \brief Minute. */
-	inline int GetMinute() const{return pMinute;}
+	inline int GetMinute() const{ return pMinute; }
 	
 	/** \brief Set minute. */
 	void SetMinute(int minute);
 	
 	/** \brief Second. */
-	inline int GetSecond() const{return pSecond;}
+	inline int GetSecond() const{ return pSecond; }
 	
 	/** \brief Set second. */
 	void SetSecond(int second);

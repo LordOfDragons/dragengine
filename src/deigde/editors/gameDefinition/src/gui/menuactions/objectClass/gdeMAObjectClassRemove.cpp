@@ -58,12 +58,12 @@ gdeBaseAction(windowMain, "Remove Object Class",
 
 igdeUndo *gdeMAObjectClassRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if(! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if(! objectClass){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -72,7 +72,7 @@ igdeUndo *gdeMAObjectClassRemove::OnAction(gdeGameDefinition &gameDefinition){
 
 void gdeMAObjectClassRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if(! gameDefinition){
+	if(!gameDefinition){
 		SetEnabled(false);
 		return;
 	}

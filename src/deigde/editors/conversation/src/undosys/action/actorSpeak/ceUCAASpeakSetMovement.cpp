@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement){
-	if(! topic || ! newMovement) DETHROW(deeInvalidParam);
+	if(!topic || !newMovement) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;

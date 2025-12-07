@@ -81,13 +81,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{return pColor;}
+	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Text color is set. */
-	inline bool GetHasColor() const{return pHasColor;}
+	inline bool GetHasColor() const{ return pHasColor; }
 	
 	/** \brief Set text color. */
 	void SetColor(const decColor &color);
@@ -98,10 +98,10 @@ public:
 	
 	
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{return pBgColor;}
+	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Background color is set. */
-	inline bool GetHasBgColor() const{return pHasBgColor;}
+	inline bool GetHasBgColor() const{ return pHasBgColor; }
 	
 	/** \brief Set background color. */
 	void SetBgColor(const decColor &color);
@@ -112,25 +112,25 @@ public:
 	
 	
 	/** \brief Bold. */
-	inline bool GetBold() const{return pBold;}
+	inline bool GetBold() const{ return pBold; }
 	
 	/** \brief Set bold. */
 	void SetBold(bool bold);
 	
 	/** \brief Italic. */
-	inline bool GetItalic() const{return pItalic;}
+	inline bool GetItalic() const{ return pItalic; }
 	
 	/** \brief Set italic. */
 	void SetItalic(bool italic);
 	
 	/** \brief Underline. */
-	inline bool GetUnderline() const{return pUnderline;}
+	inline bool GetUnderline() const{ return pUnderline; }
 	
 	/** \brief Set underline. */
 	void SetUnderline(bool underline);
 	
 	/** \brief Strike through. */
-	inline bool GetStrikeThrough() const{return pStrikeThrough;}
+	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
 	
 	/** \brief Set strike through. */
 	void SetStrikeThrough(bool strikeThrough);

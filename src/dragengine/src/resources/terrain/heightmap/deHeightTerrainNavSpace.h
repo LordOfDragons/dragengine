@@ -71,13 +71,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space type. */
-	inline deNavigationSpace::eSpaceTypes GetType() const{return pType;}
+	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set navigation space type. */
 	void SetType(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Navigation layer number. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set navigation layer number. */
 	void SetLayer(int layer);
@@ -89,7 +89,7 @@ public:
 	 * 
 	 * The default snap distance is 0.001 (1mm).
 	 */
-	inline float GetSnapDistance() const{return pSnapDistance;}
+	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/**
 	 * \brief Set snap distance in meters up to which edges are linked to neighbor spaces.
@@ -103,7 +103,7 @@ public:
 	 * 
 	 * The default snap angle is 180° in radians.
 	 */
-	inline float GetSnapAngle() const{return pSnapAngle;}
+	inline float GetSnapAngle() const{ return pSnapAngle; }
 	
 	/**
 	 * \brief Set snap angle in radians up to which edges are linked to neighbor spaces.
@@ -118,7 +118,7 @@ public:
 	/** \name Corners */
 	/*@{*/
 	/** \brief Number of corners. */
-	inline int GetCornerCount() const{return pCornerCount;}
+	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
 	void SetCornerCount(int count);
@@ -130,7 +130,7 @@ public:
 	void SetCornerAt(int index, unsigned int corner);
 	
 	/** \brief Pointer to corners. */
-	inline unsigned int *GetCorners() const{return pCorners;}
+	inline unsigned int *GetCorners() const{ return pCorners; }
 	/*@}*/
 	
 	
@@ -138,7 +138,7 @@ public:
 	/** \name Edges */
 	/*@{*/
 	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{return pEdgeCount;}
+	inline int GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Set number edges. */
 	void SetEdgeCount(int count);
@@ -147,7 +147,7 @@ public:
 	deHeightTerrainNavSpaceEdge &GetEdgeAt(int index) const;
 	
 	/** \brief Pointer to the edges. */
-	inline deHeightTerrainNavSpaceEdge *GetEdges() const{return pEdges;}
+	inline deHeightTerrainNavSpaceEdge *GetEdges() const{ return pEdges; }
 	/*@}*/
 	
 	
@@ -155,7 +155,7 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{return pFaceCount;}
+	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Set number faces. */
 	void SetFaceCount(int count);
@@ -164,7 +164,7 @@ public:
 	deNavigationSpaceFace &GetFaceAt(int index) const;
 	
 	/** \brief Pointer to the faces. */
-	inline deNavigationSpaceFace *GetFaces() const{return pFaces;}
+	inline deNavigationSpaceFace *GetFaces() const{ return pFaces; }
 	/*@}*/
 };
 

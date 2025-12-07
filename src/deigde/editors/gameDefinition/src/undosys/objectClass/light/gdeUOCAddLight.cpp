@@ -45,7 +45,7 @@ gdeUOCAddLight::gdeUOCAddLight(gdeObjectClass *objectClass, gdeOCLight *light) :
 pObjectClass(NULL),
 pLight(NULL)
 {
-	if(! objectClass || ! light){
+	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
 	}
 	

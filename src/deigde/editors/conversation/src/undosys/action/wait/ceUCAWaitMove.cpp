@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex){
-	if(! topic || ! wait || ! action) DETHROW(deeInvalidParam);
+	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	int count = 0;
 	

@@ -110,7 +110,7 @@ bool ceFacePoseList::HasNamed(const char *name) const{
 }
 
 void ceFacePoseList::Add(ceFacePose *facePose){
-	if(! facePose || HasNamed(facePose->GetName().GetString())) DETHROW(deeInvalidParam);
+	if(!facePose || HasNamed(facePose->GetName().GetString())) DETHROW(deeInvalidParam);
 	
 	pFacePoses.Add(facePose);
 }

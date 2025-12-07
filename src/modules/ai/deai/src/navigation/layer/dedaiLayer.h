@@ -71,16 +71,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent world. */
-	inline dedaiWorld &GetWorld() const{return pWorld;}
+	inline dedaiWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Layer. */
-	inline int GetLayer() const{return pLayer;}
+	inline int GetLayer() const{ return pLayer; }
 	
 	
 	
 	/** \brief Cost table. */
-	inline dedaiCostTable &GetCostTable(){return pCostTable;}
-	inline const dedaiCostTable &GetCostTable() const{return pCostTable;}
+	inline dedaiCostTable &GetCostTable(){ return pCostTable; }
+	inline const dedaiCostTable &GetCostTable() const{ return pCostTable; }
 	
 	
 	

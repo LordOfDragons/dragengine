@@ -67,27 +67,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDESynthesizer &GetModule() const{return pModule;}
+	inline deDESynthesizer &GetModule() const{ return pModule; }
 	
 	/** \brief Sound resource. */
-	inline deSound &GetSound() const{return pSound;}
+	inline deSound &GetSound() const{ return pSound; }
 	
 	
 	
 	/** \brief Stream data or \em NULL if not loaded. */
-	inline char *GetStreamData() const{return pStreamData;}
+	inline char *GetStreamData() const{ return pStreamData; }
 	
 	/** \brief Stream data size in bytes or 0 if not loaded. */
-	inline int GetStreamDataSize() const{return pStreamDataSize;}
+	inline int GetStreamDataSize() const{ return pStreamDataSize; }
 	
 	/** \brief Sound is too large requiring streaming. */
-	inline bool GetStreaming() const{return pStreaming;}
+	inline bool GetStreaming() const{ return pStreaming; }
 	
 	/** \brief Load entire sound data into buffer if not done already. */
 	void LoadEntireSound();
 	
 	/** \brief Sound is used. */
-	inline bool IsUsed() const{return pIsUsed;}
+	inline bool IsUsed() const{ return pIsUsed; }
 	
 	/**
 	 * \brief Prepare sound.

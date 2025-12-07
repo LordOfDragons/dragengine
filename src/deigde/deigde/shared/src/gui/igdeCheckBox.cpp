@@ -104,7 +104,7 @@ void igdeCheckBox::CreateNativeWidget(){
 }
 
 void igdeCheckBox::DestroyNativeWidget(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -115,7 +115,7 @@ void igdeCheckBox::DestroyNativeWidget(){
 
 
 void igdeCheckBox::OnCheckedChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -123,7 +123,7 @@ void igdeCheckBox::OnCheckedChanged(){
 }
 
 void igdeCheckBox::OnStyleChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -131,7 +131,7 @@ void igdeCheckBox::OnStyleChanged(){
 }
 
 void igdeCheckBox::OnTextChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -139,7 +139,7 @@ void igdeCheckBox::OnTextChanged(){
 }
 
 void igdeCheckBox::OnDescriptionChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -147,7 +147,7 @@ void igdeCheckBox::OnDescriptionChanged(){
 }
 
 void igdeCheckBox::OnIconChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void igdeCheckBox::OnIconChanged(){
 }
 
 void igdeCheckBox::OnEnabledChanged(){
-	if(! GetNativeWidget()){
+	if(!GetNativeWidget()){
 		return;
 	}
 	

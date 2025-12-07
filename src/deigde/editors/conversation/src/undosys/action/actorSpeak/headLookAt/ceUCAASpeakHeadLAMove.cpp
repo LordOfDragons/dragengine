@@ -44,7 +44,7 @@
 
 ceUCAASpeakHeadLAMove::ceUCAASpeakHeadLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
 ceStrip *headLookAt, int newIndex){
-	if(! topic || ! actorSpeak || ! headLookAt){
+	if(!topic || !actorSpeak || !headLookAt){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -59,7 +59,7 @@ ceCAPlayerChoiceOption *option) :
 ceWPTTIMConditionContainer(windowMain, conversation, playerChoice, etActionPlayerChoiceOptionCondition),
 pOption(NULL)
 {
-	if(! option){
+	if(!option){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -82,7 +82,7 @@ ceWPTTIMAPlayerChoiceOptionCondition::~ceWPTTIMAPlayerChoiceOptionCondition(){
 
 ceWPTTIMAPlayerChoiceOption *ceWPTTIMAPlayerChoiceOptionCondition::GetModelOption() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if(! parent){
+	if(!parent){
 		return NULL;
 	}
 	
@@ -111,7 +111,7 @@ void ceWPTTIMAPlayerChoiceOptionCondition::Update(){
 }
 
 void ceWPTTIMAPlayerChoiceOptionCondition::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -119,12 +119,12 @@ void ceWPTTIMAPlayerChoiceOptionCondition::OnContextMenu(igdeMenuCascade &contex
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = GetModelPlayerChoice();
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	ceCAPlayerChoice &playerChoice = *modelPlayerChoice->GetActionPlayerChoice();
@@ -153,17 +153,17 @@ void ceWPTTIMAPlayerChoiceOptionCondition::OnContextMenu(igdeMenuCascade &contex
 
 void ceWPTTIMAPlayerChoiceOptionCondition::ContextMenuCondition(
 igdeMenuCascade &contextMenu, ceConversationCondition *condition){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoiceOption * const modelOption = GetModelOption();
-	if(! modelOption){
+	if(!modelOption){
 		return;
 	}
 	
 	ceWPTTIMAPlayerChoice * const modelPlayerChoice = modelOption->GetModelPlayerChoice();
-	if(! modelPlayerChoice){
+	if(!modelPlayerChoice){
 		return;
 	}
 	
@@ -171,7 +171,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

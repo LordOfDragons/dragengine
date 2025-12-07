@@ -42,7 +42,7 @@
 seUEffectStretchSetMinTime::seUEffectStretchSetMinTime(seEffectStretch *effect, float newTime) :
 pSource(NULL)
 {
-	if(! effect){
+	if(!effect){
 		DETHROW(deeInvalidParam);
 	}
 	

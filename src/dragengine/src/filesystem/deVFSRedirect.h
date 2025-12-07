@@ -98,7 +98,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Redirect path in the same virtual file system. */
-	inline const decPath &GetRedirectPath(){return pRedirectPath;}
+	inline const decPath &GetRedirectPath(){ return pRedirectPath; }
 	
 	
 	

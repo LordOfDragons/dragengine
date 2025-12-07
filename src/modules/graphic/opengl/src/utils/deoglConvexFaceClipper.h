@@ -54,12 +54,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the face normal. */
-	inline const decDVector &GetNormal() const{return pNormal;}
+	inline const decDVector &GetNormal() const{ return pNormal; }
 	/** Sets the face normal. */
 	void SetNormal(const decDVector &normal);
 	
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{return pVertexCount;}
+	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the the vertex at the given position. */
 	const decDVector &GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */

@@ -49,11 +49,11 @@ public:
 	deClassServerListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassServerListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
-	inline deClassConnection *GetClassConnection() const{return pClsCon;}
+	inline deClassConnection *GetClassConnection() const{ return pClsCon; }
 	
 private:
 	struct sInitData{

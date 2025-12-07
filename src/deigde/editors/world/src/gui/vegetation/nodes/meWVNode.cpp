@@ -62,7 +62,7 @@ public:
 	pNode(node){}
 	
 	virtual void OnAction(){
-		if(! pNode.CanDelete()){
+		if(!pNode.CanDelete()){
 			return;
 		}
 		
@@ -85,7 +85,7 @@ public:
 	pNode(node){}
 	
 	virtual void OnAction(){
-		if(! pNode.CanDuplicate()){
+		if(!pNode.CanDuplicate()){
 			return;
 		}
 		
@@ -144,7 +144,7 @@ public:
 	}
 	
 	virtual void OnDraging(igdeNVNode *node){
-		if(! pUndo){
+		if(!pUndo){
 			return;
 		}
 		
@@ -154,7 +154,7 @@ public:
 	}
 	
 	virtual void OnDragEnd(igdeNVNode*){
-		if(! pUndo){
+		if(!pUndo){
 			return;
 		}
 		
@@ -178,7 +178,7 @@ igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
 pWindowVegetation(windowVegetation),
 pRule(NULL)
 {
-	if(! rule){
+	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	

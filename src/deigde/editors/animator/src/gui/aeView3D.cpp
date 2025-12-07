@@ -77,7 +77,7 @@ public:
 	}
 	
 	virtual void OnCameraChanged(){
-		if(! pView.GetAnimator()){
+		if(!pView.GetAnimator()){
 			return;
 		}
 		
@@ -101,7 +101,7 @@ public:
 public:
 	void Start(){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetLocomotion().GetEnabled() || animator->GetWakeboard().GetEnabled()){
+		if(!animator || animator->GetLocomotion().GetEnabled() || animator->GetWakeboard().GetEnabled()){
 			return;
 		}
 		
@@ -113,7 +113,7 @@ public:
 	
 	void Stop(){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetLocomotion().GetEnabled()){
+		if(!animator || !animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -125,7 +125,7 @@ public:
 	
 	virtual void OnMouseMoved(igdeWidget*, const decPoint &position, int){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetLocomotion().GetEnabled()){
+		if(!animator || !animator->GetLocomotion().GetEnabled()){
 			pMouseLocation = position;
 			return;
 		}
@@ -141,7 +141,7 @@ public:
 	
 	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetLocomotion().GetEnabled()){
+		if(!animator || !animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -164,16 +164,16 @@ public:
 			locomotion.SetKeyStepRight(true);
 			
 		}else if(keyCode == config.GetLocoKeyCrouch()){
-			locomotion.SetToggleCrouch(! locomotion.GetToggleCrouch());
+			locomotion.SetToggleCrouch(!locomotion.GetToggleCrouch());
 			
 		}else if(keyCode == config.GetLocoKeyRun()){
-			locomotion.SetToggleRun(! locomotion.GetToggleRun());
+			locomotion.SetToggleRun(!locomotion.GetToggleRun());
 		}
 	}
 	
 	virtual void OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetLocomotion().GetEnabled()){
+		if(!animator || !animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -208,7 +208,7 @@ public:
 public:
 	void Start(){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -225,7 +225,7 @@ public:
 	
 	void Stop(){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetWakeboard().GetEnabled()){
+		if(!animator || !animator->GetWakeboard().GetEnabled()){
 			return;
 		}
 		
@@ -239,7 +239,7 @@ public:
 		pMouseLocation = position;
 		
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetWakeboard().GetEnabled()){
+		if(!animator || !animator->GetWakeboard().GetEnabled()){
 			return;
 		}
 		
@@ -254,7 +254,7 @@ public:
 	
 	virtual void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || ! animator->GetWakeboard().GetEnabled()){
+		if(!animator || !animator->GetWakeboard().GetEnabled()){
 			return;
 		}
 		
@@ -273,7 +273,7 @@ public:
 public:
 	void OnButtonPress(igdeWidget*, int button, const decPoint &position, int modifiers) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -286,7 +286,7 @@ public:
 		case deInputEvent::embcLeft:
 			{
 			deBasePhysicsWorld * const peer = animator->GetEngineWorld()->GetPeerPhysics();
-			if(! peer){
+			if(!peer){
 				return;
 			}
 			
@@ -319,7 +319,7 @@ public:
 	
 	void OnButtonRelease(igdeWidget*, int button, const decPoint &position, int modifiers) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -342,7 +342,7 @@ public:
 	
 	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -354,7 +354,7 @@ public:
 	
 	void OnMouseWheeled(igdeWidget*, const decPoint &position, const decPoint &change, int modifiers) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -363,7 +363,7 @@ public:
 	
 	void OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		
@@ -372,7 +372,7 @@ public:
 	
 	void OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes keyCode, int key) override{
 		aeAnimator * const animator = pView.GetAnimator();
-		if(! animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
+		if(!animator || animator->GetWakeboard().GetEnabled() || animator->GetLocomotion().GetEnabled()){
 			return;
 		}
 		

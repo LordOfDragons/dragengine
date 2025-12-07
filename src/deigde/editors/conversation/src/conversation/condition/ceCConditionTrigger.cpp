@@ -59,7 +59,7 @@ ceCConditionTrigger::~ceCConditionTrigger(){
 ///////////////
 
 void ceCConditionTrigger::SetTrigger(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	pTrigger = name;

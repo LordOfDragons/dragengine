@@ -78,30 +78,30 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Window main. */
-	inline gdeWindowMain &GetWindowMain() const{return pWindowMain;}
+	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
+	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Categories model. */
-	inline gdeWPSTIMCategories &GetCategories() const{return *pCategories;}
+	inline gdeWPSTIMCategories &GetCategories() const{ return *pCategories; }
 	
 	/** \brief Object classes model. */
-	inline gdeWPSTIMObjectClasses &GetObjectClasses() const{return *pObjectClasses;}
+	inline gdeWPSTIMObjectClasses &GetObjectClasses() const{ return *pObjectClasses; }
 	
 	/** \brief Particle emitters model. */
-	inline gdeWPSTIMParticleEmitters &GetParticleEmitters() const{return *pParticleEmitters;}
+	inline gdeWPSTIMParticleEmitters &GetParticleEmitters() const{ return *pParticleEmitters; }
 	
 	/** \brief Skins model. */
-	inline gdeWPSTIMSkins &GetSkins() const{return *pSkins;}
+	inline gdeWPSTIMSkins &GetSkins() const{ return *pSkins; }
 	
 	/** \brief Skies model. */
-	inline gdeWPSTIMSkies &GetSkies() const{return *pSkies;}
+	inline gdeWPSTIMSkies &GetSkies() const{ return *pSkies; }
 	
 	
 	
 	/** \brief Tree list. */
-	inline igdeTreeList &GetTreeList() const{return pTreeList;}
+	inline igdeTreeList &GetTreeList() const{ return pTreeList; }
 	
 	/** \brief Clear current item. */
 	void ClearCurrentItem();
@@ -120,7 +120,7 @@ public:
 	
 	
 	/** \brief Ignore selection change in tree list. */
-	inline bool GetIgnoreSelectionChange() const{return pIgnoreSelectionChange;}
+	inline bool GetIgnoreSelectionChange() const{ return pIgnoreSelectionChange; }
 	
 	/** \brief Set ignore selection change in tree list. */
 	void SetIgnoreSelectionChange(bool ignore);

@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View. */
-	inline seViewSynthesizer &GetViewSynthesizer() const{return pViewSynthesizer;}
+	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
+	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -102,9 +102,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPlay() const{return pActionPlay;}
-	inline igdeAction *GetActionPause() const{return pActionPause;}
-	inline igdeAction *GetActionStop() const{return pActionStop;}
+	inline igdeAction *GetActionPlay() const{ return pActionPlay; }
+	inline igdeAction *GetActionPause() const{ return pActionPause; }
+	inline igdeAction *GetActionStop() const{ return pActionStop; }
 	/*@}*/
 };
 

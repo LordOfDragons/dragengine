@@ -136,7 +136,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetConversation();
-		if(! conversation){
+		if(!conversation){
 			return;
 		}
 		
@@ -304,7 +304,7 @@ public:
 	}
 	
 	virtual void Update(const ceConversation &){
-		SetEnabled(! pPanel.GetImportConvo().IsEmpty());
+		SetEnabled(!pPanel.GetImportConvo().IsEmpty());
 	}
 };
 
@@ -332,7 +332,7 @@ public:
 	
 	virtual void Update(const ceConversation &conversation){
 		const int index = conversation.GetImportConversationPath().IndexOf(pPanel.GetImportConvo());
-		SetEnabled(! pPanel.GetImportConvo().IsEmpty() && index > 0);
+		SetEnabled(!pPanel.GetImportConvo().IsEmpty() && index > 0);
 	}
 };
 
@@ -361,7 +361,7 @@ public:
 	virtual void Update(const ceConversation &conversation){
 		const decStringList &list = conversation.GetImportConversationPath();
 		const int index = list.IndexOf(pPanel.GetImportConvo());
-		SetEnabled(! pPanel.GetImportConvo().IsEmpty() && index != -1 && index < list.GetCount() - 1);
+		SetEnabled(!pPanel.GetImportConvo().IsEmpty() && index != -1 && index < list.GetCount() - 1);
 	}
 };
 
@@ -415,7 +415,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString name("Target");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
 			return NULL;
 		}
 		if(conversation->GetTargetList().HasNamed(name)){
@@ -449,12 +449,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceTarget * const target = pPanel.GetTarget();
-		if(! target){
+		if(!target){
 			return NULL;
 		}
 		
 		decString name(target->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Target", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Target", "Name:", name) 
 		|| name == target->GetName()){
 			return NULL;
 		}
@@ -522,7 +522,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceTarget * const target = pPanel.GetTarget();
-		return target && ! editVector.GetVector().IsEqualTo(target->GetPosition())
+		return target && !editVector.GetVector().IsEqualTo(target->GetPosition())
 			? new ceUCTargetSetPosition(target, editVector.GetVector()) : NULL;
 	}
 };
@@ -533,7 +533,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceTarget * const target = pPanel.GetTarget();
-		return target && ! editVector.GetVector().IsEqualTo(target->GetOrientation())
+		return target && !editVector.GetVector().IsEqualTo(target->GetOrientation())
 			? new ceUCTargetSetOrientation(target, editVector.GetVector()) : NULL;
 	}
 };
@@ -558,7 +558,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString name("Camera Shot");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Camera Shot", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Camera Shot", "Name:", name)){
 			return NULL;
 		}
 		if(conversation->GetCameraShotList().HasNamed(name)){
@@ -591,12 +591,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		if(! cameraShot){
+		if(!cameraShot){
 			return NULL;
 		}
 		
 		decString name(cameraShot->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Camera Shot", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Camera Shot", "Name:", name) 
 		|| name == cameraShot->GetName()){
 			return NULL;
 		}
@@ -620,12 +620,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		if(! cameraShot){
+		if(!cameraShot){
 			return NULL;
 		}
 		
 		decString name(cameraShot->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Duplicate Camera Shot", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Camera Shot", "Name:", name)){
 			return NULL;
 		}
 		if(conversation->GetCameraShotList().HasNamed(name)){
@@ -686,7 +686,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraFrom())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraFrom())
 			? new ceUCCShotSetOffCamFrom(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -697,7 +697,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraTo())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraTo())
 			? new ceUCCShotSetOffCamTo(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -720,7 +720,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtFrom())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtFrom())
 			? new ceUCCShotSetOffLookAtFrom(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -731,7 +731,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtTo())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtTo())
 			? new ceUCCShotSetOffLookAtTo(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -742,7 +742,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitFrom())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitFrom())
 			? new ceUCCShotSetCamOrbitFrom(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -753,7 +753,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitTo())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitTo())
 			? new ceUCCShotSetCamOrbitTo(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -789,7 +789,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetPositionFrom())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetPositionFrom())
 			? new ceUCCShotSetPosFrom(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -800,7 +800,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetPositionTo())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetPositionTo())
 			? new ceUCCShotSetPosTo(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -811,7 +811,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetRotationFrom())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetRotationFrom())
 			? new ceUCCShotSetRotFrom(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -822,7 +822,7 @@ public:
 	
 	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot && ! editVector.GetVector().IsEqualTo(cameraShot->GetRotationTo())
+		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetRotationTo())
 			? new ceUCCShotSetRotTo(cameraShot, editVector.GetVector()) : NULL;
 	}
 };
@@ -980,7 +980,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString name("Gesture");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Name:", name)){
 			return NULL;
 		}
 		if(conversation->GetGestureList().HasNamed(name)){
@@ -1014,12 +1014,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceGesture * const gesture = pPanel.GetGesture();
-		if(! gesture){
+		if(!gesture){
 			return NULL;
 		}
 		
 		decString name(gesture->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Name:", name) 
 		|| name == gesture->GetName()){
 			return NULL;
 		}
@@ -1108,7 +1108,7 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString name("FacePose");
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Face Pose", "Name:", name)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose", "Name:", name)){
 			return NULL;
 		}
 		if(conversation->GetFacePoseList().HasNamed(name)){
@@ -1142,12 +1142,12 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceFacePose * const facePose = pPanel.GetFacePose();
-		if(! facePose){
+		if(!facePose){
 			return NULL;
 		}
 		
 		decString name(facePose->GetName());
-		if(! igdeCommonDialogs::GetString(&pPanel, "Rename Face Pose", "Name:", name) 
+		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Face Pose", "Name:", name) 
 		|| name == facePose->GetName()){
 			return NULL;
 		}
@@ -1196,14 +1196,14 @@ public:
 	
 	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceFacePose * const facePose = pPanel.GetFacePose();
-		if(! facePose || conversation->GetFacePoseControllerNameList().GetCount() == 0){
+		if(!facePose || conversation->GetFacePoseControllerNameList().GetCount() == 0){
 			return NULL;
 		}
 		
 		decStringList names(conversation->GetFacePoseControllerNameList());
 		names.SortAscending();
 		decString name;
-		if(! igdeCommonDialogs::GetString(&pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
 			return NULL;
 		}
 		
@@ -1488,7 +1488,7 @@ void ceWPConversation::SetConversation(ceConversation *conversation){
 	pBtnGesture->GetAction()->Update();
 	pBtnFacePose->GetAction()->Update();
 	
-	if(! enabled){
+	if(!enabled){
 		pCBGesture->ClearText();
 		pCBFacePose->ClearText();
 	}
@@ -1533,7 +1533,7 @@ void ceWPConversation::UpdateImportConvoPathList(){
 		}
 	}
 	
-	if(! selection.IsEmpty()){
+	if(!selection.IsEmpty()){
 		pListImportConvoPath->SetSelection(pListImportConvoPath->IndexOfItem(selection));
 	}
 	if(pListImportConvoPath->GetSelection() == -1 && pListImportConvoPath->GetItemCount() > 0){
@@ -1586,7 +1586,7 @@ void ceWPConversation::SelectActiveGesture(){
 	const bool enabled = GetGesture();
 	pEditGestureAnimator->SetEnabled(enabled);
 	
-	if(! enabled){
+	if(!enabled){
 		pEditGestureAnimator->ClearText();
 	}
 	
@@ -1639,7 +1639,7 @@ void ceWPConversation::SelectActiveFacePose(){
 	const bool enabled = GetFacePose();
 	pCBFPController->SetEnabled(enabled);
 	
-	if(! enabled){
+	if(!enabled){
 		pCBFPController->ClearText();
 	}
 	
@@ -1773,7 +1773,7 @@ void ceWPConversation::SelectActiveCameraShot(){
 	pChkCShotLockCameraTarget->SetEnabled(enabled);
 	pChkCShotLockLookAtTarget->SetEnabled(enabled);
 	
-	if(! enabled){
+	if(!enabled){
 		pEditCShotActorCount->ClearText();
 		pEditCShotOffCamFrom->SetVector(decVector());
 		pEditCShotOffCamTo->SetVector(decVector());
@@ -1898,7 +1898,7 @@ void ceWPConversation::SelectActiveTarget(){
 	pEditTargetPosition->SetEnabled(enabled);
 	pEditTargetOrientation->SetEnabled(enabled);
 	
-	if(! enabled){
+	if(!enabled){
 		pEditTargetEntityID->ClearText();
 		pEditTargetBone->ClearText();
 		pEditTargetPosition->SetVector(decVector());
@@ -1938,12 +1938,12 @@ void ceWPConversation::UpdateActorIDLists(){
 			}
 			
 			const decString &id = list.GetAt(i)->GetID();
-			if(! pCBTargetActorID->HasItem(id)){
+			if(!pCBTargetActorID->HasItem(id)){
 				pCBTargetActorID->AddItem(id);
 			}
 			
 			const decString &aliasID = list.GetAt(i)->GetAliasID();
-			if(! aliasID.IsEmpty() && ! pCBTargetActorID->HasItem(aliasID)){
+			if(!aliasID.IsEmpty() && !pCBTargetActorID->HasItem(aliasID)){
 				pCBTargetActorID->AddItem(aliasID);
 			}
 		}

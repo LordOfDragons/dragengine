@@ -87,19 +87,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{return pBullet;}
+	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
 	/** Retrieves the force field. */
-	inline deSmokeEmitter *GetSmokeEmitter() const{return pSmokeEmitter;}
+	inline deSmokeEmitter *GetSmokeEmitter() const{ return pSmokeEmitter; }
 	
 	/** Retrieves the parent world. */
-	inline debpWorld *GetParentWorld() const{return pParentWorld;}
+	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
 	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the density points. */
-	inline debpSmokeDensityPoint *GetPoints() const{return pPoints;}
+	inline debpSmokeDensityPoint *GetPoints() const{ return pPoints; }
 	/** Retrieves the number of density points. */
-	inline int GetDensityPointCount() const{return pPointCount;}
+	inline int GetDensityPointCount() const{ return pPointCount; }
 	
 	/** Retrieves the emitter matrix. */
 	const decMatrix &GetEmitterMatrix();

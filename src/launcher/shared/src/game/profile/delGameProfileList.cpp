@@ -60,7 +60,7 @@ delGameProfile *delGameProfileList::GetAt(int index) const{
 }
 
 delGameProfile *delGameProfileList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -90,7 +90,7 @@ int delGameProfileList::IndexOf(delGameProfile *profile) const{
 }
 
 int delGameProfileList::IndexOfNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
@@ -107,7 +107,7 @@ int delGameProfileList::IndexOfNamed(const char *name) const{
 }
 
 void delGameProfileList::Add(delGameProfile *profile){
-	if(! profile){
+	if(!profile){
 		DETHROW_INFO(deeNullPointer, "profile");
 	}
 	if(HasNamed (profile->GetName())){

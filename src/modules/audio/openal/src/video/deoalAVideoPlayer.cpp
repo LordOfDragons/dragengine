@@ -87,7 +87,7 @@ void deoalAVideoPlayer::SetVideo(deVideo *video){
 	pSampleCount = 0;
 	pBufferSampleSize = pBytesPerSample * pSampleRate;
 	
-	if(! video){
+	if(!video){
 		return;
 	}
 	

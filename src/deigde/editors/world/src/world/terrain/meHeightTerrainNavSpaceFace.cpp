@@ -126,7 +126,7 @@ bool meHeightTerrainNavSpaceFace::NavPointsMatch(const decIntList &navpoints) co
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(! pNavPoints.Has(navpoints.GetAt(i))){
+		if(!pNavPoints.Has(navpoints.GetAt(i))){
 			return false;
 		}
 	}
@@ -162,7 +162,7 @@ bool meHeightTerrainNavSpaceFace::HasAllNavPointsIn(const decIntList &navpoints)
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(! navpoints.Has(pNavPoints.GetAt(i))){
+		if(!navpoints.Has(pNavPoints.GetAt(i))){
 			return false;
 		}
 	}

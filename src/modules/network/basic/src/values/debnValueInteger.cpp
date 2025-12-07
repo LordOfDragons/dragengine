@@ -93,7 +93,7 @@ debnValueInteger::~debnValueInteger(){
 ///////////////
 
 bool debnValueInteger::UpdateValue(bool force){
-	if(! force && pValueInt.GetInt() == pLastValue){
+	if(!force && pValueInt.GetInt() == pLastValue){
 		return false;
 	}
 	

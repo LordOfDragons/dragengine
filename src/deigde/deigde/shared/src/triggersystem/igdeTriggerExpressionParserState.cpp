@@ -39,7 +39,7 @@
 ////////////////////////////
 
 igdeTriggerExpressionParserState::igdeTriggerExpressionParserState(const char *string){
-	if(! string){
+	if(!string){
 		DETHROW(deeInvalidParam);
 	}
 	

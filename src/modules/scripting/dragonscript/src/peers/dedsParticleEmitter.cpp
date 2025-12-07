@@ -47,7 +47,7 @@
 ////////////////////////////
 
 dedsParticleEmitter::dedsParticleEmitter(deScriptingDragonScript *ds, deParticleEmitterInstance *emitter){
-	if(! ds || ! emitter){
+	if(!ds || !emitter){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -60,7 +60,7 @@ dedsParticleEmitter::dedsParticleEmitter(deScriptingDragonScript *ds, deParticle
 }
 
 dedsParticleEmitter::~dedsParticleEmitter(){
-	if(! pValCB){
+	if(!pValCB){
 		return;
 	}
 	
@@ -110,7 +110,7 @@ void dedsParticleEmitter::SetCallback(dsRealObject *object){
 //////////////////
 
 void dedsParticleEmitter::LastParticleDied(){
-	if(! pHasCB){
+	if(!pHasCB){
 		return;
 	}
 	

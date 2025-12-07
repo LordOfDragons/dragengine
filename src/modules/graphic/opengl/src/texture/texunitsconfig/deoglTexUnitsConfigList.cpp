@@ -117,7 +117,7 @@ deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmptyNoUsage() const{
 
 
 void deoglTexUnitsConfigList::Remove(deoglTexUnitsConfig *config){
-	if(! config){
+	if(!config){
 		DETHROW(deeInvalidParam);
 	}
 	

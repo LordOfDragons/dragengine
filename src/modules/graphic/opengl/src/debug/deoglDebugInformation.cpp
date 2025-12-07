@@ -97,7 +97,7 @@ void deoglDebugInformation::IncrementElapsedTime(float time){
 }
 
 void deoglDebugInformation::ClearElapsedTime(){
-	if(! pHasElapsedTime){
+	if(!pHasElapsedTime){
 		return;
 	}
 	

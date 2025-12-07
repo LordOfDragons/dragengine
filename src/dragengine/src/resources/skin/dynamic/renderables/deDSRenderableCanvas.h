@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{return pComponentCount;}
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/**
 	 * \brief Set number of components.
@@ -73,7 +73,7 @@ public:
 	void SetComponentCount(int componentCount);
 	
 	/** \brief Bit count of each component. */
-	inline int GetBitCount() const{return pBitCount;}
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/**
 	 * \brief Set bit count of each component.
@@ -82,7 +82,7 @@ public:
 	void SetBitCount(int bitCount);
 	
 	/** \brief Canvas view or NULL if not set. */
-	inline deCanvasView *GetCanvas() const{return pCanvas;}
+	inline deCanvasView *GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Set canvas view or NULL if not set. */
 	void SetCanvas(deCanvasView *canvas);

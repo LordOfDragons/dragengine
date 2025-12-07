@@ -100,37 +100,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Title. */
-	inline const decString &GetTitle() const{return pTitle;}
+	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
 	/** \brief Title alignment. */
-	inline eTitleAlignment GetTitleAlignment() const{return pTitleAlignment;}
+	inline eTitleAlignment GetTitleAlignment() const{ return pTitleAlignment; }
 	
 	/** \brief Set title alignment. */
 	void SetTitleAlignment(eTitleAlignment alignment);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Group box can be collapsed by clicking on the title. */
-	inline bool GetCanCollapse() const{return pCanCollapse;}
+	inline bool GetCanCollapse() const{ return pCanCollapse; }
 	
 	/** \brief Set if group box can be collapsed by clicking on the title. */
 	void SetCanCollapse(bool canCollapse);
 	
 	/** \brief Group box is collapsed. */
-	inline bool GetCollapsed() const{return pCollapsed;}
+	inline bool GetCollapsed() const{ return pCollapsed; }
 	
 	/** \brief Set if group box is collapsed. */
 	void SetCollapsed(bool collapsed);
 	
 	/** \brief Stretch last widget. */
-	inline bool GetStretchLast() const{return pStretchLast;}
+	inline bool GetStretchLast() const{ return pStretchLast; }
 	
 	/** \brief Set stretch last widget. */
 	void SetStretchLast(bool stretchLast);

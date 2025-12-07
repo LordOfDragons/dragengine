@@ -116,7 +116,7 @@ void reCLClosestElement::Reset(){
 //////////////////
 
 void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *info){
-	if(! info->IsCollider()){
+	if(!info->IsCollider()){
 		return;
 	}
 	if(pHasHit && info->GetDistance() >= pHitDistance){

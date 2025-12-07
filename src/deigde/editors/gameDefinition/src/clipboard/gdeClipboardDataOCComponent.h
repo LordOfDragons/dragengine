@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	gdeOCComponent *GetComponent() const{return pComponent;}
+	gdeOCComponent *GetComponent() const{ return pComponent; }
 	/*@}*/
 };
 

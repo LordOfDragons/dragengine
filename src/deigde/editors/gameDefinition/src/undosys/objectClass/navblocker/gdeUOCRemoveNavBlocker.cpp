@@ -45,11 +45,11 @@ gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass *objectClass, gdeO
 pObjectClass(NULL),
 pNavBlocker(NULL)
 {
-	if(! objectClass || ! navblocker){
+	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! objectClass->GetNavigationBlockers().Has(navblocker)){
+	if(!objectClass->GetNavigationBlockers().Has(navblocker)){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -42,7 +42,7 @@
 seUSetSourceSoundPathSound::seUSetSourceSoundPathSound(seSourceSound *source, const char *newPath) :
 pSource(NULL)
 {
-	if(! source || ! newPath){
+	if(!source || !newPath){
 		DETHROW(deeInvalidParam);
 	}
 	

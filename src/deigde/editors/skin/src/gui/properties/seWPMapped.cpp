@@ -91,7 +91,7 @@ public:
 	
 	virtual void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
-		if(! skin){
+		if(!skin){
 			return;
 		}
 		
@@ -158,7 +158,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if(! skin || ! mapped){
+		if(!skin || !mapped){
 			return;
 		}
 		
@@ -282,7 +282,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField) override{
 		seMapped * const mapped = pPanel.GetMapped();
 		const decString &value = textField->GetText();
-		if(! mapped || mapped->GetName() == value){
+		if(!mapped || mapped->GetName() == value){
 			return;
 		}
 		
@@ -304,7 +304,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if(! skin || ! mapped || ! comboBox->GetSelectedItem()){
+		if(!skin || !mapped || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
@@ -328,7 +328,7 @@ public:
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if(! skin || ! mapped){
+		if(!skin || !mapped){
 			return;
 		}
 		
@@ -349,7 +349,7 @@ public:
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if(! skin || ! mapped){
+		if(!skin || !mapped){
 			return;
 		}
 		
@@ -453,7 +453,7 @@ public:
 	virtual void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if(! skin || ! mapped || ! comboBox->GetSelectedItem()){
+		if(!skin || !mapped || !comboBox->GetSelectedItem()){
 			return;
 		}
 		

@@ -65,7 +65,7 @@ igdeGDClass *igdeDialogBrowserObjectClass::GetSelectedObjectClass() const{
 }
 
 void igdeDialogBrowserObjectClass::SetSelectedObjectClass(igdeGDClass *gdClass){
-	if(! gdClass){
+	if(!gdClass){
 		return;
 	}
 	

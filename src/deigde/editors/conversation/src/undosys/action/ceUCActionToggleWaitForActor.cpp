@@ -44,7 +44,7 @@
 ceUCActionToggleWaitForActor::ceUCActionToggleWaitForActor(
 ceConversationTopic *topic, ceConversationAction *action)
 {
-	if(! topic) DETHROW(deeInvalidParam);
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
@@ -77,6 +77,6 @@ void ceUCActionToggleWaitForActor::Undo(){
 }
 
 void ceUCActionToggleWaitForActor::Redo(){
-	pAction->SetWaitForActor(! pAction->GetWaitForActor());
+	pAction->SetWaitForActor(!pAction->GetWaitForActor());
 	pTopic->NotifyActionChanged(pAction);
 }

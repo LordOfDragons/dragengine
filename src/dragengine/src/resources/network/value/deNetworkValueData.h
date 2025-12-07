@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data pointer. */
-	inline uint8_t *GetData() const{return pData;}
+	inline uint8_t *GetData() const{ return pData; }
 	
 	/** \brief Length of the data. */
-	inline int GetLength() const{return pLength;}
+	inline int GetLength() const{ return pLength; }
 	
 	/**
 	 * \brief Set length of data.

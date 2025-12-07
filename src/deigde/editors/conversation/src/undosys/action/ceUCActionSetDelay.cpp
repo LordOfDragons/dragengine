@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay){
-	if(! topic) DETHROW(deeInvalidParam);
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

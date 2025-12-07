@@ -58,7 +58,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the image or NULL if not set. */
-	inline deImage *GetImage() const{return pImage;}
+	inline deImage *GetImage() const{ return pImage; }
 	/** Sets the image. */
 	void SetImage(deImage *image);
 	/*@}*/

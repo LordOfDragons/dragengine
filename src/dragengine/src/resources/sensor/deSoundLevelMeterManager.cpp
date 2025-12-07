@@ -107,7 +107,7 @@ void deSoundLevelMeterManager::SystemAudioLoad(){
 	deAudioSystem &audioSystem = *GetAudioSystem();
 	
 	while(soundLevelMeter){
-		if(! soundLevelMeter->GetPeerAudio()){
+		if(!soundLevelMeter->GetPeerAudio()){
 			audioSystem.LoadSoundLevelMeter(soundLevelMeter);
 		}
 		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
@@ -128,7 +128,7 @@ void deSoundLevelMeterManager::SystemScriptingLoad(){
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
 	while(soundLevelMeter){
-		if(! soundLevelMeter->GetPeerScripting()){
+		if(!soundLevelMeter->GetPeerScripting()){
 			scriptingSystem.LoadSoundLevelMeter(soundLevelMeter);
 		}
 		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();

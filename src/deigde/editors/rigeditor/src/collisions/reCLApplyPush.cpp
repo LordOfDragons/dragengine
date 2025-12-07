@@ -48,7 +48,7 @@
 ////////////////////////////
 
 reCLApplyPush::reCLApplyPush(reRig *rig){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -127,7 +127,7 @@ void reCLApplyPush::ApplyPushIn(deBasePhysicsWorld &phyWorld, const decLayerMask
 
 void reCLApplyPush::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsCollider()){
-		if(! pClosestCollider || info->GetDistance() < pClosestDistance){
+		if(!pClosestCollider || info->GetDistance() < pClosestDistance){
 			pClosestCollider = info->GetCollider();
 			pClosestBone = info->GetBone();
 			pClosestDistance = info->GetDistance();

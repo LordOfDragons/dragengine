@@ -53,15 +53,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the half height. */
-	inline float GetHalfHeight() const{return pHalfHeight;}
+	inline float GetHalfHeight() const{ return pHalfHeight; }
 	/** Sets the half height. */
 	void SetHalfHeight(float halfHeight);
 	/** Retrieves the top radius. */
-	inline float GetTopRadius() const{return pTopRadius;}
+	inline float GetTopRadius() const{ return pTopRadius; }
 	/** Sets the top radius. */
 	void SetTopRadius(float radius);
 	/** Retrieves the bottom radius. */
-	inline float GetBottomRadius() const{return pBottomRadius;}
+	inline float GetBottomRadius() const{ return pBottomRadius; }
 	/** Sets the bottom radius. */
 	void SetBottomRadius(float radius);
 	/** Sets both radi to the same value. */

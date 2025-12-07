@@ -132,13 +132,13 @@ public:
 	void SelectListItemWithData(void *data);
 	
 	/** \brief Preview size. */
-	inline ePreviewSize GetPreviewSize() const{return pPreviewSize;}
+	inline ePreviewSize GetPreviewSize() const{ return pPreviewSize; }
 	
 	/** \brief Set preview size. */
 	void SetPreviewSize(ePreviewSize size);
 	
 	/** \brief View mode. */
-	inline eViewModes GetViewMode() const{return pViewMode;}
+	inline eViewModes GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
 	void SetViewMode(eViewModes viewMode);
@@ -154,12 +154,12 @@ public:
 
 	
 	
-	inline igdeAction *GetActionPISizeSmall() const{return pActionPISizeSmall;}
-	inline igdeAction *GetActionPISizeMedium() const{return pActionPISizeMedium;}
-	inline igdeAction *GetActionPISizeLarge() const{return pActionPISizeLarge;}
+	inline igdeAction *GetActionPISizeSmall() const{ return pActionPISizeSmall; }
+	inline igdeAction *GetActionPISizeMedium() const{ return pActionPISizeMedium; }
+	inline igdeAction *GetActionPISizeLarge() const{ return pActionPISizeLarge; }
 	
-	inline igdeAction *GetActionPIViewList() const{return pActionPIViewList;}
-	inline igdeAction *GetActionPIViewPreview() const{return pActionPIViewPreview;}
+	inline igdeAction *GetActionPIViewList() const{ return pActionPIViewList; }
+	inline igdeAction *GetActionPIViewPreview() const{ return pActionPIViewPreview; }
 	/*@}*/
 	
 	

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction *action, int newIndex){
-	if(! topic || ! action) DETHROW(deeInvalidParam);
+	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;

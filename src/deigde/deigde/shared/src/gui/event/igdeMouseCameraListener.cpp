@@ -171,7 +171,7 @@ igdeMouseCameraListener::eInteraction igdeMouseCameraListener::ChooseInteraction
 
 
 bool igdeMouseCameraListener::OnRotateBegin(){
-	if(! pCamera){
+	if(!pCamera){
 		return false;
 	}
 	
@@ -181,7 +181,7 @@ bool igdeMouseCameraListener::OnRotateBegin(){
 }
 
 void igdeMouseCameraListener::OnRotateUpdate(){
-	if(! pCamera){
+	if(!pCamera){
 		return;
 	}
 	
@@ -203,7 +203,7 @@ void igdeMouseCameraListener::OnRotateFinish(bool cancelled){
 
 
 bool igdeMouseCameraListener::OnPanBegin(){
-	if(! pCamera){
+	if(!pCamera){
 		return false;
 	}
 	
@@ -214,7 +214,7 @@ bool igdeMouseCameraListener::OnPanBegin(){
 }
 
 void igdeMouseCameraListener::OnPanUpdate(){
-	if(! pCamera){
+	if(!pCamera){
 		return;
 	}
 	
@@ -234,7 +234,7 @@ void igdeMouseCameraListener::OnPanFinish(bool cancelled){
 
 
 bool igdeMouseCameraListener::OnMoveBegin(){
-	if(! pCamera){
+	if(!pCamera){
 		return false;
 	}
 	
@@ -245,7 +245,7 @@ bool igdeMouseCameraListener::OnMoveBegin(){
 }
 
 void igdeMouseCameraListener::OnMoveUpdate(){
-	if(! pCamera){
+	if(!pCamera){
 		return;
 	}
 	
@@ -265,7 +265,7 @@ void igdeMouseCameraListener::OnMoveFinish(bool cancelled){
 
 
 bool igdeMouseCameraListener::OnZoomBegin(){
-	if(! pCamera){
+	if(!pCamera){
 		return false;
 	}
 	
@@ -275,7 +275,7 @@ bool igdeMouseCameraListener::OnZoomBegin(){
 }
 
 void igdeMouseCameraListener::OnZoomUpdate(){
-	if(! pCamera){
+	if(!pCamera){
 		return;
 	}
 	

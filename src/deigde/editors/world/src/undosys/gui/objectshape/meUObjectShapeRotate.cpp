@@ -47,10 +47,10 @@ const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object || ! property){
+	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! object->GetWorld()){
+	if(!object->GetWorld()){
 		DETHROW(deeInvalidParam);
 	}
 	

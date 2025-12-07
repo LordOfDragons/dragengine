@@ -159,14 +159,14 @@ bool dellRunGame::LocateProfile(){
 	}else{
 		profile = gameManager.GetProfiles().GetNamed(pProfileName);
 		
-		if(! profile){
+		if(!profile){
 			logger.LogErrorFormat(LOGSOURCE, "No profile found with name '%s'",
 				pProfileName.GetString());
 			return false;
 		}
 	}
 	
-	if(! profile->GetValid()){
+	if(!profile->GetValid()){
 		ShowProfileProblems();
 		return false;
 	}
@@ -175,7 +175,7 @@ bool dellRunGame::LocateProfile(){
 	pRunParams.SetGameProfile(profile);
 	
 	decString error;
-	if(! pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pGame->GetUseCustomPatch(), error)){
+	if(!pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pGame->GetUseCustomPatch(), error)){
 		logger.LogError(LOGSOURCE, error.GetString());
 		return false;
 	}
@@ -204,7 +204,7 @@ void dellRunGame::UpdateRunArguments(){
 		
 	}else{
 		arguments = pGame->GetRunArguments();
-		if(! arguments.IsEmpty()){
+		if(!arguments.IsEmpty()){
 			arguments.Append(" ");
 		}
 		arguments.Append(profile.GetRunArguments());
@@ -213,7 +213,7 @@ void dellRunGame::UpdateRunArguments(){
 	const int count = pGameArgs.GetArgumentCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(! arguments.IsEmpty()){
+		if(!arguments.IsEmpty()){
 			arguments.Append(" ");
 		}
 		arguments.Append(pGameArgs.GetArgumentAt(i)->ToUTF8());
@@ -234,7 +234,7 @@ void dellRunGame::ShowGameProblems(){
 	for(i=0; i<fileFormatCount; i++){
 		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
 		
-		if(! fileFormat.GetSupported()){
+		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){
 				logger.LogErrorFormat(LOGSOURCE, "- File Format '%s' defines single type %s",
 					fileFormat.GetPattern().GetString(),
@@ -248,7 +248,7 @@ void dellRunGame::ShowGameProblems(){
 		}
 	}
 	
-	if(! pGame->GetScriptModuleFound()){
+	if(!pGame->GetScriptModuleFound()){
 		ShowModuleProblem(pGame->GetScriptModule(), deModuleSystem::emtScript);
 	}
 }
@@ -275,7 +275,7 @@ void dellRunGame::ShowModuleProblem(const char *moduleName, deModuleSystem::eMod
 	delEngineModule * const module = pLauncher.GetLauncher().GetEngine().GetModules().GetNamed(moduleName);
 	deLogger &logger = *pLauncher.GetLauncher().GetLogger();
 	
-	if(! module){
+	if(!module){
 		logger.LogErrorFormat(LOGSOURCE, "- %s module '%s' does not exist",
 			deModuleSystem::GetTypeDirectory(moduleType), moduleName);
 		
@@ -329,22 +329,22 @@ void dellRunGame::ShowModuleProblem(const char *moduleName, deModuleSystem::eMod
 }
 
 void dellRunGame::Run(){
-	if(! ParseArguments()){
+	if(!ParseArguments()){
 		return;
 	}
 	
 	pLauncher.GetLauncher().Prepare();
 	
-	if(! LocateGame()){
+	if(!LocateGame()){
 		return;
 	}
 	
-	if(! pGame->GetCanRun()){
+	if(!pGame->GetCanRun()){
 		ShowGameProblems();
 		return;
 	}
 	
-	if(! LocateProfile()){
+	if(!LocateProfile()){
 		return;
 	}
 	

@@ -74,7 +74,7 @@ deoglRenderTarget::~deoglRenderTarget(){
 ///////////////
 
 void deoglRenderTarget::SetSize(const decPoint &size){
-	if(! (size > decPoint())){
+	if(!(size > decPoint())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -520,7 +520,7 @@ gdeUOCPropertyValuesFromSubObjects::~gdeUOCPropertyValuesFromSubObjects(){
 
 gdeUOCPropertyValuesFromSubObjects *gdeUOCPropertyValuesFromSubObjects::Create(
 gdeObjectClass *objectClass){
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	

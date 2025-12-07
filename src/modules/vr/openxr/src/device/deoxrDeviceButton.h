@@ -93,10 +93,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Device. */
-	inline deoxrDevice &GetDevice() const{return pDevice;}
+	inline deoxrDevice &GetDevice() const{ return pDevice; }
 	
 	/** Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex(int index);
@@ -104,25 +104,25 @@ public:
 	
 	
 	/** Press button action. */
-	inline deoxrAction *GetActionPress() const{return pActionPress;}
+	inline deoxrAction *GetActionPress() const{ return pActionPress; }
 	
 	/** Set press button action. */
 	void SetActionPress(deoxrAction *action);
 	
 	/** Touch button action. */
-	inline deoxrAction *GetActionTouch() const{return pActionTouch;}
+	inline deoxrAction *GetActionTouch() const{ return pActionTouch; }
 	
 	/** Set touch button action. */
 	void SetActionTouch(deoxrAction *action);
 	
 	/** Near button action. */
-	inline deoxrAction *GetActionNear() const{return pActionApproach;}
+	inline deoxrAction *GetActionNear() const{ return pActionApproach; }
 	
 	/** Set approach button action. */
 	void SetActionApproach(deoxrAction *action);
 	
 	/** Button state is faked from axis state. */
-	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{return pFakeFromAxis;}
+	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
 
 	/** Set button state is faked from axis state. */
 	void SetFakeFromAxis(const deoxrDeviceAxis::Ref &axis);
@@ -130,37 +130,37 @@ public:
 	
 	
 	/** Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
 	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Type. */
-	inline deInputDeviceButton::eButtonTypes GetType() const{return pType;}
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set type. */
 	void SetType(deInputDeviceButton::eButtonTypes type);
 	
 	/** Input device component. */
-	inline deoxrDeviceComponent *GetInputDeviceComponent() const{return pInputDeviceComponent;}
+	inline deoxrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
 	void SetInputDeviceComponent(deoxrDeviceComponent *component);
 	
 	/** Finger. */
-	inline int GetFinger() const{return pFinger;}
+	inline int GetFinger() const{ return pFinger; }
 	
 	/** Set finger. */
 	void SetFinger(int finger);
 	
 	/** Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is pressed. */
 	void SetPressed(bool pressed);
@@ -169,7 +169,7 @@ public:
 	void UpdatePressed(bool pressed);
 	
 	/** Button is touched. */
-	inline bool GetTouched() const{return pTouched;}
+	inline bool GetTouched() const{ return pTouched; }
 	
 	/** Set if button is touched. */
 	void SetTouched(bool touched);
@@ -178,7 +178,7 @@ public:
 	void UpdateTouched(bool touched);
 	
 	/** Near button. */
-	inline bool GetNear() const{return pNear;}
+	inline bool GetNear() const{ return pNear; }
 	
 	/** Set if near button. */
 	void SetNear(bool near);
@@ -189,10 +189,10 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{return pDisplayImage;}
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -201,7 +201,7 @@ public:
 	void SetDisplayImages(const deoxrDeviceButton &button);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{return pDisplayText;}
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
 	void SetDisplayText(const char *text);

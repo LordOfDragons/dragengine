@@ -47,7 +47,7 @@
 ////////////////////////////
 
 deoglSmokeEmitter::deoglSmokeEmitter(deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter){
-	if(! ogl || ! smokeEmitter) DETHROW(deeInvalidParam);
+	if(!ogl || !smokeEmitter) DETHROW(deeInvalidParam);
 	
 	pOgl = ogl;
 	pSmokeEmitter = smokeEmitter;

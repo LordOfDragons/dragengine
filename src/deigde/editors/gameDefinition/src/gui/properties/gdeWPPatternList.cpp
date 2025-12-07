@@ -63,7 +63,7 @@ public:
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPatternList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -84,7 +84,7 @@ public:
 		"Remove pattern"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPatternList() || ! pPanel.GetUndoSystem()){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	igdeAction("Clear", NULL, "Clear pattern"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if(! pPanel.GetPatternList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		

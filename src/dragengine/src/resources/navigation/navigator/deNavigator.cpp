@@ -232,7 +232,7 @@ bool deNavigator::HasTypeWith(int typeValue) const{
 deNavigatorType *deNavigator::AddType(int type){
 	deNavigatorType *rtype = GetTypeWith(type);
 	
-	if(! rtype){
+	if(!rtype){
 		if(pTypeCount == pTypeSize){
 			int newSize = pTypeCount + 1;
 			deNavigatorType *newArray = new deNavigatorType[newSize];
@@ -307,7 +307,7 @@ void deNavigator::FindPath(deNavigatorPath &path, const decDVector &start, const
 
 bool deNavigator::NearestPoint(const decDVector &point, float radius,
 decDVector &nearestPoint, int &nearestType) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->NearestPoint(point, radius, nearestPoint, nearestType);
@@ -315,7 +315,7 @@ decDVector &nearestPoint, int &nearestType) const{
 
 bool deNavigator::LineCollide(const decDVector &origin, const decVector &direction,
 float &distance) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->LineCollide(origin, direction, distance);
@@ -328,7 +328,7 @@ float &distance) const{
 
 bool deNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 int &hitAfterPoint, float &hitDistance) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->PathCollideRay(path, collider, hitAfterPoint, hitDistance);
@@ -337,7 +337,7 @@ int &hitAfterPoint, float &hitDistance) const{
 bool deNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 const decDVector &startPosition, int nextPoint, float maxDistance, int &hitAfterPoint,
 float &hitDistance) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->PathCollideRay(path, collider, startPosition, nextPoint, maxDistance,
@@ -346,7 +346,7 @@ float &hitDistance) const{
 
 bool deNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 deCollider &agent, int &hitAfterPoint, float &hitDistance) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->PathCollideShape(path, collider, agent, hitAfterPoint, hitDistance);
@@ -355,7 +355,7 @@ deCollider &agent, int &hitAfterPoint, float &hitDistance) const{
 bool deNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 deCollider &agent, const decDVector &startPosition, int nextPoint, float maxDistance,
 int &hitAfterPoint, float &hitDistance) const{
-	if(! pPeerAI){
+	if(!pPeerAI){
 		return false;
 	}
 	return pPeerAI->PathCollideShape(path, collider, agent, startPosition, nextPoint,

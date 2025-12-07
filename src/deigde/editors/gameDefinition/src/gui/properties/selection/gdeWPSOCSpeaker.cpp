@@ -88,7 +88,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker){
+		if(!speaker){
 			return;
 		}
 		
@@ -112,7 +112,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker){
+		if(!speaker){
 			return;
 		}
 		
@@ -136,7 +136,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker){
+		if(!speaker){
 			return;
 		}
 		
@@ -161,7 +161,7 @@ public:
 	
 	virtual void OnAction(){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker){
+		if(!speaker){
 			return;
 		}
 		
@@ -183,7 +183,7 @@ public:
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker || speaker->GetPathSound() == editPath->GetPath()){
+		if(!speaker || speaker->GetPathSound() == editPath->GetPath()){
 			return;
 		}
 		
@@ -342,7 +342,7 @@ public:
 	cComboPropertyNameTarget(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
-		if(! pPanel.GetSpeaker()){
+		if(!pPanel.GetSpeaker()){
 			return;
 		}
 		
@@ -377,7 +377,7 @@ public:
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCSpeaker * const speaker = pPanel.GetSpeaker();
-		if(! speaker){
+		if(!speaker){
 			return;
 		}
 		

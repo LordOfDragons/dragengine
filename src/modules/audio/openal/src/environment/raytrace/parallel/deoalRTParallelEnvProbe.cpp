@@ -327,7 +327,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	pTimer.Reset();
 	
-	if(! pRunListenUsingTasks(sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position)){
+	if(!pRunListenUsingTasks(sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position)){
 		return; // cancelled
 	}
 	
@@ -451,7 +451,7 @@ void deoalRTParallelEnvProbe::ResetElapsedRTTime(){
 
 
 void deoalRTParallelEnvProbe::FinishTaskFinished(deParallelTask *task){
-	if(! pAudioThread.GetAsyncAudio()){
+	if(!pAudioThread.GetAsyncAudio()){
 		return;
 	}
 	
@@ -801,7 +801,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	// wait for finish task to finish
 	lock.Unlock();
 	pWaitForFinishTask(parallel, &task);
-	return ! task.IsCancelled();
+	return !task.IsCancelled();
 }
 
 

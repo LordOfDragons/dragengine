@@ -123,7 +123,7 @@ void seSourceGroup::MoveSourceTo(seSource *source, int index){
 }
 
 void seSourceGroup::RemoveSource(seSource *source){
-	if(! pSources.Has(source)){
+	if(!pSources.Has(source)){
 		DETHROW(deeInvalidParam);
 	}
 	

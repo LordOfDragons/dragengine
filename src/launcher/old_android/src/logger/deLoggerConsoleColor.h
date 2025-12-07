@@ -179,7 +179,7 @@ protected:
 		eTextAttributes attribute, eTextColors colorForeground,
 		eTextColors colorBackground, char lineEnd) const;
 	
-	inline deMutex &GetMutex(){return pMutex;}
+	inline deMutex &GetMutex(){ return pMutex; }
 };
 
 #endif

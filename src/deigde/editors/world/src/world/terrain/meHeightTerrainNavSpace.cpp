@@ -278,7 +278,7 @@ void meHeightTerrainNavSpace::SetSnapAngle(float angle){
 
 
 void meHeightTerrainNavSpace::NotifyChanged(){
-	if(! pHTSector){
+	if(!pHTSector){
 		return;
 	}
 	
@@ -289,7 +289,7 @@ void meHeightTerrainNavSpace::NotifyChanged(){
 }
 
 void meHeightTerrainNavSpace::InvalidatePathTest() {
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	pHTSector->GetHeightTerrain()->GetWorld().GetPathFindTest()->Invalidate();
@@ -302,7 +302,7 @@ void meHeightTerrainNavSpace::HeightTerrainSizeChanged(){
 }
 
 void meHeightTerrainNavSpace::SectorSizeOrResChanged(){
-	if(! pHTSector){
+	if(!pHTSector){
 		return;
 	}
 	
@@ -333,7 +333,7 @@ void meHeightTerrainNavSpace::InvalidateHeights(){
 }
 
 void meHeightTerrainNavSpace::UpdateDDColors(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -403,7 +403,7 @@ meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeAt(int index) const
 }
 
 meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -421,7 +421,7 @@ meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed(const char *n
 }
 
 bool meHeightTerrainNavSpace::HasTypeNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -442,7 +442,7 @@ int meHeightTerrainNavSpace::IndexOfType(meHeightTerrainNavSpaceType *type) cons
 }
 
 int meHeightTerrainNavSpace::IndexOfTypeNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -463,26 +463,26 @@ bool meHeightTerrainNavSpace::HasType(meHeightTerrainNavSpaceType *type) const{
 }
 
 void meHeightTerrainNavSpace::AddType(meHeightTerrainNavSpaceType *type){
-	if(! type || HasTypeNamed(type->GetName())){
+	if(!type || HasTypeNamed(type->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pTypes.Add(type);
 	type->SetNavSpace(this);
 	
-	if(! pBulkUpdate){
+	if(!pBulkUpdate){
 		pUpdateDDTypeFaces();
 	}
 	
 	NotifyTypeCountChanged();
 	
-	if(! pActiveType){
+	if(!pActiveType){
 		SetActiveType(type);
 	}
 }
 
 void meHeightTerrainNavSpace::RemoveType(meHeightTerrainNavSpaceType *type){
-	if(! pTypes.Has(type)){
+	if(!pTypes.Has(type)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -538,7 +538,7 @@ void meHeightTerrainNavSpace::SetActiveType(meHeightTerrainNavSpaceType *type){
 }
 
 void meHeightTerrainNavSpace::NotifyTypeCountChanged(){
-	if(! pHTSector){
+	if(!pHTSector){
 		return;
 	}
 	
@@ -590,7 +590,7 @@ void meHeightTerrainNavSpace::SetNavSpaceSaved(bool saved){
 }
 
 void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
-	if(! pEngNavSpace){
+	if(!pEngNavSpace){
 		return;
 	}
 	
@@ -645,14 +645,14 @@ void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
 }
 
 void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return; // this is a problem. we can not load the file without an environment
 	}
 	
 	meWorld &world = pHTSector->GetHeightTerrain()->GetWorld();
 	world.GetUndoSystem()->RemoveAll(); // sorry, no better way yet to keep this consistent... without using a complex undo action
 	
-	if(! pPathNavSpace.IsEmpty()){
+	if(!pPathNavSpace.IsEmpty()){
 		const decString baseDir(pHTSector->GetHeightTerrain()->GetBaseDirectory());
 		const decPath path(decPath::AbsolutePathUnix(pPathNavSpace, baseDir));
 		
@@ -690,7 +690,7 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 						}
 					}
 					
-					if(! type){
+					if(!type){
 						decString name("Type ");
 						name.AppendValue(navType);
 						
@@ -755,7 +755,7 @@ void meHeightTerrainNavSpace::pCleanUp(){
 
 
 void meHeightTerrainNavSpace::pRepositionDD(){
-	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
+	if(!pHTSector || !pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -812,7 +812,7 @@ void meHeightTerrainNavSpace::pUpdateDDTypeFaces(){
 }
 
 void meHeightTerrainNavSpace::pUpdateDDHeights(){
-	if(! pHTSector){
+	if(!pHTSector){
 		return;
 	}
 	

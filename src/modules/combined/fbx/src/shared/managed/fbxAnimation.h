@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Scene. */
-	inline fbxScene &GetScene() const{return pScene;}
+	inline fbxScene &GetScene() const{ return pScene; }
 	
 	
 	

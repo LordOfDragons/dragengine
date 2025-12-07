@@ -68,14 +68,14 @@ bool seLayerList::Has(seLayer *layer) const{
 }
 
 void seLayerList::Add(seLayer *layer){
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	pLayers.Add(layer);
 }
 
 void seLayerList::InsertAt(seLayer *layer, int index){
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	pLayers.Insert(layer, index);

@@ -50,7 +50,7 @@ pConstraints(NULL),
 pConstraintCount(0),
 pConstraintSize(0)
 {
-	if(! name[0]){
+	if(!name[0]){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -197,7 +197,7 @@ void deRigBone::AddConstraint(deRigConstraint *constraint){
 //////////////////////
 
 bool deRigBone::pHasConstraint(deRigConstraint *constraint) const{
-	if(! constraint){
+	if(!constraint){
 		DETHROW(deeInvalidParam);
 	}
 	

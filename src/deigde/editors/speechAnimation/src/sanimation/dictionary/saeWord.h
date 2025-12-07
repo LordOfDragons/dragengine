@@ -68,20 +68,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent speech animation. */
-	inline saeSAnimation *GetSAnimation() const{return pSAnimation;}
+	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	/** Sets the parent speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the phonetics. */
-	inline const decUnicodeString &GetPhonetics() const{return pPhonetics;}
+	inline const decUnicodeString &GetPhonetics() const{ return pPhonetics; }
 	/** Sets the phonetics. */
 	void SetPhonetics(const decUnicodeString &phonetics);
 	/** Determines if this is the active word. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	/** Sets if this is the active word. */
 	void SetActive(bool active);
 	/*@}*/

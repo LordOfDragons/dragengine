@@ -47,7 +47,7 @@ pTopic(NULL),
 pAction(NULL),
 pNewName(newName)
 {
-	if(! topic || ! action){
+	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
 	

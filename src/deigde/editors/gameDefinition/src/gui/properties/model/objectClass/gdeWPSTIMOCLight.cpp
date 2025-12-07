@@ -52,7 +52,7 @@ gdeWPSTIMOCLight::gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *object
 gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index),
 pLight(NULL)
 {
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,8 +86,8 @@ void gdeWPSTIMOCLight::Validate(){
 bool gdeWPSTIMOCLight::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if(! pLight->GetLightSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pLight->GetLightSkinPath()))){
+	if(!pLight->GetLightSkinPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pLight->GetLightSkinPath()))){
 		return false;
 	}
 	

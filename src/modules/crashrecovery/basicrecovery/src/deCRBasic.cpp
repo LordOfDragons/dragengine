@@ -127,7 +127,7 @@ bool deCRBasic::RecoverFromError(){
 	// show window
 	try{
 		app = new FXApp("Drag[en]gine Crash Recovery", "RPTD");
-		if(! app) DETHROW(deeOutOfMemory);
+		if(!app) DETHROW(deeOutOfMemory);
 		app->init(argc, args);
 		new decrbWindowMain(app, this);
 		app->create();

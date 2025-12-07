@@ -131,7 +131,7 @@ deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::AddOwner(deObject *ow
 }
 
 void deoglPersistentRenderTask::RemoveOwner(deoglPersistentRenderTaskOwner *owner){
-	if(! owner){
+	if(!owner){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -331,7 +331,7 @@ void deoglPersistentRenderTask::pAssignSPBInstances(deoglRenderThread &renderThr
 				while(iterInstance){
 					deoglPersistentRenderTaskInstance &instance = *((deoglPersistentRenderTaskInstance*)iterInstance->GetOwner());
 					
-					if(! paramBlock || firstIndex + instance.GetSubInstanceCount() > pSPBInstanceMaxEntries){
+					if(!paramBlock || firstIndex + instance.GetSubInstanceCount() > pSPBInstanceMaxEntries){
 						if(paramBlock){
 							const int ecount = componentsPerIndex * decMath::max(((firstIndex - 1) / 4) + 1, 1);
 							if(ecount > paramBlock->GetElementCount()){

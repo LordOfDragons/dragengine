@@ -127,7 +127,7 @@ void deVFSMemoryFiles::SearchFiles(const decPath &directory, deContainerFileSear
 	
 	for(i=0; i<countFiles; i++){
 		const decMemoryFile &memoryFile = *((decMemoryFile*)pFiles.GetAt(i));
-		if(! memoryFile.GetFilename().MatchesPattern(patternString)){
+		if(!memoryFile.GetFilename().MatchesPattern(patternString)){
 			continue;
 		}
 		
@@ -137,7 +137,7 @@ void deVFSMemoryFiles::SearchFiles(const decPath &directory, deContainerFileSear
 }
 
 deVFSContainer::eFileTypes deVFSMemoryFiles::GetFileType(const decPath &path){
-	if(! HasMemoryFileWith(path.GetPathUnix())){
+	if(!HasMemoryFileWith(path.GetPathUnix())){
 		DETHROW(deeFileNotFound);
 	}
 	
@@ -176,7 +176,7 @@ decMemoryFile *deVFSMemoryFiles::GetMemoryFileAt(int index) const{
 }
 
 int deVFSMemoryFiles::IndexOfMemoryFile(decMemoryFile *memoryFile) const{
-	if(! memoryFile){
+	if(!memoryFile){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -184,7 +184,7 @@ int deVFSMemoryFiles::IndexOfMemoryFile(decMemoryFile *memoryFile) const{
 }
 
 int deVFSMemoryFiles::IndexOfMemoryFileWith(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -201,7 +201,7 @@ int deVFSMemoryFiles::IndexOfMemoryFileWith(const char *path) const{
 }
 
 bool deVFSMemoryFiles::HasMemoryFile(decMemoryFile *memoryFile) const{
-	if(! memoryFile){
+	if(!memoryFile){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -209,7 +209,7 @@ bool deVFSMemoryFiles::HasMemoryFile(decMemoryFile *memoryFile) const{
 }
 
 bool deVFSMemoryFiles::HasMemoryFileWith(const char *path) const{
-	if(! path){
+	if(!path){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -226,7 +226,7 @@ bool deVFSMemoryFiles::HasMemoryFileWith(const char *path) const{
 }
 
 void deVFSMemoryFiles::AddMemoryFile(decMemoryFile *memoryFile){
-	if(! memoryFile || HasMemoryFileWith(memoryFile->GetFilename())){
+	if(!memoryFile || HasMemoryFileWith(memoryFile->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
 	

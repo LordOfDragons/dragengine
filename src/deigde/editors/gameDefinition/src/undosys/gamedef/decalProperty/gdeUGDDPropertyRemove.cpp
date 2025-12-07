@@ -44,10 +44,10 @@ gdeUGDDPropertyRemove::gdeUGDDPropertyRemove(gdeGameDefinition *gamedef, gdeProp
 pGameDefinition(NULL),
 pProperty(NULL)
 {
-	if(! gamedef || ! property){
+	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
 	}
-	if(! gamedef->GetDecalProperties().Has(property)){
+	if(!gamedef->GetDecalProperties().Has(property)){
 		DETHROW(deeInvalidParam);
 	}
 	

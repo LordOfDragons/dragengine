@@ -65,13 +65,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Speaker list. */
-	inline deoalSpeakerList &GetSpeakerList() const{return pSpeakerList;}
+	inline deoalSpeakerList &GetSpeakerList() const{ return pSpeakerList; }
 	
 	
 	

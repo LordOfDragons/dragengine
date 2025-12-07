@@ -44,7 +44,7 @@ seUMoveControllerDown::seUMoveControllerDown(seSynthesizer *synthesizer, seContr
 pSynthesizer(NULL),
 pController(NULL)
 {
-	if(! synthesizer || ! controller){
+	if(!synthesizer || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	

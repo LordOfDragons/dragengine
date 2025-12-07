@@ -64,7 +64,7 @@ aeLink *aeLinkList::GetAt(int index) const{
 }
 
 aeLink *aeLinkList::GetNamed(const char *name) const{
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,14 +94,14 @@ bool aeLinkList::HasNamed(const char *name) const{
 }
 
 void aeLinkList::Add(aeLink *link){
-	if(! link || Has(link)){
+	if(!link || Has(link)){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Add(link);
 }
 
 void aeLinkList::Insert(aeLink *link, int index){
-	if(! link || Has(link)){
+	if(!link || Has(link)){
 		DETHROW(deeInvalidParam);
 	}
 	pLinks.Insert(link, index);

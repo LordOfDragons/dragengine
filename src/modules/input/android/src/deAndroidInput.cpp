@@ -760,7 +760,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 
 void deAndroidInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if(! renderWindow){
+	if(!renderWindow){
 		return;
 	}
 	

@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -70,8 +70,8 @@ public:
 	/** \brief Push input event which can be \em NULL. */
 	void PushInputEvent(dsRunTime *rt, const deInputEvent &event);
 	
-	inline dsClass *GetClassInputEventType() const{return pClsInputEventType;}
-	inline dsClass *GetClassInputEventSource() const{return pClsInputEventSource;}
+	inline dsClass *GetClassInputEventType() const{ return pClsInputEventType; }
+	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
 	/*@}*/
 	
 	

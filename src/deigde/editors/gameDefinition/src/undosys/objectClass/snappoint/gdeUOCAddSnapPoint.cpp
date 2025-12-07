@@ -45,7 +45,7 @@ gdeUOCAddSnapPoint::gdeUOCAddSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoi
 pObjectClass(NULL),
 pSnapPoint(NULL)
 {
-	if(! objectClass || ! snapPoint){
+	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
 	}
 	

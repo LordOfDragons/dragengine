@@ -46,8 +46,8 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	void InitStatics(dsRunTime *RT);
-	inline deEngine *GetGameEngine() const{return pGameEngine;}
-	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	const decColor &GetColor(dsRealObject *This) const;
 	void PushColor(dsRunTime *RT, const decColor &color);
 	void AddColorConstant(dsRunTime *RT, const char *name, const decColor &color);

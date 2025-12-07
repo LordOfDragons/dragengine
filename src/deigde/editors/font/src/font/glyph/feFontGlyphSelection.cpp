@@ -42,7 +42,7 @@
 ////////////////////////////
 
 feFontGlyphSelection::feFontGlyphSelection(feFont *parentFont){
-	if(! parentFont) DETHROW(deeInvalidParam);
+	if(!parentFont) DETHROW(deeInvalidParam);
 	
 	pParentFont = parentFont;
 	pActive = NULL;
@@ -74,22 +74,22 @@ int feFontGlyphSelection::IndexOfGlyph(feFontGlyph *glyph) const{
 }
 
 void feFontGlyphSelection::AddGlyphToSelection(feFontGlyph *glyph){
-	if(! glyph) DETHROW(deeInvalidParam);
+	if(!glyph) DETHROW(deeInvalidParam);
 	
-	if(! IsGlypthSelected(glyph)){
+	if(!IsGlypthSelected(glyph)){
 		pSelected.AddGlyph(glyph);
 		glyph->SetSelected(true);
 	}
 	
 	pParentFont->NotifyGlyphSelectionChanged();
 	
-	if(! pActive){
+	if(!pActive){
 		SetActiveGlyph(glyph);
 	}
 }
 
 void feFontGlyphSelection::RemoveGlyphFromSelection(feFontGlyph *glyph){
-	if(! glyph) DETHROW(deeInvalidParam);
+	if(!glyph) DETHROW(deeInvalidParam);
 	
 	int index = pSelected.IndexOfGlyph(glyph);
 	

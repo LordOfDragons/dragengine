@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int index){
-	if(! topic || ! playerChoice || ! option){
+	if(!topic || !playerChoice || !option){
 		DETHROW(deeInvalidParam);
 	}
 	if(index < 0 || index > playerChoice->GetOptions().GetCount()){

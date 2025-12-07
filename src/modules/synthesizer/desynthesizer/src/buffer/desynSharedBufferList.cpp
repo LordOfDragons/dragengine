@@ -67,7 +67,7 @@ desynSharedBuffer *desynSharedBufferList::ClaimBuffer(int size){
 	
 	for(i=0; i<count; i++){
 		buffer = (desynSharedBuffer*)pBuffers.GetAt(i);
-		if(! buffer->GetInUse()){
+		if(!buffer->GetInUse()){
 			if(size > buffer->GetSize()){
 				buffer->SetSize(size);
 			}
@@ -93,7 +93,7 @@ desynSharedBuffer *desynSharedBufferList::ClaimBuffer(int size){
 }
 
 void desynSharedBufferList::ReleaseBuffer(desynSharedBuffer *buffer){
-	if(! buffer){
+	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
 	

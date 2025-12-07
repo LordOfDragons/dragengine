@@ -81,19 +81,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent VAO. */
-	inline deoglPersistentRenderTaskVAO *GetParentVAO() const{return pParentVAO;}
+	inline deoglPersistentRenderTaskVAO *GetParentVAO() const{ return pParentVAO; }
 	
 	/** Set parent VAO. */
 	void SetParentVAO(deoglPersistentRenderTaskVAO *vao);
 	
 	/** Shader parameter block or \em NULL. */
-	inline const deoglShaderParameterBlock *GetParameterBlock() const{return pParamBlock;}
+	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or \em NULL. */
 	void SetParameterBlock(const deoglShaderParameterBlock *block);
 	
 	/** Special shader parameter block or \em NULL. */
-	inline const deoglShaderParameterBlock *GetParameterBlockSpecial() const{return pParamBlockSpecial;}
+	inline const deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
 	
 	/** Set special shader parameter block or \em NULL. */
 	void SetParameterBlockSpecial(const deoglShaderParameterBlock *block);
@@ -101,37 +101,37 @@ public:
 	
 	
 	/** Index of first point in VAO. */
-	inline int GetFirstPoint() const{return pFirstPoint;}
+	inline int GetFirstPoint() const{ return pFirstPoint; }
 	
 	/** Set index of first point in VAO. */
 	void SetFirstPoint(int firstPoint);
 	
 	/** Number of points to render. */
-	inline int GetPointCount() const{return pPointCount;}
+	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** Set number of points to render. */
 	void SetPointCount(int pointCount);
 	
 	/** First index in VAO index buffer. */
-	inline int GetFirstIndex() const{return pFirstIndex;}
+	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
 	/** Set first index in VAO index buffer. */
 	void SetFirstIndex(int firstIndex);
 	
 	/** Number of indices in VAO index buffer. */
-	inline int GetIndexCount() const{return pIndexCount;}
+	inline int GetIndexCount() const{ return pIndexCount; }
 	
 	/** Set number of indices in VAO index buffer. */
 	void SetIndexCount(int indexCount);
 	
 	/** Primitive type. */
-	inline GLenum GetPrimitiveType() const{return pPrimitiveType;}
+	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }
 	
 	/** Set primitive type. */
 	void SetPrimitiveType(GLenum primitiveType);
 	
 	/** Patch verted count. */
-	inline int GetTessPatchVertexCount() const{return pTessPatchVertexCount;}
+	inline int GetTessPatchVertexCount() const{ return pTessPatchVertexCount; }
 	
 	/** Set patch verted count. */
 	void SetTessPatchVertexCount(int count);
@@ -154,19 +154,19 @@ public:
 	void RemoveAllSubInstances();
 	
 	/** Sub instances SPB or NULL. */
-	inline deoglSharedSPB *GetSubInstanceSPB() const{return pSubInstanceSPB;}
+	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
 	
 	/** Sub instances SPB Group or NULL. */
-	inline const deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{return pSubInstanceSPBGroup;}
+	inline const deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBGroup; }
 	
 	/** Set Sub instances SPB and group. */
 	void SetSubInstanceSPB(deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group);
 	
 	/** Sub instance index SPB. */
-	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{return pSIIndexInstanceSPB;}
+	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }
 	
 	/** Index of first sub instance index for instance shared SPB. */
-	inline int GetSIIndexInstanceFirst() const{return pSIIndexInstanceFirst;}
+	inline int GetSIIndexInstanceFirst() const{ return pSIIndexInstanceFirst; }
 	
 	/** Set sub instance SPB information for later update. */
 	void SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock, int firstIndex);
@@ -188,8 +188,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLVAO(){return pLLVAO;}
-	inline const decPointerLinkedList::cListEntry &GetLLVAO() const{return pLLVAO;}
+	inline decPointerLinkedList::cListEntry &GetLLVAO(){ return pLLVAO; }
+	inline const decPointerLinkedList::cListEntry &GetLLVAO() const{ return pLLVAO; }
 	/*@}*/
 };
 

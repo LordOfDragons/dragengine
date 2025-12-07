@@ -71,7 +71,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAWait * const action = pPanel.GetAction();
-		if(! topic || ! action){
+		if(!topic || !action){
 			return;
 		}
 		

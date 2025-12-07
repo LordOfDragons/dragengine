@@ -71,7 +71,7 @@ public:
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAMusic * const action = pPanel.GetAction();
-		if(! topic || ! action || textField->GetText() == action->GetName()){
+		if(!topic || !action || textField->GetText() == action->GetName()){
 			return;
 		}
 		

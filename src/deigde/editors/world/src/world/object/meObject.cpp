@@ -174,7 +174,7 @@ pActiveAttachBehavior(-1),
 pColliderOwner(this),
 pWOAsyncFinished(*this)
 {
-	if(! environment){
+	if(!environment){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -482,13 +482,13 @@ void meObject::OnGameDefinitionChanged(){
 void meObject::OnActiveCameraChanged(){
 	const meCamera * const camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : nullptr;
 	pWObject->SetCamera(camera ? camera->GetEngineCamera() : nullptr);
-	SetVisible(! camera || camera != pCamera);
+	SetVisible(!camera || camera != pCamera);
 }
 
 
 
 void meObject::SetClassName(const char *className){
-	if(! className){
+	if(!className){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -770,7 +770,7 @@ decDMatrix meObject::GetInverseObjectMatrix(){
 
 
 void meObject::DecrementIDGroupIDUsage(){
-	if(! pClassDef){
+	if(!pClassDef){
 		return;
 	}
 	
@@ -782,7 +782,7 @@ void meObject::DecrementIDGroupIDUsage(){
 		const meMapIDGroup &map = *((meMapIDGroup*)pMapIDGroup.GetAt(i));
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
 		
-		if(! pProperties.Has(name)){
+		if(!pProperties.Has(name)){
 			continue;
 		}
 		
@@ -809,7 +809,7 @@ void meObject::DecrementIDGroupIDUsage(){
 			const decStringDictionary properties = texture.GetProperties();
 			const decString *value;
 			
-			if(! properties.GetAt(name, &value)){
+			if(!properties.GetAt(name, &value)){
 				continue;
 			}
 			
@@ -827,7 +827,7 @@ void meObject::DecrementIDGroupIDUsage(){
 }
 
 void meObject::IncrementIDGroupIDUsage(){
-	if(! pClassDef){
+	if(!pClassDef){
 		return;
 	}
 	
@@ -840,7 +840,7 @@ void meObject::IncrementIDGroupIDUsage(){
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
 		const decString *value = nullptr;
 		
-		if(! pProperties.GetAt(name, &value)){
+		if(!pProperties.GetAt(name, &value)){
 			continue;
 		}
 		
@@ -866,7 +866,7 @@ void meObject::IncrementIDGroupIDUsage(){
 			const decStringDictionary properties = texture.GetProperties();
 			const decString *value;
 			
-			if(! properties.GetAt(name, &value)){
+			if(!properties.GetAt(name, &value)){
 				continue;
 			}
 			
@@ -951,7 +951,7 @@ void meObject::WOAsyncFinished(){
 		cWOSOLightVisitor() : range(0.0f){}
 		
 		virtual void VisitLight(igdeWOSOLight &light){
-			if(! light.GetLight()){
+			if(!light.GetLight()){
 				return;
 			}
 			// pGetCutOffDistFor( pLight->GetHalfIntensityDistance(), pLight->GetRange(), 0.01f );
@@ -1001,7 +1001,7 @@ meObjectLink *meObject::GetLinkAt(int index) const{
 }
 
 meObjectLink *meObject::GetLinkTo(meObject *target) const{
-	if(! target){
+	if(!target){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1063,7 +1063,7 @@ void meObject::RemoveAllLinks(){
 }
 
 bool meObject::CanLinkTo(meObject *object) const{
-	if(! object){
+	if(!object){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1092,7 +1092,7 @@ void meObject::CheckLinks(){
 	int i;
 	
 	// if we are not active or there is no game definition class remove all links
-	if(! pActive || ! pClassDef){
+	if(!pActive || !pClassDef){
 		for(i=0; i<pLinks.GetCount(); i++){
 			meObjectLink * const link = (meObjectLink*)pLinks.GetAt(i);
 			meObject *object = nullptr;
@@ -1114,7 +1114,7 @@ void meObject::CheckLinks(){
 	}
 	
 	// look for links with other objects. currently we look only in the current world.
-	if(! pWorld){
+	if(!pWorld){
 		return;
 	}
 	
@@ -1133,7 +1133,7 @@ void meObject::CheckLinks(){
 			meObjectLink *link = GetLinkTo(object);
 			
 			if(link){
-				if(! object->HasLink(link)){
+				if(!object->HasLink(link)){
 					object->AddLink(link);
 				}
 				
@@ -1141,7 +1141,7 @@ void meObject::CheckLinks(){
 				link = object->GetLinkTo(this);
 				
 				if(link){
-					if(! HasLink(link)){
+					if(!HasLink(link)){
 						AddLink(link);
 					}
 					
@@ -1155,7 +1155,7 @@ void meObject::CheckLinks(){
 						}else{
 							link = new meObjectLink(pEnvironment, object, this);
 						}
-						if(! link){
+						if(!link){
 							DETHROW(deeOutOfMemory);
 						}
 						
@@ -1218,7 +1218,7 @@ meObjectTexture *meObject::GetTextureNamed(const char *name) const{
 }
 
 bool meObject::HasTextureNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pTextureCount; i++){
@@ -1231,7 +1231,7 @@ bool meObject::HasTextureNamed(const char *name) const{
 }
 
 int meObject::IndexOfTexture(meObjectTexture *texture) const{
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pTextureCount; i++){
@@ -1242,7 +1242,7 @@ int meObject::IndexOfTexture(meObjectTexture *texture) const{
 }
 
 int meObject::IndexOfTextureNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pTextureCount; i++){
@@ -1255,7 +1255,7 @@ int meObject::IndexOfTextureNamed(const char *name) const{
 }
 
 bool meObject::HasTexture(meObjectTexture *texture) const{
-	if(! texture) DETHROW(deeInvalidParam);
+	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pTextureCount; i++){
@@ -1266,12 +1266,12 @@ bool meObject::HasTexture(meObjectTexture *texture) const{
 }
 
 void meObject::AddTexture(meObjectTexture *texture){
-	if(! texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
+	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	if(pTextureCount == pTextureSize){
 		int newSize = pTextureCount * 3 / 2 + 1;
 		meObjectTexture **newArray = new meObjectTexture*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTextures){
 			memcpy(newArray, pTextures, sizeof(meObjectTexture*) * pTextureSize);
 			delete [] pTextures;
@@ -1355,7 +1355,7 @@ void meObject::SetActiveTexture(meObjectTexture *texture){
 
 void meObject::UpdateComponentTextures(){
 	deComponent * const component = pWObject->GetComponent();
-	if(! component || ! component->GetModel()){
+	if(!component || !component->GetModel()){
 		return;
 	}
 	
@@ -1402,7 +1402,7 @@ void meObject::UpdateComponentTextures(){
 			useDynamicSkin = texture->GetDynamicSkin();
 		}
 		
-		if(! useSkin && pShowMissingTextures && (! engSkin || engSkin->IndexOfTextureNamed(textureName) == -1)){
+		if(!useSkin && pShowMissingTextures && (!engSkin || engSkin->IndexOfTextureNamed(textureName) == -1)){
 			useSkin = defaultSkin;
 			useTexture = defaultTexture;
 		}
@@ -1410,7 +1410,7 @@ void meObject::UpdateComponentTextures(){
 		if(useSkin != componentTexture.GetSkin()
 		|| useTexture != componentTexture.GetTexture()
 		|| useDynamicSkin != componentTexture.GetDynamicSkin()
-		|| ! texCoordTransform.IsEqualTo(componentTexture.GetTransform())){
+		|| !texCoordTransform.IsEqualTo(componentTexture.GetTransform())){
 			componentTexture.SetSkin(useSkin);
 			componentTexture.SetTexture(useTexture);
 			componentTexture.SetTransform(texCoordTransform);
@@ -1425,13 +1425,13 @@ bool meObject::IsComponentBroken() const{
 #if 0
 	// if the component is missing it is broken
 	const deComponent * const component = pWObject->GetComponent();
-	if(! component){
+	if(!component){
 		return false;
 	}
 	
 	// if the model is missing the component is broken
 	const deModel * const engModel = component->GetModel();
-	if(! engModel){
+	if(!engModel){
 		return false;
 	}
 	
@@ -1574,7 +1574,7 @@ void meObject::SetProperties(const decStringDictionary &properties){
 }
 
 void meObject::RemoveProperty(const char *key){
-	if(! pProperties.Has(key)){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	
@@ -1657,7 +1657,7 @@ void meObject::SetActiveProperty(const char *property){
 
 
 bool meObject::IsPropertyShape(const char *property) const{
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1670,7 +1670,7 @@ bool meObject::IsPropertyShape(const char *property) const{
 }
 
 bool meObject::IsPropertyShapeList(const char *property) const{
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1683,7 +1683,7 @@ bool meObject::IsPropertyShapeList(const char *property) const{
 }
 
 bool meObject::IsPropertyShapeOrShapeList(const char *property) const{
-	if(! property){
+	if(!property){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -1773,7 +1773,7 @@ void meObject::AddDecal(meDecal *decal){
 	if(pDecalCount == pDecalSize){
 		int newSize = pDecalCount * 3 / 2 + 1;
 		meDecal **newArray = new meDecal*[newSize];
-		if(! newArray) DETHROW(deeOutOfMemory);
+		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pDecals){
 			memcpy(newArray, pDecals, sizeof(meDecal*) * pDecalSize);
 			delete [] pDecals;
@@ -1966,7 +1966,7 @@ void meObject::pUpdateDDSColors(){
 }
 
 void meObject::pUpdateDDSNavSpaces(){
-	if(! pWObject){
+	if(!pWObject){
 		pDDSListNavSpaces.RemoveAll();
 		return;
 	}
@@ -1991,7 +1991,7 @@ void meObject::pUpdateDDSNavSpaces(){
 		}
 		
 		virtual void VisitNavigationSpace(igdeWOSONavigationSpace &navigationSpace){
-			if(! navigationSpace.GetNavigationSpace()){
+			if(!navigationSpace.GetNavigationSpace()){
 				return;
 			}
 			
@@ -2185,7 +2185,7 @@ void meObject::pUpdateShapeLight(){
 		}
 		
 		virtual void VisitLight(igdeWOSOLight &wosoLight){
-			if(! wosoLight.GetLight()){
+			if(!wosoLight.GetLight()){
 				return;
 			}
 			
@@ -2290,7 +2290,7 @@ void meObject::pUpdateComponent(){
 void meObject::pUpdateBrokenComponent(){
 	// if the component is broken show a broken component replacement
 	if(IsComponentBroken()){
-		if(! pEngComponentBroken){
+		if(!pEngComponentBroken){
 			const igdeGameDefinition &gamedef = *pEnvironment->GetGameProject()->GetGameDefinition();
 			pEngComponentBroken = pEnvironment->GetEngineController()->GetEngine()->
 				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin());
@@ -2305,12 +2305,12 @@ void meObject::pUpdateBrokenComponent(){
 		bool componentVisible = pWObject->GetVisible();
 		const igdeGDCComponent * const gdccomponent = meHelpers::FindFirstComponent(pWObject->GetGDClass());
 		if(gdccomponent && gdccomponent->GetPartialHide()){
-			componentVisible = ! pWObject->GetPartiallyHidden();
+			componentVisible = !pWObject->GetPartiallyHidden();
 		}
 		pEngComponentBroken->SetVisible(componentVisible);
 		
 	}else{
-		if(! pEngComponentBroken){
+		if(!pEngComponentBroken){
 			return;
 		}
 		
@@ -2481,7 +2481,7 @@ void meObject::pRemoveAllSnapPoints(){
 }
 
 void meObject::pCreateSnapPoints(){
-	if(! pClassDef){
+	if(!pClassDef){
 		return;
 	}
 	
@@ -2596,7 +2596,7 @@ void meObject::pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &p
 		igdeGDProperty &gdProperty = *gdProperties.GetAt(i);
 		
 		if(gdProperty.GetType() != igdeGDProperty::eptIdentifier
-		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage()){
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || !gdProperty.GetIdentifierUsage()){
 			continue;
 		}
 		
@@ -2614,7 +2614,7 @@ void meObject::pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &p
 		igdeGDProperty &gdProperty = *gdTexProperties.GetAt(i);
 		
 		if(gdProperty.GetType() != igdeGDProperty::eptIdentifier
-		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage()){
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || !gdProperty.GetIdentifierUsage()){
 			continue;
 		}
 		

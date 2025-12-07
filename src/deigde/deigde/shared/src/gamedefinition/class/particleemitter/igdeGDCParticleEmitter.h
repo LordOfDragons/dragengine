@@ -87,31 +87,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path of the particle emitter to use. */
-	inline const decString &GetPath() const{return pPath;}
+	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path of the particle emitter to use. */
 	void SetPath(const char *path);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{return pOrientation;}
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
-	inline const decString &GetBoneName() const{return pBoneName;}
+	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
 	void SetBoneName(const char *boneName);
 	
 	/** \brief Casting. */
-	inline bool GetCasting() const{return pCasting;}
+	inline bool GetCasting() const{ return pCasting; }
 	
 	/** \brief Set if casting. */
 	void SetCasting(bool casting);

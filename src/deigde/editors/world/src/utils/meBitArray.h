@@ -55,9 +55,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of colons. */
-	inline int GetColons() const{return pColons;}
+	inline int GetColons() const{ return pColons; }
 	/** Retrieves the number of rows. */
-	inline int GetRows() const{return pRows;}
+	inline int GetRows() const{ return pRows; }
 	/** Retrieves the boolean value at the given location. */
 	bool GetValueAt(int x, int y) const;
 	/** Sets the boolean value at the given location. */

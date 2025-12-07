@@ -65,19 +65,19 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Identifier. */
-	inline const decString &GetID() const{return pID;}
+	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
 	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{return pName;}
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{return pPressed;}
+	inline bool GetPressed() const{ return pPressed; }
 	
 	/** \brief Set if button is presssed. */
 	void SetPressed(bool pressed);
@@ -85,25 +85,25 @@ public:
 	
 	
 	/** \brief Android specific code. */
-	inline int GetAICode() const{return pAICode;}
+	inline int GetAICode() const{ return pAICode; }
 	
 	/** \brief Set Android specific code. */
 	void SetAICode(int code);
 	
 	/** \brief Android specific character. */
-	inline int GetAIChar() const{return pAIChar;}
+	inline int GetAIChar() const{ return pAIChar; }
 	
 	/** \brief Set Android specific character. */
 	void SetAIChar(int character);
 	
 	/** \brief Input event key code. */
-	inline deInputEvent::eKeyCodes GetKeyCode() const{return pKeyCode;}
+	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
 	/** \brief Set input event key code. */
 	void SetKeyCode(deInputEvent::eKeyCodes keyCode);
 	
 	/** \brief Match priority. */
-	inline int GetMatchPriority() const{return pMatchPriority;}
+	inline int GetMatchPriority() const{ return pMatchPriority; }
 	
 	/** \brief Set match priority. */
 	void SetMatchPriority(int priority);

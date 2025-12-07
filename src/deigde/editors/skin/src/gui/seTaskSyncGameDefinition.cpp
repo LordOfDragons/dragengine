@@ -60,7 +60,7 @@ seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
 ///////////////
 
 bool seTaskSyncGameDefinition::Step(){
-	if(! pWindowMain.GetSkin()){
+	if(!pWindowMain.GetSkin()){
 		return false;
 	}
 	

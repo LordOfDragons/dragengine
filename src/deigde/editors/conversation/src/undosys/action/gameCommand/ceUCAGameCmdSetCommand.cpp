@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand){
-	if(! topic || ! newCommand){
+	if(!topic || !newCommand){
 		DETHROW(deeInvalidParam);
 	}
 	

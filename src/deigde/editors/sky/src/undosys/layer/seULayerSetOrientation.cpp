@@ -43,7 +43,7 @@ seULayerSetOrientation::seULayerSetOrientation(seLayer *layer, const decVector &
 pLayer(NULL),
 pNewOrientation(newOrientation)
 {
-	if(! layer){
+	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -75,7 +75,7 @@ int deoglRSkyControllerTarget::GetLinkAt(int index) const{
 }
 
 float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, float defaultValue) const{
-	if(! instance.GetRSky()){
+	if(!instance.GetRSky()){
 		return defaultValue;
 	}
 	

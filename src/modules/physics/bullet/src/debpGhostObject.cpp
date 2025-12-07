@@ -104,7 +104,7 @@ void debpGhostObject::SetShape(debpBulletShape *shape){
 
 
 void debpGhostObject::SetPosition(const decDVector &position){
-	if(! pPosition.IsEqualTo(position)){
+	if(!pPosition.IsEqualTo(position)){
 		pPosition = position;
 		pUpdateTransform();
 		pDirtyMatrix = true;
@@ -113,7 +113,7 @@ void debpGhostObject::SetPosition(const decDVector &position){
 }
 
 void debpGhostObject::SetOrientation(const decQuaternion &orientation){
-	if(! pOrientation.IsEqualTo(orientation)){
+	if(!pOrientation.IsEqualTo(orientation)){
 		pOrientation = orientation;
 		pUpdateTransform();
 		pDirtyMatrix = true;
@@ -166,7 +166,7 @@ void debpGhostObject::pCleanUp(){
 }
 
 void debpGhostObject::pCreateGhostObject(){
-	if(! pGhostObject && pEnabled && pDynWorld && pShape){
+	if(!pGhostObject && pEnabled && pDynWorld && pShape){
 		SetDirtyAABB(true);
 		
 		pGhostObject = new btGhostObject;

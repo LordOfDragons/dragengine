@@ -79,17 +79,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOpenGL(){return pOgl;}
-	inline const deGraphicOpenGl &GetOpenGL() const{return pOgl;}
+	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
+	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Video player. */
-	inline const deVideoPlayer &GetVideoPlayer() const{return pVideoPlayer;}
+	inline const deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Current frame. */
-	inline int GetCurrentFrame() const{return pCurFrame;}
+	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	/** Render video player or \em NULL if not existing. */
-	inline deoglRVideoPlayer *GetRVideoPlayer() const{return pRVideoPlayer;}
+	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
 	/** Set current frame. */
 	void SetCurrentFrame(int frame);
@@ -105,12 +105,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){return pNotifyRenderables;}
-	inline const decPointerSet &GetNotifyRenderables() const{return pNotifyRenderables;}
+	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
+	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){return pNotifyCanvas;}
-	inline const decPointerSet &GetNotifyCanvas() const{return pNotifyCanvas;}
+	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
 	
 	

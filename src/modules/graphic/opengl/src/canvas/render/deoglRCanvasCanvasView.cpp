@@ -104,7 +104,7 @@ void deoglRCanvasCanvasView::PrepareForRenderRender(const deoglRenderPlanMasked 
 }
 
 void deoglRCanvasCanvasView::Render(const deoglRenderCanvasContext &context){
-	if(! pCanvasView){
+	if(!pCanvasView){
 		return;
 	}
 	

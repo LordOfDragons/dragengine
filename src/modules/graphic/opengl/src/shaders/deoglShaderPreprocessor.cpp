@@ -149,7 +149,7 @@ const decObjectList &locations, int line) const{
 ////////////
 
 void deoglShaderPreprocessor::SourcesAppend(const char *text, bool mapLines){
-	if(! text){
+	if(!text){
 		DETHROW(deeInvalidParam);
 	}
 	SourcesAppend(text, (int)strlen(text), mapLines);
@@ -164,7 +164,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 		return; // for exampe due to #if/#endif hiding code
 	}
 	
-	if(! text || length < 0){
+	if(!text || length < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -179,7 +179,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 	if(pSourcesLen + length > pSourcesSize){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
 		char * const newSources = (char*)realloc(pSources, newSize + 1);
-		if(! newSources){
+		if(!newSources){
 			DETHROW(deeOutOfMemory);
 		}
 		pSources = newSources;
@@ -244,7 +244,7 @@ void deoglShaderPreprocessor::SourcesAppendProcessed(const char *sourceCode){
 
 void deoglShaderPreprocessor::SourcesAppendProcessed(const char *sourceCode,
 const char *inputFile, bool resetState){
-	if(! sourceCode){
+	if(!sourceCode){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -301,7 +301,7 @@ deoglShaderPreprocessorSymbol *deoglShaderPreprocessor::GetSymbolNamed(const cha
 }
 
 void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
-	if(! symbol){
+	if(!symbol){
 		DETHROW(deeInvalidParam);
 	}
 	pSymbolTable.SetAt(symbol->GetName(), symbol);
@@ -342,7 +342,7 @@ bool deoglShaderPreprocessor::HasAnySymbolNamed(const char *name) const{
 }
 
 void deoglShaderPreprocessor::ClearSymbol(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	pSymbolTable.RemoveIfPresent(name);
@@ -390,7 +390,7 @@ void deoglShaderPreprocessor::pProcessSources(){
 				(int)(pInputNext - beginLine), emptyLine);
 		}
 		if(*pInputNext == '/' && pInputNext[1] == '/'){
-			if(pInputNext != beginLine && ! emptyLine){
+			if(pInputNext != beginLine && !emptyLine){
 				SourcesAppend(beginLine, (int)(pInputNext - beginLine), true);
 				pProcessSingleLineComment();
 				SourcesAppend("\n", 1, false);
@@ -435,7 +435,7 @@ void deoglShaderPreprocessor::pProcessSources(){
 					" newline at %d (output %d)(begin %d)(empty %d)",
 					pInputLine, pOutputCode, (int)(pInputNext - beginLine), emptyLine);
 			}
-			if(pInputNext != beginLine && ! emptyLine){
+			if(pInputNext != beginLine && !emptyLine){
 				SourcesAppend(beginLine, (int)(pInputNext - beginLine) + 1, true);
 			}
 			pInputNext++;
@@ -583,7 +583,7 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 	
 	pExpectDirectiveToken(edtNewline, "include");
 	
-	if(! pOutputCode){
+	if(!pOutputCode){
 		return;
 	}
 	
@@ -668,7 +668,7 @@ void deoglShaderPreprocessor::pProcessDirectiveDefine(const char *beginLine){
 			pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor: #define:"
 				" symbol '%s' (output %d)", symbol.GetString(), pOutputCode);
 		}
-		if(! pOutputCode){
+		if(!pOutputCode){
 			return;
 		}
 		SetSymbol(symbol, "");
@@ -701,7 +701,7 @@ void deoglShaderPreprocessor::pProcessDirectiveDefine(const char *beginLine){
 				" symbol '%s' = '%s' (output %d)", symbol.GetString(), value.GetString(), pOutputCode);
 		}
 		
-		if(! pOutputCode){
+		if(!pOutputCode){
 			return;
 		}
 		
@@ -723,7 +723,7 @@ void deoglShaderPreprocessor::pProcessDirectiveUndefine(const char *beginLine){
 			" symbol '%s' (output %d)", symbol.GetString(), pOutputCode);
 	}
 	
-	if(! pOutputCode){
+	if(!pOutputCode){
 		return;
 	}
 	
@@ -754,7 +754,7 @@ void deoglShaderPreprocessor::pProcessDirectiveIfDef() {
 	
 	if(pOutputCode){
 		pOutputCode = HasAnySymbolNamed(symbol);
-		pOutputCodeCase = ! pOutputCode;
+		pOutputCodeCase = !pOutputCode;
 		
 	}else{
 		pOutputCode = false;
@@ -786,8 +786,8 @@ void deoglShaderPreprocessor::pProcessDirectiveIfNotDef() {
 	const bool oldOutputCodeCase = pOutputCodeCase;
 	
 	if(pOutputCode){
-		pOutputCode = ! HasAnySymbolNamed(symbol);
-		pOutputCodeCase = ! pOutputCode;
+		pOutputCode = !HasAnySymbolNamed(symbol);
+		pOutputCodeCase = !pOutputCode;
 		
 	}else{
 		pOutputCode = false;
@@ -817,7 +817,7 @@ void deoglShaderPreprocessor::pProcessDirectiveIf() {
 	
 	if(pOutputCode){
 		pOutputCode = result;
-		pOutputCodeCase = ! result;
+		pOutputCodeCase = !result;
 		
 	}else{
 		pOutputCode = false;
@@ -844,7 +844,7 @@ void deoglShaderPreprocessor::pProcessDirectiveElseIf() {
 	
 	if(pOutputCodeCase){
 		pOutputCode = result;
-		pOutputCodeCase = ! result;
+		pOutputCodeCase = !result;
 		
 	}else{
 		pOutputCode = false;
@@ -945,7 +945,7 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition(const char *directive, 
 						
 					case edtNotEquals:
 						pExpectDirectiveToken(token, edtNumber, directive);
-						updateResultValue = ! symbol || symbol->GetValue().ToInt() != pDirectiveTokenString(token).ToInt();
+						updateResultValue = !symbol || symbol->GetValue().ToInt() != pDirectiveTokenString(token).ToInt();
 						break;
 						
 					case edtLessThan:
@@ -1009,7 +1009,7 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition(const char *directive, 
 		case edtRightParanthesis:
 			switch(op){
 			case edtIdentifier:
-				if(! groupOpen){
+				if(!groupOpen){
 					pErrorInvalidToken(token, directive);
 					// never gets here since pErrorInvalidToken throws an exception
 				}
@@ -1071,7 +1071,7 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition(const char *directive, 
 			case edtLogicAnd:
 			case edtLogicOr:
 			case edtLogicNot:
-				negate = ! negate;
+				negate = !negate;
 				break;
 				
 			default:
@@ -1086,12 +1086,12 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition(const char *directive, 
 		}
 		
 		// update result
-		if(! updateResult){
+		if(!updateResult){
 			continue;
 		}
 		
 		if(updateNegate){
-			updateResultValue = ! updateResultValue;
+			updateResultValue = !updateResultValue;
 		}
 		
 		if(firstResult){
@@ -1392,11 +1392,11 @@ deoglShaderPreprocessor::eDirectiveTokens deoglShaderPreprocessor::pParseDirecti
 			}
 		}
 		
-		if(! token.begin){
+		if(!token.begin){
 			token.begin = pInputNext;
 			token.line = pInputLine;
 		}
-		if(! token.end){
+		if(!token.end){
 			token.end = pInputNext + 1;
 		}
 		token.length = (int)(token.end - token.begin);
@@ -1404,13 +1404,13 @@ deoglShaderPreprocessor::eDirectiveTokens deoglShaderPreprocessor::pParseDirecti
 		return edtInvalid;
 	}
 	
-	if(! token.begin){
+	if(!token.begin){
 		token.begin = vTokenEOS;
 		token.end = token.begin + 5;
 		token.length = 5;
 		token.line = pInputLine;
 		
-	}else if(! token.end){
+	}else if(!token.end){
 		token.end = pInputNext;
 		token.length = (int)(token.end - token.begin);
 	}
@@ -1519,13 +1519,13 @@ bool deoglShaderPreprocessor::pParseDirectiveAnything(sToken &token){
 		}
 	}
 	
-	if(! token.begin){
+	if(!token.begin){
 		token.begin = pInputNext;
 		token.end = pInputNext;
 		token.length = 0;
 		token.line = pInputLine;
 		
-	}else if(! token.end){
+	}else if(!token.end){
 		token.end = pInputNext;
 		token.length = (int)(token.end - token.begin);
 	}
@@ -1547,7 +1547,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken(const sToken &token, const char
 	/*
 	#ifdef OS_BEOS
 	// compiler bug protection
-	if(! token.begin){
+	if(!token.begin){
 		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #%s: Invalid token <COMPILER-BUG> at %s:%d",
 			directive, pInputFile != NULL ? pInputFile : "?", token.line);
 		DETHROW(deeInvalidParam);
@@ -1634,7 +1634,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 	if(pResolveBufferLen + length > pResolveBufferSize){
 		const int newSize = pResolveBufferLen + length + 1024;  // increment by steps of 1k
 		char * const newResolveBuffer = (char*)realloc(pResolveBuffer, newSize + 1);
-		if(! newResolveBuffer){
+		if(!newResolveBuffer){
 			DETHROW(deeOutOfMemory);
 		}
 		pResolveBuffer = newResolveBuffer;
@@ -1655,7 +1655,7 @@ void deoglShaderPreprocessor::pSetResolveSymbolName(const char *name, int length
 	if(pResolveSymbolNameLen + length > pResolveSymbolNameSize){
 		const int newSize = pResolveSymbolNameLen + length + 50;
 		char * const newName = (char*)realloc(pResolveSymbolName, newSize + 1);
-		if(! newName){
+		if(!newName){
 			DETHROW(deeOutOfMemory);
 		}
 		pResolveSymbolName = newName;

@@ -64,10 +64,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
+	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Index. */
-	inline int GetIndex() const{return pIndex;}
+	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
 	void SetIndex(int index);
@@ -76,10 +76,10 @@ public:
 	ceWPTTIMAIfElse *GetModelIfElse() const;
 	
 	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseCondition *GetChildCondition() const{return pCondition;}
+	inline ceWPTTIMAIfElseIfCaseCondition *GetChildCondition() const{ return pCondition; }
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseActions *GetChildActions() const{return pActions;}
+	inline ceWPTTIMAIfElseIfCaseActions *GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();

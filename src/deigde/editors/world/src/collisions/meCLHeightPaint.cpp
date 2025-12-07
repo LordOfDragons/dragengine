@@ -59,7 +59,7 @@
 ////////////////////////////
 
 meCLHeightPaint::meCLHeightPaint(meWorld *world){
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	
@@ -159,7 +159,7 @@ void meCLHeightPaint::Paint(float elapsed){
 		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old heights
-		if(! pOldHeights){
+		if(!pOldHeights){
 			pSessionSector = pPaintSector;
 			
 			pSessionGrid.x = (int)pPaintGrid.x;
@@ -221,7 +221,7 @@ void meCLHeightPaint::CollisionResponse(deCollider *owner, deCollisionInfo *info
 	if(info->IsHTSector()){
 		const float distance = info->GetDistance();
 		
-		if(! pHasHit || distance < pHitDistance){
+		if(!pHasHit || distance < pHitDistance){
 			pHasHit = true;
 			pHitPoint = pRayOrigin + pRayDirection * distance;
 			pHitDistance = distance;
@@ -559,7 +559,7 @@ void meCLHeightPaint::pFetch3x3(float *values, int sectorX, int sectorY, int x/*
 	sGrayscale32 *pixels;
 	
 	htsector = hterrain->GetSectorWith(decPoint(sectorX, sectorY));
-	if(! htsector) DETHROW(deeInvalidParam);
+	if(!htsector) DETHROW(deeInvalidParam);
 	
 	pixels = htsector->GetHeightImage()->GetDataGrayscale32();
 	
@@ -780,7 +780,7 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 		
 		try{
 			oldHeights = new float[newWidth * newHeight];
-			if(! oldHeights) DETHROW(deeOutOfMemory);
+			if(!oldHeights) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

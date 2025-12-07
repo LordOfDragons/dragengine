@@ -112,10 +112,10 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 		if(loadmod.GetType() != deModuleSystem::emtService){
 			continue;
 		}
-		if(! loadmod.IsLoaded()){
+		if(!loadmod.IsLoaded()){
 			continue;
 		}
-		if(! loadmod.GetModule()){
+		if(!loadmod.GetModule()){
 			continue;
 		}
 		
@@ -139,10 +139,10 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 		if(loadmod.GetType() != deModuleSystem::emtService){
 			continue;
 		}
-		if(! loadmod.IsLoaded()){
+		if(!loadmod.IsLoaded()){
 			continue;
 		}
-		if(! loadmod.GetModule()){
+		if(!loadmod.GetModule()){
 			continue;
 		}
 		
@@ -150,7 +150,7 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 		
 		deBaseServiceModule * const srvmod = (deBaseServiceModule*)loadmod.GetModule();
 		deBaseServiceService * const peer = srvmod->CreateService(service, name, data);
-		if(! peer){
+		if(!peer){
 			continue;
 		}
 		
@@ -210,7 +210,7 @@ void deServiceManager::SystemScriptingLoad(){
 	deService *service = (deService*)pServices.GetRoot();
 	
 	while(service){
-		if(! service->GetPeerScripting()){
+		if(!service->GetPeerScripting()){
 			GetScriptingSystem()->CreateService(service);
 		}
 		
@@ -237,7 +237,7 @@ void deServiceManager::RemoveResource(deResource *resource){
 //////////////////////
 
 void deServiceManager::pUpdateModuleList(){
-	if(! pDirtyModules){
+	if(!pDirtyModules){
 		return;
 	}
 	

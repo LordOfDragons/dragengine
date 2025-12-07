@@ -90,7 +90,7 @@ bool deDynamicSkin::HasRenderableNamed(const char *name) const{
 }
 
 int deDynamicSkin::IndexOfRenderable(deDSRenderable *renderable) const{
-	if(! renderable) DETHROW(deeInvalidParam);
+	if(!renderable) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pRenderableCount; i++){
@@ -103,7 +103,7 @@ int deDynamicSkin::IndexOfRenderable(deDSRenderable *renderable) const{
 }
 
 int deDynamicSkin::IndexOfRenderableNamed(const char *name) const{
-	if(! name) DETHROW(deeInvalidParam);
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
 	for(i=0; i<pRenderableCount; i++){
@@ -116,7 +116,7 @@ int deDynamicSkin::IndexOfRenderableNamed(const char *name) const{
 }
 
 void deDynamicSkin::AddRenderable(deDSRenderable *renderable){
-	if(! renderable || HasRenderableNamed(renderable->GetName())) DETHROW(deeInvalidParam);
+	if(!renderable || HasRenderableNamed(renderable->GetName())) DETHROW(deeInvalidParam);
 	
 	if(pRenderableCount == pRenderableSize){
 		int newSize = pRenderableSize * 3 / 2 + 1;

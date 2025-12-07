@@ -44,7 +44,7 @@ meUHTNavSpaceTypeRemove::meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType *ty
 pNavSpace(NULL),
 pType(NULL)
 {
-	if(! type || ! type->GetNavSpace()){
+	if(!type || !type->GetNavSpace()){
 		DETHROW(deeInvalidParam);
 	}
 	

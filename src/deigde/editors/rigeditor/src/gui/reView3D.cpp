@@ -84,14 +84,14 @@ public:
 	
 public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
-		if(! pView.GetRig() || pView.GetRig()->GetCamera()->GetAttachToBone()){
+		if(!pView.GetRig() || pView.GetRig()->GetCamera()->GetAttachToBone()){
 			return eiNone;
 		}
 		return igdeMouseCameraListener::ChooseInteraction();
 	}
 	
 	virtual void OnCameraChanged(){
-		if(! pView.GetRig()){
+		if(!pView.GetRig()){
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public:
 	cBaseInteraction(reView3D &view) : pView(view){}
 	
 	decVector ViewDirection() const{
-		if(! pView.GetRig()){
+		if(!pView.GetRig()){
 			return decVector(0.0f, 0.0f, 1.0f);
 		}
 		
@@ -127,12 +127,12 @@ public:
 	
 	void TestCollisionWith(deBaseScriptingCollider &listener, const decDVector &position,
 	const decVector &direction, decLayerMask &layerMask){
-		if(! pView.GetRig()){
+		if(!pView.GetRig()){
 			return;
 		}
 		
 		deBasePhysicsWorld * const phyWorld = pView.GetRig()->GetEngineWorld()->GetPeerPhysics();
-		if(! phyWorld){
+		if(!phyWorld){
 			return;
 		}
 		
@@ -164,7 +164,7 @@ public:
 	}
 	
 	virtual bool OnDragBegin(reRig &rig){
-		if(! rig.GetSimulationRunning()){
+		if(!rig.GetSimulationRunning()){
 			return false;
 		}
 		
@@ -210,7 +210,7 @@ public:
 		
 		TestCollisionWith(closestElement, position, rayDirection, layerMask);
 		
-		if(! closestElement.GetHasHit()){
+		if(!closestElement.GetHasHit()){
 			return false; // nothing to grab
 		}
 		
@@ -227,7 +227,7 @@ public:
 	}
 	
 	virtual void OnDragUpdate(){
-		if(! pConstraint){
+		if(!pConstraint){
 			return;
 		}
 		
@@ -350,7 +350,7 @@ public:
 	}
 	
 	virtual void OnDragUpdate(){
-		if(! pUndo || ! pView.GetRig()){
+		if(!pUndo || !pView.GetRig()){
 			return;
 		}
 		
@@ -393,11 +393,11 @@ public:
 	}
 	
 	virtual void OnDragFinish(bool cancelled){
-		if(! pUndo){
+		if(!pUndo){
 			return;
 		}
 		
-		if(cancelled || ! pView.GetRig()){
+		if(cancelled || !pView.GetRig()){
 			pUndo = NULL;
 			return;
 		}
@@ -544,7 +544,7 @@ public:
 			}
 		}
 		
-		if(! pUndo){
+		if(!pUndo){
 			return false;
 		}
 		
@@ -559,7 +559,7 @@ public:
 	}
 	
 	virtual void OnDragUpdate(){
-		if(! pUndo || ! pView.GetRig()){
+		if(!pUndo || !pView.GetRig()){
 			return;
 		}
 		
@@ -576,16 +576,16 @@ public:
 		// update undo object and redo the movement
 		reURotateShape &undo = (reURotateShape&)(igdeUndo&)pUndo;
 		undo.SetAngle(angle);
-		undo.SetModifyPosition(! GetControlNow());
+		undo.SetModifyPosition(!GetControlNow());
 		undo.ProgressiveRedo();
 	}
 	
 	virtual void OnDragFinish(bool cancelled){
-		if(! pUndo){
+		if(!pUndo){
 			return;
 		}
 		
-		if(cancelled || ! pView.GetRig()){
+		if(cancelled || !pView.GetRig()){
 			pUndo = NULL;
 			return;
 		}

@@ -86,14 +86,14 @@ gdeCategory *gdeCategoryList::GetWithPath(const char *path) const{
 	}
 	
 	gdeCategory *category = GetNamed(components.GetAt(0));
-	if(! category){
+	if(!category){
 		return NULL;
 	}
 	
 	int i;
 	for(i=1; i<count; i++){
 		category = category->GetCategories().GetNamed(components.GetAt(i));
-		if(! category){
+		if(!category){
 			return NULL;
 		}
 	}
@@ -136,7 +136,7 @@ bool gdeCategoryList::HasNamed(const char *name) const{
 }
 
 void gdeCategoryList::Add(gdeCategory *category){
-	if(! category || HasNamed(category->GetName())){
+	if(!category || HasNamed(category->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

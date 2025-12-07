@@ -65,13 +65,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline type. */
-	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{return pSkinPipelineType;}
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
 	/** Set pipeline type. */
 	void SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type);
 	
 	/** Pipeline modifier. */
-	inline int GetSkinPipelineModifier() const{return pSkinPipelineModifier;}
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
 	/** Set pipeline modifier. */
 	void SetSkinPipelineModifier(int modifier);

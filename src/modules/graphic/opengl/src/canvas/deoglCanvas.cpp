@@ -109,9 +109,9 @@ void deoglCanvas::SetDirtyMaskContent(){
 
 
 void deoglCanvas::SyncToRender(){
-	if(! pRCanvas){
+	if(!pRCanvas){
 		pRCanvas = CreateRCanvas();
-		if(! pRCanvas){
+		if(!pRCanvas){
 			DETHROW(deeInvalidParam);
 		}
 		

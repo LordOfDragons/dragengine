@@ -61,14 +61,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the load save speech animation. */
-	inline saeLoadSaveSAnimation *GetLSSAnim(){return pLSSAnim;}
+	inline saeLoadSaveSAnimation *GetLSSAnim(){ return pLSSAnim; }
 	
 	/** Loads the speech animation from file. */
 	saeSAnimation *LoadSAnimation(const char *filename);
 	/** Saves the speech animation to file. */
 	void SaveSAnimation(saeSAnimation *sanimation, const char *filename);
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList *GetFilePatternList() const{return &pFilePatternList;}
+	inline const igdeFilePatternList *GetFilePatternList() const{ return &pFilePatternList; }
 	/*@}*/
 	
 private:

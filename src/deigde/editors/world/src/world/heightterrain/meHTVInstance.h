@@ -58,22 +58,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation layer index. */
-	inline short GetVLayer() const{return pVLayer;}
+	inline short GetVLayer() const{ return pVLayer; }
 	/** Retrieves the vegetation variation index. */
-	inline short GetVariation() const{return pVariation;}
+	inline short GetVariation() const{ return pVariation; }
 	/** Sets the vegetation layer and variation index. */
 	void SetVLayer(int vlayer, int variation);
 	
 	/** Retrieves the position. */
-	inline const decVector &GetPosition() const{return pPosition;}
+	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
 	void SetPosition(const decVector &position);
 	/** Retrieves the rotation. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	/** Sets the rotation. */
 	void SetRotation(const decVector &rotation);
 	/** Retrieves the scaling. */
-	inline float GetScaling() const{return pScaling;}
+	inline float GetScaling() const{ return pScaling; }
 	/** Sets the scaling. */
 	void SetScaling(float scaling);
 	/** Sets all parameters at once. */

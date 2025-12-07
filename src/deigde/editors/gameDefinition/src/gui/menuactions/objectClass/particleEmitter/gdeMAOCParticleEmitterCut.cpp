@@ -67,7 +67,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
-	if(! particleEmitter){
+	if(!particleEmitter){
 		return NULL;
 	}
 	

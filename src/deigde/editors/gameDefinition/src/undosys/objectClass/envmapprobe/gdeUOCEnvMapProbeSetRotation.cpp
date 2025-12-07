@@ -45,7 +45,7 @@ gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
 pObjectClass(NULL),
 pEnvMapProbe(NULL)
 {
-	if(! objectClass || ! envMapProbe){
+	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	

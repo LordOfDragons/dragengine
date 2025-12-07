@@ -70,7 +70,7 @@ void deClassEasyXMLElement::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.element = NULL;
 	
 	// create xml element
-	if(! rt->GetValue(0)->GetRealObject()){
+	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -310,7 +310,7 @@ void deClassEasyXMLElement::nfGetAttributeNamed::RunFunction(dsRunTime *rt, dsVa
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -341,7 +341,7 @@ void deClassEasyXMLElement::nfGetAttributeIntNamed::RunFunction(dsRunTime *rt, d
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -372,7 +372,7 @@ void deClassEasyXMLElement::nfGetAttributeFloatNamed::RunFunction(dsRunTime *rt,
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -403,7 +403,7 @@ void deClassEasyXMLElement::nfGetAttributeBoolNamed::RunFunction(dsRunTime *rt, 
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -436,7 +436,7 @@ void deClassEasyXMLElement::nfHasAttributeNamed::RunFunction(dsRunTime *rt, dsVa
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -469,7 +469,7 @@ void deClassEasyXMLElement::nfSetAttributeString::RunFunction(dsRunTime *rt, dsV
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -518,7 +518,7 @@ void deClassEasyXMLElement::nfSetAttributeInteger::RunFunction(dsRunTime *rt, ds
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -567,7 +567,7 @@ void deClassEasyXMLElement::nfSetAttributeFloat::RunFunction(dsRunTime *rt, dsVa
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -613,7 +613,7 @@ void deClassEasyXMLElement::nfSetAttributeBool::RunFunction(dsRunTime *rt, dsVal
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -657,7 +657,7 @@ void deClassEasyXMLElement::nfRemoveAttributeNamed::RunFunction(dsRunTime *rt, d
 	
 	for(i=0; i<elementCount; i++){
 		decXmlElement &next = *container.GetElementAt(i);
-		if(! next.CanCastToAttValue()){
+		if(!next.CanCastToAttValue()){
 			continue;
 		}
 		
@@ -920,7 +920,7 @@ void deClassEasyXMLElement::nfRemoveAllElements::RunFunction(dsRunTime *rt, dsVa
 	int i;
 	for(i=0; i<container.GetElementCount(); i++){
 		decXmlElement * const next = container.GetElementAt(i);
-		if(! next->CanCastToAttValue()){
+		if(!next->CanCastToAttValue()){
 			container.RemoveElement(next);
 			i--;
 		}
@@ -1176,7 +1176,7 @@ void deClassEasyXMLElement::nfForEachTag::RunFunction(dsRunTime *rt, dsValue *my
 	deClassEasyXMLElement &clsXmlElement = *((deClassEasyXMLElement*)GetOwnerClass());
 	
 	dsValue * const valueBlock = rt->GetValue(0);
-	if(! valueBlock->GetRealObject()){
+	if(!valueBlock->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -1191,7 +1191,7 @@ void deClassEasyXMLElement::nfForEachTag::RunFunction(dsRunTime *rt, dsValue *my
 	int i;
 	for(i=0; i<count; i++){
 		decXmlElement * const element2 = container.GetElementAt(i);
-		if(! element2->CanCastToElementTag()){
+		if(!element2->CanCastToElementTag()){
 			continue;
 		}
 		
@@ -1248,7 +1248,7 @@ void deClassEasyXMLElement::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself
 	deClassEasyXMLElement * const clsXmlElement = (deClassEasyXMLElement*)GetOwnerClass();
 	
 	dsValue * const object = rt->GetValue(0);
-	if(! p_IsObjOfType(object, clsXmlElement)){
+	if(!p_IsObjOfType(object, clsXmlElement)){
 		rt->PushBool(false);
 		
 	}else{
@@ -1355,18 +1355,18 @@ void deClassEasyXMLElement::CreateClassMembers(dsEngine *engine){
 }
 
 decXmlElement *deClassEasyXMLElement::GetElement(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	return ((sXMLElNatDat*)p_GetNativeData(myself->GetBuffer()))->element;
 }
 
 void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement *element){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! element){
+	if(!element){
 		rt->PushObject(NULL, this);
 		return;
 	}

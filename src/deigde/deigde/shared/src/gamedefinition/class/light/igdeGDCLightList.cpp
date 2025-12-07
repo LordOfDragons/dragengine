@@ -71,7 +71,7 @@ bool igdeGDCLightList::Has(igdeGDCLight *light) const{
 }
 
 void igdeGDCLightList::Add(igdeGDCLight *light){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -79,7 +79,7 @@ void igdeGDCLightList::Add(igdeGDCLight *light){
 }
 
 void igdeGDCLightList::InsertAt(igdeGDCLight *light, int index){
-	if(! light){
+	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	

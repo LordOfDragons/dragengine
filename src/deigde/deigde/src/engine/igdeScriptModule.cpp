@@ -60,7 +60,7 @@ pWindowMain(windowMain){
 igdeScriptModule::cModule::~cModule(){}
 void igdeScriptModule::cModule::CreateModule(){
 	SetModule(new igdeScriptModule(*this, pWindowMain));
-	if(! GetModule()){
+	if(!GetModule()){
 		SetErrorCode(eecCreateModuleFailed);
 	}
 }

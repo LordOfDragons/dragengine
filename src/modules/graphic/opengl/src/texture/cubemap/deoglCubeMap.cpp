@@ -89,7 +89,7 @@ void deoglCubeMap::SetSize(int size){
 }
 
 void deoglCubeMap::SetFormat(const deoglCapsTextureFormat *format){
-	if(! format){
+	if(!format){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -138,10 +138,10 @@ void deoglCubeMap::CreateCubeMap(){
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 	
-	if(! pTexture){
+	if(!pTexture){
 		OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 		
-		if(! pTexture){
+		if(!pTexture){
 			DETHROW(deeInvalidParam);
 		}
 	}
@@ -316,7 +316,7 @@ void deoglCubeMap::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	if(pixelBuffer.GetWidth() != size || pixelBuffer.GetHeight() != size || pixelBuffer.GetDepth() != 6){
 		DETHROW(deeInvalidParam);
 	}
-	if(! pTexture){
+	if(!pTexture){
 		return;
 	}
 	
@@ -601,7 +601,7 @@ void deoglCubeMap::CopyFrom(const deoglCubeMap &cubemap, bool withMipMaps, int s
 void deoglCubeMap::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
-	if(! pTexture || ! pFormat){
+	if(!pTexture || !pFormat){
 		return;
 	}
 	

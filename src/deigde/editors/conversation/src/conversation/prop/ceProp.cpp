@@ -97,11 +97,11 @@ void ceProp::SetConversation(ceConversation *conversation){
 
 
 void ceProp::SetName(const char *name){
-	if(! name){
+	if(!name){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pName.Equals(name)){
+	if(!pName.Equals(name)){
 		pName = name;
 		
 		if(pConversation){
@@ -111,11 +111,11 @@ void ceProp::SetName(const char *name){
 }
 
 void ceProp::SetObjectClass(const char *objectClass){
-	if(! objectClass){
+	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(! pObjectClass.Equals(objectClass)){
+	if(!pObjectClass.Equals(objectClass)){
 		pObjectClass = objectClass;
 		if(pObjectWrapper){
 			pObjectWrapper->SetGDClassName(pObjectClass.GetString());
@@ -128,7 +128,7 @@ void ceProp::SetObjectClass(const char *objectClass){
 }
 
 void ceProp::SetPosition(const decVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		if(pObjectWrapper){
 			pObjectWrapper->SetPosition(decDVector(position));
@@ -141,7 +141,7 @@ void ceProp::SetPosition(const decVector &position){
 }
 
 void ceProp::SetOrientation(const decVector &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		if(pObjectWrapper){
 			pObjectWrapper->SetOrientation(decMatrix::CreateRotation(orientation * DEG2RAD).ToQuaternion());

@@ -148,7 +148,7 @@ decIntDictionary::~decIntDictionary(){
 ///////////////
 
 bool decIntDictionary::Has(const char *key) const{
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -169,7 +169,7 @@ bool decIntDictionary::Has(const char *key) const{
 int decIntDictionary::GetAt(const char *key) const{
 	int value;
 	
-	if(! GetAt(key, &value)){
+	if(!GetAt(key, &value)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -177,7 +177,7 @@ int decIntDictionary::GetAt(const char *key) const{
 }
 
 bool decIntDictionary::GetAt(const char *key, int *value) const{
-	if(! key || ! value){
+	if(!key || !value){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -199,7 +199,7 @@ bool decIntDictionary::GetAt(const char *key, int *value) const{
 }
 
 void decIntDictionary::SetAt(const char *key, int value){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -243,7 +243,7 @@ void decIntDictionary::SetAt(const char *key, int value){
 }
 
 void decIntDictionary::Remove(const char *key){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -276,7 +276,7 @@ void decIntDictionary::Remove(const char *key){
 }
 
 void decIntDictionary::RemoveIfPresent(const char *key){
-	if(! key){
+	if(!key){
 		DETHROW(deeNullPointer);
 	}
 	
@@ -375,7 +375,7 @@ bool decIntDictionary::Equals(const decIntDictionary &dict) const{
 		sDictEntry *iterEntry = pBuckets[i];
 		
 		while(iterEntry){
-			if(! dict.GetAt(iterEntry->key, &value) || value != iterEntry->value){
+			if(!dict.GetAt(iterEntry->key, &value) || value != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -393,7 +393,7 @@ void decIntDictionary::CheckLoad(){
 		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if(! newBuckets){
+		if(!newBuckets){
 			DETHROW(deeInvalidParam);
 		}
 		for(i=0; i<newBucketCount; i++){

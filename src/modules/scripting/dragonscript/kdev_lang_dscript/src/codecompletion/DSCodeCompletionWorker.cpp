@@ -29,7 +29,7 @@ pModel(model)
 CodeCompletionContext *DSCodeCompletionWorker::createCompletionContext(
 const DUContextPointer context, const QString &contextText, const QString &followingText,
 const CursorInRevision &position) const{
-	if(! context){
+	if(!context){
 		return nullptr;
 	}
 	
@@ -38,10 +38,10 @@ const CursorInRevision &position) const{
 
 void DSCodeCompletionWorker::updateContextRange(Range &contextRange, View *view,
 const DUContextPointer context) const{
-	if(! context){
+	if(!context){
 		return;
 	}
-	if(! contextRange.start().isValid()){
+	if(!contextRange.start().isValid()){
 		contextRange.setStart({0, 0});
 	}
 	

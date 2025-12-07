@@ -81,7 +81,7 @@ void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked 
 }
 
 deoglTexture *deoglRDSRenderableVideoFrame::GetRenderTexture(){
-	if(! pVideoPlayer){
+	if(!pVideoPlayer){
 		return NULL;
 	}
 	return pVideoPlayer->GetTexture();

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
-	if(! link || ! animator) DETHROW(deeInvalidParam);
+	if(!link || !animator) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
 	pLink = NULL;

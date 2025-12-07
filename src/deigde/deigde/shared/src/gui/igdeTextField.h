@@ -86,34 +86,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief TextField is enabled. */
-	inline bool GetEnabled() const{return pEnabled;}
+	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
 	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
-	inline int GetColumns() const{return pColumns;}
+	inline int GetColumns() const{ return pColumns; }
 	
 	/** \brief Text is editable. */
-	inline bool GetEditable() const{return pEditable;}
+	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if text is editable. */
 	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{return pDescription;}
+	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
-	inline int GetPrecision() const{return pPrecision;}
+	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision for floating point values as digits after period. */
 	void SetPrecision(int precision);
 	
 	/** \brief Mark widget as having an invalue value. */
-	inline bool GetInvalidValue() const{return pInvalidValue;}
+	inline bool GetInvalidValue() const{ return pInvalidValue; }
 	
 	/** \brief Set to mark widget as having an invalid value. */
 	void SetInvalidValue(bool invalidValue);
@@ -121,7 +121,7 @@ public:
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{return pText;}
+	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
 	void SetText(const char *text, bool changing = false, bool forceNotify = false);

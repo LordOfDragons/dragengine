@@ -158,7 +158,7 @@ void dearAnimatorInstance::ApplyRules(){
 }
 
 void dearAnimatorInstance::ApplyStateToArComponent() const{
-	if(! pAnimator || ! pComponent){
+	if(!pAnimator || !pComponent){
 		return;
 	}
 	
@@ -185,7 +185,7 @@ DEBUG_PRINT_TIMER("ApplyStateToArComponent directly");
 }
 
 void dearAnimatorInstance::pStartTaskApplyRules(){
-	if(! pComponent){
+	if(!pComponent){
 		return;
 	}
 	
@@ -235,7 +235,7 @@ void dearAnimatorInstance::pStartTaskApplyRules(){
 void dearAnimatorInstance::StopTaskApplyRules(){
 	// WARNING called by dearTaskApplyRules::Finished() only!
 	
-	if(! pActiveTaskApplyRule){
+	if(!pActiveTaskApplyRule){
 		return;
 	}
 	
@@ -256,7 +256,7 @@ void dearAnimatorInstance::StopTaskApplyRules(){
 
 
 void dearAnimatorInstance::Apply(bool direct){
-	if(pSkipApply || ! pComponent || ! pAnimator){
+	if(pSkipApply || !pComponent || !pAnimator){
 		return;
 	}
 	
@@ -424,7 +424,7 @@ void dearAnimatorInstance::EnableRetargetingChanged(){
 }
 
 void dearAnimatorInstance::ProtectDynamicBonesChanged(){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
@@ -487,11 +487,11 @@ void dearAnimatorInstance::pCheckRequireRebuild(){
 }
 
 void dearAnimatorInstance::pUpdateMappings(){
-	if(! pDirtyMappings){
+	if(!pDirtyMappings){
 		return;
 	}
 	
-	if(! pAnimator){
+	if(!pAnimator){
 		pBoneStateList.SetStateCount(0);
 		pMappingRigToState.RemoveAll();
 		pUseAllBones = true;
@@ -557,7 +557,7 @@ void dearAnimatorInstance::pUpdateMappings(){
 }
 
 void dearAnimatorInstance::pCheckAnimatorChanged(){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
@@ -567,7 +567,7 @@ void dearAnimatorInstance::pCheckAnimatorChanged(){
 }
 
 void dearAnimatorInstance::pUpdateAnimator(){
-	if(! pDirtyAnimator){
+	if(!pDirtyAnimator){
 		return;
 	}
 	
@@ -598,7 +598,7 @@ void dearAnimatorInstance::pUpdateFakeRootBones(){
 	// we do not use component.PrepareBones() here to calculate only those global matrices
 	// we really need to get the correct result
 	const deRig * const rig = pAnimator->GetAnimator().GetRig();
-	if(! rig){
+	if(!rig){
 		return;
 	}
 	
@@ -651,7 +651,7 @@ void dearAnimatorInstance::pRemoveAllLinks(){
 }
 
 void dearAnimatorInstance::pAddAnimatorLinks(){
-	if(! pAnimator){
+	if(!pAnimator){
 		return;
 	}
 	
@@ -701,7 +701,7 @@ void dearAnimatorInstance::pDropRules(){
 }
 
 void dearAnimatorInstance::pUpdateRules(){
-	if(! pDirtyRules){
+	if(!pDirtyRules){
 		return;
 	}
 	
@@ -741,7 +741,7 @@ void dearAnimatorInstance::pUpdateRules(){
 }
 
 void dearAnimatorInstance::pUpdateRuleParams(){
-	if(! pDirtyRuleParams){
+	if(!pDirtyRuleParams){
 		return;
 	}
 	
@@ -774,7 +774,7 @@ void dearAnimatorInstance::pUpdateControllerStates(){
 }
 
 void dearAnimatorInstance::pApplyStateToComponent() const{
-	if(! pAnimator || ! pComponent){
+	if(!pAnimator || !pComponent){
 		return;
 	}
 	
@@ -830,7 +830,7 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 }
 
 void dearAnimatorInstance::pCancelTaskApplyRules(){
-	if(! pActiveTaskApplyRule){
+	if(!pActiveTaskApplyRule){
 		return;
 	}
 	
@@ -844,7 +844,7 @@ void dearAnimatorInstance::pCancelTaskApplyRules(){
 }
 
 void dearAnimatorInstance::pWaitTaskApplyRules(){
-	if(! pActiveTaskApplyRule){
+	if(!pActiveTaskApplyRule){
 		return;
 	}
 	

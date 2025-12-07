@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{return pDS;}
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
 	void CreateClassMembers(dsEngine *engine);
@@ -72,8 +72,8 @@ public:
 	/** \brief Push force field which can be \em NULL. */
 	void PushForceField(dsRunTime *rt, deForceField *forcefield);
 	
-	inline dsClass *GetClassForceFieldType() const{return pClsForceFieldType;}
-	inline dsClass *GetClassForceFieldApplication() const{return pClsForceFieldApplication;}
+	inline dsClass *GetClassForceFieldType() const{ return pClsForceFieldType; }
+	inline dsClass *GetClassForceFieldApplication() const{ return pClsForceFieldApplication; }
 	/*@}*/
 	
 	

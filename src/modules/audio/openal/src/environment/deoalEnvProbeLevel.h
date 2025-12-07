@@ -75,21 +75,21 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Traced sound ray list. */
-	inline deoalSoundRayList &GetSoundRayList(){return pSoundRayList;}
-	inline const deoalSoundRayList &GetSoundRayList() const{return pSoundRayList;}
+	inline deoalSoundRayList &GetSoundRayList(){ return pSoundRayList; }
+	inline const deoalSoundRayList &GetSoundRayList() const{ return pSoundRayList; }
 	
 	/** \brief First reflection sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRIList(){return pSRIList;}
-	inline const deoalSoundRayInteractionList &GetSRIList() const{return pSRIList;}
+	inline deoalSoundRayInteractionList &GetSRIList(){ return pSRIList; }
+	inline const deoalSoundRayInteractionList &GetSRIList() const{ return pSRIList; }
 	
 	/** \brief Number of rays used to calculate probe. */
-	inline int GetRayCount() const{return pRayCount;}
+	inline int GetRayCount() const{ return pRayCount; }
 	
 	/** \brief Set number of rays used to calculate probe. */
 	void SetRayCount(int rayCount);
 	
 	/** \brief Ray beam opening angle used for calculating probe. */
-	inline float GetRayOpeningAngle() const{return pRayOpeningAngle;}
+	inline float GetRayOpeningAngle() const{ return pRayOpeningAngle; }
 	
 	/** \brief Set ray beam opening angle used for calculating probe. */
 	void SetRayOpeningAngle(float angle);
@@ -97,19 +97,19 @@ public:
 	
 	
 	/** \brief Reverberation time in seconds for medium frequencies. */
-	inline float GetReverberationTimeMedium() const{return pReverberationTimeMedium;}
+	inline float GetReverberationTimeMedium() const{ return pReverberationTimeMedium; }
 	
 	/** \brief Reverberation time in seconds for low frequencies. */
-	inline float GetReverberationTimeLow() const{return pReverberationTimeLow;}
+	inline float GetReverberationTimeLow() const{ return pReverberationTimeLow; }
 	
 	/** \brief Reverberation time in seconds for high frequencies. */
-	inline float GetReverberationTimeHigh() const{return pReverberationTimeHigh;}
+	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh; }
 	
 	/** \brief Set reverberation. */
 	void SetReverberationTime(float timeLow, float timeMedium, float timeHigh);
 	
 	/** \brief Echo delay. */
-	inline float GetEchoDelay() const{return pEchoDelay;}
+	inline float GetEchoDelay() const{ return pEchoDelay; }
 	
 	/** \brief Set echo. */
 	void SetEcho(float delay);
@@ -117,19 +117,19 @@ public:
 	
 	
 	/** \brief Room volume. */
-	inline float GetRoomVolume() const{return pRoomVolume;}
+	inline float GetRoomVolume() const{ return pRoomVolume; }
 	
 	/** \brief Room surface. */
-	inline float GetRoomSurface() const{return pRoomSurface;}
+	inline float GetRoomSurface() const{ return pRoomSurface; }
 	
 	/** \brief Room sabine for low frequencies. */
-	inline float GetRoomSabineLow() const{return pRoomSabineLow;}
+	inline float GetRoomSabineLow() const{ return pRoomSabineLow; }
 	
 	/** \brief Room sabine for medium frequencies. */
-	inline float GetRoomSabineMedium() const{return pRoomSabineMedium;}
+	inline float GetRoomSabineMedium() const{ return pRoomSabineMedium; }
 	
 	/** \brief Room sabine for high frequencies. */
-	inline float GetRoomSabineHigh() const{return pRoomSabineHigh;}
+	inline float GetRoomSabineHigh() const{ return pRoomSabineHigh; }
 	
 	/** \brief Set room indirect sound parameters. */
 	void SetRoom(float volume, float surface, float sabineLow, float sabineMedium, float sabineHigh);

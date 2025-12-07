@@ -75,15 +75,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source. */
-	inline igdeNVSlot *GetSource() const{return pSource;}
+	inline igdeNVSlot *GetSource() const{ return pSource; }
 	
 	/** \brief Target. */
-	inline igdeNVSlot *GetTarget() const{return pTarget;}
+	inline igdeNVSlot *GetTarget() const{ return pTarget; }
 	
 	
 	
 	/** \brief Owner board or NULL. */
-	inline igdeNVBoard *GetOwnerBoard() const{return pOwnerBoard;}
+	inline igdeNVBoard *GetOwnerBoard() const{ return pOwnerBoard; }
 	
 	/**
 	 * \brief Set owner board or NULL.

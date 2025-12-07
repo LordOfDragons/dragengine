@@ -59,15 +59,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/** Number of combined textures in the list. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** Root combined texture. */
-	inline deoglCombinedTexture *GetRoot() const{return pRoot;}
+	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
 	
 	/**
 	 * Combined texture with parameters.

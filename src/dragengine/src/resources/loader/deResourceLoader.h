@@ -128,7 +128,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Debug messages are logger. */
-	inline bool GetOutputDebugMessages() const{return pOutputDebugMessages;}
+	inline bool GetOutputDebugMessages() const{ return pOutputDebugMessages; }
 	
 	/** \brief Set if debug messages are logged. */
 	void SetOutputDebugMessages(bool outputDebugMessages);

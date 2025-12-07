@@ -49,7 +49,7 @@
 
 reTemporaryConstraint::reTemporaryConstraint(reRig *rig, reRigBone *bone,
 const decDVector &position, const decQuaternion &orientation){
-	if(! rig) DETHROW(deeInvalidParam);
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	decDMatrix matrix(decDMatrix::CreateWorld(position, orientation));
 	deColliderComponent *simcol = rig->GetEngineSimulationCollider();
@@ -111,7 +111,7 @@ reTemporaryConstraint::~reTemporaryConstraint(){
 ///////////////
 
 void reTemporaryConstraint::SetPosition(const decDVector &position){
-	if(! position.IsEqualTo(pPosition)){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
 		if(pEngConstraint){
@@ -123,7 +123,7 @@ void reTemporaryConstraint::SetPosition(const decDVector &position){
 }
 
 void reTemporaryConstraint::SetOrientation(const decQuaternion &orientation){
-	if(! orientation.IsEqualTo(pOrientation)){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
 		if(pEngConstraint){
@@ -137,7 +137,7 @@ void reTemporaryConstraint::SetOrientation(const decQuaternion &orientation){
 
 
 void reTemporaryConstraint::SetLinearLowerLimits(const decVector &lowerLimits){
-	if(! lowerLimits.IsEqualTo(pLinearLowerLimits)){
+	if(!lowerLimits.IsEqualTo(pLinearLowerLimits)){
 		pLinearLowerLimits = lowerLimits;
 		
 		if(pEngConstraint){
@@ -151,7 +151,7 @@ void reTemporaryConstraint::SetLinearLowerLimits(const decVector &lowerLimits){
 }
 
 void reTemporaryConstraint::SetLinearUpperLimits(const decVector &upperLimits){
-	if(! upperLimits.IsEqualTo(pLinearUpperLimits)){
+	if(!upperLimits.IsEqualTo(pLinearUpperLimits)){
 		pLinearUpperLimits = upperLimits;
 		
 		if(pEngConstraint){
@@ -165,7 +165,7 @@ void reTemporaryConstraint::SetLinearUpperLimits(const decVector &upperLimits){
 }
 
 void reTemporaryConstraint::SetAngularLowerLimits(const decVector &lowerLimits){
-	if(! lowerLimits.IsEqualTo(pAngularLowerLimits)){
+	if(!lowerLimits.IsEqualTo(pAngularLowerLimits)){
 		pAngularLowerLimits = lowerLimits;
 		
 		if(pEngConstraint){
@@ -179,7 +179,7 @@ void reTemporaryConstraint::SetAngularLowerLimits(const decVector &lowerLimits){
 }
 
 void reTemporaryConstraint::SetAngularUpperLimits(const decVector &upperLimits){
-	if(! upperLimits.IsEqualTo(pAngularUpperLimits)){
+	if(!upperLimits.IsEqualTo(pAngularUpperLimits)){
 		pAngularUpperLimits = upperLimits;
 		
 		if(pEngConstraint){

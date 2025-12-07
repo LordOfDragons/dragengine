@@ -60,24 +60,24 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Determines if the point 2 point constraint is enabled. */
-	inline bool GetEnableConstraintPoint2Point() const{return pEnableConstraintPoint2Point;}
+	inline bool GetEnableConstraintPoint2Point() const{ return pEnableConstraintPoint2Point; }
 	/** Sets if the point 2 point constraint is enabled. */
 	void SetEnableConstraintPoint2Point(bool enable);
 	/** Determines if the hinge constraint is enabled. */
-	inline bool GetEnableConstraintHinge() const{return pEnableConstraintHinge;}
+	inline bool GetEnableConstraintHinge() const{ return pEnableConstraintHinge; }
 	/** Sets if the hinge constraint is enabled. */
 	void SetEnableConstraintHinge(bool enable);
 	/** Determines if the cone twist constraint is enabled. */
-	inline bool GetEnableConstraintConeTwist() const{return pEnableConstraintConeTwist;}
+	inline bool GetEnableConstraintConeTwist() const{ return pEnableConstraintConeTwist; }
 	/** Sets if the cone twist constraint is enabled. */
 	void SetEnableConstraintConeTwist(bool enable);
 	/** Determines if the slider constraint is enabled. */
-	inline bool GetEnableConstraintSlider() const{return pEnableConstraintSlider;}
+	inline bool GetEnableConstraintSlider() const{ return pEnableConstraintSlider; }
 	/** Sets if the slider constraint is enabled. */
 	void SetEnableConstraintSlider(bool enable);
 	
 	/** Determines if prop fields are simulated. */
-	inline bool GetSimulatePropFields() const{return pSimulatePropFields;}
+	inline bool GetSimulatePropFields() const{ return pSimulatePropFields; }
 	/** Sets if prop fields are simulated. */
 	void SetSimulatePropFields(bool simulatePropFields);
 	/*@}*/

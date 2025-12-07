@@ -68,7 +68,7 @@ deoglShaderParameterBlock &deoglSharedSPBElementMapBuffer::GetBlockRef() const{
 }
 
 void deoglSharedSPBElementMapBuffer::Unmap(){
-	if(! pBlock){
+	if(!pBlock){
 		return;
 	}
 	

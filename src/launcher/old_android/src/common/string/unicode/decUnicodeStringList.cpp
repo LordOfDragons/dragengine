@@ -227,7 +227,7 @@ decUnicodeStringList &decUnicodeStringList::operator=(const decUnicodeStringList
 }
 
 bool decUnicodeStringList::operator!=(const decUnicodeStringList &list){
-	return ! (*this == list);
+	return !(*this == list);
 }
 
 bool decUnicodeStringList::operator==(const decUnicodeStringList &list){

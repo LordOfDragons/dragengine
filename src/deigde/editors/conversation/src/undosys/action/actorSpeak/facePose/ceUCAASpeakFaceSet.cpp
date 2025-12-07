@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip){
-	if(! topic || ! actorSpeak || ! facePose || ! newStrip){
+	if(!topic || !actorSpeak || !facePose || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
 	

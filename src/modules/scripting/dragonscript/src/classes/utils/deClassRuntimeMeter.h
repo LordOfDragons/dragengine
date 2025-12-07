@@ -54,7 +54,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{return pDS;}
+	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/
 	
 private:

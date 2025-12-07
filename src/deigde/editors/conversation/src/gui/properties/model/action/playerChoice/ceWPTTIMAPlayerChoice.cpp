@@ -141,7 +141,7 @@ void ceWPTTIMAPlayerChoice::OnExpandedChanged(){
 }
 
 void ceWPTTIMAPlayerChoice::OnContextMenu(igdeMenuCascade &contextMenu){
-	if(! GetTreeItem()){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -150,7 +150,7 @@ void ceWPTTIMAPlayerChoice::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if(! topic){
+	if(!topic){
 		return;
 	}
 	

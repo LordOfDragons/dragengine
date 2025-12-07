@@ -62,19 +62,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Logger to pass information to or NULL to ignore them. */
-	inline const deLogger::Ref &GetLoggerInfo() const{return pLoggerInfo;}
+	inline const deLogger::Ref &GetLoggerInfo() const{ return pLoggerInfo; }
 	
 	/** Set logger to pass information to or NULL to ignore them. */
 	void SetLoggerInfo(deLogger *logger);
 	
 	/** Logger to pass warnings to or NULL to ignore them. */
-	inline const deLogger::Ref &GetLoggerWarning() const{return pLoggerWarn;}
+	inline const deLogger::Ref &GetLoggerWarning() const{ return pLoggerWarn; }
 	
 	/** Set logger to pass warnings to or NULL to ignore them. */
 	void SetLoggerWarning(deLogger *logger);
 	
 	/** Logger to pass errors to or NULL to ignore them. */
-	inline const deLogger::Ref &GetLoggerError() const{return pLoggerError;}
+	inline const deLogger::Ref &GetLoggerError() const{ return pLoggerError; }
 	
 	/** Set logger to pass errors to or NULL to ignore them. */
 	void SetLoggerError(deLogger *logger);

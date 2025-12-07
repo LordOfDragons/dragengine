@@ -115,22 +115,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
+	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{return pCollider;}
+	inline deColliderVolume *GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the world or NULL. */
-	inline meWorld *GetWorld() const{return pWorld;}
+	inline meWorld *GetWorld() const{ return pWorld; }
 	/** \brief Sets the world or NULL. */
 	void SetWorld(meWorld *world);
 	
 	/** \brief Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{return pParentObject;}
+	inline meObject *GetParentObject() const{ return pParentObject; }
 	/** \brief Sets the parent object or NULL. */
 	void SetParentObject(meObject *object);
 	
 	/** \brief Retrieves the skin file path. */
-	inline const decString &GetSkinPath() const{return pSkinPath;}
+	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	/** \brief Sets the skin file path. */
 	void SetSkinPath(const char *skinPath);
 	
@@ -141,62 +141,62 @@ public:
 	decVector GetDefaultSize(float baseSize = 0.5f) const;
 	
 	/** \brief Retrieves the skin texture name. */
-	inline const decString &GetTextureName() const{return pTextureName;}
+	inline const decString &GetTextureName() const{ return pTextureName; }
 	/** \brief Sets the skin texture name. */
 	void SetTextureName(const char *textureName);
 	/** \brief Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{return pEngSkin;}
+	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{return pPosition;}
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
 	void SetPosition(const decDVector &position);
 	/** \brief Retrieves the rotation. */
-	inline const decVector &GetRotation() const{return pRotation;}
+	inline const decVector &GetRotation() const{ return pRotation; }
 	/** \brief Sets the rotation. */
 	void SetRotation(const decVector &rotation);
 	/** \brief Retrieves the size. */
-	inline const decVector &GetSize() const{return pSize;}
+	inline const decVector &GetSize() const{ return pSize; }
 	/** \brief Sets the size. */
 	void SetSize(const decVector &size);
 	/** \brief Retrieves the texture coordinates offset. */
-	inline const decVector2 &GetTexCoordOffset() const{return pTexCoordOffset;}
+	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	/** \brief Sets the texture coordinates offset. */
 	void SetTexCoordOffset(const decVector2 &offset);
 	/** \brief Retrieves the texture coordinates scaling. */
-	inline const decVector2 &GetTexCoordScaling() const{return pTexCoordScaling;}
+	inline const decVector2 &GetTexCoordScaling() const{ return pTexCoordScaling; }
 	/** \brief Sets the texture coordinates scaling. */
 	void SetTexCoordScaling(const decVector2 &scaling);
 	/** \brief Retrieves the texture coordinates rotation. */
-	inline float GetTexCoordRotation() const{return pTexCoordRotation;}
+	inline float GetTexCoordRotation() const{ return pTexCoordRotation; }
 	/** \brief Sets the texture coordinates rotation. */
 	void SetTexCoordRotation(float rotation);
 	
 	/** \brief Retrieves the color tint. */
-	inline const decColor &GetColorTint() const{return pColorTint;}
+	inline const decColor &GetColorTint() const{ return pColorTint; }
 	/** \brief Sets the color tint. */
 	void SetColorTint(const decColor &color);
 	
 	/** \brief Retrieves the dynamic skin or NULL if there is none. */
-	inline deDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
+	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Updates the dynamic skin. */
 	void UpdateDynamicSkin();
 	
 	/** \brief Retrieves the ID. */
-	inline int GetID() const{return pID;}
+	inline int GetID() const{ return pID; }
 	/** \brief Sets the ID. */
 	void SetID(int id);
 	/** \brief Determines if the decal is visible. */
-	inline bool GetVisible() const{return pVisible;}
+	inline bool GetVisible() const{ return pVisible; }
 	/** \brief Sets if the decal is visible. */
 	void SetVisible(bool visible);
 	
 	/** \brief Determines if the decal is selected. */
-	inline bool GetSelected() const{return pSelected;}
+	inline bool GetSelected() const{ return pSelected; }
 	/** \brief Sets if the decal is selected. */
 	void SetSelected(bool selected);
 	/** \brief Determines if the decal is the active one. */
-	inline bool GetActive() const{return pActive;}
+	inline bool GetActive() const{ return pActive; }
 	/** \brief Sets if the decal is the active one. */
 	void SetActive(bool active);
 	
@@ -218,7 +218,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{return pProperties;}
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property. */
 	void SetProperty(const char *key, const char *value);
@@ -233,7 +233,7 @@ public:
 	void RemoveAllProperties();
 	
 	/** \brief Active property. */
-	inline const decString &GetActiveProperty() const{return pActiveProperty;}
+	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** \brief Set active property. */
 	void SetActiveProperty(const char *property);

@@ -70,7 +70,7 @@ void ceWPTTIMCActorCommand::Update(){
 		text += " => ";
 	}
 	
-	if(! condition.GetCommand().IsEmpty()){
+	if(!condition.GetCommand().IsEmpty()){
 		const decString lineCommand(condition.GetCommand().Split('\n').GetAt(0));
 		
 		if(lineCommand.GetLength() > 40){

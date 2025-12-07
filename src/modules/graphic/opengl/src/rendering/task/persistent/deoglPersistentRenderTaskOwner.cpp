@@ -81,7 +81,7 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskOwner::GetInstanceAt
 }
 
 void deoglPersistentRenderTaskOwner::AddInstance(deoglPersistentRenderTaskInstance *instance){
-	if(! instance){
+	if(!instance){
 		DETHROW(deeInvalidParam);
 	}
 	pInstances.Add(instance);
@@ -102,7 +102,7 @@ deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskOwner::GetSubInst
 }
 
 void deoglPersistentRenderTaskOwner::AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance){
-	if(! subInstance){
+	if(!subInstance){
 		DETHROW(deeInvalidParam);
 	}
 	pSubInstances.Add(subInstance);

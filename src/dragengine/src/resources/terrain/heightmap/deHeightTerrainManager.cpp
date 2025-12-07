@@ -118,7 +118,7 @@ void deHeightTerrainManager::SystemGraphicLoad(){
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(heightTerrain){
-		if(! heightTerrain->GetPeerGraphic()){
+		if(!heightTerrain->GetPeerGraphic()){
 			grasys.LoadHeightTerrain(heightTerrain);
 		}
 		
@@ -140,7 +140,7 @@ void deHeightTerrainManager::SystemPhysicsLoad(){
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(heightTerrain){
-		if(! heightTerrain->GetPeerPhysics()){
+		if(!heightTerrain->GetPeerPhysics()){
 			physys.LoadHeightTerrain(heightTerrain);
 		}
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
@@ -161,7 +161,7 @@ void deHeightTerrainManager::SystemAILoad(){
 	deAISystem &aisys = *GetAISystem();
 	
 	while(heightTerrain){
-		if(! heightTerrain->GetPeerAI()){
+		if(!heightTerrain->GetPeerAI()){
 			aisys.LoadHeightTerrain(*heightTerrain);
 		}
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();
@@ -182,7 +182,7 @@ void deHeightTerrainManager::SystemAudioLoad(){
 	deAudioSystem &audioSystem = *GetAudioSystem();
 	
 	while(heightTerrain){
-		if(! heightTerrain->GetPeerAudio()){
+		if(!heightTerrain->GetPeerAudio()){
 			audioSystem.LoadHeightTerrain(*heightTerrain);
 		}
 		heightTerrain = (deHeightTerrain*)heightTerrain->GetLLManagerNext();

@@ -67,19 +67,19 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{return *pConversation;}
+	inline ceConversation &GetConversation() const{ return *pConversation; }
 	
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{return pTopic;}
+	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{return pAction;}
+	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief If-else action. */
-	inline ceCConditionLogic *GetLogic() const{return pLogic;}
+	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Action. */
-	inline ceConversationCondition *GetCondition() const{return pCondition;}
+	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	
 	

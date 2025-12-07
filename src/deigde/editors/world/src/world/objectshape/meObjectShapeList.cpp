@@ -70,7 +70,7 @@ bool meObjectShapeList::Has(meObjectShape *objectShape) const{
 }
 
 void meObjectShapeList::Add(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -78,7 +78,7 @@ void meObjectShapeList::Add(meObjectShape *objectShape){
 }
 
 void meObjectShapeList::AddIfAbsent(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -86,7 +86,7 @@ void meObjectShapeList::AddIfAbsent(meObjectShape *objectShape){
 }
 
 void meObjectShapeList::Remove(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -94,7 +94,7 @@ void meObjectShapeList::Remove(meObjectShape *objectShape){
 }
 
 void meObjectShapeList::RemoveIfPresent(meObjectShape *objectShape){
-	if(! objectShape){
+	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
 	

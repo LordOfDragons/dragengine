@@ -45,10 +45,10 @@ meUObjectAddTexture::meUObjectAddTexture(meObject *object, meObjectTexture *text
 pObject(NULL),
 pTexture(NULL)
 {
-	if(! object || ! texture) DETHROW(deeInvalidParam);
+	if(!object || !texture) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if(! world) DETHROW(deeInvalidParam);
+	if(!world) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Add Object Texture");
 	

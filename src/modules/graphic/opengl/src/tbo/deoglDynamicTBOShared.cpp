@@ -50,7 +50,7 @@ pStride2(stride2),
 pUsedSize(0),
 pDirty(true)
 {
-	if(! tbo || stride < 1 || stride2 < 1){
+	if(!tbo || stride < 1 || stride2 < 1){
 		DETHROW(deeInvalidParam);
 	}
 }
@@ -70,7 +70,7 @@ deoglDynamicTBOShared::~deoglDynamicTBOShared(){
 ///////////////
 
 void deoglDynamicTBOShared::Prepare(){
-	if(! pDirty){
+	if(!pDirty){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::GetBlockAt(int index) const{
 }
 
 deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
-	if(! tbo){
+	if(!tbo){
 		DETHROW(deeInvalidParam);
 	}
 	if(tbo2 && tbo2->GetPixelCount() / pStride2 != tbo->GetPixelCount() / pStride){

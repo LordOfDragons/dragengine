@@ -131,7 +131,7 @@ deoglShadowMapper::~deoglShadowMapper(){
 ///////////////
 
 deoglTexture *deoglShadowMapper::GetSolidDepthTexture() const{
-	if(! pTextureDepthSolid){
+	if(!pTextureDepthSolid){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -149,7 +149,7 @@ void deoglShadowMapper::SetForeignSolidDepthTexture(deoglTexture *texture){
 }
 
 deoglTexture *deoglShadowMapper::GetTransparentDepthTexture() const{
-	if(! pTextureDepthTransp){
+	if(!pTextureDepthTransp){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -167,7 +167,7 @@ void deoglShadowMapper::SetForeignTransparentDepthTexture(deoglTexture *texture)
 }
 
 deoglTexture *deoglShadowMapper::GetTransparentColorTexture() const{
-	if(! pTextureColorTransp){
+	if(!pTextureColorTransp){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -256,7 +256,7 @@ void deoglShadowMapper::ActivateSolidTexture(int size, bool useFloatDepth, bool 
 	}
 	
 	// obtain solid depth texture if not existing already
-	if(! pTextureDepthSolid && ! pForeignTexDepthSolid){
+	if(!pTextureDepthSolid && !pForeignTexDepthSolid){
 		pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
 			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
@@ -301,14 +301,14 @@ void deoglShadowMapper::ActivateTransparentTexture(int size, bool useFloatDepth)
 	}
 	
 	// obtain transparent depth texture if not existing already
-	if(! pTextureDepthTransp && ! pForeignTexDepthTransp){
+	if(!pTextureDepthTransp && !pForeignTexDepthTransp){
 		pTextureDepthTransp = pRenderThread.GetTexture().GetRenderableDepthTexture()
 			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexDepthTransp = pTextureDepthTransp->GetTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
-	if(! pTextureColorTransp && ! pForeignTexColorTransp){
+	if(!pTextureColorTransp && !pForeignTexColorTransp){
 		pTextureColorTransp = pRenderThread.GetTexture().GetRenderableColorTexture()
 			.GetTextureWith(size, size, 4, false);
 		pUseTexColorTransp = pTextureColorTransp->GetTexture();
@@ -333,7 +333,7 @@ void deoglShadowMapper::ActivateTransparentTexture(int size, bool useFloatDepth)
 
 
 deoglCubeMap *deoglShadowMapper::GetSolidDepthCubeMap() const{
-	if(! pCubeMapDepthSolid){
+	if(!pCubeMapDepthSolid){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -352,7 +352,7 @@ void deoglShadowMapper::SetForeignSolidDepthCubeMap(deoglCubeMap *cubemap){
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
-	if(! pCubeMapDepthTransp){
+	if(!pCubeMapDepthTransp){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -371,7 +371,7 @@ void deoglShadowMapper::SetForeignTransparentDepthCubeMap(deoglCubeMap *cubemap)
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentColorCubeMap() const{
-	if(! pCubeMapColorTransp){
+	if(!pCubeMapColorTransp){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -468,7 +468,7 @@ void deoglShadowMapper::ActivateSolidCubeMap(int size, bool useFloatDepth){
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if(! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid){
+	if(!pCubeMapDepthSolid && !pForeignCubeMapDepthSolid){
 		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
 			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
@@ -511,7 +511,7 @@ void deoglShadowMapper::ActivateSolidCubeMapFace(int size, bool useFloatDepth, i
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if(! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid){
+	if(!pCubeMapDepthSolid && !pForeignCubeMapDepthSolid){
 		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
 			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
@@ -549,14 +549,14 @@ void deoglShadowMapper::ActivateTransparentCubeMap(int size, bool useFloatDepth)
 	}
 	
 	// obtain transparent depth cubemap if not existing already
-	if(! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp){
+	if(!pCubeMapDepthTransp && !pForeignCubeMapDepthTransp){
 		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
 			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
 	}
 	
 	// obtain transparent color cubemap if not existing already
-	if(! pCubeMapColorTransp && ! pForeignCubeMapColorTransp){
+	if(!pCubeMapColorTransp && !pForeignCubeMapColorTransp){
 		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith(size, 4, false);
 		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
 	}
@@ -599,14 +599,14 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace(int size, bool useFloatDe
 	}
 	
 	// obtain transparent depth cubemap if not existing already
-	if(! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp){
+	if(!pCubeMapDepthTransp && !pForeignCubeMapDepthTransp){
 		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
 			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
 	}
 	
 	// obtain transparent color cubemap if not existing already
-	if(! pCubeMapColorTransp && ! pForeignCubeMapColorTransp){
+	if(!pCubeMapColorTransp && !pForeignCubeMapColorTransp){
 		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith(size, 4, false);
 		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
 	}
@@ -635,7 +635,7 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace(int size, bool useFloatDe
 
 
 deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
-	if(! pArrTexSolidDepth){
+	if(!pArrTexSolidDepth){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -653,7 +653,7 @@ void deoglShadowMapper::SetForeignSolidDepthArrayTexture(deoglArrayTexture *text
 }
 
 deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
-	if(! pArrTexTranspDepth){
+	if(!pArrTexTranspDepth){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -671,7 +671,7 @@ void deoglShadowMapper::SetForeignTransparentDepthArrayTexture(deoglArrayTexture
 }
 
 deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
-	if(! pArrTexTranspColor){
+	if(!pArrTexTranspColor){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -747,7 +747,7 @@ void deoglShadowMapper::ActivateSolidArrayTexture(int size, int layerCount, bool
 	}
 	
 	// obtain solid depth texture if not existing already
-	if(! pArrTexSolidDepth && ! pForeignArrTexSolidDepth){
+	if(!pArrTexSolidDepth && !pForeignArrTexSolidDepth){
 		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
 			.GetWith(size, size, layerCount, withStencil, false);
 		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
@@ -788,7 +788,7 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer(int size, int layerCount,
 	}
 	
 	// obtain solid depth texture if not existing already
-	if(! pArrTexSolidDepth && ! pForeignArrTexSolidDepth){
+	if(!pArrTexSolidDepth && !pForeignArrTexSolidDepth){
 		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
 			.GetWith(size, size, layerCount, withStencil, false);
 		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
@@ -827,14 +827,14 @@ void deoglShadowMapper::ActivateTransparentArrayTexture(int size, int layerCount
 	}
 	
 	// obtain transparent depth texture if not existing already
-	if(! pArrTexTranspDepth && ! pForeignArrTexTranspDepth){
+	if(!pArrTexTranspDepth && !pForeignArrTexTranspDepth){
 		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture().
 			GetWith(size, size, layerCount, false, false);
 		pUseArrTexTranspDepth = pArrTexTranspDepth->GetArrayTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
-	if(! pArrTexTranspColor && ! pForeignArrTexTranspColor){
+	if(!pArrTexTranspColor && !pForeignArrTexTranspColor){
 		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableColorArrayTexture().
 			GetWith(size, size, layerCount, 4, false);
 		pUseArrTexTranspColor = pArrTexTranspColor->GetArrayTexture();
@@ -859,7 +859,7 @@ void deoglShadowMapper::ActivateTransparentArrayTexture(int size, int layerCount
 
 
 deoglTexture *deoglShadowMapper::GetOcclusionTexture() const{
-	if(! pTextureOcclusion){
+	if(!pTextureOcclusion){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -887,7 +887,7 @@ void deoglShadowMapper::ActivateOcclusionTexture(int width, int height){
 	}
 	
 	// obtain occlusion texture if not existing already
-	if(! pTextureOcclusion){
+	if(!pTextureOcclusion){
 		pTextureOcclusion = pRenderThread.GetTexture().GetRenderableColorTexture().GetTextureWith(width, height, 4, false);
 	}
 	
@@ -909,7 +909,7 @@ void deoglShadowMapper::ActivateOcclusionTexture(int width, int height){
 
 
 deoglTexture *deoglShadowMapper::GetAmbientTexture() const{
-	if(! pTextureAmbient){
+	if(!pTextureAmbient){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -964,7 +964,7 @@ void deoglShadowMapper::ActivateAmbientTexture(int size, bool useFloatDepth){
 	}
 	
 	// obtain ambient texture if not existing already
-	if(! pTextureAmbient && ! pForeignTexAmbient){
+	if(!pTextureAmbient && !pForeignTexAmbient){
 		pTextureAmbient = pRenderThread.GetTexture().GetRenderableDepthTexture()
 			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexAmbient = pTextureAmbient->GetTexture();
@@ -988,7 +988,7 @@ void deoglShadowMapper::ActivateAmbientTexture(int size, bool useFloatDepth){
 
 
 deoglCubeMap *deoglShadowMapper::GetAmbientCubeMap() const{
-	if(! pCubeMapAmbient){
+	if(!pCubeMapAmbient){
 		DETHROW(deeInvalidParam);
 	}
 	return pCubeMapAmbient->GetCubeMap();
@@ -1046,7 +1046,7 @@ void deoglShadowMapper::ActivateAmbientCubeMap(int size, bool useFloatDepth){
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if(! pCubeMapAmbient && ! pForeignCubeMapAmbient){
+	if(!pCubeMapAmbient && !pForeignCubeMapAmbient){
 		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
 	}
@@ -1087,7 +1087,7 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace(int size, bool useFloatDepth,
 	}
 	
 	// obtain depth cubemap if not existing already
-	if(! pCubeMapAmbient && ! pForeignCubeMapAmbient){
+	if(!pCubeMapAmbient && !pForeignCubeMapAmbient){
 		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
 	}

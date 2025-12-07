@@ -70,7 +70,7 @@ void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
 	// load model
 	const char * const filename = rt->GetValue(0)->GetString();
 	nd.model = mdlMgr.LoadModel(filename, "/");
-	if(! nd.model){
+	if(!nd.model){
 		DSTHROW(dueInvalidParam);
 	}
 }
@@ -87,7 +87,7 @@ void deClassModel::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
 	
-	if(! listener){
+	if(!listener){
 		DSTHROW(dueNullPointer);
 	}
 	
@@ -257,7 +257,7 @@ void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModel * const clsModel = (deClassModel*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
-	if(obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! obj->GetRealObject()
+	if(obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || !obj->GetRealObject()
 	|| obj->GetRealObject()->GetType() != clsModel){
 		rt->PushBool(false);
 		
@@ -278,7 +278,7 @@ void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassModel::deClassModel(deScriptingDragonScript *ds) : dsClass("Model",
 DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(! ds){
+	if(!ds){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -331,7 +331,7 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 }
 
 deModel *deClassModel::GetModel(dsRealObject *myself) const{
-	if(! myself){
+	if(!myself){
 		return NULL;
 	}
 	
@@ -339,11 +339,11 @@ deModel *deClassModel::GetModel(dsRealObject *myself) const{
 }
 
 void deClassModel::PushModel(dsRunTime *rt, deModel *model){
-	if(! rt){
+	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if(! model){
+	if(!model){
 		rt->PushObject(NULL, this);
 		return;
 	}

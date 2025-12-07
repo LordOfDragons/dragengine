@@ -66,23 +66,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Decal pointer. */
-	inline meDecal *GetDecal() const{return pDecal;}
+	inline meDecal *GetDecal() const{ return pDecal; }
 	
 	/** \brief Old property value. */
-	inline const decString &GetOldValue() const{return pOldValue;}
+	inline const decString &GetOldValue() const{ return pOldValue; }
 	
 	/** \brief Set old property value. */
 	void SetOldValue(const char *value);
 	
 	/** \brief Property has been present before the redo operation. */
-	inline bool GetPropertyExists() const{return pPropertyExists;}
+	inline bool GetPropertyExists() const{ return pPropertyExists; }
 	
 	/** \brief Set if property has been present before the redo operation. */
 	void SetPropertyExists(bool exists);
 	
 	/** \brief Old property list. */
-	inline decStringDictionary &GetOldProperties(){return pOldProperties;}
-	inline const decStringDictionary &GetOldProperties() const{return pOldProperties;}
+	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }
+	inline const decStringDictionary &GetOldProperties() const{ return pOldProperties; }
 	/*@}*/
 };
 

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones, float newMass){
-	if(! rig || bones.GetCount() == 0){
+	if(!rig || bones.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	

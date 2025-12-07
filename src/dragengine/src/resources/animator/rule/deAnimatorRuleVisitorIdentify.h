@@ -79,52 +79,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule type. */
-	inline eRuleTypes GetType() const{return pType;}
+	inline eRuleTypes GetType() const{ return pType; }
 	
 	/** \brief Rule is unknown. */
-	inline bool IsUnknown() const{return pType == ertUnknown;}
+	inline bool IsUnknown() const{ return pType == ertUnknown; }
 	
 	/** \brief Rule is an animation rule. */
-	inline bool IsAnimation() const{return pType == ertAnimation;}
+	inline bool IsAnimation() const{ return pType == ertAnimation; }
 	
 	/** \brief Rule is an animation Difference rule. */
-	inline bool IsAnimationDifference() const{return pType == ertAnimationDifference;}
+	inline bool IsAnimationDifference() const{ return pType == ertAnimationDifference; }
 	
 	/** \brief Rule is an animation select rule. */
-	inline bool IsAnimationSelect() const{return pType == ertAnimationSelect;}
+	inline bool IsAnimationSelect() const{ return pType == ertAnimationSelect; }
 	
 	/** \brief Rule is a bone transformator rule. */
-	inline bool IsBoneTransformator() const{return pType == ertBoneTransformator;}
+	inline bool IsBoneTransformator() const{ return pType == ertBoneTransformator; }
 	
 	/** \brief Rule is an inverse Kinematic rule. */
-	inline bool IsInverseKinematic() const{return pType == ertInverseKinematic;}
+	inline bool IsInverseKinematic() const{ return pType == ertInverseKinematic; }
 	
 	/** \brief Rule is a state manipulator rule. */
-	inline bool IsStateManipulator() const{return pType == ertStateManipulator;}
+	inline bool IsStateManipulator() const{ return pType == ertStateManipulator; }
 	
 	/** \brief Rule is a state snapshot rule. */
-	inline bool IsStateSnapshot() const{return pType == ertStateSnapshot;}
+	inline bool IsStateSnapshot() const{ return pType == ertStateSnapshot; }
 	
 	/** \brief Rule is a foreign state rule. */
-	inline bool IsForeignState() const{return pType == ertForeignState;}
+	inline bool IsForeignState() const{ return pType == ertForeignState; }
 	
 	/** \brief Rule is a group rule. */
-	inline bool IsGroup() const{return pType == ertGroup;}
+	inline bool IsGroup() const{ return pType == ertGroup; }
 	
 	/** \brief Rule is a sub animator rule. */
-	inline bool IsSubAnimator() const{return pType == ertSubAnimator;}
+	inline bool IsSubAnimator() const{ return pType == ertSubAnimator; }
 	
 	/** \brief Rule is a track to rule. */
-	inline bool IsTrackTo() const{return pType == ertTrackTo;}
+	inline bool IsTrackTo() const{ return pType == ertTrackTo; }
 	
 	/** \brief Rule is a limit rule. */
-	inline bool IsLimit() const{return pType == ertLimit;}
+	inline bool IsLimit() const{ return pType == ertLimit; }
 	
 	/**
 	 * \brief Rule is a mirror rule.
 	 * \version 1.9
 	 */
-	inline bool IsMirror() const{return pType == ertMirror;}
+	inline bool IsMirror() const{ return pType == ertMirror; }
 	
 	/**
 	 * \brief Cast to animation rule.

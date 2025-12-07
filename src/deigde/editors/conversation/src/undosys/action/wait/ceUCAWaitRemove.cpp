@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action){
-	if(! topic || ! wait || ! action) DETHROW(deeInvalidParam);
+	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pWait = NULL;

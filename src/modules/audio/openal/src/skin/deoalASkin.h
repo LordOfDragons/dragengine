@@ -71,15 +71,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
+	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	/** \brief Filename of resource. */
-	inline const decString &GetFilename() const{return pFilename;}
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	
 	
 	/** \brief Number of textures. */
-	inline int GetTextureCount() const{return pTextureCount;}
+	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture at index. */
 	const deoalSkinTexture &GetTextureAt(int index) const;
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** \brief Material affects sound. */
-	inline bool GetAffectsSound() const{return pAffectsSound;}
+	inline bool GetAffectsSound() const{ return pAffectsSound; }
 	/*@}*/
 	
 	

@@ -87,9 +87,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the ray origin. */
-	inline const decDVector &GetRayOrigin() const{return pRayOrigin;}
+	inline const decDVector &GetRayOrigin() const{ return pRayOrigin; }
 	/** \brief Retrieves the ray direction. */
-	inline const decVector &GetRayDirection() const{return pRayDirection;}
+	inline const decVector &GetRayDirection() const{ return pRayDirection; }
 	/** \brief Sets the paint ray. */
 	void SetRay(const decDVector &origin, const decVector &direction);
 	

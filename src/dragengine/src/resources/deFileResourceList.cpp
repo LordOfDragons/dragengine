@@ -50,13 +50,13 @@ deFileResourceList::~deFileResourceList(){
 ///////////////
 
 deResource *deFileResourceList::GetWithFilename(deVirtualFileSystem *vfs, const char *filename) const{
-	if(! vfs || ! filename){
+	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
 	deFileResource *resource = (deFileResource*)GetRoot();
 	while(resource){
-		if(! resource->GetOutdated()
+		if(!resource->GetOutdated()
 		&& resource->GetVirtualFileSystem() == vfs
 		&& resource->GetFilename() == filename){
 			return resource;

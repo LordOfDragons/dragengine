@@ -74,7 +74,7 @@ void deoglQuickSorter::RemoveAllElements(){
 }
 
 void deoglQuickSorter::AddElement(void *element, float score){
-	if(! element){
+	if(!element){
 		DETHROW(deeInvalidParam);
 	}
 	

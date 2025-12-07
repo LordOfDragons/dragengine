@@ -54,7 +54,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertOcc
 pOcclusionMesh(occlusionMesh),
 pSucceeded(false)
 {
-	if(! occlusionMesh){
+	if(!occlusionMesh){
 		DETHROW(deeInvalidParam);
 	}
 	SetType(etWrite);
@@ -72,7 +72,7 @@ void deRLTaskWriteOcclusionMesh::Run(){
 	LogRunEnter();
 	deBaseOcclusionMeshModule * const module = (deBaseOcclusionMeshModule*)GetEngine().
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtOcclusionMesh, GetPath());
-	if(! module){
+	if(!module){
 		DETHROW(deeInvalidParam);
 	}
 	

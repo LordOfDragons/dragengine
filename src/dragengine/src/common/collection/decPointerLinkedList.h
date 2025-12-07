@@ -88,16 +88,16 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** \brief List entry owner. */
-		inline void *GetOwner() const{return pOwner;}
+		inline void *GetOwner() const{ return pOwner; }
 		
 		/** \brief Previous linked list entry or NULL. */
-		inline cListEntry *GetPrevious() const{return pPrev;}
+		inline cListEntry *GetPrevious() const{ return pPrev; }
 		
 		/** \brief Next linked list entry or NULL. */
-		inline cListEntry *GetNext() const{return pNext;}
+		inline cListEntry *GetNext() const{ return pNext; }
 		
 		/** \brief Linked list or NULL if not in a list. */
-		inline decPointerLinkedList *GetList() const{return pList;}
+		inline decPointerLinkedList *GetList() const{ return pList; }
 		/*@}*/
 		
 		
@@ -270,13 +270,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Count of objects. */
-	inline int GetCount() const{return pCount;}
+	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Root entry at start of list or NULL if list is empty. */
-	inline cListEntry *GetRoot() const{return pRoot;}
+	inline cListEntry *GetRoot() const{ return pRoot; }
 	
 	/** \brief Tail entry at end of list or NULL if list is empty. */
-	inline cListEntry *GetTail() const{return pTail;}
+	inline cListEntry *GetTail() const{ return pTail; }
 	
 	/**
 	 * \brief Pointer at index.
