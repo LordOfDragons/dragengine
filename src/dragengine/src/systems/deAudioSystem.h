@@ -27,7 +27,7 @@
 
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
-#include <dragengine/src/resources/sound/deMicrophone.h>
+#include <dragengine/resources/sound/deMicrophone.h>
 
 class deBaseAudioModule;
 class deComponent;

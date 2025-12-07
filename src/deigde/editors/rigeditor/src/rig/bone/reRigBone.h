@@ -31,8 +31,8 @@
 #include <dragengine/deObject.h>
 #include "../shape/reRigShapeList.h"
 #include "../constraint/reRigConstraintList.h"
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class reRig;
 class reRigShape;

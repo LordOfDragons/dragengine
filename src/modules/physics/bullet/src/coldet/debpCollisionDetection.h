@@ -30,7 +30,7 @@
 #include "../shape/debpShapeTransform.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/src/resources/collider/deCollisionInfo.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 class decCollisionFilter;
 class dePhysicsBullet;

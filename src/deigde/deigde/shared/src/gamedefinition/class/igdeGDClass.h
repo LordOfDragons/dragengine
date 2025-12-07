@@ -48,7 +48,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringDictionary.h>
-#include <dragengine/src/resources/image/deImage.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deglIntList;
 class igdeGDClassInherit;

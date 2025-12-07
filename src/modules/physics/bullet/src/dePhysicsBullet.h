@@ -30,7 +30,7 @@
 #include "devmode/debpDeveloperMode.h"
 
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
-#include <dragengine/src/resources/collider/deCollisionInfo.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 class debpConfiguration;
 class debpCommandExecuter;

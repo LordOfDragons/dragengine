@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 #include "meObject.h"
-#include <dragengine/src/resources/sensor/deLumimeter.h>
+#include <dragengine/resources/sensor/deLumimeter.h>
 
 // predefinitions
 class meWorld;

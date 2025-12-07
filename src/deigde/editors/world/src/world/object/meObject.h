@@ -42,9 +42,9 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShapeList.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/component/deComponent.h>
-#include <dragengine/src/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class meCamera;
 class meDecal;

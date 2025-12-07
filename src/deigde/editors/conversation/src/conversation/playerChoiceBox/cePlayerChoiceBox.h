@@ -32,7 +32,7 @@
 #include <dragengine/resources/font/deFontSize.h>
 
 #include "cePCBOptionList.h"
-#include <dragengine/src/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 class deGraphicContext;
 class ceConversation;

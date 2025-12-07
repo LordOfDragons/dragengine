@@ -28,7 +28,7 @@
 #include "../../../common/collection/decPointerOrderedSet.h"
 #include "../../../common/math/decMath.h"
 #include "../../../resources/image/deImage.h"
-#include <dragengine/src/resources/decal/deDecal.h>
+#include <dragengine/resources/decal/deDecal.h>
 
 class deHeightTerrain;
 class deHeightTerrainNavSpace;

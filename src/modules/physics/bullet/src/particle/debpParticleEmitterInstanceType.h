@@ -28,7 +28,7 @@
 #include "LinearMath/btVector3.h"
 
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
-#include <dragengine/src/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
 class debpForceField;
 class debpParticleEmitterInstance;

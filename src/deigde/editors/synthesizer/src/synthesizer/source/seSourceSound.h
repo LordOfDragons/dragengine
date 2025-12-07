@@ -28,7 +28,7 @@
 #include "seSource.h"
 
 #include <dragengine/common/string/decString.h>
-#include <dragengine/src/resources/sound/deSound.h>
+#include <dragengine/resources/sound/deSound.h>
 
 class deEngine;
 

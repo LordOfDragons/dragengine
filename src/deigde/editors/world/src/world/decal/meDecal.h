@@ -33,10 +33,10 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
-#include <dragengine/src/resources/skin/dynamic/deDynamicSkin.h>
-#include <dragengine/src/resources/skin/deSkin.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class meObject;
 class meWorld;

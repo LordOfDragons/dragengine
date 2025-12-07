@@ -28,7 +28,7 @@
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
-#include <dragengine/src/resources/collider/deCollisionInfo.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 class deWorld;
 

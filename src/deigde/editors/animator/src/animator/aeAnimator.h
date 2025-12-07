@@ -36,13 +36,13 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
-#include <dragengine/src/resources/world/deWorld.h>
-#include <dragengine/src/resources/light/deLight.h>
-#include <dragengine/src/resources/animator/deAnimatorInstance.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/collider/deColliderComponent.h>
-#include <dragengine/src/resources/animator/deAnimator.h>
-#include <dragengine/src/resources/component/deComponent.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/component/deComponent.h>
 
 // predefinitions
 class igdeEnvironment;

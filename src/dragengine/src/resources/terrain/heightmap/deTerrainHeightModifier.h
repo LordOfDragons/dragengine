@@ -26,7 +26,7 @@
 #define _DETERRAINHEIGHTMODIFIER_H_
 
 #include "../../../common/math/decMath.h"
-#include <dragengine/src/resources/image/deImage.h>
+#include <dragengine/resources/image/deImage.h>
 
 
 

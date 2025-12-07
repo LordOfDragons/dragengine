@@ -28,7 +28,7 @@
 
 // includes
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/src/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
 
 // predefinitions
 class reRig;

@@ -26,7 +26,7 @@
 #define _SEDYNAMICSKIN_H_
 
 #include "seDynamicSkinRenderableList.h"
-#include <dragengine/src/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 class seSkin;
 

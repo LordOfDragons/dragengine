@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class meBitArray;
 class meHeightTerrain;

@@ -41,7 +41,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/src/resources/world/deWorld.h>
+#include <dragengine/resources/world/deWorld.h>
 #include "gdeOCBillboard.h"
 #include "gdeOCNavigationBlocker.h"
 #include "gdeOCSnapPoint.h"

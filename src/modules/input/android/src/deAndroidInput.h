@@ -34,7 +34,7 @@
 #include <android/native_activity.h>
 #include <android/input.h>
 #include <game-activity/native_app_glue/android_native_app_glue.h>
-#include <dragengine/src/resources/font/deFont.h>
+#include <dragengine/resources/font/deFont.h>
 
 class deOSAndroid;
 class deainpOverlaySystem;

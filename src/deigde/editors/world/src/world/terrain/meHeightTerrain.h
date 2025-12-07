@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/src/resources/terrain/heightmap/deHeightTerrain.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
 class meHeightTerrainSector;
 class meHTVegetationLayer;

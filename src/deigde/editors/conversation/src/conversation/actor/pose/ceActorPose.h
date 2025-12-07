@@ -30,7 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
 class igdeEnvironment;
 

@@ -32,14 +32,14 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
-#include <dragengine/src/resources/world/deWorld.h>
-#include <dragengine/src/resources/light/deLight.h>
-#include <dragengine/src/resources/animator/deAnimatorInstance.h>
-#include <dragengine/src/resources/rig/deRig.h>
-#include <dragengine/src/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
 #include "reRigBone.h"
-#include <dragengine/src/resources/animator/deAnimator.h>
-#include <dragengine/src/resources/component/deComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/component/deComponent.h>
 
 class reRigConstraintDof;
 class igdeGameDefinition;

@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <dragengine/common/string/decString.h>
-#include <dragengine/src/resources/animator/deAnimator.h>
-#include <dragengine/src/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 // predefinitions
 class aeLoadSaveSystem;

@@ -28,8 +28,8 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include <dragengine/src/resources/component/deComponent.h>
-#include <dragengine/src/resources/skin/deSkin.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class deSmokeEmitterManager;
 class deWorld;

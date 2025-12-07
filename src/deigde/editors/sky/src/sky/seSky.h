@@ -36,10 +36,10 @@
 #include "controller/seControllerList.h"
 #include "layer/seLayerList.h"
 #include "link/seLinkList.h"
-#include <dragengine/src/resources/world/deWorld.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/sky/deSky.h>
-#include <dragengine/src/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/sky/deSky.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
 
 class seBody;
 class seSkyListener;

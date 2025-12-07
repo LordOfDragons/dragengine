@@ -35,11 +35,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/resources/light/deLight.h>
-#include <dragengine/src/resources/world/deWorld.h>
-#include <dragengine/src/resources/animator/deAnimatorInstance.h>
-#include <dragengine/src/resources/skin/deSkin.h>
-#include <dragengine/src/resources/animator/deAnimator.h>
-#include <dragengine/src/resources/component/deComponent.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/component/deComponent.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;

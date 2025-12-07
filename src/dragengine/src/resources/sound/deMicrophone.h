@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
-#include <dragengine/src/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deSpeaker.h>
 
 class deWorld;
 class deMicrophone;

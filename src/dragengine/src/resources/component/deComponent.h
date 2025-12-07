@@ -37,7 +37,7 @@
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/string/decString.h"
-#include <dragengine/src/resources/decal/deDecal.h>
+#include <dragengine/resources/decal/deDecal.h>
 
 
 class deBaseAnimatorComponent;

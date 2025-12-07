@@ -28,8 +28,8 @@
 
 // includes
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/src/resources/component/deComponent.h>
-#include <dragengine/src/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 // predefinitions
 class aeAnimator;

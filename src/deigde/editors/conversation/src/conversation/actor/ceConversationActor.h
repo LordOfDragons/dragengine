@@ -34,12 +34,12 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/src/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 #include "ceTarget.h"
-#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimator.h>
 #include "ceFacePose.h"
-#include <dragengine/src/resources/sound/deSpeaker.h>
-#include <dragengine/src/resources/component/deComponent.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/component/deComponent.h>
 
 class cePlayback;
 class ceConversation;

@@ -31,8 +31,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/resources/navigation/navigator/deNavigatorPath.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
-#include <dragengine/src/resources/navigation/navigator/deNavigator.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/navigation/navigator/deNavigator.h>
 
 class meObject;
 class meWorld;

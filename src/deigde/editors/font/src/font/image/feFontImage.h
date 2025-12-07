@@ -30,7 +30,7 @@
 #include <dragengine/deObject.h>
 
 #include <dragengine/common/string/decString.h>
-#include <dragengine/src/resources/image/deImage.h>
+#include <dragengine/resources/image/deImage.h>
 
 // predefinitions
 class feFont;

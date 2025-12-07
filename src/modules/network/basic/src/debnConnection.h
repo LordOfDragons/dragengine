@@ -31,7 +31,7 @@
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
 #include "debnSocket.h"
-#include <dragengine/src/resources/network/deNetworkMessage.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 
 class deConnection;
 class deNetworkBasic;

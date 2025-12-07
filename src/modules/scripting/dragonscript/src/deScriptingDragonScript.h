@@ -34,7 +34,7 @@
 #include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
 #include "parameters/dedsParameterList.h"
-#include <dragengine/src/resources/collider/deCollisionInfo.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 
 class deClassPhysicsSystem;

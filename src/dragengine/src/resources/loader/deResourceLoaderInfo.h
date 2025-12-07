@@ -27,7 +27,7 @@
 
 #include "deResourceLoader.h"
 #include "../../common/string/decString.h"
-#include <dragengine/src/resources/deFileResource.h>
+#include <dragengine/resources/deFileResource.h>
 
 
 

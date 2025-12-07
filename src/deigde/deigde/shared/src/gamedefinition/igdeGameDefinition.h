@@ -31,8 +31,8 @@
 
 #include "particleemitter/igdeGDParticleEmitterManager.h"
 #include "property/igdeGDPropertyList.h"
-#include <dragengine/src/resources/model/deModel.h>
-#include <dragengine/src/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class igdeGDSkinManager;
 class igdeGDClassManager;

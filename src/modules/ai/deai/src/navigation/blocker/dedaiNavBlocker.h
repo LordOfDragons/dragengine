@@ -28,7 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
 #include <dragengine/systems/modules/ai/deBaseAINavigationBlocker.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deDEAIModule;
 class dedaiLayer;

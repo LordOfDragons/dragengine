@@ -31,7 +31,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainSector;

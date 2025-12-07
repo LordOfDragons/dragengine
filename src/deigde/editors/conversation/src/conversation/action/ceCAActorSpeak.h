@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/src/resources/sound/deSound.h>
+#include <dragengine/resources/sound/deSound.h>
 
 class ceConversation;
 

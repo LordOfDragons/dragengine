@@ -27,7 +27,7 @@
 
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
-#include <dragengine/src/resources/image/deImage.h>
+#include <dragengine/resources/image/deImage.h>
 
 
 // definitions

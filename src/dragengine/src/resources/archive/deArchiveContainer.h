@@ -26,7 +26,7 @@
 #define _DEARCHIVECONTAINER_H_
 
 #include "../../filesystem/deVFSContainer.h"
-#include <dragengine/src/resources/archive/deArchive.h>
+#include <dragengine/resources/archive/deArchive.h>
 
 
 

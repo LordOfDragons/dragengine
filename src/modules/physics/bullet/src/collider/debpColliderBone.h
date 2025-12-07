@@ -30,7 +30,7 @@
 
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include "debpBulletShape.h"
 
 class debpColliderConstraint;

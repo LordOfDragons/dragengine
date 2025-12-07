@@ -31,7 +31,7 @@
 
 #include "glyph/feFontGlyphList.h"
 #include "glyph/feFontGlyphSelection.h"
-#include <dragengine/src/resources/font/deFont.h>
+#include <dragengine/resources/font/deFont.h>
 #include "feFontImage.h"
 
 class igdeGameDefinition;

@@ -28,9 +28,9 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
-#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include "reRigBone.h"
-#include <dragengine/src/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class reRig;
 class deRigConstraint;
