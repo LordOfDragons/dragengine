@@ -1196,7 +1196,8 @@ void debpColliderBones::pCreateBones(){
 			colBone.SetDynamic(responseType == deCollider::ertDynamic && rigBone->GetDynamic());
 		}
 		*/
-		colBone.SetDynamic(rigBone.GetDynamic()); // WARNING!this calls BoneDynamicChanged()!		
+		colBone.SetDynamic(rigBone.GetDynamic()); // WARNING! this calls BoneDynamicChanged()!
+		
 		// only create a bone if it has a shape definition. bones without a
 		// shape definition are most probably controller bones or used for
 		// rendering only and should not clog up the physics system with

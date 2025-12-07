@@ -936,7 +936,8 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 		if(coneMap){
 			delete coneMap;
 		}
-		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!		throw;
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
+		throw;
 	}
 	
 	pRenderThread.GetLogger().LogInfoFormat("deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",

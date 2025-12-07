@@ -270,7 +270,7 @@ pDirtyRig(true)
 		pEngSimCollider = engine->GetColliderManager()->CreateColliderComponent();
 		pEngSimCollider->SetEnabled(false);
 		pEngSimCollider->SetResponseType(deCollider::ertDynamic);
-		pEngSimCollider->SetUseLocalGravity(false);//!pDynamic);
+		pEngSimCollider->SetUseLocalGravity(false);//! pDynamic);
 		pEngSimCollider->SetMass(pMass);
 		
 		layerMask.ClearMask();

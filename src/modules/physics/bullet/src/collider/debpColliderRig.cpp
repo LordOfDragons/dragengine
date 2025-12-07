@@ -1180,7 +1180,8 @@ void debpColliderRig::pUpdateBones(){
 				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
 				
 			}else{
-				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!			}
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!
+			}
 			
 		}else{
 			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);

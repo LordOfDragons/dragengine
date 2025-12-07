@@ -1561,7 +1561,8 @@ void debpColliderComponent::ResponseTypeChanged(){
 			SetUseKinematicSimulation(false);
 			
 		}else if(responseType == deCollider::ertKinematic){
-			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){ // tri mesh supports no kinematic!				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
+			if(pTestMode == etmModelStatic || pTestMode == etmModelDynamic){ // tri mesh supports no kinematic!
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 				SetUseKinematicSimulation(false);
 				
 			}else{
@@ -2469,7 +2470,8 @@ void debpColliderComponent::pUpdateBones(){
 				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
 				
 			}else{
-				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!			}
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!
+			}
 			
 		}else{
 			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);

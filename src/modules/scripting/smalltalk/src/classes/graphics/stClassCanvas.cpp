@@ -158,7 +158,8 @@ stClassCanvas::~stClassCanvas(){
 void stClassCanvas::SetUpLinks(){
 	pOOPClass = gst_class_name_to_oop("DECanvas");
 	if(!pOOPClass){
-		DETHROW(deeInvalidParam); // Canvas.st missing !	}
+		DETHROW(deeInvalidParam); // Canvas.st missing !
+	}
 	
 	csCanvasClass &csclass = *((csCanvasClass*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();

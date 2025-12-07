@@ -329,7 +329,8 @@ void igdeNativeFoxRenderView::AttachRenderWindow(){
 #endif
 	
 	// attach the window to fox. we have to destroy the old window not just detach it
-	FXFrame::destroy();  // IMPORTANT!super-call or our destroy() overwrite fires and this is bad!	attach((FXID)renderWindow->GetWindow());
+	FXFrame::destroy();  // IMPORTANT! super-call or our destroy() overwrite fires and this is bad!
+	attach((FXID)renderWindow->GetWindow());
 	pRenderWindowAttached = true;
 	
 	// update window properties to match what FOX has stored for the previous window
